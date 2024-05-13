@@ -1,7 +1,6 @@
 #pragma once
 #include"EventSubscriber.h" 
-namespace VisPred
-{
+
 
 enum class KEY_STATE
 {
@@ -103,4 +102,3 @@ public:
 	//static bool GetButtonDown(BUTTON button) { return false; };
 };
 
-}

@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "InputManager.h"
-namespace VisPred
-{
 
 	 InputManager* InputManager::instance = nullptr;
 
@@ -84,4 +82,3 @@ namespace VisPred
 		return  m_KeyInputInfos[(int)key].KeyState == KEY_STATE::DOWN;
 	}
 
-}

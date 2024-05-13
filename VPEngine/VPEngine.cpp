@@ -14,10 +14,8 @@
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
-namespace VisPred
-{
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	GameProcess::GameProcess(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
+	VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 	{
 		auto wTitle = std::wstring(title.begin(), title.end());
 		// 윈도우 클래스 구조체 정의
@@ -57,7 +55,7 @@ namespace VisPred
 		m_SystemManager->AddSystem<SceneSerializer>();
 	}
 
-	GameProcess::~GameProcess()
+	VPEngine::~VPEngine()
 	{
 		delete m_TimeManager;
 		delete m_EntityManager;
@@ -66,7 +64,7 @@ namespace VisPred
 		EventManager::GetInstance().Release();
 	}
 
-	void GameProcess::Loop()
+	void VPEngine::Loop()
 	{
 		MSG msg;
 
@@ -95,7 +93,7 @@ namespace VisPred
 	}
 
 
-	void GameProcess::Update()
+	void VPEngine::Update()
 	{
 		EventManager::GetInstance().Update(m_DeltaTime);
 		InputManager::GetInstance().Update();
@@ -110,7 +108,7 @@ namespace VisPred
 		SetWindowTextW(m_hWnd, newname.c_str());
 	}
 
-	void GameProcess::Render()
+	void VPEngine::Render()
 	{
 
 	}
@@ -157,4 +155,3 @@ namespace VisPred
 		}
 		return 0;
 	}
-}

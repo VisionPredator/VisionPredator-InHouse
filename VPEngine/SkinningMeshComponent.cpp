@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "SkinningMeshComponent.h"
-namespace VisPred
-{
 	META_REGISTRATION
 	{
 		entt::meta<SkinningMeshComponent>()
@@ -14,4 +12,3 @@ namespace VisPred
 	{
 	}
 
-}

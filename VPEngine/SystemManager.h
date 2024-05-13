@@ -1,8 +1,6 @@
 #pragma once
 #include "SystemInterface.h"
 #include "System.h"
-namespace VisPred
-{
 
 	class SystemManager
 	{
@@ -53,4 +51,3 @@ namespace VisPred
 		//std::vector<IRenderable*> m_Renderables;
 	};
 
-}

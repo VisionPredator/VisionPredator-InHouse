@@ -1,8 +1,5 @@
 #pragma once
 #include "System.h"
-namespace VisPred
-{
-
 class CameraSystem :
     public System, public IUpdatable
 {
@@ -16,5 +13,4 @@ class CameraSystem :
     void Update(float deltaTime) override;
 
 };
-}
 

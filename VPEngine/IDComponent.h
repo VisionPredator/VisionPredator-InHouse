@@ -1,12 +1,9 @@
 #pragma once
 #include "Component.h"
 
-namespace VisPred
+struct IDComponent : public Component
 {
-	struct IDComponent : public Component
-	{
-		VP_JSONBODY(IDComponent, Name)
+	VP_JSONBODY(IDComponent, Name)
 		IDComponent();
-		std::string Name = "Entity";
-	};
-}
+	std::string Name = "Entity";
+};

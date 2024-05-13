@@ -5,8 +5,6 @@
 #include <iostream>
 
 
-namespace VisPred
-{
 	TransformSystem::TransformSystem(EntityManager* entityManager)
 		:System(entityManager)
 	{
@@ -84,4 +82,3 @@ namespace VisPred
 	void TransformSystem::OnTest(std::any test)
 	{
 	}
-}

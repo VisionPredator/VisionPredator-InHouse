@@ -2,12 +2,12 @@
 #include "Entity.h"
 #include "Components.h"
 #include "EntityManager.h"
-VisPred::Entity::Entity(uint32_t entityID)
+Entity::Entity(uint32_t entityID)
 {
 	m_EntityID = entityID;
 }
 
-VisPred::Entity::~Entity()
+Entity::~Entity()
 {
 	for (auto& comp:m_OwnedComp)
 	{

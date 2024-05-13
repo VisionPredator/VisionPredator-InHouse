@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "MeshComponent.h"
-namespace VisPred
-{
 	META_REGISTRATION
 	{
 		entt::meta<MeshComponent>()
@@ -14,4 +12,3 @@ namespace VisPred
 	{
 	}
 
-}

@@ -1,6 +1,4 @@
 #pragma once
-namespace VisPred
-{
 	class EventSubscriber;
 	using Callback_Event = std::function<void(std::any)>;
 	using EventType = std::string;
@@ -59,4 +57,3 @@ namespace VisPred
 
 	};
 
-}

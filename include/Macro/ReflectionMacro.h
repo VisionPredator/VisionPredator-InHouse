@@ -25,7 +25,7 @@ static const fq__auto__register__ CAT(auto_register__, __LINE__);               
 static void AutoRegisterMetaTypeFunction()
 
 
-namespace VisPred::Reflection
+namespace Reflection
 {
     template<typename T>
     static entt::id_type GetTypeID() {

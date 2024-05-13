@@ -2,8 +2,6 @@
 #include "EntityManager.h"
 #include "SystemInterface.h"
 
-namespace VisPred
-{
 	class System
 	{
 	public:
@@ -41,4 +39,3 @@ namespace VisPred
 		EntityManager* m_EntityManager;
 	};
 
-}

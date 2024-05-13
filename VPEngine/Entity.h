@@ -1,7 +1,5 @@
 #pragma once
 #include "pch.h"
-namespace VisPred
-{
 	class EntityManager;
 	struct Component;
 	class Entity
@@ -91,4 +89,3 @@ namespace VisPred
 		friend class EntityManager;
 		friend class SceneSerializer;
 	};
-}

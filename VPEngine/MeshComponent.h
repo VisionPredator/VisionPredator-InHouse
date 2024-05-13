@@ -1,7 +1,5 @@
 #pragma once
 #include "Component.h"
-namespace VisPred
-{
     struct MeshComponent :
         public Component
     {
@@ -10,4 +8,3 @@ namespace VisPred
         std::string name;
     };
 
-}

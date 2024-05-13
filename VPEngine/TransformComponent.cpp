@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "TransformComponent.h"
 
-namespace VisPred
-{
 	META_REGISTRATION
 	{
 		entt::meta<Parent>()
@@ -22,8 +20,7 @@ namespace VisPred
 			.func<&TransformComponent::DeserializeComponent>("DeserializeComponent"_hs);
 	}
 
-		VisPred::TransformComponent::TransformComponent()
+	TransformComponent::TransformComponent()
 	{
 	}
 
-}

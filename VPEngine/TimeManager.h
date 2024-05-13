@@ -3,8 +3,6 @@
 ///누수 없음.
 
 
-namespace VisPred
-{
 	class TimeManager
 	{
 	private:
@@ -21,8 +19,7 @@ namespace VisPred
 		void Update();
 		~TimeManager() {}
 
-		float GetDeltaTime() { return static_cast<float>(m_DeltaTime); }
+		const float GetDeltaTime() { return static_cast<float>(m_DeltaTime); }
 		uint32_t GetFPS() { return m_LastFPS; }
 	};
 
-}

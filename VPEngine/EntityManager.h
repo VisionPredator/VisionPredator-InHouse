@@ -2,8 +2,6 @@
 #include "SceneManager.h"
 #include "Entity.h"
 
-namespace VisPred
-{
 
 	class Scene;
 	class SceneManager;
@@ -62,4 +60,3 @@ namespace VisPred
 		ParentEntity.RemoveComponent<T>();
 	}
 
-}

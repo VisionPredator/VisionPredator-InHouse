@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
-namespace VisPred 
-{
+ 
 
 
 struct CameraComponent :
@@ -13,4 +12,3 @@ struct CameraComponent :
 };
 
 
-}

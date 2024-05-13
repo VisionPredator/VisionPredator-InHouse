@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "SystemManager.h"
 
-namespace VisPred
-{
 	SystemManager::SystemManager()
 	{
 	}
@@ -42,4 +40,3 @@ namespace VisPred
 
 
 
-}

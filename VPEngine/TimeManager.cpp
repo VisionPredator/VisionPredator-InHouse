@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "TimeManager.h"
-namespace VisPred
-{
 	TimeManager::TimeManager()
 	{
 		// 현재 카운트
@@ -25,4 +23,3 @@ namespace VisPred
 			m_FPS = 0;
 		}
 	}
-}

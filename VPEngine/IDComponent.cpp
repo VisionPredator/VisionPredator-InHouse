@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "IDComponent.h"
 
-namespace VisPred
-{
 	META_REGISTRATION
 	{
 		entt::meta<IDComponent>()
@@ -14,4 +12,3 @@ namespace VisPred
 	IDComponent::IDComponent()
 	{
 	}
-}
