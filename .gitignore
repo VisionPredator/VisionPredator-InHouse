@@ -1,3 +1,9 @@
 .vs/VisionPredator/FileContentIndex/d7c337eb-f5a5-4c01-94ed-cdc4f003ef36.vsidx
 .vs/
 *.user
+*.tlog
+*.obj
+VPGraphics/x64/
+VPEngine/x64/Debug/VPEngine.Build.CppClean.log
+VPEngine/x64/
+x64/
