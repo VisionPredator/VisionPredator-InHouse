@@ -147,9 +147,6 @@
     <ClInclude Include="MeshRenderSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>

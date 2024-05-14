@@ -4,6 +4,7 @@
 class CameraSystem :
     public System, public IFixedUpdatable,public EventSubscriber
 {
+public: 
     CameraSystem(EntityManager* entityManager);
     ~CameraSystem() = default;
 

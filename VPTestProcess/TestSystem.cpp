@@ -18,12 +18,12 @@ void TestSystem::Update(float deltaTime)
 	if (a > 1)
 		EventManager::GetInstance().ScheduleEvent("OnTest");
 
-	if (a>9&&a<10)
-	{
-		//EventManager::GetInstance().ScheduleEvent("OnSerializeScene");
-		std::string sceneName = "LDH_Map";
-		EventManager::GetInstance().ScheduleEvent("OnChangeScene", sceneName);
-	}
+	//if (a>9&&a<10)
+	//{
+	//	//EventManager::GetInstance().ScheduleEvent("OnSerializeScene");
+	//	std::string sceneName = "LDH_Map";
+	//	EventManager::GetInstance().ScheduleEvent("OnChangeScene", sceneName);
+	//}
 }
 
 void TestSystem::FixedUpdate(float deltaTime)
