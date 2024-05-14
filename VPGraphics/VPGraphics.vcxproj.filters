@@ -1,17 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="GraphicsEngine">
+      <UniqueIdentifier>{89297b2b-da77-48bc-9a83-34647083fbb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXResource">
+      <UniqueIdentifier>{9e3b65b6-bc3a-4d99-8494-77204bb2ae00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXResource\Device">
+      <UniqueIdentifier>{4e3557e1-d62f-4f45-8071-ec72d3e451ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\Animator">
+      <UniqueIdentifier>{80bed82e-0fff-45f6-9c9b-393d40f497a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\ResourceManager">
+      <UniqueIdentifier>{afe051f0-b3a8-4137-8429-1f0ab42f6c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\ModelLoader">
+      <UniqueIdentifier>{765b35ec-6ac2-4506-acfc-b6f7a7fad902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{5957083e-e3b2-4880-a1ce-6ebb37b165e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Interface">
+      <UniqueIdentifier>{4cf1d488-1aff-4aa8-8158-a7f9eee9d96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\VertexBuffer">
+      <UniqueIdentifier>{dd8e2574-d372-4030-a2ac-412a608d927b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\IndexBuffer">
+      <UniqueIdentifier>{3a653f12-fc5d-4b7e-909a-2f18629c1920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StaticData">
+      <UniqueIdentifier>{80928033-658b-4d31-a345-bc861c5fdf02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\RenderTargetView">
+      <UniqueIdentifier>{9f21e5a0-f859-483c-8104-6a5aec714ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\DepthStencilView">
+      <UniqueIdentifier>{27d99747-d3de-4415-b7d9-e8cd6f7c8990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object">
+      <UniqueIdentifier>{bba3c6b3-38cd-45e9-8f0f-a607e71bc20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\ModelData">
+      <UniqueIdentifier>{d39baa98-fb02-4292-a825-c5f7bbe11596}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Node">
+      <UniqueIdentifier>{d9c3781f-bcbe-48ef-ba5f-ff02b7d0f22a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Mesh">
+      <UniqueIdentifier>{01cf5229-8aa6-4738-a458-4af83116bba9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ConstantBuffer">
+      <UniqueIdentifier>{6f366c8e-08a6-4e77-b80b-f942be155164}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\RenderState">
+      <UniqueIdentifier>{584032de-a968-476a-ab22-c5698850b751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\PixelShader">
+      <UniqueIdentifier>{3a582e74-7212-4cca-ab7d-0612cb049099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Interface\.h">
+      <UniqueIdentifier>{72d6ecc8-18a7-4395-98ed-07a1354b953e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Interface\.cpp">
+      <UniqueIdentifier>{f1a4c5df-0dca-4d38-bee3-239068340686}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\VertexShader">
+      <UniqueIdentifier>{4a6a3542-7e8f-4c46-9ff0-474492ba1c31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Texture2D">
+      <UniqueIdentifier>{c75abc88-8be4-4249-81f1-9de186540733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Material">
+      <UniqueIdentifier>{8e1fb402-cee1-4f02-a640-c4ef9281294a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ShaderResourceView">
+      <UniqueIdentifier>{b1ed6087-ce31-4867-8b66-d0ad422f20cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Animation">
+      <UniqueIdentifier>{84e49f22-5238-4f38-9422-25459c5d3d3c}</UniqueIdentifier>
     </Filter>
     <Filter Include="GraphicsEngine\Interface">
       <UniqueIdentifier>{f84c9c2c-0828-4506-951c-6b757cc418fc}</UniqueIdentifier>
@@ -27,7 +100,6 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="GraphicsEngine.h">
       <Filter>GraphicsEngine</Filter>
     </ClInclude>
@@ -121,15 +193,85 @@
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-=======
->>>>>>> 56209f2061470621838c9646bd2d195592451c2e
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VPGraphics.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="GraphicsEngine.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>DXResource\Device</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VPGraphics.cpp">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>GraphicsEngine\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>GraphicsEngine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>GraphicsEngine\ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetView.cpp">
+      <Filter>Resource\RenderTargetView</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilView.cpp">
+      <Filter>Resource\DepthStencilView</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelData.cpp">
+      <Filter>Resource\Object\ModelData</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Resource\Object\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Resource\VertexBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Resource\IndexBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Resource\ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderState.cpp">
+      <Filter>Resource\RenderState</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Resource\Interface\.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resource\Interface\.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Resource\Interface\.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Resource\PixelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Resource\VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Resource\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource\Object\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResourceView.cpp">
+      <Filter>Resource\ShaderResourceView</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Resource\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Resource\Object\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
