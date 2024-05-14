@@ -19,6 +19,8 @@ void SceneManager::Initialize()
 {
 	///씬 생성
 	m_CurrentScene = new Scene;
+	m_CurrentScene->SceneName = "TempScene";
+	EventManager::GetInstance().ScheduleEvent("OnStartScene");
 }
 //씬 체인지 이벤트 :: SchduleEvent로 호출 권장!
 void SceneManager::OnChangeScene(std::any data)
@@ -48,6 +50,8 @@ void SceneManager::OnStartScene(std::any data)
 {
 	///TODO: 씬 시작시 설정할 init??
 	EventManager::GetInstance().ImmediateEvent("OnInitialize");
+	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
+
 
 }
 
@@ -61,6 +65,8 @@ void SceneManager::OnEndScene(std::any data)
 {
 	///TODO:씬 끝났을 때 처리할 Finalize?
 	EventManager::GetInstance().ImmediateEvent("OnFinalize");
+	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystem");
+
 }
 
 void SceneManager::OnOpenScene(std::any data)

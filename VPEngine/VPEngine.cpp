@@ -51,6 +51,7 @@
 		/// 다 초기화 되고 윈도우 만들기
 		ShowWindow(m_hWnd, SW_SHOWNORMAL);
 		UpdateWindow(m_hWnd);
+
 		m_SystemManager->AddSystem<TransformSystem>();
 		m_SystemManager->AddSystem<SceneSerializer>();
 	}
