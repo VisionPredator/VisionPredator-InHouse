@@ -1,39 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="GraphicsEngine">
-      <UniqueIdentifier>{89297b2b-da77-48bc-9a83-34647083fbb5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DXResource">
-      <UniqueIdentifier>{9e3b65b6-bc3a-4d99-8494-77204bb2ae00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DXResource\Device">
-      <UniqueIdentifier>{4e3557e1-d62f-4f45-8071-ec72d3e451ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GraphicsEngine\Animator">
-      <UniqueIdentifier>{80bed82e-0fff-45f6-9c9b-393d40f497a6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GraphicsEngine\ResourceManager">
-      <UniqueIdentifier>{afe051f0-b3a8-4137-8429-1f0ab42f6c08}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GraphicsEngine\ModelLoader">
-      <UniqueIdentifier>{765b35ec-6ac2-4506-acfc-b6f7a7fad902}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource">
-      <UniqueIdentifier>{5957083e-e3b2-4880-a1ce-6ebb37b165e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\Interface">
-      <UniqueIdentifier>{4cf1d488-1aff-4aa8-8158-a7f9eee9d96a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\VertexBuffer">
-      <UniqueIdentifier>{dd8e2574-d372-4030-a2ac-412a608d927b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\IndexBuffer">
-      <UniqueIdentifier>{3a653f12-fc5d-4b7e-909a-2f18629c1920}</UniqueIdentifier>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,52 +21,13 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsEngine.h">
-      <Filter>GraphicsEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="IGraphics.h">
-      <Filter>GraphicsEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>DXResource\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Animator.h">
-      <Filter>GraphicsEngine\Animator</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>GraphicsEngine\ResourceManager</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelLoader.h">
-      <Filter>GraphicsEngine\ModelLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="IResource.h">
-      <Filter>Resource\Interface</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GraphicsEngine.cpp">
-      <Filter>GraphicsEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>DXResource\Device</Filter>
+    <ClCompile Include="VPGraphics.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="VPGraphics.cpp">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Animator.cpp">
-      <Filter>GraphicsEngine\Animator</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>GraphicsEngine\ResourceManager</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelLoader.cpp">
-      <Filter>GraphicsEngine\ModelLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="IResource.cpp">
-      <Filter>Resource\Interface</Filter>
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
