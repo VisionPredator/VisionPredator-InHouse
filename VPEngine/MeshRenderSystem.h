@@ -1,10 +1,8 @@
 #pragma once
 #include "System.h"
-#include "EventSubscriber.h"
 class MeshRenderSystem :
-    public System,public IFixedUpdatable,public EventSubscriber
+    public System,public IFixedUpdatable
 {
-public:
     MeshRenderSystem(EntityManager* entityManager);
     ~MeshRenderSystem() = default;
     void OnInitializeSystem(std::any);

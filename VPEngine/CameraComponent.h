@@ -8,6 +8,8 @@ struct CameraComponent :
 		CameraComponent();
 	VPMath::Matrix testMatrix{};
 	bool IsMain{ false };
+
+
 };
 
 

@@ -48,7 +48,6 @@ void SceneManager::OnStartScene(std::any data)
 {
 	///TODO: æ¿ Ω√¿€Ω√ º≥¡§«“ init??
 	EventManager::GetInstance().ImmediateEvent("OnInitialize");
-	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
 
 }
 
@@ -62,7 +61,6 @@ void SceneManager::OnEndScene(std::any data)
 {
 	///TODO:æ¿ ≥°≥µ¿ª ∂ß √≥∏Æ«“ Finalize?
 	EventManager::GetInstance().ImmediateEvent("OnFinalize");
-	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystem");
 }
 
 void SceneManager::OnOpenScene(std::any data)

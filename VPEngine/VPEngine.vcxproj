@@ -154,6 +154,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="MeshRenderSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />
