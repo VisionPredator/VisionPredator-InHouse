@@ -513,11 +513,6 @@ void GraphicsEngine::OnResize()
 	m_device->Context()->RSSetViewports(1, m_VP);
 }
 
-void GraphicsEngine::SetCamera(DirectX::XMFLOAT3 pos, float angle)
-{
-	m_Camera->SetPos();
-}
-
 void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
 {
 
