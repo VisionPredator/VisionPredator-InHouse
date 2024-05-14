@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="GraphicsEngine\Interface">
+      <UniqueIdentifier>{f84c9c2c-0828-4506-951c-6b757cc418fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="GraphicsEngine.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>DXResource\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>GraphicsEngine\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>GraphicsEngine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>GraphicsEngine\ModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexData.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetView.h">
+      <Filter>Resource\RenderTargetView</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilView.h">
+      <Filter>Resource\DepthStencilView</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelData.h">
+      <Filter>Resource\Object\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Resource\Object\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Resource\VertexBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Resource\IndexBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Resource\ConstantBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderState.h">
+      <Filter>Resource\RenderState</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Resource\Interface\.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Resource\Interface\.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resource\Interface\.h</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Resource\PixelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Resource\VertexShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Resource\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Resource\Object\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderResourceView.h">
+      <Filter>Resource\ShaderResourceView</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Resource\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Desc.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="CBuffer.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticData.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFilter.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphics.h">
+      <Filter>GraphicsEngine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+=======
+>>>>>>> 56209f2061470621838c9646bd2d195592451c2e
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VPGraphics.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
