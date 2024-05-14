@@ -55,6 +55,9 @@ bool GraphicsEngine::Initialize()
 	m_VP->MinDepth = 0.0f;
 	m_VP->MaxDepth = 1.0f;
 
+	m_Camera = new Camera();
+	m_Camera->Initialize(m_VP->Width / m_VP->Height);
+
 	m_device = new Device(m_hWnd);
 	if (m_device != nullptr)
 	{
@@ -486,6 +489,8 @@ void GraphicsEngine::OnResize()
 	m_RTVs.clear();
 	m_DSVs.clear();
 
+	
+
 	m_device->OnResize();
 	m_ResourceManager->OnResize();
 
@@ -506,6 +511,11 @@ void GraphicsEngine::OnResize()
 
 	m_device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
 	m_device->Context()->RSSetViewports(1, m_VP);
+}
+
+void GraphicsEngine::SetCamera(DirectX::XMFLOAT3 pos, float angle)
+{
+	m_Camera->SetPos();
 }
 
 void GraphicsEngine::DrawQuad(ShaderResourceView* srv)

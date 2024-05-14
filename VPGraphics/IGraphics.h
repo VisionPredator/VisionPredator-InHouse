@@ -1,12 +1,16 @@
 #pragma once
 #include <windows.h>
-
 #include <string>
 
 #include "SimpleMath.h"
 #include "MeshFilter.h"
 #include "CBuffer.h"
 
+
+
+/// <summary>
+/// 게임 엔진에서 사용할 인터페이스 클래스
+/// </summary>
 namespace Graphics
 {
 	class Interface
@@ -30,6 +34,16 @@ namespace Graphics
 		virtual bool Finalize() abstract;
 		virtual void Render() abstract;
 		virtual void OnResize() abstract;
+
+
+		///추가해야할거
+		//엔티티가 사라지면 그래픽스 안에 있는 해당 오브젝트도 지워주는 함수
+		//void DeleteObject();
+
+		//카메라의 상태 업데이트
+		virtual void SetCamera(DirectX::XMFLOAT3 pos, float Xrotate, float Yrotate) abstract;
+		
+
 
 
 		//나중에 지울거

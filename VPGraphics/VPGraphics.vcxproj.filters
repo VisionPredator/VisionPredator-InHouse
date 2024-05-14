@@ -86,6 +86,12 @@
     <Filter Include="Resource\Object\Animation">
       <UniqueIdentifier>{84e49f22-5238-4f38-9422-25459c5d3d3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicsEngine\Interface">
+      <UniqueIdentifier>{f84c9c2c-0828-4506-951c-6b757cc418fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -95,9 +101,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsEngine.h">
-      <Filter>GraphicsEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="IGraphics.h">
       <Filter>GraphicsEngine</Filter>
     </ClInclude>
     <ClInclude Include="Device.h">
@@ -184,6 +187,12 @@
     <ClInclude Include="MeshFilter.h">
       <Filter>StaticData</Filter>
     </ClInclude>
+    <ClInclude Include="IGraphics.h">
+      <Filter>GraphicsEngine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -263,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Resource\Object\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
