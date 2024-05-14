@@ -96,7 +96,7 @@ public:
 	 bool GetKey(KEY key);
 	 bool GetKeyUp(KEY key);
 	 bool GetKeyDown(KEY key);
-	 const VPMath::Vector2 GetCurPos() { return m_CurPos; }
+	 VPMath::Vector2 GetCurPos() const { return m_CurPos; }
 	//static bool GetButton(BUTTON button) { return false; };
 	//static bool GetButtonUp(BUTTON button) { return false; };
 	//static bool GetButtonDown(BUTTON button) { return false; };

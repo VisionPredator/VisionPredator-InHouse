@@ -6,8 +6,10 @@
 struct CameraComponent :
     public Component
 {
+    CameraComponent();
+    VPMath::Matrix testMatrix{};
+    bool IsMain{false};
 
-    VPMath::Matrix testMatrix;
 
 };
 

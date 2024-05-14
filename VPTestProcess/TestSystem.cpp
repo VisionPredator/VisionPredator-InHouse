@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "TestSystem.h"
+#include "Components.h"
 #include "EventManager.h"
 
 TestSystem::TestSystem(EntityManager* entityManager)

@@ -5,9 +5,9 @@
 	{
 		SkinningMeshComponent();
 
-		VP_JSONBODY(SkinningMeshComponent, name)
+		VP_JSONBODY(SkinningMeshComponent, Name)
 
-		std::string name;
+		std::string Name;
 
 	};
 

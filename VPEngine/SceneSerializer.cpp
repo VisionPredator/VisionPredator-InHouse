@@ -41,11 +41,11 @@ void SceneSerializer::OnSerializeScene(std::any data)
 	}
 	///TODO 씬이름으로 json 파일 만들어서 넣기!!
 	try {
-		for (const auto entityPair : m_EntityManager->GetEntityMap())
+		for (const auto& entityPair : m_EntityManager->GetEntityMap())
 		{
 			nlohmann::ordered_json entityJson;
 			entityJson["EntityID"] = entityPair.first;
-			for (const auto [id, comp] : entityPair.second->m_OwnedComp)
+			for (const auto& [id, comp] : entityPair.second->m_OwnedComp)
 			{
 				nlohmann::json compnentEntity;
 				comp->SerializeComponent(compnentEntity);

@@ -2,6 +2,10 @@
 #include "EntityManager.h"
 #include "SystemInterface.h"
 
+#define COMPITER(ClassName) CompIter<ClassName>(m_EntityManager)
+
+
+
 	class System
 	{
 	public:
