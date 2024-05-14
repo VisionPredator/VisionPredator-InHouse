@@ -53,7 +53,11 @@ void CameraSystem::FixedUpdate(float deltaTime)
 
 		///TODO:유승운 여기서 그래픽스한테 메인카메라 설정 보내주기!
 		{
-			cameracomp.GetComponent<TransformComponent>()->WorldTransform;
+			TransformComponent cameratrans= *cameracomp.GetComponent<TransformComponent>();
+			cameratrans.World_Location;
+			cameratrans.World_Quaternion;
+
+			cameracomp.GetComponent<TransformComponent>()->World_Quaternion;
 			//	Graphics::Interface->SetCamera(cameracomp의정보);
 			//	Graphics::Interface->SetMeshrender(uint32_t id,cameracomp의정보);
 		}
