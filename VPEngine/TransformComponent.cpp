@@ -3,21 +3,14 @@
 
 	META_REGISTRATION
 	{
-		entt::meta<Parent>()
-			.data<&Parent::ParentID>("ParentID"_hs)
-			.func<&Parent::SerializeComponent>("SerializeComponent"_hs)
-			.func<&Parent::DeserializeComponent>("DeserializeComponent"_hs);
-		entt::meta<Children>()
-			.data<&Children::ChildrenID>("ChildrenID"_hs)
-			.func<&Children::SerializeComponent>("SerializeComponent"_hs)
-			.func<&Children::DeserializeComponent>("DeserializeComponent"_hs);
+		META_ADD_MEMBER(Parent,Parent::ParentID)
+		META_ADD_MEMBER(Children,Children::ChildrenID)
+		META_ADD_MEMBER(TransformComponent,TransformComponent::Local_Location,TransformComponent::Local_Quaternion,TransformComponent::Local_Scale)
 
-		entt::meta<TransformComponent>()
-			.data<&TransformComponent::Local_Location>("Local_Location"_hs)
-			.data<&TransformComponent::Local_Quaternion>("Local_Quaternion"_hs)
-			.data<&TransformComponent::Local_Scale>("Local_Scale"_hs)
-			.func<&TransformComponent::SerializeComponent>("SerializeComponent"_hs)
-			.func<&TransformComponent::DeserializeComponent>("DeserializeComponent"_hs);
+
+
+
+
 	}
 
 	TransformComponent::TransformComponent()

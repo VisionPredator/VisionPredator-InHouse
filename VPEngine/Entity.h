@@ -14,7 +14,6 @@
 		template<typename T>
 		T* GetComponent() requires std::derived_from<T, Component>
 		{
-			
 			if (HasComponent<T>())
 			{
 				T* TtypeComponent = FindComponent<T>();

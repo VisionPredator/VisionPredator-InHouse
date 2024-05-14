@@ -8,9 +8,9 @@ void PlayerSystem::Update(float deltaTime)
 
 	for (IDComponent& IDComp :COMPITER(IDComponent))
 	{
-		IDComp.Name == "Player";
-		IDComp.GetComponent<TransformComponent>();
+		//IDComp.Name == "Player";
+		//IDComp.GetComponent<TransformComponent>();
 
-		InputManager::GetInstance().GetKeyDown(KEY::A);
+		//InputManager::GetInstance().GetKeyDown(KEY::A);
 	}
 }

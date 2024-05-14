@@ -34,12 +34,6 @@
     <Filter Include="자체 엔진\Entity\Component">
       <UniqueIdentifier>{5c14ed15-78aa-4a17-af35-496000fdca53}</UniqueIdentifier>
     </Filter>
-    <Filter Include="자체 엔진\Entity\Component\Header">
-      <UniqueIdentifier>{9846a9ca-de8a-437e-8591-a77261db5f1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Entity\Component\Source">
-      <UniqueIdentifier>{735bd9a1-3a1e-4afa-83ec-b97f4c14b8c4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="자체 엔진\Base">
       <UniqueIdentifier>{f036751f-d27f-4895-a867-f81696b32c2e}</UniqueIdentifier>
     </Filter>
@@ -61,6 +55,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="자체 엔진\Entity\Component\Source">
+      <UniqueIdentifier>{9846a9ca-de8a-437e-8591-a77261db5f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="자체 엔진\Entity\Component\Header">
+      <UniqueIdentifier>{735bd9a1-3a1e-4afa-83ec-b97f4c14b8c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -70,25 +70,25 @@
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="IDComponent.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="IdentityComponent.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="MeshComponent.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="SkinningMeshComponent.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="TransformComponent.h">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>자체 엔진\Entity\Component</Filter>
@@ -147,6 +147,12 @@
     <ClInclude Include="MeshRenderSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -156,25 +162,25 @@
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="IDComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="IdentityComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="MeshComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="SkinningMeshComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>자체 엔진\Pch</Filter>
@@ -221,5 +227,13 @@
     <ClCompile Include="MeshRenderSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>자체 엔진\Entity\Component\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VPEngine.rc">
+      <Filter>자체 엔진\리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

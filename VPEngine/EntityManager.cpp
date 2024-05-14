@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "EntityManager.h"
 #include "Components.h"
+#include <fstream>
+
 #include <random>
 
 
@@ -48,6 +50,67 @@ Entity* EntityManager::CreateEntity()
 	AddComponent<IDComponent>(id);
 	AddComponent<TransformComponent>(id);
 	return tempEntity;
+}
+
+void EntityManager::SerializePrefab(uint32_t entityID)
+{
+	Entity tempEntity = *m_SceneManager->GetEntity(entityID);
+	tempEntity.GetComponent<IDComponent>();
+	///Set FilePath
+	std::string folderName = "../Resource/Prefab/";
+	std::string entityName = tempEntity.GetComponent<IDComponent>()->Name;
+	std::string fileExtension = ".json";
+	std::string filePath = folderName + entityName + fileExtension;
+
+	nlohmann::ordered_json SceneJson;			///ordered_json 하고 json의 차이 알아보기!
+	///Json을 저장할 파일 위치!
+	std::ofstream ofsPrefabPath(filePath);
+	if (!ofsPrefabPath)
+		VP_ASSERT(false, "파일을 여는데 실패하였습니다!");
+
+	try {
+		std::pair<uint32_t, Entity > entityPair = std::make_pair(entityID, tempEntity);
+		nlohmann::ordered_json entityJson;
+		entityJson["EntityID"] = entityPair.first;
+		for (const auto& [id, comp] : entityPair.second.m_OwnedComp)
+		{
+			nlohmann::json compnentEntity;
+			comp->SerializeComponent(compnentEntity);
+			compnentEntity["ComponentID"] = id;
+			entityJson["Component"].push_back(compnentEntity);
+		}
+		SceneJson["Entitys"].push_back(entityJson);
+		ofsPrefabPath << SceneJson.dump(4);
+	}
+	catch (const std::exception&)
+	{
+		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
+	}
+	ofsPrefabPath.close();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 Entity* EntityManager::DeSerializeEntity(const nlohmann::json entityjson)

@@ -111,9 +111,15 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 
 void SceneSerializer::OnSerializePrefab(std::any data)
 {
-	uint32_t entityId = {};
-
-	m_EntityManager->GetEntity(entityId);
+	try
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		m_EntityManager->SerializePrefab(entityID);
+	}
+	catch (const std::bad_any_cast&)
+	{
+		VP_ASSERT(false, "std::any_cast에 실패하였습니다.");  // Wrong data type assertion
+	}
 }
 
 void SceneSerializer::OnDeSerializePrefab(std::any data)

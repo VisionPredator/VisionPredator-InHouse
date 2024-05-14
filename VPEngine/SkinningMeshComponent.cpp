@@ -1,14 +1,11 @@
 #include "pch.h"
 #include "SkinningMeshComponent.h"
-	META_REGISTRATION
-	{
-		entt::meta<SkinningMeshComponent>()
-			.data<&SkinningMeshComponent::Name>("name"_hs)
-		.func<&SkinningMeshComponent::SerializeComponent>("SerializeComponent"_hs)
-		.func<&SkinningMeshComponent::DeserializeComponent>("DeserializeComponent"_hs);
-	}
+META_REGISTRATION
+{
+	META_ADD_MEMBER(SkinningMeshComponent,SkinningMeshComponent::Name);
+}
 
-		SkinningMeshComponent::SkinningMeshComponent()
-	{
-	}
+SkinningMeshComponent::SkinningMeshComponent()
+{
+}
 
