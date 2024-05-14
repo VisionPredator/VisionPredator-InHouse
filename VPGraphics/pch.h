@@ -11,9 +11,11 @@
 
 
 #include <memory>
+#include <string>
+#include <map>
+#include <unordered_map>
 
-
-
+#include "SimpleMath.h"
 
 
 #endif //PCH_H
