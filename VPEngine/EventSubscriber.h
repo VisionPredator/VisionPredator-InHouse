@@ -15,7 +15,4 @@ protected:
 	{
 		return Subscriber(this, [this, func](std::any data) { (static_cast<T*>(this)->*func)(data); });
 	}
-
-
-
 };
