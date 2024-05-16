@@ -8,6 +8,8 @@ public:
 	~SceneManager();
 	void Initialize();
 
+	void OnDestroyEntity(std::any entityID);
+	void OnClearEntity(std::any data);
 
 	void OnChangeScene(std::any data);
 	void OnStartScene(std::any data);

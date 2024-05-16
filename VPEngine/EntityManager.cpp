@@ -9,8 +9,6 @@
 
 EntityManager::EntityManager()
 {
-	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&EntityManager::OnDestroyEntity), true);
-	EventManager::GetInstance().Subscribe("OnClearEntity", CreateSubscriber(&EntityManager::OnClearEntity), true);
 }
 EntityManager::~EntityManager()
 {
@@ -55,43 +53,7 @@ Entity* EntityManager::CreateEntity()
 	return tempEntity;
 }
 
-void EntityManager::OnDestroyEntity(std::any data)
-{
-	// EntityMap에서 해당 Entity를 찾습니다.
-	uint32_t entityID = std::any_cast <int>(data);
 
-	auto& entityMap = m_SceneManager->GetEntityMap();
-
-	auto entityIter = entityMap.find(entityID);
-	if (entityIter != entityMap.end())
-	{
-		Entity* entityToRemove = entityIter->second;
-		// m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
-		for (auto& compPair : m_SceneManager->GetScene().m_ComponentPool)
-		{
-			auto& components = compPair.second;
-			// 해당 Entity의 컴포넌트를 찾아 제거합니다.
-			auto it = std::remove_if(components.begin(), components.end(),
-				[entityID](Component* comp) { return comp->GetEntityID() == entityID; });
-			components.erase(it, components.end());
-			// 제거된 컴포넌트들을 삭제합니다.
-			for (auto eraseIt = it; eraseIt != components.end(); ++eraseIt)
-			{
-				delete* eraseIt;
-			}
-		}
-		// EntityMap에서 해당 Entity를 제거합니다.
-		delete entityToRemove;
-		entityMap.erase(entityIter);
-	}
-}
-
-void EntityManager::OnClearEntity(std::any data)
-{
-
-
-
-}
 
 void EntityManager::SerializePrefab(uint32_t entityID)
 {
@@ -128,30 +90,6 @@ void EntityManager::SerializePrefab(uint32_t entityID)
 		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
 	}
 	ofsPrefabPath.close();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 Entity* EntityManager::DeSerializeEntity(const nlohmann::json entityjson)

@@ -14,8 +14,6 @@
 		void Initalize();
 		void Finalize();
 		Entity* CreateEntity();
-		void OnDestroyEntity(std::any entityID);
-		void OnClearEntity(std::any data);
 		void SerializePrefab(uint32_t entityID);
 		Entity* DeSerializeEntity(const nlohmann::json entityjson);
 		template<typename T, typename... Args>

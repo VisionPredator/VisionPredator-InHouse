@@ -1,7 +1,7 @@
 #pragma once
 	class EventSubscriber;
 	using Callback_Event = std::function<void(std::any)>;
-	using EventType = std::string;
+	using EventName = std::string;
 
 	struct Subscriber
 	{
@@ -18,6 +18,14 @@
 			: m_scheduledTime(delay), m_Event(event) {}
 	};
 
+	enum class EventType
+	{
+		BASIC,
+		ADD_DELETE,
+		SCENE
+	};
+
+
 	class EventManager
 	{
 	public:
@@ -26,29 +34,31 @@
 		static EventManager& GetInstance()
 		{
 			if (instance == nullptr)
-			{
 				instance = new EventManager;
-			}
 			return *instance;
 		}
 		void Release()
 		{
 			delete instance;
 		}
-		
+
 
 		void Update(float deltatime);
 
-
-		 void Subscribe(const EventType& type, const Subscriber& listenerInfo,bool IsSpawnEvenet = false);					///이벤트 구독
-		 void ImmediateEvent(const EventType& type, std::any data = std::any{});				///즉시 실행
-		 void ScheduleEvent(const EventType& type, std::any data = std::any{}, float delay = 0);///delay 또는 새로운 프레임 시작 이후 실행
-		 void Unsubscribe(EventSubscriber* listenerInfo);										
+		///이벤트 구독
+		void Subscribe(const EventName& type, const Subscriber& listenerInfo, EventType  EventType = EventType::BASIC);
+		///즉시 실행
+		void ImmediateEvent(const EventName& type, std::any data = std::any{});
+		///delay 또는 새로운 프레임 시작 이후 실행
+		void ScheduleEvent(const EventName& type, std::any data = std::any{}, float delay = 0);
+		///이벤트 구독 취소
+		void Unsubscribe(EventSubscriber* listenerInfo);
 
 	private:
-		std::vector<ScheduledEvent> m_ScheduledEvents;	///중간삭제가 용의해야함. 하지만 for문을 돌기에는 vector가 좋고 오버헤드도 안일어난다.
-		std::unordered_map<EventType, std::vector<Subscriber>> m_BasicEventSubscribers;
-		std::unordered_map<EventType, std::vector<Subscriber>> m_SpawnEventSubscribers;
-
+		std::vector<ScheduledEvent> m_ScheduledEvents;
+		std::vector<ScheduledEvent> m_SchedulingEvents;
+		std::unordered_map<EventName, std::vector<Subscriber>> m_BasicEventSubscribers;		//기본적인 이벤트
+		std::unordered_map<EventName, std::vector<Subscriber>> m_SceneEventSubscribers;		//씬생성삭제에 관련 이벤트
+		std::unordered_map<EventName, std::vector<Subscriber>> m_SpawnEventSubscribers;		//게임도중 오브젝트 생성삭제 관련 이벤트
 	};
 

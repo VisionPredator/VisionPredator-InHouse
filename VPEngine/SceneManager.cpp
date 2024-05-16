@@ -1,14 +1,18 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "EntityManager.h"
+#include "Components.h"
 
 SceneManager::SceneManager()
 {
-	EventManager::GetInstance().Subscribe("OnChangeScene", CreateSubscriber(&SceneManager::OnChangeScene));
-	EventManager::GetInstance().Subscribe("OnEndScene", CreateSubscriber(&SceneManager::OnEndScene));
-	EventManager::GetInstance().Subscribe("OnResetScene", CreateSubscriber(&SceneManager::OnResetScene));
-	EventManager::GetInstance().Subscribe("OnOpenScene", CreateSubscriber(&SceneManager::OnOpenScene));
-	EventManager::GetInstance().Subscribe("OnStartScene", CreateSubscriber(&SceneManager::OnStartScene));
+	EventManager::GetInstance().Subscribe("OnChangeScene", CreateSubscriber(&SceneManager::OnChangeScene),EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnEndScene", CreateSubscriber(&SceneManager::OnEndScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnResetScene", CreateSubscriber(&SceneManager::OnResetScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnOpenScene", CreateSubscriber(&SceneManager::OnOpenScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnStartScene", CreateSubscriber(&SceneManager::OnStartScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnClearEntity", CreateSubscriber(&SceneManager::OnClearEntity), EventType::ADD_DELETE);
+
 }
 SceneManager::~SceneManager()
 {
@@ -21,6 +25,54 @@ void SceneManager::Initialize()
 	m_CurrentScene = new Scene;
 	m_CurrentScene->SceneName = "TempScene";
 	EventManager::GetInstance().ScheduleEvent("OnStartScene");
+}
+void SceneManager::OnDestroyEntity(std::any data)
+{
+	// EntityMap에서 해당 Entity를 찾습니다.
+	uint32_t entityID = std::any_cast <int>(data);
+
+	auto& entityMap = GetEntityMap();
+
+	auto entityIter = entityMap.find(entityID);
+	if (entityIter != entityMap.end())
+	{
+		Entity* entityToRemove = entityIter->second;
+		// m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
+		for (auto& compPair :GetScene().m_ComponentPool)
+		{
+			auto& components = compPair.second;
+			// 해당 Entity의 컴포넌트를 찾아 제거합니다.
+			auto it = std::remove_if(components.begin(), components.end(),
+				[entityID](Component* comp) { return comp->GetEntityID() == entityID; });
+			components.erase(it, components.end());
+			// 제거된 컴포넌트들을 삭제합니다.
+			for (auto eraseIt = it; eraseIt != components.end(); ++eraseIt)
+			{
+				delete* eraseIt;
+			}
+		}
+		// EntityMap에서 해당 Entity를 제거합니다.
+		delete entityToRemove;
+		entityMap.erase(entityIter);
+	}
+}
+
+void SceneManager::OnClearEntity(std::any data)
+{
+	// Clear EntityMap and manage memory for Entity*
+	for (auto& pair : m_CurrentScene->EntityMap) {
+		delete pair.second;  // Assuming that you are responsible for deleting the Entity*
+	}
+	m_CurrentScene->EntityMap.clear();
+
+	// Clear m_ComponentPool and manage memory for Component* objects
+	for (auto& pair : m_CurrentScene->m_ComponentPool) {
+		for (Component* comp : pair.second) {
+			delete comp;  // Assuming that you are responsible for deleting the Component*
+		}
+		pair.second.clear();
+	}
+	m_CurrentScene->m_ComponentPool.clear();
 }
 //씬 체인지 이벤트 :: SchduleEvent로 호출 권장!
 void SceneManager::OnChangeScene(std::any data)
