@@ -29,17 +29,28 @@ public:
 	}
 
 	template<typename T>
-	void AddComponenttoPool(T* component)
+	void AddCompToPool(T* component)
 	{
 		m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()].push_back(component);
+	}
+	template<typename T>
+	void ReleaseCompFromPool(T* component)
+	{
+		auto& pool = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
+		auto it = std::find(pool.begin(), pool.end(), component);
+		if (it != pool.end())
+		{
+			std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
+			pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
+		}
 	}
 
 	bool HasEntity(uint32_t entityID);
 
 	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
-	std::unordered_map<uint32_t, Entity*> GetEntityMap() { return m_CurrentScene->EntityMap; }
-	const Scene& GetScene() const { return *m_CurrentScene; }
+	std::unordered_map<uint32_t, Entity*>& GetEntityMap() { return m_CurrentScene->EntityMap; }
+	 Scene& GetScene() const { return *m_CurrentScene; }
 	const std::string GetSceneName() { return m_CurrentScene->SceneName; }
 	void SetSceneName(std::string scenename) { m_CurrentScene->SceneName = scenename; }
 	Entity* GetEntity(uint32_t entityID);

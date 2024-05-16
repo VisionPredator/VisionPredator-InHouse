@@ -5,7 +5,7 @@
 
 	class Scene;
 	class SceneManager;
-	class EntityManager
+	class EntityManager: public EventSubscriber
 	{
 	public:
 		friend class Entity;
@@ -14,6 +14,8 @@
 		void Initalize();
 		void Finalize();
 		Entity* CreateEntity();
+		void OnDestroyEntity(std::any entityID);
+		void OnClearEntity(std::any data);
 		void SerializePrefab(uint32_t entityID);
 		Entity* DeSerializeEntity(const nlohmann::json entityjson);
 		template<typename T, typename... Args>
@@ -47,7 +49,7 @@
 		T* component = new T;
 		component->OwnedEntity = ParentEntity;
 		ParentEntity->AddComponent<T>(component);
-		m_SceneManager->AddComponenttoPool<T>(component);
+		m_SceneManager->AddCompToPool<T>(component);
 		return component;
 	}
 
@@ -58,6 +60,8 @@
 	{
 		VP_ASSERT(HasComponent<T>(EntityID), "해당 타입의 컴포넌트가 존재하지 않습니다.");
 		Entity& ParentEntity = m_SceneManager->GetEntity(EntityID);///GetEntity
+		T* Component = ParentEntity.GetComponent<T>();
+		m_SceneManager->ReleaseCompFromPool<T>(Component);
 		ParentEntity.RemoveComponent<T>();
 	}
 
