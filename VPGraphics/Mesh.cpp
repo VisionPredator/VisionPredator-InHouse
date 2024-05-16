@@ -2,7 +2,7 @@
 
 #include "Mesh.h"
 
-Mesh::Mesh() : m_VB(nullptr), m_IB(nullptr), m_primitive(), m_node(nullptr), Matrix_Pallete(new MatrixPallete())
+Mesh::Mesh() : m_VB(nullptr), m_IB(nullptr), m_primitive()
 {
 
 }
@@ -46,4 +46,34 @@ UINT Mesh::IBCount()
 void Mesh::Release()
 {
 
+}
+
+StaticMesh::StaticMesh()
+{
+
+}
+
+StaticMesh::~StaticMesh()
+{
+
+}
+
+bool StaticMesh::IsSkinned()
+{
+	return false;
+}
+
+SkinnedMesh::SkinnedMesh() : Mesh(), m_node(nullptr), Matrix_Pallete(new MatrixPallete())
+{
+
+}
+
+SkinnedMesh::~SkinnedMesh()
+{
+
+}
+
+bool SkinnedMesh::IsSkinned()
+{
+	return true;
 }

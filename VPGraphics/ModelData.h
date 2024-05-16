@@ -11,6 +11,7 @@ class Node;
 class ModelData :
     public Resource
 {
+public:
 	ModelData() : m_name(L"need name"), m_RootNode()
 	{
 	}

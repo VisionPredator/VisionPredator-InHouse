@@ -48,10 +48,34 @@ public:
 	IndexBuffer* m_IB;
 	D3D11_PRIMITIVE_TOPOLOGY m_primitive;
 
-	Node* m_node;
 
-	std::vector<Bone*> m_BoneData;
+	virtual bool IsSkinned() abstract;
 
-	MatrixPallete* Matrix_Pallete;
 };
 
+class StaticMesh : public Mesh
+{
+public:
+	StaticMesh();
+	~StaticMesh();
+
+	virtual bool IsSkinned() override final;
+
+private:
+};
+
+class SkinnedMesh : public Mesh
+{
+public:
+	SkinnedMesh();
+	~SkinnedMesh();
+	virtual bool IsSkinned() override final;
+
+	Node* m_node;
+	std::vector<Bone*> m_BoneData;
+	MatrixPallete* Matrix_Pallete;
+
+private:
+
+
+};

@@ -131,12 +131,17 @@ void Animator::UpdateMatrixPallete(Object* ob)
 {
 	for (auto& mesh : ob->Meshes())
 	{
-		for (int i = 0; i < mesh->m_BoneData.size(); i++)
+		if (mesh->IsSkinned())
 		{
-			DirectX::SimpleMath::Matrix nodeworld = mesh->m_BoneData[i]->node->m_World; //glocal
-			DirectX::SimpleMath::Matrix offset = mesh->m_BoneData[i]->offsetMatrix;
+			SkinnedMesh* skinned = dynamic_cast<SkinnedMesh*>(mesh);
 
-			mesh->Matrix_Pallete->pallete[i] = (nodeworld * offset);
+			for (int i = 0; i < skinned->m_BoneData.size(); i++)
+			{
+				DirectX::SimpleMath::Matrix nodeworld = skinned->m_BoneData[i]->node->m_World; //glocal
+				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
+
+				skinned->Matrix_Pallete->pallete[i] = (nodeworld * offset);
+			}
 		}
 	}
 }
