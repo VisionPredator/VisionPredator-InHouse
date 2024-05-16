@@ -7,7 +7,7 @@ class TransformSystem :
 	public System, public IUpdatable, public IFixedUpdatable, public EventSubscriber
 {
 public:
-	TransformSystem(EntityManager* entityManager);
+	TransformSystem(SceneManager* entityManager);
 	~TransformSystem() override = default;
 
 

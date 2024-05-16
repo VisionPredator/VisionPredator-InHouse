@@ -46,11 +46,11 @@
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CLASSNAME, __VA_ARGS__)\
 void SerializeComponent(nlohmann::json& json)const override\
  { to_json(json, *this); }\
-void* DeserializeComponent(const nlohmann::json json, EntityManager* entityManager,uint32_t entityID) const override\
+void* DeserializeComponent(const nlohmann::json json, SceneManager* sceneManager,uint32_t entityID) const override\
 {\
-	auto component = entityManager->AddComponent<CLASSNAME>(entityID);\
+	auto component = sceneManager->AddComponent<CLASSNAME>(entityID);\
 	*component = json;\
-	component->OwnedEntity = entityManager->GetEntity(entityID);\
+	component->OwnedEntity = sceneManager->GetEntity(entityID);\
     return component;\
 }\
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "pch.h"
-	class EntityManager;
 	struct Component;
 	class Entity
 	{
@@ -81,7 +80,6 @@
 
 		uint32_t m_EntityID{};
 		std::unordered_map<entt::id_type, Component*> m_OwnedComp;
-		friend class EntityManager;
 		friend class SceneSerializer;
 		friend class SceneManager;
 	};

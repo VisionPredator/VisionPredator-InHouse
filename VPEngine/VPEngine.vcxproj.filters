@@ -102,9 +102,6 @@
     <ClInclude Include="Resource.h">
       <Filter>자체 엔진\Pch</Filter>
     </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>자체 엔진\Manager\Header</Filter>
-    </ClInclude>
     <ClInclude Include="EventManager.h">
       <Filter>자체 엔진\Manager\Header</Filter>
     </ClInclude>
@@ -184,9 +181,6 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>자체 엔진\Pch</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>자체 엔진\Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
       <Filter>자체 엔진\Manager\Source</Filter>

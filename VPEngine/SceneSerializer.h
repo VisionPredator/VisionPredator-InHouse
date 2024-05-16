@@ -1,15 +1,14 @@
 #pragma once
 #include "System.h"
 #include "EventSubscriber.h"
-class EntityManager;
 
 class SceneSerializer : public System, public EventSubscriber
 {
 public:
 	using System::System;
-	SceneSerializer(EntityManager* entityManager);
+	SceneSerializer(SceneManager* entityManager);
 	~SceneSerializer();
-	void Initialize(EntityManager* entityManager);
+	void Initialize(SceneManager* entityManager);
 
 	/// æ¿¿ª serialize «’¥œ¥Ÿ.
 	void OnSerializeScene(std::any data);

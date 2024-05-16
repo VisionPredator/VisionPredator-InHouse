@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Entity.h"
 #include "Components.h"
-#include "EntityManager.h"
 Entity::Entity(uint32_t entityID)
 {
 	m_EntityID = entityID;

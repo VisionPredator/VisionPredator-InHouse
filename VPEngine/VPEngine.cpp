@@ -42,10 +42,10 @@
 			NULL, NULL, hInstance, NULL);
 
 		m_TimeManager = new TimeManager;
-		m_EntityManager = new EntityManager;
+		m_SceneManager = new SceneManager;
 		m_SystemManager = new SystemManager;
-		m_EntityManager->Initalize();
-		m_SystemManager->Initialize(m_EntityManager);
+		m_SceneManager->Initialize();
+		m_SystemManager->Initialize(m_SceneManager);
 
 		InputManager::GetInstance().Initialize();
 		/// 다 초기화 되고 윈도우 만들기
@@ -59,7 +59,7 @@
 	VPEngine::~VPEngine()
 	{
 		delete m_TimeManager;
-		delete m_EntityManager;
+		delete m_SceneManager;
 		delete m_SystemManager;
 		InputManager::GetInstance().Release();
 		EventManager::GetInstance().Release();

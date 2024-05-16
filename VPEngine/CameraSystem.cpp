@@ -3,7 +3,7 @@
 #include "CameraSystem.h"
 
 
-CameraSystem::CameraSystem(EntityManager* entityManager) :System(entityManager)
+CameraSystem::CameraSystem(SceneManager* sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSetMainCamera",CreateSubscriber(&CameraSystem::OnSetMainCamera));
 

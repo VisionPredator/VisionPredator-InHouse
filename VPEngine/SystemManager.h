@@ -10,14 +10,14 @@
 		SystemManager();
 		~SystemManager() = default;
 		void Update(float deltatime);
-		void Initialize(EntityManager* entitymanager);
+		void Initialize(SceneManager* entitymanager);
 		void FixedUpdate(float deltatime);
 		void Render();
 
 		template <typename T> requires std::is_base_of_v<System, T>
 		T* AddSystem()
 		{
-			m_Systems.push_back(std::make_unique<T>(m_EntityManager));
+			m_Systems.push_back(std::make_unique<T>(m_SceneManager));
 
 			if constexpr (std::is_base_of_v<IUpdatable, T>)
 			{
@@ -43,7 +43,7 @@
 		}
 
 	private:
-		EntityManager* m_EntityManager = nullptr;
+		SceneManager* m_SceneManager = nullptr;
 
 		std::vector<std::unique_ptr<System>> m_Systems;
 		std::vector<IFixedUpdatable*> m_FixedUpdatables;

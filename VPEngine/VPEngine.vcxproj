@@ -148,7 +148,6 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="EventSubscriber.h" />
     <ClInclude Include="framework.h" />
@@ -179,7 +178,6 @@
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="EventSubscriber.cpp" />
     <ClCompile Include="IDComponent.cpp" />

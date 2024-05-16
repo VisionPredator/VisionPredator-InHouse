@@ -10,8 +10,6 @@ public:
 	void Initialize();
 	void Finalize();
 	void OnInitalizeEntity(std::any data);
-
-
 	void OnDestroyEntity(std::any entityID);
 	void OnClearEntity(std::any data);
 	void OnChangeScene(std::any data);
@@ -20,23 +18,37 @@ public:
 	void OnEndScene(std::any data);
 	void OnOpenScene(std::any data);
 
-
 	void SerializePrefab(uint32_t entityID);
 	void OnSerializePrefab(std::any entityID);
 
 
+	//씬 시리얼라이즈 용도!
+	Entity* DeSerializeEntity(const nlohmann::json entityjson);
+	Entity* CreateEntity();
 
-
-
-
-
-
-
+	template<typename T, typename ...Args>
+	inline T* AddComponent(uint32_t EntityID, Args && ...args)
+	{
+		Entity* ParentEntity = GetEntity(EntityID);///GetEntity
+		VP_ASSERT(!HasComponent<T>(EntityID), "같은 타입의 컴포넌트가 존재합니다.");
+		T* component = new T;
+		component->OwnedEntity = ParentEntity;
+		ParentEntity->AddComponent<T>(component);
+		AddCompToPool<T>(component);
+		return component;
+	}
 
 
 #pragma region Finished Fuctions
+
+
 	template<typename T>
-	std::vector<T*> GetComponentpool() {
+	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
+		template<typename T>
+		bool HasComponent(uint32_t EntityID) { return GetEntity(EntityID)->HasComponent<T>(); }
+	template<typename T>
+	std::vector<T*> GetComponentPool()
+	{
 		auto& baseVec = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
 		std::vector<T*> result;
 		result.reserve(baseVec.size()); // 예비 메모리 할당
@@ -76,6 +88,8 @@ public:
 
 
 
+	template<typename T>
+	void RemoveComponent(uint32_t EntityID);
 
 
 #pragma endregion
@@ -84,4 +98,15 @@ private:
 
 };
 
+
+/// TODO : 미완
+template<typename T>
+inline void SceneManager::RemoveComponent(uint32_t EntityID)
+{
+	VP_ASSERT(HasComponent<T>(EntityID), "해당 타입의 컴포넌트가 존재하지 않습니다.");
+	Entity& ParentEntity = GetEntity(EntityID);///GetEntity
+	T* Component = ParentEntity.GetComponent<T>();
+	ReleaseCompFromPool<T>(Component);
+	ParentEntity.RemoveComponent<T>();
+}
 

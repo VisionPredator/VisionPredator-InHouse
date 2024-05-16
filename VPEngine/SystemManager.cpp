@@ -11,9 +11,9 @@
 			updateable->Update(deltatime);
 
 	}
-	void SystemManager::Initialize(EntityManager* entitymanager)
+	void SystemManager::Initialize(SceneManager* entitymanager)
 	{
-		m_EntityManager = entitymanager;
+		m_SceneManager = entitymanager;
 	}
 
 	void SystemManager::FixedUpdate(float deltatime)

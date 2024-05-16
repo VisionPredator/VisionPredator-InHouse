@@ -4,7 +4,7 @@
 class CameraSystem :
     public System, public IFixedUpdatable,public EventSubscriber
 {
-    CameraSystem(EntityManager* entityManager);
+    CameraSystem(SceneManager* sceneManager);
     ~CameraSystem() = default;
 
     void OnSetMainCamera(std::any data);

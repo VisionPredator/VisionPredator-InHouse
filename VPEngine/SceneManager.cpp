@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "SceneManager.h"
-#include "EntityManager.h"
 #include "Components.h"
 #include <fstream>
+#include <random>
 
 SceneManager::SceneManager()
 {
@@ -151,7 +151,6 @@ void SceneManager::OnOpenScene(std::any data)
 
 void SceneManager::SerializePrefab(uint32_t entityID)
 {
-
 	EventManager::GetInstance().ScheduleEvent("OnSerializePrefab", entityID);
 }
 
@@ -192,4 +191,51 @@ void SceneManager::OnSerializePrefab(std::any data)
 		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
 	}
 	ofsPrefabPath.close();
+}
+
+Entity* SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
+{
+	uint32_t entityID = entityjson["EntityID"];
+
+	Entity* tempEntity = new Entity;
+	tempEntity->SetEntityID(entityID);
+	SetEntityMap(entityID, tempEntity);
+
+	for (auto& componentjson : entityjson["Component"])
+	{
+		entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
+		auto metaType = entt::resolve(comp_id);
+		if (metaType)
+		{
+			// 메타 타입으로부터 인스턴스를 생성합니다.
+			auto instance = metaType.construct();
+			// 특정 함수를 찾고 호출합니다.
+			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+			if (myFunctionMeta)
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, (uint32_t)entityID);
+			else
+				VP_ASSERT(false, "Reflection 함수 실패!");
+		}
+	}
+
+	return tempEntity;
+}
+
+Entity* SceneManager::CreateEntity()
+{
+	std::random_device rd;  // 난수 생성기
+	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
+	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_Max 까지의 난수 범위
+	uint32_t id = dis(gen);
+	while (HasEntity(id))
+	{
+		id = dis(gen);
+	}
+
+	Entity* tempEntity = new Entity;
+	tempEntity->SetEntityID(id);
+	SetEntityMap(id, tempEntity);
+	AddComponent<IDComponent>(id);
+	AddComponent<TransformComponent>(id);
+	return tempEntity;
 }

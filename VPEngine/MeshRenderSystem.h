@@ -4,7 +4,7 @@
 class MeshRenderSystem :
     public System, public EventSubscriber,public IFixedUpdatable
 {
-    MeshRenderSystem(EntityManager* entityManager);
+    MeshRenderSystem(SceneManager* entityManager);
     ~MeshRenderSystem() = default;
     void OnInitializeSystem(std::any );
     void OnFinalizeSystem(std::any);

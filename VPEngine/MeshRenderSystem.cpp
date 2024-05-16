@@ -2,8 +2,8 @@
 #include "MeshRenderSystem.h"
 #include "Components.h"
 #include "EventManager.h"
-MeshRenderSystem::MeshRenderSystem(EntityManager* entityManager)
-	: System(entityManager)
+MeshRenderSystem::MeshRenderSystem(SceneManager* sceneManager)
+	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnInitializeSystem", CreateSubscriber(&MeshRenderSystem::OnInitializeSystem));
 	EventManager::GetInstance().Subscribe("OnFinalizeSystem", CreateSubscriber(&MeshRenderSystem::OnFinalizeSystem));
@@ -15,7 +15,7 @@ void MeshRenderSystem::OnInitializeSystem(std::any)
 {
 	///TODO: 유승운 MeshRenderor등록함수!
 
-	for (MeshComponent& meshComp : CompIter<MeshComponent>(m_EntityManager))
+	for (MeshComponent& meshComp : CompIter<MeshComponent>(m_SceneManager))
 	{
 		uint32_t entityID = meshComp.GetEntityID();
 		///여기서 Entity ID 와 해당 정보정보 보내주기!

@@ -3,8 +3,8 @@
 #include "Components.h"
 #include "EventManager.h"
 
-TestSystem::TestSystem(EntityManager* entityManager)
-	:System(entityManager)
+TestSystem::TestSystem(SceneManager* sceneManager)
+	:System(sceneManager)
 
 {
 	EventManager::GetInstance().Subscribe("OnTest", CreateSubscriber(&TestSystem::OnTest));
@@ -38,7 +38,7 @@ void TestSystem::OnTest(std::any test)
 	static int s = 0;
 	while (s < 200)
 	{
-		m_EntityManager->CreateEntity();
+		m_SceneManager->CreateEntity();
 		s++;  
 	}
 
