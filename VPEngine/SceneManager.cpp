@@ -13,7 +13,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnStartScene", CreateSubscriber(&SceneManager::OnStartScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearEntity", CreateSubscriber(&SceneManager::OnClearEntity), EventType::ADD_DELETE);
-
+	 
 }
 SceneManager::~SceneManager()
 {
@@ -239,3 +239,14 @@ Entity* SceneManager::CreateEntity()
 	AddComponent<TransformComponent>(id);
 	return tempEntity;
 }
+
+void SceneManager::OnAddComponent(std::any data)
+{
+	auto [entityID, compId_type, component] = std::any_cast <std::tuple<  uint32_t, entt::id_type, Component* >> (data);
+	Entity* ParentEntity = GetEntity(entityID);///GetEntity
+	VP_ASSERT(!HasComponent(entityID, compId_type), "같은 타입의 컴포넌트가 존재합니다.");
+	component->OwnedEntity = ParentEntity;
+	ParentEntity->AddComponent(compId_type, component);
+	AddCompToPool(compId_type, component);
+}
+

@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Entity.h"
+
 #include "EventSubscriber.h"
 class SceneManager :public EventSubscriber
 {
@@ -29,14 +30,23 @@ public:
 	template<typename T, typename ...Args>
 	inline T* AddComponent(uint32_t EntityID, Args && ...args)
 	{
+
 		Entity* ParentEntity = GetEntity(EntityID);///GetEntity
 		VP_ASSERT(!HasComponent<T>(EntityID), "같은 타입의 컴포넌트가 존재합니다.");
 		T* component = new T;
+
+		///아래껄 하지말고 바로 이벤트 호출 하는것도 좋을 듯!!!!
 		component->OwnedEntity = ParentEntity;
 		ParentEntity->AddComponent<T>(component);
 		AddCompToPool<T>(component);
 		return component;
 	}
+
+
+	void OnAddComponent(std::any data);
+
+
+
 
 
 #pragma region Finished Fuctions
@@ -46,6 +56,11 @@ public:
 	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
 		template<typename T>
 		bool HasComponent(uint32_t EntityID) { return GetEntity(EntityID)->HasComponent<T>(); }
+
+
+		bool HasComponent(uint32_t EntityID,entt::id_type compid) { return GetEntity(EntityID)->HasComponent(compid); }
+		bool HasComponentOnScene(uint32_t EntityID, entt::id_type compid) { return GetEntity(EntityID)->HasComponent(compid); }
+
 	template<typename T>
 	std::vector<T*> GetComponentPool()
 	{
@@ -59,10 +74,16 @@ public:
 	}
 
 	template<typename T>
-	void AddCompToPool(T* component)
+	void AddCompToPool(Component* component)
 	{
 		m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()].push_back(component);
 	}
+
+	void AddCompToPool(entt::id_type compID,Component* component)
+	{
+		m_CurrentScene->m_ComponentPool[compID].push_back(component);
+	}
+
 	template<typename T>
 	void ReleaseCompFromPool(T* component)
 	{

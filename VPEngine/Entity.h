@@ -30,10 +30,11 @@
 		{
 			return m_OwnedComp.count(Reflection::GetTypeID<T>()) > 0;
 		}
+		bool HasComponent(entt::id_type compid) { return m_OwnedComp.count(compid) > 0; }
 		const uint32_t GetEntityID() { return m_EntityID; }
 	private:
 		template<typename T> requires std::derived_from<T, Component>
-		void AddComponent(T* comp)
+		void AddComponent(Component* comp)
 		{
 			/// 메타를 사용하여 T를 타입추론해서 ID값에 해당하는 컴포넌트를 추가할수 있을듯함.
 			entt::id_type idNum = Reflection::GetTypeID<T>();
@@ -41,9 +42,15 @@
 			m_OwnedComp[idNum] = comp;
 		}
 
+		void AddComponent(entt::id_type compID,Component* comp)
+		{
+			/// 메타를 사용하여 T를 타입추론해서 ID값에 해당하는 컴포넌트를 추가할수 있을듯함.
+			VP_ASSERT(!HasComponent(compID), "컴포넌트가 존재합니다");
+			m_OwnedComp[compID] = comp;
+		}
+
+
 		void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
-
-
 
 
 		template<typename T>

@@ -39,6 +39,11 @@ void TestSystem::OnTest(std::any test)
 	while (s < 200)
 	{
 		m_SceneManager->CreateEntity();
+		///
+		/// ADDComponen
+		///
+		//Entity* testentity=new Entity;
+		//m_SceneManager->AddComponent<TransformComponent>(testentity->GetEntityID());
 		s++;  
 	}
 
