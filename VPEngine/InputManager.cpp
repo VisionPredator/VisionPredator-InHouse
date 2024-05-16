@@ -56,12 +56,14 @@
 			ScreenToClient(hWnd, &curPos);
 			m_CurPos = { (float)curPos.x,(float)curPos.y };
 
-			///Input관련 
-			for (int i = 0; i < (int)KEY::END; ++i)
-				if (m_KeyInputInfos[i].KeyState == KEY_STATE::DOWN)	//키가 눌림
-					m_KeyInputInfos[i].KeyState = KEY_STATE::HOLD;
-				else if ((m_KeyInputInfos[i].KeyState == KEY_STATE::UP))
-					m_KeyInputInfos[i].KeyState = KEY_STATE::NONE;
+
+
+			/////Input관련 
+			//for (int i = 0; i < (int)KEY::END; ++i)
+			//	if (m_KeyInputInfos[i].KeyState == KEY_STATE::DOWN)	//키가 눌림
+			//		m_KeyInputInfos[i].KeyState = KEY_STATE::HOLD;
+			//	else if ((m_KeyInputInfos[i].KeyState == KEY_STATE::UP))
+			//		m_KeyInputInfos[i].KeyState = KEY_STATE::NONE;
 
 		}
 	}

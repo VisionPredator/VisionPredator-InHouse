@@ -33,11 +33,6 @@
 		}
 		const uint32_t GetEntityID() { return m_EntityID; }
 	private:
-		/// <summary>
-		/// 이걸로만 추가되지 않으니 주의
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="comp"></param>
 		template<typename T> requires std::derived_from<T, Component>
 		void AddComponent(T* comp)
 		{
@@ -46,6 +41,7 @@
 			VP_ASSERT(!HasComponent<T>(), "컴포넌트가 존재합니다");
 			m_OwnedComp[idNum] = comp;
 		}
+
 		void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
 
 
@@ -87,4 +83,5 @@
 		std::unordered_map<entt::id_type, Component*> m_OwnedComp;
 		friend class EntityManager;
 		friend class SceneSerializer;
+		friend class SceneManager;
 	};

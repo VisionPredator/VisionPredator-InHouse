@@ -1,7 +1,16 @@
 #include "pch.h"
-#include "Components.h"
 #include "MeshRenderSystem.h"
+#include "Components.h"
+#include "EventManager.h"
+MeshRenderSystem::MeshRenderSystem(EntityManager* entityManager)
+	: System(entityManager)
+{
+	EventManager::GetInstance().Subscribe("OnInitializeSystem", CreateSubscriber(&MeshRenderSystem::OnInitializeSystem));
+	EventManager::GetInstance().Subscribe("OnFinalizeSystem", CreateSubscriber(&MeshRenderSystem::OnFinalizeSystem));
+	EventManager::GetInstance().Subscribe("OnInitializeEntity", CreateSubscriber(&MeshRenderSystem::OnInitializeEntity));
+	EventManager::GetInstance().Subscribe("OnFinalizeEntity", CreateSubscriber(&MeshRenderSystem::OnFinalizeEntity));
 
+}
 void MeshRenderSystem::OnInitializeSystem(std::any)
 {
 	///TODO: 유승운 MeshRenderor등록함수!
@@ -19,6 +28,19 @@ void MeshRenderSystem::OnInitializeSystem(std::any)
 	}
 }
 
+void MeshRenderSystem::OnInitializeEntity(std::any data)
+{
+	uint32_t entityID = std::any_cast<uint32_t>(data);
+}
+
+void MeshRenderSystem::OnFinalizeEntity(std::any data)
+{
+	uint32_t entityID = std::any_cast<uint32_t>(data);
+
+}
+
+
+
 void MeshRenderSystem::OnFinalizeSystem(std::any)
 {
 	///TODO: 유승운 MeshRenderor 삭제함수!
@@ -27,6 +49,12 @@ void MeshRenderSystem::OnFinalizeSystem(std::any)
 }
 
 void MeshRenderSystem::FixedUpdate(float deltaTime)
+{
+	for (MeshComponent& meshComp : COMPITER(MeshComponent))
+	{
+	}
+}
+void MeshRenderSystem::Render(float deltaTime)
 {
 
 	for (MeshComponent& meshComp : COMPITER(MeshComponent))

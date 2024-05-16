@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "EntityManager.h"
 #include "Components.h"
+#include <fstream>
 
 SceneManager::SceneManager()
 {
@@ -25,6 +26,9 @@ void SceneManager::Initialize()
 	m_CurrentScene = new Scene;
 	m_CurrentScene->SceneName = "TempScene";
 	EventManager::GetInstance().ScheduleEvent("OnStartScene");
+}
+void SceneManager::Finalize()
+{
 }
 void SceneManager::OnDestroyEntity(std::any data)
 {
@@ -145,16 +149,47 @@ void SceneManager::OnOpenScene(std::any data)
 
 }
 
-Entity* SceneManager::GetEntity(uint32_t entityID)
+void SceneManager::SerializePrefab(uint32_t entityID)
 {
-	VP_ASSERT(HasEntity(entityID), "Entity가 존재하지 않습니다!!");
-	return m_CurrentScene->EntityMap[entityID];
+
+	EventManager::GetInstance().ScheduleEvent("OnSerializePrefab", entityID);
 }
 
-bool SceneManager::HasEntity(uint32_t entityID)
+void SceneManager::OnSerializePrefab(std::any data)
 {
-	return m_CurrentScene->EntityMap.count(entityID) > 0;
+	uint32_t entityID = std::any_cast<uint32_t>(data);
+
+	Entity tempEntity = *GetEntity(entityID);
+	tempEntity.GetComponent<IDComponent>();
+	///Set FilePath
+	std::string folderName = "../Resource/Prefab/";
+	std::string entityName = tempEntity.GetComponent<IDComponent>()->Name;
+	std::string fileExtension = ".json";
+	std::string filePath = folderName + entityName + fileExtension;
+
+	nlohmann::ordered_json SceneJson;			///ordered_json 하고 json의 차이 알아보기!
+	///Json을 저장할 파일 위치!
+	std::ofstream ofsPrefabPath(filePath);
+	if (!ofsPrefabPath)
+		VP_ASSERT(false, "파일을 여는데 실패하였습니다!");
+
+	try {
+		std::pair<uint32_t, Entity > entityPair = std::make_pair(entityID, tempEntity);
+		nlohmann::ordered_json entityJson;
+		entityJson["EntityID"] = entityPair.first;
+		for (const auto& [id, comp] : entityPair.second.m_OwnedComp)
+		{
+			nlohmann::json compnentEntity;
+			comp->SerializeComponent(compnentEntity);
+			compnentEntity["ComponentID"] = id;
+			entityJson["Component"].push_back(compnentEntity);
+		}
+		SceneJson["Entitys"].push_back(entityJson);
+		ofsPrefabPath << SceneJson.dump(4);
+	}
+	catch (const std::exception&)
+	{
+		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
+	}
+	ofsPrefabPath.close();
 }
-
-
-

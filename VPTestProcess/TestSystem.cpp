@@ -22,7 +22,7 @@ void TestSystem::Update(float deltaTime)
 	{
 		//EventManager::GetInstance().ScheduleEvent("OnSerializeScene");
 		std::string sceneName = "LDH_Map";
-		EventManager::GetInstance().ScheduleEvent("OnChangeScene", sceneName);
+		//EventManager::GetInstance().ScheduleEvent("OnChangeScene", sceneName);
 	}
 }
 

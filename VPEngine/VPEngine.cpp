@@ -86,6 +86,10 @@
 				Update();
 				//Render();
 
+				if (InputManager::GetInstance().GetKeyDown(KEY::ESC))
+				{
+					break;
+				}
 			}
 		}
 
