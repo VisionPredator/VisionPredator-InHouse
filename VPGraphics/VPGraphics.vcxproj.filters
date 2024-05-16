@@ -89,7 +89,7 @@
     <Filter Include="GraphicsEngine\Interface">
       <UniqueIdentifier>{f84c9c2c-0828-4506-951c-6b757cc418fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Camera">
+    <Filter Include="GraphicsEngine\Camera">
       <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -191,7 +191,7 @@
       <Filter>GraphicsEngine\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
+      <Filter>GraphicsEngine\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -274,7 +274,7 @@
       <Filter>Resource\Object\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
+      <Filter>GraphicsEngine\Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

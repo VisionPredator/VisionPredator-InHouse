@@ -126,6 +126,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\x64\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTex.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>if not exist "$(SolutionDir)Library\x64\Debug" mkdir "$(SolutionDir)Library\x64\Debug"
+copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64\Debug.</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
