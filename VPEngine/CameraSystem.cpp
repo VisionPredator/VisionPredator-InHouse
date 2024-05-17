@@ -33,8 +33,8 @@ void CameraSystem::OnSetMainCamera(std::any data)
 			mainCameraCount++;
 			cameracomp.IsMain = true;
 		}
-		if (mainCameraCount!=1)
-			VP_ASSERT(false, "해당 이름에 해당하는 카메라가 1개가 아닙니다!")
+		if (mainCameraCount != 1)
+			VP_ASSERT(false, "해당 이름에 해당하는 카메라가 1개가 아닙니다!");
 	}
 	catch (const std::bad_any_cast&)
 	{

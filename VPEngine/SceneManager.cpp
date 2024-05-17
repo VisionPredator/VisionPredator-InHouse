@@ -9,7 +9,7 @@ SceneManager::SceneManager()
 	//OnInitalizeEntity(std::any data);
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearEntity", CreateSubscriber(&SceneManager::OnClearEntity), EventType::ADD_DELETE);
-	EventManager::GetInstance().Subscribe("OnChangeScene", CreateSubscriber(&SceneManager::OnChangeScene),EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnChangeScene", CreateSubscriber(&SceneManager::OnChangeScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnStartScene", CreateSubscriber(&SceneManager::OnStartScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnResetScene", CreateSubscriber(&SceneManager::OnResetScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnEndScene", CreateSubscriber(&SceneManager::OnEndScene), EventType::SCENE);
@@ -34,6 +34,7 @@ void SceneManager::Initialize()
 }
 void SceneManager::Finalize()
 {
+
 }
 
 
@@ -242,11 +243,9 @@ Entity* SceneManager::CreateEntity()
 	Entity* tempEntity = new Entity;
 	tempEntity->SetEntityID(id);
 
-	IDComponent* idComponent = new IDComponent;
-	std::tuple<uint32_t, entt::id_type, Component*> IDdata = std::make_tuple(id, Reflection::GetTypeID<IDComponent>(), idComponent);
 
-	TransformComponent* trnasformComp = new TransformComponent;
-	std::tuple<uint32_t, entt::id_type, Component*> Tdata = std::make_tuple(id, Reflection::GetTypeID<TransformComponent>(), trnasformComp);
+	std::pair<uint32_t, entt::id_type> IDdata = std::make_pair(id, Reflection::GetTypeID<IDComponent>());
+	std::pair<uint32_t, entt::id_type> Tdata = std::make_pair(id, Reflection::GetTypeID<TransformComponent>());
 
 	EventManager::GetInstance().ImmediateEvent("OnSetEntityMap", std::pair(id, tempEntity));
 	EventManager::GetInstance().ScheduleEvent("OnAddComponent", IDdata);
@@ -255,16 +254,26 @@ Entity* SceneManager::CreateEntity()
 }
 //리플렉션
 // 
-// std::tuple<  uint32_t, entt::id_type, Component* >
+// std::tuple<  uint32_t, entt::id_type >
 void SceneManager::OnAddComponent(std::any data)
 {
-	auto [entityID, compId_type, component] = std::any_cast <std::tuple<  uint32_t, entt::id_type, Component* >> (data);
+	auto [entityID, compId] = std::any_cast <std::pair<  uint32_t, entt::id_type>> (data);
+	VP_ASSERT(!HasComponent(entityID, compId), "같은 타입의 컴포넌트가 존재합니다.");
 
-	Entity* ParentEntity = GetEntity(entityID);///GetEntity
-	VP_ASSERT(!HasComponent(entityID, compId_type), "같은 타입의 컴포넌트가 존재합니다.");
-	component->OwnedEntity = ParentEntity;
-	ParentEntity->AddComponent(compId_type, component);
-	AddCompToPool(compId_type, component);
+	auto metaType = entt::resolve(compId);
+	if (metaType)
+	{
+		// 메타 타입으로부터 인스턴스를 생성합니다.
+		auto instance = metaType.construct();
+		// 특정 함수를 찾고 호출합니다.
+		auto myFunctionMeta = metaType.func("AddComponent"_hs);
+		if (myFunctionMeta)
+		{
+			entt::meta_any result =myFunctionMeta.invoke(instance, this, entityID);
+		}
+		else
+			VP_ASSERT(false, "Reflection 함수 실패!");
+	}
 }
 
 void SceneManager::OnRemoveComponent(std::any data)

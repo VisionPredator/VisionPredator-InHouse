@@ -61,6 +61,9 @@
     <Filter Include="자체 엔진\Entity\Component\Header">
       <UniqueIdentifier>{735bd9a1-3a1e-4afa-83ec-b97f4c14b8c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="자체 엔진\Entity\Component\Base">
+      <UniqueIdentifier>{0cb2aa62-22e1-406a-b9cc-975e1bc376a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -70,9 +73,6 @@
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="IDComponent.h">
@@ -150,6 +150,9 @@
     <ClInclude Include="PlayerComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>자체 엔진\Entity\Component\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -159,9 +162,6 @@
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
       <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="IDComponent.cpp">
@@ -223,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>자체 엔진\Entity\Component\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

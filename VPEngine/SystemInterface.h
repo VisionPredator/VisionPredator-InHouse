@@ -10,3 +10,9 @@ class IFixedUpdatable
 public:
 	virtual void FixedUpdate(float deltaTime) = 0;
 };
+
+class IRenderable
+{
+public:
+	virtual void RenderUpdate(float deltaTime) = 0;
+};

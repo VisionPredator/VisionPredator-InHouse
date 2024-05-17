@@ -25,7 +25,7 @@ public:
 	void OnOpenScene(std::any data);
 	// 모든 Entity를 지운다.
 	void OnAddComponent(std::any data);
-	// 해당 콤포넌트를 삭제한다.
+	// 해당 Component 삭제한다.
 	void OnRemoveComponent(std::any data);
 	// 해당 Entity를 맵에 추가한다.
 	void OnSetEntityMap(std::any data);
@@ -47,6 +47,7 @@ public:
 
 	template<typename T>
 	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
+	Component* GetComponent(uint32_t EntityID, entt::id_type compId) { return GetEntity(EntityID)->GetComponent(compId); }
 
 	template<typename T>
 	bool HasComponent(uint32_t EntityID) { return GetEntity(EntityID)->HasComponent<T>(); }
@@ -79,6 +80,7 @@ public:
 			pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
 		}
 	}
+
 	void ReleaseCompFromPool(entt::id_type compID,Component* comp)
 	{
 		auto& pool = m_CurrentScene->m_ComponentPool[compID];
@@ -111,8 +113,8 @@ public:
 #pragma endregion
 
 #pragma endregion
-	template<typename T, typename ...Args>
-	inline T* AddComponent(uint32_t entityID, Args && ...args)
+	template<typename T>
+	inline T* AddComponent(uint32_t entityID)
 	{
 
 		Entity* ParentEntity = GetEntity(entityID);///GetEntity
@@ -123,6 +125,8 @@ public:
 		comp->OwnedEntity = ParentEntity;
 		ParentEntity->AddComponent<T>(comp);
 		AddCompToPool<T>(comp);
+		std::pair<uint32_t, entt::id_type> data = { ParentEntity ->GetEntityID(),comp->GetTypeID()};
+		EventManager::GetInstance().ImmediateEvent("OnAddedComponent", data);
 		return comp;
 	}
 protected:

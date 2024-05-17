@@ -1,17 +1,13 @@
 #include "pch.h"
 #include "IdentityComponent.h"
 
-	META_REGISTRATION
-	{
-		entt::meta<IdentityComponent>()
-			.data<&IdentityComponent::UUID>("UUID"_hs)
-		.func<&IdentityComponent::SerializeComponent>("SerializeComponent"_hs)
-		.func<&IdentityComponent::DeserializeComponent>("DeserializeComponent"_hs);
-		}
+META_REGISTRATION
+{
+META_ADD_MEMBER(IdentityComponent,IdentityComponent::UUID);
+}
+IMPLEMENT_COMPONENT_TYPE(IdentityComponent);
 
-	IMPLEMENT_COMPONENT_TYPE(IdentityComponent);
-
-		IdentityComponent::IdentityComponent(		)
-	{
-	}
+IdentityComponent::IdentityComponent()
+{
+}
 

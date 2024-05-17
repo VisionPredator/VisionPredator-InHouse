@@ -17,3 +17,10 @@
 	{
 	}
 
+	Parent::Parent()
+	{
+	}
+
+	Children::Children()
+	{
+	}

@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include "SceneSerializer.h"
+#include "MeshRenderSystem.h"
 
 
 
@@ -54,6 +55,7 @@
 
 		m_SystemManager->AddSystem<TransformSystem>();
 		m_SystemManager->AddSystem<SceneSerializer>();
+		m_SystemManager->AddSystem<MeshRenderSystem>();
 	}
 
 	VPEngine::~VPEngine()
