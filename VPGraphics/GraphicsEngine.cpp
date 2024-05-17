@@ -65,8 +65,8 @@ bool GraphicsEngine::Initialize()
 		m_ResourceManager = new ResourceManager(m_device);
 		m_ResourceManager->Initialize();
 
-		m_Loader = new ModelLoader(m_ResourceManager);
-		m_Loader->Initialize();
+		//m_Loader = new ModelLoader(m_ResourceManager);
+		//m_Loader->Initialize();
 
 		m_Animator = new Animator();
 
@@ -114,13 +114,18 @@ void GraphicsEngine::Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLOA
 	}
 
 
-	m_Animator->Update(dt, m_FowardRenderObjects);
+	//m_Animator->Update(dt, m_FowardRenderObjects);
+
+}
+
+void GraphicsEngine::Update(double dt)
+{
 
 }
 
 bool GraphicsEngine::Finalize()
 {
-	delete m_Loader;
+	//delete m_Loader;
 	delete m_ResourceManager;
 
 	delete m_VP;
@@ -132,6 +137,7 @@ bool GraphicsEngine::Finalize()
 
 void GraphicsEngine::Render()
 {
+
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
 	m_device->BeginRender(m_RTVs[0]->Get(), m_DSVs[0]->Get(), Black);
 
@@ -184,24 +190,11 @@ void GraphicsEngine::DeferredRender()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
 	//ImGui::Text("test");
 	float aspectRatio = 16.0f / 9.0f;
 	float newWidth = 300 * aspectRatio;
 
 	m_device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
-
-	ImGui::Image(SRVS[0]->Get(), ImVec2(newWidth, 300));
-	ImGui::Image(SRVS[1]->Get(), ImVec2(newWidth, 300));
-	ImGui::Image(SRVS[2]->Get(), ImVec2(newWidth, 300));
-	ImGui::Image(SRVS[3]->Get(), ImVec2(newWidth, 300));
-	ImGui::Image(SRVS[4]->Get(), ImVec2(newWidth, 300));
-
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	//pass2
 	//UINT size = static_cast<UINT>(sizeof(QuadVertex));
@@ -256,7 +249,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 	{
 		case MeshFilter::Axis:
 		{
-			ModelData* AxisModel = new ModelData();
+			/*ModelData* AxisModel = new ModelData();
 
 			AxisModel->m_Meshes.push_back(new Mesh());
 
@@ -271,7 +264,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 
 			newObject->Set<RenderState>(m_ResourceManager->Get<RenderState>(L"Wire"));
 			newObject->Set<WorldTransformCB>(m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(name + L"Transform", BufferDESC::Constant::DefaultWorld), name + L"Transform");
-			newObject->Set<ModelData>(AxisModel);
+			newObject->Set<ModelData>(AxisModel);*/
 
 		}
 		break;
@@ -338,7 +331,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = &(vertexBuffer[0]);
 
-			GridModel->m_Meshes.push_back(new Mesh());
+			//GridModel->m_Meshes.push_back(new Mesh());
 			UINT size = static_cast<UINT>(sizeof(BaseVertex));
 			GridModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(name + L"_VB", vbd, data, size);
 
@@ -371,7 +364,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 			newObject->Set<VertexShader>(m_ResourceManager->Create<VertexShader>(VSPath, VERTEXFILTER::BASE, VSname));
 			newObject->Set<PixelShader>(m_ResourceManager->Create<PixelShader>(PSPath, PSname));
 
-			BoxModel->m_Meshes.push_back(new Mesh());
+			//BoxModel->m_Meshes.push_back(new Mesh());
 			UINT size = static_cast<UINT>(sizeof(BaseVertex));
 
 			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"Box_VB", Box::Vertex::Desc, Box::Vertex::Data, size);
@@ -392,7 +385,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 			newObject->Set<VertexShader>(m_ResourceManager->Create<VertexShader>(VSPath, VERTEXFILTER::TEXTURE, VSname));
 			newObject->Set<PixelShader>(m_ResourceManager->Create<PixelShader>(PSPath, PSname));
 
-			BoxModel->m_Meshes.push_back(new Mesh());
+			//BoxModel->m_Meshes.push_back(new Mesh());
 			UINT size = static_cast<UINT>(sizeof(TextureVertex));
 			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
 			BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);

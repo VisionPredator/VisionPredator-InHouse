@@ -144,72 +144,7 @@ void Device::EndRender()
 
 void Device::ForwardRender(Object* object)
 {
-	m_Context->IASetInputLayout(object->InputLayOut());
-
-	if (!object->Meshes().empty())
-	{
-		for (auto& mesh : object->Meshes())
-		{
-			int i = 0;
-			m_Context->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
-			m_Context->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
-
-			m_Context->IASetPrimitiveTopology(mesh->m_primitive);
-			m_Context->RSSetState(object->RS());
-
-			m_Context->VSSetShader(object->VS(), nullptr, 0);
-
-			m_Context->VSSetConstantBuffers(1, 1, object->GetCB<WorldTransformCB>(object->m_name + L"Transform")->GetAddress());
-			m_Context->PSSetConstantBuffers(0, 1, object->GetCB<WorldTransformCB>(object->m_name + L"Transform")->GetAddress());
-
-			if (mesh->m_node != nullptr)
-			{
-				LocalTransformCB cb;
-				if (!object->Animations().empty())
-				{
-					cb.local = mesh->m_node->m_World;
-					object->GetCB<LocalTransformCB>(object->m_name + L"Local")->Update(cb);
-
-					if (!mesh->m_BoneData.empty())
-					{
-						MatrixPallete matrixPallete = *(mesh->Matrix_Pallete);
-
-						object->GetCB<MatrixPallete>(object->m_name + L"MatrixPallete")->Update(matrixPallete);
-						m_Context->VSSetConstantBuffers(3, 1, object->GetCB<MatrixPallete>(object->m_name + L"MatrixPallete")->GetAddress());
-					}
-
-				}
-				else
-				{
-					cb.local = DirectX::SimpleMath::Matrix::Identity;
-					object->GetCB<LocalTransformCB>(object->m_name + L"Local")->Update(cb);
-				}
-
-				m_Context->VSSetConstantBuffers(2, 1, object->GetCB<LocalTransformCB>(object->m_name + L"Local")->GetAddress());
-			}
-
-			// 텍스처와 샘플러를 셰이더에 바인딩
-			if (!object->Materials().empty())
-			{
-				if (true)
-				{
-					m_Context->PSSetShaderResources(0, 1, (object->DiffuseSRV(i)->GetAddress()));
-					m_Context->PSSetSamplers(0, 1, object->DiffuseSRV(i)->GetSamplerAddress());
-
-					m_Context->PSSetShaderResources(1, 1, (object->NormalSRV(i)->GetAddress()));
-					m_Context->PSSetSamplers(1, 1, object->NormalSRV(i)->GetSamplerAddress());
-
-					//m_device->Context()->PSSetShaderResources(1, 1, (m_Materials[i]->m_SpecularSRV->GetAddress()));
-					//m_device->Context()->PSSetSamplers(1, 1, m_Materials[i]->m_SpecularSRV->GetSamplerAddress());
-				}
-			}
-
-			m_Context->PSSetShader(object->PS(), nullptr, 0);
-			m_Context->DrawIndexed(mesh->IBCount(), 0, 0);
-
-			i++;
-		}
-	}
+	
 }
 
 void Device::BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs)
@@ -242,76 +177,76 @@ void Device::DeferredRender(Object* object, std::vector<RenderTargetView*>& RTVs
 {
 	//사용할 쿼드만큼 그려버리자?
 
-	m_Context->IASetInputLayout(object->InputLayOut());
+	//m_Context->IASetInputLayout(object->InputLayOut());
 
-	if (!object->Meshes().empty())
-	{
-		for (auto& mesh : object->Meshes())
-		{
-			int i = 0;
-			m_Context->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
-			m_Context->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+	//if (!object->Meshes().empty())
+	//{
+	//	for (auto& mesh : object->Meshes())
+	//	{
+	//		int i = 0;
+	//		m_Context->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
+	//		m_Context->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 
-			m_Context->IASetPrimitiveTopology(mesh->m_primitive);
-			m_Context->RSSetState(object->RS());
+	//		m_Context->IASetPrimitiveTopology(mesh->m_primitive);
+	//		m_Context->RSSetState(object->RS());
 
-			m_Context->VSSetShader(object->VS(), nullptr, 0);
+	//		m_Context->VSSetShader(object->VS(), nullptr, 0);
 
 
-			m_Context->VSSetConstantBuffers(1, 1, object->GetCB<WorldTransformCB>(object->m_name + L"Transform")->GetAddress());
-			m_Context->PSSetConstantBuffers(0, 1, object->GetCB<WorldTransformCB>(object->m_name + L"Transform")->GetAddress());
+	//		m_Context->VSSetConstantBuffers(1, 1, object->GetCB<WorldTransformCB>(object->m_name + L"Transform")->GetAddress());
+	//		m_Context->PSSetConstantBuffers(0, 1, object->GetCB<WorldTransformCB>(object->m_name + L"Transform")->GetAddress());
 
-			//이 메쉬에 어떤 local이 들어가야할지 node에서 꺼야하는데 어케 꺼냄? 지금 메쉬에서 어떻게 노드에 접근할거여
-			//없는 애들도 있다 어떻게 있는 애 구분해서 그릴거야
-			//미리 셋팅해서 그려야지 그릴때 셋팅하는건 말이 되나?
-			if (mesh->m_node != nullptr)
-			{
-				LocalTransformCB cb;
-				if (!object->Animations().empty())
-				{
-					cb.local = mesh->m_node->m_World;
-					object->GetCB<LocalTransformCB>(object->m_name + L"Local")->Update(cb);
+	//		//이 메쉬에 어떤 local이 들어가야할지 node에서 꺼야하는데 어케 꺼냄? 지금 메쉬에서 어떻게 노드에 접근할거여
+	//		//없는 애들도 있다 어떻게 있는 애 구분해서 그릴거야
+	//		//미리 셋팅해서 그려야지 그릴때 셋팅하는건 말이 되나?
+	//		if (mesh->m_node != nullptr)
+	//		{
+	//			LocalTransformCB cb;
+	//			if (!object->Animations().empty())
+	//			{
+	//				cb.local = mesh->m_node->m_World;
+	//				object->GetCB<LocalTransformCB>(object->m_name + L"Local")->Update(cb);
 
-					if (!mesh->m_BoneData.empty())
-					{
-						MatrixPallete matrixPallete = *(mesh->Matrix_Pallete);
+	//				if (!mesh->m_BoneData.empty())
+	//				{
+	//					MatrixPallete matrixPallete = *(mesh->Matrix_Pallete);
 
-						object->GetCB<MatrixPallete>(object->m_name + L"MatrixPallete")->Update(matrixPallete);
-						m_Context->VSSetConstantBuffers(3, 1, object->GetCB<MatrixPallete>(object->m_name + L"MatrixPallete")->GetAddress());
-					}
+	//					object->GetCB<MatrixPallete>(object->m_name + L"MatrixPallete")->Update(matrixPallete);
+	//					m_Context->VSSetConstantBuffers(3, 1, object->GetCB<MatrixPallete>(object->m_name + L"MatrixPallete")->GetAddress());
+	//				}
 
-				}
-				else
-				{
-					cb.local = DirectX::SimpleMath::Matrix::Identity;
-					object->GetCB<LocalTransformCB>(object->m_name + L"Local")->Update(cb);
-				}
+	//			}
+	//			else
+	//			{
+	//				cb.local = DirectX::SimpleMath::Matrix::Identity;
+	//				object->GetCB<LocalTransformCB>(object->m_name + L"Local")->Update(cb);
+	//			}
 
-				m_Context->VSSetConstantBuffers(2, 1, object->GetCB<LocalTransformCB>(object->m_name + L"Local")->GetAddress());
-			}
+	//			m_Context->VSSetConstantBuffers(2, 1, object->GetCB<LocalTransformCB>(object->m_name + L"Local")->GetAddress());
+	//		}
 
-			// 텍스처와 샘플러를 셰이더에 바인딩
-			if (!object->Materials().empty())
-			{
-				if (true)
-				{
-					m_Context->PSSetShaderResources(0, 1, (object->DiffuseSRV(i)->GetAddress()));
-					m_Context->PSSetSamplers(0, 1, object->DiffuseSRV(i)->GetSamplerAddress());
+	//		// 텍스처와 샘플러를 셰이더에 바인딩
+	//		if (!object->Materials().empty())
+	//		{
+	//			if (true)
+	//			{
+	//				m_Context->PSSetShaderResources(0, 1, (object->DiffuseSRV(i)->GetAddress()));
+	//				m_Context->PSSetSamplers(0, 1, object->DiffuseSRV(i)->GetSamplerAddress());
 
-					m_Context->PSSetShaderResources(1, 1, (object->NormalSRV(i)->GetAddress()));
-					m_Context->PSSetSamplers(1, 1, object->NormalSRV(i)->GetSamplerAddress());
+	//				m_Context->PSSetShaderResources(1, 1, (object->NormalSRV(i)->GetAddress()));
+	//				m_Context->PSSetSamplers(1, 1, object->NormalSRV(i)->GetSamplerAddress());
 
-					//m_device->Context()->PSSetShaderResources(1, 1, (m_Materials[i]->m_SpecularSRV->GetAddress()));
-					//m_device->Context()->PSSetSamplers(1, 1, m_Materials[i]->m_SpecularSRV->GetSamplerAddress());
-				}
-			}
+	//				//m_device->Context()->PSSetShaderResources(1, 1, (m_Materials[i]->m_SpecularSRV->GetAddress()));
+	//				//m_device->Context()->PSSetSamplers(1, 1, m_Materials[i]->m_SpecularSRV->GetSamplerAddress());
+	//			}
+	//		}
 
-			//m_Context->PSSetShader(object->PS(), nullptr, 0);
-			m_Context->DrawIndexed(mesh->IBCount(), 0, 0);
+	//		//m_Context->PSSetShader(object->PS(), nullptr, 0);
+	//		m_Context->DrawIndexed(mesh->IBCount(), 0, 0);
 
-			i++;
-		}
-	}
+	//		i++;
+	//	}
+	//}
 }
 
 void Device::DrawQuard(ShaderResourceView* srv)

@@ -92,6 +92,9 @@
     <Filter Include="GraphicsEngine\Camera">
       <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicsEngine\RenderPass">
+      <UniqueIdentifier>{67d6ba83-9a87-4668-a08d-b46c47cc5fc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -193,6 +196,9 @@
     <ClInclude Include="Camera.h">
       <Filter>GraphicsEngine\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>GraphicsEngine\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -275,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>GraphicsEngine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>GraphicsEngine\RenderPass</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

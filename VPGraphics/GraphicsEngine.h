@@ -37,15 +37,10 @@ public:
 	~GraphicsEngine();
 
 	virtual bool Initialize() override;
-	virtual void Update(double dt) abstract;
+	virtual void Update(double dt) override;
 	virtual bool Finalize() override;
 	virtual void Render() override;
 	virtual void OnResize() override;
-
-
-
-
-
 
 	void DeferredRender();
 	void Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj);
