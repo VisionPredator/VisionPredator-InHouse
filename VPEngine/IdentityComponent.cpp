@@ -9,6 +9,8 @@
 		.func<&IdentityComponent::DeserializeComponent>("DeserializeComponent"_hs);
 		}
 
+	IMPLEMENT_COMPONENT_TYPE(IdentityComponent);
+
 		IdentityComponent::IdentityComponent(		)
 	{
 	}

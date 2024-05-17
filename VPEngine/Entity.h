@@ -13,16 +13,11 @@
 		template<typename T>
 		T* GetComponent() requires std::derived_from<T, Component>
 		{
-			if (HasComponent<T>())
-			{
-				T* TtypeComponent = FindComponent<T>();
-				return TtypeComponent;
-			}
-			else 
-			{
-				VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
-				return nullptr;
-			}
+				return FindComponent<T>();
+		}
+		Component* GetComponent(entt::id_type compID)
+		{
+			return FindComponent(compID);
 		}
 
 		template<typename T>
@@ -31,6 +26,7 @@
 			return m_OwnedComp.count(Reflection::GetTypeID<T>()) > 0;
 		}
 		bool HasComponent(entt::id_type compid) { return m_OwnedComp.count(compid) > 0; }
+
 		const uint32_t GetEntityID() { return m_EntityID; }
 	private:
 		template<typename T> requires std::derived_from<T, Component>
@@ -58,7 +54,10 @@
 		{
 			return (T*)m_OwnedComp[Reflection::GetTypeID<T>()];
 		}
-
+		Component* FindComponent(entt::id_type compID)
+		{
+			return m_OwnedComp[compID];
+		}
 
 		template<typename T>
 		void RemoveComponent()
@@ -71,6 +70,19 @@
 				VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
 			}
 		}
+		void RemoveComponent(entt::id_type compID)
+		{
+			auto it = m_OwnedComp.find(compID);
+			if (it != m_OwnedComp.end())
+				m_OwnedComp.erase(it);
+			else
+			{
+				VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
+			}
+		}
+
+
+
 
 		operator bool() const { return m_EntityID; }
 		operator uint32_t() const { return m_EntityID; }

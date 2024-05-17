@@ -36,7 +36,7 @@ void EventManager::ImmediateEvent(const EventName& type, std::any data)
 			subscrber.CallbackFunction(data);
 	//생성 삭제에 관련해서
 	if (m_SpawnEventSubscribers.find(type) != m_SpawnEventSubscribers.end())
-		for (auto& subscrber : m_BasicEventSubscribers[type])
+		for (auto& subscrber : m_SpawnEventSubscribers[type])
 			subscrber.CallbackFunction(data);
 	// Scene 관련 이벤트를 처리
 	if (m_SceneEventSubscribers.find(type) != m_SceneEventSubscribers.end())

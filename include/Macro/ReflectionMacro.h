@@ -43,7 +43,8 @@ static void AutoRegisterMetaTypeFunction();
 entt::meta<CLASS>()\
 MEMBERS(__VA_ARGS__)\
 .func<&CLASS::SerializeComponent>("SerializeComponent"_hs)\
-.func<&CLASS::DeserializeComponent>("DeserializeComponent"_hs);
+.func<&CLASS::DeserializeComponent>("DeserializeComponent"_hs)\
+.func<&CLASS::AddComponent>("AddComponent"_hs);
 
 
 

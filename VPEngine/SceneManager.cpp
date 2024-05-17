@@ -6,14 +6,19 @@
 
 SceneManager::SceneManager()
 {
-	EventManager::GetInstance().Subscribe("OnChangeScene", CreateSubscriber(&SceneManager::OnChangeScene),EventType::SCENE);
-	EventManager::GetInstance().Subscribe("OnEndScene", CreateSubscriber(&SceneManager::OnEndScene), EventType::SCENE);
-	EventManager::GetInstance().Subscribe("OnResetScene", CreateSubscriber(&SceneManager::OnResetScene), EventType::SCENE);
-	EventManager::GetInstance().Subscribe("OnOpenScene", CreateSubscriber(&SceneManager::OnOpenScene), EventType::SCENE);
-	EventManager::GetInstance().Subscribe("OnStartScene", CreateSubscriber(&SceneManager::OnStartScene), EventType::SCENE);
+	//OnInitalizeEntity(std::any data);
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearEntity", CreateSubscriber(&SceneManager::OnClearEntity), EventType::ADD_DELETE);
-	 
+	EventManager::GetInstance().Subscribe("OnChangeScene", CreateSubscriber(&SceneManager::OnChangeScene),EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnStartScene", CreateSubscriber(&SceneManager::OnStartScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnResetScene", CreateSubscriber(&SceneManager::OnResetScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnEndScene", CreateSubscriber(&SceneManager::OnEndScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnOpenScene", CreateSubscriber(&SceneManager::OnOpenScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnAddComponent", CreateSubscriber(&SceneManager::OnAddComponent), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnRemoveComponent", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnSetEntityMap", CreateSubscriber(&SceneManager::OnSetEntityMap), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneManager::OnSerializePrefab), EventType::ADD_DELETE);
+
 }
 SceneManager::~SceneManager()
 {
@@ -30,6 +35,8 @@ void SceneManager::Initialize()
 void SceneManager::Finalize()
 {
 }
+
+
 void SceneManager::OnDestroyEntity(std::any data)
 {
 	// EntityMap에서 해당 Entity를 찾습니다.
@@ -42,7 +49,7 @@ void SceneManager::OnDestroyEntity(std::any data)
 	{
 		Entity* entityToRemove = entityIter->second;
 		// m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
-		for (auto& compPair :GetScene().m_ComponentPool)
+		for (auto& compPair :m_CurrentScene->m_ComponentPool)
 		{
 			auto& components = compPair.second;
 			// 해당 Entity의 컴포넌트를 찾아 제거합니다.
@@ -60,7 +67,7 @@ void SceneManager::OnDestroyEntity(std::any data)
 		entityMap.erase(entityIter);
 	}
 }
-
+///
 void SceneManager::OnClearEntity(std::any data)
 {
 	// Clear EntityMap and manage memory for Entity*
@@ -234,15 +241,25 @@ Entity* SceneManager::CreateEntity()
 
 	Entity* tempEntity = new Entity;
 	tempEntity->SetEntityID(id);
-	SetEntityMap(id, tempEntity);
-	AddComponent<IDComponent>(id);
-	AddComponent<TransformComponent>(id);
+
+	IDComponent* idComponent = new IDComponent;
+	std::tuple<uint32_t, entt::id_type, Component*> IDdata = std::make_tuple(id, Reflection::GetTypeID<IDComponent>(), idComponent);
+
+	TransformComponent* trnasformComp = new TransformComponent;
+	std::tuple<uint32_t, entt::id_type, Component*> Tdata = std::make_tuple(id, Reflection::GetTypeID<TransformComponent>(), trnasformComp);
+
+	EventManager::GetInstance().ImmediateEvent("OnSetEntityMap", std::pair(id, tempEntity));
+	EventManager::GetInstance().ScheduleEvent("OnAddComponent", IDdata);
+	EventManager::GetInstance().ScheduleEvent("OnAddComponent", Tdata);
 	return tempEntity;
 }
-
+//리플렉션
+// 
+// std::tuple<  uint32_t, entt::id_type, Component* >
 void SceneManager::OnAddComponent(std::any data)
 {
 	auto [entityID, compId_type, component] = std::any_cast <std::tuple<  uint32_t, entt::id_type, Component* >> (data);
+
 	Entity* ParentEntity = GetEntity(entityID);///GetEntity
 	VP_ASSERT(!HasComponent(entityID, compId_type), "같은 타입의 컴포넌트가 존재합니다.");
 	component->OwnedEntity = ParentEntity;
@@ -250,3 +267,18 @@ void SceneManager::OnAddComponent(std::any data)
 	AddCompToPool(compId_type, component);
 }
 
+void SceneManager::OnRemoveComponent(std::any data)
+{
+	auto [EntityID, CompID] = std::any_cast<std::pair<uint32_t, entt::id_type>>(data);
+	VP_ASSERT(HasComponent(EntityID, CompID), "해당 타입의 컴포넌트가 존재하지 않습니다.");
+	Entity* ParentEntity = GetEntity(EntityID);///GetEntity
+	Component* comp = ParentEntity->GetComponent(CompID);
+	ParentEntity->RemoveComponent(CompID);
+	ReleaseCompFromPool(CompID,comp);
+}
+
+void SceneManager::OnSetEntityMap(std::any data)
+{
+	auto [entityID, entity] = std::any_cast <std::pair< uint32_t, Entity* >> (data);
+	m_CurrentScene->EntityMap[entityID] = entity;
+}

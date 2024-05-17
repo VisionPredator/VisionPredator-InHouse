@@ -8,11 +8,10 @@ struct Component
 	{
 		OwnedEntity = nullptr; // Then set the pointer to nullptr (mostly for safety in this scope)
 	}
-	Entity* OwnedEntity = nullptr;
 
 	virtual void SerializeComponent(nlohmann::json& json) const {};
 	virtual void* DeserializeComponent(const nlohmann::json json, SceneManager* sceneManager, uint32_t entityID) const { return nullptr; }
-
+	virtual void* AddComponent(SceneManager* sceneManager, uint32_t entityID) { return nullptr; }
 	template <typename T>
 	T* GetComponent()
 	{
@@ -27,6 +26,10 @@ struct Component
 	{
 		return OwnedEntity->GetEntityID();
 	}
+	Entity* OwnedEntity = nullptr;
+	virtual entt::id_type GetTypeID() const = 0;
+protected:
+	friend class SceneManager;
 };
 
 template <typename T>
