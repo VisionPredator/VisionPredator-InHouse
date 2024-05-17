@@ -95,13 +95,20 @@ public:
 
 private:
 
+	//pass
 	VertexShader* m_VS;
 	PixelShader* m_PS;
 	RenderState* m_renderState;
 
+	//얘는 어딜까?
+	std::map<std::wstring, Buffer*> m_CBList; //상수버퍼를 담고있는 컨테이너 -> 상수버퍼를 만들위해 필요한 구조체 data
+	
+	
+	
+	
+	
+	
 	ModelData* m_LoadData;	//Mesh + Material + Animation
-
-	std::map<std::wstring, Buffer*> m_CBList; //상수버퍼를 담고있는 컨테이너
 };
 
 template<typename T>

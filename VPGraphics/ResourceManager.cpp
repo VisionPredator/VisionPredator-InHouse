@@ -63,9 +63,9 @@ void ResourceManager::Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLO
 void ResourceManager::Initialize()
 {
 	//디퍼드 용 쉐이더 테스트
-	Create<VertexShader>(L"../x64/Debug/DeferredVS.cso", VERTEXFILTER::SKINNING, L"Deferred");
-	Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
-	Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
+	//Create<VertexShader>(L"../x64/Debug/DeferredVS.cso", VERTEXFILTER::SKINNING, L"Deferred");
+	//Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
+	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
 	//기본 RS
 	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);

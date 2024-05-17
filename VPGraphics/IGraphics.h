@@ -2,7 +2,8 @@
 #include <windows.h>
 #include <string>
 
-#include "SimpleMath.h"
+#include "../include/directxtk/SimpleMath.h"
+
 #include "MeshFilter.h"
 #include "CBuffer.h"
 
@@ -16,8 +17,8 @@ namespace Graphics
 	class Interface
 	{
 	public:
-		Interface();
-		virtual ~Interface();
+		Interface() {};
+		virtual ~Interface() {};
 
 		//복사 생성자
 		Interface(Interface& other) = delete;
@@ -41,7 +42,7 @@ namespace Graphics
 		//void DeleteObject();
 
 		//카메라의 상태 업데이트
-		virtual void SetCamera(DirectX::XMFLOAT3 pos, float Xrotate, float Yrotate) abstract;
+		//virtual void SetCamera(DirectX::XMFLOAT3 pos, float Xrotate, float Yrotate) abstract;
 		
 
 
