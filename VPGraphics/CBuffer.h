@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include "SimpleMath.h"
+#include "../Include/directxtk/SimpleMath.h"
 
 
 struct CB

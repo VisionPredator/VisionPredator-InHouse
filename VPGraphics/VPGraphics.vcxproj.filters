@@ -92,6 +92,15 @@
     <Filter Include="GraphicsEngine\Camera">
       <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pass">
+      <UniqueIdentifier>{bd8a2133-9734-49d7-b93f-565676ddfe0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Deferred Lighting">
+      <UniqueIdentifier>{273446f8-dc41-4717-a9ae-00096bdafd95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -193,6 +202,15 @@
     <ClInclude Include="Camera.h">
       <Filter>GraphicsEngine\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredGeometryPass.h">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredLightPass.h">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -275,6 +293,15 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>GraphicsEngine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredGeometryPass.cpp">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredLightPass.cpp">
+      <Filter>Pass\Deferred Lighting</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

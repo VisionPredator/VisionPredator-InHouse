@@ -209,6 +209,11 @@
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VPGraphics\VPGraphics.vcxproj">
+      <Project>{6af1262e-67c4-4738-97ac-a36899fe4316}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
