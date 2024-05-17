@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderPass.h"
 
-class DeferredLightPass final : public RenderPass
+class DeferredLightPass final : public Pass
 {
 public:
 	void Render() override;

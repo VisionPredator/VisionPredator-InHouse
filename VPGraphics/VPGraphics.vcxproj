@@ -177,6 +177,7 @@ copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Pass.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="RenderState.h" />
@@ -212,6 +213,7 @@ copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="RenderState.cpp" />

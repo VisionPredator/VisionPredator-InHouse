@@ -1,11 +1,11 @@
 #pragma once
 #include "ConstantBuffer.h"
-#include "RenderPass.h"
+#include "Pass.h"
 #include "Device.h"
 #include "ResourceManager.h"
 #include "VertexShader.h"
 
-class DeferredGeometryPass final : public RenderPass
+class DeferredGeometryPass final : public Pass
 {
 public:
 	//void Initialize(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager, uint32_t width, uint32_t height);

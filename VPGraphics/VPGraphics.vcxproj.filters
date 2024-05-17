@@ -214,6 +214,9 @@
     <ClInclude Include="DeferredLightPass.h">
       <Filter>Pass\Deferred Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="Pass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -306,5 +309,6 @@
     <ClCompile Include="DeferredLightPass.cpp">
       <Filter>Pass\Deferred Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="Pass.cpp" />
   </ItemGroup>
 </Project>
