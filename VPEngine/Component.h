@@ -32,15 +32,3 @@ protected:
 	friend class SceneManager;
 };
 
-template <typename T>
-class IDType
-{
-public:
-	static entt::id_type getTypeID()
-	{
-		static entt::id_type typeID = entt::resolve<T>().id();
-		return typeID;
-	}
-};
-
-

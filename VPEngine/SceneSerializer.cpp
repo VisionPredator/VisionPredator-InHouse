@@ -9,10 +9,7 @@
 SceneSerializer::SceneSerializer(SceneManager* sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSerializeScene", CreateSubscriber(&SceneSerializer::OnSerializeScene));
-	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneSerializer::OnSerializePrefab));
-
 	EventManager::GetInstance().Subscribe("OnDeSerializeScene", CreateSubscriber(&SceneSerializer::OnDeSerializeScene));
-	EventManager::GetInstance().Subscribe("OnDeSerializePrefab", CreateSubscriber(&SceneSerializer::OnDeSerializePrefab));
 }
 SceneSerializer::~SceneSerializer()
 {
@@ -106,22 +103,5 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 		VP_ASSERT(false, "JSON 처리 중 오류가 발생했습니다: ");
 	}
 	inputFile.close();
-}
-
-void SceneSerializer::OnSerializePrefab(std::any data)
-{
-	try
-	{
-		uint32_t entityID = std::any_cast<uint32_t>(data);
-		m_SceneManager->SerializePrefab(entityID);
-	}
-	catch (const std::bad_any_cast&)
-	{
-		VP_ASSERT(false, "std::any_cast에 실패하였습니다.");  // Wrong data type assertion
-	}
-}
-
-void SceneSerializer::OnDeSerializePrefab(std::any data)
-{
 }
 

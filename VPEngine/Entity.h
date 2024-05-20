@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "EventManager.h"
 	struct Component;
 	class Entity
 	{
@@ -28,26 +29,27 @@
 		bool HasComponent(entt::id_type compid) { return m_OwnedComp.count(compid) > 0; }
 
 		const uint32_t GetEntityID() { return m_EntityID; }
+
+		void AddComponentToMap(Component* comp);
+
+		template<typename T>
+		T* AddComponent()
+		{
+			if (HasComponent<T>())
+			{
+				VP_ASSERT(false, "이미 있는 Component 입니다.")
+					return nullptr;
+			}
+			T* newcomp = new T;
+			AddComponentToMap(newcomp);
+			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", newcomp);
+			return newcomp;
+		}
+
+
 	private:
-		template<typename T> requires std::derived_from<T, Component>
-		void AddComponent(Component* comp)
-		{
-			/// 메타를 사용하여 T를 타입추론해서 ID값에 해당하는 컴포넌트를 추가할수 있을듯함.
-			entt::id_type idNum = Reflection::GetTypeID<T>();
-			VP_ASSERT(!HasComponent<T>(), "컴포넌트가 존재합니다");
-			m_OwnedComp[idNum] = comp;
-		}
-
-		void AddComponent(entt::id_type compID,Component* comp)
-		{
-			/// 메타를 사용하여 T를 타입추론해서 ID값에 해당하는 컴포넌트를 추가할수 있을듯함.
-			VP_ASSERT(!HasComponent(compID), "컴포넌트가 존재합니다");
-			m_OwnedComp[compID] = comp;
-		}
-
 
 		void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
-
 
 		template<typename T>
 		inline T* FindComponent()
@@ -70,6 +72,7 @@
 				VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
 			}
 		}
+
 		void RemoveComponent(entt::id_type compID)
 		{
 			auto it = m_OwnedComp.find(compID);

@@ -64,7 +64,7 @@ void SerializeComponent(nlohmann::json& json)const override\
  { to_json(json, *this); }\
 void* DeserializeComponent(const nlohmann::json json, SceneManager* sceneManager,uint32_t entityID) const override\
 {\
-	auto component = sceneManager->AddComponent<CLASSNAME>(entityID);\
+	CLASSNAME* component = sceneManager->AddComponent<CLASSNAME>(entityID);\
 	*component = json;\
 	component->OwnedEntity = sceneManager->GetEntity(entityID);\
     return component;\

@@ -18,6 +18,8 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnRemoveComponent", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnSetEntityMap", CreateSubscriber(&SceneManager::OnSetEntityMap), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneManager::OnSerializePrefab), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnDeSerializeEntity", CreateSubscriber(&SceneManager::OnDeSerializeEntity), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
 
 }
 SceneManager::~SceneManager()
@@ -244,6 +246,33 @@ Entity* SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
 	return tempEntity;
 }
 
+void SceneManager::OnDeSerializeEntity(std::any data)
+{
+	const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
+	uint32_t entityID = entityjson["EntityID"];
+
+	Entity* tempEntity = new Entity;
+	tempEntity->SetEntityID(entityID);
+	SetEntityMap(entityID, tempEntity);
+
+	for (auto& componentjson : entityjson["Component"])
+	{
+		entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
+		auto metaType = entt::resolve(comp_id);
+		if (metaType)
+		{
+			// 메타 타입으로부터 인스턴스를 생성합니다.
+			auto instance = metaType.construct();
+			// 특정 함수를 찾고 호출합니다.
+			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+			if (myFunctionMeta)
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, (uint32_t)entityID);
+			else
+				VP_ASSERT(false, "Reflection 함수 실패!");
+		}
+	}
+}
+
 Entity* SceneManager::CreateEntity()
 {
 	std::random_device rd;  // 난수 생성기
@@ -257,14 +286,19 @@ Entity* SceneManager::CreateEntity()
 
 	Entity* tempEntity = new Entity;
 	tempEntity->SetEntityID(id);
+	SetEntityMap(id, tempEntity);
 
+	TransformComponent* TransComp=new TransformComponent;
+	TransComp->OwnedEntity = tempEntity;
+	tempEntity->AddComponentToMap(TransComp);
 
-	std::pair<uint32_t, entt::id_type> IDdata = std::make_pair(id, Reflection::GetTypeID<IDComponent>());
-	std::pair<uint32_t, entt::id_type> Tdata = std::make_pair(id, Reflection::GetTypeID<TransformComponent>());
+	IDComponent* IDComp = new IDComponent;
+	IDComp->OwnedEntity = tempEntity;
+	tempEntity->AddComponentToMap(IDComp);
 
-	EventManager::GetInstance().ImmediateEvent("OnSetEntityMap", std::pair(id, tempEntity));
-	EventManager::GetInstance().ScheduleEvent("OnAddComponent", IDdata);
-	EventManager::GetInstance().ScheduleEvent("OnAddComponent", Tdata);
+	EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(TransComp));
+	EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(IDComp));
+
 	return tempEntity;
 }
 //리플렉션
@@ -284,7 +318,7 @@ void SceneManager::OnAddComponent(std::any data)
 		// 메타 타입으로부터 인스턴스를 생성합니다.
 		auto instance = metaType.construct();
 		// 특정 함수를 찾고 호출합니다.
-		auto myFunctionMeta = metaType.func("AddComponent"_hs);
+		auto myFunctionMeta = metaType.func("AddComponentToMap"_hs);
 		if (myFunctionMeta)
 		{
 			entt::meta_any result = myFunctionMeta.invoke(instance, this, entityID);
@@ -292,6 +326,13 @@ void SceneManager::OnAddComponent(std::any data)
 		else
 			VP_ASSERT(false, "Reflection 함수 실패!");
 	}
+}
+
+void SceneManager::OnAddCompToScene(std::any data)
+{
+	auto comp = std::any_cast< Component*>(data);
+	entt::id_type compID = comp->GetTypeID();
+	AddCompToPool(compID, comp);
 }
 
 void SceneManager::OnRemoveComponent(std::any data)

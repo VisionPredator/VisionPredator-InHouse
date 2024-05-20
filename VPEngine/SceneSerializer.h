@@ -12,9 +12,7 @@ public:
 
 	/// æ¿¿ª serialize «’¥œ¥Ÿ.
 	void OnSerializeScene(std::any data);
-	void OnSerializePrefab(std::any data);
 
 	/// æ¿¿ª deserialize «’¥œ¥Ÿ.
 	void OnDeSerializeScene(std::any data);
-	void OnDeSerializePrefab(std::any data);
 };
