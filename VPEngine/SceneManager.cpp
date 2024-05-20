@@ -39,16 +39,21 @@ void SceneManager::Finalize()
 
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
-	std::vector<uint32_t> childrenID;
-	EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", entityID);
-	
+	std::list<uint32_t> DeleteEntityIDs;
+	DeleteEntityIDs.push_back(entityID);
 
-	for (uint32_t childID: childrenID)
+	while (!DeleteEntityIDs.empty())
 	{
-		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", childID);
+		uint32_t DeleteEntityID = DeleteEntityIDs.front();
+
+		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", DeleteEntityID);
+		DeleteEntityIDs.pop_front();
+		if (GetEntity(DeleteEntityID)->HasComponent<Children>())
+			continue;
+		Children* children = GetEntity(DeleteEntityID)->GetComponent<Children>();
+		DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
 	}
 }
-
 
 void SceneManager::OnDestroyEntity(std::any data)
 {
@@ -79,7 +84,7 @@ void SceneManager::OnDestroyEntity(std::any data)
 		entityMap.erase(entityIter);
 	}
 }
-///
+
 void SceneManager::OnClearEntity(std::any data)
 {
 	// Clear EntityMap and manage memory for Entity*
@@ -97,6 +102,7 @@ void SceneManager::OnClearEntity(std::any data)
 	}
 	m_CurrentScene->m_ComponentPool.clear();
 }
+
 //씬 체인지 이벤트 :: SchduleEvent로 호출 권장!
 void SceneManager::OnChangeScene(std::any data)
 {
@@ -126,8 +132,6 @@ void SceneManager::OnStartScene(std::any data)
 	///TODO: 씬 시작시 설정할 init??
 	EventManager::GetInstance().ImmediateEvent("OnInitialize");
 	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
-
-
 }
 
 void SceneManager::OnResetScene(std::any data)
