@@ -1,5 +1,6 @@
 #pragma once
 #include "Resource.h"
+#include "MeshFilter.h"
 
 #include <string>
 
@@ -10,14 +11,25 @@ class Mesh;
 class Material;
 class Animation;
 class Node;
+class RenderState;
 
 class ModelData :
     public Resource
 {
 public:
-	ModelData() : m_name(L"need name"), m_RootNode()
+	ModelData() : m_name(L"need name"), m_RootNode(),RS(nullptr)
 	{
 	}
+
+
+	ModelData(ModelData* other)
+	{
+		this->m_RootNode = other->m_RootNode;
+		this->m_Meshes = other->m_Meshes;
+		this->m_Materials = other->m_Materials;
+		this->m_Animations = other->m_Animations;
+	}
+
 
 	virtual void Release() override {}
 
@@ -32,5 +44,10 @@ public:
 	//위치 data
 	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
 	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
+
+
+	RenderState* RS;
+	PassState m_pass;
+
 };
 

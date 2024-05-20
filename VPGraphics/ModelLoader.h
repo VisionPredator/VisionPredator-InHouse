@@ -9,9 +9,9 @@
 #pragma  endregion STL
 
 #pragma region assimp
-#include "scene.h"
-#include "Importer.hpp"
-#include "postprocess.h"
+#include "../assimp/scene.h"
+#include "../assimp/Importer.hpp"
+#include "../assimp/postprocess.h"
 #pragma endregion assimp
 
 

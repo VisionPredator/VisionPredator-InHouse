@@ -48,7 +48,7 @@ namespace Graphics
 
 
 		//나중에 지울거
-		virtual bool LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx, std::wstring VSname, std::wstring PSname) abstract;
+		virtual bool LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
 		virtual void UpdateCB(std::wstring name, std::wstring cbname, WorldTransformCB constantstruct) abstract;
 		virtual void UpdateCB(std::wstring name, std::wstring cbname, DirectionLightCB constantstruct)abstract;
 

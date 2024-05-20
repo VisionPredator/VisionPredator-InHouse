@@ -1,5 +1,6 @@
 #pragma once
 #include <queue>
+#include <vector>
 
 class Device;
 
@@ -84,6 +85,42 @@ class ForwardPass : public RenderPass
 public:
 	ForwardPass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
 	~ForwardPass();
+
+	virtual void Render() override;
+	virtual void StaticRender() override;
+	virtual void SkinnedRender() override;
+
+private:
+	RenderTargetView* m_RTV;
+	DepthStencilView* m_DSV;
+	D3D11_VIEWPORT* m_VP;
+};
+
+
+
+class SkinnigPass : public RenderPass
+{
+public:
+	SkinnigPass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	~SkinnigPass();
+
+	virtual void Render() override;
+	virtual void StaticRender() override;
+	virtual void SkinnedRender() override;
+
+private:
+	RenderTargetView* m_RTV;
+	DepthStencilView* m_DSV;
+	D3D11_VIEWPORT* m_VP;
+};
+
+
+
+class TexturePass : public RenderPass
+{
+public:
+	TexturePass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	~TexturePass();
 
 	virtual void Render() override;
 	virtual void StaticRender() override;

@@ -67,6 +67,18 @@ void ResourceManager::Initialize()
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
+	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
+
+
+	Create<VertexShader>(L"../x64/Debug/BaseVS.cso", VERTEXFILTER::TEXTURE,L"Base");
+	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
+
+	Create<VertexShader>(L"../x64/Debug/SkinningVS.cso", VERTEXFILTER::SKINNING, L"Skinning");
+	Create<PixelShader>(L"../x64/Debug/SkinningPS.cso",  L"Skinning");
+
+	VertexShader* a = Create<VertexShader>(L"../x64/Debug/TextureVS.cso", VERTEXFILTER::TEXTURE, L"Texture");
+	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
+
 	//기본 RS
 	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);
 	Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
@@ -100,16 +112,18 @@ void ResourceManager::Initialize()
 	dsd.Width = m_device->GetWndSize().right - m_device->GetWndSize().left;
 	dsd.Height = m_device->GetWndSize().bottom - m_device->GetWndSize().top;
 	Create<DepthStencilView>(L"DSV_1", dsd);
-
 	Create<DepthStencilView>(L"DSV_2", dsd);
 
 	//한번만 연결해주면 계속 쓸 것들
 	Create<ConstantBuffer<WorldTransformCB>>(L"SunTransform", BufferDESC::Constant::DefaultWorld);
+	Create<ConstantBuffer<WorldTransformCB>>(L"Transform", BufferDESC::Constant::DefaultWorld);
+	Create<ConstantBuffer<LocalTransformCB>>(L"Local", BufferDESC::Constant::DefaultLocal);
 
 	m_DirectionalLight = Create<ConstantBuffer<DirectionLightCB>>(L"DirectionLight", BufferDESC::Constant::DefaultDirLight);
 	m_device->Context()->PSSetConstantBuffers(2, 1, m_DirectionalLight->GetAddress());
 
 	m_Camera = Create<ConstantBuffer<CameraCB>>(L"Camera", BufferDESC::Constant::DefaultCamera);
+	m_Camera->Update();
 
 	m_device->Context()->VSSetConstantBuffers(0, 1, (m_Camera->GetAddress()));
 	m_device->Context()->PSSetConstantBuffers(1, 1, (m_Camera->GetAddress()));

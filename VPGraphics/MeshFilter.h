@@ -9,7 +9,14 @@ enum class MeshFilter
 	LoadModel,
 	Skinning,
 
-
-
 	None
+};
+
+enum class PassState
+{
+	Base = 0,
+	Texture,
+	Skinning,
+
+	End
 };
