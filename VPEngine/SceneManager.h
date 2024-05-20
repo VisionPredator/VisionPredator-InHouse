@@ -20,7 +20,6 @@ public:
 	Entity* CreateEntity();
 
 	// 모든 Entity를 지운다.
-	void OnAddComponent(std::any data);
 	void OnAddCompToScene(std::any data);
 	template<typename T>
 	inline T* AddComponent(uint32_t entityID);
@@ -50,12 +49,9 @@ protected:
 private:
 	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
-	template<typename T>
-	void AddCompToPool(Component* comp) { m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()].push_back(comp); }
-	void AddCompToPool(entt::id_type compID, Component* comp) { m_CurrentScene->m_ComponentPool[compID].push_back(comp); }
-	void OnDestroyEntity(std::any entityID);
-	// 모든 Entity를 지운다.
-	void OnClearEntity(std::any data);
+
+	void AddCompToPool(Component* comp); 
+
 	// 씬을 바꾼다.
 	void OnChangeScene(std::any data);
 	// 씬 시작 이벤트를 호출한다.
@@ -67,10 +63,14 @@ private:
 	// 해당 씬을 연다.
 	void OnOpenScene(std::any data);
 
+	// Entity를 삭제한다.
+	void OnDestroyEntity(std::any entityID);
+	// 모든 Entity를 지운다.
+	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
 	void OnRemoveComponent(std::any data);
 	// 해당 Entity를 맵에 추가한다.
-	void OnSetEntityMap(std::any data);
+	//void OnAddEntity(std::any data);
 	// 해당 Prefab을 serialize한다.
 	void OnSerializePrefab(std::any entityID);
 	// 해당 Prefab을 Deserialize한다.
@@ -116,7 +116,7 @@ inline T* SceneManager::AddComponent(uint32_t entityID)
 	///아래껄 하지말고 바로 이벤트 호출 하는것도 좋을 듯!!!!
 	comp->OwnedEntity = ParentEntity;
 	ParentEntity->AddComponentToMap(comp);
-	AddCompToPool<T>(comp);
+	AddCompToPool(comp);
 	std::pair<uint32_t, entt::id_type> data = { ParentEntity->GetEntityID(),comp->GetTypeID() };
 	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", data);
 	return comp;

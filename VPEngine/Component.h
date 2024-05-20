@@ -11,7 +11,7 @@ struct Component
 
 	virtual void SerializeComponent(nlohmann::json& json) const {};
 	virtual void* DeserializeComponent(const nlohmann::json json, SceneManager* sceneManager, uint32_t entityID) const { return nullptr; }
-	virtual void* AddComponent(SceneManager* sceneManager, uint32_t entityID) { return nullptr; }
+	virtual Component* AddComponent(Entity* parentEntity) { return nullptr; }
 	template <typename T>
 	T* GetComponent()
 	{

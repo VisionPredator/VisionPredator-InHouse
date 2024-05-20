@@ -42,10 +42,11 @@
 			}
 			T* newcomp = new T;
 			AddComponentToMap(newcomp);
-			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", newcomp);
+			newcomp->OwnedEntity = this;
+			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
 			return newcomp;
 		}
-
+		Component* AddComponent(entt::id_type compID);
 
 	private:
 

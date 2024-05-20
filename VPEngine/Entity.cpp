@@ -25,3 +25,43 @@ void Entity::AddComponentToMap(Component* comp)
 	}
 	m_OwnedComp[comp->GetTypeID()] = comp;
 }
+
+Component* Entity::AddComponent(entt::id_type compID)
+{
+	if (HasComponent(compID))
+	{
+		VP_ASSERT(false, "이미 있는 Component 입니다.")
+			return nullptr;
+	}
+	auto metaType = entt::resolve(compID);
+
+	if (metaType)
+	{
+		// 메타 타입으로부터 인스턴스를 생성합니다.
+		auto instance = metaType.construct();
+		// 특정 함수를 찾고 호출합니다.
+		auto myFunctionMeta = metaType.func("AddComponent"_hs);
+		if (myFunctionMeta)
+		{
+			entt::meta_any result = myFunctionMeta.invoke(instance, this);
+			if (auto componentPtr = result.try_cast<Component*>())
+			{
+				return *componentPtr;
+			}
+			else
+			{
+				VP_ASSERT(false, " 함수 리턴 실패!");
+
+			}
+		}
+		else
+			VP_ASSERT(false, "FunctionMeta 함수 실패!");
+	}
+	else
+	{
+		VP_ASSERT(false, "resolve 함수 실패!");
+	}
+
+
+	return nullptr;
+}

@@ -54,21 +54,20 @@ public: \
 #define VP_JSONBODY(CLASSNAME,...)\
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CLASSNAME, __VA_ARGS__)\
 DEFINE_COMPONENT_TYPE(CLASSNAME)\
-void* AddComponent( SceneManager* sceneManager,uint32_t entityID) override\
+Component* AddComponent(Entity* parentEntity) override\
 {\
-CLASSNAME* component= sceneManager->AddComponent<CLASSNAME>(entityID);\
-component->OwnedEntity = sceneManager->GetEntity(entityID);\
+CLASSNAME* component = parentEntity->AddComponent<CLASSNAME>();\
 return component;\
 }\
 void SerializeComponent(nlohmann::json& json)const override\
  { to_json(json, *this); }\
 void* DeserializeComponent(const nlohmann::json json, SceneManager* sceneManager,uint32_t entityID) const override\
 {\
-	CLASSNAME* component = sceneManager->AddComponent<CLASSNAME>(entityID);\
+    Entity* ParentEntity =  sceneManager->GetEntity(entityID);\
+	auto component = ParentEntity->AddComponent<CLASSNAME>();\
 	*component = json;\
-	component->OwnedEntity = sceneManager->GetEntity(entityID);\
+	component->OwnedEntity = ParentEntity;\
     return component;\
 }\
-
 
 

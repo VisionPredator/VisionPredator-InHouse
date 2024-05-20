@@ -45,12 +45,10 @@ void MeshRenderSystem::OnFinalizeSystem(std::any)
 
 void MeshRenderSystem::OnAddedComponent(std::any data)
 {
-	auto [entityID, compID] = std::any_cast<std::pair<uint32_t, entt::id_type>>(data);
-
-	if (Reflection::GetTypeID<MeshComponent>() != compID)
+	auto comp = std::any_cast<Component*>(data);
+	if (comp->GetTypeID() != Reflection::GetTypeID<MeshComponent>())
 		return;
-
-	MeshComponent* meshComponent = static_cast<MeshComponent*>(m_SceneManager->GetComponent(entityID, compID));
+	MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 	// Graphic에 등록할 MeshEntity
 	//IGraphics::Getinstance().AddEntity(uint32_t, 정보);
 }
