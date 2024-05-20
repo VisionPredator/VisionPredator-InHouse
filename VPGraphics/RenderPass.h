@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 
+#include "MeshFilter.h"
 class Device;
 
 class ModelData;
@@ -65,6 +66,7 @@ public:
 	virtual void StaticRender() abstract;
 	virtual void SkinnedRender() abstract;
 	void AddModelData(ModelData* model);
+	void AddModelData(std::map<std::wstring, std::pair<PassState, ModelData*>>& model_list);
 
 protected:
 	std::queue<ModelData*> m_RenderModelQueue;
@@ -78,6 +80,8 @@ protected:
 
 	ResourceManager* m_ResourceManager;
 
+
+	PassState m_state = PassState::None;
 };
 
 class ForwardPass : public RenderPass

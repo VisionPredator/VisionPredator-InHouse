@@ -142,24 +142,35 @@ void GraphicsEngine::Update(double dt)
 
 	m_Animator->Update(dt,m_RenderList);
 
+
 	//비트 연산으로 해보자
+
 	for (auto& model : m_RenderList)
 	{
-		switch (model.second.first)	
-		{
-			case PassState::Base:
-				m_BasePass->AddModelData(model.second.second);
-				break;
-			case PassState::Texture:
-				m_TexturePass->AddModelData(model.second.second);
-				break;
-			case PassState::Skinning:
-				m_SkinningPass->AddModelData(model.second.second);
-				break;
+		PassState temp = model.second.first;
 
-			default:
-				break;
+		temp &= PassState::Base;
+		if (temp == PassState::Base)
+		{
+			m_BasePass->AddModelData(model.second.second);
+
 		}
+
+		temp = model.second.first;
+		temp &= PassState::Texture;
+		if (temp == PassState::Texture)
+		{
+			m_TexturePass->AddModelData(model.second.second);
+
+		}
+
+		temp = model.second.first;
+		temp &= PassState::Skinning;
+		if (temp == PassState::Skinning)
+		{
+			m_SkinningPass->AddModelData(model.second.second);
+		}
+
 	}
 
 
@@ -477,7 +488,11 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 				newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
 				newModel->m_pass = PassState::Skinning;
 
-				newModel->world = DirectX::SimpleMath::Matrix::Identity * 0.05f;
+				newModel->world = DirectX::SimpleMath::Matrix::Identity;
+				newModel->world._11 *= 0.05f;
+				newModel->world._22 *= 0.05f;
+				newModel->world._33 *= 0.05f;
+
 				newModel->local = DirectX::SimpleMath::Matrix::Identity;
 
 				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, ModelData*>>(L"test", std::pair<PassState, ModelData*>(PassState::Skinning, newModel)));

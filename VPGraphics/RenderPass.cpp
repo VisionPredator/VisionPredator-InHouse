@@ -5,7 +5,6 @@
 
 #include "ResourceManager.h"
 
-
 RenderPass::RenderPass(Device* device, ResourceManager* manger) : m_Device(device), m_ResourceManager(manger), m_VS(nullptr), m_PS(nullptr), m_RS(nullptr)
 {
 
@@ -19,6 +18,21 @@ RenderPass::~RenderPass()
 void RenderPass::AddModelData(ModelData* model)
 {
 	m_RenderModelQueue.push(model);
+}
+
+void RenderPass::AddModelData(std::map<std::wstring, std::pair<PassState, ModelData*>>& model_list)
+{
+	for (auto& model : model_list)
+	{
+		PassState temp = model.second.first;
+		temp &= m_state;
+		if (temp == m_state)
+		{
+			m_RenderModelQueue.push(model.second.second);
+		}
+	}
+
+
 }
 
 void RenderPass::StaticRender()
@@ -38,6 +52,9 @@ ForwardPass::ForwardPass(Device* device, ResourceManager* manager, D3D11_VIEWPOR
 	m_PS = m_ResourceManager->Get<PixelShader>(L"../x64/Debug/BasePS.cso");
 	m_VS = m_ResourceManager->Get<VertexShader>(L"../x64/Debug/BaseVS.cso");
 	//m_RS = ;
+
+	m_state = PassState::Base;
+
 }
 
 ForwardPass::~ForwardPass()
@@ -202,6 +219,10 @@ SkinnigPass::SkinnigPass(Device* device, ResourceManager* manager, D3D11_VIEWPOR
 	m_DSV = manager->Get<DepthStencilView>(L"DSV_1");
 	m_PS = m_ResourceManager->Get<PixelShader>(L"../x64/Debug/SkinningPS.cso");
 	m_VS = m_ResourceManager->Get<VertexShader>(L"../x64/Debug/SkinningVS.cso");
+
+	m_state = PassState::Skinning;
+
+
 }
 
 SkinnigPass::~SkinnigPass()
@@ -299,6 +320,8 @@ TexturePass::TexturePass(Device* device, ResourceManager* manager, D3D11_VIEWPOR
 	m_DSV = manager->Get<DepthStencilView>(L"DSV_1");
 	m_PS = m_ResourceManager->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
 	m_VS = m_ResourceManager->Get<VertexShader>(L"../x64/Debug/TextureVS.cso");
+	m_state = PassState::Texture;
+
 }
 
 TexturePass::~TexturePass()
