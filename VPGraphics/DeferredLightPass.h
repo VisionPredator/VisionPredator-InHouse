@@ -1,10 +1,10 @@
 #pragma once
-#include "RenderPass.h"
+#include "Pass.h"
 
 class DeferredLightPass final : public Pass
 {
 public:
-	void Render() override;
+	virtual void Render() override;
 
 private:
 
