@@ -92,6 +92,15 @@
     <Filter Include="GraphicsEngine\Camera">
       <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pass">
+      <UniqueIdentifier>{bd8a2133-9734-49d7-b93f-565676ddfe0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Deferred Lighting">
+      <UniqueIdentifier>{273446f8-dc41-4717-a9ae-00096bdafd95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="GraphicsEngine\RenderPass">
       <UniqueIdentifier>{67d6ba83-9a87-4668-a08d-b46c47cc5fc8}</UniqueIdentifier>
     </Filter>
@@ -209,7 +218,16 @@
       <Filter>GraphicsEngine\Camera</Filter>
     </ClInclude>
     <ClInclude Include="RenderPass.h">
-      <Filter>GraphicsEngine\RenderPass</Filter>
+      <Filter>Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredGeometryPass.h">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredLightPass.h">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Pass.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -295,8 +313,15 @@
       <Filter>GraphicsEngine\Camera</Filter>
     </ClCompile>
     <ClCompile Include="RenderPass.cpp">
-      <Filter>GraphicsEngine\RenderPass</Filter>
+      <Filter>Pass</Filter>
     </ClCompile>
+    <ClCompile Include="DeferredGeometryPass.cpp">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredLightPass.cpp">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Pass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
