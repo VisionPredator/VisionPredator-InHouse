@@ -37,6 +37,18 @@ void SceneManager::Finalize()
 
 }
 
+void SceneManager::DeleteEntity(uint32_t entityID)
+{
+	std::vector<uint32_t> childrenID;
+	EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", entityID);
+	
+
+	for (uint32_t childID: childrenID)
+	{
+		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", childID);
+	}
+}
+
 
 void SceneManager::OnDestroyEntity(std::any data)
 {
@@ -44,7 +56,6 @@ void SceneManager::OnDestroyEntity(std::any data)
 	uint32_t entityID = std::any_cast <int>(data);
 
 	auto& entityMap = GetEntityMap();
-
 	auto entityIter = entityMap.find(entityID);
 	if (entityIter != entityMap.end())
 	{
@@ -258,8 +269,11 @@ Entity* SceneManager::CreateEntity()
 void SceneManager::OnAddComponent(std::any data)
 {
 	auto [entityID, compId] = std::any_cast <std::pair<  uint32_t, entt::id_type>> (data);
-	VP_ASSERT(!HasComponent(entityID, compId), "같은 타입의 컴포넌트가 존재합니다.");
-
+	if (HasComponent(entityID, compId))
+	{
+		VP_ASSERT(false, "같은 타입의 컴포넌트가 존재합니다.");
+		return;
+	}
 	auto metaType = entt::resolve(compId);
 	if (metaType)
 	{
@@ -269,7 +283,7 @@ void SceneManager::OnAddComponent(std::any data)
 		auto myFunctionMeta = metaType.func("AddComponent"_hs);
 		if (myFunctionMeta)
 		{
-			entt::meta_any result =myFunctionMeta.invoke(instance, this, entityID);
+			entt::meta_any result = myFunctionMeta.invoke(instance, this, entityID);
 		}
 		else
 			VP_ASSERT(false, "Reflection 함수 실패!");
@@ -279,11 +293,15 @@ void SceneManager::OnAddComponent(std::any data)
 void SceneManager::OnRemoveComponent(std::any data)
 {
 	auto [EntityID, CompID] = std::any_cast<std::pair<uint32_t, entt::id_type>>(data);
-	VP_ASSERT(HasComponent(EntityID, CompID), "해당 타입의 컴포넌트가 존재하지 않습니다.");
+	if (!HasComponent(EntityID, CompID))
+	{
+		VP_ASSERT(false, "해당 타입의 컴포넌트가 존재하지 않습니다.");
+		return;
+	}
 	Entity* ParentEntity = GetEntity(EntityID);///GetEntity
 	Component* comp = ParentEntity->GetComponent(CompID);
 	ParentEntity->RemoveComponent(CompID);
-	ReleaseCompFromPool(CompID,comp);
+	ReleaseCompFromPool(CompID, comp);
 }
 
 void SceneManager::OnSetEntityMap(std::any data)

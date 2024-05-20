@@ -6,14 +6,19 @@ EventManager* EventManager::instance = nullptr;
 void EventManager::Update(float deltatime)
 {
 	// m_ScheduledEvents에 있는 이벤트를 m_SchedulingEvents로 옮기기
-	for (const auto& event : m_ScheduledEvents)
-		m_SchedulingEvents.push_back(event);
-
+	for (const auto& event : m_ScheduledBasicEvents)
+		m_ScheduledEvents.push_back(event);
+	for (const auto& event : m_ScheduledSpawnEvents)
+		m_ScheduledEvents.push_back(event);
+	for (const auto& event : m_ScheduledSceneEvents)
+		m_ScheduledEvents.push_back(event);
 	// m_ScheduledEvents 비우기
-	m_ScheduledEvents.clear();
+	m_ScheduledBasicEvents.clear();
+	m_ScheduledSpawnEvents.clear();
+	m_ScheduledSceneEvents.clear();
 
 	// m_SchedulingEvents 업데이트 및 이벤트 실행
-	for (auto& ScheduledEvent : m_SchedulingEvents)
+	for (auto& ScheduledEvent : m_ScheduledEvents)
 	{
 		ScheduledEvent.m_scheduledTime -= deltatime;
 		if (ScheduledEvent.m_scheduledTime <= 0)
@@ -25,7 +30,7 @@ void EventManager::Update(float deltatime)
 			return event.m_scheduledTime <= 0;
 		};
 
-	std::erase_if(m_SchedulingEvents, whenTimeIsOver);
+	std::erase_if(m_ScheduledEvents, whenTimeIsOver);
 }
 
 void EventManager::ImmediateEvent(const EventName& type, std::any data)
@@ -48,12 +53,21 @@ void EventManager::ScheduleEvent(const EventName& type, std::any data, float del
 {
 	// ImmediateEvent 함수 호출
 	auto immediateEvent = [=]() { ImmediateEvent(type, data); };
-	m_ScheduledEvents.emplace_back(delay, [=]() {immediateEvent(); });
+
+
+	if (m_BasicEventSubscribers.find(type) != m_BasicEventSubscribers.end())
+		m_ScheduledBasicEvents.emplace_back(delay, [=]() {immediateEvent(); });
+
+	if (m_SpawnEventSubscribers.find(type) != m_SpawnEventSubscribers.end())
+		m_ScheduledSpawnEvents.emplace_back(delay, [=]() {immediateEvent(); });
+
+	if (m_SceneEventSubscribers.find(type) != m_SceneEventSubscribers.end())
+		m_ScheduledSceneEvents.emplace_back(delay, [=]() {immediateEvent(); });
 }
 
-void EventManager::Subscribe(const EventName& type, const  Subscriber& listenerInfo,EventType EventType )
+void EventManager::Subscribe(const EventName& type, const  Subscriber& listenerInfo, EventType EventType)
 {
-	if (EventType== EventType::BASIC)
+	if (EventType == EventType::BASIC)
 		m_BasicEventSubscribers[type].push_back(listenerInfo);
 	else if (EventType == EventType::ADD_DELETE)
 		m_SpawnEventSubscribers[type].push_back(listenerInfo);

@@ -10,6 +10,9 @@ public:
 	~SceneManager();
 	void Initialize();
 	void Finalize();
+	// 엔티티를 삭제한다.
+	void DeleteEntity(uint32_t entityID);
+
 	void OnDestroyEntity(std::any entityID);
 	// 모든 Entity를 지운다.
 	void OnClearEntity(std::any data);

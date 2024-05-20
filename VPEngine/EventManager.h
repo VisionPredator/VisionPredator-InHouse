@@ -55,15 +55,18 @@
 		void Unsubscribe(EventSubscriber* listenerInfo);
 
 	private:
-		//이벤트 예약
+		/// 예약 대기 중인 Event들.
+		std::vector<ScheduledEvent> m_ScheduledBasicEvents;
+		std::vector<ScheduledEvent> m_ScheduledSpawnEvents;
+		std::vector<ScheduledEvent> m_ScheduledSceneEvents;
+
+		/// 예약 되어 있는 Event들
 		std::vector<ScheduledEvent> m_ScheduledEvents;
-		//예약된 이벤트 수락
-		std::vector<ScheduledEvent> m_SchedulingEvents;
-		//기본적인 이벤트
+		///기본적인 이벤트 구독자.
 		std::unordered_map<EventName, std::vector<Subscriber>> m_BasicEventSubscribers;
-		//게임도중 오브젝트 생성삭제 관련 이벤트
+		///게임도중 오브젝트 생성삭제 관련 이벤트 구독자.
 		std::unordered_map<EventName, std::vector<Subscriber>> m_SpawnEventSubscribers;
-		//씬생성삭제에 관련 이벤트
+		///씬생성삭제에 관련 이벤트 구독자.
 		std::unordered_map<EventName, std::vector<Subscriber>> m_SceneEventSubscribers;
 	};
 
