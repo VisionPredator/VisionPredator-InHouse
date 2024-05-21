@@ -1,8 +1,10 @@
 #include "pch.h"	
 
 #include "Animator.h"
-#include "Object.h"
-
+#include "ModelData.h"
+#include "Animation.h"
+#include "Node.h"
+#include "Mesh.h"
 
 Animator::Animator()
 {

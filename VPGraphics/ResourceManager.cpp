@@ -2,7 +2,6 @@
 
 #include "ResourceManager.h"
 #include "ConstantBuffer.h"
-#include "Object.h"
 #include "RenderState.h"
 #include "RenderTargetView.h"
 #include "Texture2D.h"
