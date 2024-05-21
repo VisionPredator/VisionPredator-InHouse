@@ -59,26 +59,26 @@ class DepthStencilView;
 class RenderPass
 {
 public:
-	RenderPass(Device* device, ResourceManager* manger);
+	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger);
 	~RenderPass();
 
 	virtual void Render() abstract;
 	virtual void StaticRender() abstract;
 	virtual void SkinnedRender() abstract;
-	void AddModelData(ModelData* model);
-	void AddModelData(std::map<std::wstring, std::pair<PassState, ModelData*>>& model_list);
+	void AddModelData(std::shared_ptr<ModelData> model);
+	void AddModelData(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& model_list);
 
 protected:
-	std::queue<ModelData*> m_RenderModelQueue;
+	std::queue<std::weak_ptr<ModelData>> m_RenderModelQueue;
 
-	Device* m_Device;
+	std::weak_ptr<Device> m_Device;
 
-	VertexShader* m_VS;
-	PixelShader* m_PS;
-	RenderState* m_RS;
+	std::weak_ptr<VertexShader> m_VS;
+	std::weak_ptr<PixelShader> m_PS;
+	std::weak_ptr<RenderState> m_RS;
 
 
-	ResourceManager* m_ResourceManager;
+	std::weak_ptr<ResourceManager> m_ResourceManager;
 
 
 	PassState m_state = PassState::None;
@@ -87,7 +87,7 @@ protected:
 class ForwardPass : public RenderPass
 {
 public:
-	ForwardPass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, D3D11_VIEWPORT* vp);
 	~ForwardPass();
 
 	virtual void Render() override;
@@ -95,8 +95,8 @@ public:
 	virtual void SkinnedRender() override;
 
 private:
-	RenderTargetView* m_RTV;
-	DepthStencilView* m_DSV;
+	std::weak_ptr<RenderTargetView> m_RTV;
+	std::weak_ptr<DepthStencilView> m_DSV;
 	D3D11_VIEWPORT* m_VP;
 };
 
@@ -105,7 +105,7 @@ private:
 class SkinnigPass : public RenderPass
 {
 public:
-	SkinnigPass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	SkinnigPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, D3D11_VIEWPORT* vp);
 	~SkinnigPass();
 
 	virtual void Render() override;
@@ -113,8 +113,8 @@ public:
 	virtual void SkinnedRender() override;
 
 private:
-	RenderTargetView* m_RTV;
-	DepthStencilView* m_DSV;
+	std::weak_ptr<RenderTargetView> m_RTV;
+	std::weak_ptr<DepthStencilView> m_DSV;
 	D3D11_VIEWPORT* m_VP;
 };
 
@@ -123,7 +123,7 @@ private:
 class TexturePass : public RenderPass
 {
 public:
-	TexturePass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	TexturePass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, D3D11_VIEWPORT* vp);
 	~TexturePass();
 
 	virtual void Render() override;
@@ -131,7 +131,7 @@ public:
 	virtual void SkinnedRender() override;
 
 private:
-	RenderTargetView* m_RTV;
-	DepthStencilView* m_DSV;
+	std::weak_ptr<RenderTargetView> m_RTV;
+	std::weak_ptr<DepthStencilView> m_DSV;
 	D3D11_VIEWPORT* m_VP;
 };

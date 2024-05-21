@@ -6,9 +6,9 @@ class Texture2D;
 class RenderTargetView : public Resource
 {
 public:
-	RenderTargetView(Device* device);
-	RenderTargetView(Device* device, Texture2D* backbuffer);
-	RenderTargetView(Device* device, Texture2D* backbuffer, D3D11_RENDER_TARGET_VIEW_DESC desc);
+	RenderTargetView(std::shared_ptr<Device> device);
+	RenderTargetView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> backbuffer);
+	RenderTargetView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> backbuffer, D3D11_RENDER_TARGET_VIEW_DESC desc);
 	~RenderTargetView();
 
 	ID3D11RenderTargetView* Get() const;
@@ -16,11 +16,11 @@ public:
 
 	virtual void Release() override;
 
-	Texture2D* Texture();
+	std::weak_ptr<Texture2D> Texture();
 
 private:
 	ID3D11RenderTargetView* m_RTV;
-	Texture2D* m_tex;
+	std::weak_ptr<Texture2D> m_tex;
 
 };
 

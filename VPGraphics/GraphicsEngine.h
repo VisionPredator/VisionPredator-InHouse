@@ -1,23 +1,7 @@
 #pragma once
 #include "IGraphics.h"
 
-#pragma region STL
-#include <memory> //smart pointer
-
-#include <vector>
-#include <map>
-#include "MeshFilter.h"
-#pragma endregion STL
-
-
-#include "Camera.h"
-
-/// <summary>
-/// 2024.03.14
-/// 그림을 그려줄 클래스
-/// 작성자 : 유승운
-/// </summary>
-
+#pragma region DX
 struct D3D11_VIEWPORT;
 
 class Device;
@@ -27,16 +11,27 @@ class Animator;
 class RenderTargetView;
 class DepthStencilView;
 class ShaderResourceView;
+#pragma endregion DX
 
-class Object;
-class ModelData;
-
-
+#pragma region Pass
 class ForwardPass;
 class SkinnigPass;
 class TexturePass;
+#pragma endregion Pass
+
+#include "MeshFilter.h"
+
+class Camera;
+class ModelData;
 
 
+
+
+/// <summary>
+/// 2024.03.14
+/// 그림을 그려줄 클래스
+/// 작성자 : 유승운
+/// </summary>
 
 class GraphicsEngine : public Graphics::Interface
 {
@@ -58,29 +53,27 @@ public:
 	
 
 protected:
-	std::vector<RenderTargetView*> m_RTVs;
-	std::vector<DepthStencilView*> m_DSVs;
+	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
+	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
-	std::map<std::wstring, std::pair<PassState,ModelData*>> m_RenderList;
+	std::map<std::wstring, std::pair<PassState,std::shared_ptr<ModelData>>> m_RenderList;
 
 	void DrawQuad(ShaderResourceView* srv);
 
 private:
-	Device* m_Device;
+	std::shared_ptr<Device> m_Device;
 	D3D11_VIEWPORT* m_VP;
 
 private:
-	ResourceManager* m_ResourceManager;
-	ModelLoader* m_Loader;
-	Animator* m_Animator;
+	std::shared_ptr<ResourceManager> m_ResourceManager;
+	std::shared_ptr<ModelLoader> m_Loader;
+	std::shared_ptr<Animator> m_Animator;
 
 private:
 	HWND m_hWnd;
 	RECT m_wndSize;
 
 	Camera* m_Camera;
-
-
 
 	ForwardPass* m_BasePass;
 	TexturePass* m_TexturePass;

@@ -1,6 +1,12 @@
 #pragma once
 #include <windows.h>
+
+#pragma region STL
 #include <string>
+#include <memory> //smart pointer
+#include <vector>
+#include <map>
+#pragma endregion STL
 
 #include "../include/directxtk/SimpleMath.h"
 

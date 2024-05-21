@@ -25,10 +25,10 @@ struct Channel
 	Channel() {}
 
 	std::wstring nodename;
-	Node* node;
-	std::vector<Key*> positionkey;
-	std::vector<Key*> rotationkey;
-	std::vector<Key*> scalingkey;
+	std::weak_ptr<Node> node;
+	std::vector<std::shared_ptr<Key>> positionkey;
+	std::vector<std::shared_ptr<Key>> rotationkey;
+	std::vector<std::shared_ptr<Key>> scalingkey;
 };
 
 
@@ -41,6 +41,6 @@ public:
 	double m_Duration;
 	double m_TickFrame;
 
-	std::vector<Channel*> m_Channels;
+	std::vector<std::shared_ptr<Channel>> m_Channels;
 };
 

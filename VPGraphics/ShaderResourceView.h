@@ -5,10 +5,10 @@
 class ShaderResourceView : public Resource
 {
 public:
-	ShaderResourceView(Device* device);
-	ShaderResourceView(Device* device, std::wstring filename, D3D11_SAMPLER_DESC sampler);
-	ShaderResourceView(Device* device, Texture2D* texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
-	ShaderResourceView(Device* device, RenderTargetView* rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
+	ShaderResourceView(std::shared_ptr<Device>device);
+	ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename, D3D11_SAMPLER_DESC sampler);
+	ShaderResourceView(std::shared_ptr<Device>device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
+	ShaderResourceView(std::shared_ptr<Device>device, std::weak_ptr<RenderTargetView> rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
 	~ShaderResourceView();
 
 	ID3D11ShaderResourceView* Get() const;
@@ -18,8 +18,6 @@ public:
 
 	void SetSampler(ID3D11SamplerState* sampler);
 	virtual void Release() override;
-
-	static void Create();
 
 private:
 	ID3D11ShaderResourceView* m_view;

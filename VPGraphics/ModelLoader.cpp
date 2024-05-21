@@ -1,25 +1,24 @@
-
 #include "pch.h"
-
 #include "ModelLoader.h"
-#include <windows.h>
-#include<string>
-#include "DirectXHelpers.h"
 
+#include "DirectXHelpers.h"
 #include "ResourceManager.h"
 
-#include "Object.h"
+#include "ModelData.h"
 #include "Material.h"
 #include "Node.h"
+#include "Mesh.h"
+#include "Animation.h"
 
 #include "ShaderResourceView.h"
-#include "CBuffer.h"
 #include "ConstantBuffer.h"
+
 #include "Desc.h"
+#include "CBuffer.h"
 
 
 
-ModelLoader::ModelLoader(ResourceManager* manager) : m_device(nullptr), m_ResourceManager(manager)
+ModelLoader::ModelLoader(std::shared_ptr<ResourceManager> manager, std::shared_ptr<Device> device) : m_Device(device), m_ResourceManager(manager)
 {
 
 }
@@ -92,15 +91,9 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 //데이터 가공이 필요하다
 void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filter filter)
 {
-	ModelData* newData = new ModelData();
+	std::shared_ptr<ModelData> newData = std::make_shared<ModelData>();
 	newData->m_name.assign(name.begin(), name.end());
-	newData->m_RootNode = new Node();
-
-	//Object* newObject = new Object(m_device);
-	/*Object* newObject = new Object();
-	newObject->m_name.assign(name.begin(), name.end());
-	newObject->m_RootNode = new Node();*/
-
+	newData->m_RootNode = std::make_shared<Node>();
 
 	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
 	{
@@ -126,24 +119,24 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 	std::wstring key;
 	key.assign(name.begin()/*+ 12*/, name.end());
 
-	m_ResourceManager->Add<ModelData>(key, newData);
+	m_ResourceManager.lock()->Add<ModelData>(key, newData);
 }
 
 //메쉬 저장
-void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index, Filter filter)
+void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, unsigned int index, Filter filter)
 {
 	std::wstring str_index = std::to_wstring(index);
 
 	aiMesh* curMesh = mesh;
 
-	Mesh* newMesh = nullptr;
+	std::shared_ptr<Mesh> newMesh;
 	switch (filter)
 	{
 		case Filter::STATIC:
-			newMesh = new StaticMesh();
+			newMesh = std::make_shared<StaticMesh>();
 			break;
 		case Filter::SKINNING:
-			newMesh = new SkinnedMesh();
+			newMesh = std::make_shared<SkinnedMesh>();
 			break;
 	}
 
@@ -169,7 +162,7 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 	idata.pSysMem = &(indexbuffer[0]);
 
 	//face 당 3개의 인덱스 사용 - 삼각형으로 면을 구성하기때문
-	newMesh->m_IB = m_ResourceManager->Create<IndexBuffer>(Model->m_name + L"_" + str_index + L"_IB", idesc, idata, curMesh->mNumFaces * 3);
+	newMesh->m_IB = m_ResourceManager.lock()->Create<IndexBuffer>(Model->m_name + L"_" + str_index + L"_IB", idesc, idata, curMesh->mNumFaces * 3);
 
 	switch (filter)
 	{
@@ -180,7 +173,7 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 			}
 			desc.ByteWidth = sizeof(TextureVertex) * curMesh->mNumVertices;
 			data.pSysMem = &(TextureVertices[0]);
-			newMesh->m_VB = m_ResourceManager->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(TextureVertex));
+			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(TextureVertex));
 			break;
 
 		case Filter::SKINNING:
@@ -191,13 +184,14 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 				ProcessVertexBuffer(SkinningVertices, curMesh, i);
 			}
 
-			SkinnedMesh* newSkin = dynamic_cast<SkinnedMesh*>(newMesh);
+			std::shared_ptr<SkinnedMesh> newSkin = std::dynamic_pointer_cast<SkinnedMesh>(newMesh);
+
 			//process bone
 			for (unsigned int i = 0; i < mesh->mNumBones; i++)
 			{
 				aiBone* curAiBone = mesh->mBones[i];
 
-				Bone* curBone = new Bone();
+				std::shared_ptr<Bone> curBone = std::make_shared<Bone>();
 				std::string name = curAiBone->mName.C_Str();
 				curBone->name.assign(name.begin(), name.end());
 				curBone->Boneindex = i;
@@ -239,7 +233,7 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 			ProcessBoneMapping(SkinningVertices, curMesh, newMesh);
 			desc.ByteWidth = sizeof(SkinningVertex) * curMesh->mNumVertices;
 			data.pSysMem = &(SkinningVertices[0]);
-			newMesh->m_VB = m_ResourceManager->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(SkinningVertex));
+			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(SkinningVertex));
 		}
 			break;
 		case Filter::END:
@@ -250,9 +244,9 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 
 	Model->m_Meshes.push_back(newMesh);
 }
-void ModelLoader::ProcessMaterials(ModelData* Model, aiMaterial* material)
+void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial* material)
 {
-	Material* newMaterial = new Material(m_device);
+	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
 
 	// Diffuse
 	std::wstring basePath = L"../Resource/Texture/";
@@ -292,14 +286,14 @@ void ModelLoader::ProcessMaterials(ModelData* Model, aiMaterial* material)
 		//newMaterial->m_DiffuseSRV->Load(finalPath);
 
 
-		newMaterial->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(finalPath, finalPath, SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, finalPath, SamplerDESC::Linear);
 
 		//m_pBaseColor = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::BASECOLOR;
 	}
 	else
 	{
-		newMaterial->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
 	}
 
 	path = (textureProperties[aiTextureType_NORMALS].second);
@@ -308,14 +302,14 @@ void ModelLoader::ProcessMaterials(ModelData* Model, aiMaterial* material)
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->m_NormalFilePath = finalPath;
 		//newMaterial->m_NormalSRV->Load(finalPath);
-		newMaterial->m_NormalSRV = m_ResourceManager->Create<ShaderResourceView>(finalPath, finalPath, SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, finalPath, SamplerDESC::Linear);
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
 	}
 	else
 	{
-		newMaterial->m_NormalSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png", SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png", SamplerDESC::Linear);
 
 	}
 
@@ -364,16 +358,16 @@ void ModelLoader::ProcessMaterials(ModelData* Model, aiMaterial* material)
 
 	Model->m_Materials.push_back(newMaterial);
 }
-void ModelLoader::ProcessBoneNodeMapping(ModelData* Model)
+void ModelLoader::ProcessBoneNodeMapping(std::shared_ptr<ModelData> Model)
 {
 	for (auto& mesh : Model->m_Meshes)
 	{
 		if (mesh->IsSkinned())
 		{
-			SkinnedMesh* curMesh = dynamic_cast<SkinnedMesh*>(mesh);
+			std::shared_ptr<SkinnedMesh> curMesh = dynamic_pointer_cast<SkinnedMesh>(mesh);
 			for (auto& bone : curMesh->m_BoneData)
 			{
-				Node* temp = FindNode(bone->name, Model->m_RootNode);
+				std::shared_ptr<Node> temp = FindNode(bone->name, Model->m_RootNode);
 				if (temp != nullptr)
 				{
 					bone->node = temp;
@@ -383,17 +377,17 @@ void ModelLoader::ProcessBoneNodeMapping(ModelData* Model)
 		}
 	}
 }
-void ModelLoader::ProcessAnimation(ModelData* Model, aiAnimation* animation)
+void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation* animation)
 {
-	Animation* _Animation = new Animation();
+	std::shared_ptr<Animation> _Animation = std::make_shared<Animation>();
 	_Animation->m_Duration = animation->mDuration;
 	_Animation->m_TickFrame = animation->mTicksPerSecond;
 
 	for (unsigned int i = 0; i < animation->mNumChannels; i++)
 	{
-		_Animation->m_Channels.push_back(new Channel());
+		_Animation->m_Channels.push_back(std::make_shared<Channel>());
 
-		Channel* ob_Channel = _Animation->m_Channels.back();
+		std::shared_ptr<Channel> ob_Channel = _Animation->m_Channels.back();
 		aiNodeAnim* curChannel = animation->mChannels[i];
 
 		const char* name = curChannel->mNodeName.C_Str();
@@ -402,9 +396,9 @@ void ModelLoader::ProcessAnimation(ModelData* Model, aiAnimation* animation)
 
 		for (unsigned int j = 0; j < curChannel->mNumPositionKeys; j++)
 		{
-			ob_Channel->positionkey.push_back(new Key());
+			ob_Channel->positionkey.push_back(std::make_shared<Key>());
 
-			Key* curKey = ob_Channel->positionkey.back();
+			std::shared_ptr<Key> curKey = ob_Channel->positionkey.back();
 			aiVectorKey curAnimation = curChannel->mPositionKeys[j];
 
 			curKey->time = curAnimation.mTime;
@@ -416,9 +410,9 @@ void ModelLoader::ProcessAnimation(ModelData* Model, aiAnimation* animation)
 
 		for (unsigned int j = 0; j < curChannel->mNumScalingKeys; j++)
 		{
-			ob_Channel->scalingkey.push_back(new Key());
+			ob_Channel->scalingkey.push_back(std::make_shared<Key>());
 
-			Key* curKey = ob_Channel->scalingkey.back();
+			std::shared_ptr<Key> curKey = ob_Channel->scalingkey.back();
 			aiVectorKey curAnimation = curChannel->mScalingKeys[j];
 
 			curKey->time = curAnimation.mTime;
@@ -430,9 +424,10 @@ void ModelLoader::ProcessAnimation(ModelData* Model, aiAnimation* animation)
 
 		for (unsigned int j = 0; j < curChannel->mNumRotationKeys; j++)
 		{
-			ob_Channel->rotationkey.push_back(new Key());
+			ob_Channel->rotationkey.push_back(std::make_shared<Key>());
 
-			Key* curKey = ob_Channel->rotationkey.back();
+
+			std::shared_ptr<Key> curKey = ob_Channel->rotationkey.back();
 			aiQuatKey curAnimation = curChannel->mRotationKeys[j];
 
 			curKey->time = curAnimation.mTime;
@@ -520,7 +515,7 @@ void ModelLoader::ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace)
 }
 
 //머테리얼 저장
-void ModelLoader::ProcessNode(Node* parents, Node* ob_node, aiNode* node, std::vector<Mesh*>& meshes)
+void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes)
 {
 	std::string Name = node->mName.C_Str();
 	ob_node->name.assign(Name.begin(), Name.end());
@@ -566,7 +561,7 @@ void ModelLoader::ProcessNode(Node* parents, Node* ob_node, aiNode* node, std::v
 		ob_node->m_Parents = parents;
 
 		//이게 local로써 constantbuffer에 들어가야함 이게 계속 바뀌어야함 물론 원본이 아니라 밖에서 이걸 이용해 만든 것들 그러면 이걸 상수 버퍼로 만들어버려
-		ob_node->m_World = (ob_node->m_Parents->m_World * ob_node->m_Local);
+		ob_node->m_World = (ob_node->m_Parents.lock()->m_World * ob_node->m_Local);
 		ob_node->m_WorldInverse = ob_node->m_World.Invert();
 	}
 	else
@@ -584,35 +579,29 @@ void ModelLoader::ProcessNode(Node* parents, Node* ob_node, aiNode* node, std::v
 
 		for (auto& mesh : ob_node->m_Meshes)
 		{
-			SkinnedMesh* curMesh = dynamic_cast<SkinnedMesh*>(mesh);
+			std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh.lock());
 			curMesh->m_node = ob_node;
 		}
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		ob_node->m_Childs.push_back(new Node());
+		ob_node->m_Childs.push_back(std::make_shared<Node>());
 		ProcessNode(ob_node, ob_node->m_Childs.back(), node->mChildren[i], meshes);
 	}
-
-
-
-
-
-
 }
 
-void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, Mesh* curMesh)
+void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, std::shared_ptr<Mesh> curMesh)
 {
 
-	SkinnedMesh* curSkin = dynamic_cast<SkinnedMesh*>(curMesh);
+	std::shared_ptr<SkinnedMesh> curSkin = std::dynamic_pointer_cast<SkinnedMesh>(curMesh);
 
 	UINT meshBoneCount = curSkin->m_BoneData.size();
 
 
 	for (UINT i = 0; i < meshBoneCount; ++i)
 	{
-		Bone* curBone = curSkin->m_BoneData[i];
+		std::shared_ptr<Bone> curBone = curSkin->m_BoneData[i];
 
 		//버텍스 버퍼 만들기위해 버텍스 내용채움
 		for (int j = 0; j < curBone->vertexids.size(); j++)
@@ -660,7 +649,7 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 	}
 }
 
-Node* ModelLoader::FindNode(std::wstring nodename, Node* RootNode)
+std::shared_ptr<Node> ModelLoader::FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode)
 {
 	//탐색방법도 일단 중요할듯
 
@@ -675,7 +664,7 @@ Node* ModelLoader::FindNode(std::wstring nodename, Node* RootNode)
 
 			for (auto& node : RootNode->m_Childs)
 			{
-				Node* temp = FindNode(nodename, node);
+				std::shared_ptr<Node> temp = FindNode(nodename, node);
 
 				if (temp != nullptr)
 				{

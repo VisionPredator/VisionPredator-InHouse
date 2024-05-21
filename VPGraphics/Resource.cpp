@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "Resource.h"
 
-Resource::Resource() : m_Device(nullptr)
+Resource::Resource() : m_Device()
 {
 
 }
 
-Resource::Resource(Device* device) : m_Device(device)
+Resource::Resource(std::shared_ptr<Device> device) : m_Device(device)
 {
 
 }

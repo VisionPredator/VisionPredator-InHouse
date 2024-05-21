@@ -11,7 +11,7 @@
 #include "StaticData.h"
 #include "Desc.h"
 
-ResourceManager::ResourceManager(Device * device) : m_device(device), m_Camera(nullptr), m_DirectionalLight(nullptr)
+ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device), m_Camera(), m_DirectionalLight()
 {
 }
 
@@ -23,7 +23,7 @@ ResourceManager::~ResourceManager()
 		for (auto& resource : m_ResourceArray[i])
 		{
 			resource.second->Release();
-			delete resource.second;
+			//delete resource.second;
 		}
 
 		m_ResourceArray[i].clear();
@@ -50,13 +50,13 @@ void ResourceManager::Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLO
 	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, (XMLoadFloat4x4(&view)));
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
-	m_Camera->m_struct.worldviewproj = cb_worldviewproj;
-	m_Camera->m_struct.view = cb_view;
-	m_Camera->m_struct.proj = cb_proj;
-	m_Camera->m_struct.viewInverse = cb_viewInverse;
-	m_Camera->Update();
+	m_Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
+	m_Camera.lock()->m_struct.view = cb_view;
+	m_Camera.lock()->m_struct.proj = cb_proj;
+	m_Camera.lock()->m_struct.viewInverse = cb_viewInverse;
+	m_Camera.lock()->Update();
 
-	m_DirectionalLight->Update();
+	m_DirectionalLight.lock()->Update();
 }
 
 
@@ -68,15 +68,11 @@ void ResourceManager::Initialize()
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
 	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
-
-
 	Create<VertexShader>(L"../x64/Debug/BaseVS.cso", VERTEXFILTER::TEXTURE,L"Base");
 	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
-
 	Create<VertexShader>(L"../x64/Debug/SkinningVS.cso", VERTEXFILTER::SKINNING, L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/SkinningPS.cso",  L"Skinning");
-
-	VertexShader* a = Create<VertexShader>(L"../x64/Debug/TextureVS.cso", VERTEXFILTER::TEXTURE, L"Texture");
+	Create<VertexShader>(L"../x64/Debug/TextureVS.cso", VERTEXFILTER::TEXTURE, L"Texture");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
 
 	//기본 RS
@@ -85,8 +81,8 @@ void ResourceManager::Initialize()
 
 
 	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
-	texDesc.Width = m_device->GetWndSize().right - m_device->GetWndSize().left;
-	texDesc.Height = m_device->GetWndSize().bottom - m_device->GetWndSize().top;
+	texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+	texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 
 	//출력용 backbuffer
 	Create<RenderTargetView>(L"RTV_1");
@@ -98,7 +94,7 @@ void ResourceManager::Initialize()
 		std::wstring index = std::to_wstring(i);
 		std::wstring rtvindex = std::to_wstring(i + 1);
 
-		Texture2D* offscreenTex = Create<Texture2D>(L"OffScreenTex_" + index, texDesc);
+		std::weak_ptr<Texture2D> offscreenTex = Create<Texture2D>(L"OffScreenTex_" + index, texDesc);
 		Create<RenderTargetView>(L"RTV_" + rtvindex, offscreenTex);
 	}
 
@@ -109,8 +105,8 @@ void ResourceManager::Initialize()
 
 	//출력용
 	D3D11_TEXTURE2D_DESC dsd = TextureDESC::DSVDesc;
-	dsd.Width = m_device->GetWndSize().right - m_device->GetWndSize().left;
-	dsd.Height = m_device->GetWndSize().bottom - m_device->GetWndSize().top;
+	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+	dsd.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 	Create<DepthStencilView>(L"DSV_1", dsd);
 	Create<DepthStencilView>(L"DSV_2", dsd);
 
@@ -120,13 +116,13 @@ void ResourceManager::Initialize()
 	Create<ConstantBuffer<LocalTransformCB>>(L"Local", BufferDESC::Constant::DefaultLocal);
 
 	m_DirectionalLight = Create<ConstantBuffer<DirectionLightCB>>(L"DirectionLight", BufferDESC::Constant::DefaultDirLight);
-	m_device->Context()->PSSetConstantBuffers(2, 1, m_DirectionalLight->GetAddress());
+	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_DirectionalLight.lock()->GetAddress());
 
 	m_Camera = Create<ConstantBuffer<CameraCB>>(L"Camera", BufferDESC::Constant::DefaultCamera);
-	m_Camera->Update();
+	m_Camera.lock()->Update();
 
-	m_device->Context()->VSSetConstantBuffers(0, 1, (m_Camera->GetAddress()));
-	m_device->Context()->PSSetConstantBuffers(1, 1, (m_Camera->GetAddress()));
+	m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
+	m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, (m_Camera.lock()->GetAddress()));
 }
 
 
@@ -149,8 +145,8 @@ void ResourceManager::OnResize()
 	RTVmap.clear();
 
 	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
-	texDesc.Width = m_device->GetWndSize().right - m_device->GetWndSize().left;
-	texDesc.Height = m_device->GetWndSize().bottom - m_device->GetWndSize().top;
+	texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+	texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 
 	//출력용 backbuffer
 	Create<RenderTargetView>(L"RTV_1");
@@ -167,8 +163,8 @@ void ResourceManager::OnResize()
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-		Texture2D* offscreenTex = Create<Texture2D>(L"OffScreenTex_" + index, texDesc);
-		RenderTargetView* newRTV = Create<RenderTargetView>(L"RTV_" + rtvindex, offscreenTex, renderTargetViewDesc);
+		std::weak_ptr <Texture2D> offscreenTex = Create<Texture2D>(L"OffScreenTex_" + index, texDesc);
+		std::weak_ptr <RenderTargetView> newRTV = Create<RenderTargetView>(L"RTV_" + rtvindex, offscreenTex, renderTargetViewDesc);
 
 
 		// 셰이더 리소스 뷰의 설명을 설정합니다.
@@ -183,10 +179,10 @@ void ResourceManager::OnResize()
 		// 셰이더 리소스 뷰를 만듭니다.
 
 		ID3D11SamplerState* samplerState;
-		m_device->Get()->CreateSamplerState(&SamplerDESC::Linear, &samplerState);
+		m_Device.lock()->Get()->CreateSamplerState(&SamplerDESC::Linear, &samplerState);
 
 		//Create<ShaderResourceView>(L"OffScreenSRV_" + index, offscreenTex, shaderResourceViewDesc)->SetSampler(samplerState);
-		Create<ShaderResourceView>(L"OffScreenSRV_" + index, newRTV, shaderResourceViewDesc)->SetSampler(samplerState);
+		Create<ShaderResourceView>(L"OffScreenSRV_" + index, newRTV, shaderResourceViewDesc).lock()->SetSampler(samplerState);
 	}
 
 	auto& DSVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<DepthStencilView>())];
@@ -210,7 +206,7 @@ void ResourceManager::OnResize()
 	{
 
 		std::wstring index = std::to_wstring(i + 1);
-		Texture2D* texture = Get<Texture2D>(L"OffScreenTex_" + index);
+		std::weak_ptr<Texture2D> texture = Get<Texture2D>(L"OffScreenTex_" + index);
 		//Create<DepthStencilView>(L"DSV_" + index,desc,texture);
 	}
 }

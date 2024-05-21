@@ -69,6 +69,8 @@
 		delete m_SystemManager;
 		InputManager::GetInstance().Release();
 		EventManager::GetInstance().Release();
+		m_Graphics->Finalize();
+		delete m_Graphics;
 	}
 
 	void VPEngine::Loop()

@@ -1,35 +1,39 @@
 #include "pch.h"	
-
 #include "GraphicsEngine.h"
 
-#include "SimpleMath.h"
+#pragma region DX
 #include <d3d11.h>
-
 #include "Device.h"
-#include "ResourceManager.h"
-#include "ModelLoader.h"
-#include "Animator.h"
-
-#include "Vertex.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
-
-#include "Object.h"
-
-#include "StaticData.h"
-
 #include "RenderState.h"
 #include "ConstantBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
-#include "Desc.h"
-
 #include "Texture2D.h"
-
-
 #include "RenderPass.h"
+#pragma endregion DX
+
+#pragma region Util
+#include "Camera.h"
+#include "Desc.h"
+#include "SimpleMath.h"
+#include "VertexData.h"
+#include "StaticData.h"
+#include "ModelData.h"
+#include "Mesh.h"
+#include "Material.h"
+#pragma endregion Util
+
+#pragma region Manager
+#include "ResourceManager.h"
+#include "ModelLoader.h"
+#include "Animator.h"
+#pragma endregion Manager
+
+
 
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
@@ -55,17 +59,17 @@ bool GraphicsEngine::Initialize()
 	m_Camera = new Camera();
 	m_Camera->Initialize(m_VP->Width / m_VP->Height);
 
-	m_Device = new Device(m_hWnd);
+	m_Device = std::make_shared<Device>(m_hWnd);
 	if (m_Device != nullptr)
 	{
 		m_Device->Initialize();
-		m_ResourceManager = new ResourceManager(m_Device);
+		m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
 		m_ResourceManager->Initialize();
 
-		m_Loader = new ModelLoader(m_ResourceManager);
+		m_Loader = std::make_shared <ModelLoader>(m_ResourceManager,m_Device);
 		m_Loader->Initialize();
 
-		m_Animator = new Animator();
+		m_Animator = std::make_shared <Animator>();
 
 		if (m_Device->SwapChain())
 		{
@@ -87,7 +91,7 @@ bool GraphicsEngine::Initialize()
 			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_6"));
 
 			//Ãâ·Âº´ÇÕ±â
-			m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
+			m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 			m_Device->Context()->RSSetViewports(1, m_VP);
 
 
@@ -133,11 +137,11 @@ void GraphicsEngine::Update(double dt)
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
 
-	ConstantBuffer<CameraCB>* test = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
-	test->m_struct.view = cb_view;
-	test->m_struct.viewInverse = cb_viewInverse;
-	test->m_struct.worldviewproj = cb_worldviewproj;
-	test->Update();
+	std::weak_ptr<ConstantBuffer<CameraCB>> test = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	test.lock()->m_struct.view = cb_view;
+	test.lock()->m_struct.viewInverse = cb_viewInverse;
+	test.lock()->m_struct.worldviewproj = cb_worldviewproj;
+	test.lock()->Update();
 
 
 	m_Animator->Update(dt,m_RenderList);
@@ -184,11 +188,20 @@ void GraphicsEngine::Update(double dt)
 bool GraphicsEngine::Finalize()
 {
 	//delete m_Loader;
-	delete m_ResourceManager;
+	//m_ResourceManager;
 
+	delete m_Camera;
 	delete m_VP;
 
-	delete m_Device;
+	m_Device.reset();
+	m_ResourceManager.reset();
+	m_Loader.reset();
+	m_Animator.reset();
+
+	//test
+	delete m_TexturePass;
+	delete m_SkinningPass;
+	delete m_BasePass;
 
 	return true;
 }
@@ -196,94 +209,94 @@ bool GraphicsEngine::Finalize()
 void GraphicsEngine::Render()
 {
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	m_Device->BeginRender(m_RTVs[0]->Get(), m_DSVs[0]->Get(), Black);
+	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
 
 	m_BasePass->StaticRender();
 	m_TexturePass->StaticRender();
 	m_SkinningPass->Render();
 
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
+	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP);
 	m_Device->EndRender();
 }
 
 void GraphicsEngine::DeferredRender()
 {
-	m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP);
+	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
+	//m_Device->Context()->RSSetViewports(1, m_VP);
 
-	ID3D11RenderTargetView* MRT[5];
-	MRT[0] = m_RTVs[1]->Get(); //albedo
-	MRT[1] = m_RTVs[2]->Get(); //normal
-	MRT[2] = m_RTVs[3]->Get(); //position
-	MRT[3] = m_RTVs[4]->Get(); //depth
-	MRT[4] = m_RTVs[5]->Get(); //tangent
+	//ID3D11RenderTargetView* MRT[5];
+	//MRT[0] = m_RTVs[1]->Get(); //albedo
+	//MRT[1] = m_RTVs[2]->Get(); //normal
+	//MRT[2] = m_RTVs[3]->Get(); //position
+	//MRT[3] = m_RTVs[4]->Get(); //depth
+	//MRT[4] = m_RTVs[5]->Get(); //tangent
 
-	ShaderResourceView* SRVS[5];
-	SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
-	SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
-	SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
-	SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
-	SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
+	//std::weak_ptr<ShaderResourceView> SRVS[5];
+	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
+	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
+	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
+	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
+	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
 
-	//·»´õÅ¸°Ù ¹ÙÀÎµù
-	m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
+	////·»´õÅ¸°Ù ¹ÙÀÎµù
+	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
 
-	//pass 1
-	for (int i = 1; i < m_RTVs.size(); i++)
-	{
-		m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry")->GetPS(), nullptr, 0);
-
-		/*for (auto& ob : m_FowardRenderObjects)
-		{
-			m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
-		}*/
-
-		//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-	}
-
-
-	//ImGui::Text("test");
-	float aspectRatio = 16.0f / 9.0f;
-	float newWidth = 300 * aspectRatio;
-
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
-
-	//pass2
-	//UINT size = static_cast<UINT>(sizeof(QuadVertex));
-	//VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	//IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	//ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
-	//VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-	//PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
-	//RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
-	//
-	//
-	//m_device->Context()->IASetInputLayout(vs->InputLayout());
-	//
-	//m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-	//m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-	//
-	//m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-	//m_device->Context()->RSSetState(rs->Get());
-	//
-	//m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
-	//
-	//
-	//m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
-	//m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
-	//
-	//for (int i = 0; i < 5; i++)
+	////pass 1
+	//for (int i = 1; i < m_RTVs.size(); i++)
 	//{
-	//	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
+	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
+
+	//	/*for (auto& ob : m_FowardRenderObjects)
+	//	{
+	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
+	//	}*/
+
+	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 	//}
-	//
-	//m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
-	//
-	//m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
-	//m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-	//
-	m_Device->EndRender();
+
+
+	////ImGui::Text("test");
+	//float aspectRatio = 16.0f / 9.0f;
+	//float newWidth = 300 * aspectRatio;
+
+	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
+
+	////pass2
+	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
+	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
+	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
+	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
+	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
+	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
+	////
+	////
+	////m_device->Context()->IASetInputLayout(vs->InputLayout());
+	////
+	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
+	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
+	////
+	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
+	////m_device->Context()->RSSetState(rs->Get());
+	////
+	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
+	////
+	////
+	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
+	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
+	////
+	////for (int i = 0; i < 5; i++)
+	////{
+	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
+	////}
+	////
+	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
+	////
+	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
+	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
+	////
+	//m_Device->EndRender();
 }
 
 bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx)
@@ -299,11 +312,11 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 	{
 		case MeshFilter::Axis:
 		{
-			ModelData* AxisModel = new ModelData();
+			std::shared_ptr<ModelData> AxisModel = std::make_shared<ModelData>();
 			AxisModel->m_name = name;
 			AxisModel->RS = m_ResourceManager->Get<RenderState>(L"Wire");
 
-			AxisModel->m_Meshes.push_back(new StaticMesh());
+			AxisModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
 
 			AxisModel->m_Meshes[0]->m_primitive = Axis::PRIMITIVE_TOPOLOGY;
 
@@ -317,12 +330,12 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 			AxisModel->m_pass = PassState::Base;
 
 			m_ResourceManager->Add<ModelData>(L"Axis", AxisModel);
-			m_RenderList.insert(std::pair<std::wstring,std::pair<PassState, ModelData*>>(L"Axis", std::pair<PassState, ModelData*>(PassState::Base, AxisModel)));
+			m_RenderList.insert(std::pair<std::wstring,std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, AxisModel)));
 		}
 		break;
 		case MeshFilter::Grid:
 		{
-			ModelData* GridModel = new ModelData();
+			std::shared_ptr<ModelData> GridModel = std::make_shared<ModelData>();
 			GridModel->m_name = name;
 			GridModel->RS = m_ResourceManager->Get<RenderState>(L"Wire");
 
@@ -380,7 +393,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = &(vertexBuffer[0]);
 
-			GridModel->m_Meshes.push_back(new StaticMesh());
+			GridModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
 			UINT size = static_cast<UINT>(sizeof(BaseVertex));
 			GridModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(name + L"_VB", vbd, data, size);
 
@@ -404,20 +417,19 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 
 			GridModel->m_pass = PassState::Base;
 
-
 			m_ResourceManager->Add<ModelData>(L"Grid", GridModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, ModelData*>>(L"Grid", std::pair<PassState, ModelData*>(PassState::Base, GridModel)));
-
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, GridModel)));
 		}
 		break;
 		case MeshFilter::Box:
 		{
-			ModelData* BoxModel = new ModelData();
+			std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
+
 			BoxModel->m_name = name;
 			BoxModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
 
+			BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
 
-			BoxModel->m_Meshes.push_back(new StaticMesh());
 			UINT size = static_cast<UINT>(sizeof(BaseVertex));
 
 			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"Box_VB", Box::Vertex::Desc, Box::Vertex::Data, size);
@@ -431,16 +443,17 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
 			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, ModelData*>>(L"Box", std::pair<PassState, ModelData*>(PassState::Base, BoxModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, BoxModel)));
 		}
 		break;
 		case MeshFilter::TextureBox:
 			{
-				ModelData* BoxModel = new ModelData();
+				std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
 
 				BoxModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
 
-				BoxModel->m_Meshes.push_back(new StaticMesh());
+				BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
+
 				UINT size = static_cast<UINT>(sizeof(TextureVertex));
 				BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
 				BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
@@ -456,15 +469,16 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 				BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
 				BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-				BoxModel->m_Materials.push_back(new Material(m_Device));
+				BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
 				BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
+				BoxModel->m_Materials[0]->m_NormalSRV= m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
 
 				BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
 
 				BoxModel->m_pass = PassState::Texture;
 
 				m_ResourceManager->Add<ModelData>(L"TextureBox", BoxModel);
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, ModelData*>>(L"TextureBox", std::pair<PassState, ModelData*>(PassState::Texture, BoxModel)));
+				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"TextureBox", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Texture, BoxModel)));
 
 			}
 			break;
@@ -482,7 +496,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 		case MeshFilter::Skinning:
 			{
 				std::wstring fbxpath = L"../Resource/FBX/" + fbx + L".fbx";
-				ModelData* newModel = new ModelData(m_ResourceManager->Get<ModelData>(fbxpath));
+				std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
 				newModel->m_name = name;
 
 				newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
@@ -495,9 +509,8 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 
 				newModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, ModelData*>>(L"test", std::pair<PassState, ModelData*>(PassState::Skinning, newModel)));
+				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"test", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Skinning, newModel)));
 				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
-
 			}
 			break;
 
@@ -522,7 +535,7 @@ void GraphicsEngine::UpdateCB(std::wstring name, std::wstring cbname, WorldTrans
 
 void GraphicsEngine::UpdateCB(std::wstring name, std::wstring cbname, DirectionLightCB constantstruct)
 {
-	m_ResourceManager->Get<ConstantBuffer<DirectionLightCB>>(L"DirectionLight")->m_struct = constantstruct;
+	m_ResourceManager->Get<ConstantBuffer<DirectionLightCB>>(L"DirectionLight").lock()->m_struct = constantstruct;
 }
 
 void GraphicsEngine::OnResize()
@@ -561,7 +574,7 @@ void GraphicsEngine::OnResize()
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_6"));*/
 
 
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
+	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP);
 }
 
@@ -573,36 +586,36 @@ void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
 
 	UINT size = static_cast<UINT>(sizeof(QuadVertex));
 
-	VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
+	std::weak_ptr<VertexBuffer> vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
+	std::weak_ptr<IndexBuffer> ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+	std::weak_ptr<ConstantBuffer<WorldTransformCB>> cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
 
-	VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-	PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/QuadPS.cso", L"Quad");
-	RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
+	std::weak_ptr<VertexShader> vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
+	std::weak_ptr<PixelShader> ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/QuadPS.cso", L"Quad");
+	std::weak_ptr<RenderState> rs = m_ResourceManager->Get<RenderState>(L"Solid");
 
 
 
-	m_Device->Context()->IASetInputLayout(vs->InputLayout());
+	m_Device->Context()->IASetInputLayout(vs.lock()->InputLayout());
 
-	m_Device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-	m_Device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
+	m_Device->Context()->IASetVertexBuffers(0, 1, vb.lock()->GetAddress(), vb.lock()->Size(), vb.lock()->Offset());
+	m_Device->Context()->IASetIndexBuffer(ib.lock()->Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	m_Device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-	m_Device->Context()->RSSetState(rs->Get());
+	m_Device->Context()->RSSetState(rs.lock()->Get());
 
-	m_Device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
+	m_Device->Context()->VSSetShader(vs.lock()->GetVS(), nullptr, 0);
 
 
-	m_Device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
-	m_Device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
+	m_Device->Context()->VSSetConstantBuffers(1, 1, cb.lock()->GetAddress());
+	m_Device->Context()->PSSetConstantBuffers(0, 1, cb.lock()->GetAddress());
 
 
 	m_Device->Context()->PSSetShaderResources(0, 1, srv->GetAddress());
 	m_Device->Context()->PSSetSamplers(0, 1, srv->GetSamplerAddress());
 
 
-	m_Device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
+	m_Device->Context()->PSSetShader(ps.lock()->GetPS(), nullptr, 0);
 	m_Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 
 

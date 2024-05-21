@@ -16,19 +16,19 @@ public:
 	Animator();
 	~Animator();
 
-	void Update(double dt, std::map<std::wstring, std::pair<PassState, ModelData*>>& models);
+	void Update(double dt, std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& models);
 
 private:
 	std::vector<Object*> m_PlayList;
 
-	void UpdateWorld(double dt, ModelData* ob);
-	void CalcWorld(Node* RootNode);
+	void UpdateWorld(double dt, std::shared_ptr<ModelData> ob);
+	void CalcWorld(std::shared_ptr<Node> RootNode);
 
 
-	DirectX::SimpleMath::Matrix CalcMatrix(double time, std::vector<Key*> channel);
-	DirectX::SimpleMath::Matrix CalcRotation(double time, std::vector<Key*> rotationKey);
+	DirectX::SimpleMath::Matrix CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel);
+	DirectX::SimpleMath::Matrix CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey);
 
-	void UpdateMatrixPallete(ModelData* ob);
+	void UpdateMatrixPallete(std::shared_ptr<ModelData> ob);
 
 
 };

@@ -22,13 +22,13 @@ public:
 
 	unsigned int index;
 
-	std::vector<Mesh*> m_Meshes;
+	std::vector<std::weak_ptr<Mesh>> m_Meshes;
 
-	Node* m_Parents;
+	std::weak_ptr<Node> m_Parents;
 	bool HasParents = false;
 
-	std::vector<Node*> m_Childs;
-	std::vector<Bone*> m_Bones;
+	std::vector<std::shared_ptr<Node>> m_Childs;
+	std::vector<std::weak_ptr<Bone>> m_Bones;
 
 	virtual void Release() override;
 };
