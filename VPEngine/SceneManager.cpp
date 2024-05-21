@@ -317,6 +317,8 @@ void SceneManager::OnRemoveComponent(std::any data)
 		VP_ASSERT(false, "해당 타입의 컴포넌트가 존재하지 않습니다.");
 		return;
 	}
+	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
+
 	comp->GetEntity()->ReleaseComponent(comp);
 	ReleaseCompFromPool(CompID, comp);
 }

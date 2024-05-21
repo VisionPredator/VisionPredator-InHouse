@@ -78,6 +78,3 @@
 	{
 
 	}
-	void TransformSystem::OnTest(std::any test)
-	{
-	}

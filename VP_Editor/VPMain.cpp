@@ -9,7 +9,6 @@
 
 #define MAX_LOADSTRING 100
 //memory leak
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
 

@@ -141,7 +141,7 @@
     <ClInclude Include="VPEngine.h">
       <Filter>자체 엔진\Base\Header</Filter>
     </ClInclude>
-    <ClInclude Include="MeshRenderSystem.h">
+    <ClInclude Include="RenderSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
     <ClInclude Include="resource1.h">
@@ -218,7 +218,7 @@
     <ClCompile Include="VPEngine.cpp">
       <Filter>자체 엔진\Base\Source</Filter>
     </ClCompile>
-    <ClCompile Include="MeshRenderSystem.cpp">
+    <ClCompile Include="RenderSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp">
