@@ -51,6 +51,15 @@ void CameraSystem::FixedUpdate(float deltaTime)
 		if (cameracomp.IsMain != true)
 			continue;
 
+
+
+
+		/*if (InputManager::GetInstance().GetKey(KEY::RIGHT))
+		{
+
+		}*/
+		
+
 		///TODO:유승운 여기서 그래픽스한테 메인카메라 설정 보내주기!
 		{
 			TransformComponent cameratrans= *cameracomp.GetComponent<TransformComponent>();

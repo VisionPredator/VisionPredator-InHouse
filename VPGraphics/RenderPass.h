@@ -1,6 +1,8 @@
 #pragma once
 #include <queue>
+#include <vector>
 
+#include "MeshFilter.h"
 class Device;
 
 class ModelData;
@@ -64,6 +66,7 @@ public:
 	virtual void StaticRender() abstract;
 	virtual void SkinnedRender() abstract;
 	void AddModelData(ModelData* model);
+	void AddModelData(std::map<std::wstring, std::pair<PassState, ModelData*>>& model_list);
 
 protected:
 	std::queue<ModelData*> m_RenderModelQueue;
@@ -77,6 +80,8 @@ protected:
 
 	ResourceManager* m_ResourceManager;
 
+
+	PassState m_state = PassState::None;
 };
 
 class ForwardPass : public RenderPass
@@ -84,6 +89,42 @@ class ForwardPass : public RenderPass
 public:
 	ForwardPass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
 	~ForwardPass();
+
+	virtual void Render() override;
+	virtual void StaticRender() override;
+	virtual void SkinnedRender() override;
+
+private:
+	RenderTargetView* m_RTV;
+	DepthStencilView* m_DSV;
+	D3D11_VIEWPORT* m_VP;
+};
+
+
+
+class SkinnigPass : public RenderPass
+{
+public:
+	SkinnigPass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	~SkinnigPass();
+
+	virtual void Render() override;
+	virtual void StaticRender() override;
+	virtual void SkinnedRender() override;
+
+private:
+	RenderTargetView* m_RTV;
+	DepthStencilView* m_DSV;
+	D3D11_VIEWPORT* m_VP;
+};
+
+
+
+class TexturePass : public RenderPass
+{
+public:
+	TexturePass(Device* device, ResourceManager* manager, D3D11_VIEWPORT* vp);
+	~TexturePass();
 
 	virtual void Render() override;
 	virtual void StaticRender() override;

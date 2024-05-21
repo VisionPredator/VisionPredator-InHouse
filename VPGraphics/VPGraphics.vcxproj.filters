@@ -104,6 +104,18 @@
     <Filter Include="GraphicsEngine\RenderPass">
       <UniqueIdentifier>{67d6ba83-9a87-4668-a08d-b46c47cc5fc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{2644191c-0089-450a-83a0-e4b574d48fd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Base">
+      <UniqueIdentifier>{2835e231-c468-4d59-9fe7-63183ee62662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Texture">
+      <UniqueIdentifier>{3c28ca5d-8820-4dc8-b44a-ce22ae5cc4eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Skinning">
+      <UniqueIdentifier>{f6f8f9e8-e93e-4fb6-abfc-a8c641d9d707}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -315,5 +327,25 @@
     <ClCompile Include="Pass.cpp">
       <Filter>Pass</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BasePS.hlsl">
+      <Filter>hlsl\Base</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseVS.hlsl">
+      <Filter>hlsl\Base</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePS.hlsl">
+      <Filter>hlsl\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVS.hlsl">
+      <Filter>hlsl\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinningVS.hlsl">
+      <Filter>hlsl\Skinning</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinningPS.hlsl">
+      <Filter>hlsl\Skinning</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

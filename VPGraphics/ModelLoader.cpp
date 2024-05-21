@@ -30,11 +30,8 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
-	LoadModel("../Resource/SkinningTest.fbx", Filter::SKINNING);
-	//LoadModel("../Resource/BoxHuman.fbx");
-	LoadModel("../Resource/Flair.fbx", Filter::SKINNING);
-	LoadModel("../Resource/cerberus.fbx", Filter::STATIC);
-	LoadModel("../Resource/Breakdance 1990.fbx", Filter::SKINNING);
+	LoadModel("../Resource/FBX/Flair.fbx", Filter::SKINNING);
+	LoadModel("../Resource/FBX/cerberus.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -115,10 +112,9 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 		ProcessMaterials(newData, scene->mMaterials[i]);
 	}
 
-	ProcessNode(nullptr, newData->m_RootNode, scene->mRootNode, newData->m_Meshes);
-
 	if (Filter::SKINNING == filter)
 	{
+		ProcessNode(nullptr, newData->m_RootNode, scene->mRootNode, newData->m_Meshes);
 		ProcessBoneNodeMapping(newData);
 	}
 
@@ -140,7 +136,17 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 
 	aiMesh* curMesh = mesh;
 
-	Mesh* newMesh = new Mesh();
+	Mesh* newMesh = nullptr;
+	switch (filter)
+	{
+		case Filter::STATIC:
+			newMesh = new StaticMesh();
+			break;
+		case Filter::SKINNING:
+			newMesh = new SkinnedMesh();
+			break;
+	}
+
 	newMesh->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	///메쉬에따라 읽는방식과 세부 설정을 따로 둬야할듯
@@ -178,11 +184,14 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 			break;
 
 		case Filter::SKINNING:
+		{
+
 			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
 			{
 				ProcessVertexBuffer(SkinningVertices, curMesh, i);
 			}
 
+			SkinnedMesh* newSkin = dynamic_cast<SkinnedMesh*>(newMesh);
 			//process bone
 			for (unsigned int i = 0; i < mesh->mNumBones; i++)
 			{
@@ -193,7 +202,7 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 				curBone->name.assign(name.begin(), name.end());
 				curBone->Boneindex = i;
 
-				newMesh->m_BoneData.push_back(curBone);
+				newSkin->m_BoneData.push_back(curBone);
 
 				DirectX::XMFLOAT4X4 temp;
 
@@ -231,6 +240,7 @@ void ModelLoader::ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index
 			desc.ByteWidth = sizeof(SkinningVertex) * curMesh->mNumVertices;
 			data.pSysMem = &(SkinningVertices[0]);
 			newMesh->m_VB = m_ResourceManager->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(SkinningVertex));
+		}
 			break;
 		case Filter::END:
 			break;
@@ -245,7 +255,7 @@ void ModelLoader::ProcessMaterials(ModelData* Model, aiMaterial* material)
 	Material* newMaterial = new Material(m_device);
 
 	// Diffuse
-	std::wstring basePath = L"../Resource/";
+	std::wstring basePath = L"../Resource/Texture/";
 	std::filesystem::path path;
 	std::wstring finalPath;
 	std::string name = material->GetName().C_Str();
@@ -289,7 +299,7 @@ void ModelLoader::ProcessMaterials(ModelData* Model, aiMaterial* material)
 	}
 	else
 	{
-		newMaterial->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png", SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
 	}
 
 	path = (textureProperties[aiTextureType_NORMALS].second);
@@ -358,13 +368,17 @@ void ModelLoader::ProcessBoneNodeMapping(ModelData* Model)
 {
 	for (auto& mesh : Model->m_Meshes)
 	{
-		for (auto& bone : mesh->m_BoneData)
+		if (mesh->IsSkinned())
 		{
-			Node* temp = FindNode(bone->name, Model->m_RootNode);
-			if (temp != nullptr)
+			SkinnedMesh* curMesh = dynamic_cast<SkinnedMesh*>(mesh);
+			for (auto& bone : curMesh->m_BoneData)
 			{
-				bone->node = temp;
-				temp->m_Bones.push_back(bone);
+				Node* temp = FindNode(bone->name, Model->m_RootNode);
+				if (temp != nullptr)
+				{
+					bone->node = temp;
+					temp->m_Bones.push_back(bone);
+				}
 			}
 		}
 	}
@@ -570,7 +584,8 @@ void ModelLoader::ProcessNode(Node* parents, Node* ob_node, aiNode* node, std::v
 
 		for (auto& mesh : ob_node->m_Meshes)
 		{
-			mesh->m_node = ob_node;
+			SkinnedMesh* curMesh = dynamic_cast<SkinnedMesh*>(mesh);
+			curMesh->m_node = ob_node;
 		}
 	}
 
@@ -589,12 +604,15 @@ void ModelLoader::ProcessNode(Node* parents, Node* ob_node, aiNode* node, std::v
 
 void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, Mesh* curMesh)
 {
-	UINT meshBoneCount = curMesh->m_BoneData.size();
+
+	SkinnedMesh* curSkin = dynamic_cast<SkinnedMesh*>(curMesh);
+
+	UINT meshBoneCount = curSkin->m_BoneData.size();
 
 
 	for (UINT i = 0; i < meshBoneCount; ++i)
 	{
-		Bone* curBone = curMesh->m_BoneData[i];
+		Bone* curBone = curSkin->m_BoneData[i];
 
 		//버텍스 버퍼 만들기위해 버텍스 내용채움
 		for (int j = 0; j < curBone->vertexids.size(); j++)

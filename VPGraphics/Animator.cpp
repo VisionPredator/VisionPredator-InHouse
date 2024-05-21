@@ -14,38 +14,39 @@ Animator::~Animator()
 
 }
 
-void Animator::Update(double dt, std::map<std::wstring, Object*>& objects)
+void Animator::Update(double dt, std::map<std::wstring, std::pair<PassState, ModelData*>>& models)
 {
-	for (auto& ob : objects)
+	for (auto& model : models)
 	{
-		UpdateWorld(dt, ob.second);
-		UpdateMatrixPallete(ob.second);
+		UpdateWorld(dt, model.second.second);
+		UpdateMatrixPallete(model.second.second);
 	}
 }
 
-void Animator::UpdateWorld(double dt, Object* ob)
+void Animator::UpdateWorld(double dt, ModelData* ob)
 {
 	//오브젝트마다 애니메이션의 길이 시간등등이 다른데 시간을 어떻게 처리할까???
 	//같은 데이터의 포인터를 사용하니까 같은 애니메이션 쓰는 애들은 시간이 두배가되서 속도가 2배 빨라져
 	//같은 데이터를 쓰지만 각자가 가지고 있는 고유의 데이터야하는 아이러니?
 	//이건 애니메이션 데이터는 그대로 두고 각자의 시간과 애니메이션 따로 놀면된다
 	//여기서 터지면 loader에 데이터를 안읽어왔을 확률 높음
-	if (ob->Animations().empty())
+	if (ob->m_Animations.empty())
 	{
 		return;
 	}
 
-	double& time = ob->playTime;
-	double speed = ob->CurAnimation(0)->m_TickFrame;
+	//double& time = ob->playTime; //현재 애니메이션 플레이시간
+	static double time = 0; //현재 애니메이션 플레이시간
+	double speed = ob->m_Animations[0]->m_TickFrame;
 	time += dt * speed;
 
-	if (time > ob->CurAnimation(0)->m_Duration)
+	if (time > ob->m_Animations[0]->m_Duration)
 	{
-		time -= ob->CurAnimation(0)->m_Duration;
+		time -= ob->m_Animations[0]->m_Duration;
 		//time = 0;
 	}
 
-	for (auto& ani : ob->CurAnimation(0)->m_Channels)
+	for (auto& ani : ob->m_Animations[0]->m_Channels)
 	{
 		DirectX::SimpleMath::Matrix rotation{};
 		DirectX::SimpleMath::Matrix translate{};
@@ -62,7 +63,7 @@ void Animator::UpdateWorld(double dt, Object* ob)
 		ani->node->m_LocalInverse = ani->node->m_Local.Invert();
 	}
 
-	CalcWorld(ob->RootNode());
+	CalcWorld(ob->m_RootNode);
 }
 
 void Animator::CalcWorld(Node* RootNode)
@@ -127,9 +128,9 @@ DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<Key*
 	return DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
 }
 
-void Animator::UpdateMatrixPallete(Object* ob)
+void Animator::UpdateMatrixPallete(ModelData* ob)
 {
-	for (auto& mesh : ob->Meshes())
+	for (auto& mesh : ob->m_Meshes)
 	{
 		if (mesh->IsSkinned())
 		{

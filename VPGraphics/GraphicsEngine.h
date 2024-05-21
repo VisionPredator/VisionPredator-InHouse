@@ -3,11 +3,11 @@
 
 #pragma region STL
 #include <memory> //smart pointer
-#pragma endregion STL
 
 #include <vector>
 #include <map>
 #include "MeshFilter.h"
+#pragma endregion STL
 
 
 #include "Camera.h"
@@ -29,6 +29,14 @@ class DepthStencilView;
 class ShaderResourceView;
 
 class Object;
+class ModelData;
+
+
+class ForwardPass;
+class SkinnigPass;
+class TexturePass;
+
+
 
 class GraphicsEngine : public Graphics::Interface
 {
@@ -43,8 +51,7 @@ public:
 	virtual void OnResize() override;
 
 	void DeferredRender();
-	void Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj);
-	virtual bool LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx, std::wstring VSname, std::wstring PSname) override;
+	virtual bool LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
 	virtual void UpdateCB(std::wstring name, std::wstring cbname, WorldTransformCB constantstruct) override;
 	virtual void UpdateCB(std::wstring name, std::wstring cbname, DirectionLightCB constantstruct)override;
 
@@ -54,13 +61,12 @@ protected:
 	std::vector<RenderTargetView*> m_RTVs;
 	std::vector<DepthStencilView*> m_DSVs;
 
-	std::map<std::wstring, Object*> m_DeferredRenderObjects;
-	std::map<std::wstring, Object*> m_FowardRenderObjects;
+	std::map<std::wstring, std::pair<PassState,ModelData*>> m_RenderList;
 
 	void DrawQuad(ShaderResourceView* srv);
 
 private:
-	Device* m_device;
+	Device* m_Device;
 	D3D11_VIEWPORT* m_VP;
 
 private:
@@ -73,4 +79,11 @@ private:
 	RECT m_wndSize;
 
 	Camera* m_Camera;
+
+
+
+	ForwardPass* m_BasePass;
+	TexturePass* m_TexturePass;
+	SkinnigPass* m_SkinningPass;
+
 };
