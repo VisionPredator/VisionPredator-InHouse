@@ -2,9 +2,9 @@
 #include "pch.h"
 
 #pragma region assimp
-#include "../assimp/scene.h"
-#include "../assimp/Importer.hpp"
-#include "../assimp/postprocess.h"
+#include "scene.h"
+#include "Importer.hpp"
+#include "postprocess.h"
 #pragma endregion assimp
 
 #include "VertexData.h"

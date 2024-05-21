@@ -193,9 +193,6 @@
     <ClInclude Include="ShaderResourceView.h">
       <Filter>Resource\ShaderResourceView</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Resource\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Resource\Object\Animation</Filter>
     </ClInclude>
@@ -227,6 +224,9 @@
       <Filter>Pass\Deferred Lighting</Filter>
     </ClInclude>
     <ClInclude Include="Pass.h">
+      <Filter>Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -303,9 +303,6 @@
     <ClCompile Include="ShaderResourceView.cpp">
       <Filter>Resource\ShaderResourceView</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Resource\Object\Animation</Filter>
     </ClCompile>
@@ -321,7 +318,9 @@
     <ClCompile Include="DeferredLightPass.cpp">
       <Filter>Pass\Deferred Lighting</Filter>
     </ClCompile>
-    <ClCompile Include="Pass.cpp" />
+    <ClCompile Include="Pass.cpp">
+      <Filter>Pass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">

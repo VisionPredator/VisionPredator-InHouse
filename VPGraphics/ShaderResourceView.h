@@ -9,6 +9,7 @@ public:
 	ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename, D3D11_SAMPLER_DESC sampler);
 	ShaderResourceView(std::shared_ptr<Device>device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
 	ShaderResourceView(std::shared_ptr<Device>device, std::weak_ptr<RenderTargetView> rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
+	ShaderResourceView(std::shared_ptr<Device> device, RenderTargetView* rtv);
 	~ShaderResourceView();
 
 	ID3D11ShaderResourceView* Get() const;

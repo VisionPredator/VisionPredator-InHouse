@@ -75,6 +75,7 @@ void Device::Initialize()
 	CreateSwapChain();
 
 
+	
 }
 
 void Device::OnResize()
@@ -122,6 +123,7 @@ void Device::EndRender()
 	m_Context->RSSetState(0);
 }
 
+
 void Device::BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs)
 {
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
@@ -147,7 +149,6 @@ void Device::BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11Dep
 	m_Context->ClearDepthStencilView(DSVs, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 }
-
 void Device::DrawQuard(ShaderResourceView* srv)
 {
 	m_Context->PSSetShaderResources(0, 1, srv->GetAddress());

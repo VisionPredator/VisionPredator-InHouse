@@ -123,7 +123,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\x64\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Library\x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTex.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
@@ -169,6 +169,7 @@ copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="DeferredLightPass.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthStencilView.h" />
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />
@@ -181,9 +182,6 @@ copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64
     <ClInclude Include="MeshFilter.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="Object.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="RenderPass.h" />
@@ -221,9 +219,6 @@ copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="Object.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="RenderPass.cpp" />

@@ -13,6 +13,7 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 #include "Texture2D.h"
+
 #include "RenderPass.h"
 #pragma endregion DX
 
@@ -241,9 +242,6 @@ void GraphicsEngine::DeferredRender()
 
 	////·»´õÅ¸°Ù ¹ÙÀÎµù
 	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
-
-	////pass 1
-	//for (int i = 1; i < m_RTVs.size(); i++)
 	//{
 	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
 
