@@ -24,9 +24,6 @@
 			updatelist.push_back(comp.GetEntityID());
 
 		}
-
-
-
 		while (!updatelist.empty())
 		{
 			uint32_t transformid = updatelist.front();
@@ -73,6 +70,8 @@
 		{
 			transform->WorldTransform = tempWorldTrasnform;
 			transform->WorldTransform.Decompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
+			transform->FrontVector= transform->WorldTransform.Forward();
+			transform->UpVector = transform->WorldTransform.Up();
 		}
 	}
 	void TransformSystem::FixedUpdate(float deltaTime)

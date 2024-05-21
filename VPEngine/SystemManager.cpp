@@ -31,6 +31,12 @@
 
 	}
 
+	void SystemManager::RenderUpdate(float deltatime)
+	{
+		for (auto renderable : m_Renderables)
+			renderable->RenderUpdate(deltatime);
+	}
+
 	void SystemManager::Render()
 	{
 		//for (auto renderable : m_Renderables)

@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Entity.h"
 #include "Components.h"
+Entity::Entity()
+{
+}
 Entity::Entity(uint32_t entityID)
 {
 	m_EntityID = entityID;
@@ -30,7 +33,7 @@ Component* Entity::AddComponent(entt::id_type compID)
 {
 	if (HasComponent(compID))
 	{
-		VP_ASSERT(false, "이미 있는 Component 입니다.")
+		VP_ASSERT(false, "이미 있는 Component 입니다.");
 			return nullptr;
 	}
 	auto metaType = entt::resolve(compID);
@@ -64,4 +67,15 @@ Component* Entity::AddComponent(entt::id_type compID)
 
 
 	return nullptr;
+}
+
+void Entity::ReleaseComponent(Component* comp)
+{
+	auto it = m_OwnedComp.find(comp->GetTypeID());
+	if (it != m_OwnedComp.end())
+		m_OwnedComp.erase(it);
+	else
+	{
+		VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
+	}
 }

@@ -5,7 +5,7 @@
 	class Entity
 	{
 	public:
-		Entity() = default;
+		Entity();
 		Entity(uint32_t entityID);
 		Entity(const Entity& other) = default;
 		~Entity();
@@ -37,17 +37,27 @@
 		{
 			if (HasComponent<T>())
 			{
-				VP_ASSERT(false, "이미 있는 Component 입니다.")
+				VP_ASSERT(false, "이미 있는 Component 입니다.");
 					return nullptr;
 			}
 			T* newcomp = new T;
 			AddComponentToMap(newcomp);
-			newcomp->OwnedEntity = this;
+			newcomp->SetEntity(this);
 			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
 			return newcomp;
 		}
 		Component* AddComponent(entt::id_type compID);
+		template<typename T>
+		void RemoveComponent()
+		{
+			EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(Reflection::GetTypeID<T>()));
 
+		}
+
+		void RemoveComponent(entt::id_type compID)
+		{
+			EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(compID));
+		}
 	private:
 
 		void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
@@ -62,29 +72,8 @@
 			return m_OwnedComp[compID];
 		}
 
-		template<typename T>
-		void RemoveComponent()
-		{
-			auto it = m_OwnedComp.find(Reflection::GetTypeID<T>());
-			if (it != m_OwnedComp.end())
-				m_OwnedComp.erase(it);
-			else
-			{
-				VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
-			}
-		}
-
-		void RemoveComponent(entt::id_type compID)
-		{
-			auto it = m_OwnedComp.find(compID);
-			if (it != m_OwnedComp.end())
-				m_OwnedComp.erase(it);
-			else
-			{
-				VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
-			}
-		}
-
+	
+		void ReleaseComponent(Component* comp);
 
 
 

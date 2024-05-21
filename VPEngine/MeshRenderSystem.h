@@ -2,7 +2,7 @@
 #include "System.h"
 #include "EventSubscriber.h"
 class MeshRenderSystem :
-    public System, public EventSubscriber,public IFixedUpdatable
+    public System, public EventSubscriber,public IFixedUpdatable,public IRenderable
 {
 public:
     MeshRenderSystem(SceneManager* entityManager);
@@ -28,8 +28,8 @@ public:
 
     // IFixedUpdatable을(를) 통해 상속됨
     void FixedUpdate(float deltaTime) override;
-
-    void Render(float deltaTime);
+    // IRenderable을(를) 통해 상속됨
+    void RenderUpdate(float deltaTime) override;
 
 };
 

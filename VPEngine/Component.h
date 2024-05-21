@@ -1,6 +1,6 @@
 #pragma once                                                                                                                                                                                                                            
 #include "Entity.h"
-#include "SceneManager.h"
+//#include "SceneManager.h"
 struct Component
 {
 	Component() = default;
@@ -10,7 +10,7 @@ struct Component
 	}
 
 	virtual void SerializeComponent(nlohmann::json& json) const {};
-	virtual void* DeserializeComponent(const nlohmann::json json, SceneManager* sceneManager, uint32_t entityID) const { return nullptr; }
+	virtual void* DeserializeComponent(const nlohmann::json json,Entity* parentEntity) const { return nullptr; }
 	virtual Component* AddComponent(Entity* parentEntity) { return nullptr; }
 	template <typename T>
 	T* GetComponent()
@@ -26,9 +26,11 @@ struct Component
 	{
 		return OwnedEntity->GetEntityID();
 	}
-	Entity* OwnedEntity = nullptr;
+	Entity* GetEntity() { return OwnedEntity; }
+	void SetEntity(Entity* entity) { OwnedEntity = entity; }
 	virtual entt::id_type GetTypeID() const = 0;
 protected:
+	Entity* OwnedEntity = nullptr;
 	friend class SceneManager;
 };
 

@@ -1,9 +1,9 @@
-// DemoApp.cpp : ¾ÖÇÃ¸®ÄÉÀÌ¼Ç¿¡ ´ëÇÑ ÁøÀÔÁ¡À» Á¤ÀÇÇÕ´Ï´Ù.
+ï»¿// DemoApp.cpp : ì• í”Œë¦¬ì¼€ì´ì…˜ì— ëŒ€í•œ ì§„ìž…ì ì„ ì •ì˜í•©ë‹ˆë‹¤.
 //
 
 #include "pch.h"
 #include "framework.h"
-#include "VPTestProcess.h"
+#include "VP_Editor.h"
 #include "VPMain.h"
 
 
@@ -14,8 +14,8 @@
 #include <crtdbg.h>
 
 /// <summary>
-/// ´©¼ö ¸Þ¸ð!!!
-/// 215 216 217 218 357 Àº ¸øÀâ°ÚÀ½..... ÀÏ´Ü new·Î ÀÎÇÑ ´©¼ö°¡ ¾Æ´Ñ stl ¶Ç´Â static¿¡ ÀÇÇÑ ´©¼ö°°À½...
+/// ëˆ„ìˆ˜ ë©”ëª¨!!!
+/// 215 216 217 218 357 ì€ ëª»ìž¡ê² ìŒ..... ì¼ë‹¨ newë¡œ ì¸í•œ ëˆ„ìˆ˜ê°€ ì•„ë‹Œ stl ë˜ëŠ” staticì— ì˜í•œ ëˆ„ìˆ˜ê°™ìŒ...
 /// <returns></returns>
 
 
@@ -28,8 +28,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 	_CrtSetBreakAlloc(475);
-	VPTestProcess* Process;
-	Process = new VPTestProcess(hInstance, "VisionPredator", 1920, 1080);
+	VP_Editor* Process;
+	Process = new VP_Editor(hInstance, "VisionPredator", 1920, 1080);
 	Process->Loop();
 	delete Process;
 

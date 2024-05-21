@@ -44,7 +44,8 @@ struct TransformComponent :public Component
 	VPMath::Vector3 World_Location = {};
 	VPMath::Quaternion World_Quaternion = {};
 	VPMath::Vector3 World_Scale = { 1.f,1.f,1.f };
-
+	VPMath::Vector3 FrontVector = {};
+	VPMath::Vector3 UpVector = {};
 	VPMath::Matrix LocalTransform = {};
 	VPMath::Matrix WorldTransform = {};
 };

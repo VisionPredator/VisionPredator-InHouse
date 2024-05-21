@@ -15,7 +15,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
 
-	EventManager::GetInstance().Subscribe("OnRemoveComponent", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
 
 	//EventManager::GetInstance().Subscribe("OnAddEntity", CreateSubscriber(&SceneManager::OnAddEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
@@ -243,7 +243,7 @@ Entity* SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
 			// 특정 함수를 찾고 호출합니다.
 			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, (uint32_t)entityID);
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity);
 			else
 				VP_ASSERT(false, "Reflection 함수 실패!");
 		}
@@ -309,15 +309,15 @@ void SceneManager::OnAddCompToScene(std::any data)
 
 void SceneManager::OnRemoveComponent(std::any data)
 {
-	auto [EntityID, CompID] = std::any_cast<std::pair<uint32_t, entt::id_type>>(data);
+	Component* comp = std::any_cast<Component*>(data);
+	uint32_t EntityID = comp->GetEntityID();
+	entt::id_type CompID = comp->GetTypeID();
 	if (!HasComponent(EntityID, CompID))
 	{
 		VP_ASSERT(false, "해당 타입의 컴포넌트가 존재하지 않습니다.");
 		return;
 	}
-	Entity* ParentEntity = GetEntity(EntityID);///GetEntity
-	Component* comp = ParentEntity->GetComponent(CompID);
-	ParentEntity->RemoveComponent(CompID);
+	comp->GetEntity()->ReleaseComponent(comp);
 	ReleaseCompFromPool(CompID, comp);
 }
 

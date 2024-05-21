@@ -15,6 +15,8 @@
 
 	TransformComponent::TransformComponent()
 	{
+		FrontVector = WorldTransform.Forward();
+		UpVector = WorldTransform.Up();
 	}
 
 	Parent::Parent()

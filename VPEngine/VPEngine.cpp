@@ -85,8 +85,11 @@
 			}
 			else
 			{
+
+
 				Update();
-				//Render();
+
+				Render();
 
 				if (InputManager::GetInstance().GetKeyDown(KEY::ESC))
 				{
@@ -102,17 +105,16 @@
 
 	void VPEngine::Update()
 	{
-		EventManager::GetInstance().Update(m_DeltaTime);
-		InputManager::GetInstance().Update();
 		m_TimeManager->Update();
 		m_DeltaTime = m_TimeManager->GetDeltaTime();
-		//if (m_DeltaTime > 1)
-		//	m_DeltaTime = 1/165;
+		EventManager::GetInstance().Update(m_DeltaTime);
+		InputManager::GetInstance().Update();
 		m_SystemManager->Update(m_DeltaTime);
 		m_SystemManager->FixedUpdate(m_DeltaTime);
-
+		m_SystemManager->RenderUpdate(m_DeltaTime);
 		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 		SetWindowTextW(m_hWnd, newname.c_str());
+
 	}
 
 	void VPEngine::Render()

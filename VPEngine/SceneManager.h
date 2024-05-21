@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Entity.h"
+#include "Components.h"
 
 #include "EventSubscriber.h"
 class SceneManager :public EventSubscriber
@@ -21,8 +22,7 @@ public:
 
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
-	template<typename T>
-	inline T* AddComponent(uint32_t entityID);
+
 
 
 
@@ -31,8 +31,6 @@ public:
 	bool HasComponent(uint32_t EntityID, entt::id_type compid) { return GetEntity(EntityID)->HasComponent(compid); }
 	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }
 
-	template<typename T>
-	inline std::vector<T*> GetComponentPool();
 
 	template<typename T>
 	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
@@ -42,13 +40,16 @@ public:
 	const std::string GetSceneName() { return m_CurrentScene->SceneName; }
 
 	void SetSceneName(std::string sceneName) { m_CurrentScene->SceneName = sceneName; }
-
-
+	
+	template<typename T>
+	inline std::vector<T*> GetComponentPool();
 
 protected:
+	friend class CompIter;
 private:
-	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
+
+	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
 	void AddCompToPool(Component* comp); 
 
@@ -69,8 +70,6 @@ private:
 	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
 	void OnRemoveComponent(std::any data);
-	// 해당 Entity를 맵에 추가한다.
-	//void OnAddEntity(std::any data);
 	// 해당 Prefab을 serialize한다.
 	void OnSerializePrefab(std::any entityID);
 	// 해당 Prefab을 Deserialize한다.
@@ -94,6 +93,7 @@ private:
 		auto it = std::find(pool.begin(), pool.end(), comp);
 		if (it != pool.end())
 		{
+			delete* it; // 포인터가 가리키는 실제 객체를 삭제
 			std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
 			pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
 		}
@@ -105,22 +105,7 @@ private:
 
 };
 
-template<typename T>
-inline T* SceneManager::AddComponent(uint32_t entityID)
-{
 
-	Entity* ParentEntity = GetEntity(entityID);///GetEntity
-	VP_ASSERT(!HasComponent<T>(entityID), "같은 타입의 컴포넌트가 존재합니다.");
-	T* comp = new T;
-
-	///아래껄 하지말고 바로 이벤트 호출 하는것도 좋을 듯!!!!
-	comp->OwnedEntity = ParentEntity;
-	ParentEntity->AddComponentToMap(comp);
-	AddCompToPool(comp);
-	std::pair<uint32_t, entt::id_type> data = { ParentEntity->GetEntityID(),comp->GetTypeID() };
-	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", data);
-	return comp;
-}
 
 template<typename T>
 inline std::vector<T*> SceneManager::GetComponentPool()

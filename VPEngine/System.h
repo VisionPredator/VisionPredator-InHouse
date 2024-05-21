@@ -1,7 +1,7 @@
 #pragma once
 #include "SceneManager.h"
 #include "SystemInterface.h"
-
+#include "Components.h"
 #define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager)
 
 

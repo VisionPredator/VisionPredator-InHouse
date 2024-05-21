@@ -60,9 +60,11 @@ void MeshRenderSystem::FixedUpdate(float deltaTime)
 
 	}
 }
-void MeshRenderSystem::Render(float deltaTime)
+
+
+void MeshRenderSystem::RenderUpdate(float deltaTime)
 {
-	Entity* temp = m_SceneManager->CreateEntity();
+
 	for (MeshComponent& meshComp : COMPITER(MeshComponent))
 	{
 		//IGraphics::Getinstance().Render(uint32_t, transform, ~~Á¤º¸);
