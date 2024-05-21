@@ -9,6 +9,7 @@ public:
 	ShaderResourceView(Device* device, std::wstring filename, D3D11_SAMPLER_DESC sampler);
 	ShaderResourceView(Device* device, Texture2D* texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
 	ShaderResourceView(Device* device, RenderTargetView* rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
+	ShaderResourceView(Device* device, RenderTargetView* rtv);
 	~ShaderResourceView();
 
 	ID3D11ShaderResourceView* Get() const;
@@ -22,9 +23,9 @@ public:
 	static void Create();
 
 private:
-	ID3D11ShaderResourceView* m_view;
-	ID3D11Texture2D* m_tex;
-	ID3D11SamplerState* m_samplerState;
+	ID3D11ShaderResourceView* m_view = nullptr;
+	ID3D11Texture2D* m_tex = nullptr;
+	ID3D11SamplerState* m_samplerState = nullptr;
 
 };
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Pass.h"
 #include "RenderPass.h"
 
 class DeferredLightPass final : public Pass

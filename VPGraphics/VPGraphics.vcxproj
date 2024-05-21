@@ -123,7 +123,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\x64\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Library\x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTex.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
@@ -164,6 +164,7 @@ copy $(SolutionDir)x64\$(Configuration)\VPGraphics.lib $(SolutionDir)Library\x64
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DeferredGeometryPass.h" />
     <ClInclude Include="DeferredLightPass.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthStencilView.h" />
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />

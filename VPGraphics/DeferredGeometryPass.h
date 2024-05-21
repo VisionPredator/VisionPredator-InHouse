@@ -8,11 +8,14 @@
 class DeferredGeometryPass final : public Pass
 {
 public:
-	//void Initialize(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager, uint32_t width, uint32_t height);
-	void Initialize(Device* device, ResourceManager* resourceManager, uint32_t width, uint32_t height);
+	// TODO: 매개변수로 전달할때 생포인터로 전달 금지. 소유권을 명확히 할 수 없음. 무조건 참조로 전달.
+	//void Initialize(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager, const uint32_t& width, const uint32_t& height);
+	void Initialize(Device* device, ResourceManager* resourceManager, const uint32_t& width, const uint32_t& height);		// 포인터를 매개변수로 받는건 좀.. 바꿔야 한다.
 	void Render() override;
 
 private:
+	// TODO: 스마트 포인터로 싹 바꾸어야 합니다~ (다 바꾸어야 한다는 뜻은 아님)
+
 	//std::shared_ptr<Device> m_Device;
 	//std::shared_ptr<ResourceManager> m_ResourceManager;
 	Device* m_Device = nullptr;
@@ -27,10 +30,12 @@ private:
 	//std::shared_ptr<VertexShader> m_StaticMeshVS;
 	//std::shared_ptr<VertexShader> m_SkeletalMeshVS;
 	VertexShader* m_StaticMeshVS = nullptr;
-	VertexShader* m_SkeletalMeshVS = nullptr;
+	VertexShader* m_SkinnedMeshVS = nullptr;
 
 	//std::shared_ptr<PixelShader> m_GeometryPS;
 	PixelShader* m_GeometryPS = nullptr;
+
+	enum { GBufferSize = 4 };	// 상수. 일단 만들어는 뒀는데 언제 쓸까.
 
 	// Multi Render Target
 	//std::shared_ptr<RenderTargetView> m_AlbedoRTV;

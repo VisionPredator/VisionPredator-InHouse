@@ -12,10 +12,9 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 
-
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 Device::Device(HWND hWnd) : ableMSAA(false), m_Device(nullptr), m_Context(nullptr), m_FeatureLevel(), MSAAQuality(), m_hWnd(hWnd), m_SwapChain(nullptr), m_wndSize()
 {
@@ -83,17 +82,17 @@ void Device::Initialize()
 	CreateSwapChain();
 
 
-	// ImGui 초기화
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
+	//// ImGui 초기화
+	//IMGUI_CHECKVERSION();
+	//ImGui::CreateContext();
 
-	// ImGui 스타일 설정
-	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsLight();
+	//// ImGui 스타일 설정
+	//ImGui::StyleColorsDark();
+	////ImGui::StyleColorsLight();
 
-	// 플랫폼, 렌더러 설정
-	ImGui_ImplWin32_Init(m_hWnd);
-	ImGui_ImplDX11_Init(m_Device, m_Context);
+	//// 플랫폼, 렌더러 설정
+	//ImGui_ImplWin32_Init(m_hWnd);
+	//ImGui_ImplDX11_Init(m_Device, m_Context);
 
 }
 

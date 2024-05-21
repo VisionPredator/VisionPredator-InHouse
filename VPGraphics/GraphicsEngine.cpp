@@ -28,11 +28,9 @@
 
 #include "Texture2D.h"
 
-
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
-
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
@@ -186,13 +184,13 @@ void GraphicsEngine::DeferredRender()
 		//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-	//ImGui::Text("test");
-	float aspectRatio = 16.0f / 9.0f;
-	float newWidth = 300 * aspectRatio;
+	////ImGui::Text("test");
+	//float aspectRatio = 16.0f / 9.0f;
+	//float newWidth = 300 * aspectRatio;
 
 	m_device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
 
