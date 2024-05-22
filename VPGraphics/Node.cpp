@@ -10,8 +10,3 @@ Node::~Node()
 {
 
 }
-
-void Node::Release()
-{
-
-}

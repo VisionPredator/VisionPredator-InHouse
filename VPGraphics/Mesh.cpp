@@ -42,12 +42,6 @@ UINT Mesh::IBCount()
 	return m_IB.lock()->Count();
 }
 
-
-void Mesh::Release()
-{
-
-}
-
 StaticMesh::StaticMesh()
 {
 

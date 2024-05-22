@@ -45,12 +45,12 @@ public:
 	virtual void Render() override;
 	virtual void OnResize() override;
 
-	void DeferredRender();
-	virtual bool LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
-	virtual void UpdateCB(std::wstring name, std::wstring cbname, WorldTransformCB constantstruct) override;
-	virtual void UpdateCB(std::wstring name, std::wstring cbname, DirectionLightCB constantstruct)override;
+	virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
 
-	
+	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
+
+
+
 
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
@@ -75,6 +75,12 @@ private:
 
 	Camera* m_Camera;
 
+	//camera
+	DirectX::SimpleMath::Matrix m_View;
+	DirectX::SimpleMath::Matrix m_Proj;
+	DirectX::SimpleMath::Matrix m_ViewProj;
+
+	
 	ForwardPass* m_BasePass;
 	TexturePass* m_TexturePass;
 	SkinnigPass* m_SkinningPass;

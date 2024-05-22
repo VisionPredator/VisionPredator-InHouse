@@ -51,16 +51,7 @@ public:
 	void Erase(std::wstring path);
 
 
-#pragma region delete funtion
-
-
-	void Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj);
-
-
 	void Initialize();
-
-#pragma endregion delete funtion
-
 	void OnResize();
 
 private:

@@ -17,8 +17,6 @@ enum class ResourceType
 	DSV,
 	SRV,
 	RS,
-	Mesh,
-	Material,
 	ModelData,
 	PixelShader,
 	VertexShader,

@@ -31,34 +31,6 @@ ResourceManager::~ResourceManager()
 
 }
 
-
-
-void ResourceManager::Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj)
-{
-	DirectX::XMFLOAT4X4 cb_worldviewproj;
-	DirectX::XMFLOAT4X4 cb_view;
-	DirectX::XMFLOAT4X4 cb_proj;
-	DirectX::XMFLOAT4X4 cb_viewInverse;
-	cb_worldviewproj = DirectX::SimpleMath::Matrix(view) * proj;
-
-	//상수 버퍼는 계산 순서때문에 전치한다
-	XMStoreFloat4x4(&cb_worldviewproj, XMMatrixTranspose(XMLoadFloat4x4(&cb_worldviewproj)));
-	XMStoreFloat4x4(&cb_view, XMMatrixTranspose(XMLoadFloat4x4(&view)));
-	XMStoreFloat4x4(&cb_proj, XMMatrixTranspose(XMLoadFloat4x4(&proj)));
-
-	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, (XMLoadFloat4x4(&view)));
-	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
-
-	m_Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
-	m_Camera.lock()->m_struct.view = cb_view;
-	m_Camera.lock()->m_struct.proj = cb_proj;
-	m_Camera.lock()->m_struct.viewInverse = cb_viewInverse;
-	m_Camera.lock()->Update();
-
-	m_DirectionalLight.lock()->Update();
-}
-
-
 void ResourceManager::Initialize()
 {
 	//디퍼드 용 쉐이더 테스트
