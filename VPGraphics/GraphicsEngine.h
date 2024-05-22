@@ -46,9 +46,10 @@ public:
 	virtual void OnResize() override;
 
 	virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
+	virtual void EraseObject(std::wstring name) override;
 
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-
+	virtual void UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world) override;
 
 
 

@@ -104,7 +104,11 @@ bool GraphicsEngine::Initialize()
 			AddRenderModel(MeshFilter::Axis, L"Axis");
 			AddRenderModel(MeshFilter::Grid, L"Grid");
 			AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
+			EraseObject(L"TextureBox");
 			AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
+
+			
+
 
 			return true;
 		}
@@ -512,6 +516,11 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 }
 
 
+void GraphicsEngine::EraseObject(std::wstring name)
+{
+	m_RenderList.erase(name);
+}
+
 void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	m_View = view;
@@ -537,6 +546,11 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	Camera.lock()->Update();
+}
+
+void GraphicsEngine::UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world)
+{
+	m_RenderList[name].second->world = world;
 }
 
 void GraphicsEngine::OnResize()

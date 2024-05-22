@@ -43,15 +43,20 @@ namespace Graphics
 		virtual void OnResize() abstract;
 
 
-		///추가해야할거
 		//엔티티가 사라지면 그래픽스 안에 있는 해당 오브젝트도 지워주는 함수
-		//void DeleteObject();
+		virtual void EraseObject(std::wstring name) abstract;
 
+		///추가해야할거
+		//엔티티의 데이터가 업데이트 되면 그값을 renderlist의 값에 갱신 시켜줘야하는 함수 근데 이게 맞아? 매번 엔티티마다 이함수를 부를거야? 그건 좀..
+		virtual void UpdateModelTransform(std::wstring name,DirectX::SimpleMath::Matrix world) abstract;
+
+		//애니메이션 변경
+		//virtual void ChangeAnimation(std::wstring name, animationfilter filter) abstract;
+		
 		//카메라의 상태 업데이트
 		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
-		
 
-		//나중에 지울거
+		//렌더링
 		virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
 
 	private:
