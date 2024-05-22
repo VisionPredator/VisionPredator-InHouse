@@ -101,12 +101,10 @@ bool GraphicsEngine::Initialize()
 			m_TexturePass = new TexturePass(m_Device, m_ResourceManager, m_VP);
 			m_SkinningPass = new SkinnigPass(m_Device, m_ResourceManager, m_VP);
 
-			LoadResource(MeshFilter::Axis, L"Axis");
-			LoadResource(MeshFilter::Grid, L"Grid");
-			LoadResource(MeshFilter::TextureBox, L"TextureBox");
-			LoadResource(MeshFilter::Skinning, L"test",L"Flair");
-
-
+			AddRenderModel(MeshFilter::Axis, L"Axis");
+			AddRenderModel(MeshFilter::Grid, L"Grid");
+			AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
+			AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
 
 			return true;
 		}
@@ -177,13 +175,6 @@ void GraphicsEngine::Update(double dt)
 		}
 
 	}
-
-
-
-
-
-
-
 }
 
 bool GraphicsEngine::Finalize()
@@ -221,90 +212,89 @@ void GraphicsEngine::Render()
 	m_Device->EndRender();
 }
 
-void GraphicsEngine::DeferredRender()
-{
-	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
-	//m_Device->Context()->RSSetViewports(1, m_VP);
 
-	//ID3D11RenderTargetView* MRT[5];
-	//MRT[0] = m_RTVs[1]->Get(); //albedo
-	//MRT[1] = m_RTVs[2]->Get(); //normal
-	//MRT[2] = m_RTVs[3]->Get(); //position
-	//MRT[3] = m_RTVs[4]->Get(); //depth
-	//MRT[4] = m_RTVs[5]->Get(); //tangent
+//void GraphicsEngine::DeferredRender()
+//{
+//	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
+//	//m_Device->Context()->RSSetViewports(1, m_VP);
+//
+//	//ID3D11RenderTargetView* MRT[5];
+//	//MRT[0] = m_RTVs[1]->Get(); //albedo
+//	//MRT[1] = m_RTVs[2]->Get(); //normal
+//	//MRT[2] = m_RTVs[3]->Get(); //position
+//	//MRT[3] = m_RTVs[4]->Get(); //depth
+//	//MRT[4] = m_RTVs[5]->Get(); //tangent
+//
+//	//std::weak_ptr<ShaderResourceView> SRVS[5];
+//	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
+//	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
+//	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
+//	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
+//	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
+//
+//	////렌더타겟 바인딩
+//	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
+//	//{
+//	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
+//
+//	//	/*for (auto& ob : m_FowardRenderObjects)
+//	//	{
+//	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
+//	//	}*/
+//
+//	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
+//	//}
+//
+//
+//	////ImGui::Text("test");
+//	//float aspectRatio = 16.0f / 9.0f;
+//	//float newWidth = 300 * aspectRatio;
+//
+//	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
+//
+//	////pass2
+//	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
+//	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
+//	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+//	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
+//	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
+//	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
+//	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
+//	////
+//	////
+//	////m_device->Context()->IASetInputLayout(vs->InputLayout());
+//	////
+//	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
+//	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
+//	////
+//	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
+//	////m_device->Context()->RSSetState(rs->Get());
+//	////
+//	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
+//	////
+//	////
+//	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
+//	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
+//	////
+//	////for (int i = 0; i < 5; i++)
+//	////{
+//	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
+//	////}
+//	////
+//	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
+//	////
+//	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
+//	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
+//	////
+//	//m_Device->EndRender();
+//}
 
-	//std::weak_ptr<ShaderResourceView> SRVS[5];
-	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
-	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
-	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
-	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
-	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
 
-	////렌더타겟 바인딩
-	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
-	//{
-	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
-
-	//	/*for (auto& ob : m_FowardRenderObjects)
-	//	{
-	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
-	//	}*/
-
-	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-	//}
-
-
-	////ImGui::Text("test");
-	//float aspectRatio = 16.0f / 9.0f;
-	//float newWidth = 300 * aspectRatio;
-
-	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
-
-	////pass2
-	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
-	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
-	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
-	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
-	////
-	////
-	////m_device->Context()->IASetInputLayout(vs->InputLayout());
-	////
-	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-	////
-	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-	////m_device->Context()->RSSetState(rs->Get());
-	////
-	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
-	////
-	////
-	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
-	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
-	////
-	////for (int i = 0; i < 5; i++)
-	////{
-	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
-	////}
-	////
-	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
-	////
-	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
-	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-	////
-	//m_Device->EndRender();
-}
-
-bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx)
+bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx)
 {
 
 	//std::wstring VSPath = L"../x64/Debug/" + VSname + L"VS.cso";
 	//std::wstring PSPath = L"../x64/Debug/" + PSname + L"PS.cso";
-
-	//계속 늘어나면 어쩔거임? 한정적이지 않을까?
-	//생각보다 한정적이다
 
 	switch (mesh)
 	{
@@ -522,18 +512,31 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 }
 
 
-void GraphicsEngine::UpdateCB(std::wstring name, std::wstring cbname, WorldTransformCB constantstruct)
+void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	/*if (m_FowardRenderObjects.find(name) != m_FowardRenderObjects.end())
-	{
-		XMStoreFloat4x4(&constantstruct.world, XMMatrixTranspose(XMLoadFloat4x4(&constantstruct.world)));
-		m_FowardRenderObjects[name]->GetCB<WorldTransformCB>(cbname)->m_struct = constantstruct;
-	}*/
-}
+	m_View = view;
+	m_Proj = proj;
+	m_ViewProj = view * proj;
 
-void GraphicsEngine::UpdateCB(std::wstring name, std::wstring cbname, DirectionLightCB constantstruct)
-{
-	m_ResourceManager->Get<ConstantBuffer<DirectionLightCB>>(L"DirectionLight").lock()->m_struct = constantstruct;
+	DirectX::XMFLOAT4X4 cb_worldviewproj;
+	DirectX::XMFLOAT4X4 cb_view;
+	DirectX::XMFLOAT4X4 cb_proj;
+	DirectX::XMFLOAT4X4 cb_viewInverse;
+	cb_worldviewproj = m_ViewProj;
+
+	//상수 버퍼는 계산 순서때문에 전치한다
+	XMStoreFloat4x4(&cb_worldviewproj, XMMatrixTranspose(m_ViewProj));
+	XMStoreFloat4x4(&cb_view, XMMatrixTranspose(m_View));
+	XMStoreFloat4x4(&cb_proj, XMMatrixTranspose(m_Proj));
+
+	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
+	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
+
+	std::weak_ptr<ConstantBuffer<CameraCB>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	Camera.lock()->m_struct.view = cb_view;
+	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
+	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
+	Camera.lock()->Update();
 }
 
 void GraphicsEngine::OnResize()

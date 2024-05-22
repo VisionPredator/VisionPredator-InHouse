@@ -48,16 +48,11 @@ namespace Graphics
 		//void DeleteObject();
 
 		//카메라의 상태 업데이트
-		//virtual void SetCamera(DirectX::XMFLOAT3 pos, float Xrotate, float Yrotate) abstract;
+		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
 		
 
-
-
 		//나중에 지울거
-		virtual bool LoadResource(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
-		virtual void UpdateCB(std::wstring name, std::wstring cbname, WorldTransformCB constantstruct) abstract;
-		virtual void UpdateCB(std::wstring name, std::wstring cbname, DirectionLightCB constantstruct)abstract;
-
+		virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
 
 	private:
 

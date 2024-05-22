@@ -43,8 +43,6 @@ void Camera::Initialize(double ratio)
 
 void Camera::Update(double dt)
 {
-	float dtf = static_cast<float>(dt);
-
 	UpdateView();
 
 	m_worldviewprojMT = m_worldMT * m_viewMT * m_projMT;

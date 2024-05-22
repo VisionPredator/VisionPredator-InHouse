@@ -28,12 +28,10 @@ public:
 	std::weak_ptr<Node> node;
 };
 
-class Mesh : public Resource
+class Mesh 
 {
 public:
 	Mesh();
-
-	virtual void Release() override;
 
 	ID3D11Buffer* VB();
 	ID3D11Buffer** GetAddressVB();

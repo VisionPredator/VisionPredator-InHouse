@@ -1,13 +1,11 @@
 #pragma once
-#include "Resource.h"
 #include "SimpleMath.h"
 
 
 class Mesh;
 class Bone;
 
-class Node :
-    public Resource
+class Node
 {
 public:
 	Node();
@@ -30,6 +28,5 @@ public:
 	std::vector<std::shared_ptr<Node>> m_Childs;
 	std::vector<std::weak_ptr<Bone>> m_Bones;
 
-	virtual void Release() override;
 };
 
