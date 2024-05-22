@@ -20,6 +20,7 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resourc
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename, D3D11_SAMPLER_DESC sampler) : Resource(device), m_tex(nullptr)
 {
+	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
 
 	std::filesystem::path _path(filename);
 	std::wstring strExtension = _path.extension();
@@ -31,19 +32,19 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 	HRESULT hr = S_OK;
 	if (strExtension == L".dds")
 	{
-		(hr = DirectX::LoadFromDDSFile(filename.c_str(), DirectX::DDS_FLAGS_NONE, &metadata1, scratchImage));
+		(hr = DirectX::LoadFromDDSFile(filePath.c_str(), DirectX::DDS_FLAGS_NONE, &metadata1, scratchImage));
 	}
 	else if (strExtension == L".tga")
 	{
-		(hr = DirectX::LoadFromTGAFile(filename.c_str(), &metadata1, scratchImage));
+		(hr = DirectX::LoadFromTGAFile(filePath.c_str(), &metadata1, scratchImage));
 	}
 	else if (strExtension == L".hdr")
 	{
-		(hr = DirectX::LoadFromHDRFile(filename.c_str(), &metadata1, scratchImage));
+		(hr = DirectX::LoadFromHDRFile(filePath.c_str(), &metadata1, scratchImage));
 	}
 	else // ±âÅ¸..
 	{
-		(hr = DirectX::LoadFromWICFile(filename.c_str(), DirectX::WIC_FLAGS_NONE, &metadata1, scratchImage));
+		(hr = DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_NONE, &metadata1, scratchImage));
 	}
 
 	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata1, &m_view));

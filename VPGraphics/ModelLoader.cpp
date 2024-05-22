@@ -29,13 +29,15 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
-	LoadModel("../Resource/FBX/Flair.fbx", Filter::SKINNING);
-	LoadModel("../Resource/FBX/cerberus.fbx", Filter::STATIC);
+	LoadModel("Flair.fbx", Filter::SKINNING);
+	LoadModel("cerberus.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
+
+	const std::string filePath = "..\\..\\..\\Resource\\FBX\\" + filename;
 
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
@@ -74,7 +76,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 
 
 
-	const aiScene* scene = importer.ReadFile(filename, importFlags);
+	const aiScene* scene = importer.ReadFile(filePath, importFlags);
 	if (!scene)
 	{
 		MessageBox(0, L"Error loading files", 0, 0);
@@ -249,7 +251,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
 
 	// Diffuse
-	std::wstring basePath = L"../Resource/Texture/";
+	std::wstring basePath = L"../../../Resource/Texture/";
 	std::filesystem::path path;
 	std::wstring finalPath;
 	std::string name = material->GetName().C_Str();
@@ -286,14 +288,14 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//newMaterial->m_DiffuseSRV->Load(finalPath);
 
 
-		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, finalPath, SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path, SamplerDESC::Linear);
 
 		//m_pBaseColor = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::BASECOLOR;
 	}
 	else
 	{
-		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
 	}
 
 	path = (textureProperties[aiTextureType_NORMALS].second);
@@ -302,7 +304,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->m_NormalFilePath = finalPath;
 		//newMaterial->m_NormalSRV->Load(finalPath);
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, finalPath, SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path, SamplerDESC::Linear);
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;

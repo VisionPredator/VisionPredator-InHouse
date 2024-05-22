@@ -468,8 +468,8 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 				BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
 				BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
-				BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
-				BoxModel->m_Materials[0]->m_NormalSRV= m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"../Resource/Texture/base.png", SamplerDESC::Linear);
+				BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
+				BoxModel->m_Materials[0]->m_NormalSRV= m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
 
 				BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
 
@@ -493,7 +493,7 @@ bool GraphicsEngine::LoadResource(MeshFilter mesh, std::wstring name, std::wstri
 
 		case MeshFilter::Skinning:
 			{
-				std::wstring fbxpath = L"../Resource/FBX/" + fbx + L".fbx";
+				std::wstring fbxpath = fbx + L".fbx";
 				std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
 				newModel->m_name = name;
 
