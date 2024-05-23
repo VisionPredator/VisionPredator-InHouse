@@ -89,8 +89,32 @@
     <Filter Include="GraphicsEngine\Interface">
       <UniqueIdentifier>{f84c9c2c-0828-4506-951c-6b757cc418fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Camera">
+    <Filter Include="GraphicsEngine\Camera">
       <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass">
+      <UniqueIdentifier>{bd8a2133-9734-49d7-b93f-565676ddfe0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Deferred Lighting">
+      <UniqueIdentifier>{273446f8-dc41-4717-a9ae-00096bdafd95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\RenderPass">
+      <UniqueIdentifier>{67d6ba83-9a87-4668-a08d-b46c47cc5fc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{2644191c-0089-450a-83a0-e4b574d48fd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Base">
+      <UniqueIdentifier>{2835e231-c468-4d59-9fe7-63183ee62662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Texture">
+      <UniqueIdentifier>{3c28ca5d-8820-4dc8-b44a-ce22ae5cc4eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Skinning">
+      <UniqueIdentifier>{f6f8f9e8-e93e-4fb6-abfc-a8c641d9d707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Pipeline">
+      <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -160,17 +184,11 @@
     <ClInclude Include="VertexShader.h">
       <Filter>Resource\VertexShader</Filter>
     </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Resource\Texture2D</Filter>
-    </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Resource\Object\Material</Filter>
     </ClInclude>
     <ClInclude Include="ShaderResourceView.h">
       <Filter>Resource\ShaderResourceView</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Resource\Object</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Resource\Object\Animation</Filter>
@@ -191,7 +209,25 @@
       <Filter>GraphicsEngine\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
+      <Filter>GraphicsEngine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredGeometryPass.h">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredLightPass.h">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Pass.h">
+      <Filter>Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Resource\Texture2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -267,14 +303,46 @@
     <ClCompile Include="ShaderResourceView.cpp">
       <Filter>Resource\ShaderResourceView</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Resource\Object\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
+      <Filter>GraphicsEngine\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredGeometryPass.cpp">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredLightPass.cpp">
+      <Filter>Pass\Deferred Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Pass.cpp">
+      <Filter>Pass</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BasePS.hlsl">
+      <Filter>hlsl\Base</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseVS.hlsl">
+      <Filter>hlsl\Base</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePS.hlsl">
+      <Filter>hlsl\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVS.hlsl">
+      <Filter>hlsl\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinningVS.hlsl">
+      <Filter>hlsl\Skinning</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinningPS.hlsl">
+      <Filter>hlsl\Skinning</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ResourceDiagram.cd" />
   </ItemGroup>
 </Project>

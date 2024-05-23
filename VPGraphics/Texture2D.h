@@ -4,7 +4,7 @@
 class Texture2D : public Resource
 {
 public:
-	Texture2D(Device* device, D3D11_TEXTURE2D_DESC desc);
+	Texture2D(std::shared_ptr<Device> device, D3D11_TEXTURE2D_DESC desc);
 	~Texture2D();
 
 

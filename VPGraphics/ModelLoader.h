@@ -1,12 +1,5 @@
 #pragma once
-
-
-#pragma region STL
-#include <vector>
-#include <filesystem>
-#include <iostream>
-#include <string>
-#pragma  endregion STL
+#include "pch.h"
 
 #pragma region assimp
 #include "scene.h"
@@ -14,15 +7,15 @@
 #include "postprocess.h"
 #pragma endregion assimp
 
-
-//#include "Device.h"
-#include "Object.h"
 #include "VertexData.h"
 
 
 
+class Device;
 class ResourceManager;
-
+class ModelData;
+class Node;
+class Mesh;
 
 enum class Filter
 {
@@ -35,7 +28,7 @@ enum class Filter
 class ModelLoader
 {
 public:
-	ModelLoader(ResourceManager* manager);
+	ModelLoader(std::shared_ptr<ResourceManager> manager, std::shared_ptr<Device> device);
 	~ModelLoader();
 
 	void Initialize();
@@ -46,23 +39,22 @@ public:
 private:
 
 	std::vector<const aiScene*> m_SceneList;
-	void ProcessMesh(ModelData* Model, aiMesh* mesh, unsigned int index, Filter filter);
-	void ProcessMaterials(ModelData* Model, aiMaterial* material);
-	void ProcessBoneNodeMapping(ModelData* Model);
-	void ProcessAnimation(ModelData* Model, aiAnimation* animation);
+	void ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, unsigned int index, Filter filter);
+	void ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial* material);
+	void ProcessBoneNodeMapping(std::shared_ptr<ModelData> Model);
+	void ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation* animation);
 
 	void ProcessVertexBuffer(std::vector<SkinningVertex>& buffer, aiMesh* curMesh, unsigned int index);
 	void ProcessVertexBuffer(std::vector<TextureVertex>& buffer, aiMesh* curMesh, unsigned int index);
 
 	void ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace);
-	void ProcessNode(Node* parents, Node* ob_node, aiNode* node, std::vector<Mesh*>& meshes);
+	void ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes);
 
-	void ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, Mesh* curMesh);
-	Node* FindNode(std::wstring nodename, Node* RootNode);
+	void ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, std::shared_ptr<Mesh> curMesh);
+	std::shared_ptr<Node>FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode);
 
-	Device* m_device;
-
-	ResourceManager* m_ResourceManager;
+	std::weak_ptr<Device> m_Device;
+	std::weak_ptr<ResourceManager> m_ResourceManager;
 
 	std::map<std::wstring, int> BoneMapping;
 

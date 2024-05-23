@@ -27,7 +27,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	VPTestProcess* Process;
-	Process = new VPTestProcess(hInstance, "VisionPredator", 1920, 1080);
+	Process = new VPTestProcess(hInstance, "Vision Predator", 1920, 1080);
 	Process->Loop();
 	delete Process;
 

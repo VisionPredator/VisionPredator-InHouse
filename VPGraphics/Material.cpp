@@ -1,11 +1,13 @@
 #include "pch.h"
-
 #include "Material.h"
+#include "Device.h"
 
-Material::Material(Device* device) : m_Device(device), m_DiffuseSRV(nullptr), m_NormalSRV(nullptr), m_SpecularSRV(nullptr)
+
+Material::Material(std::shared_ptr<Device> device) : m_Device(device), m_DiffuseSRV(), m_NormalSRV(), m_SpecularSRV()
 {
-	m_DiffuseSRV = new ShaderResourceView(device);
-	m_NormalSRV = new ShaderResourceView(device);
+	m_DiffuseSRV =  std::make_shared<ShaderResourceView>(device);
+	m_NormalSRV =  std::make_shared<ShaderResourceView>(device);
+	
 }
 
 Material::~Material()

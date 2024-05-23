@@ -9,6 +9,7 @@
 #include <io.h>
 #include "SceneSerializer.h"
 
+#include "../VPGraphics/GraphicsEngine.h"
 
 
 #ifdef _DEBUG
@@ -53,6 +54,12 @@
 		UpdateWindow(m_hWnd);
 		m_SystemManager->AddSystem<TransformSystem>();
 		m_SystemManager->AddSystem<SceneSerializer>();
+
+
+		m_Graphics = new GraphicsEngine(m_hWnd);
+		m_Graphics->Initialize();
+
+
 	}
 
 	VPEngine::~VPEngine()
@@ -62,6 +69,8 @@
 		delete m_SystemManager;
 		InputManager::GetInstance().Release();
 		EventManager::GetInstance().Release();
+		m_Graphics->Finalize();
+		delete m_Graphics;
 	}
 
 	void VPEngine::Loop()
@@ -83,7 +92,7 @@
 			else
 			{
 				Update();
-				//Render();
+				Render();
 
 			}
 		}
@@ -106,11 +115,12 @@
 
 		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 		SetWindowTextW(m_hWnd, newname.c_str());
+		m_Graphics->Update(m_DeltaTime);
 	}
 
 	void VPEngine::Render()
 	{
-
+		m_Graphics->Render();
 	}
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
