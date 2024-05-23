@@ -14,7 +14,7 @@ VertexShader::VertexShader(std::wstring filename) : Shader(filename)
 
 VertexShader::VertexShader(std::shared_ptr<Device> device, std::wstring filename /*= L"need name"*/) : Shader(device, filename)
 {
-	m_filename = L"../x64/Debug/" + m_filename + L"VS.cso";
+	m_filename = m_filename + L"VS.cso";
 
 	ID3DBlob* VSBlob = nullptr;
 
@@ -46,7 +46,6 @@ VertexShader::VertexShader(std::shared_ptr<Device> device, std::wstring filename
 
 VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_vertex, std::wstring filename /*= L"need name"*/) : Shader(device, filename), m_Kind_of_Vertex(kind_of_vertex)
 {
-	//m_filename = L"../x64/Debug/" + m_filename + L"VS.cso";
 	m_filename = m_filename + L"VS.cso";
 
 	ID3DBlob* VSBlob = nullptr;
