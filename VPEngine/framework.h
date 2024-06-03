@@ -15,11 +15,11 @@
 #include <string_view>
 #include <entt/entt.hpp>
 #include <d3d11.h>
-#include "VisPredDirectX\VisPredMath.h"
+#include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;
 #include <crtdbg.h>
 ///new로 인한 누수 잡기!!
-#ifdef _DEBUG
-#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#endif
+//#ifdef _DEBUG
+//#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//#endif

@@ -64,6 +64,9 @@
     <Filter Include="자체 엔진\Entity\Component\Base">
       <UniqueIdentifier>{0cb2aa62-22e1-406a-b9cc-975e1bc376a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VisPredMath">
+      <UniqueIdentifier>{c9967b03-29c5-484d-a7bf-51de3ed1ab3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -153,6 +156,9 @@
     <ClInclude Include="Component.h">
       <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClInclude>
+    <ClInclude Include="VisPredMath.h">
+      <Filter>VisPredMath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -227,6 +233,9 @@
     <ClCompile Include="Component.cpp">
       <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClCompile>
+    <ClCompile Include="VisPredMath.cpp">
+      <Filter>VisPredMath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
@@ -235,5 +244,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="VisPredMath.inl">
+      <Filter>VisPredMath</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 #pragma once
 #include "VPEngine.h"
+#include "IImGui.h"
+class EditorCamera;
 class VP_Editor :public VPEngine
 {
 public:
@@ -7,6 +9,7 @@ public:
 	~VP_Editor();
 	virtual void Update();
 	virtual void Render();
-
+	std::vector<IImGui*> m_ImGuis;
+	EditorCamera* test;
 };
 

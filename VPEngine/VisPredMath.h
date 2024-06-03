@@ -1,11 +1,6 @@
 //-------------------------------------------------------------------------------------
-// SimpleMath.h -- Simplified C++ Math wrapper for DirectXMath
-//
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
+// 
+// 
 //-------------------------------------------------------------------------------------
 
 #pragma once
@@ -26,9 +21,8 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
-#include <nlohmann/json.hpp>
-#include <entt/entt.hpp>
-
+#include "../include/nlohmann/json.hpp"
+#include "../include/entt/entt.hpp"
 
 using namespace entt::literals;
 
@@ -45,6 +39,7 @@ namespace VisPred
     namespace SimpleMath
     {
         using namespace DirectX;
+
         struct Vector2;
         struct Vector4;
         struct Matrix;

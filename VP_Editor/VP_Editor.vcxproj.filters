@@ -33,6 +33,15 @@
     <ClInclude Include="VP_Editor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="IImGui.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Toolbar.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorCamera.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VPMain.cpp">
@@ -42,6 +51,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="VP_Editor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IImGui.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Toolbar.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorCamera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

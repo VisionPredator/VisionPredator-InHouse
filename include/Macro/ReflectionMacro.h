@@ -72,6 +72,12 @@ static void AutoRegisterMetaTypeFunction()
 
 
 
+
+
+
+
+
+
 namespace Reflection
 {
     template<typename T>
