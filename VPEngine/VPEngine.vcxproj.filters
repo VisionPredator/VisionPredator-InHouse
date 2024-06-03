@@ -61,6 +61,9 @@
     <Filter Include="자체 엔진\Entity\Component\Header">
       <UniqueIdentifier>{735bd9a1-3a1e-4afa-83ec-b97f4c14b8c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="자체 엔진\Entity\Component\Base">
+      <UniqueIdentifier>{0cb2aa62-22e1-406a-b9cc-975e1bc376a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -70,9 +73,6 @@
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="IDComponent.h">
@@ -101,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>자체 엔진\Pch</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>자체 엔진\Manager\Header</Filter>
     </ClInclude>
     <ClInclude Include="EventManager.h">
       <Filter>자체 엔진\Manager\Header</Filter>
@@ -144,7 +141,7 @@
     <ClInclude Include="VPEngine.h">
       <Filter>자체 엔진\Base\Header</Filter>
     </ClInclude>
-    <ClInclude Include="MeshRenderSystem.h">
+    <ClInclude Include="RenderSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
     <ClInclude Include="resource1.h">
@@ -152,6 +149,9 @@
     </ClInclude>
     <ClInclude Include="PlayerComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,9 +162,6 @@
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
       <Filter>자체 엔진\Entity\Component\Source</Filter>
     </ClCompile>
     <ClCompile Include="IDComponent.cpp">
@@ -184,9 +181,6 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>자체 엔진\Pch</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>자체 엔진\Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
       <Filter>자체 엔진\Manager\Source</Filter>
@@ -224,16 +218,22 @@
     <ClCompile Include="VPEngine.cpp">
       <Filter>자체 엔진\Base\Source</Filter>
     </ClCompile>
-    <ClCompile Include="MeshRenderSystem.cpp">
+    <ClCompile Include="RenderSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>자체 엔진\Entity\Component\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
       <Filter>자체 엔진\리소스 파일</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

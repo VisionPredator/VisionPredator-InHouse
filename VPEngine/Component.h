@@ -1,6 +1,6 @@
 #pragma once                                                                                                                                                                                                                            
 #include "Entity.h"
-#include "EntityManager.h"
+//#include "SceneManager.h"
 struct Component
 {
 	Component() = default;
@@ -8,11 +8,10 @@ struct Component
 	{
 		OwnedEntity = nullptr; // Then set the pointer to nullptr (mostly for safety in this scope)
 	}
-	Entity* OwnedEntity = nullptr;
 
 	virtual void SerializeComponent(nlohmann::json& json) const {};
-	virtual void* DeserializeComponent(const nlohmann::json json, EntityManager* entityManager, uint32_t entityID) const { return nullptr; }
-
+	virtual void* DeserializeComponent(const nlohmann::json json,Entity* parentEntity) const { return nullptr; }
+	virtual Component* AddComponent(Entity* parentEntity) { return nullptr; }
 	template <typename T>
 	T* GetComponent()
 	{
@@ -27,17 +26,11 @@ struct Component
 	{
 		return OwnedEntity->GetEntityID();
 	}
+	Entity* GetEntity() { return OwnedEntity; }
+	void SetEntity(Entity* entity) { OwnedEntity = entity; }
+	virtual entt::id_type GetTypeID() const = 0;
+protected:
+	Entity* OwnedEntity = nullptr;
+	friend class SceneManager;
 };
-
-template <typename T>
-class IDType
-{
-public:
-	static entt::id_type getTypeID()
-	{
-		static entt::id_type typeID = entt::resolve<T>().id();
-		return typeID;
-	}
-};
-
 

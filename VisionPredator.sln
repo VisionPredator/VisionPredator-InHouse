@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPTestProcess", "VPTestProc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPGraphics", "VPGraphics\VPGraphics.vcxproj", "{6AF1262E-67C4-4738-97AC-A36899FE4316}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VP_Editor", "VP_Editor\VP_Editor.vcxproj", "{E90E05F5-F35A-4376-ACB8-DE5D257126BC}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{2F00B69A-45E0-4776-A6F8-47E4E473AD95}"
 EndProject
 Global
@@ -43,6 +45,14 @@ Global
 		{6AF1262E-67C4-4738-97AC-A36899FE4316}.Release|x64.Build.0 = Release|x64
 		{6AF1262E-67C4-4738-97AC-A36899FE4316}.Release|x86.ActiveCfg = Release|Win32
 		{6AF1262E-67C4-4738-97AC-A36899FE4316}.Release|x86.Build.0 = Release|Win32
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Debug|x64.ActiveCfg = Debug|x64
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Debug|x64.Build.0 = Debug|x64
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Debug|x86.ActiveCfg = Debug|Win32
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Debug|x86.Build.0 = Debug|Win32
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Release|x64.ActiveCfg = Release|x64
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Release|x64.Build.0 = Release|x64
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Release|x86.ActiveCfg = Release|Win32
+		{E90E05F5-F35A-4376-ACB8-DE5D257126BC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

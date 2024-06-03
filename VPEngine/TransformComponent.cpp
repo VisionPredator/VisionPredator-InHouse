@@ -7,13 +7,22 @@
 		META_ADD_MEMBER(Children,Children::ChildrenID)
 		META_ADD_MEMBER(TransformComponent,TransformComponent::Local_Location,TransformComponent::Local_Quaternion,TransformComponent::Local_Scale)
 
-
-
-
-
 	}
+	IMPLEMENT_COMPONENT_TYPE(Parent);
+	IMPLEMENT_COMPONENT_TYPE(Children);
+	IMPLEMENT_COMPONENT_TYPE(TransformComponent);
+
 
 	TransformComponent::TransformComponent()
 	{
+		FrontVector = WorldTransform.Forward();
+		UpVector = WorldTransform.Up();
 	}
 
+	Parent::Parent()
+	{
+	}
+
+	Children::Children()
+	{
+	}

@@ -1,13 +1,12 @@
 #pragma once
-#include "EventSubscriber.h"
 #include "System.h"
 struct TransformComponent;
 
 class TransformSystem :
-	public System, public IUpdatable, public IFixedUpdatable, public EventSubscriber
+	public System, public IUpdatable, public IFixedUpdatable
 {
 public:
-	TransformSystem(EntityManager* entityManager);
+	TransformSystem(SceneManager* entityManager);
 	~TransformSystem() override = default;
 
 
@@ -18,6 +17,5 @@ public:
 	// IFixedUpdatable을(를) 통해 상속됨
 	void FixedUpdate(float deltaTime) override;
 
-	void OnTest(std::any test);
 };
 

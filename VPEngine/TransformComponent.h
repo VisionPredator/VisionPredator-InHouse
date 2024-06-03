@@ -11,7 +11,9 @@ using namespace entt::literals;
 struct Parent : public Component
 {
 	VP_JSONBODY(Parent, ParentID)
-		uint32_t ParentID = 0;
+		Parent();
+
+	uint32_t ParentID = 0;
 
 
 };
@@ -19,18 +21,19 @@ struct Parent : public Component
 struct Children : public Component
 {
 	VP_JSONBODY(Children, ChildrenID)
+		Children();
 
-		std::list<uint32_t> ChildrenID;
+	std::list<uint32_t> ChildrenID;
 
 };
 
 struct TransformComponent :public Component
 {
-	TransformComponent();
 	VP_JSONBODY(TransformComponent, Local_Location, Local_Quaternion, Local_Scale)
+		TransformComponent();
 
 
-		VPMath::Vector3 Local_Location = {};
+	VPMath::Vector3 Local_Location = {};
 	VPMath::Quaternion Local_Quaternion = {};
 	VPMath::Vector3 Local_Scale = { 1.f,1.f,1.f };
 
@@ -41,7 +44,8 @@ struct TransformComponent :public Component
 	VPMath::Vector3 World_Location = {};
 	VPMath::Quaternion World_Quaternion = {};
 	VPMath::Vector3 World_Scale = { 1.f,1.f,1.f };
-
+	VPMath::Vector3 FrontVector = {};
+	VPMath::Vector3 UpVector = {};
 	VPMath::Matrix LocalTransform = {};
 	VPMath::Matrix WorldTransform = {};
 };
