@@ -1,11 +1,5 @@
 #pragma once
-#include <string>
-#include <map>
-#include <array>
-#include <unordered_map>
-#include <vector>
-
-#include "SimpleMath.h"
+#include "pch.h"
 
 #include "MeshFilter.h"
 
@@ -25,16 +19,9 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 
-#include "Object.h"
 #include "VertexData.h"
 
 
-enum class SamplerState
-{
-	LINEAR = 0,
-
-	END
-};
 
 
 /// <summary>
@@ -47,84 +34,75 @@ enum class SamplerState
 class ResourceManager
 {
 public:
-	ResourceManager(Device* device);
+	ResourceManager(std::weak_ptr<Device> device);
 	~ResourceManager();
 
 	template<typename T, typename... Types>
-	T* Create(std::wstring path, Types...args);
+	std::weak_ptr <T> Create(std::wstring path, Types...args);
 
 	template<typename T>
-	T* Get(std::wstring path);
+	std::weak_ptr <T> Get(std::wstring path);
 
 	template<typename T>
-	void Add(std::wstring path, Resource* resource);
+	void Add(std::wstring path, std::shared_ptr<Resource> resource);
 
 
 	template<typename T>
 	void Erase(std::wstring path);
 
 
-#pragma region delete funtion
-
-
-	void Update(double dt, DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj);
-
-
 	void Initialize();
-
-#pragma endregion delete funtion
-
 	void OnResize();
 
 private:
-	Device* m_device;
+	std::weak_ptr<Device> m_Device;
+	std::weak_ptr<ConstantBuffer<CameraCB>> m_Camera;
+	std::weak_ptr<ConstantBuffer<DirectionLightCB>> m_DirectionalLight;
 
-
-
-	ConstantBuffer<CameraCB>* m_Camera;
-	ConstantBuffer<DirectionLightCB>* m_DirectionalLight;
-
-	std::array<std::unordered_map<std::wstring, Resource*>, static_cast<int>(ResourceType::End)> m_ResourceArray;
+	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 };
 
 
 template<typename T, typename...Types>
-T* ResourceManager::Create(std::wstring path, Types...args)
+std::weak_ptr <T> ResourceManager::Create(std::wstring path, Types...args)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
-	std::unordered_map<std::wstring, Resource*> curMap = m_ResourceArray[index];
+	std::unordered_map<std::wstring, std::shared_ptr<Resource>> curMap = m_ResourceArray[index];
 
 	if (curMap.find(path) != curMap.end())
 	{
-		return dynamic_cast<T*>(m_ResourceArray[index][path]);
+		return std::dynamic_pointer_cast<T>(m_ResourceArray[index][path]);
 	}
 
-	m_ResourceArray[index].insert(std::pair<std::wstring, Resource*>(path, new T(m_device, args...)));
+	std::shared_ptr<T> newResource = std::make_shared<T>(m_Device.lock(), args...);
 
-	return dynamic_cast<T*>(m_ResourceArray[index][path]);
+	m_ResourceArray[index].insert(std::pair<std::wstring, std::shared_ptr<Resource>>(path, newResource));
+
+	return  std::dynamic_pointer_cast<T>(m_ResourceArray[index][path]);
 }
 
 template<typename T>
-T* ResourceManager::Get(std::wstring path)
+std::weak_ptr <T> ResourceManager::Get(std::wstring path)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
-	std::unordered_map<std::wstring, Resource*>& curMap = m_ResourceArray[index];
+	std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[index];
 
 
 	if (curMap.find(path) != curMap.end())
 	{
-		return dynamic_cast<T*>(curMap[path]);
+		return  std::dynamic_pointer_cast<T>(curMap[path]);
 	}
 
-	return nullptr;
+
+	return {};
 }
 
 template<typename T>
-void ResourceManager::Add(std::wstring path, Resource* resource)
+void ResourceManager::Add(std::wstring path, std::shared_ptr<Resource> resource)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
 
-	std::unordered_map<std::wstring, Resource*>& curMap = m_ResourceArray[index];
+	std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[index];
 	if (curMap.find(path) == curMap.end())
 	{
 		curMap.insert({ path,resource });
@@ -136,11 +114,11 @@ void ResourceManager::Erase(std::wstring path)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
 
-	std::unordered_map<std::wstring, Resource*>& curMap = m_ResourceArray[index];
+	std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[index];
 	if (curMap.find(path) != curMap.end())
 	{
 		curMap[path]->Release();
-		delete curMap[path];
+		//delete curMap[path];
 		curMap.erase(path);
 	}
 }

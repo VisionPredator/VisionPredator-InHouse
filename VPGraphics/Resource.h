@@ -5,6 +5,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+
 
 enum class ResourceType
 {
@@ -15,9 +17,6 @@ enum class ResourceType
 	DSV,
 	SRV,
 	RS,
-	Object,
-	Mesh,
-	Material,
 	ModelData,
 	PixelShader,
 	VertexShader,
@@ -45,7 +44,7 @@ class Resource
 {
 public:
 	Resource();
-	Resource(Device* device);
+	Resource(std::shared_ptr<Device> device);
 	virtual ~Resource();
 
 	virtual void Release() abstract;
@@ -55,7 +54,7 @@ public:
 	static ResourceType GetResourceType();
 
 protected:
-	Device* m_Device;
+	std::weak_ptr<Device>m_Device;
 private:
 };
 
@@ -72,8 +71,6 @@ ResourceType Resource::GetResourceType()
 		return ResourceType::SRV;
 	if (std::is_base_of_v<RenderState, T>)
 		return ResourceType::RS;
-	if (std::is_base_of_v<Object, T>)
-		return ResourceType::Object;
 	if (std::is_base_of_v<ModelData, T>)
 		return ResourceType::ModelData;
 	if (std::is_base_of_v<PixelShader, T>)

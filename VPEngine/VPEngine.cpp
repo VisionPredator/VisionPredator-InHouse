@@ -8,8 +8,8 @@
 #include <fcntl.h>
 #include <io.h>
 #include "SceneSerializer.h"
-#include "RenderSystem.h"
 
+#include "../VPGraphics/GraphicsEngine.h"
 
 
 #ifdef _DEBUG
@@ -43,28 +43,34 @@
 			NULL, NULL, hInstance, NULL);
 
 		m_TimeManager = new TimeManager;
-		m_SceneManager = new SceneManager;
+		m_EntityManager = new EntityManager;
 		m_SystemManager = new SystemManager;
-		m_SceneManager->Initialize();
-		m_SystemManager->Initialize(m_SceneManager);
+		m_EntityManager->Initalize();
+		m_SystemManager->Initialize(m_EntityManager);
 
 		InputManager::GetInstance().Initialize();
 		/// 다 초기화 되고 윈도우 만들기
 		ShowWindow(m_hWnd, SW_SHOWNORMAL);
 		UpdateWindow(m_hWnd);
-
 		m_SystemManager->AddSystem<TransformSystem>();
 		m_SystemManager->AddSystem<SceneSerializer>();
-		m_SystemManager->AddSystem<RenderSystem>();
+
+
+		m_Graphics = new GraphicsEngine(m_hWnd);
+		m_Graphics->Initialize();
+
+
 	}
 
 	VPEngine::~VPEngine()
 	{
 		delete m_TimeManager;
-		delete m_SceneManager;
+		delete m_EntityManager;
 		delete m_SystemManager;
 		InputManager::GetInstance().Release();
 		EventManager::GetInstance().Release();
+		m_Graphics->Finalize();
+		delete m_Graphics;
 	}
 
 	void VPEngine::Loop()
@@ -85,16 +91,9 @@
 			}
 			else
 			{
-
-
 				Update();
-
 				Render();
 
-				if (InputManager::GetInstance().GetKeyDown(KEY::ESC))
-				{
-					break;
-				}
 			}
 		}
 
@@ -105,21 +104,23 @@
 
 	void VPEngine::Update()
 	{
-		m_TimeManager->Update();
-		m_DeltaTime = m_TimeManager->GetDeltaTime();
 		EventManager::GetInstance().Update(m_DeltaTime);
 		InputManager::GetInstance().Update();
+		m_TimeManager->Update();
+		m_DeltaTime = m_TimeManager->GetDeltaTime();
+		//if (m_DeltaTime > 1)
+		//	m_DeltaTime = 1/165;
 		m_SystemManager->Update(m_DeltaTime);
 		m_SystemManager->FixedUpdate(m_DeltaTime);
-		m_SystemManager->RenderUpdate(m_DeltaTime);
+
 		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 		SetWindowTextW(m_hWnd, newname.c_str());
-
+		m_Graphics->Update(m_DeltaTime);
 	}
 
 	void VPEngine::Render()
 	{
-
+		m_Graphics->Render();
 	}
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

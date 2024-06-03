@@ -2,9 +2,9 @@
 
 #include "RenderState.h"
 
-RenderState::RenderState(Device* device, D3D11_RASTERIZER_DESC desc) : Resource(device)
+RenderState::RenderState(std::shared_ptr<Device> device, D3D11_RASTERIZER_DESC desc) : Resource(device)
 {
-	m_Device->Get()->CreateRasterizerState(&desc, &m_RS);
+	m_Device.lock()->Get()->CreateRasterizerState(&desc, &m_RS);
 }
 
 RenderState::~RenderState()

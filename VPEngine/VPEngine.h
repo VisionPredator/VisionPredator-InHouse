@@ -1,5 +1,8 @@
 #pragma once
 #include "resource.h"
+#include "../VPGraphics/IGraphics.h"
+
+
 
 class TimeManager;
 class SystemManager;
@@ -19,5 +22,9 @@ protected:
 	SystemManager* m_SystemManager;
 	SceneManager* m_SceneManager;
 	float m_DeltaTime;
+
+
+	Graphics::Interface* m_Graphics;
+
 };
 

@@ -13,11 +13,11 @@ class Buffer :
 {
 public:
 	Buffer();
-	Buffer(Device* device, UINT count);
-	Buffer(Device* device);
-	Buffer(Device* device, D3D11_BUFFER_DESC desc);
-	Buffer(Device* device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data);
-	Buffer(Device* device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, int count);
+	Buffer(std::shared_ptr<Device> device, UINT count);
+	Buffer(std::shared_ptr<Device> device);
+	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc);
+	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data);
+	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, int count);
 	~Buffer();
 
 	ID3D11Buffer* Get() const;

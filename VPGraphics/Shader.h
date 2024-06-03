@@ -13,8 +13,8 @@ class Shader :
 {
 public:
 	Shader(std::wstring filename = L"need name");
-	Shader(Device* device, std::wstring filename = L"need name");
-	Shader(Device* device, D3D11_INPUT_ELEMENT_DESC desc, std::wstring filename = L"need name");
+	Shader(std::shared_ptr<Device> device, std::wstring filename = L"need name");
+	Shader(std::shared_ptr<Device> device, D3D11_INPUT_ELEMENT_DESC desc, std::wstring filename = L"need name");
 	virtual ~Shader();
 
 	virtual void Release() abstract;

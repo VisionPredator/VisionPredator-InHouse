@@ -4,7 +4,7 @@
 class RenderState :public Resource
 {
 public:
-	RenderState(Device* device, D3D11_RASTERIZER_DESC desc);
+	RenderState(std::shared_ptr<Device> device, D3D11_RASTERIZER_DESC desc);
 	~RenderState();
 
 	virtual void Release() override;

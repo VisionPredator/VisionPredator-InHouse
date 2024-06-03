@@ -1,10 +1,9 @@
 #pragma once
 #include "Shader.h"
-
 #include <string>
 
-#include "Device.h"
 
+class Device;
 
 enum class VERTEXFILTER
 {
@@ -17,22 +16,18 @@ enum class VERTEXFILTER
 
 };
 
-
-
 class VertexShader : public Shader
 {
 public:
 	VertexShader(std::wstring filename = L"need name");
-	VertexShader(Device* device, std::wstring filename = L"need name");
-	VertexShader(Device* device, VERTEXFILTER kind_of_vertex = VERTEXFILTER::BASE, std::wstring filename = L"need name");
+	VertexShader(std::shared_ptr<Device>device, std::wstring filename = L"need name");
+	VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_vertex = VERTEXFILTER::BASE, std::wstring filename = L"need name");
 	~VertexShader();
 
 
 
 	ID3D11PixelShader* GetPS() = delete;
 	virtual void Release() override;
-
-	static Resource* Create(Device* device, std::wstring name); //지울 예정
 
 private:
 	VERTEXFILTER m_Kind_of_Vertex;

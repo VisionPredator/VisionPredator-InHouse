@@ -2,9 +2,8 @@
 
 #include <d3d11.h>
 #include <vector>
+#pragma comment(lib, "d3d11.lib")
 
-
-class Object;
 class RenderTargetView;
 class DepthStencilView;
 class ShaderResourceView;
@@ -25,13 +24,10 @@ public:
 
 	void BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DSV, const float* color);
 	void EndRender();
-	void ForwardRender(Object* object);
-
 
 
 
 	void BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs);
-	void DeferredRender(Object* object, std::vector<RenderTargetView*>& RTVs, std::vector < DepthStencilView*>& DSVs);
 
 	void DrawQuard(ShaderResourceView* srv);
 

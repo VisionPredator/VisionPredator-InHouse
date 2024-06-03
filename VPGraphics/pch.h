@@ -8,14 +8,19 @@
 #define PCH_H
 
 #include "framework.h"
+#include <windows.h>
 
 
 #include <memory>
 #include <string>
+#include <vector>
+#include <array>
 #include <map>
 #include <unordered_map>
+#include <filesystem>
+#include <iostream>
+#include <algorithm>
 
 #include "SimpleMath.h"
-
 
 #endif //PCH_H

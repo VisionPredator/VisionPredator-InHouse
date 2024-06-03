@@ -8,13 +8,13 @@ Shader::Shader(std::wstring filename) : Resource(), m_filename(filename), m_VS(n
 }
 
 
-Shader::Shader(Device* device, std::wstring filename) : Resource(device), m_filename(filename), m_VS(nullptr), m_PS(nullptr), m_inputLayout(nullptr), m_Desc()
+Shader::Shader(std::shared_ptr < Device> device, std::wstring filename) : Resource(device), m_filename(filename), m_VS(nullptr), m_PS(nullptr), m_inputLayout(nullptr), m_Desc()
 {
 
 }
 
 
-Shader::Shader(Device* device, D3D11_INPUT_ELEMENT_DESC desc, std::wstring filename /*= L"need name"*/) :Resource(device), m_filename(filename), m_Desc(desc), m_VS(nullptr), m_PS(nullptr), m_inputLayout(nullptr)
+Shader::Shader(std::shared_ptr < Device>device, D3D11_INPUT_ELEMENT_DESC desc, std::wstring filename /*= L"need name"*/) :Resource(device), m_filename(filename), m_Desc(desc), m_VS(nullptr), m_PS(nullptr), m_inputLayout(nullptr)
 {
 
 }

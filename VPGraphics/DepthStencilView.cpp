@@ -4,11 +4,11 @@
 #include "Texture2D.h"
 #include "Desc.h"
 
-DepthStencilView::DepthStencilView(Device* device, D3D11_TEXTURE2D_DESC desc) : Resource(device)
+DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_TEXTURE2D_DESC desc) : Resource(device)
 {
 	D3D11_TEXTURE2D_DESC dsd{};
-	dsd.Width = m_Device->GetWndSize().right - m_Device->GetWndSize().left;
-	dsd.Height = m_Device->GetWndSize().bottom - m_Device->GetWndSize().top;
+	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+	dsd.Height = m_Device.lock() ->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 	dsd.MipLevels = 1;
 	dsd.ArraySize = 1;
 	dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -34,14 +34,14 @@ DepthStencilView::DepthStencilView(Device* device, D3D11_TEXTURE2D_DESC desc) : 
 	ID3D11Texture2D* DSBuffer;
 
 	HRESULT hr;
-	hr = m_Device->Get()->CreateTexture2D(&dsd, 0, &DSBuffer);
+	hr = m_Device.lock()->Get()->CreateTexture2D(&dsd, 0, &DSBuffer);
 	if (FAILED(hr))
 	{
 		MessageBox(0, L"Device CreateTexture Failed", 0, 0);
 	}
 	else
 	{
-		hr = m_Device->Get()->CreateDepthStencilView(DSBuffer, 0, &m_DSV);
+		hr = m_Device.lock()->Get()->CreateDepthStencilView(DSBuffer, 0, &m_DSV);
 	}
 
 	if (FAILED(hr))
@@ -52,11 +52,11 @@ DepthStencilView::DepthStencilView(Device* device, D3D11_TEXTURE2D_DESC desc) : 
 	DSBuffer->Release();
 }
 
-DepthStencilView::DepthStencilView(Device* device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture) : Resource(device)
+DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture) : Resource(device)
 {
 
 	HRESULT hr;
-	hr = m_Device->Get()->CreateDepthStencilView(texture->Get(), &desc, &m_DSV);
+	hr = m_Device.lock()->Get()->CreateDepthStencilView(texture->Get(), &desc, &m_DSV);
 
 	if (FAILED(hr))
 	{
@@ -64,7 +64,7 @@ DepthStencilView::DepthStencilView(Device* device, D3D11_DEPTH_STENCIL_VIEW_DESC
 	}
 }
 
-DepthStencilView::DepthStencilView(Device* device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
+DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
 {
 	/*HRESULT hr;
 	hr = m_Device->Get()->CreateDepthStencilView(DSBuffer, 0, &m_DSV);
