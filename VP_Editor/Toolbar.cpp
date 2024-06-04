@@ -7,7 +7,8 @@ Toolbar::Toolbar()
 
 void Toolbar::ImGuiRender()
 {
-	ImGui::Begin("Asset");
-	ImGui::End();
-
+	if (ImGui::Begin("Light"))
+	{
+		ImGui::Text("Light0");
+	}
 }

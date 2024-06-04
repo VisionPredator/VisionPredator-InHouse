@@ -10,6 +10,8 @@ public:
 	virtual void Update();
 	virtual void Render();
 	std::vector<IImGui*> m_ImGuis;
-	EditorCamera* test;
+	EditorCamera* m_editorcamera;
+
+	bool m_IsEditorMode = true;
 };
 

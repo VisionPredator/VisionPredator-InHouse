@@ -155,7 +155,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
 		break;
 	}
-
+	case WM_LBUTTONDOWN:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_LBUTTON), KEY_STATE::DOWN };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_LBUTTON), KEY_STATE::UP };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_RBUTTON), KEY_STATE::DOWN };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_RBUTTON), KEY_STATE::UP };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

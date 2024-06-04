@@ -27,8 +27,8 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	*/
-	//m_ImGuis.push_back(new Toolbar);
-	test = new EditorCamera;
+	m_ImGuis.push_back(new Toolbar);
+	m_editorcamera = new EditorCamera;
 
 
 }
@@ -44,26 +44,28 @@ VP_Editor::~VP_Editor()
 
 void VP_Editor::Update()
 {
-	test->Update(m_DeltaTime);
-	VPEngine::Update();
-	static float test = 0;
+	if (m_IsEditorMode)
+	{
+		m_editorcamera->Update(m_DeltaTime);
+		VPEngine::Update();
 
-	test += m_DeltaTime;
-	if (test>5&& test < 9)
-	{
-		m_SystemManager->ReleaseSystem<TransformSystem>();
+		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
 	}
-	if (test > 8)
+	else
 	{
-		m_SystemManager->AddSystem<TransformSystem>();
+		VPEngine::Update();
 	}
+
 }
 
 void VP_Editor::Render()
 {
-	//for (auto& ImGui : m_ImGuis)
-	//{
-	//	ImGui->ImGuiRender();
-	//}
+	VPEngine::Render();
+
+	for (auto& ImGui : m_ImGuis)
+	{
+		ImGui->ImGuiRender();
+	}
+
 }
 

@@ -2583,6 +2583,14 @@ inline Matrix Matrix::CreatePerspectiveFieldOfView(float fov, float aspectRatio,
     XMStoreFloat4x4(&R, XMMatrixPerspectiveFovRH(fov, aspectRatio, nearPlane, farPlane));
     return R;
 }
+inline Matrix Matrix::CreatePerspectiveFieldOfView_LH(float fov, float aspectRatio, float nearPlane, float farPlane) noexcept
+{
+    using namespace DirectX;
+    Matrix L;
+    XMStoreFloat4x4(&L, XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane));
+    return L;
+}
+
 
 inline Matrix Matrix::CreatePerspective(float width, float height, float nearPlane, float farPlane) noexcept
 {
@@ -2625,6 +2633,16 @@ inline Matrix Matrix::CreateLookAt(const Vector3& eye, const Vector3& target, co
     const XMVECTOR upv = XMLoadFloat3(&up);
     XMStoreFloat4x4(&R, XMMatrixLookAtRH(eyev, targetv, upv));
     return R;
+}
+inline Matrix Matrix::CreateLookAt_LH(const Vector3& eye, const Vector3& target, const Vector3& up) noexcept
+{
+    using namespace DirectX;
+    Matrix L;
+    const XMVECTOR eyev = XMLoadFloat3(&eye);
+    const XMVECTOR targetv = XMLoadFloat3(&target);
+    const XMVECTOR upv = XMLoadFloat3(&up);
+    XMStoreFloat4x4(&L, XMMatrixLookAtLH(eyev, targetv, upv));
+    return L;
 }
 
 inline Matrix Matrix::CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept
