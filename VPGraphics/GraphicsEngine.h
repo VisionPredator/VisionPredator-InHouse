@@ -75,6 +75,7 @@ private:
 	RECT m_wndSize;
 
 	Camera* m_Camera;
+	DirectionLightCB* m_Sun;
 
 	//camera
 	DirectX::SimpleMath::Matrix m_View;

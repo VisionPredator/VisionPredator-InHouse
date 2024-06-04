@@ -6,32 +6,16 @@ namespace BufferDESC
 {
 	namespace Constant
 	{
-		static D3D11_BUFFER_DESC DefaultWorld = {
-			sizeof(WorldTransformCB),
-			D3D11_USAGE_DEFAULT,
-			D3D11_BIND_CONSTANT_BUFFER,
-			0,
-			0
+		static D3D11_BUFFER_DESC DefaultTransform = {
+		sizeof(TransformCB),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_CONSTANT_BUFFER,
+		0,
+		0
 		};
 
-		static D3D11_BUFFER_DESC DynamicWorld = {
-			sizeof(WorldTransformCB),
-			D3D11_USAGE_DYNAMIC,
-			D3D11_BIND_CONSTANT_BUFFER,
-			D3D11_CPU_ACCESS_WRITE,
-			0
-		};
-
-		static D3D11_BUFFER_DESC DefaultLocal = {
-			sizeof(LocalTransformCB),
-			D3D11_USAGE_DEFAULT,
-			D3D11_BIND_CONSTANT_BUFFER,
-			0,
-			0
-		};
-
-		static D3D11_BUFFER_DESC DynamicLocal = {
-			sizeof(LocalTransformCB),
+		static D3D11_BUFFER_DESC DynamicTransform = {
+			sizeof(TransformCB),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,
@@ -53,9 +37,6 @@ namespace BufferDESC
 			D3D11_CPU_ACCESS_WRITE,
 			0
 		};
-
-
-
 
 		static D3D11_BUFFER_DESC DefaultDirLight = {
 			sizeof(DirectionLightCB),

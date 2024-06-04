@@ -8,17 +8,13 @@ struct CB
 
 };
 
-struct WorldTransformCB : public CB
+struct TransformCB : public CB
 {
-	DirectX::SimpleMath::Matrix world;
-};
-
-struct LocalTransformCB : public CB
-{
-	LocalTransformCB() : local(DirectX::SimpleMath::Matrix::Identity)
+	TransformCB() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity)
 	{
 	}
 
+	DirectX::SimpleMath::Matrix world;
 	DirectX::SimpleMath::Matrix local;
 };
 

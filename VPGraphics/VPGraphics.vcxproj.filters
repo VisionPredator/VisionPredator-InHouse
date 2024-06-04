@@ -116,6 +116,12 @@
     <Filter Include="Resource\Pipeline">
       <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hlsl\Mesh">
+      <UniqueIdentifier>{b1fc30bd-d6da-458d-bf01-fa4c58652fe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Header">
+      <UniqueIdentifier>{046dd9ee-14e0-454d-a71b-9bc325ac1f92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -326,23 +332,23 @@
     <FxCompile Include="BasePS.hlsl">
       <Filter>hlsl\Base</Filter>
     </FxCompile>
-    <FxCompile Include="BaseVS.hlsl">
-      <Filter>hlsl\Base</Filter>
-    </FxCompile>
     <FxCompile Include="TexturePS.hlsl">
       <Filter>hlsl\Texture</Filter>
-    </FxCompile>
-    <FxCompile Include="TextureVS.hlsl">
-      <Filter>hlsl\Texture</Filter>
-    </FxCompile>
-    <FxCompile Include="SkinningVS.hlsl">
-      <Filter>hlsl\Skinning</Filter>
     </FxCompile>
     <FxCompile Include="SkinningPS.hlsl">
       <Filter>hlsl\Skinning</Filter>
     </FxCompile>
+    <FxCompile Include="MeshVS.hlsl">
+      <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshPS.hlsl">
+      <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDiagram.cd" />
+    <None Include="Common.hlsli">
+      <Filter>hlsl\Header</Filter>
+    </None>
   </ItemGroup>
 </Project>

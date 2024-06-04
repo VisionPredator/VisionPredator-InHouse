@@ -38,18 +38,21 @@ struct SpotLight
     
 };
 
-cbuffer Transform : register(b0)
-{
-    float4x4 glocal;
-}
-
-cbuffer Camera : register(b1)
+cbuffer Camera : register(b0)
 {
     float4x4 gWorldViewProj;
     float4x4 gView;
     float4x4 gProj;
     float4x4 gViewInverse;
 };
+
+cbuffer Transform : register(b1)
+{
+    float4x4 gWorld;
+    float4x4 glocal;
+}
+
+
 
 cbuffer Light : register(b2)
 {

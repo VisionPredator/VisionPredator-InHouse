@@ -105,6 +105,7 @@ bool GraphicsEngine::Initialize()
 			AddRenderModel(MeshFilter::Grid, L"Grid");
 			AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
 			EraseObject(L"TextureBox");
+			AddRenderModel(MeshFilter::Box, L"Box");
 			AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
 
 			
@@ -141,6 +142,9 @@ void GraphicsEngine::Update(double dt)
 
 
 	std::weak_ptr<ConstantBuffer<CameraCB>> test = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	std::weak_ptr<ConstantBuffer<DirectionLightCB>> testDL = m_ResourceManager->Get<ConstantBuffer<DirectionLightCB>>(L"DirectionLight");
+
+
 	test.lock()->m_struct.view = cb_view;
 	test.lock()->m_struct.viewInverse = cb_viewInverse;
 	test.lock()->m_struct.worldviewproj = cb_worldviewproj;
@@ -151,19 +155,19 @@ void GraphicsEngine::Update(double dt)
 
 
 	//비트 연산으로 해보자
-
 	for (auto& model : m_RenderList)
 	{
-		PassState temp = model.second.first;
+		PassState curState = model.second.first;
+		PassState temp = curState;
 
-		temp &= PassState::Base;
-		if (temp == PassState::Base)
+		temp &= PassState::Static;
+		if (temp == PassState::Static)
 		{
 			m_BasePass->AddModelData(model.second.second);
 
 		}
 
-		temp = model.second.first;
+		temp = curState;
 		temp &= PassState::Texture;
 		if (temp == PassState::Texture)
 		{
@@ -171,13 +175,12 @@ void GraphicsEngine::Update(double dt)
 
 		}
 
-		temp = model.second.first;
+		temp = curState;
 		temp &= PassState::Skinning;
 		if (temp == PassState::Skinning)
 		{
 			m_SkinningPass->AddModelData(model.second.second);
 		}
-
 	}
 }
 
@@ -319,10 +322,10 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			AxisModel->world = DirectX::SimpleMath::Matrix::Identity;
 			AxisModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			AxisModel->m_pass = PassState::Base;
+			AxisModel->m_pass = PassState::Static;
 
 			m_ResourceManager->Add<ModelData>(L"Axis", AxisModel);
-			m_RenderList.insert(std::pair<std::wstring,std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, AxisModel)));
+			m_RenderList.insert(std::pair<std::wstring,std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, AxisModel)));
 		}
 		break;
 		case MeshFilter::Grid:
@@ -407,10 +410,10 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			GridModel->world = DirectX::SimpleMath::Matrix::Identity;
 			GridModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			GridModel->m_pass = PassState::Base;
+			GridModel->m_pass = PassState::Static;
 
 			m_ResourceManager->Add<ModelData>(L"Grid", GridModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, GridModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, GridModel)));
 		}
 		break;
 		case MeshFilter::Box:
@@ -430,12 +433,12 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
 			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			BoxModel->m_pass = PassState::Base;
+			BoxModel->m_pass = PassState::Static;
 
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
 			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, BoxModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 		}
 		break;
 		case MeshFilter::TextureBox:
@@ -446,14 +449,14 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 				BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
 
-				UINT size = static_cast<UINT>(sizeof(TextureVertex));
+				UINT size = static_cast<UINT>(sizeof(BaseVertex));
 				BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
 				BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
 
 
 				D3D11_BUFFER_DESC bufferDesc{};
 				bufferDesc.Usage = D3D11_USAGE_DEFAULT; //동적 리소스 만들거면 dynamic , upadate시 map,unmap 사용
-				bufferDesc.ByteWidth = sizeof(WorldTransformCB); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
+				bufferDesc.ByteWidth = sizeof(TransformCB); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
 				bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 				bufferDesc.CPUAccessFlags = 0;	//동적 리소스면 write
 				bufferDesc.MiscFlags = 0;
@@ -474,15 +477,24 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 			}
 			break;
-		case MeshFilter::LoadModel:
-			/*{
-				newObject->Set<VertexShader>(m_ResourceManager->Create<VertexShader>(VSPath, VERTEXFILTER::TEXTURE, VSname));
-				newObject->Set<PixelShader>(m_ResourceManager->Create<PixelShader>(PSPath, PSname));
-				newObject->Set<ModelData>(m_ResourceManager->Get<ModelData>(name));
-				newObject->Set<RenderState>(m_ResourceManager->Get<RenderState>(L"Solid"));
-				newObject->Set<WorldTransformCB>(m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(name + L"Transform", BufferDESC::Constant::DefaultWorld), name + L"Transform");
-				newObject->Set<LocalTransformCB>(m_ResourceManager->Create<ConstantBuffer<LocalTransformCB>>(name + L"Local", BufferDESC::Constant::DefaultWorld), name + L"Local");
-			}*/
+		case MeshFilter::Static:
+			{
+				std::wstring fbxpath = fbx + L".fbx";
+				std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
+				newModel->m_name = name;
+
+				newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
+				newModel->m_pass = PassState::Texture;
+
+				newModel->local= DirectX::SimpleMath::Matrix::Identity;
+				newModel->local._11 *= 0.05f;
+				newModel->local._22 *= 0.05f;
+				newModel->local._33 *= 0.05f;
+
+				newModel->world = DirectX::SimpleMath::Matrix::Identity;
+
+				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"static", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+			}
 			break;
 
 		case MeshFilter::Skinning:
@@ -494,14 +506,14 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 				newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
 				newModel->m_pass = PassState::Skinning;
 
-				newModel->world = DirectX::SimpleMath::Matrix::Identity;
-				newModel->world._11 *= 0.05f;
-				newModel->world._22 *= 0.05f;
-				newModel->world._33 *= 0.05f;
-
 				newModel->local = DirectX::SimpleMath::Matrix::Identity;
+				newModel->local._11 *= 0.05f;
+				newModel->local._22 *= 0.05f;
+				newModel->local._33 *= 0.05f;
 
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"test", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Skinning, newModel)));
+				newModel->world = DirectX::SimpleMath::Matrix::Identity;
+
+				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"skinning", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
 				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
 			}
 			break;
@@ -603,7 +615,7 @@ void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
 
 	std::weak_ptr<VertexBuffer> vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
 	std::weak_ptr<IndexBuffer> ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	std::weak_ptr<ConstantBuffer<WorldTransformCB>> cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
+	std::weak_ptr<ConstantBuffer<TransformCB>> cb = m_ResourceManager->Create<ConstantBuffer<TransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultTransform);
 
 	std::weak_ptr<VertexShader> vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
 	std::weak_ptr<PixelShader> ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/QuadPS.cso", L"Quad");

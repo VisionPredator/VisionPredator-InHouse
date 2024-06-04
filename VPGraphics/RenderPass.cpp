@@ -53,10 +53,10 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
 	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/BasePS.cso");
-	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"../x64/Debug/BaseVS.cso");
+	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	//m_RS = ;
 
-	m_state = PassState::Base;
+	m_state = PassState::Static;
 
 }
 
@@ -67,7 +67,6 @@ ForwardPass::~ForwardPass()
 
 void ForwardPass::Render()
 {
-
 }
 
 void ForwardPass::StaticRender()
@@ -85,21 +84,18 @@ void ForwardPass::StaticRender()
 		{
 			int i = 0;
 
-			std::shared_ptr<ConstantBuffer<WorldTransformCB>> position = m_ResourceManager.lock()->Create<ConstantBuffer<WorldTransformCB>>(L"Transform").lock();
-			position->m_struct.world = curModel->world;
-			position->Update();
+			std::shared_ptr<ConstantBuffer<TransformCB>> transform = m_ResourceManager.lock()->Create<ConstantBuffer<TransformCB>>(L"Transform").lock();
+			transform->m_struct.world = curModel->world;
+			transform->m_struct.local = curModel->local;
+			transform->Update();
 
 			m_Device.lock()->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
 			m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 			m_Device.lock()->Context()->IASetPrimitiveTopology(mesh->m_primitive);
 
-			std::shared_ptr<ConstantBuffer<LocalTransformCB>> local = m_ResourceManager.lock()->Create<ConstantBuffer<LocalTransformCB>>(L"Local").lock();
-			local->m_struct.local = curModel->local;
-			local->Update();
 
-			m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, position->GetAddress());
-			m_Device.lock()->Context()->PSSetConstantBuffers(0, 1, position->GetAddress());
-			m_Device.lock()->Context()->VSSetConstantBuffers(2, 1, local->GetAddress());
+			m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, transform->GetAddress());
+			//m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, transform->GetAddress());
 
 			// 텍스처와 샘플러를 셰이더에 바인딩
 			if (!curModel->m_Materials.empty())
@@ -127,15 +123,11 @@ void ForwardPass::StaticRender()
 		}
 
 		m_RenderModelQueue.pop();
-	}
-
-	
+	}	
 }
 
 void ForwardPass::SkinnedRender()
 {
-
-
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
 	m_Device.lock()->BeginRender(m_RTV.lock()->Get(), m_DSV.lock()->Get(), Black);
 
@@ -154,18 +146,15 @@ void ForwardPass::SkinnedRender()
 
 			int i = 0;
 
-			std::weak_ptr <ConstantBuffer<WorldTransformCB>> position = m_ResourceManager.lock()->Get<ConstantBuffer<WorldTransformCB>>(L"Transform");
+			std::weak_ptr <ConstantBuffer<TransformCB>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformCB>>(L"Transform");
 			position.lock()->m_struct.world = curModel->world;
+			position.lock()->m_struct.local = curMesh->m_node.lock()->m_World;
 			position.lock()->Update();
 
 			m_Device.lock()->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
 			m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 			m_Device.lock()->Context()->IASetPrimitiveTopology(mesh->m_primitive);
 
-			std::weak_ptr <ConstantBuffer<LocalTransformCB>> local = m_ResourceManager.lock()->Get<ConstantBuffer<LocalTransformCB>>(L"Local");
-			local.lock()->m_struct.local = curMesh->m_node.lock()->m_World;
-			local.lock()->Update();
-			m_Device.lock()->Context()->VSSetConstantBuffers(2, 1, local.lock()->GetAddress());
 
 			std::weak_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete");
 			pallete.lock()->m_struct = *(curMesh->Matrix_Pallete);
@@ -174,8 +163,7 @@ void ForwardPass::SkinnedRender()
 
 
 			m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, position.lock()->GetAddress());
-			m_Device.lock()->Context()->PSSetConstantBuffers(0, 1, position.lock()->GetAddress());
-			m_Device.lock()->Context()->VSSetConstantBuffers(2, 1, local.lock()->GetAddress());
+			//m_Device.lock()->Context()->PSSetConstantBuffers(0, 1, position.lock()->GetAddress());
 
 
 			// 텍스처와 샘플러를 셰이더에 바인딩
@@ -206,7 +194,6 @@ void ForwardPass::SkinnedRender()
 		m_RenderModelQueue.pop();
 	}
 
-
 	m_Device.lock()->Context()->OMSetRenderTargets(1, m_RTV.lock()->GetAddress(), m_DSV.lock()->Get());
 	m_Device.lock()->Context()->RSSetViewports(1, m_VP);
 	m_Device.lock()->EndRender();
@@ -221,7 +208,7 @@ SkinnigPass::SkinnigPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
 	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/SkinningPS.cso");
-	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"../x64/Debug/SkinningVS.cso");
+	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 
 	m_state = PassState::Skinning;
 
@@ -251,17 +238,14 @@ void SkinnigPass::Render()
 
 			int i = 0;
 
-			std::shared_ptr<ConstantBuffer<WorldTransformCB>> position = m_ResourceManager.lock()->Create<ConstantBuffer<WorldTransformCB>>(L"Transform").lock();
-			position->m_struct.world = curModel->world;
+			std::shared_ptr<ConstantBuffer<TransformCB>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformCB>>(L"Transform").lock();
+			position->m_struct.world = curModel->local;
+			position->m_struct.local = curMesh->m_node.lock()->m_World;
 			position->Update();
 
 			m_Device.lock()->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
 			m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 			m_Device.lock()->Context()->IASetPrimitiveTopology(mesh->m_primitive);
-
-			std::shared_ptr<ConstantBuffer<LocalTransformCB>> local = m_ResourceManager.lock()->Create<ConstantBuffer<LocalTransformCB>>(L"Local").lock();
-			local->m_struct.local = curMesh->m_node.lock()->m_World;
-			local->Update();
 
 			if (!curMesh->m_BoneData.empty())
 			{
@@ -274,7 +258,6 @@ void SkinnigPass::Render()
 
 			m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, position->GetAddress());
 			m_Device.lock()->Context()->PSSetConstantBuffers(0, 1, position->GetAddress());
-			m_Device.lock()->Context()->VSSetConstantBuffers(2, 1, local->GetAddress());
 
 			// 텍스처와 샘플러를 셰이더에 바인딩
 			if (!curModel->m_Materials.empty())
@@ -282,6 +265,8 @@ void SkinnigPass::Render()
 
 				std::shared_ptr<Material> curMaterial = curModel->m_Materials[i];
 
+
+				//매번 분기를 타면서 어떤 srv가 있는지 확인할건가?
 				if (true)
 				{
 					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
@@ -297,8 +282,6 @@ void SkinnigPass::Render()
 
 			///Draw
 			m_Device.lock()->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
-
-			//그렸으면 queue에서 빼기 어디서 매프레임마다 넣어줄거니?
 		}
 
 		m_RenderModelQueue.pop();
@@ -321,7 +304,7 @@ TexturePass::TexturePass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
 	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
-	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"../x64/Debug/TextureVS.cso");
+	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Texture;
 
 }
@@ -352,21 +335,18 @@ void TexturePass::StaticRender()
 		{
 			int i = 0;
 
-			std::shared_ptr<ConstantBuffer<WorldTransformCB>> position = m_ResourceManager.lock()->Create<ConstantBuffer<WorldTransformCB>>(L"Transform").lock();
+			std::shared_ptr<ConstantBuffer<TransformCB>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformCB>>(L"Transform").lock();
 			position->m_struct.world = curModel->world;
+			position->m_struct.local = curModel->local;
 			position->Update();
 
 			m_Device.lock()->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
 			m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 			m_Device.lock()->Context()->IASetPrimitiveTopology(mesh->m_primitive);
 
-			std::shared_ptr<ConstantBuffer<LocalTransformCB>> local = m_ResourceManager.lock()->Create<ConstantBuffer<LocalTransformCB>>(L"Local").lock();
-			local->m_struct.local = curModel->local;
-			local->Update();
 
 			m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, position->GetAddress());
-			m_Device.lock()->Context()->PSSetConstantBuffers(0, 1, position->GetAddress());
-			m_Device.lock()->Context()->VSSetConstantBuffers(2, 1, local->GetAddress());
+			m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, position->GetAddress());
 
 			// 텍스처와 샘플러를 셰이더에 바인딩
 			if (!curModel->m_Materials.empty())

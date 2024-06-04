@@ -33,22 +33,28 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Initialize()
 {
+	///--------확정-----
+	//기본 RS
+	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);
+	Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
+
+	Create<VertexShader>(L"Base", VERTEXFILTER::STATIC,L"Mesh");
+	Create<VertexShader>(L"Skinning", VERTEXFILTER::SKINNING, L"Mesh");
+
+	///------미정------
 	//디퍼드 용 쉐이더 테스트
 	//Create<VertexShader>(L"../x64/Debug/DeferredVS.cso", VERTEXFILTER::SKINNING, L"Deferred");
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
 	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
-	Create<VertexShader>(L"../x64/Debug/BaseVS.cso", VERTEXFILTER::TEXTURE,L"Base");
+
+
 	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
-	Create<VertexShader>(L"../x64/Debug/SkinningVS.cso", VERTEXFILTER::SKINNING, L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/SkinningPS.cso",  L"Skinning");
-	Create<VertexShader>(L"../x64/Debug/TextureVS.cso", VERTEXFILTER::TEXTURE, L"Texture");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
 
-	//기본 RS
-	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);
-	Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
+	
 
 
 	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
@@ -82,9 +88,9 @@ void ResourceManager::Initialize()
 	Create<DepthStencilView>(L"DSV_2", dsd);
 
 	//한번만 연결해주면 계속 쓸 것들
-	Create<ConstantBuffer<WorldTransformCB>>(L"SunTransform", BufferDESC::Constant::DefaultWorld);
-	Create<ConstantBuffer<WorldTransformCB>>(L"Transform", BufferDESC::Constant::DefaultWorld);
-	Create<ConstantBuffer<LocalTransformCB>>(L"Local", BufferDESC::Constant::DefaultLocal);
+	Create<ConstantBuffer<TransformCB>>(L"SunTransform", BufferDESC::Constant::DefaultTransform);
+
+	Create<ConstantBuffer<TransformCB>>(L"Transform", BufferDESC::Constant::DefaultTransform);
 
 	m_DirectionalLight = Create<ConstantBuffer<DirectionLightCB>>(L"DirectionLight", BufferDESC::Constant::DefaultDirLight);
 	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_DirectionalLight.lock()->GetAddress());
