@@ -18,6 +18,8 @@
 #include "ShaderResourceView.h"
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
+#include "Sampler.h"
+#include "Texture2D.h"
 
 #include "VertexData.h"
 
@@ -38,17 +40,15 @@ public:
 	~ResourceManager();
 
 	template<typename T, typename... Types>
-	std::weak_ptr <T> Create(std::wstring path, Types...args);
+	std::weak_ptr <T> Create(const std::wstring path, Types...args);
 
-	template<typename T>
-	std::weak_ptr <T> Get(std::wstring path);
+	template<typename T> std::weak_ptr <T> Get(const std::wstring path);
 
-	template<typename T>
-	void Add(std::wstring path, std::shared_ptr<Resource> resource);
+	template<typename T> void Add(const std::wstring path, std::shared_ptr<Resource> resource);
 
 
 	template<typename T>
-	void Erase(std::wstring path);
+	void Erase(const std::wstring path);
 
 
 	void Initialize();
@@ -56,15 +56,15 @@ public:
 
 private:
 	std::weak_ptr<Device> m_Device;
-	std::weak_ptr<ConstantBuffer<CameraCB>> m_Camera;
-	std::weak_ptr<ConstantBuffer<DirectionLightCB>> m_DirectionalLight;
+	std::weak_ptr<ConstantBuffer<CameraData>> m_Camera;
+	std::weak_ptr<ConstantBuffer<LightData>> m_DirectionalLight;
 
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 };
 
 
 template<typename T, typename...Types>
-std::weak_ptr <T> ResourceManager::Create(std::wstring path, Types...args)
+std::weak_ptr <T> ResourceManager::Create(const std::wstring path, Types...args)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
 	std::unordered_map<std::wstring, std::shared_ptr<Resource>> curMap = m_ResourceArray[index];
@@ -81,8 +81,7 @@ std::weak_ptr <T> ResourceManager::Create(std::wstring path, Types...args)
 	return  std::dynamic_pointer_cast<T>(m_ResourceArray[index][path]);
 }
 
-template<typename T>
-std::weak_ptr <T> ResourceManager::Get(std::wstring path)
+template<typename T> std::weak_ptr <T> ResourceManager::Get(const std::wstring path)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
 	std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[index];
@@ -97,8 +96,7 @@ std::weak_ptr <T> ResourceManager::Get(std::wstring path)
 	return {};
 }
 
-template<typename T>
-void ResourceManager::Add(std::wstring path, std::shared_ptr<Resource> resource)
+template<typename T> void ResourceManager::Add(const std::wstring path, std::shared_ptr<Resource> resource)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
 
@@ -110,7 +108,7 @@ void ResourceManager::Add(std::wstring path, std::shared_ptr<Resource> resource)
 }
 
 template<typename T>
-void ResourceManager::Erase(std::wstring path)
+void ResourceManager::Erase(const std::wstring path)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
 

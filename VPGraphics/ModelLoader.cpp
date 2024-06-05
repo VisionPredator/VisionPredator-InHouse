@@ -30,7 +30,7 @@ ModelLoader::~ModelLoader()
 void ModelLoader::Initialize()
 {
 	LoadModel("Flair.fbx", Filter::SKINNING);
-	LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("cerberus.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -288,14 +288,14 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//newMaterial->m_DiffuseSRV->Load(finalPath);
 
 
-		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path, SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 
 		//m_pBaseColor = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::BASECOLOR;
 	}
 	else
 	{
-		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 	}
 
 	path = (textureProperties[aiTextureType_NORMALS].second);
@@ -304,14 +304,14 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->m_NormalFilePath = finalPath;
 		//newMaterial->m_NormalSRV->Load(finalPath);
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path, SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
 	}
 	else
 	{
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png", SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png");
 
 	}
 

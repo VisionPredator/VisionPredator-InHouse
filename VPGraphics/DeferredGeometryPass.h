@@ -35,7 +35,7 @@ private:
 
 	// Constant Buffer
 	std::shared_ptr<ConstantBuffer<WorldTransformCB>> m_ModelTransformCB;
-	std::shared_ptr<ConstantBuffer<CameraCB>> m_CameraTransformCB;
+	std::shared_ptr<ConstantBuffer<CameraData>> m_CameraTransformCB;
 	std::shared_ptr<ConstantBuffer<MatrixPallete>> m_BoneTransformCB;
 	std::shared_ptr<ConstantBuffer<DirectionLightCB>> m_LightTransformCB;
 };

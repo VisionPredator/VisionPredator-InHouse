@@ -12,13 +12,13 @@
 #include "Defines.h"
 
 
-ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resource(device), m_tex(nullptr), m_view(nullptr), m_samplerState(nullptr)
+ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resource(device), m_tex(nullptr), m_view(nullptr)
 {
 
 
 }
 
-ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename, D3D11_SAMPLER_DESC sampler) : Resource(device), m_tex(nullptr)
+ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename) : Resource(device), m_tex(nullptr)
 {
 	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
 
@@ -50,7 +50,6 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata1, &m_view));
 
 
-	m_Device.lock()->Get()->CreateSamplerState(&sampler, &m_samplerState);
 }
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc) : Resource(device)
@@ -107,28 +106,10 @@ ID3D11ShaderResourceView** ShaderResourceView::GetAddress()
 	return &m_view;
 }
 
-ID3D11SamplerState* ShaderResourceView::GetSampler() const
-{
-	return m_samplerState;
-}
 
-ID3D11SamplerState** ShaderResourceView::GetSamplerAddress()
-{
-
-	return &m_samplerState;
-}
-
-void ShaderResourceView::SetSampler(ID3D11SamplerState* sampler)
-{
-	m_samplerState = sampler;
-}
 
 void ShaderResourceView::Release()
 {
-	if (m_samplerState != nullptr)
-	{
-		m_samplerState->Release();
-	}
 	if (m_view != nullptr)
 	{
 		m_view->Release();

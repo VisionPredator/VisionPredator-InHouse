@@ -122,6 +122,15 @@
     <Filter Include="hlsl\Header">
       <UniqueIdentifier>{046dd9ee-14e0-454d-a71b-9bc325ac1f92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicsEngine\LightManager">
+      <UniqueIdentifier>{3dc4e553-0282-4da4-a3f6-71e92ed9e420}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\PassManager">
+      <UniqueIdentifier>{3b5d186b-8d30-4109-9d20-adaf3e553cb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Sampler">
+      <UniqueIdentifier>{968c1507-91ae-43eb-be6a-bd35345512d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -235,6 +244,15 @@
     <ClInclude Include="Texture2D.h">
       <Filter>Resource\Texture2D</Filter>
     </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>GraphicsEngine\LightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PassManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Resource\Sampler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -326,6 +344,13 @@
     </ClCompile>
     <ClCompile Include="Pass.cpp">
       <Filter>Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>GraphicsEngine\LightManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PassManager.cpp" />
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Resource\Sampler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

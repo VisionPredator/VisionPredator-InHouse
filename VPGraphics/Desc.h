@@ -7,7 +7,7 @@ namespace BufferDESC
 	namespace Constant
 	{
 		static D3D11_BUFFER_DESC DefaultTransform = {
-		sizeof(TransformCB),
+		sizeof(TransformData),
 		D3D11_USAGE_DEFAULT,
 		D3D11_BIND_CONSTANT_BUFFER,
 		0,
@@ -15,7 +15,7 @@ namespace BufferDESC
 		};
 
 		static D3D11_BUFFER_DESC DynamicTransform = {
-			sizeof(TransformCB),
+			sizeof(TransformData),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,
@@ -38,16 +38,16 @@ namespace BufferDESC
 			0
 		};
 
-		static D3D11_BUFFER_DESC DefaultDirLight = {
-			sizeof(DirectionLightCB),
+		static D3D11_BUFFER_DESC DefaultLight = {
+			sizeof(LightData),
 			D3D11_USAGE_DEFAULT,
 			D3D11_BIND_CONSTANT_BUFFER,
 			0,
 			0
 		};
 
-		static D3D11_BUFFER_DESC DynamicDirLight = {
-			sizeof(DirectionLightCB),
+		static D3D11_BUFFER_DESC DynamicLight = {
+			sizeof(LightData),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,
@@ -55,7 +55,7 @@ namespace BufferDESC
 		};
 
 		static D3D11_BUFFER_DESC DefaultCamera = {
-			sizeof(CameraCB),
+			sizeof(CameraData),
 			D3D11_USAGE_DEFAULT,
 			D3D11_BIND_CONSTANT_BUFFER,
 			0,
@@ -63,7 +63,7 @@ namespace BufferDESC
 		};
 
 		static D3D11_BUFFER_DESC DynamicCamera = {
-			sizeof(CameraCB),
+			sizeof(CameraData),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,

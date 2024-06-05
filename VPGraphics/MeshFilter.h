@@ -16,8 +16,8 @@ enum class PassState : unsigned int
 {
 	None = 0,
 	Static = 1 << 0,
-	Texture = 1 << 1,
-	Skinning = 1 << 2,
+	Skinning = 1 << 1,
+	Debug = 1 << 2,
 
 	End
 };
