@@ -8,6 +8,10 @@ public:
     ~Toolbar()=default;
 
     void ImGuiRender() override;
-
+    void Menu();
+    void Help();
+    void Serialize();
+    bool m_IsPlaying=false;
+    bool m_IsPause = false;
 };
 

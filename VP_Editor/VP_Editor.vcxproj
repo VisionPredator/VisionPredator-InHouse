@@ -145,8 +145,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EditorCamera.h" />
+    <ClInclude Include="FolderTool.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Hierarchy.h" />
+    <ClInclude Include="HierarchySystem.h" />
     <ClInclude Include="IImGui.h" />
+    <ClInclude Include="Inspector.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -156,7 +160,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EditorCamera.cpp" />
+    <ClCompile Include="FolderTool.cpp" />
+    <ClCompile Include="Hierarchy.cpp" />
+    <ClCompile Include="HierarchySystem.cpp" />
     <ClCompile Include="IImGui.cpp" />
+    <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

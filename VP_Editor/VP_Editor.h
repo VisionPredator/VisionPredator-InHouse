@@ -1,8 +1,9 @@
 #pragma once
 #include "VPEngine.h"
 #include "IImGui.h"
+#include "EventSubscriber.h"
 class EditorCamera;
-class VP_Editor :public VPEngine
+class VP_Editor :public VPEngine,public EventSubscriber
 {
 public:
 	VP_Editor(HINSTANCE hInstance, std::string title, int width, int height);
@@ -13,5 +14,7 @@ public:
 	EditorCamera* m_editorcamera;
 
 	bool m_IsEditorMode = true;
+	void OnPlayButton(std::any);
+	void OnStopButton(std::any);
 };
 

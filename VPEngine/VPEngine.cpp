@@ -10,6 +10,7 @@
 #include "SceneSerializer.h"
 
 #include "../VPGraphics/GraphicsEngine.h"
+#include <imgui.h>
 
 
 #ifdef _DEBUG
@@ -93,6 +94,7 @@ void VPEngine::Loop()
 		{
 			Update();
 			Render();
+			EndRender();
 
 		}
 	}
@@ -121,10 +123,19 @@ void VPEngine::Update()
 void VPEngine::Render()
 {
 	m_Graphics->Render();
+
 }
+
+void VPEngine::EndRender()
+{
+	m_Graphics->EndRender();
+}
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return 0;
 	switch (message)
 	{
 	case WM_SIZE:

@@ -20,8 +20,7 @@ public:
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	Entity* CreateEntity();
 
-	// 모든 Entity를 지운다.
-	void OnAddCompToScene(std::any data);
+
 
 
 
@@ -63,7 +62,8 @@ private:
 	void OnEndScene(std::any data);
 	// 해당 씬을 연다.
 	void OnOpenScene(std::any data);
-
+	// 모든 Entity를 지운다.
+	void OnAddCompToScene(std::any data);
 	// Entity를 삭제한다.
 	void OnDestroyEntity(std::any entityID);
 	// 모든 Entity를 지운다.

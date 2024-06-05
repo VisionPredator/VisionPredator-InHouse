@@ -6,8 +6,14 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 #include "EditorCamera.h"
+#include "FolderTool.h"
+#include "Hierarchy.h"
+#include "Inspector.h"
+#include "EventManager.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 20.0f);
+
 	///Imgui Setting
 	/*
 	IMGUI_CHECKVERSION();
@@ -28,9 +34,12 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	ImGui::NewFrame();
 	*/
 	m_ImGuis.push_back(new Toolbar);
+	m_ImGuis.push_back(new FolderTool);
+	m_ImGuis.push_back(new Hierarchy{m_SceneManager});
+	m_ImGuis.push_back(new Inspector);
 	m_editorcamera = new EditorCamera;
-
-
+	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&VP_Editor::OnPlayButton));
+	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&VP_Editor::OnStopButton));
 }
 
 VP_Editor::~VP_Editor()
@@ -54,6 +63,8 @@ void VP_Editor::Update()
 	else
 	{
 		VPEngine::Update();
+		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
+
 	}
 
 }
@@ -62,10 +73,26 @@ void VP_Editor::Render()
 {
 	VPEngine::Render();
 
+	// Create a window called "Hello, world!" and append into it.
+
+	ImGui::DockSpaceOverViewport();
+
+	// Rendering
 	for (auto& ImGui : m_ImGuis)
 	{
 		ImGui->ImGuiRender();
 	}
+
+}
+
+void VP_Editor::OnPlayButton(std::any)
+{
+	m_IsEditorMode = false;
+}
+
+void VP_Editor::OnStopButton(std::any)
+{
+	m_IsEditorMode = true;
 
 }
 

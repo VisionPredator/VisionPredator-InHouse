@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ImGuiBar">
+      <UniqueIdentifier>{172b149b-483d-43d2-a01e-7882db2776de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGuiBar\Header">
+      <UniqueIdentifier>{9c4edc7a-1002-4539-865c-355964d641e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGuiBar\Source">
+      <UniqueIdentifier>{67ae2e5f-ff2c-489e-b36f-79fcbfa80e2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -33,13 +42,25 @@
     <ClInclude Include="VP_Editor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="IImGui.h">
+    <ClInclude Include="EditorCamera.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderTool.h">
+      <Filter>ImGuiBar\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Hierarchy.h">
+      <Filter>ImGuiBar\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Inspector.h">
+      <Filter>ImGuiBar\Header</Filter>
     </ClInclude>
     <ClInclude Include="Toolbar.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>ImGuiBar\Header</Filter>
     </ClInclude>
-    <ClInclude Include="EditorCamera.h">
+    <ClInclude Include="IImGui.h">
+      <Filter>ImGuiBar</Filter>
+    </ClInclude>
+    <ClInclude Include="HierarchySystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,13 +74,25 @@
     <ClCompile Include="VP_Editor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="IImGui.cpp">
+    <ClCompile Include="EditorCamera.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderTool.cpp">
+      <Filter>ImGuiBar\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Hierarchy.cpp">
+      <Filter>ImGuiBar\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Inspector.cpp">
+      <Filter>ImGuiBar\Source</Filter>
     </ClCompile>
     <ClCompile Include="Toolbar.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>ImGuiBar\Source</Filter>
     </ClCompile>
-    <ClCompile Include="EditorCamera.cpp">
+    <ClCompile Include="IImGui.cpp">
+      <Filter>ImGuiBar</Filter>
+    </ClCompile>
+    <ClCompile Include="HierarchySystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
