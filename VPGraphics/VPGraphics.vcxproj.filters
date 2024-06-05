@@ -116,6 +116,21 @@
     <Filter Include="Resource\Pipeline">
       <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hlsl\Mesh">
+      <UniqueIdentifier>{b1fc30bd-d6da-458d-bf01-fa4c58652fe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\Header">
+      <UniqueIdentifier>{046dd9ee-14e0-454d-a71b-9bc325ac1f92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\LightManager">
+      <UniqueIdentifier>{3dc4e553-0282-4da4-a3f6-71e92ed9e420}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\PassManager">
+      <UniqueIdentifier>{3b5d186b-8d30-4109-9d20-adaf3e553cb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Sampler">
+      <UniqueIdentifier>{968c1507-91ae-43eb-be6a-bd35345512d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -232,6 +247,15 @@
     <ClInclude Include="DeferredShadingPipeline.h">
       <Filter>Resource\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>GraphicsEngine\LightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PassManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Resource\Sampler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -327,28 +351,35 @@
     <ClCompile Include="DeferredShadingPipeline.cpp">
       <Filter>Resource\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>GraphicsEngine\LightManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PassManager.cpp" />
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Resource\Sampler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
       <Filter>hlsl\Base</Filter>
     </FxCompile>
-    <FxCompile Include="BaseVS.hlsl">
-      <Filter>hlsl\Base</Filter>
-    </FxCompile>
     <FxCompile Include="TexturePS.hlsl">
       <Filter>hlsl\Texture</Filter>
-    </FxCompile>
-    <FxCompile Include="TextureVS.hlsl">
-      <Filter>hlsl\Texture</Filter>
-    </FxCompile>
-    <FxCompile Include="SkinningVS.hlsl">
-      <Filter>hlsl\Skinning</Filter>
     </FxCompile>
     <FxCompile Include="SkinningPS.hlsl">
       <Filter>hlsl\Skinning</Filter>
     </FxCompile>
+    <FxCompile Include="MeshVS.hlsl">
+      <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshPS.hlsl">
+      <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDiagram.cd" />
+    <None Include="Common.hlsli">
+      <Filter>hlsl\Header</Filter>
+    </None>
   </ItemGroup>
 </Project>

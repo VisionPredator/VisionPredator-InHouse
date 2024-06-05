@@ -2,27 +2,17 @@
 #include "../include/directxtk/SimpleMath.h"
 
 
-
-struct CB
+struct TransformData
 {
-
-};
-
-struct WorldTransformCB : public CB
-{
-	DirectX::SimpleMath::Matrix world;
-};
-
-struct LocalTransformCB : public CB
-{
-	LocalTransformCB() : local(DirectX::SimpleMath::Matrix::Identity)
+	TransformData() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity)
 	{
 	}
 
+	DirectX::SimpleMath::Matrix world;
 	DirectX::SimpleMath::Matrix local;
 };
 
-struct CameraCB : public CB
+struct CameraData
 {
 	DirectX::SimpleMath::Matrix worldviewproj;
 	DirectX::SimpleMath::Matrix view;
@@ -30,41 +20,35 @@ struct CameraCB : public CB
 	DirectX::SimpleMath::Matrix viewInverse;
 };
 
-struct MatrixPallete : public CB
+struct MatrixPallete
 {
 	DirectX::SimpleMath::Matrix pallete[128];
 };
 
-struct DirectionLightCB : public CB
+
+enum class Kind_of_Light
 {
-	DirectX::XMFLOAT4 m_ambient;
-	DirectX::XMFLOAT4 m_diffuse;
-	DirectX::XMFLOAT4 m_specular;
-	DirectX::XMFLOAT3 m_direction;
-	float pad;
+	Direction = 0,
+	Spot,
+	Point,
+
+	End
 };
 
-
-
-
-struct PointLightCB : public CB
+struct LightData
 {
-	DirectX::XMFLOAT4 m_ambient;
-	DirectX::XMFLOAT4 m_diffuse;
-	DirectX::XMFLOAT4 m_specular;
-	DirectX::XMFLOAT3 m_attenuation;
-	float m_range;
-};
+	DirectX::XMFLOAT4 ambient;
+	DirectX::XMFLOAT4 diffuse;
+	DirectX::XMFLOAT4 specular;
 
-struct SpotLightCB : public CB
-{
-	DirectX::XMFLOAT4 m_ambient;
-	DirectX::XMFLOAT4 m_diffuse;
-	DirectX::XMFLOAT4 m_specular;
+	DirectX::XMFLOAT3 direction;
+	float range;
 
-	DirectX::XMFLOAT3 m_direction;
-	float m_range;
-
-	DirectX::XMFLOAT3 m_attenuation;
+	DirectX::XMFLOAT3 attenuation;
 	float pad;
+
+	DirectX::XMFLOAT3 pos;
+	float spot;
+
+
 };

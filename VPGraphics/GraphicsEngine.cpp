@@ -34,6 +34,7 @@
 #include "ResourceManager.h"
 #include "ModelLoader.h"
 #include "Animator.h"
+#include "PassManager.h"
 #pragma endregion Manager
 
 
@@ -51,7 +52,7 @@ GraphicsEngine::~GraphicsEngine()
 bool GraphicsEngine::Initialize()
 {
 	GetClientRect(m_hWnd, &m_wndSize);
-	m_VP = new D3D11_VIEWPORT();
+	m_VP = std::make_shared<D3D11_VIEWPORT>();
 	m_VP->TopLeftX = static_cast<float>(m_wndSize.left);
 	m_VP->TopLeftY = static_cast<float>(m_wndSize.top);
 	m_VP->Width = static_cast<float>(m_wndSize.right - m_wndSize.left);
@@ -68,16 +69,21 @@ bool GraphicsEngine::Initialize()
 		return false;
 
 	m_Device->Initialize();
-	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
-	m_ResourceManager->Initialize();
-
-	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager,m_Device);
-	m_Loader->Initialize();
-
-	m_Animator = std::make_shared <Animator>();
 
 	if (m_Device->SwapChain() == nullptr)
 		return false;
+
+	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
+	m_ResourceManager->Initialize();
+
+	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
+	m_Loader->Initialize();
+
+	m_PassManager = std::make_shared <PassManager>(m_Device,m_ResourceManager,m_VP);
+	m_PassManager->Initialize();
+
+	m_Animator = std::make_shared <Animator>();
+
 
 	//output
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
@@ -87,22 +93,38 @@ bool GraphicsEngine::Initialize()
 	//출력병합기
 	// TODO: RTV와 뷰포트 바인딩은 이제 여기서 안하고 패스마다 필요시에 바인딩할 것임. 즉. 여기 있는거 삭제해야함.
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP);
+	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
 	// Pipeline
 	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
 
-	//test
-	m_BasePass = new ForwardPass(m_Device, m_ResourceManager, m_VP);
-	m_TexturePass = new TexturePass(m_Device, m_ResourceManager, m_VP);
-	m_SkinningPass = new SkinnigPass(m_Device, m_ResourceManager, m_VP);
-
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
 	AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
+	//AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	EraseObject(L"TextureBox");
-	AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
+	AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 
+	Dir.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	Dir.diffuse = DirectX::XMFLOAT4(0.20f, 0.2f, 0.2f, 1.0f);
+	Dir.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
+
+	Point.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	Point.diffuse = DirectX::XMFLOAT4(0.20f, 0.2f, 0.2f, 1.0f);
+	Point.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	Point.range = 10.f;
+	Point.pos = DirectX::XMFLOAT3{ 0.f ,0.f , -0.f };
+	Point.attenuation = DirectX::XMFLOAT3{ 0.f ,0.f , 0.50f };
+
+	Spot.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	Spot.direction = DirectX::XMFLOAT3(0.0f, -0.0f, -0.5f);
+	Spot.diffuse = DirectX::XMFLOAT4(0.50f, 0.5f, 0.5f, 1.0f);
+	Spot.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	Spot.range = 5.f;
+	Spot.pos = DirectX::XMFLOAT3{ 0.f ,2.f , -01.f };
+	Spot.attenuation = DirectX::XMFLOAT3{ 0.f ,0.f , 0.20f };
+	Spot.spot = 1;
 
 
 	return true;
@@ -131,166 +153,60 @@ void GraphicsEngine::Update(double dt)
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
 
-	std::weak_ptr<ConstantBuffer<CameraCB>> test = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	std::weak_ptr<ConstantBuffer<CameraData>> test = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
+	
 	test.lock()->m_struct.view = cb_view;
 	test.lock()->m_struct.viewInverse = cb_viewInverse;
 	test.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	test.lock()->Update();
 
+	std::weak_ptr<ConstantBuffer<LightData>> testDL = m_ResourceManager->Get<ConstantBuffer<LightData>>(L"DirectionLight");
+	testDL.lock()->m_struct = Dir;
+	//testDL.lock()->m_struct = Point;
+	//testDL.lock()->m_struct = Spot;
+	testDL.lock()->Update();
 
-	m_Animator->Update(dt,m_RenderList);
 
+	m_Animator->Update(dt, m_RenderList);
 
-	//비트 연산으로 해보자
-
-	for (auto& model : m_RenderList)
-	{
-		PassState temp = model.second.first;
-
-		temp &= PassState::Base;
-		if (temp == PassState::Base)
-		{
-			m_BasePass->AddModelData(model.second.second);
-
-		}
-
-		temp = model.second.first;
-		temp &= PassState::Texture;
-		if (temp == PassState::Texture)
-		{
-			m_TexturePass->AddModelData(model.second.second);
-
-		}
-
-		temp = model.second.first;
-		temp &= PassState::Skinning;
-		if (temp == PassState::Skinning)
-		{
-			m_SkinningPass->AddModelData(model.second.second);
-		}
-
-	}
+	m_PassManager->Update(m_RenderList);
 }
 
 bool GraphicsEngine::Finalize()
 {
-	//delete m_Loader;
-	//m_ResourceManager;
-
 	delete m_Camera;
-	delete m_VP;
+
+	m_RenderList.clear();
+	m_VP.reset();
 
 	m_Device.reset();
 	m_ResourceManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
 
-	//test
-	delete m_TexturePass;
-	delete m_SkinningPass;
-	delete m_BasePass;
-
 	return true;
+}
+
+void GraphicsEngine::BeginRender()
+{
+	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
+	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
 }
 
 void GraphicsEngine::Render()
 {
-	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+	m_PassManager->Render();
+}
 
-	m_BasePass->StaticRender();
-	m_TexturePass->StaticRender();
-	m_SkinningPass->Render();
-
+void GraphicsEngine::EndRender()
+{
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP);
+	m_Device->Context()->RSSetViewports(1, m_VP.get());
 	m_Device->EndRender();
 }
 
-
-//void GraphicsEngine::DeferredRender()
-//{
-//	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
-//	//m_Device->Context()->RSSetViewports(1, m_VP);
-//
-//	//ID3D11RenderTargetView* MRT[5];
-//	//MRT[0] = m_RTVs[1]->Get(); //albedo
-//	//MRT[1] = m_RTVs[2]->Get(); //normal
-//	//MRT[2] = m_RTVs[3]->Get(); //position
-//	//MRT[3] = m_RTVs[4]->Get(); //depth
-//	//MRT[4] = m_RTVs[5]->Get(); //tangent
-//
-//	//std::weak_ptr<ShaderResourceView> SRVS[5];
-//	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
-//	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
-//	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
-//	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
-//	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
-//
-//	////렌더타겟 바인딩
-//	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
-//	//{
-//	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
-//
-//	//	/*for (auto& ob : m_FowardRenderObjects)
-//	//	{
-//	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
-//	//	}*/
-//
-//	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-//	//}
-//
-//
-//	////ImGui::Text("test");
-//	//float aspectRatio = 16.0f / 9.0f;
-//	//float newWidth = 300 * aspectRatio;
-//
-//	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
-//
-//	////pass2
-//	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
-//	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-//	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-//	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
-//	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-//	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
-//	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
-//	////
-//	////
-//	////m_device->Context()->IASetInputLayout(vs->InputLayout());
-//	////
-//	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-//	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-//	////
-//	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-//	////m_device->Context()->RSSetState(rs->Get());
-//	////
-//	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
-//	////
-//	////
-//	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
-//	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
-//	////
-//	////for (int i = 0; i < 5; i++)
-//	////{
-//	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
-//	////}
-//	////
-//	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
-//	////
-//	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
-//	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-//	////
-//	//m_Device->EndRender();
-//}
-
-
 bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx)
 {
-
-	//std::wstring VSPath = L"../x64/Debug/" + VSname + L"VS.cso";
-	//std::wstring PSPath = L"../x64/Debug/" + PSname + L"PS.cso";
-
 	switch (mesh)
 	{
 		case MeshFilter::Axis:
@@ -310,10 +226,10 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			AxisModel->world = DirectX::SimpleMath::Matrix::Identity;
 			AxisModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			AxisModel->m_pass = PassState::Base;
+			AxisModel->m_pass = PassState::Debug;
 
 			m_ResourceManager->Add<ModelData>(L"Axis", AxisModel);
-			m_RenderList.insert(std::pair<std::wstring,std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, AxisModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(AxisModel->m_pass, AxisModel)));
 		}
 		break;
 		case MeshFilter::Grid:
@@ -398,10 +314,10 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			GridModel->world = DirectX::SimpleMath::Matrix::Identity;
 			GridModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			GridModel->m_pass = PassState::Base;
+			GridModel->m_pass = PassState::Debug;
 
 			m_ResourceManager->Add<ModelData>(L"Grid", GridModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, GridModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(GridModel->m_pass, GridModel)));
 		}
 		break;
 		case MeshFilter::Box:
@@ -421,81 +337,90 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
 			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			BoxModel->m_pass = PassState::Base;
+			BoxModel->m_pass = PassState::Static;
 
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
 			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, BoxModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 		}
 		break;
 		case MeshFilter::TextureBox:
-			{
-				std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
+		{
+			std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
 
-				BoxModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
+			BoxModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
 
-				BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
+			BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
 
-				UINT size = static_cast<UINT>(sizeof(TextureVertex));
-				BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
-				BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
+			UINT size = static_cast<UINT>(sizeof(BaseVertex));
+			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
+			BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
 
 
-				D3D11_BUFFER_DESC bufferDesc{};
-				bufferDesc.Usage = D3D11_USAGE_DEFAULT; //동적 리소스 만들거면 dynamic , upadate시 map,unmap 사용
-				bufferDesc.ByteWidth = sizeof(WorldTransformCB); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
-				bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-				bufferDesc.CPUAccessFlags = 0;	//동적 리소스면 write
-				bufferDesc.MiscFlags = 0;
+			D3D11_BUFFER_DESC bufferDesc{};
+			bufferDesc.Usage = D3D11_USAGE_DEFAULT; //동적 리소스 만들거면 dynamic , upadate시 map,unmap 사용
+			bufferDesc.ByteWidth = sizeof(TransformData); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
+			bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			bufferDesc.CPUAccessFlags = 0;	//동적 리소스면 write
+			bufferDesc.MiscFlags = 0;
 
-				BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
-				BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
+			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
+			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-				BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
-				BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
-				BoxModel->m_Materials[0]->m_NormalSRV= m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
+			BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
+			BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+			BoxModel->m_Materials[0]->m_NormalSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 
-				BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
+			BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
 
-				BoxModel->m_pass = PassState::Texture;
+			BoxModel->m_pass = PassState::Static;
 
-				m_ResourceManager->Add<ModelData>(L"TextureBox", BoxModel);
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"TextureBox", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Texture, BoxModel)));
+			m_ResourceManager->Add<ModelData>(L"TextureBox", BoxModel);
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"TextureBox", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 
-			}
-			break;
-		case MeshFilter::LoadModel:
-			/*{
-				newObject->Set<VertexShader>(m_ResourceManager->Create<VertexShader>(VSPath, VERTEXFILTER::TEXTURE, VSname));
-				newObject->Set<PixelShader>(m_ResourceManager->Create<PixelShader>(PSPath, PSname));
-				newObject->Set<ModelData>(m_ResourceManager->Get<ModelData>(name));
-				newObject->Set<RenderState>(m_ResourceManager->Get<RenderState>(L"Solid"));
-				newObject->Set<WorldTransformCB>(m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(name + L"Transform", BufferDESC::Constant::DefaultWorld), name + L"Transform");
-				newObject->Set<LocalTransformCB>(m_ResourceManager->Create<ConstantBuffer<LocalTransformCB>>(name + L"Local", BufferDESC::Constant::DefaultWorld), name + L"Local");
-			}*/
-			break;
+		}
+		break;
+		case MeshFilter::Static:
+		{
+			std::wstring fbxpath = fbx + L".fbx";
+			std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
+			newModel->m_name = name;
+
+			newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
+			newModel->m_pass = PassState::Static;
+
+			newModel->local = DirectX::SimpleMath::Matrix::Identity;
+			newModel->local._11 *= 0.05f;
+			newModel->local._22 *= 0.05f;
+			newModel->local._33 *= 0.05f;
+
+			newModel->world = DirectX::SimpleMath::Matrix::Identity;
+
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"static", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+		}
+		break;
 
 		case MeshFilter::Skinning:
-			{
-				std::wstring fbxpath = fbx + L".fbx";
-				std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
-				newModel->m_name = name;
+		{
+			std::wstring fbxpath = fbx + L".fbx";
+			std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
+			newModel->m_name = name;
 
-				newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-				newModel->m_pass = PassState::Skinning;
+			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
+			newModel->m_pass = PassState::Skinning;
 
-				newModel->world = DirectX::SimpleMath::Matrix::Identity;
-				newModel->world._11 *= 0.05f;
-				newModel->world._22 *= 0.05f;
-				newModel->world._33 *= 0.05f;
+			newModel->world= DirectX::SimpleMath::Matrix::Identity;
+			newModel->world._11 *= 0.05f;
+			newModel->world._22 *= 0.05f;
+			newModel->world._33 *= 0.05f;
 
-				newModel->local = DirectX::SimpleMath::Matrix::Identity;
+			newModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"test", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Skinning, newModel)));
-				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
-			}
-			break;
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"skinning", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+			m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
+		}
+		break;
 
 		case MeshFilter::None:
 			break;
@@ -532,7 +457,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
-	std::weak_ptr<ConstantBuffer<CameraCB>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
@@ -544,12 +469,18 @@ void GraphicsEngine::UpdateModelTransform(std::wstring name, DirectX::SimpleMath
 	m_RenderList[name].second->world = world;
 }
 
+void GraphicsEngine::AddLight(Kind_of_Light kind, LightData data)
+{
+
+}
+
+
 void GraphicsEngine::OnResize()
 {
-	delete m_VP;
+	m_VP.reset();
 
 	GetClientRect(m_hWnd, &m_wndSize);
-	m_VP = new D3D11_VIEWPORT();
+	m_VP = std::make_shared<D3D11_VIEWPORT>();
 	m_VP->TopLeftX = static_cast<float>(m_wndSize.left);
 	m_VP->TopLeftY = static_cast<float>(m_wndSize.top);
 	m_VP->Width = static_cast<float>(m_wndSize.right - m_wndSize.left);
@@ -581,20 +512,16 @@ void GraphicsEngine::OnResize()
 
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP);
+	m_Device->Context()->RSSetViewports(1, m_VP.get());
 }
 
 void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
 {
-
-
-
-
 	UINT size = static_cast<UINT>(sizeof(QuadVertex));
 
 	std::weak_ptr<VertexBuffer> vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
 	std::weak_ptr<IndexBuffer> ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	std::weak_ptr<ConstantBuffer<WorldTransformCB>> cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
+	std::weak_ptr<ConstantBuffer<TransformData>> cb = m_ResourceManager->Create<ConstantBuffer<TransformData>>(L"QuadTransform", BufferDESC::Constant::DefaultTransform);
 
 	std::weak_ptr<VertexShader> vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
 	std::weak_ptr<PixelShader> ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/QuadPS.cso", L"Quad");
@@ -618,14 +545,85 @@ void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
 
 
 	m_Device->Context()->PSSetShaderResources(0, 1, srv->GetAddress());
-	m_Device->Context()->PSSetSamplers(0, 1, srv->GetSamplerAddress());
+	m_Device->Context()->PSSetSamplers(0, 1, m_ResourceManager->Get<Sampler>(L"Linear").lock()->GetAddress());
 
 
 	m_Device->Context()->PSSetShader(ps.lock()->GetPS(), nullptr, 0);
 	m_Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-
-
-
-
-
 }
+
+//void GraphicsEngine::DeferredRender()
+//{
+//	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
+//	//m_Device->Context()->RSSetViewports(1, m_VP);
+//
+//	//ID3D11RenderTargetView* MRT[5];
+//	//MRT[0] = m_RTVs[1]->Get(); //albedo
+//	//MRT[1] = m_RTVs[2]->Get(); //normal
+//	//MRT[2] = m_RTVs[3]->Get(); //position
+//	//MRT[3] = m_RTVs[4]->Get(); //depth
+//	//MRT[4] = m_RTVs[5]->Get(); //tangent
+//
+//	//std::weak_ptr<ShaderResourceView> SRVS[5];
+//	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
+//	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
+//	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
+//	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
+//	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
+//
+//	////렌더타겟 바인딩
+//	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
+//	//{
+//	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
+//
+//	//	/*for (auto& ob : m_FowardRenderObjects)
+//	//	{
+//	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
+//	//	}*/
+//
+//	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
+//	//}
+//
+//
+//	////ImGui::Text("test");
+//	//float aspectRatio = 16.0f / 9.0f;
+//	//float newWidth = 300 * aspectRatio;
+//
+//	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
+//
+//	////pass2
+//	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
+//	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
+//	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+//	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
+//	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
+//	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
+//	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
+//	////
+//	////
+//	////m_device->Context()->IASetInputLayout(vs->InputLayout());
+//	////
+//	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
+//	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
+//	////
+//	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
+//	////m_device->Context()->RSSetState(rs->Get());
+//	////
+//	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
+//	////
+//	////
+//	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
+//	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
+//	////
+//	////for (int i = 0; i < 5; i++)
+//	////{
+//	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
+//	////}
+//	////
+//	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
+//	////
+//	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
+//	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
+//	////
+//	//m_Device->EndRender();
+//}

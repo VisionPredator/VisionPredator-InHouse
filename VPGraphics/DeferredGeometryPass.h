@@ -33,10 +33,10 @@ private:
 	std::shared_ptr<RenderTargetView> m_DepthRTV;
 
 	// Constant Buffer
-	std::shared_ptr<ConstantBuffer<WorldTransformCB>> m_ModelTransformCB;
-	std::shared_ptr<ConstantBuffer<CameraCB>> m_CameraTransformCB;
-	std::shared_ptr<ConstantBuffer<MatrixPallete>> m_BoneTransformCB;
-	std::shared_ptr<ConstantBuffer<DirectionLightCB>> m_LightTransformCB;
+	//std::shared_ptr<ConstantBuffer<WorldTransformCB>> m_ModelTransformCB;
+	//std::shared_ptr<ConstantBuffer<CameraData>> m_CameraTransformCB;
+	//std::shared_ptr<ConstantBuffer<MatrixPallete>> m_BoneTransformCB;
+	//std::shared_ptr<ConstantBuffer<DirectionLightCB>> m_LightTransformCB;
 
 	// VB 와 IB 는 여기서는 없어도 괜찮다. 어차피 MRT 에 그리는 것이 목적이기 때문.
 };

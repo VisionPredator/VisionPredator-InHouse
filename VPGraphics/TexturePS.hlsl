@@ -1,49 +1,21 @@
-struct DirectionLight
+struct LightData
 {
     float4 Ambient;
     float4 Diffuse;
     float4 Specular;
+
     float3 Direction;
-    float pad;
-    
-};
-
-struct PointLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    
-    float3 Position;
     float Range;
-    
-    float3 Att;
+
+    float3 Attenuation;
     float pad;
+  
+    float3 pos;
+    float spot;
 };
 
-struct SpotLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    
-    float3 Position;
-    float Range;
-    
-    float3 Direction;
-    float Spot;
-    
-    float3 Att;
-    float pad;
-    
-};
 
-cbuffer Transform : register(b0)
-{
-    float4x4 glocal;
-}
-
-cbuffer Camera : register(b1)
+cbuffer Camera : register(b0)
 {
     float4x4 gWorldViewProj;
     float4x4 gView;
@@ -51,11 +23,19 @@ cbuffer Camera : register(b1)
     float4x4 gViewInverse;
 };
 
+cbuffer Transform : register(b1)
+{
+    float4x4 gWorld;
+    float4x4 glocal;
+}
+
+
+
 cbuffer Light : register(b2)
 {
-    DirectionLight gDirLight;
-    PointLight gPointLight;
-    SpotLight gSpotLight;
+    LightData gDirLight;
+    //LightData gPointLight;
+    LightData gSpotLight;
 };
 
 
@@ -63,14 +43,7 @@ Texture2D gDiffuseMap : register(t0);
 Texture2D gNormalMap : register(t1);
 Texture2D gSpecularMap : register(t2);
 
-SamplerState samAnisotropic : register(s0)
-{
-    //Filter = ANISOTROPIC;
-    //MaxAnisotropy = 4;
-    //AddressU = WRAP;
-    //AddressV = WRAP;
-};
-
+SamplerState samAnisotropic : register(s0);
 SamplerState samLinear : register(s1);
 
 struct PS_INPUT
@@ -87,6 +60,7 @@ struct PS_INPUT
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
+
     float4 ambient = { 0.1, 0.1, 0.1, 0 };
     float4 diffuse = { 0, 0, 0, 0 };
     float4 specular = { 0, 0, 0, 0 };
@@ -123,7 +97,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     //float3 v = reflect(-lightVec, input.normal.xyz);
     float3 v = reflect(-lightVec, vNormal.xyz);
         
-    /*물질의 광택 계수*/
+    //물질의 광택 계수
     float materialCoefficient = 64.f;
     
     //거듭제곱을 통해 광택을 간접적으로 표현
@@ -133,8 +107,9 @@ float4 main(PS_INPUT input) : SV_TARGET
     specular = specularfactor * gDirLight.Specular;
         
     float4 litColor;
+
     //ambient에 albedo를 곱해 더 선명한 색상을 출력해 낼수 있다
-    //litColor = ambient * albedo + diffuse * albedo + specular;
+    litColor = ambient * albedo + diffuse * albedo + specular;
     
     //litColor = diffuse * specular;
     //litColor = ambient * specular;
@@ -149,7 +124,10 @@ float4 main(PS_INPUT input) : SV_TARGET
     //litColor = input.tangent;
     //litColor = input.bitangent;
     //litColor = vNormal;
-    litColor = albedo;
+    //litColor = albedo;
     
+ 
     return litColor;
+    
+
 }

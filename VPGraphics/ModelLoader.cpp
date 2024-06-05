@@ -30,7 +30,7 @@ ModelLoader::~ModelLoader()
 void ModelLoader::Initialize()
 {
 	LoadModel("Flair.fbx", Filter::SKINNING);
-	LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("cerberus.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -145,7 +145,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 	newMesh->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	///메쉬에따라 읽는방식과 세부 설정을 따로 둬야할듯
-	std::vector<TextureVertex> TextureVertices;
+	std::vector<BaseVertex> TextureVertices;
 	std::vector<SkinningVertex> SkinningVertices;
 
 	D3D11_BUFFER_DESC desc = BufferDESC::Vertex::Default;
@@ -173,9 +173,9 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			{
 				ProcessVertexBuffer(TextureVertices, curMesh, i);
 			}
-			desc.ByteWidth = sizeof(TextureVertex) * curMesh->mNumVertices;
+			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
 			data.pSysMem = &(TextureVertices[0]);
-			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(TextureVertex));
+			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
 			break;
 
 		case Filter::SKINNING:
@@ -288,14 +288,14 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//newMaterial->m_DiffuseSRV->Load(finalPath);
 
 
-		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path, SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 
 		//m_pBaseColor = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::BASECOLOR;
 	}
 	else
 	{
-		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
+		newMaterial->m_DiffuseSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 	}
 
 	path = (textureProperties[aiTextureType_NORMALS].second);
@@ -304,14 +304,14 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->m_NormalFilePath = finalPath;
 		//newMaterial->m_NormalSRV->Load(finalPath);
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path, SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
 	}
 	else
 	{
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png", SamplerDESC::Linear);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png");
 
 	}
 
@@ -478,9 +478,9 @@ void ModelLoader::ProcessVertexBuffer(std::vector<SkinningVertex>& buffer, aiMes
 	}
 	buffer.push_back(vertex);
 }
-void ModelLoader::ProcessVertexBuffer(std::vector<TextureVertex>& buffer, aiMesh* curMesh, unsigned int index)
+void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* curMesh, unsigned int index)
 {
-	TextureVertex vertex;
+	BaseVertex vertex;
 
 	vertex.pos.x = curMesh->mVertices[index].x;
 	vertex.pos.y = curMesh->mVertices[index].y;

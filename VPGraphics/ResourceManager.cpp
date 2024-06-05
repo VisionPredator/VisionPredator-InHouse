@@ -1,10 +1,6 @@
 #include "pch.h"
 
 #include "ResourceManager.h"
-#include "ConstantBuffer.h"
-#include "RenderState.h"
-#include "RenderTargetView.h"
-#include "Texture2D.h"
 
 //자주 쓰는 구조체 정리를 해보자
 #include "StaticData.h"
@@ -33,22 +29,38 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Initialize()
 {
+	///--------확정-----
+	//기본 RS
+	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);
+	Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
+
+	Create<VertexShader>(L"Base", VERTEXFILTER::STATIC,L"Mesh");
+	Create<VertexShader>(L"Skinning", VERTEXFILTER::SKINNING, L"Mesh");
+
+	m_Camera = Create<ConstantBuffer<CameraData>>(L"Camera", BufferDESC::Constant::DefaultCamera);
+	m_Camera.lock()->Update();
+
+	m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
+	m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, (m_Camera.lock()->GetAddress()));
+
+	Create<ConstantBuffer<TransformData>>(L"Transform", BufferDESC::Constant::DefaultTransform);
+
+	Create<Sampler>(L"Linear", SamplerDESC::Linear);
+
+	///------미정------
 	//디퍼드 용 쉐이더 테스트
 	//Create<VertexShader>(L"../x64/Debug/DeferredVS.cso", VERTEXFILTER::SKINNING, L"Deferred");
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
-	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
-	Create<VertexShader>(L"../x64/Debug/BaseVS.cso", VERTEXFILTER::TEXTURE,L"Base");
+	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+
+
 	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
-	Create<VertexShader>(L"../x64/Debug/SkinningVS.cso", VERTEXFILTER::SKINNING, L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/SkinningPS.cso",  L"Skinning");
-	Create<VertexShader>(L"../x64/Debug/TextureVS.cso", VERTEXFILTER::TEXTURE, L"Texture");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
 
-	//기본 RS
-	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);
-	Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
+	
 
 
 	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
@@ -82,18 +94,13 @@ void ResourceManager::Initialize()
 	Create<DepthStencilView>(L"DSV_2", dsd);
 
 	//한번만 연결해주면 계속 쓸 것들
-	Create<ConstantBuffer<WorldTransformCB>>(L"SunTransform", BufferDESC::Constant::DefaultWorld);
-	Create<ConstantBuffer<WorldTransformCB>>(L"Transform", BufferDESC::Constant::DefaultWorld);
-	Create<ConstantBuffer<LocalTransformCB>>(L"Local", BufferDESC::Constant::DefaultLocal);
+	Create<ConstantBuffer<TransformData>>(L"SunTransform", BufferDESC::Constant::DefaultTransform);
 
-	m_DirectionalLight = Create<ConstantBuffer<DirectionLightCB>>(L"DirectionLight", BufferDESC::Constant::DefaultDirLight);
+
+	m_DirectionalLight = Create<ConstantBuffer<LightData>>(L"DirectionLight", BufferDESC::Constant::DefaultLight);
 	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_DirectionalLight.lock()->GetAddress());
 
-	m_Camera = Create<ConstantBuffer<CameraCB>>(L"Camera", BufferDESC::Constant::DefaultCamera);
-	m_Camera.lock()->Update();
-
-	m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
-	m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, (m_Camera.lock()->GetAddress()));
+	
 }
 
 
@@ -149,11 +156,7 @@ void ResourceManager::OnResize()
 		Erase<ShaderResourceView>(L"OffScreenSRV_" + index);
 		// 셰이더 리소스 뷰를 만듭니다.
 
-		ID3D11SamplerState* samplerState;
-		m_Device.lock()->Get()->CreateSamplerState(&SamplerDESC::Linear, &samplerState);
-
-		//Create<ShaderResourceView>(L"OffScreenSRV_" + index, offscreenTex, shaderResourceViewDesc)->SetSampler(samplerState);
-		Create<ShaderResourceView>(L"OffScreenSRV_" + index, newRTV, shaderResourceViewDesc).lock()->SetSampler(samplerState);
+		Create<ShaderResourceView>(L"OffScreenSRV_" + index, newRTV, shaderResourceViewDesc);
 	}
 
 	auto& DSVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<DepthStencilView>())];

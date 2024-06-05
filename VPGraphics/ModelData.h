@@ -17,19 +17,10 @@ class ModelData :
 	public Resource, public std::enable_shared_from_this<ModelData>
 {
 public:
-	ModelData() : m_name(L"need name"), m_RootNode(),RS()
-	{
-	}
-
+	ModelData();
 	~ModelData();
 
-	ModelData(std::shared_ptr<ModelData> other)
-	{
-		this->m_RootNode = other->m_RootNode;
-		this->m_Meshes = other->m_Meshes;
-		this->m_Materials = other->m_Materials;
-		this->m_Animations = other->m_Animations;
-	}
+	ModelData(std::shared_ptr<ModelData> other);
 
 
 	virtual void Release() override;

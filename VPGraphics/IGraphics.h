@@ -39,7 +39,9 @@ namespace Graphics
 		virtual bool Initialize() abstract;
 		virtual void Update(double dt) abstract;
 		virtual bool Finalize() abstract;
+		virtual void BeginRender() abstract;
 		virtual void Render() abstract;
+		virtual void EndRender() abstract;
 		virtual void OnResize() abstract;
 
 
@@ -59,7 +61,11 @@ namespace Graphics
 		//·»´õ¸µ
 		virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
 
+		//ºû Ãß°¡
+		virtual void AddLight(Kind_of_Light kind, LightData data) abstract;
+
 	private:
 
 	};
+
 }

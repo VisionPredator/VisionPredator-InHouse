@@ -45,7 +45,7 @@ private:
 	void ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation* animation);
 
 	void ProcessVertexBuffer(std::vector<SkinningVertex>& buffer, aiMesh* curMesh, unsigned int index);
-	void ProcessVertexBuffer(std::vector<TextureVertex>& buffer, aiMesh* curMesh, unsigned int index);
+	void ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* curMesh, unsigned int index);
 
 	void ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace);
 	void ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes);

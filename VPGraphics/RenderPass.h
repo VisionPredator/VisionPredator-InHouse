@@ -45,7 +45,8 @@ class RenderState;
 /// 메쉬마다 각 패스의 인스턴스가 생기는디
 /// 그게 아니라 패스에 각각의 메쉬들이 대기타고 있다가 그릴건데
 /// 오브젝트가 쓰는 cb가 아닌 것들은 외부에서 넣어줘야한다
-///  
+/// 2024.06.04
+/// 패스마다 skinning static을 나눌 필요가 있나? 패스마다가 아니라 저게 패스 그자체임
 /// </summary>
 
 
@@ -59,12 +60,10 @@ class DepthStencilView;
 class RenderPass
 {
 public:
-	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger);
+	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger, std::weak_ptr<D3D11_VIEWPORT> vp);
 	~RenderPass();
 
 	virtual void Render() abstract;
-	virtual void StaticRender() abstract;
-	virtual void SkinnedRender() abstract;
 	void AddModelData(std::shared_ptr<ModelData> model);
 	void AddModelData(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& model_list);
 
@@ -80,58 +79,44 @@ protected:
 
 	std::weak_ptr<ResourceManager> m_ResourceManager;
 
+	std::weak_ptr<RenderTargetView> m_RTV;
+	std::weak_ptr<DepthStencilView> m_DSV;
+	std::weak_ptr<D3D11_VIEWPORT> m_VP;
+
 
 	PassState m_state = PassState::None;
 };
 
-class ForwardPass : public RenderPass
+class DebugPass : public RenderPass
 {
 public:
-	ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, D3D11_VIEWPORT* vp);
-	~ForwardPass();
+	DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	~DebugPass();
 
 	virtual void Render() override;
-	virtual void StaticRender() override;
-	virtual void SkinnedRender() override;
 
-private:
-	std::weak_ptr<RenderTargetView> m_RTV;
-	std::weak_ptr<DepthStencilView> m_DSV;
-	D3D11_VIEWPORT* m_VP;
 };
 
 
-
-class SkinnigPass : public RenderPass
+//forward
+class SkinningPass : public RenderPass
 {
 public:
-	SkinnigPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, D3D11_VIEWPORT* vp);
-	~SkinnigPass();
+	SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	~SkinningPass();
 
 	virtual void Render() override;
-	virtual void StaticRender() override;
-	virtual void SkinnedRender() override;
 
 private:
-	std::weak_ptr<RenderTargetView> m_RTV;
-	std::weak_ptr<DepthStencilView> m_DSV;
-	D3D11_VIEWPORT* m_VP;
 };
 
-
-
-class TexturePass : public RenderPass
+class StaticPass : public RenderPass
 {
 public:
-	TexturePass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, D3D11_VIEWPORT* vp);
-	~TexturePass();
+	StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	~StaticPass();
 
 	virtual void Render() override;
-	virtual void StaticRender() override;
-	virtual void SkinnedRender() override;
 
 private:
-	std::weak_ptr<RenderTargetView> m_RTV;
-	std::weak_ptr<DepthStencilView> m_DSV;
-	D3D11_VIEWPORT* m_VP;
 };

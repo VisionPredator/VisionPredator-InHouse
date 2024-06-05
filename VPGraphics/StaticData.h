@@ -19,14 +19,14 @@ namespace Axis
 	namespace Vertex
 	{
 		static BaseVertex Buffer[] = {
-				{DirectX::XMFLOAT4(0.f, 0.f, 0.f,1.0f), { 1.f, 0.f, 0.f, 1.f }},
-				{DirectX::XMFLOAT4(10.f, 0.f, 0.f,1.0f), { 1.f, 0.f, 0.f, 1.f }},
+				{DirectX::XMFLOAT4(0.f, 0.f, 0.f,1.0f), { 1.f, 0.f, 0.f, 1.f },{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f}},
+				{DirectX::XMFLOAT4(10.f, 0.f, 0.f,1.0f), { 1.f, 0.f, 0.f, 1.f },{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f}},
 
-				{DirectX::XMFLOAT4(0.f, 0.f, 0.f,1.0f), { 0.f, 1.f, 0.f, 1.f }},
-				{DirectX::XMFLOAT4(0.f, 10.f, 0.f,1.0f), { 0.f, 1.f, 0.f, 1.f }},
+				{DirectX::XMFLOAT4(0.f, 0.f, 0.f,1.0f), { 0.f, 1.f, 0.f, 1.f },{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f}},
+				{DirectX::XMFLOAT4(0.f, 10.f, 0.f,1.0f), { 0.f, 1.f, 0.f, 1.f },{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f}},
 
-				{DirectX::XMFLOAT4(0.f, 0.f, 0.f,1.0f), { 0.f, 0.f, 1.f, 1.f }},
-				{DirectX::XMFLOAT4(0.f, 0.f, 10.f,1.0f), { 0.f, 0.f, 1.f, 1.f }},
+				{DirectX::XMFLOAT4(0.f, 0.f, 0.f,1.0f), { 0.f, 0.f, 1.f, 1.f },{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f}},
+				{DirectX::XMFLOAT4(0.f, 0.f, 10.f,1.0f), { 0.f, 0.f, 1.f, 1.f },{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f, 0.f,0.0f},{0.f, 0.f}},
 		};
 
 		static UINT count = 6;
@@ -161,7 +161,7 @@ namespace TextureBox
 	{
 
 		static float scale = 1;
-		static TextureVertex Buffer[] = {
+		static BaseVertex Buffer[] = {
 			//face 단위로 스플릿
 
 			//윗면 4개 + 아래도 4개 해서 육면체니까 24개
@@ -209,7 +209,7 @@ namespace TextureBox
 
 		static D3D11_BUFFER_DESC Desc =
 		{
-			sizeof(TextureVertex) * TextureBox::Vertex::count,
+			sizeof(BaseVertex) * TextureBox::Vertex::count,
 			D3D11_USAGE_IMMUTABLE,
 			D3D11_BIND_VERTEX_BUFFER,
 			0,
