@@ -1,6 +1,7 @@
 #pragma once
 #include "Resource.h"
 #include <string>
+#include <d3d11shader.h>
 
 #include "Device.h"
 

@@ -3,8 +3,8 @@
 class Pass
 {
 public:
-	Pass() {}
-	~Pass() {}
+	Pass() = default;
+	virtual ~Pass() = default;
 
 	virtual void Render() = 0;
 };

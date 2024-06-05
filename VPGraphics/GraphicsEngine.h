@@ -13,6 +13,11 @@ class DepthStencilView;
 class ShaderResourceView;
 #pragma endregion DX
 
+#pragma region Pipeline
+class DeferredShadingPipeline;
+// class ForwardShadingPipeline;
+#pragma endregion
+
 #pragma region Pass
 class ForwardPass;
 class SkinnigPass;
@@ -81,7 +86,9 @@ private:
 	DirectX::SimpleMath::Matrix m_Proj;
 	DirectX::SimpleMath::Matrix m_ViewProj;
 
-	
+	// Pipeline
+	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
+
 	ForwardPass* m_BasePass;
 	TexturePass* m_TexturePass;
 	SkinnigPass* m_SkinningPass;

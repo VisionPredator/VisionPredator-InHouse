@@ -22,6 +22,8 @@ public:
 	VertexShader(std::wstring filename = L"need name");
 	VertexShader(std::shared_ptr<Device>device, std::wstring filename = L"need name");
 	VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_vertex = VERTEXFILTER::BASE, std::wstring filename = L"need name");
+
+	VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const int& a);
 	~VertexShader();
 
 

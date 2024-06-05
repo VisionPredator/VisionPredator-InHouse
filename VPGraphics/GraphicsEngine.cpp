@@ -14,6 +14,8 @@
 #include "DepthStencilView.h"
 #include "Texture2D.h"
 
+#include "DeferredShadingPipeline.h"
+
 #include "RenderPass.h"
 #pragma endregion DX
 
@@ -39,7 +41,7 @@
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
 {
-
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -61,61 +63,50 @@ bool GraphicsEngine::Initialize()
 	m_Camera->Initialize(m_VP->Width / m_VP->Height);
 
 	m_Device = std::make_shared<Device>(m_hWnd);
-	if (m_Device != nullptr)
-	{
-		m_Device->Initialize();
-		m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
-		m_ResourceManager->Initialize();
 
-		m_Loader = std::make_shared <ModelLoader>(m_ResourceManager,m_Device);
-		m_Loader->Initialize();
+	if (m_Device == nullptr)
+		return false;
 
-		m_Animator = std::make_shared <Animator>();
+	m_Device->Initialize();
+	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
+	m_ResourceManager->Initialize();
 
-		if (m_Device->SwapChain())
-		{
-			//output
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
+	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager,m_Device);
+	m_Loader->Initialize();
 
-			//deferred
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_2"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_3"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_4"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_5"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_6"));
+	m_Animator = std::make_shared <Animator>();
 
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_1"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_2"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_3"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_4"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_5"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_6"));
+	if (m_Device->SwapChain() == nullptr)
+		return false;
 
-			//출력병합기
-			m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-			m_Device->Context()->RSSetViewports(1, m_VP);
+	//output
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
+	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_1"));
 
 
-			//test
-			m_BasePass = new ForwardPass(m_Device, m_ResourceManager, m_VP);
-			m_TexturePass = new TexturePass(m_Device, m_ResourceManager, m_VP);
-			m_SkinningPass = new SkinnigPass(m_Device, m_ResourceManager, m_VP);
+	//출력병합기
+	// TODO: RTV와 뷰포트 바인딩은 이제 여기서 안하고 패스마다 필요시에 바인딩할 것임. 즉. 여기 있는거 삭제해야함.
+	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
+	m_Device->Context()->RSSetViewports(1, m_VP);
 
-			AddRenderModel(MeshFilter::Axis, L"Axis");
-			AddRenderModel(MeshFilter::Grid, L"Grid");
-			AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
-			EraseObject(L"TextureBox");
-			AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
+	// Pipeline
+	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
 
-			
+	//test
+	m_BasePass = new ForwardPass(m_Device, m_ResourceManager, m_VP);
+	m_TexturePass = new TexturePass(m_Device, m_ResourceManager, m_VP);
+	m_SkinningPass = new SkinnigPass(m_Device, m_ResourceManager, m_VP);
+
+	AddRenderModel(MeshFilter::Axis, L"Axis");
+	AddRenderModel(MeshFilter::Grid, L"Grid");
+	AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
+	EraseObject(L"TextureBox");
+	AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
 
 
-			return true;
-		}
-	}
 
+	return true;
 
-	return false;
 }
 
 void GraphicsEngine::Update(double dt)
