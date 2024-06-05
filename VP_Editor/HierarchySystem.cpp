@@ -17,7 +17,6 @@ void HierarchySystem::ShowEntitys()
 			continue;
 
 		ShowParentEntity(transcomp.GetEntityID());
-
 	}
 }
 

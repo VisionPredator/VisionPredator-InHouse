@@ -14,7 +14,7 @@ void Hierarchy::ImGuiRender()
 	ImGui::Begin("Hierarchy");
 
 
-	if (ImGui::BeginPopupContextWindow())
+	if (!m_HierarchySystem->m_IsHovered &&ImGui::BeginPopupContextWindow())
 	{
 		if (ImGui::MenuItem("Create Empty"))
 		{
@@ -24,6 +24,7 @@ void Hierarchy::ImGuiRender()
 		ImGui::EndPopup();
 	}
 	m_HierarchySystem->ShowEntitys();
+
 	ImGui::End();
 
 }
