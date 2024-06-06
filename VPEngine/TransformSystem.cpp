@@ -17,7 +17,7 @@
 			
 		std::list<uint32_t> updatelist;
 		///최상단의 Entity 만 기억하기. 근데 뭘로 기억하는게 좋을까 고민해보기.
-		for (TransformComponent& comp : COMPITER(TransformComponent))
+		for (TransformComponent& comp : CompIter<TransformComponent>(m_SceneManager))
 		{
 			if (comp.HasComponent<Parent>())
 				continue;

@@ -56,7 +56,7 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 
 		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", DeleteEntityID);
 		DeleteEntityIDs.pop_front();
-		if (GetEntity(DeleteEntityID)->HasComponent<Children>())
+		if (!GetEntity(DeleteEntityID)->HasComponent<Children>())
 			continue;
 		Children* children = GetEntity(DeleteEntityID)->GetComponent<Children>();
 		DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
@@ -66,7 +66,7 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 void SceneManager::OnDestroyEntity(std::any data)
 {
 	// EntityMap에서 해당 Entity를 찾습니다.
-	uint32_t entityID = std::any_cast <int>(data);
+	uint32_t entityID = std::any_cast<uint32_t>(data);
 
 	auto& entityMap = GetEntityMap();
 	auto entityIter = entityMap.find(entityID);
@@ -74,17 +74,27 @@ void SceneManager::OnDestroyEntity(std::any data)
 	{
 		Entity* entityToRemove = entityIter->second;
 		// m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
-		for (auto& compPair :m_CurrentScene->m_ComponentPool)
+		for (auto& compPair : m_CurrentScene->m_ComponentPool)
 		{
 			auto& components = compPair.second;
+			std::vector<Component*> toDelete;
+
 			// 해당 Entity의 컴포넌트를 찾아 제거합니다.
-			auto it = std::remove_if(components.begin(), components.end(),
-				[entityID](Component* comp) { return comp->GetEntityID() == entityID; });
-			components.erase(it, components.end());
+			components.erase(std::remove_if(components.begin(), components.end(),
+				[entityID, &toDelete](Component* comp) 
+				{
+					if (comp->GetEntityID() == entityID)
+					{
+						toDelete.push_back(comp);
+						return true;
+					}
+					return false;
+				}), components.end());
+
 			// 제거된 컴포넌트들을 삭제합니다.
-			for (auto eraseIt = it; eraseIt != components.end(); ++eraseIt)
+			for (auto* comp : toDelete)
 			{
-				delete* eraseIt;
+				delete comp;
 			}
 		}
 		// EntityMap에서 해당 Entity를 제거합니다.
