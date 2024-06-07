@@ -4,9 +4,8 @@
 #include "HierarchySystem.h"
 #include <EventManager.h>
 
-Hierarchy::Hierarchy(SceneManager* scManager): m_SceneManager{scManager}
+Hierarchy::Hierarchy(SceneManager* scManager, HierarchySystem* hierarchySystem) : m_SceneManager{ scManager }, m_HierarchySystem{ hierarchySystem }
 {
-	m_HierarchySystem = new HierarchySystem(scManager);
 }
 
 void Hierarchy::ImGuiRender()

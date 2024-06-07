@@ -3,6 +3,7 @@
 #include "IImGui.h"
 #include "EventSubscriber.h"
 class EditorCamera;
+class HierarchySystem;
 class VP_Editor :public VPEngine,public EventSubscriber
 {
 public:
@@ -10,6 +11,7 @@ public:
 	~VP_Editor();
 	virtual void Update();
 	virtual void Render();
+	HierarchySystem* m_HierarchySystem;
 	std::vector<IImGui*> m_ImGuis;
 	EditorCamera* m_editorcamera;
 

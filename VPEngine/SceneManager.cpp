@@ -306,6 +306,13 @@ Entity* SceneManager::CreateEntity()
 
 	Component* TransformComp =tempEntity->AddComponent(Reflection::GetTypeID<TransformComponent>());
 	Component* IDComp = tempEntity->AddComponent(Reflection::GetTypeID<IDComponent>());
+	IDComponent* temp = static_cast<IDComponent*>(IDComp);
+	static int a = 0;
+	if (temp->Name=="Entity")
+	{
+	temp->Name= temp->Name+ std::to_string(a);
+	a++;
+	}
 
 	return tempEntity;
 }

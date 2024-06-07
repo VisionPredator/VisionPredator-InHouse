@@ -10,6 +10,7 @@
 #include "Hierarchy.h"
 #include "Inspector.h"
 #include "EventManager.h"
+#include "HierarchySystem.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 20.0f);
@@ -33,10 +34,11 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	*/
+	m_HierarchySystem = new HierarchySystem{m_SceneManager};
 	m_ImGuis.push_back(new Toolbar);
 	m_ImGuis.push_back(new FolderTool);
-	m_ImGuis.push_back(new Hierarchy{m_SceneManager});
-	m_ImGuis.push_back(new Inspector);
+	m_ImGuis.push_back(new Hierarchy{m_SceneManager,m_HierarchySystem});
+	m_ImGuis.push_back(new Inspector{ m_SceneManager,m_HierarchySystem });
 	m_editorcamera = new EditorCamera;
 	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&VP_Editor::OnPlayButton));
 	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&VP_Editor::OnStopButton));

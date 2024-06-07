@@ -7,6 +7,7 @@
 class TimeManager;
 class SystemManager;
 class SceneManager;
+
 class VPEngine
 {
 public:
