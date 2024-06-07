@@ -5,7 +5,7 @@
 
 
 
-PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : m_Device(device),m_Resourcemanager(manager), m_VP(vp)
+PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<D3D11_VIEWPORT> vp) : m_Device(device),m_Resourcemanager(resource), m_VP(vp)
 {
 
 }

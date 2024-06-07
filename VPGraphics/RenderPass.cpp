@@ -51,8 +51,6 @@ SkinningPass::SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 
 	m_state = PassState::Skinning;
-
-
 }
 
 SkinningPass::~SkinningPass()

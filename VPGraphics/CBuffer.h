@@ -52,3 +52,16 @@ struct LightData
 
 
 };
+
+
+struct LightArray
+{
+	//여유있게 대충 100개 했음
+	LightData Dir[100];
+	LightData Point[100];
+	LightData Spot[100];
+	float DirIndex;
+	float PointIndex;
+	float SpotIndex;
+	float pad;
+};

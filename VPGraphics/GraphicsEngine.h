@@ -18,14 +18,8 @@ class DeferredShadingPipeline;
 // class ForwardShadingPipeline;
 #pragma endregion
 
-#pragma region Pass
-class StaticPass;
-class SkinningPass;
-class DebugPass;
-
 class PassManager;
-
-#pragma endregion Pass
+class LightManager;
 
 #include "MeshFilter.h"
 
@@ -61,15 +55,19 @@ public:
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	virtual void UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world) override;
 
-	virtual void AddLight(Kind_of_Light kind, LightData data) override;
+	virtual void AddLight(std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void EraseLight(std::wstring name, Kind_of_Light kind) override;
+
+	virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) override;
 
 
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
-	//pass manager 안에 들어 있어야할까?
 	std::map<std::wstring, std::pair<PassState,std::shared_ptr<ModelData>>> m_RenderList;
+	std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)> m_LightList;
+
 
 	void DrawQuad(ShaderResourceView* srv);
 
@@ -82,6 +80,7 @@ private:
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<PassManager> m_PassManager;
+	std::shared_ptr<LightManager> m_LightManager;
 
 private:
 	HWND m_hWnd;
@@ -95,9 +94,7 @@ private:
 	// Pipeline
 	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
-	StaticPass* m_BasePass;
-	SkinningPass* m_SkinningPass;
-	DebugPass* m_DebugPass;
+
 
 
 	//test

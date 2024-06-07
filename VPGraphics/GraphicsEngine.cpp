@@ -35,6 +35,7 @@
 #include "ModelLoader.h"
 #include "Animator.h"
 #include "PassManager.h"
+#include "LightManager.h"
 #pragma endregion Manager
 
 
@@ -82,6 +83,8 @@ bool GraphicsEngine::Initialize()
 	m_PassManager = std::make_shared <PassManager>(m_Device,m_ResourceManager,m_VP);
 	m_PassManager->Initialize();
 
+	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
+
 	m_Animator = std::make_shared <Animator>();
 
 
@@ -125,6 +128,17 @@ bool GraphicsEngine::Initialize()
 	Spot.pos = DirectX::XMFLOAT3{ 0.f ,2.f , -01.f };
 	Spot.attenuation = DirectX::XMFLOAT3{ 0.f ,0.f , 0.20f };
 	Spot.spot = 1;
+
+	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
+
+	LightData Dir2;
+	Dir2.ambient = DirectX::XMFLOAT4(01.7f, 01.7f, 01.7f, 1.0f);
+	Dir2.diffuse = DirectX::XMFLOAT4(0.70f, 0.7f, 0.7f, 1.0f);
+	Dir2.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	Dir2.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
+
+	AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
+	EraseLight(L"Sun", Kind_of_Light::Direction);
 
 
 	return true;
@@ -170,6 +184,8 @@ void GraphicsEngine::Update(double dt)
 	m_Animator->Update(dt, m_RenderList);
 
 	m_PassManager->Update(m_RenderList);
+
+	m_LightManager->Update(m_LightList);
 }
 
 bool GraphicsEngine::Finalize()
@@ -431,7 +447,6 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 	return true;
 }
 
-
 void GraphicsEngine::EraseObject(std::wstring name)
 {
 	m_RenderList.erase(name);
@@ -469,11 +484,55 @@ void GraphicsEngine::UpdateModelTransform(std::wstring name, DirectX::SimpleMath
 	m_RenderList[name].second->world = world;
 }
 
-void GraphicsEngine::AddLight(Kind_of_Light kind, LightData data)
+void GraphicsEngine::AddLight(std::wstring name, Kind_of_Light kind, LightData data)
 {
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(name) == curMap.end())
+	{
+		curMap.insert(std::pair<std::wstring, LightData>(name, data));
+	}
+	else
+	{
+		MessageBox(0, L"This Light already Exist", 0, 0);
+		return;
+	}
 
 }
 
+
+void GraphicsEngine::EraseLight(std::wstring name, Kind_of_Light kind)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(name) != curMap.end())
+	{
+		curMap.erase(name);
+	}
+	else
+	{
+		MessageBox(0, L"This Light Is Not Exist", 0, 0);
+		return;
+	}
+}
+
+void GraphicsEngine::UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData> curMap = m_LightList[index];
+
+	if (curMap.find(name) != curMap.end())
+	{
+		curMap[name] = data;
+	}
+	else
+	{
+		MessageBox(0, L"This Light Is Not Exist", 0, 0);
+		return;
+	}
+}
 
 void GraphicsEngine::OnResize()
 {

@@ -12,6 +12,14 @@ class VertexShader;
 class PixelShader;
 class RenderState;
 
+class LightManager;
+class ResourceManager;
+class RenderTargetView;
+class DepthStencilView;
+
+
+struct D3D11_VIEWPORT;
+
 /// <summary>
 /// 2024.05.16
 /// 렌더링 파이프라인 단위
@@ -50,12 +58,7 @@ class RenderState;
 /// </summary>
 
 
-struct D3D11_VIEWPORT;
 
-
-class ResourceManager;
-class RenderTargetView;
-class DepthStencilView;
 
 class RenderPass
 {

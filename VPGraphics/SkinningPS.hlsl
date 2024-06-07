@@ -29,13 +29,16 @@ cbuffer Transform : register(b1)
     float4x4 glocal;
 }
 
-cbuffer Light : register(b2)
+cbuffer LightArray : register(b2)
 {
-    LightData gDirLight;
-    LightData gPointLight;
-    LightData gSpotLight;
+    LightData Dir[100];
+    LightData Point[100];
+    LightData Spot[100];
+    float DirIndex;
+    float PointIndex;
+    float SpotIndex;
+    float pad;
 };
-
 
 Texture2D gDiffuseMap : register(t0);
 Texture2D gNormalMap : register(t1);
@@ -75,6 +78,8 @@ float4 main(PS_INPUT input) : SV_TARGET
         
     //눈위치는 FPS니까 카메라랑 똑같다 - view는 카메라 행렬의 역행렬이다 viewinverse == camera
     float3 eyepos = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
+    
+    LightData gDirLight = Dir[0];
     
     //표면점에서 광원으로의 벡터 
     float3 lightVec = -normalize(gDirLight.Direction); //directionlight는 모든 표면점에서 일정한 방향으로 들어오는 빛이므로 빛의 방향을 역으로 쓰자

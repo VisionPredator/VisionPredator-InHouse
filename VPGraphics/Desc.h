@@ -70,6 +70,23 @@ namespace BufferDESC
 			0
 		};
 
+
+		static D3D11_BUFFER_DESC DefaultLightArray = {
+			sizeof(LightArray),
+			D3D11_USAGE_DEFAULT,
+			D3D11_BIND_CONSTANT_BUFFER,
+			0,
+			0
+		};
+
+		static D3D11_BUFFER_DESC DynamicLightArray = {
+			sizeof(LightArray),
+			D3D11_USAGE_DYNAMIC,
+			D3D11_BIND_CONSTANT_BUFFER,
+			D3D11_CPU_ACCESS_WRITE,
+			0
+		};
+
 	}
 
 	namespace Index
