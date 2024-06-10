@@ -58,18 +58,31 @@
 		{
 			EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(compID));
 		}
-	private:
 
+	private:
+		std::vector<Component*> GetOwnedComponent()
+		{
+			std::vector<Component*> tempComponentPool;
+			for (auto& component : m_OwnedComp)
+			{
+				tempComponentPool.push_back(component.second);
+			}
+			return tempComponentPool;
+		}
 		void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
 
 		template<typename T>
 		inline T* FindComponent()
 		{
-			return (T*)m_OwnedComp[Reflection::GetTypeID<T>()];
+			auto it = m_OwnedComp.find(Reflection::GetTypeID<T>());
+			assert(it != m_OwnedComp.end() && "Component not found in m_OwnedComp");
+			return static_cast<T*>(it->second);
 		}
 		Component* FindComponent(entt::id_type compID)
 		{
-			return m_OwnedComp[compID];
+			auto it = m_OwnedComp.find(compID);
+			assert(it != m_OwnedComp.end() && "Component not found in m_OwnedComp");
+			return it->second;
 		}
 
 	

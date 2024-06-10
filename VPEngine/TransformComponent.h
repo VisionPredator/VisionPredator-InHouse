@@ -29,6 +29,7 @@ struct Children : public Component
 
 struct TransformComponent :public Component
 {
+public:
 	VP_JSONBODY(TransformComponent, Local_Location, Local_Quaternion, Local_Scale)
 		TransformComponent();
 

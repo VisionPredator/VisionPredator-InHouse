@@ -22,7 +22,7 @@ public:
 
 
 
-
+	std::vector<Component*> GetOwnedComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponent(); }
 
 
 	template<typename T>

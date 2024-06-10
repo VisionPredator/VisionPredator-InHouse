@@ -29,6 +29,9 @@ struct Component
 	Entity* GetEntity() { return OwnedEntity; }
 	void SetEntity(Entity* entity) { OwnedEntity = entity; }
 	virtual entt::id_type GetTypeID() const = 0;
+	virtual entt::meta_handle GetHandle() abstract;
+
+
 protected:
 	Entity* OwnedEntity = nullptr;
 	friend class SceneManager;

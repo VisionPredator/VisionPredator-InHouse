@@ -11,8 +11,12 @@ static void AutoRegisterMetaTypeFunction();
 
 #pragma region Meta Member 등록
 
+
 #define MEMBER(NAME)\
- .data<& NAME >(#NAME##_hs)
+ .data<& NAME >(#NAME##_hs)\
+		.prop(Reflection::Prop::Name,#NAME)
+
+
 
 #define MEMBER_EXPAND( x ) x
 #define MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, NAME,...) NAME
@@ -80,9 +84,87 @@ static void AutoRegisterMetaTypeFunction()
 
 namespace Reflection
 {
-    template<typename T>
-    static entt::id_type GetTypeID() {
-    static entt::id_type typeID = entt::resolve<T>().id();
-    return typeID;
+	namespace Prop
+	{
+		// 함수, 변수 이름
+		constexpr static entt::hashed_string Name = entt::hashed_string("name");
+
+		// 주석
+		constexpr static entt::hashed_string Comment = entt::hashed_string("comment");
+
+		// 상대경로로 저장 설정
+		constexpr static entt::hashed_string RelativePath = entt::hashed_string("relative_path");
+
+		// 읽기 전용
+		constexpr static entt::hashed_string ReadOnly = entt::hashed_string("read_only");
+
+		// 리소스 드래그 드랍 설정 
+		// value를 ".mp3/.wav"로 설정하면 mp3, wav 파일을 드래그 드랍 받기 가능합니다 
+		constexpr static entt::hashed_string DragDrop = entt::hashed_string("drag_drop");
+
+		// Plain Old Data Structure 순수한 변수들의 집합
+		constexpr static entt::hashed_string POD = entt::hashed_string("POD");
+
+		// ??
+		constexpr static entt::hashed_string Label = entt::hashed_string("label");
+	}
+
+	template<typename T>
+	static entt::id_type GetTypeID() {
+		static entt::id_type typeID = entt::resolve<T>().id();
+		return typeID;
+	}
+
+	inline std::string GetClass_Name(const entt::meta_type& type)
+	{
+		std::string_view name = type.info().name();
+
+		// Find the position of the first space
+		size_t space_pos = name.find(' ');
+
+		// If a space is found, remove the prefix up to and including the space
+		if (space_pos != std::string_view::npos) {
+			name.remove_prefix(space_pos + 1);
+		}
+
+		return std::string(name);
+	}
+
+
+	inline std::string RemoveClassName(const std::string& fullName)
+	{
+		// "::" 이후의 부분을 찾기 위해 find를 사용합니다.
+		size_t pos = fullName.find("::");
+
+		// "::"을 찾지 못했을 경우 그대로 반환합니다.
+		if (pos == std::string::npos) {
+			return fullName;
+		}
+
+		// "::" 이후의 문자열을 반환합니다.
+		return fullName.substr(pos + 2); // "::"의 길이가 2이므로 pos + 2로 이후의 문자열을 가져옵니다.
+	}
+
+	inline std::string GetName(const entt::meta_data& metaData)
+	{
+		auto prop = metaData.prop(Prop::Name);
+		if (!prop)
+			return {};
+		std::string fullName =prop.value().cast<const char*>();
+		return RemoveClassName(fullName);
+	}
+
+	inline std::string GetName(const entt::meta_type& metaType)
+	{
+		auto prop = metaType.prop(Prop::Name);
+		if (!prop)
+			return {};
+		std::string fullName = prop.value().cast<const char*>();
+		return RemoveClassName(fullName);
+
+	}
+
+	
+
 }
-}
+

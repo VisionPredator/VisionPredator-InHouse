@@ -68,5 +68,8 @@ void* DeserializeComponent(const nlohmann::json json, Entity* parentEntity) cons
 	component->OwnedEntity = parentEntity;\
     return component;\
 }\
+		entt::meta_handle GetHandle() override { return *this; }\
+
+\
 
 

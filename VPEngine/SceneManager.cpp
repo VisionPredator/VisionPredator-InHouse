@@ -304,8 +304,8 @@ Entity* SceneManager::CreateEntity()
 	tempEntity->SetEntityID(id);
 	SetEntityMap(id, tempEntity);
 
-	Component* TransformComp =tempEntity->AddComponent(Reflection::GetTypeID<TransformComponent>());
 	Component* IDComp = tempEntity->AddComponent(Reflection::GetTypeID<IDComponent>());
+	Component* TransformComp =tempEntity->AddComponent(Reflection::GetTypeID<TransformComponent>());
 	IDComponent* temp = static_cast<IDComponent*>(IDComp);
 	static int a = 0;
 	if (temp->Name=="Entity")

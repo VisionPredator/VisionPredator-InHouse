@@ -22,6 +22,9 @@
     <Filter Include="ImGuiBar\Source">
       <UniqueIdentifier>{67ae2e5f-ff2c-489e-b36f-79fcbfa80e2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Macro">
+      <UniqueIdentifier>{84c46fa4-27d5-4a22-ac1b-80a994b2d9fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">

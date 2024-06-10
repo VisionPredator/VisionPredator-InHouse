@@ -13,7 +13,7 @@ void HierarchySystem::ShowEntitys()
 	{
 
 		// 부모가 없으면 루트
-		if (transcomp.GetComponent<Parent>())
+		if (transcomp.HasComponent<Parent>())
 			continue;
 
 		ShowParentEntity(transcomp.GetEntityID());
