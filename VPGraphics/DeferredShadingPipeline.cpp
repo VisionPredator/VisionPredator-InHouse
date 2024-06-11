@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "DeferredShadingPipeline.h"
 
-#include <entt/resource/resource.hpp>
-
 #include "DeferredGeometryPass.h"
 #include "DeferredLightPass.h"
 #include "Device.h"
@@ -28,6 +26,7 @@ void DeferredShadingPipeline::Initialize(std::shared_ptr<Device>& device,
 {
 	m_DeferredGeometryPass->Initialize(device, resourceManager, width, height);
 	m_DeferredLightPass->Initialize(device, resourceManager, width, height);
+
 }
 
 /// <summary>
@@ -44,6 +43,13 @@ void DeferredShadingPipeline::RenderBegin()
 void DeferredShadingPipeline::Render()
 {
 }
+
+/// TEST TEST TEST
+//void DeferredShadingPipeline::TestRender(
+//	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
+//{
+//	m_DeferredGeometryPass->TestRender(renderList);
+//}
 
 /// <summary>
 ///	그리기를 종료하고 화면에 출력

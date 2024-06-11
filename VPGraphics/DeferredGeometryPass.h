@@ -5,11 +5,23 @@
 #include "ResourceManager.h"
 #include "VertexShader.h"
 
+#include <map>
+#include <utility>
+#include <string>
+#include <memory>
+
+#include "MeshFilter.h"
+
+class Mesh;
+class ModelData;
+class RenderState;
+
 class DeferredGeometryPass final : public Pass
 {
 public:
 	void Initialize(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager, const uint32_t& width, const uint32_t& height);
 	void Render() override;
+	//void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);
 
 private:
 	std::shared_ptr<Device> m_Device;
@@ -26,17 +38,18 @@ private:
 	std::shared_ptr<PixelShader> m_GeometryPS;
 
 	// Multi Render Target
-	enum { GBufferSize = 4 };	// 상수. 일단 만들어는 뒀는데 언제 쓸까.
+	enum { GBufferSize = 4 };	// 상수. #define 보다 디버깅할때 더 편하다.
 	std::shared_ptr<RenderTargetView> m_AlbedoRTV;
 	std::shared_ptr<RenderTargetView> m_NormalRTV;
 	std::shared_ptr<RenderTargetView> m_PositionRTV;
 	std::shared_ptr<RenderTargetView> m_DepthRTV;
 
 	// Constant Buffer
+	std::shared_ptr<ConstantBuffer<TransformData>> m_ModelTransformCB;
+	std::shared_ptr<ConstantBuffer<MatrixPallete>> m_BoneTransformCB;
+
 	//std::shared_ptr<ConstantBuffer<WorldTransformCB>> m_ModelTransformCB;
 	//std::shared_ptr<ConstantBuffer<CameraData>> m_CameraTransformCB;
 	//std::shared_ptr<ConstantBuffer<MatrixPallete>> m_BoneTransformCB;
 	//std::shared_ptr<ConstantBuffer<DirectionLightCB>> m_LightTransformCB;
-
-	// VB 와 IB 는 여기서는 없어도 괜찮다. 어차피 MRT 에 그리는 것이 목적이기 때문.
 };

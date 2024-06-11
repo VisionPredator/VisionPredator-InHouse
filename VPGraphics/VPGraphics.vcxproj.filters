@@ -375,6 +375,12 @@
     <FxCompile Include="MeshPS.hlsl">
       <Filter>hlsl\Mesh</Filter>
     </FxCompile>
+    <FxCompile Include="MeshDeferredGeometryPS.hlsl">
+      <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshDeferredLightPS.hlsl">
+      <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDiagram.cd" />

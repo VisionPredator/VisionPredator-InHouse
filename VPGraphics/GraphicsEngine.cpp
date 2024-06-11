@@ -96,7 +96,7 @@ bool GraphicsEngine::Initialize()
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
 	// Pipeline
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
 
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
@@ -195,7 +195,11 @@ void GraphicsEngine::BeginRender()
 
 void GraphicsEngine::Render()
 {
+	//m_DeferredShadingPipeline->TestRender(m_RenderList);
+	m_DeferredShadingPipeline->Render();
+
 	m_PassManager->Render();
+
 }
 
 void GraphicsEngine::EndRender()
