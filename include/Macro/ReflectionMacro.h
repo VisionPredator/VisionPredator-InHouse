@@ -115,7 +115,7 @@ namespace Reflection
 		return typeID;
 	}
 
-	inline std::string GetClass_Name(const entt::meta_type& type)
+	inline std::string GetName_Class(const entt::meta_type& type)
 	{
 		std::string_view name = type.info().name();
 

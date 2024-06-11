@@ -21,12 +21,12 @@ Entity::~Entity()
 void Entity::AddComponentToMap(Component* comp)
 {
 	/// 메타를 사용하여 T를 타입추론해서 ID값에 해당하는 컴포넌트를 추가할수 있을듯함.
-	if (HasComponent(comp->GetTypeID()))
+	if (HasComponent(comp->GetHandle()->type().id()))
 	{
 	VP_ASSERT(false, "컴포넌트가 존재합니다");
 	return;
 	}
-	m_OwnedComp[comp->GetTypeID()] = comp;
+	m_OwnedComp[comp->GetHandle()->type().id()] = comp;
 }
 
 Component* Entity::AddComponent(entt::id_type compID)
@@ -71,7 +71,8 @@ Component* Entity::AddComponent(entt::id_type compID)
 
 void Entity::ReleaseComponent(Component* comp)
 {
-	auto it = m_OwnedComp.find(comp->GetTypeID());
+	
+	auto it = m_OwnedComp.find(comp->GetHandle()->type().id());
 	if (it != m_OwnedComp.end())
 		m_OwnedComp.erase(it);
 	else

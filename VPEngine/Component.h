@@ -3,7 +3,7 @@
 //#include "SceneManager.h"
 struct Component
 {
-	Component() = default;
+	Component();
 	virtual ~Component()
 	{
 		OwnedEntity = nullptr; // Then set the pointer to nullptr (mostly for safety in this scope)
@@ -28,7 +28,6 @@ struct Component
 	}
 	Entity* GetEntity() { return OwnedEntity; }
 	void SetEntity(Entity* entity) { OwnedEntity = entity; }
-	virtual entt::id_type GetTypeID() const = 0;
 	virtual entt::meta_handle GetHandle() abstract;
 
 

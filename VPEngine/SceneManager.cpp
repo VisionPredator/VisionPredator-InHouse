@@ -43,7 +43,7 @@ void SceneManager::Finalize()
 
 void SceneManager::AddCompToPool(Component* comp)
 {
-	m_CurrentScene->m_ComponentPool[comp->GetTypeID()].push_back(comp);
+	m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()].push_back(comp);
 }
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
@@ -328,7 +328,7 @@ void SceneManager::OnRemoveComponent(std::any data)
 {
 	Component* comp = std::any_cast<Component*>(data);
 	uint32_t EntityID = comp->GetEntityID();
-	entt::id_type CompID = comp->GetTypeID();
+	entt::id_type CompID = comp->GetHandle()->type().id();
 	if (!HasComponent(EntityID, CompID))
 	{
 		VP_ASSERT(false, "해당 타입의 컴포넌트가 존재하지 않습니다.");

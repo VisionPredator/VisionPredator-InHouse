@@ -30,15 +30,17 @@ struct Children : public Component
 struct TransformComponent :public Component
 {
 public:
-	VP_JSONBODY(TransformComponent, Local_Location, Local_Quaternion, Local_Scale)
+	VP_JSONBODY(TransformComponent, Local_Location, Local_Rotation,Local_Scale)
 		TransformComponent();
 
 
 	VPMath::Vector3 Local_Location = {};
+	VPMath::Vector3 Local_Rotation = {};
 	VPMath::Quaternion Local_Quaternion = {};
 	VPMath::Vector3 Local_Scale = { 1.f,1.f,1.f };
 
 	VPMath::Vector3 Previous_Location = {};
+	VPMath::Vector3 Previous_Rotation = {};
 	VPMath::Quaternion Previous_Quaternion = {};
 	VPMath::Vector3 Previous_Scale = { 1.f,1.f,1.f };
 

@@ -39,13 +39,7 @@
 #endif
 
 // Macro to simplify type ID definition
-#define DEFINE_COMPONENT_TYPE(TYPE) \
-public: \
-    static const entt::id_type typeID; \
-    entt::id_type GetTypeID() const override { return TYPE::typeID; }
 
-#define IMPLEMENT_COMPONENT_TYPE(TYPE) \
-    const entt::id_type TYPE::typeID =entt::resolve<TYPE>().id();
 
 /// \def VP_JSONBODY(CLASSNAME,...)
 /// \brief 해당 컴포넌트에 시리얼라이즈 함수와 디시리얼라이즈 함수를 구현한다.
@@ -53,7 +47,6 @@ public: \
 /// \param 추가 매개변수 : 가지고있는 멤버변수 순서 맞춰서 기입해주세요.
 #define VP_JSONBODY(CLASSNAME,...)\
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CLASSNAME, __VA_ARGS__)\
-DEFINE_COMPONENT_TYPE(CLASSNAME)\
 Component* AddComponent(Entity* parentEntity) override\
 {\
 CLASSNAME* component = parentEntity->AddComponent<CLASSNAME>();\
