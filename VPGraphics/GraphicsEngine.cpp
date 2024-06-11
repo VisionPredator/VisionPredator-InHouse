@@ -43,7 +43,7 @@
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
 {
-	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
 }
 
 GraphicsEngine::~GraphicsEngine()
