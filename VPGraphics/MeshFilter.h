@@ -8,6 +8,7 @@ enum class MeshFilter
 	TextureBox,
 	Static,
 	Skinning,
+	Circle,
 
 	None
 };

@@ -50,8 +50,6 @@ cbuffer LightArray : register(b4)
     float pad;
 };
 
-
-
 //TEXTURE
 Texture2D gDiffuseMap : register(t0);
 Texture2D gNormalMap : register(t1);
@@ -88,17 +86,6 @@ struct VS_INPUT
 };
 
 struct VS_OUTPUT
-{
-    float4 pos : SV_POSITION;
-    float4 posWorld : WORLDPOSITION;
-    float4 color : COLOR;
-    float4 normal : NORMAL;
-    float4 tangent : TANGENT;
-    float4 bitangent : BITANGENT;
-    float2 tex : TEXCOORD;
-};
-
-struct PS_INPUT
 {
     float4 pos : SV_POSITION;
     float4 posWorld : WORLDPOSITION;

@@ -37,6 +37,12 @@ enum class Kind_of_Light
 
 struct LightData
 {
+	LightData() : range(-1),pos(0,0,0), spot(-1)
+	{
+
+	}
+
+
 	DirectX::XMFLOAT4 ambient;
 	DirectX::XMFLOAT4 diffuse;
 	DirectX::XMFLOAT4 specular;
