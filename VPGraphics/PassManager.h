@@ -18,11 +18,10 @@
 
 class ModelData;
 
-
 class PassManager
 {
 public:
-	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<D3D11_VIEWPORT> vp);
 	~PassManager();
 
 	void Initialize();

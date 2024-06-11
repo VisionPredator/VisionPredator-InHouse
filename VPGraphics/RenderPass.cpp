@@ -47,12 +47,11 @@ SkinningPass::SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
-	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/SkinningPS.cso");
+	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/SkinningPS.cso");
+	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/MeshPS.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 
 	m_state = PassState::Skinning;
-
-
 }
 
 SkinningPass::~SkinningPass()

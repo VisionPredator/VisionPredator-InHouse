@@ -35,6 +35,7 @@
 #include "ModelLoader.h"
 #include "Animator.h"
 #include "PassManager.h"
+#include "LightManager.h"
 #pragma endregion Manager
 
 
@@ -42,7 +43,7 @@
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
 {
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -79,8 +80,10 @@ bool GraphicsEngine::Initialize()
 	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
 	m_Loader->Initialize();
 
-	m_PassManager = std::make_shared <PassManager>(m_Device,m_ResourceManager,m_VP);
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager, m_VP);
 	m_PassManager->Initialize();
+
+	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
 
 	m_Animator = std::make_shared <Animator>();
 
@@ -95,6 +98,9 @@ bool GraphicsEngine::Initialize()
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
+	OnResize();
+
+
 	// Pipeline
 	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
 
@@ -105,6 +111,7 @@ bool GraphicsEngine::Initialize()
 	EraseObject(L"TextureBox");
 	AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 
+
 	Dir.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	Dir.diffuse = DirectX::XMFLOAT4(0.20f, 0.2f, 0.2f, 1.0f);
 	Dir.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -113,9 +120,9 @@ bool GraphicsEngine::Initialize()
 	Point.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	Point.diffuse = DirectX::XMFLOAT4(0.20f, 0.2f, 0.2f, 1.0f);
 	Point.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	Point.range = 10.f;
-	Point.pos = DirectX::XMFLOAT3{ 0.f ,0.f , -0.f };
-	Point.attenuation = DirectX::XMFLOAT3{ 0.f ,0.f , 0.50f };
+	Point.range = 5.f;
+	Point.pos = DirectX::XMFLOAT3{ 0.f ,10.f , -0.f };
+	Point.attenuation = DirectX::XMFLOAT3{ 0.5f ,05.f , 0.50f };
 
 	Spot.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	Spot.direction = DirectX::XMFLOAT3(0.0f, -0.0f, -0.5f);
@@ -126,6 +133,19 @@ bool GraphicsEngine::Initialize()
 	Spot.attenuation = DirectX::XMFLOAT3{ 0.f ,0.f , 0.20f };
 	Spot.spot = 1;
 
+	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
+	EraseLight(L"Sun", Kind_of_Light::Direction);
+
+	LightData Dir2;
+	Dir2.ambient = DirectX::XMFLOAT4(01.7f, 01.7f, 01.7f, 1.0f);
+	Dir2.diffuse = DirectX::XMFLOAT4(0.70f, 0.7f, 0.7f, 1.0f);
+	Dir2.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	Dir2.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
+
+	AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
+	EraseLight(L"Sun2", Kind_of_Light::Direction);
+
+	AddLight(L"Point", Kind_of_Light::Point, Point);
 
 	return true;
 
@@ -154,7 +174,7 @@ void GraphicsEngine::Update(double dt)
 
 
 	std::weak_ptr<ConstantBuffer<CameraData>> test = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
-	
+
 	test.lock()->m_struct.view = cb_view;
 	test.lock()->m_struct.viewInverse = cb_viewInverse;
 	test.lock()->m_struct.worldviewproj = cb_worldviewproj;
@@ -170,6 +190,8 @@ void GraphicsEngine::Update(double dt)
 	m_Animator->Update(dt, m_RenderList);
 
 	m_PassManager->Update(m_RenderList);
+
+	m_LightManager->Update(m_LightList);
 }
 
 bool GraphicsEngine::Finalize()
@@ -414,18 +436,117 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
 			newModel->m_pass = PassState::Skinning;
 
-			newModel->world= DirectX::SimpleMath::Matrix::Identity;
+			newModel->world = DirectX::SimpleMath::Matrix::Identity;
 			newModel->world._11 *= 0.05f;
 			newModel->world._22 *= 0.05f;
 			newModel->world._33 *= 0.05f;
 
 			newModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"skinning", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
 			m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
 		}
 		break;
 
+		case MeshFilter::Circle:
+		{
+			std::shared_ptr<ModelData> CircleModel = std::make_shared<ModelData>();
+
+			CircleModel->m_name = name;
+			CircleModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
+
+			CircleModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
+
+			UINT size = static_cast<UINT>(sizeof(BaseVertex));
+
+			int segmentCount = 60;
+			int radius = 1;
+			const float angleStep = DirectX::XM_2PI / segmentCount; //2pi = 360
+
+			std::vector<BaseVertex> vertices;
+
+			//xy
+			for (int i = 0; i <= segmentCount; ++i)
+			{
+				float angle = i * angleStep;
+				float x = radius * cosf(angle);
+				float y = radius * sinf(angle);
+
+				BaseVertex temp1;
+				temp1.pos = DirectX::XMFLOAT4(x, y, 0, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴
+				temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+				vertices.push_back(temp1);
+
+			}
+
+			//xz
+			for (int i = 0; i <= segmentCount; ++i)
+			{
+				float angle = i * angleStep;
+				float x = radius * cosf(angle);
+				float y = radius * sinf(angle);
+
+				BaseVertex temp1;
+				temp1.pos = DirectX::XMFLOAT4(x, 0, y, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴 0은 벡터
+				temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+				vertices.push_back(temp1);
+
+			}
+
+
+			D3D11_BUFFER_DESC vbd;
+			vbd.Usage = D3D11_USAGE_IMMUTABLE;
+			vbd.ByteWidth = sizeof(BaseVertex) * static_cast<int>(vertices.size());
+			vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			vbd.CPUAccessFlags = 0;
+			vbd.MiscFlags = 0;
+			vbd.StructureByteStride = 0;
+
+			D3D11_SUBRESOURCE_DATA data;
+			data.pSysMem = &(vertices[0]);
+
+			size = static_cast<UINT>(sizeof(BaseVertex));
+			CircleModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"Circle_VB", vbd, data, size);
+
+			std::vector<UINT> indexList;
+
+			for (int i = 0; i < vertices.size() / 2; i++)
+			{
+				indexList.push_back(i);
+			}
+
+			indexList.back() = 0;
+
+			for (int i = vertices.size() / 2; i < vertices.size(); i++)
+			{
+				indexList.push_back(i);
+			}
+			indexList.back() = vertices.size() / 2;
+
+			D3D11_BUFFER_DESC ibd;
+			ibd.Usage = D3D11_USAGE_IMMUTABLE;
+			ibd.ByteWidth = sizeof(UINT) * static_cast<int>(indexList.size());
+			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			ibd.CPUAccessFlags = 0;
+			ibd.MiscFlags = 0;
+			ibd.StructureByteStride = 0;
+
+			D3D11_SUBRESOURCE_DATA iinitData;
+			iinitData.pSysMem = &(indexList[0]);
+
+			CircleModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"Circle_IB", ibd, iinitData, static_cast<int>(indexList.size()));
+			CircleModel->m_Meshes[0]->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+
+			CircleModel->world = DirectX::SimpleMath::Matrix::Identity;
+			CircleModel->local = DirectX::SimpleMath::Matrix::Identity;
+
+			CircleModel->m_pass = PassState::Debug;
+
+			m_ResourceManager->Add<ModelData>(name, CircleModel);
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(CircleModel->m_pass, CircleModel)));
+		}
+
+		break;
 		case MeshFilter::None:
 			break;
 		default:
@@ -434,7 +555,6 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 	return true;
 }
-
 
 void GraphicsEngine::EraseObject(std::wstring name)
 {
@@ -473,11 +593,83 @@ void GraphicsEngine::UpdateModelTransform(std::wstring name, DirectX::SimpleMath
 	m_RenderList[name].second->world = world;
 }
 
-void GraphicsEngine::AddLight(Kind_of_Light kind, LightData data)
+void GraphicsEngine::AddLight(std::wstring name, Kind_of_Light kind, LightData data)
 {
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(name) == curMap.end())
+	{
+		curMap.insert(std::pair<std::wstring, LightData>(name, data));
+		AddRenderModel(MeshFilter::Circle, name);
+
+		curMap[name] = data;
+		std::shared_ptr<ModelData> debugmodel = m_ResourceManager->Get<ModelData>(name).lock();
+
+		//scale
+		if (data.range > 0)
+		{
+			debugmodel->local._11 = data.range;
+			debugmodel->local._22 = data.range;
+			debugmodel->local._33 = data.range;
+		}
+
+		//상수버퍼로 넘겨야하니까 전치해서 보내버리자
+		//translate
+		debugmodel->local._14 = data.pos.x;
+		debugmodel->local._24 = data.pos.y;
+		debugmodel->local._34 = data.pos.z;
+
+	}
+	else
+	{
+		MessageBox(0, L"This Light already Exist", 0, 0);
+		return;
+	}
 
 }
 
+
+void GraphicsEngine::EraseLight(std::wstring name, Kind_of_Light kind)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(name) != curMap.end())
+	{
+		curMap.erase(name);
+		EraseObject(name);
+	}
+	else
+	{
+		MessageBox(0, L"This Light Is Not Exist", 0, 0);
+		return;
+	}
+}
+
+void GraphicsEngine::UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData> curMap = m_LightList[index];
+
+	if (curMap.find(name) != curMap.end())
+	{
+		curMap[name] = data;
+		m_ResourceManager->Get<ModelData>(name).lock()->local._31 = data.pos.x;
+		m_ResourceManager->Get<ModelData>(name).lock()->local._32 = data.pos.y;
+		m_ResourceManager->Get<ModelData>(name).lock()->local._33 = data.pos.z;
+
+		if (data.range > 0)
+		{
+			m_ResourceManager->Get<ModelData>(name).lock()->local * data.range;
+		}
+	}
+	else
+	{
+		MessageBox(0, L"This Light Is Not Exist", 0, 0);
+		return;
+	}
+}
 
 void GraphicsEngine::OnResize()
 {

@@ -47,6 +47,8 @@ void ResourceManager::Initialize()
 
 	Create<Sampler>(L"Linear", SamplerDESC::Linear);
 
+	m_UsingLights = Create<ConstantBuffer<LightArray>>(L"LightArray", BufferDESC::Constant::DefaultLightArray);
+
 	///------미정------
 	//디퍼드 용 쉐이더 테스트
 	//Create<VertexShader>(L"../x64/Debug/DeferredVS.cso", VERTEXFILTER::SKINNING, L"Deferred");
@@ -59,6 +61,7 @@ void ResourceManager::Initialize()
 	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
 	Create<PixelShader>(L"../x64/Debug/SkinningPS.cso",  L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
+	Create<PixelShader>(L"../x64/Debug/MeshPS.cso", L"Mesh");
 
 	
 
@@ -98,7 +101,7 @@ void ResourceManager::Initialize()
 
 
 	m_DirectionalLight = Create<ConstantBuffer<LightData>>(L"DirectionLight", BufferDESC::Constant::DefaultLight);
-	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_DirectionalLight.lock()->GetAddress());
+	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_UsingLights.lock()->GetAddress());
 
 	
 }

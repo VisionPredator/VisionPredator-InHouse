@@ -250,11 +250,11 @@
     <ClInclude Include="LightManager.h">
       <Filter>GraphicsEngine\LightManager</Filter>
     </ClInclude>
-    <ClInclude Include="PassManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Sampler.h">
       <Filter>Resource\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="PassManager.h">
+      <Filter>GraphicsEngine\PassManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -354,9 +354,11 @@
     <ClCompile Include="LightManager.cpp">
       <Filter>GraphicsEngine\LightManager</Filter>
     </ClCompile>
-    <ClCompile Include="PassManager.cpp" />
     <ClCompile Include="Sampler.cpp">
       <Filter>Resource\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="PassManager.cpp">
+      <Filter>GraphicsEngine\PassManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -380,6 +382,9 @@
     </FxCompile>
     <FxCompile Include="MeshDeferredLightPS.hlsl">
       <Filter>hlsl\Mesh</Filter>
+    </FxCompile>
+    <FxCompile Include="PBR.hlsl">
+      <Filter>hlsl</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

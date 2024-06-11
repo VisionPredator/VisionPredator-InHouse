@@ -37,6 +37,12 @@ enum class Kind_of_Light
 
 struct LightData
 {
+	LightData() : range(-1),pos(0,0,0), spot(-1)
+	{
+
+	}
+
+
 	DirectX::XMFLOAT4 ambient;
 	DirectX::XMFLOAT4 diffuse;
 	DirectX::XMFLOAT4 specular;
@@ -51,4 +57,17 @@ struct LightData
 	float spot;
 
 
+};
+
+
+struct LightArray
+{
+	//여유있게 대충 100개 했음
+	LightData Dir[100];
+	LightData Point[100];
+	LightData Spot[100];
+	float DirIndex;
+	float PointIndex;
+	float SpotIndex;
+	float pad;
 };

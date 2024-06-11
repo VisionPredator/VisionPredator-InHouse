@@ -1,4 +1,6 @@
 //CONSTANT
+
+///Camera
 cbuffer Camera : register(b0)
 {
     float4x4 gWorldViewProj;
@@ -6,16 +8,47 @@ cbuffer Camera : register(b0)
     float4x4 gProj;
 };
 
+///Transform
 cbuffer Transform : register(b1)
 {
     float4x4 gWorld;
     float4x4 gLocal;
 };
 
+///Skinning
 cbuffer MatrixPallete : register(b3)
 {
     matrix MatrixPallete[128];
 }
+
+///Light
+struct LightData
+{
+    float4 Ambient;
+    float4 Diffuse;
+    float4 Specular;
+
+    float3 Direction;
+    float Range;
+
+    float3 Attenuation;
+    float pad;
+  
+    float3 pos;
+    float spot;
+};
+
+
+cbuffer LightArray : register(b4)
+{
+    LightData Dir[100];
+    LightData Point[100];
+    LightData Spot[100];
+    float DirIndex;
+    float PointIndex;
+    float SpotIndex;
+    float pad;
+};
 
 //TEXTURE
 Texture2D gDiffuseMap : register(t0);
@@ -53,17 +86,6 @@ struct VS_INPUT
 };
 
 struct VS_OUTPUT
-{
-    float4 pos : SV_POSITION;
-    float4 posWorld : WORLDPOSITION;
-    float4 color : COLOR;
-    float4 normal : NORMAL;
-    float4 tangent : TANGENT;
-    float4 bitangent : BITANGENT;
-    float2 tex : TEXCOORD;
-};
-
-struct PS_INPUT
 {
     float4 pos : SV_POSITION;
     float4 posWorld : WORLDPOSITION;

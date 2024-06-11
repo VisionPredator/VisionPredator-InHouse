@@ -62,7 +62,14 @@ namespace Graphics
 		virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
 
 		//ºû Ãß°¡
-		virtual void AddLight(Kind_of_Light kind, LightData data) abstract;
+		virtual void AddLight(std::wstring name ,Kind_of_Light kind, LightData data) abstract;
+
+		//ºû Á¦°Å
+		virtual void EraseLight(std::wstring name ,Kind_of_Light kind) abstract;
+
+
+		//ºû Á¤º¸ ¾÷µ¥ÀÌÆ®
+		virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) abstract;
 
 	private:
 

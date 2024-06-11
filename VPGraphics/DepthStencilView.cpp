@@ -137,5 +137,5 @@ ID3D11DepthStencilView** DepthStencilView::GetAddress()
 
 void DepthStencilView::Release()
 {
-	m_DSV->Release();
+	//m_DSV->Release();
 }

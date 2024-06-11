@@ -58,6 +58,7 @@ private:
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ConstantBuffer<CameraData>> m_Camera;
 	std::weak_ptr<ConstantBuffer<LightData>> m_DirectionalLight;
+	std::weak_ptr<ConstantBuffer<LightArray>> m_UsingLights;
 
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 };

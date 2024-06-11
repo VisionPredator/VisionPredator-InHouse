@@ -4,21 +4,6 @@
 #include "Device.h"
 #include "CBuffer.h"
 
-
-
-enum class CBFILTER
-{
-	TRANSFORM = 0,
-	LIGHT,
-	CAMERA,
-
-
-
-	END
-
-};
-
-
 template<typename T>
 class ConstantBuffer :
 	public Buffer
@@ -27,7 +12,7 @@ public:
 	ConstantBuffer();
 	ConstantBuffer(std::shared_ptr<Device> device);
 	ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc);
-	//ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, CBFILTER kind_of_CB);
+	ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data);
 	~ConstantBuffer();
 
 
@@ -41,9 +26,16 @@ public:
 	T m_struct;
 
 private:
-	CBFILTER m_Kind_of_CB;
 
 };
+
+template<typename T>
+ConstantBuffer<T>::ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data)
+{
+	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
+
+	m_struct = data;
+}
 
 template<typename T>
 void ConstantBuffer<T>::Release()
@@ -51,16 +43,8 @@ void ConstantBuffer<T>::Release()
 	m_buffer->Release();
 }
 
-//template<typename T>
-//ConstantBuffer<T>::ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, CBFILTER kind_of_CB)
-//{
-//	m_Device->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
-//
-//	m_struct = T();
-//}
-
 template<typename T>
-ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc) : Buffer(device, Desc), m_Kind_of_CB(CBFILTER::END)
+ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc) : Buffer(device, Desc)
 {
 	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
 
