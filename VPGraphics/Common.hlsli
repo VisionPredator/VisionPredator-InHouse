@@ -59,17 +59,13 @@ Texture2D gDepth : register(t3);
 Texture2D gTangent : register(t4);
 
 
-//SAMPLER
-SamplerState samAnisotropic : register(s0)
-{
-    //Filter = ANISOTROPIC;
-    //MaxAnisotropy = 4;
-    //AddressU = WRAP;
-    //AddressV = WRAP;
-};
+Texture2D gMeshAlbedo : register(t5);
+Texture2D gMeshNormal : register(t6);
 
 
-SamplerState samLinear : register(s1);
+
+
+SamplerState samLinear : register(s0);
 
 
 //STRUCT
@@ -104,6 +100,17 @@ struct Quad
     float4 pos : POSITION;
     float2 tex : TEXCOORD;
 };
+
+
+struct PS_OUTPUT
+{
+    float4 Albedo : SV_Target0;
+    float4 Normal : SV_Target1;
+    float4 Position : SV_Target2;
+    float4 Depth : SV_Target3;
+    //float4 Tangent : SV_Target4;
+};
+
 
 
 //Light Function

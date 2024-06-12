@@ -43,7 +43,6 @@
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
 {
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -88,9 +87,11 @@ bool GraphicsEngine::Initialize()
 	m_Animator = std::make_shared <Animator>();
 
 
+
+
 	//output
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_1"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
+	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
 
 	//출력병합기
@@ -99,10 +100,11 @@ bool GraphicsEngine::Initialize()
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
 	OnResize();
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>(m_Device, m_ResourceManager);
 
 
 	// Pipeline
-	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
+	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
 
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
@@ -208,13 +210,25 @@ bool GraphicsEngine::Finalize()
 void GraphicsEngine::BeginRender()
 {
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
+	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 1.f };
+	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
+	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
+	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+
 	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[0].lock()->Get(), white);
+	m_Device->BeginRender(m_RTVs[2].lock()->Get(), m_DSVs[0].lock()->Get(), red);
+	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[0].lock()->Get(), green);
+	m_Device->BeginRender(m_RTVs[4].lock()->Get(), m_DSVs[0].lock()->Get(), blue);
+	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+
+
 }
 
 void GraphicsEngine::Render()
 {
 	//m_DeferredShadingPipeline->Render();
-	m_PassManager->Render();
+	//m_PassManager->Render();
 
 	m_DeferredShadingPipeline->TestRender(m_RenderList);
 
@@ -689,14 +703,14 @@ void GraphicsEngine::OnResize()
 	m_Device->OnResize();
 	m_ResourceManager->OnResize();
 
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_2"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_3"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_4"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_5"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_6"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Albedo"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Normal"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Position"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Depth"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Tangent"));
 
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_1"));
+	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	/*m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_2"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_3"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_4"));

@@ -12,7 +12,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.tangent = input.tangent;
     output.bitangent = input.bitangent, output.pos;
     output.tex = input.tex;
-    
+       
 #ifdef SKINNING
     int index[4];
     index[0] = input.boneindex.x;
@@ -39,6 +39,9 @@ VS_OUTPUT main(VS_INPUT input)
     
     output.pos = mul(output.posWorld, gWorldViewProj);
 #endif    
+    
+    
+    
     
     return output;
 }

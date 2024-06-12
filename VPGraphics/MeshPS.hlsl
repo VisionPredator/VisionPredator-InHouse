@@ -10,7 +10,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
     
     //텍스처 색상
-    float4 albedo = gAlbedo.Sample(samAnisotropic, input.tex);
+    float4 albedo = gAlbedo.Sample(samLinear, input.tex);
     //float4 albedo = input.color;
     
     //tangentspace를 계산해 normal을 만든다

@@ -11,10 +11,10 @@
 /// <summary>
 /// 디퍼드 렌더링에서 사용할 패스 모두 생성
 /// </summary>
-DeferredShadingPipeline::DeferredShadingPipeline()
+DeferredShadingPipeline::DeferredShadingPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager)
 {
-	m_DeferredGeometryPass = std::make_shared<DeferredGeometryPass>();
-	m_DeferredLightPass = std::make_shared<DeferredLightPass>();
+	m_DeferredGeometryPass = std::make_shared<DeferredGeometryPass>(device,resourceManager);
+	m_DeferredLightPass = std::make_shared<DeferredLightPass>(device, resourceManager);
 
 }
 
@@ -24,7 +24,6 @@ DeferredShadingPipeline::DeferredShadingPipeline()
 void DeferredShadingPipeline::Initialize(std::shared_ptr<Device>& device,
 	std::shared_ptr<ResourceManager>& resourceManager, const uint32_t& width, const uint32_t& height)
 {
-	m_DeferredGeometryPass->Initialize(device, resourceManager, width, height);
 	m_DeferredLightPass->Initialize(device, resourceManager, width, height);
 
 }
@@ -48,8 +47,8 @@ void DeferredShadingPipeline::Render()
 void DeferredShadingPipeline::TestRender(
 	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
 {
-	//m_DeferredGeometryPass->Render();
 	m_DeferredGeometryPass->TestRender(renderList);
+	m_DeferredLightPass->Render();
 }
 
 /// <summary>

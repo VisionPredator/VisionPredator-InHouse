@@ -33,8 +33,6 @@ public:
 	std::vector<std::shared_ptr<Material>> m_Materials; //SRV
 	std::vector<std::shared_ptr<Animation>> m_Animations; //애니메이션 전체를 담고있는 컨테이너
 
-
-
 	///여기 데이터를 따로 때서 Modeldata를 갖는 형식으로 해야할까?
 	//위치 data
 	DirectX::SimpleMath::Matrix world; //게임 세상의 위치

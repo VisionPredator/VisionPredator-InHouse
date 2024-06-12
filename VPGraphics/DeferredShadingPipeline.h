@@ -16,7 +16,7 @@ class Device;
 class DeferredShadingPipeline
 {
 public:
-	DeferredShadingPipeline();
+	DeferredShadingPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager);
 	~DeferredShadingPipeline() = default;
 
 	void Initialize(std::shared_ptr<Device>& device, 

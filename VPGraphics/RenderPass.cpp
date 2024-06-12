@@ -45,8 +45,8 @@ void RenderPass::AddModelData(std::map<std::wstring, std::pair<PassState, std::s
 
 SkinningPass::SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : RenderPass(device, manager, vp)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
-	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/SkinningPS.cso");
 	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/MeshPS.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
@@ -130,8 +130,8 @@ void SkinningPass::Render()
 
 StaticPass::StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : RenderPass(device, manager, vp)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
-	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Static;
@@ -203,8 +203,8 @@ void StaticPass::Render()
 
 DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : RenderPass(device, manager, vp)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_1");
-	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_1");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/BasePS.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Static;
