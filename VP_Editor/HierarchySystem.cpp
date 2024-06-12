@@ -57,8 +57,6 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 			m_RClickedEntityID = 0;
 			m_IsEntityRClicked = false;
 		}
-
-
 		ImGui::EndPopup();
 	}
 

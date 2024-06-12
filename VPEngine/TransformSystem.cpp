@@ -41,6 +41,28 @@
 
 
 	}
+	/// <summary>
+	/// ¿Ã∫•
+	/// </summary>
+	/// <param name="Parent_Child"></param>
+	void SetParentAndChild(std::any Parent_Child)
+	{
+
+
+
+
+
+	}
+
+	void RelaseParentAndChild(std::any Parent_Child)
+	{
+
+
+
+
+
+	}
+
 	void TransformSystem::CalulateTransform(TransformComponent* transform)
 	{
 		if (transform->Previous_Location != transform->Local_Location ||

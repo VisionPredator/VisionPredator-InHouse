@@ -12,6 +12,7 @@ public:
     void ImGuiRender() override;
 
     Inspector() = default;
+    void EntityImGui(uint32_t entitiyID);
     void ComponentImGui(Component* component);
 	void MemberImGui(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_Vector2(entt::meta_data memberMetaData, Component* component);
@@ -30,6 +31,7 @@ public:
     SceneManager* m_SceneManager;
     HierarchySystem* m_HierarchySystem;
     std::string m_searchComponent{};
-    
+    bool IsClicked=false;
+    entt::id_type m_ClickedCompID{};
 };
 

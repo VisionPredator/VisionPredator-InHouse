@@ -12,70 +12,120 @@ Inspector::Inspector(SceneManager* sceneManager, HierarchySystem* hierarchySyste
 void Inspector::ImGuiRender()
 {
 	ImGui::Begin("Inspector");
-	const int entityID = m_HierarchySystem->m_SelectedEntityID;
-	if (entityID != 0 && m_SceneManager->HasEntity(entityID))
 	{
+		const int entityID = m_HierarchySystem->m_SelectedEntityID;
+		if (entityID != 0 && m_SceneManager->HasEntity(entityID))
+			EntityImGui(entityID);
+	}
+	ImGui::End();
+}
 
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		ImGui::PushID(static_cast<int>(entityID));
+void Inspector::EntityImGui(uint32_t entityID)
+{
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.MouseDragThreshold = 10.0f;
+	ImGui::PushID(static_cast<int>(entityID));
+	auto& objectName = m_SceneManager->GetComponent<IDComponent>(entityID)->Name;
+	ImGui::InputText("Name", &objectName);
+	ImGui::PopID();
+	ImGui::Separator();
 
-		auto& objectName = m_SceneManager->GetComponent<IDComponent>(entityID)->Name;
-		ImGui::InputText("Name", &objectName);
-
-		ImGui::PopID();
-		ImGui::Separator();
-
-
-		ImGui::Text("Serialize");
-		ImGui::SameLine();
-		if (ImGui::Button("Save"))
-			int a = 5;
+	ImGui::Text("Serialize");	ImGui::SameLine();	if (ImGui::Button("Save"))
 		ImGui::Text(" ");
 
-		ImGui::Separator();
+	ImGui::Separator();
 
-		if (ImGui::Button("  AddComponent  "))
+	if (ImGui::Button("  AddComponent  "))
+		ImGui::OpenPopup("AddComponentPopup");
+
+	ImGui::SetNextWindowSize({ 250.f, 330.f });
+	if (ImGui::BeginPopup("AddComponentPopup"))
+	{
+		if (!m_searchComponent.empty())
 		{
-			ImGui::OpenPopup("AddComponentPopup");
+			if (ImGui::Button("x"))
+				m_searchComponent.clear();
 		}
-		ImGui::SetNextWindowSize({ 250.f, 330.f });
+		else
+			ImGui::Button(">");
 
-		if (ImGui::BeginPopup("AddComponentPopup"))
+		ImGui::SameLine();
+
+		ImGui::InputText("##AddComponent", &m_searchComponent);
+		for (auto [id1, MetaType] : entt::resolve())
 		{
-
-			if (!m_searchComponent.empty())
-			{
-				if (ImGui::Button("x"))
-					m_searchComponent.clear();
-
-			}
-				else
-					ImGui::Button(">");
-			ImGui::SameLine();
-			ImGui::InputText("##AddComponent", &m_searchComponent);
-			ImGui::EndPopup();
-		}
-
-		for (auto [ID, MetaType] : entt::resolve())
-		{
+			const entt::id_type MetaTypeID = MetaType.id();
 			for (auto [id2, baseType] : MetaType.base())
 			{
-				if (entt::resolve<Component>() == baseType)
-				{
-					auto asd = Reflection::GetName_Class(MetaType);
-					int test;
-					test = 5;
-				}
+				if (MetaTypeID == Reflection::GetTypeID<IDComponent>()
+					|| MetaTypeID == Reflection::GetTypeID<TransformComponent>()
+					|| MetaTypeID == Reflection::GetTypeID<Parent>()
+					|| MetaTypeID == Reflection::GetTypeID<Children>()
+					|| Reflection::GetTypeID<Component>() != baseType.id())
+					continue;
+	
+				auto ClassName = Reflection::GetName_Class(MetaType);
+				// Convert a string to lowercase
+				auto toLower = [](const std::string& str) -> std::string {
+					std::string lowerStr = str;
+					std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+					return lowerStr;
+					};
+
+				std::string lowerSearchComponent = toLower(m_searchComponent);
+				auto lowerClassName = toLower(ClassName);
+
+				// Check if ClassName contains m_searchComponent
+				if (lowerClassName.find(lowerSearchComponent) == std::string::npos)
+					continue;
+
+				if (m_SceneManager->HasComponent(entityID, MetaTypeID))
+					continue;
+
+				ImGui::PushID(ClassName.c_str());
+				if (ImGui::Button(ClassName.c_str(), ImVec2(235, 35)))
+					m_SceneManager->GetEntity(entityID)->AddComponent(MetaTypeID);
+				ImGui::PopID();
 			}
 		}
-		auto Components = m_SceneManager->GetOwnedComponent(entityID);
-		for (Component* Comp : Components)
-			ComponentImGui(Comp);
 
+		ImGui::EndPopup();
+	}
+
+	ComponentImGui(m_SceneManager->GetComponent(entityID, Reflection::GetTypeID<TransformComponent>()));
+	for (auto [id1, MetaType] : entt::resolve())
+	{
+		const entt::id_type metaTypeID = MetaType.id();
+		for (auto [id2, baseType] : MetaType.base())
+		{
+			if (Reflection::GetTypeID<Component>() != baseType.id())
+				continue;
+			if (metaTypeID == Reflection::GetTypeID<IDComponent>() ||
+				metaTypeID == Reflection::GetTypeID<TransformComponent>() ||
+				metaTypeID == Reflection::GetTypeID<Parent>() ||
+				metaTypeID == Reflection::GetTypeID<Children>())
+				continue;
+			if (m_SceneManager->HasComponent(entityID, MetaType.id()))
+			{
+				ComponentImGui(m_SceneManager->GetComponent(entityID, metaTypeID));
+			}
+		}
 	}
 
 
-	ImGui::End();
+	//auto Components = m_SceneManager->GetOwnedComponent(entityID);
+	//for (Component* Comp : Components)
+	//{
+	//	entt::id_type CompID = Comp->GetHandle()->type().id();
+	//	if (CompID == Reflection::GetTypeID<IDComponent>()
+	//		|| CompID == Reflection::GetTypeID<TransformComponent>()
+	//		|| CompID == Reflection::GetTypeID<Parent>()
+	//		|| CompID == Reflection::GetTypeID<Children>())
+	//		continue;
+	//	ComponentImGui(Comp);
+	//}
+
+
 }
 
 void Inspector::ComponentImGui(Component* component)
@@ -93,6 +143,37 @@ void Inspector::ComponentImGui(Component* component)
 			MemberImGui(memberMetaData, component);
 		ImGui::TreePop();
 	}
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+	{
+		ImGui::OpenPopup("Component_Option");
+		IsClicked = true;
+		m_ClickedCompID = component->GetHandle()->type().id();
+
+	}
+	if (m_ClickedCompID != Reflection::GetTypeID<TransformComponent>())
+	{
+		if (IsClicked && ImGui::BeginPopupContextWindow("Component_Option"))
+		{
+
+			if (ImGui::MenuItem("Delete"))
+			{
+				if (component->GetEntity()->HasComponent(m_ClickedCompID))
+				{
+					component->GetEntity()->RemoveComponent(m_ClickedCompID);
+
+				}
+				//m_SceneManager->DeleteEntity(m_RClickedEntityID);
+				//m_RClickedEntityID = 0;
+				//m_IsEntityRClicked = false;
+				IsClicked = false;
+			}
+
+
+			ImGui::EndPopup();
+		}
+	}
+
 	ImGui::PopID();
 
 }
