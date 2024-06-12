@@ -1,4 +1,17 @@
-float4 main() : SV_TARGET
+#include"Common.hlsli"
+
+
+
+float4 main(VS_OUTPUT input) : SV_TARGET
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+ 
+    float4 albedo = gAlbedo.Sample(samLinear, input.tex);
+    
+    
+    for (int i = 0; i < DirIndex; i++)
+    {
+	
+    }    
+	
+    return albedo;
 }

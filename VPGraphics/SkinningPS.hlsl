@@ -1,73 +1,7 @@
-struct LightData
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-
-    float3 Direction;
-    float Range;
-
-    float3 Attenuation;
-    float pad;
-  
-    float3 pos;
-    float spot;
-};
+#include "Common.hlsli"
 
 
-cbuffer Camera : register(b0)
-{
-    float4x4 gWorldViewProj;
-    float4x4 gView;
-    float4x4 gProj;
-    float4x4 gViewInverse;
-};
-
-cbuffer Transform : register(b1)
-{
-    float4x4 gWorld;
-    float4x4 glocal;
-}
-
-cbuffer LightArray : register(b2)
-{
-    LightData Dir[100];
-    LightData Point[100];
-    LightData Spot[100];
-    float DirIndex;
-    float PointIndex;
-    float SpotIndex;
-    float pad;
-};
-
-Texture2D gDiffuseMap : register(t0);
-Texture2D gNormalMap : register(t1);
-Texture2D gSpecularMap : register(t2);
-
-SamplerState samAnisotropic : register(s0)
-{
-    //Filter = ANISOTROPIC;
-    //MaxAnisotropy = 4;
-    //AddressU = WRAP;
-    //AddressV = WRAP;
-};
-
-SamplerState samLinear : register(s1);
-
-struct PS_INPUT
-{
-    float4 pos : SV_POSITION;
-    float4 posWorld : WORLDPOSITION;
-    float4 color : COLOR;
-    float4 normal : NORMAL;
-    float4 tangent : TANGENT;
-    float4 bitangent : BITANGENT;
-    float2 tex : TEXCOORD;
-    //float4 boneindex : BONEINDEX;
-    //float4 boneweight : BONEWEIGHT;
-};
-
-float4 main(PS_INPUT input) : SV_TARGET
+float4 main(VS_OUTPUT input) : SV_TARGET
 {   
     //Direction Light
     /*
@@ -89,7 +23,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     ambient = gDirLight.Ambient;
     
     //텍스처 색상
-    float4 albedo = gDiffuseMap.Sample(samAnisotropic, input.tex);
+    float4 albedo = gAlbedo.Sample(samAnisotropic, input.tex);
     //float4 albedo = input.color;
     
     //tangentspace를 계산해 normal을 만든다
@@ -97,7 +31,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float4 vTangent = normalize(input.tangent);
     float4 vBitangent = normalize(input.bitangent);
         
-    float3 NormalTangentSpace = gNormalMap.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
+    float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
     float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
     vNormal.xyz = mul(NormalTangentSpace, WorldTransform);
     vNormal.xyz = normalize(vNormal.xyz);

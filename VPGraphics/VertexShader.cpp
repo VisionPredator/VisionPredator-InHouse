@@ -110,13 +110,22 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 			hr = m_Device.lock()->Get()->CreateInputLayout(SkinningVertexInputDesc, SkinningDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
 		}
 		break;
+
 		case VERTEXFILTER::QUAD:
-			//½¦ÀÌ´õ¿¡ µé¾î°¡´Â°Å¶û ´Ù¸£¸é ¾È¸¸µë
+		{
+			hr = D3DCompileFromFile(m_filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", dwShaderFlags, 0, &VSBlob, &pErrorBlob);
+			hr = m_Device.lock()->Get()->CreateVertexShader(VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), nullptr, &m_VS);
 			hr = m_Device.lock()->Get()->CreateInputLayout(QuadVertexInputDesc, QuadDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
-			break;
+		}
+		break;
 
 		case VERTEXFILTER::END:
-			break;
+		{
+
+		}
+
+		break;
+
 		default:
 			break;
 	}
