@@ -92,12 +92,6 @@
     <Filter Include="GraphicsEngine\Camera">
       <UniqueIdentifier>{685db6cc-d2a7-47b3-bef6-a27ee49a9576}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pass">
-      <UniqueIdentifier>{bd8a2133-9734-49d7-b93f-565676ddfe0a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pass\Deferred Lighting">
-      <UniqueIdentifier>{273446f8-dc41-4717-a9ae-00096bdafd95}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GraphicsEngine\RenderPass">
       <UniqueIdentifier>{67d6ba83-9a87-4668-a08d-b46c47cc5fc8}</UniqueIdentifier>
     </Filter>
@@ -113,9 +107,6 @@
     <Filter Include="hlsl\Skinning">
       <UniqueIdentifier>{f6f8f9e8-e93e-4fb6-abfc-a8c641d9d707}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\Pipeline">
-      <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="hlsl\Mesh">
       <UniqueIdentifier>{b1fc30bd-d6da-458d-bf01-fa4c58652fe6}</UniqueIdentifier>
     </Filter>
@@ -130,6 +121,15 @@
     </Filter>
     <Filter Include="Resource\Sampler">
       <UniqueIdentifier>{968c1507-91ae-43eb-be6a-bd35345512d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline\Pass">
+      <UniqueIdentifier>{bd8a2133-9734-49d7-b93f-565676ddfe0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline\Pass\Deferred Lighting">
+      <UniqueIdentifier>{273446f8-dc41-4717-a9ae-00096bdafd95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -227,16 +227,16 @@
       <Filter>GraphicsEngine\Camera</Filter>
     </ClInclude>
     <ClInclude Include="RenderPass.h">
-      <Filter>Pass</Filter>
+      <Filter>Pipeline\Pass</Filter>
     </ClInclude>
     <ClInclude Include="DeferredGeometryPass.h">
-      <Filter>Pass\Deferred Lighting</Filter>
+      <Filter>Pipeline\Pass\Deferred Lighting</Filter>
     </ClInclude>
     <ClInclude Include="DeferredLightPass.h">
-      <Filter>Pass\Deferred Lighting</Filter>
+      <Filter>Pipeline\Pass\Deferred Lighting</Filter>
     </ClInclude>
     <ClInclude Include="Pass.h">
-      <Filter>Pass</Filter>
+      <Filter>Pipeline\Pass</Filter>
     </ClInclude>
     <ClInclude Include="Defines.h">
       <Filter>헤더 파일</Filter>
@@ -245,7 +245,7 @@
       <Filter>Resource\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="DeferredShadingPipeline.h">
-      <Filter>Resource\Pipeline</Filter>
+      <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="LightManager.h">
       <Filter>GraphicsEngine\LightManager</Filter>
@@ -337,19 +337,19 @@
       <Filter>GraphicsEngine\Camera</Filter>
     </ClCompile>
     <ClCompile Include="RenderPass.cpp">
-      <Filter>Pass</Filter>
+      <Filter>Pipeline\Pass</Filter>
     </ClCompile>
     <ClCompile Include="DeferredGeometryPass.cpp">
-      <Filter>Pass\Deferred Lighting</Filter>
+      <Filter>Pipeline\Pass\Deferred Lighting</Filter>
     </ClCompile>
     <ClCompile Include="DeferredLightPass.cpp">
-      <Filter>Pass\Deferred Lighting</Filter>
+      <Filter>Pipeline\Pass\Deferred Lighting</Filter>
     </ClCompile>
     <ClCompile Include="Pass.cpp">
-      <Filter>Pass</Filter>
+      <Filter>Pipeline\Pass</Filter>
     </ClCompile>
     <ClCompile Include="DeferredShadingPipeline.cpp">
-      <Filter>Resource\Pipeline</Filter>
+      <Filter>Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
       <Filter>GraphicsEngine\LightManager</Filter>

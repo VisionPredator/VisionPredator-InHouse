@@ -45,11 +45,12 @@ void DeferredShadingPipeline::Render()
 }
 
 /// TEST TEST TEST
-//void DeferredShadingPipeline::TestRender(
-//	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
-//{
-//	m_DeferredGeometryPass->TestRender(renderList);
-//}
+void DeferredShadingPipeline::TestRender(
+	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
+{
+	//m_DeferredGeometryPass->Render();
+	m_DeferredGeometryPass->TestRender(renderList);
+}
 
 /// <summary>
 ///	그리기를 종료하고 화면에 출력

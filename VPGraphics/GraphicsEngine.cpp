@@ -217,10 +217,11 @@ void GraphicsEngine::BeginRender()
 
 void GraphicsEngine::Render()
 {
-	//m_DeferredShadingPipeline->TestRender(m_RenderList);
-	m_DeferredShadingPipeline->Render();
-
+	//m_DeferredShadingPipeline->Render();
 	m_PassManager->Render();
+
+	m_DeferredShadingPipeline->TestRender(m_RenderList);
+
 
 }
 

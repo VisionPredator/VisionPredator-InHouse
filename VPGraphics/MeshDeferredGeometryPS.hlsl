@@ -9,7 +9,7 @@ Texture2D gAlbedoMap : register(t0);
 Texture2D gNormalMap : register(t1);
 Texture2D gSpecularMap : register(t2);
 
-SamplerState samLinear : register(s1);
+SamplerState samLinear : register(s0);
 
 struct PS_INPUT
 {

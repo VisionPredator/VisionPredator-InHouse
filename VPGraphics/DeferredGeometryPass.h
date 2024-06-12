@@ -2,26 +2,22 @@
 #include "ConstantBuffer.h"
 #include "Pass.h"
 #include "Device.h"
-#include "ResourceManager.h"
 #include "VertexShader.h"
 
-#include <map>
-#include <utility>
 #include <string>
-#include <memory>
+#include "ModelData.h"
 
-#include "MeshFilter.h"
-
+enum class PassState : unsigned;
 class Mesh;
-class ModelData;
 class RenderState;
+class ResourceManager;
 
 class DeferredGeometryPass final : public Pass
 {
 public:
 	void Initialize(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager, const uint32_t& width, const uint32_t& height);
 	void Render() override;
-	//void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);
+	void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);
 
 private:
 	std::shared_ptr<Device> m_Device;
@@ -52,4 +48,7 @@ private:
 	//std::shared_ptr<ConstantBuffer<CameraData>> m_CameraTransformCB;
 	//std::shared_ptr<ConstantBuffer<MatrixPallete>> m_BoneTransformCB;
 	//std::shared_ptr<ConstantBuffer<DirectionLightCB>> m_LightTransformCB;
+
+	// TEMP
+
 };
