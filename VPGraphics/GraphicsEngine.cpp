@@ -180,11 +180,7 @@ void GraphicsEngine::Update(double dt)
 	test.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	test.lock()->Update();
 
-	std::weak_ptr<ConstantBuffer<LightData>> testDL = m_ResourceManager->Get<ConstantBuffer<LightData>>(L"DirectionLight");
-	testDL.lock()->m_struct = Dir;
-	//testDL.lock()->m_struct = Point;
-	//testDL.lock()->m_struct = Spot;
-	testDL.lock()->Update();
+
 
 
 	m_Animator->Update(dt, m_RenderList);
