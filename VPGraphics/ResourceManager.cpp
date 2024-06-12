@@ -48,6 +48,17 @@ void ResourceManager::Initialize()
 	Create<Sampler>(L"Linear", SamplerDESC::Linear);
 
 	m_UsingLights = Create<ConstantBuffer<LightArray>>(L"LightArray", BufferDESC::Constant::DefaultLightArray);
+	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_UsingLights.lock()->GetAddress());
+
+	UINT size = sizeof(QuadVertex);
+	Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
+	Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+	Create<VertexShader>(L"Quad", VERTEXFILTER::QUAD, L"Quad");
+
+
+	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+
+	Create<PixelShader>(L"MeshDeferredLight",L"MeshDeferredLight");
 
 	///------미정------
 	//디퍼드 용 쉐이더 테스트
@@ -55,7 +66,6 @@ void ResourceManager::Initialize()
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
-	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 
 
 	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
@@ -85,25 +95,15 @@ void ResourceManager::Initialize()
 	}
 
 	//쿼드용
-	UINT size = sizeof(QuadVertex);
-	Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+	
+
 
 	//출력용
 	D3D11_TEXTURE2D_DESC dsd = TextureDESC::DSVDesc;
 	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
 	dsd.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 	Create<DepthStencilView>(L"DSV_1", dsd);
-	Create<DepthStencilView>(L"DSV_2", dsd);
-
-	//한번만 연결해주면 계속 쓸 것들
-	Create<ConstantBuffer<TransformData>>(L"SunTransform", BufferDESC::Constant::DefaultTransform);
-
-
-	m_DirectionalLight = Create<ConstantBuffer<LightData>>(L"DirectionLight", BufferDESC::Constant::DefaultLight);
-	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_UsingLights.lock()->GetAddress());
-
-	
+	Create<DepthStencilView>(L"DSV_2", dsd);	
 }
 
 
@@ -133,6 +133,16 @@ void ResourceManager::OnResize()
 	Create<RenderTargetView>(L"RTV_1");
 
 	//디퍼드용
+	//이름 바꿔야할듯
+	//배열에 담아놓고 쓰던가
+
+	std::wstring arr[5];
+	arr[0] = L"Albedo";
+	arr[1] = L"Normal";
+	arr[2] = L"Position";
+	arr[3] = L"Depth";
+	arr[4] = L"Tangent";
+
 	for (int i = 1; i < numRTV; i++)
 	{
 		std::wstring index = std::to_wstring(i);

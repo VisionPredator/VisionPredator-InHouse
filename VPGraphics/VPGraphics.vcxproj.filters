@@ -386,6 +386,9 @@
     <FxCompile Include="PBR.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
+    <FxCompile Include="QuadVS.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDiagram.cd" />

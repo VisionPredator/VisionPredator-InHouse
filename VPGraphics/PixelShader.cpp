@@ -20,6 +20,7 @@ PixelShader::PixelShader(std::shared_ptr<Device> device, std::wstring filename) 
 	//m_filename = L"../x64/Debug/" + m_filename + L"PS.cso";
 	m_filename = m_filename + L"PS.cso";
 
+
 	ID3DBlob* PSBlob = nullptr;
 
 	HRESULT hr;

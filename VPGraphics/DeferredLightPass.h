@@ -1,8 +1,10 @@
 #pragma once
 #include "Pass.h"
+#include "ResourceManager.h"
 
-class Device;
-class ResourceManager;
+
+
+class ShaderResourceView;
 
 class DeferredLightPass final : public Pass
 {
@@ -16,5 +18,19 @@ public:
 private:
 	// Vertex Buffer
 	// Index Buffer
+
+
+	std::weak_ptr<Device> m_Device;
+	std::weak_ptr<ResourceManager> m_ResourceManager;
+
+	
+	std::weak_ptr<ShaderResourceView> m_Albedo;
+	std::weak_ptr<ShaderResourceView> m_Normal;
+	std::weak_ptr<ShaderResourceView> m_Position;
+	std::weak_ptr<ShaderResourceView> m_Depth;
+	std::weak_ptr<ShaderResourceView> m_Tangent;
+
+	std::weak_ptr < PixelShader > m_PS;
+	std::weak_ptr < VertexShader> m_VS;
 };
 
