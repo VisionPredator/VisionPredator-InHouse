@@ -32,7 +32,7 @@ class RenderTargetView;
 class RenderState;
 class DepthStencilView;
 class ShaderResourceView;
-struct ModelData;
+class ModelData;
 class PixelShader;
 class VertexShader;
 class Texture2D;

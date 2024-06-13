@@ -27,6 +27,11 @@ DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::share
 
 
 
+DeferredLightPass::~DeferredLightPass()
+{
+
+}
+
 void DeferredLightPass::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
@@ -58,3 +63,4 @@ void DeferredLightPass::Render()
 
 	Device->Context()->DrawIndexed(Quad::Index::count,0,0);
 }
+

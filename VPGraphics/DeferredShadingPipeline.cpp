@@ -18,18 +18,44 @@ DeferredShadingPipeline::DeferredShadingPipeline(std::shared_ptr<Device> device,
 
 }
 
+DeferredShadingPipeline::~DeferredShadingPipeline()
+{
+
+}
+
+void DeferredShadingPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
+{
+	for (auto& model : RenderList)
+	{
+		PassState curState = model.second.first;
+		PassState temp = curState;
+
+		temp &= PassState::Deferred;
+		if (temp == PassState::Deferred)
+		{
+			std::shared_ptr<ModelData> curModel = model.second.second;
+			m_RenderQueue.push(curModel);
+		}
+	}
+
+}
+
 /// <summary>
 /// 모든 패스 Render
 ///	패스 별 렌더 순서에 유의
 /// </summary>
 void DeferredShadingPipeline::Render()
 {
-}
+	while (!m_RenderQueue.empty())
+	{
+		std::shared_ptr<ModelData> curModel = m_RenderQueue.front();
 
-/// TEST TEST TEST
-void DeferredShadingPipeline::TestRender(
-	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
-{
-	m_DeferredGeometryPass->TestRender(renderList);
+		m_DeferredGeometryPass->Render(curModel);
+
+
+		m_RenderQueue.pop();
+	}
+
 	m_DeferredLightPass->Render();
 }
+

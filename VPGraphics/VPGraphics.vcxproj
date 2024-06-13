@@ -201,8 +201,7 @@
     <ClInclude Include="MeshFilter.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="Pass.h" />
-    <ClInclude Include="PassManager.h" />
+    <ClInclude Include="ForwardPipeline.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="RenderState.h" />
@@ -248,8 +247,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="Pass.cpp" />
-    <ClCompile Include="PassManager.cpp" />
+    <ClCompile Include="ForwardPipeline.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="RenderState.cpp" />

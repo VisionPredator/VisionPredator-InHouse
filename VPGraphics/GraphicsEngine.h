@@ -18,7 +18,7 @@ class DeferredShadingPipeline;
 // class ForwardShadingPipeline;
 #pragma endregion
 
-class PassManager;
+class ForwardPipeline;
 class LightManager;
 
 #include "MeshFilter.h"
@@ -68,9 +68,6 @@ protected:
 	std::map<std::wstring, std::pair<PassState,std::shared_ptr<ModelData>>> m_RenderList;
 	std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)> m_LightList;
 
-
-	void DrawQuad(ShaderResourceView* srv);
-
 private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<D3D11_VIEWPORT> m_VP;
@@ -79,7 +76,6 @@ private:
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
-	std::shared_ptr<PassManager> m_PassManager;
 	std::shared_ptr<LightManager> m_LightManager;
 
 private:
@@ -92,6 +88,7 @@ private:
 	DirectX::SimpleMath::Matrix m_ViewProj;
 
 	// Pipeline
+	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
 	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
 

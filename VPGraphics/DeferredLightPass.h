@@ -1,16 +1,14 @@
 #pragma once
-#include "Pass.h"
 #include "ResourceManager.h"
 
 
-class DeferredLightPass final : public Pass
+class DeferredLightPass
 {
 public:
-	DeferredLightPass() = default;
 	DeferredLightPass(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager);
-	virtual ~DeferredLightPass() = default;
+	~DeferredLightPass();
 
-	void Render() override;
+	void Render();
 
 private:
 	// Vertex Buffer

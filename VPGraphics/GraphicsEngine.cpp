@@ -14,9 +14,10 @@
 #include "DepthStencilView.h"
 #include "Texture2D.h"
 
-#include "DeferredShadingPipeline.h"
-
 #include "RenderPass.h"
+
+#include "DeferredShadingPipeline.h"
+#include "ForwardPipeline.h"
 #pragma endregion DX
 
 #pragma region Util
@@ -34,7 +35,6 @@
 #include "ResourceManager.h"
 #include "ModelLoader.h"
 #include "Animator.h"
-#include "PassManager.h"
 #include "LightManager.h"
 #pragma endregion Manager
 
@@ -76,18 +76,19 @@ bool GraphicsEngine::Initialize()
 	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
 	m_ResourceManager->Initialize();
 
+	OnResize();
+
 	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
 	m_Loader->Initialize();
 
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager, m_VP);
-	m_PassManager->Initialize();
+	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
+	m_ForwardPipeline->Initialize();
 
 	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
 
 	m_Animator = std::make_shared <Animator>();
 
-
-
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>(m_Device, m_ResourceManager);
 
 	//output
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
@@ -99,8 +100,6 @@ bool GraphicsEngine::Initialize()
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
-	OnResize();
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>(m_Device, m_ResourceManager);
 
 
 	// Pipeline
@@ -183,11 +182,10 @@ void GraphicsEngine::Update(double dt)
 	test.lock()->Update();
 
 
-
-
 	m_Animator->Update(dt, m_RenderList);
 
-	m_PassManager->Update(m_RenderList);
+	m_DeferredShadingPipeline->Update(m_RenderList);
+	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_LightList);
 }
@@ -227,12 +225,8 @@ void GraphicsEngine::BeginRender()
 
 void GraphicsEngine::Render()
 {
-	//m_DeferredShadingPipeline->Render();
-	//m_PassManager->Render();
-
-	m_DeferredShadingPipeline->TestRender(m_RenderList);
-
-
+	m_DeferredShadingPipeline->Render();
+	m_ForwardPipeline->Render();
 }
 
 void GraphicsEngine::EndRender()
@@ -528,11 +522,13 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 			indexList.back() = 0;
 
-			for (int i = vertices.size() / 2; i < vertices.size(); i++)
+			int verticesize = static_cast<int>(vertices.size());
+
+			for (int i = verticesize / 2; i < verticesize; i++)
 			{
 				indexList.push_back(i);
 			}
-			indexList.back() = vertices.size() / 2;
+			indexList.back() = verticesize / 2;
 
 			D3D11_BUFFER_DESC ibd;
 			ibd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -711,126 +707,10 @@ void GraphicsEngine::OnResize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Tangent"));
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
-	/*m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_2"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_3"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_4"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_5"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_6"));*/
+
 
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 }
 
-void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
-{
-	UINT size = static_cast<UINT>(sizeof(QuadVertex));
-
-	std::weak_ptr<VertexBuffer> vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	std::weak_ptr<IndexBuffer> ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	std::weak_ptr<ConstantBuffer<TransformData>> cb = m_ResourceManager->Create<ConstantBuffer<TransformData>>(L"QuadTransform", BufferDESC::Constant::DefaultTransform);
-
-	std::weak_ptr<VertexShader> vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-	std::weak_ptr<PixelShader> ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/QuadPS.cso", L"Quad");
-	std::weak_ptr<RenderState> rs = m_ResourceManager->Get<RenderState>(L"Solid");
-
-
-
-	m_Device->Context()->IASetInputLayout(vs.lock()->InputLayout());
-
-	m_Device->Context()->IASetVertexBuffers(0, 1, vb.lock()->GetAddress(), vb.lock()->Size(), vb.lock()->Offset());
-	m_Device->Context()->IASetIndexBuffer(ib.lock()->Get(), DXGI_FORMAT_R32_UINT, 0);
-
-	m_Device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-	m_Device->Context()->RSSetState(rs.lock()->Get());
-
-	m_Device->Context()->VSSetShader(vs.lock()->GetVS(), nullptr, 0);
-
-
-	m_Device->Context()->VSSetConstantBuffers(1, 1, cb.lock()->GetAddress());
-	m_Device->Context()->PSSetConstantBuffers(0, 1, cb.lock()->GetAddress());
-
-
-	m_Device->Context()->PSSetShaderResources(0, 1, srv->GetAddress());
-	m_Device->Context()->PSSetSamplers(0, 1, m_ResourceManager->Get<Sampler>(L"Linear").lock()->GetAddress());
-
-
-	m_Device->Context()->PSSetShader(ps.lock()->GetPS(), nullptr, 0);
-	m_Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-}
-
-//void GraphicsEngine::DeferredRender()
-//{
-//	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
-//	//m_Device->Context()->RSSetViewports(1, m_VP);
-//
-//	//ID3D11RenderTargetView* MRT[5];
-//	//MRT[0] = m_RTVs[1]->Get(); //albedo
-//	//MRT[1] = m_RTVs[2]->Get(); //normal
-//	//MRT[2] = m_RTVs[3]->Get(); //position
-//	//MRT[3] = m_RTVs[4]->Get(); //depth
-//	//MRT[4] = m_RTVs[5]->Get(); //tangent
-//
-//	//std::weak_ptr<ShaderResourceView> SRVS[5];
-//	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
-//	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
-//	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
-//	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
-//	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
-//
-//	////·»´õÅ¸°Ù ¹ÙÀÎµù
-//	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
-//	//{
-//	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
-//
-//	//	/*for (auto& ob : m_FowardRenderObjects)
-//	//	{
-//	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
-//	//	}*/
-//
-//	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-//	//}
-//
-//
-//	////ImGui::Text("test");
-//	//float aspectRatio = 16.0f / 9.0f;
-//	//float newWidth = 300 * aspectRatio;
-//
-//	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
-//
-//	////pass2
-//	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
-//	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-//	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-//	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
-//	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-//	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
-//	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
-//	////
-//	////
-//	////m_device->Context()->IASetInputLayout(vs->InputLayout());
-//	////
-//	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-//	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-//	////
-//	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-//	////m_device->Context()->RSSetState(rs->Get());
-//	////
-//	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
-//	////
-//	////
-//	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
-//	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
-//	////
-//	////for (int i = 0; i < 5; i++)
-//	////{
-//	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
-//	////}
-//	////
-//	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
-//	////
-//	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
-//	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-//	////
-//	//m_Device->EndRender();
-//}

@@ -37,7 +37,7 @@ enum class Kind_of_Light
 
 struct LightData
 {
-	LightData() : range(-1),pos(0,0,0), spot(-1)
+	LightData() : ambient(0,0,0,0), diffuse(),specular(),direction(),range(-1),attenuation(),pad(), pos(0, 0, 0), spot(-1)
 	{
 
 	}
@@ -62,6 +62,11 @@ struct LightData
 
 struct LightArray
 {
+	LightArray() : Dir(),Point(),Spot(),DirIndex(0),PointIndex(0), SpotIndex(0),pad(0)
+	{
+
+	}
+
 	//여유있게 대충 100개 했음
 	LightData Dir[100];
 	LightData Point[100];

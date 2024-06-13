@@ -272,14 +272,14 @@ namespace Quad
 {
 	namespace Vertex
 	{
+		//z값을 1로하는 이유는 foward를 하는 경우에는 quad(texture)가 깊이값에 의해 덮어 그려버릴수도있다
 
-		static const float scale = 1;
 		static QuadVertex Buffer[] = {
 
-		{ DirectX::XMFLOAT4(-1.0f , -1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(0.0f,1.0f) },// 왼쪽 아래
-		{ DirectX::XMFLOAT4(-1.0f ,  1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(0.0f,0.0f) },// 왼쪽 위
-		{ DirectX::XMFLOAT4(1.0f  ,  1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(1.0f,0.0f) },// 오른쪽 위
-		{ DirectX::XMFLOAT4(1.0f  , -1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(1.0f,1.0f) },// 오른쪽 아래
+		{ DirectX::XMFLOAT4(-1.0f , -1.0f , 1.f , 1.0f),DirectX::XMFLOAT2(0.0f,1.0f) },// 왼쪽 아래
+		{ DirectX::XMFLOAT4(-1.0f ,  1.0f , 1.f , 1.0f),DirectX::XMFLOAT2(0.0f,0.0f) },// 왼쪽 위
+		{ DirectX::XMFLOAT4(1.0f  ,  1.0f , 1.f , 1.0f),DirectX::XMFLOAT2(1.0f,0.0f) },// 오른쪽 위
+		{ DirectX::XMFLOAT4(1.0f  , -1.0f , 1.f , 1.0f),DirectX::XMFLOAT2(1.0f,1.0f) },// 오른쪽 아래
 
 
 		};

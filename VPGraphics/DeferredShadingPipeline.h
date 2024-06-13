@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <queue>
 
 
 class ShaderResourceView;
@@ -17,7 +18,10 @@ class DeferredShadingPipeline
 {
 public:
 	DeferredShadingPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager);
-	~DeferredShadingPipeline() = default;
+	~DeferredShadingPipeline();
+
+	void Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList);
+
 
 	void Render();
 	void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);	// TEST: 동작 확인되면 정리한 후 삭제.
@@ -42,4 +46,10 @@ private:
 	std::shared_ptr<ShaderResourceView> m_NormalSRV;
 	std::shared_ptr<ShaderResourceView> m_PositionSRV;
 	std::shared_ptr<ShaderResourceView> m_DepthSRV;
+
+
+
+	std::queue<std::shared_ptr<ModelData>> m_RenderQueue;
+
+
 };
