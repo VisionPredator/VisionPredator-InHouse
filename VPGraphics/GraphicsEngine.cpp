@@ -406,7 +406,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
 			BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
-			BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+			BoxModel->m_Materials[0]->m_AlbedoSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 			BoxModel->m_Materials[0]->m_NormalSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 
 			BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;

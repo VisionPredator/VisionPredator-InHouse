@@ -19,14 +19,8 @@ public:
 	DeferredShadingPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager);
 	~DeferredShadingPipeline() = default;
 
-	void Initialize(std::shared_ptr<Device>& device, 
-		std::shared_ptr<ResourceManager>& resourceManager, 
-		const uint32_t& width, const uint32_t& height);
-
-	void RenderBegin();
 	void Render();
 	void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);	// TEST: 동작 확인되면 정리한 후 삭제.
-	void RenderEnd();
 
 private:
 	std::shared_ptr<Device> m_Device;

@@ -19,37 +19,32 @@ DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::share
 
 	m_PS = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
 	m_VS = resourceManager->Get<VertexShader>(L"Quad");
+
+	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quard_VB");
+	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quard_IB");
+
 }
 
-void DeferredLightPass::Initialize(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager,
-	const uint32_t& width, const uint32_t& height)
-{
-	m_Device = device;
-	m_ResourceManager = resourceManager;
 
-
-	//m_AlbedoRTV = resourceManager->Get<ShaderResourceView>(L"Albedo");
-	//m_NormalRTV = resourceManager->Get<ShaderResourceView>(L"Normal");
-	//m_PositionRTV = resourceManager->Get<ShaderResourceView>(L"Position");
-	//m_DepthRTV = resourceManager->Get<ShaderResourceView>(L"Depth");
-
-	m_PS = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
-	m_VS = resourceManager->Get<VertexShader>(L"Quad");
-}
 
 void DeferredLightPass::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
-	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main").lock();
-	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
+	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
+	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
+	std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
+	std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
 
 	Device->Context()->IASetInputLayout(m_VS.lock()->InputLayout());
 	Device->Context()->VSSetShader(m_VS.lock()->GetVS(),nullptr,0);
 	Device->Context()->PSSetShader(m_PS.lock()->GetPS(),nullptr,0);
-	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
-	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
+	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress() ,vb->Size(), vb->Offset());
+	m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
 	Device->Context()->PSSetShaderResources(0,1,m_Albedo->GetAddress());

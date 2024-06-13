@@ -108,7 +108,7 @@ void SkinningPass::Render()
 				//매번 분기를 타면서 어떤 srv가 있는지 확인할건가?
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
+					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
@@ -180,7 +180,7 @@ void StaticPass::Render()
 
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
+					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, (curMaterial->m_NormalSRV.lock()->GetAddress()));
@@ -252,7 +252,7 @@ void DebugPass::Render()
 
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
+					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, (curMaterial->m_NormalSRV.lock()->GetAddress()));

@@ -273,13 +273,13 @@ namespace Quad
 	namespace Vertex
 	{
 
-		static float scale = 1;
+		static const float scale = 1;
 		static QuadVertex Buffer[] = {
 
-		{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, 0.0f * scale, 1.0f),DirectX::XMFLOAT2(0.0f,1.0f) },// 왼쪽 아래
-		{ DirectX::XMFLOAT4(-1.0f * scale,  1.0f * scale, 0.0f * scale, 1.0f),DirectX::XMFLOAT2(0.0f,0.0f) },// 왼쪽 위
-		{ DirectX::XMFLOAT4(1.0f * scale,  1.0f * scale, 0.0f * scale, 1.0f),DirectX::XMFLOAT2(1.0f,0.0f) },// 오른쪽 위
-		{ DirectX::XMFLOAT4(1.0f * scale, -1.0f * scale, 0.0f * scale, 1.0f),DirectX::XMFLOAT2(1.0f,1.0f) },// 오른쪽 아래
+		{ DirectX::XMFLOAT4(-1.0f , -1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(0.0f,1.0f) },// 왼쪽 아래
+		{ DirectX::XMFLOAT4(-1.0f ,  1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(0.0f,0.0f) },// 왼쪽 위
+		{ DirectX::XMFLOAT4(1.0f  ,  1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(1.0f,0.0f) },// 오른쪽 위
+		{ DirectX::XMFLOAT4(1.0f  , -1.0f , 0.0f , 1.0f),DirectX::XMFLOAT2(1.0f,1.0f) },// 오른쪽 아래
 
 
 		};
