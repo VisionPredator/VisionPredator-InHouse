@@ -1,0 +1,98 @@
+[
+    {
+        "EntityID": 2234150277,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "MainEntity"
+            },
+            {
+                "ChildrenID": [
+                    1763915147,
+                    1456435319
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    },
+    {
+        "EntityID": 1763915147,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "child1"
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2234150277
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    },
+    {
+        "EntityID": 1456435319,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Child2"
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2234150277
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    }
+]

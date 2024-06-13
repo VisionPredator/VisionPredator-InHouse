@@ -34,7 +34,7 @@
                 __debugbreak(); \
         } \
     } \
-    while (false);
+    while (false)
 
 #endif
 
@@ -54,7 +54,7 @@ return component;\
 }\
 void SerializeComponent(nlohmann::json& json)const override\
  { to_json(json, *this); }\
-void* DeserializeComponent(const nlohmann::json json, Entity* parentEntity) const override\
+Component* DeserializeComponent(const nlohmann::json json, Entity* parentEntity) const override\
 {\
 	auto component = parentEntity->AddComponent<CLASSNAME>();\
 	*component = json;\

@@ -16,9 +16,12 @@ public:
 
 
 	void SerializePrefab(uint32_t entityID);
+	void DeSerializePrefab(std::string filePath);
 	/// 해당 json를 Deserialize 한다.
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	Entity* CreateEntity();
+	Entity* CreateEntity(uint32_t id);
+	uint32_t CreateRandomEntityID();
 
 
 
@@ -46,6 +49,9 @@ public:
 protected:
 	friend class CompIter;
 private:
+	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
+
+
 
 
 	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
@@ -72,6 +78,7 @@ private:
 	void OnRemoveComponent(std::any data);
 	// 해당 Prefab을 serialize한다.
 	void OnSerializePrefab(std::any entityID);
+	void OnDeSerializePrefab(std::any data);
 	// 해당 Prefab을 Deserialize한다.
 	void OnDeSerializeEntity(std::any data);
 

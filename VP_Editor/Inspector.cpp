@@ -34,6 +34,7 @@ void Inspector::EntityImGui(uint32_t entityID)
 	if (ImGui::Button("Save"))
 	{
 		m_SceneManager->SerializePrefab(entityID);
+		m_SceneManager->DeSerializePrefab("ff");
 	}
 		ImGui::Text(" ");
 

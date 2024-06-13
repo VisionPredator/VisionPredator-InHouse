@@ -22,6 +22,7 @@ SceneManager::SceneManager()
 
 	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneManager::OnSerializePrefab), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDeSerializeEntity", CreateSubscriber(&SceneManager::OnDeSerializeEntity), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnDeSerializePrefab", CreateSubscriber(&SceneManager::OnDeSerializePrefab), EventType::ADD_DELETE);
 
 }
 SceneManager::~SceneManager()
@@ -39,6 +40,21 @@ void SceneManager::Initialize()
 void SceneManager::Finalize()
 {
 
+}
+
+std::pair<uint32_t, uint32_t>& SceneManager::findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key)
+{
+	// Search for the pair
+	for (auto& pair : vec) 
+	{
+		if (pair.first == key) 
+		{
+			return pair;  // Return the found pair
+		}
+	}
+	// If not found, create a new pair
+	vec.emplace_back(key, CreateRandomEntityID());  // Default value for second element is 0, can be modified as needed
+	return vec.back();  // Return the newly created pair
 }
 
 void SceneManager::AddCompToPool(Component* comp)
@@ -197,16 +213,16 @@ void SceneManager::SerializePrefab(uint32_t entityID)
 
 void SceneManager::OnSerializePrefab(std::any data)
 {
-
 	uint32_t entityID = std::any_cast<uint32_t>(data);
+	std::list<uint32_t>  serializeIDs;
+	serializeIDs.push_back(entityID);
 
-	Entity tempEntity = *GetEntity(entityID);
-	tempEntity.GetComponent<IDComponent>();
 	///Set FilePath
 	std::string folderName = "../Resource/Prefab/";
-	std::string entityName = tempEntity.GetComponent<IDComponent>()->Name;
+	std::string entityName = GetEntity(entityID)->GetComponent<IDComponent>()->Name;
 	std::string fileExtension = ".json";
 	std::string filePath = folderName + entityName + fileExtension;
+
 	// Ensure directory exists before creating the file
 	std::filesystem::create_directories(folderName);
 
@@ -216,25 +232,95 @@ void SceneManager::OnSerializePrefab(std::any data)
 	if (!ofsPrefabPath)
 		VP_ASSERT(false, "파일을 여는데 실패하였습니다!");
 
-	try {
-		std::pair<uint32_t, Entity > entityPair = std::make_pair(entityID, tempEntity);
+	while (!serializeIDs.empty())
+	{
+		uint32_t serializeID = serializeIDs.front();
+		serializeIDs.pop_front();
+		Entity* serializeEntity = GetEntity(serializeID);
 		nlohmann::ordered_json entityJson;
-		entityJson["EntityID"] = entityPair.first;
-		for (const auto& [id, comp] : entityPair.second.m_OwnedComp)
+		entityJson["EntityID"] = serializeEntity->GetEntityID();
+		for (const auto& [id, comp] : serializeEntity->m_OwnedComp)
 		{
 			nlohmann::json compnentEntity;
 			comp->SerializeComponent(compnentEntity);
 			compnentEntity["ComponentID"] = id;
 			entityJson["Component"].push_back(compnentEntity);
 		}
-		SceneJson["Entitys"].push_back(entityJson);
-		ofsPrefabPath << SceneJson.dump(4);
+
+		SceneJson.push_back(entityJson);
+		if (!serializeEntity->HasComponent<Children>())
+			continue;
+		Children* childrenComp = serializeEntity->GetComponent<Children>();
+		serializeIDs.insert(serializeIDs.end(), childrenComp->ChildrenID.begin(), childrenComp->ChildrenID.end());
 	}
-	catch (const std::exception&)
-	{
-		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
-	}
+
+	ofsPrefabPath << SceneJson.dump(4);
+
 	ofsPrefabPath.close();
+}
+
+void SceneManager::DeSerializePrefab(std::string filePath)
+{
+	EventManager::GetInstance().ScheduleEvent("OnDeSerializePrefab", filePath);
+}
+
+
+
+void SceneManager::OnDeSerializePrefab(std::any name)
+{
+	std::string filePath = std::any_cast<std::string>(name);
+
+	filePath = "../Resource/Prefab/TesParent.json";
+
+	std::ifstream inputFile(filePath);
+	std::vector<std::pair<uint32_t, uint32_t> > entityResettingPair{};
+
+	if (inputFile.is_open())
+	{
+		nlohmann::json prefabJson;
+		inputFile >> prefabJson;
+		//테스트코드
+		auto count = prefabJson.size();
+		for (const auto& entityJson : prefabJson)
+		{
+			const uint32_t oldEntityID = entityJson["EntityID"].get<uint32_t>();
+			uint32_t renewEntityID = findOrCreatePair(entityResettingPair, oldEntityID).second;
+			Entity* tempEntity = new Entity;
+			tempEntity->SetEntityID(renewEntityID);
+			SetEntityMap(renewEntityID, tempEntity);
+			for (const nlohmann::json compJson : entityJson["Component"])
+			{
+				entt::id_type comp_id = (entt::id_type)compJson["ComponentID"];
+				auto metaType = entt::resolve(comp_id);
+				if (metaType)
+				{
+
+					// 메타 타입으로부터 인스턴스를 생성합니다.
+					auto instance = metaType.construct();
+					// 특정 함수를 찾고 호출합니다.
+					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+					if (myFunctionMeta)
+					{
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity);
+						if (auto compPPtr = result.try_cast<Component*>())
+						{
+							auto compPtr = *compPPtr;
+							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
+								for (auto& childID : static_cast<Children*> (compPtr)->ChildrenID)
+									childID = findOrCreatePair(entityResettingPair, childID).second;
+							else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
+							{
+								Parent* parentComponet = static_cast<Parent*> (compPtr);
+								parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
+							}
+						}
+					}
+					else
+						VP_ASSERT(false, "Reflection 함수 실패!");
+				}
+			}
+		}
+	}
 }
 
 Entity* SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
@@ -268,7 +354,7 @@ Entity* SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
 void SceneManager::OnDeSerializeEntity(std::any data)
 {
 	const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
-	uint32_t entityID = entityjson["EntityID"];
+	uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
 
 	Entity* tempEntity = new Entity;
 	tempEntity->SetEntityID(entityID);
@@ -285,7 +371,7 @@ void SceneManager::OnDeSerializeEntity(std::any data)
 			// 특정 함수를 찾고 호출합니다.
 			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, (uint32_t)entityID);
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity);
 			else
 				VP_ASSERT(false, "Reflection 함수 실패!");
 		}
@@ -318,6 +404,44 @@ Entity* SceneManager::CreateEntity()
 	}
 
 	return tempEntity;
+}
+
+Entity* SceneManager::CreateEntity(uint32_t id)
+{
+	if (HasEntity(id))
+	{
+		VP_ASSERT(false, "이미 존재하는 EntityID 입니다.");
+		return nullptr;
+	}
+
+	Entity* tempEntity = new Entity;
+	tempEntity->SetEntityID(id);
+	SetEntityMap(id, tempEntity);
+
+	Component* IDComp = tempEntity->AddComponent(Reflection::GetTypeID<IDComponent>());
+	Component* TransformComp = tempEntity->AddComponent(Reflection::GetTypeID<TransformComponent>());
+	IDComponent* temp = static_cast<IDComponent*>(IDComp);
+	static int a = 0;
+	if (temp->Name == "Entity")
+	{
+		temp->Name = temp->Name + std::to_string(a);
+		a++;
+	}
+
+	return tempEntity;
+}
+
+uint32_t SceneManager::CreateRandomEntityID()
+{
+	std::random_device rd;  // 난수 생성기
+	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
+	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_Max 까지의 난수 범위
+	uint32_t id = dis(gen);
+	while (HasEntity(id))
+	{
+		id = dis(gen);
+	}
+	return id;
 }
 
 void SceneManager::OnAddCompToScene(std::any data)

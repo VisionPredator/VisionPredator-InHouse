@@ -10,7 +10,7 @@ struct Component
 	}
 
 	virtual void SerializeComponent(nlohmann::json& json) const {};
-	virtual void* DeserializeComponent(const nlohmann::json json,Entity* parentEntity) const { return nullptr; }
+	virtual Component* DeserializeComponent(const nlohmann::json json,Entity* parentEntity) const { return nullptr; }
 	virtual Component* AddComponent(Entity* parentEntity) { return nullptr; }
 	template <typename T>
 	T* GetComponent()

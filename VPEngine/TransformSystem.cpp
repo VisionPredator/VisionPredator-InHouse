@@ -14,7 +14,8 @@
 	{
 		///업데이트 순서가 매우 중요하게 느껴짐.
 		///예를 들어서 Parent가 업데이트 되기전에 다른것들이 업데이트 된다면?? 문제가 생길수있음!!
-			
+		auto a= Reflection::GetTypeID<Parent>();
+		auto b = Reflection::GetTypeID<Children>();
 		std::list<uint32_t> updatelist;
 		///최상단의 Entity 만 기억하기. 근데 뭘로 기억하는게 좋을까 고민해보기.
 		for (TransformComponent& comp : CompIter<TransformComponent>(m_SceneManager))
