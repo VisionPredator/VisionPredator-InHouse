@@ -13,6 +13,7 @@ public:
 
     Hierarchy() = default;
 private:
+
     HierarchySystem* m_HierarchySystem; 
     SceneManager* m_SceneManager;
 };

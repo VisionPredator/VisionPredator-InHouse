@@ -30,7 +30,11 @@ void Inspector::EntityImGui(uint32_t entityID)
 	ImGui::PopID();
 	ImGui::Separator();
 
-	ImGui::Text("Serialize");	ImGui::SameLine();	if (ImGui::Button("Save"))
+	ImGui::Text("Serialize");	ImGui::SameLine();	
+	if (ImGui::Button("Save"))
+	{
+		m_SceneManager->SerializePrefab(entityID);
+	}
 		ImGui::Text(" ");
 
 	ImGui::Separator();
@@ -180,6 +184,8 @@ void Inspector::ComponentImGui(Component* component)
 
 void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component)
 {
+
+
 	auto metaType = memberMetaData.type();
 	if (metaType.id() == Reflection::GetTypeID<VPMath::Vector2>())
 		TypeImGui_Vector2(memberMetaData, component);
@@ -197,7 +203,7 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<int>())
 		TypeImGui_int(memberMetaData, component);
-	else if (metaType.id() == Reflection::GetTypeID<unsigned int>())
+	else if (metaType.id() == Reflection::GetTypeID<uint32_t>())
 		TypeImGui_unsigned_int(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<float>())
 		TypeImGui_float(memberMetaData, component);
@@ -320,7 +326,7 @@ void Inspector::TypeImGui_int(entt::meta_data memberMetaData, Component* compone
 }
 void Inspector::TypeImGui_unsigned_int(entt::meta_data memberMetaData, Component* component)
 {
-	unsigned int tempUnsignedint = memberMetaData.get(component->GetHandle()).cast<unsigned int>();
+	unsigned int tempUnsignedint = memberMetaData.get(component->GetHandle()).cast<uint32_t>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 	ImGui::PushID(memberName.c_str());
 	if (ImGui::InputScalar(memberName.c_str(), ImGuiDataType_U32, &tempUnsignedint))

@@ -197,6 +197,7 @@ void SceneManager::SerializePrefab(uint32_t entityID)
 
 void SceneManager::OnSerializePrefab(std::any data)
 {
+
 	uint32_t entityID = std::any_cast<uint32_t>(data);
 
 	Entity tempEntity = *GetEntity(entityID);
@@ -206,6 +207,8 @@ void SceneManager::OnSerializePrefab(std::any data)
 	std::string entityName = tempEntity.GetComponent<IDComponent>()->Name;
 	std::string fileExtension = ".json";
 	std::string filePath = folderName + entityName + fileExtension;
+	// Ensure directory exists before creating the file
+	std::filesystem::create_directories(folderName);
 
 	nlohmann::ordered_json SceneJson;			///ordered_json 하고 json의 차이 알아보기!
 	///Json을 저장할 파일 위치!

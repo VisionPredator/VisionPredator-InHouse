@@ -27,7 +27,8 @@ void SceneSerializer::OnSerializeScene(std::any data)
 	std::string sceneName = m_SceneManager->GetSceneName();
 	std::string fileExtension = ".json";
 	std::string filePath = folderName + sceneName + fileExtension;
-
+	// Ensure directory exists before creating the file
+	std::filesystem::create_directories(folderName);
 	///엔티티들을 담을 공간!
 	nlohmann::ordered_json SceneJson;			///ordered_json 하고 json의 차이 알아보기!
 	///Json을 저장할 파일 위치!
