@@ -19,8 +19,9 @@ enum class PassState : unsigned int
 	Static = 1 << 0,
 	Skinning = 1 << 1,
 	Debug = 1 << 2,
+	Deferred = 1 << 3,
 
-	End
+	End = 99999
 };
 
 // 비트 연산자 오버로딩

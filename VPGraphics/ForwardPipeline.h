@@ -18,11 +18,11 @@
 
 class ModelData;
 
-class PassManager
+class ForwardPipeline
 {
 public:
-	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<D3D11_VIEWPORT> vp);
-	~PassManager();
+	ForwardPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource);
+	~ForwardPipeline();
 
 	void Initialize();
 	void Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList);
@@ -34,6 +34,5 @@ private:
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_Resourcemanager;
-	std::weak_ptr<D3D11_VIEWPORT> m_VP;
 };
 

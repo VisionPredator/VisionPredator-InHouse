@@ -18,21 +18,26 @@ DeferredShadingPipeline::DeferredShadingPipeline(std::shared_ptr<Device> device,
 
 }
 
-/// <summary>
-///	생성한 패스들 초기화
-/// </summary>
-void DeferredShadingPipeline::Initialize(std::shared_ptr<Device>& device,
-	std::shared_ptr<ResourceManager>& resourceManager, const uint32_t& width, const uint32_t& height)
+DeferredShadingPipeline::~DeferredShadingPipeline()
 {
-	m_DeferredLightPass->Initialize(device, resourceManager, width, height);
 
 }
 
-/// <summary>
-///	후면 버퍼에 연결된 렌더 타겟 클리어
-///	</summary>
-void DeferredShadingPipeline::RenderBegin()
+void DeferredShadingPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
 {
+	for (auto& model : RenderList)
+	{
+		PassState curState = model.second.first;
+		PassState temp = curState;
+
+		temp &= PassState::Deferred;
+		if (temp == PassState::Deferred)
+		{
+			std::shared_ptr<ModelData> curModel = model.second.second;
+			m_RenderQueue.push(curModel);
+		}
+	}
+
 }
 
 /// <summary>
@@ -41,19 +46,16 @@ void DeferredShadingPipeline::RenderBegin()
 /// </summary>
 void DeferredShadingPipeline::Render()
 {
-}
+	while (!m_RenderQueue.empty())
+	{
+		std::shared_ptr<ModelData> curModel = m_RenderQueue.front();
 
-/// TEST TEST TEST
-void DeferredShadingPipeline::TestRender(
-	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
-{
-	m_DeferredGeometryPass->TestRender(renderList);
+		m_DeferredGeometryPass->Render(curModel);
+
+
+		m_RenderQueue.pop();
+	}
+
 	m_DeferredLightPass->Render();
 }
 
-/// <summary>
-///	그리기를 종료하고 화면에 출력
-/// </summary>
-void DeferredShadingPipeline::RenderEnd()
-{
-}

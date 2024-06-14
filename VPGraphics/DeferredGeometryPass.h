@@ -1,25 +1,24 @@
 #pragma once
 #include "ConstantBuffer.h"
-#include "Pass.h"
 #include "Device.h"
 #include "VertexShader.h"
+#include "ModelData.h"
 
 #include <string>
-#include "ModelData.h"
+#include <queue>
 
 enum class PassState : unsigned;
 class Mesh;
 class RenderState;
 class ResourceManager;
 
-class DeferredGeometryPass final : public Pass
+class DeferredGeometryPass
 {
 public:
 	DeferredGeometryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager);
 	~DeferredGeometryPass();
 
-	void Render() override;
-	void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);
+	void Render(const std::shared_ptr<ModelData>& model);
 
 private:
 	std::weak_ptr<Device> m_Device;

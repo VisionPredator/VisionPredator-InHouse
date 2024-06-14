@@ -30,7 +30,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 		{
 			case Kind_of_Light::Direction:
 			{
-				m_BufferStruct.DirIndex = size;
+				m_BufferStruct.DirIndex = static_cast<float>(size);
 				for (int i = 0; i < size; i++)
 				{
 					m_BufferStruct.Dir[i] = curData->second;
@@ -40,7 +40,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 			break;
 			case Kind_of_Light::Spot:
 			{
-				m_BufferStruct.SpotIndex = size;
+				m_BufferStruct.SpotIndex = static_cast<float>(size);
 				for (int i = 0; i < size; i++)
 				{
 					m_BufferStruct.Spot[i] = curData->second;
@@ -50,7 +50,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 			break;
 			case Kind_of_Light::Point:
 			{
-				m_BufferStruct.PointIndex= size;
+				m_BufferStruct.PointIndex= static_cast<float>(size);
 				for (int i = 0; i < size; i++)
 				{
 					m_BufferStruct.Point[i] = curData->second;

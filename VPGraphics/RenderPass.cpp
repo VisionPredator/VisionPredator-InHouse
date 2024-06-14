@@ -6,7 +6,7 @@
 #include "Mesh.h"
 #include "Material.h"
 
-RenderPass::RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger, std::weak_ptr<D3D11_VIEWPORT> vp) : m_Device(device), m_ResourceManager(manger), m_VS(), m_PS(), m_RS(), m_VP(vp)
+RenderPass::RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger) : m_Device(device), m_ResourceManager(manger), m_VS(), m_PS(), m_RS()
 {
 
 }
@@ -19,7 +19,6 @@ RenderPass::~RenderPass()
 
 	m_RTV.reset();
 	m_DSV.reset();
-	m_VP.reset();
 
 	m_Device.reset();
 	m_ResourceManager.reset();
@@ -43,7 +42,7 @@ void RenderPass::AddModelData(std::map<std::wstring, std::pair<PassState, std::s
 	}
 }
 
-SkinningPass::SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : RenderPass(device, manager, vp)
+SkinningPass::SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
@@ -108,7 +107,7 @@ void SkinningPass::Render()
 				//매번 분기를 타면서 어떤 srv가 있는지 확인할건가?
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
+					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
@@ -128,7 +127,7 @@ void SkinningPass::Render()
 
 }
 
-StaticPass::StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : RenderPass(device, manager, vp)
+StaticPass::StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
@@ -180,7 +179,7 @@ void StaticPass::Render()
 
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
+					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, (curMaterial->m_NormalSRV.lock()->GetAddress()));
@@ -201,7 +200,7 @@ void StaticPass::Render()
 	}
 }
 
-DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp) : RenderPass(device, manager, vp)
+DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
@@ -252,7 +251,7 @@ void DebugPass::Render()
 
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_DiffuseSRV.lock()->GetAddress()));
+					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, (curMaterial->m_NormalSRV.lock()->GetAddress()));

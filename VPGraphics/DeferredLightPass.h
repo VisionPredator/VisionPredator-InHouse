@@ -1,20 +1,14 @@
 #pragma once
-#include "Pass.h"
 #include "ResourceManager.h"
 
 
-
-class ShaderResourceView;
-
-class DeferredLightPass final : public Pass
+class DeferredLightPass
 {
 public:
-	DeferredLightPass() = default;
 	DeferredLightPass(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager);
-	virtual ~DeferredLightPass() = default;
+	~DeferredLightPass();
 
-	void Initialize(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager, const uint32_t& width, const uint32_t& height);
-	void Render() override;
+	void Render();
 
 private:
 	// Vertex Buffer
@@ -37,5 +31,10 @@ private:
 
 	std::weak_ptr < PixelShader > m_PS;
 	std::weak_ptr < VertexShader> m_VS;
+
+	std::weak_ptr <VertexBuffer> m_QuadVB;
+	std::weak_ptr < IndexBuffer > m_QuadIB;
+
+
 };
 

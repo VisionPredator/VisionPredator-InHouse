@@ -12,7 +12,6 @@
 DeferredGeometryPass::DeferredGeometryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
 {
 
-
 	m_DepthStencilView = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 
 	m_AlbedoRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Albedo").lock();
@@ -31,15 +30,7 @@ DeferredGeometryPass::~DeferredGeometryPass()
 }
 
 
-void DeferredGeometryPass::Render()
-{
-	// 모든 데이터 바인딩
-	// CB 업데이트 및 바인딩
-	// Static, Skeletal 별로 CB 업데이트하고 Material 바인딩하고 각각 드로우
-}
-
-void DeferredGeometryPass::TestRender(
-	const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList)
+void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 {
 	std::shared_ptr<Device> device = m_Device.lock();
 
@@ -71,9 +62,9 @@ void DeferredGeometryPass::TestRender(
 
 	{
 		// TODO: 너무 너무 중첩.. 정리 필요함..
-		for (const auto& model : renderList)
+		//for (const auto& model : renderList)
 		{
-			std::shared_ptr<ModelData> curModel = model.second.second;
+			std::shared_ptr<ModelData> curModel = model;
 
 			for (const auto& mesh : curModel->m_Meshes)
 			{
@@ -93,16 +84,16 @@ void DeferredGeometryPass::TestRender(
 					// CB Update
 					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 
-					position->m_struct.world = model.second.second->world;
-					position->m_struct.local = model.second.second->local;
+					position->m_struct.world = curModel->world;
+					position->m_struct.local = curModel->local;
 					position->Update();	// == Bind
 
 					// Material Binding
 					if (!curModel->m_Materials.empty())
 					{
-						for (const auto& material : model.second.second->m_Materials)
+						for (const auto& material : curModel->m_Materials)
 						{
-							device->Context()->PSSetShaderResources(0, 1, material->m_DiffuseSRV.lock()->GetAddress());
+							device->Context()->PSSetShaderResources(0, 1, material->m_AlbedoSRV.lock()->GetAddress());
 							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
 							//device->Context()->PSSetShaderResources(2, 1, material->m_SpecularSRV.lock()->GetAddress());
 						}
@@ -130,16 +121,16 @@ void DeferredGeometryPass::TestRender(
 					position->Update();	// == Bind
 
 					MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(model.second.second->m_name + L"MatrixPallete").lock();
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(model->m_name + L"MatrixPallete").lock();
 					pallete->Update(matrixPallete);
 					m_Device.lock()->Context()->VSSetConstantBuffers(3, 1, pallete->GetAddress());
 
 					// Material Binding
 					if (!curModel->m_Materials.empty())
 					{
-						for (const auto& material : model.second.second->m_Materials)
+						for (const auto& material : curModel->m_Materials)
 						{
-							device->Context()->PSSetShaderResources(0, 1, material->m_DiffuseSRV.lock()->GetAddress());
+							device->Context()->PSSetShaderResources(0, 1, material->m_AlbedoSRV.lock()->GetAddress());
 							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
 							//m_Device->Context()->PSSetShaderResources(2, 1, material->m_SpecularSRV.lock()->GetAddress());
 						}

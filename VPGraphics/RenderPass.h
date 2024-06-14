@@ -63,7 +63,7 @@ struct D3D11_VIEWPORT;
 class RenderPass
 {
 public:
-	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger, std::weak_ptr<D3D11_VIEWPORT> vp);
+	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger);
 	~RenderPass();
 
 	virtual void Render() abstract;
@@ -84,7 +84,6 @@ protected:
 
 	std::weak_ptr<RenderTargetView> m_RTV;
 	std::weak_ptr<DepthStencilView> m_DSV;
-	std::weak_ptr<D3D11_VIEWPORT> m_VP;
 
 
 	PassState m_state = PassState::None;
@@ -93,7 +92,7 @@ protected:
 class DebugPass : public RenderPass
 {
 public:
-	DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
 	~DebugPass();
 
 	virtual void Render() override;
@@ -105,7 +104,7 @@ public:
 class SkinningPass : public RenderPass
 {
 public:
-	SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
 	~SkinningPass();
 
 	virtual void Render() override;
@@ -116,7 +115,7 @@ private:
 class StaticPass : public RenderPass
 {
 public:
-	StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<D3D11_VIEWPORT> vp);
+	StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
 	~StaticPass();
 
 	virtual void Render() override;

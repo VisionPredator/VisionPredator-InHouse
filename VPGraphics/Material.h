@@ -17,7 +17,7 @@ public:
 	std::wstring m_NormalFilePath;
 	std::wstring m_SpecularFilePath;
 
-	std::weak_ptr <ShaderResourceView> m_DiffuseSRV;
+	std::weak_ptr <ShaderResourceView> m_AlbedoSRV;
 	std::weak_ptr <ShaderResourceView> m_NormalSRV;
 	std::weak_ptr <ShaderResourceView> m_SpecularSRV;
 
