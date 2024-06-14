@@ -59,9 +59,6 @@ Texture2D gDepth : register(t3);
 Texture2D gTangent : register(t4);
 
 
-Texture2D gMeshAlbedo : register(t5);
-Texture2D gMeshNormal : register(t6);
-
 
 
 
@@ -101,17 +98,12 @@ struct Quad
     float2 tex : TEXCOORD;
 };
 
-
-struct PS_OUTPUT
+struct Material
 {
-    float4 Albedo : SV_Target0;
-    float4 Normal : SV_Target1;
-    float4 Position : SV_Target2;
-    float4 Depth : SV_Target3;
-    //float4 Tangent : SV_Target4;
+	float4 albedo;
+    float3 normal;
+    // 더 추가해야할 수도..
 };
-
-
 
 //Light Function
 

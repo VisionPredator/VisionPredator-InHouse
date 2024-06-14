@@ -102,8 +102,8 @@ void DeferredGeometryPass::TestRender(
 					{
 						for (const auto& material : model.second.second->m_Materials)
 						{
-							device->Context()->PSSetShaderResources(5, 1, material->m_DiffuseSRV.lock()->GetAddress());
-							device->Context()->PSSetShaderResources(6, 1, material->m_NormalSRV.lock()->GetAddress());
+							device->Context()->PSSetShaderResources(0, 1, material->m_DiffuseSRV.lock()->GetAddress());
+							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
 							//device->Context()->PSSetShaderResources(2, 1, material->m_SpecularSRV.lock()->GetAddress());
 						}
 					}
@@ -139,8 +139,8 @@ void DeferredGeometryPass::TestRender(
 					{
 						for (const auto& material : model.second.second->m_Materials)
 						{
-							device->Context()->PSSetShaderResources(5, 1, material->m_DiffuseSRV.lock()->GetAddress());
-							device->Context()->PSSetShaderResources(6, 1, material->m_NormalSRV.lock()->GetAddress());
+							device->Context()->PSSetShaderResources(0, 1, material->m_DiffuseSRV.lock()->GetAddress());
+							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
 							//m_Device->Context()->PSSetShaderResources(2, 1, material->m_SpecularSRV.lock()->GetAddress());
 						}
 					}
