@@ -23,20 +23,25 @@ void HierarchySystem::ShowEntitys()
 void HierarchySystem::ShowParentEntity(uint32_t entityID)
 {
 	bool isNodeOpened = false;
+	Children* entityChildren=nullptr;
+	Entity* entity = m_SceneManager->GetEntity(entityID);
+
+
 	ImGui::PushID(entityID);
 	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
-	if (!m_SceneManager->HasComponent<Children>(entityID))
+
+	if (!entity->HasComponent<Children>())
 		node_flags |= ImGuiTreeNodeFlags_Leaf;
+	else
+		entityChildren = entity->GetComponent<Children>();
+
 	if (m_SelectedEntityID == entityID)
 		node_flags |= ImGuiTreeNodeFlags_Selected;
-	auto IDcomp = m_SceneManager->GetComponent<IDComponent>(entityID);
+	auto IDcomp = entity->GetComponent<IDComponent>();
 	isNodeOpened = ImGui::TreeNodeEx(IDcomp->Name.c_str(), node_flags);
 
 
-	if (isNodeOpened)
-	{
-		ImGui::TreePop();
-	}
+
 
 	bool test = ImGui::IsItemHovered();
 	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
@@ -60,13 +65,9 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 		ImGui::EndPopup();
 	}
 
- 
 
 
-	if (ImGui::IsItemClicked())
-	{
-		m_SelectedEntityID = entityID;
-	}
+
 
 
 	/// 아이템 드래그 앤 드랍
@@ -91,14 +92,36 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 
 			if (move_from != move_to)
 			{
+				m_SceneManager->AddChild(move_to, move_from);
 				//ParentChildrenSystem(m_GameObjectManager).AddChild(move_to, move_from);
 			}
 
 		}
 		ImGui::EndDragDropTarget();
 	}
+
 	ImGui::PopID();
 
+	if (ImGui::IsItemClicked())
+	{
+		m_SelectedEntityID = entityID;
+	}
 
+	if (isNodeOpened)
+	{
+		if (entityChildren == nullptr)
+		{
+			ImGui::TreePop();
+			return;
+		}
 
+		// 게임 오브젝트의 자식들에 대한 루프
+		for (auto k : entityChildren->ChildrenID)
+		{
+			ShowParentEntity(k);
+		}
+
+		// 트리 노드 닫기
+		ImGui::TreePop();
+	}
 }

@@ -46,13 +46,17 @@ public:
 	template<typename T>
 	inline std::vector<T*> GetComponentPool();
 
+	void AddChild(uint32_t Parent, uint32_t Child);
+	void RemoveParent(uint32_t child);
 protected:
 	friend class CompIter;
 private:
 	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
 
-
+	bool CheckParent(uint32_t parent, uint32_t child);
+	void OnAddChild(std::any data);
+	void OnRemoveChild(std::any data);
 
 	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 

@@ -16,9 +16,11 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
 
 	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnAddChild", CreateSubscriber(&SceneManager::OnAddChild), EventType::ADD_DELETE);
 
 	//EventManager::GetInstance().Subscribe("OnAddEntity", CreateSubscriber(&SceneManager::OnAddEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnRemoveChild", CreateSubscriber(&SceneManager::OnRemoveChild), EventType::ADD_DELETE);
 
 	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneManager::OnSerializePrefab), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDeSerializeEntity", CreateSubscriber(&SceneManager::OnDeSerializeEntity), EventType::ADD_DELETE);
@@ -56,6 +58,101 @@ std::pair<uint32_t, uint32_t>& SceneManager::findOrCreatePair(std::vector<std::p
 	vec.emplace_back(key, CreateRandomEntityID());  // Default value for second element is 0, can be modified as needed
 	return vec.back();  // Return the newly created pair
 }
+bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
+{
+	Parent* nextParent = GetComponent<Parent>(child);
+
+	while (nextParent != nullptr)
+	{
+		if (!GetComponent<Children>(nextParent->ParentID))
+		{
+			nextParent = GetComponent<Parent>(nextParent->ParentID);
+			continue;
+		}
+
+		if (nextParent->ParentID == parent)
+		{
+			return true;
+		}
+		nextParent = GetComponent<Parent>(nextParent->ParentID);
+	}
+	return false;
+}
+
+void SceneManager::AddChild(uint32_t parent, uint32_t child)
+{
+	std::pair<uint32_t, uint32_t> data{ parent ,child };
+	EventManager::GetInstance().ScheduleEvent("OnAddChild", data);
+}
+
+void SceneManager::OnAddChild(std::any data)
+{
+	auto [parent, child] = std::any_cast<std::pair<uint32_t, uint32_t>>(data);
+	if (parent == child || CheckParent(parent, child))
+		return;
+
+	if (Parent* parentofchild = GetComponent<Parent>(child); parentofchild)
+	{
+		std::pair<uint32_t, uint32_t> newdata{ parentofchild->ParentID, child };
+		OnRemoveChild(newdata);
+	}
+
+	GetEntity(child)->AddComponent<Parent>(true)->ParentID= parent;
+
+	if (Children* children = GetComponent<Children>(parent); children)
+		children->ChildrenID.push_back(child);
+	else
+		GetEntity(parent)->AddComponent<Children>(true)->ChildrenID.push_back(child);
+}
+
+
+
+
+
+void SceneManager::RemoveParent(uint32_t childID)
+{
+	if (Parent* parent = GetComponent<Parent>(childID); parent)
+	{
+		std::pair<uint32_t, uint32_t> data{ parent->ParentID, childID };
+		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
+	}
+}
+
+void SceneManager::OnRemoveChild(std::any data)
+{
+
+	auto [parent, child] = std::any_cast<std::pair<uint32_t, uint32_t>>(data);
+	if (!CheckParent(parent, child))
+		return;
+
+	if (Parent* parentOfChild = GetComponent<Parent>(child); parentOfChild)
+	{
+		if (parentOfChild->ParentID == parent)
+		{
+			Children* children =GetComponent<Children>(parent);
+			children->ChildrenID.remove_if(
+				[child](uint32_t id)
+				{
+					return id == child;
+				}
+			);
+
+			if (children->ChildrenID.empty())
+			{
+				OnRemoveComponent(static_cast<Component*>(children));
+			}
+			OnRemoveComponent(static_cast<Component*>(parentOfChild));
+
+		}
+	}
+
+}
+
+
+
+
+
+
 
 void SceneManager::AddCompToPool(Component* comp)
 {
@@ -65,6 +162,12 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 {
 	std::list<uint32_t> DeleteEntityIDs;
 	DeleteEntityIDs.push_back(entityID);
+
+	if (HasComponent<Parent>(entityID))
+	{
+		Entity* parentEntity = GetEntity(GetComponent<Parent>(entityID)->ParentID);
+		auto parentsChildren = parentEntity->GetComponent<Children>();
+	}
 
 	while (!DeleteEntityIDs.empty())
 	{
@@ -114,7 +217,7 @@ void SceneManager::OnDestroyEntity(std::any data)
 			}
 		}
 		// EntityMap에서 해당 Entity를 제거합니다.
-		delete entityToRemove;
+		delete entityToRemove; 
 		entityMap.erase(entityIter);
 	}
 }
@@ -454,6 +557,7 @@ void SceneManager::OnAddCompToScene(std::any data)
 void SceneManager::OnRemoveComponent(std::any data)
 {
 	Component* comp = std::any_cast<Component*>(data);
+
 	uint32_t EntityID = comp->GetEntityID();
 	entt::id_type CompID = comp->GetHandle()->type().id();
 	if (!HasComponent(EntityID, CompID))

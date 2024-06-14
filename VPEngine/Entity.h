@@ -33,7 +33,7 @@
 		void AddComponentToMap(Component* comp);
 
 		template<typename T>
-		T* AddComponent()
+		T* AddComponent(bool Immediately = false)
 		{
 			if (HasComponent<T>())
 			{
@@ -43,7 +43,10 @@
 			T* newcomp = new T;
 			AddComponentToMap(newcomp);
 			newcomp->SetEntity(this);
+			if (!Immediately)
 			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
+			else
+				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
 			return newcomp;
 		}
 		Component* AddComponent(entt::id_type compID);
@@ -74,14 +77,22 @@
 		template<typename T>
 		inline T* FindComponent()
 		{
+			if (!HasComponent<T>())
+			{
+				return nullptr;
+			}
 			auto it = m_OwnedComp.find(Reflection::GetTypeID<T>());
-			assert(it != m_OwnedComp.end() && "Component not found in m_OwnedComp");
 			return static_cast<T*>(it->second);
 		}
 		Component* FindComponent(entt::id_type compID)
 		{
+			if (!HasComponent(compID))
+			{
+				VP_ASSERT(false,"Component not found in m_OwnedComp");
+				return nullptr;
+			}
+
 			auto it = m_OwnedComp.find(compID);
-			assert(it != m_OwnedComp.end() && "Component not found in m_OwnedComp");
 			return it->second;
 		}
 
