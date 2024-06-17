@@ -24,7 +24,6 @@ public:
 
 
 	void Render();
-	void TestRender(const std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& renderList);	// TEST: 동작 확인되면 정리한 후 삭제.
 
 private:
 	std::shared_ptr<Device> m_Device;

@@ -107,46 +107,15 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
-	AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
 	//AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
-	EraseObject(L"TextureBox");
-	AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
+	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
+	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 
 
-	Dir.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	Dir.diffuse = DirectX::XMFLOAT4(0.20f, 0.2f, 0.2f, 1.0f);
-	Dir.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
-
-	Point.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	Point.diffuse = DirectX::XMFLOAT4(0.20f, 0.2f, 0.2f, 1.0f);
-	Point.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	Point.range = 5.f;
-	Point.pos = DirectX::XMFLOAT3{ 0.f ,10.f , -0.f };
-	Point.attenuation = DirectX::XMFLOAT3{ 0.5f ,05.f , 0.50f };
-
-	Spot.ambient = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	Spot.direction = DirectX::XMFLOAT3(0.0f, -0.0f, -0.5f);
-	Spot.diffuse = DirectX::XMFLOAT4(0.50f, 0.5f, 0.5f, 1.0f);
-	Spot.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	Spot.range = 5.f;
-	Spot.pos = DirectX::XMFLOAT3{ 0.f ,2.f , -01.f };
-	Spot.attenuation = DirectX::XMFLOAT3{ 0.f ,0.f , 0.20f };
-	Spot.spot = 1;
+	Dir.color = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
-	EraseLight(L"Sun", Kind_of_Light::Direction);
-
-	LightData Dir2;
-	Dir2.ambient = DirectX::XMFLOAT4(01.7f, 01.7f, 01.7f, 1.0f);
-	Dir2.diffuse = DirectX::XMFLOAT4(0.70f, 0.7f, 0.7f, 1.0f);
-	Dir2.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	Dir2.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
-
-	AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
-	EraseLight(L"Sun2", Kind_of_Light::Direction);
-
-	AddLight(L"Point", Kind_of_Light::Point, Point);
 
 	return true;
 
@@ -419,7 +388,8 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
-			newModel->m_pass = PassState::Static;
+			//newModel->m_pass = PassState::Static;
+			newModel->m_pass = PassState::Deferred;
 
 			newModel->local = DirectX::SimpleMath::Matrix::Identity;
 			newModel->local._11 *= 0.05f;

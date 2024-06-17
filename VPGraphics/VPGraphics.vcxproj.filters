@@ -395,6 +395,9 @@
     <FxCompile Include="MeshVS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
+    <FxCompile Include="PBR2PS.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDiagram.cd" />

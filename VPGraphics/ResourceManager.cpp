@@ -75,11 +75,16 @@ void ResourceManager::Initialize()
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
 
+	Create<ConstantBuffer<MaterialData>>(L"Material", BufferDESC::Constant::DefaultMaterial);
+	m_Device.lock()->Context()->VSSetConstantBuffers(5, 1, transform->GetAddress());
+
+
 
 	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
 	Create<PixelShader>(L"../x64/Debug/SkinningPS.cso", L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
-	Create<PixelShader>(L"../x64/Debug/MeshPS.cso", L"Mesh");
+	//Create<PixelShader>(L"../x64/Debug/MeshPS.cso", L"Mesh");
+	Create<PixelShader>(L"../x64/Debug/PBR2.cso", L"PBR2");
 
 	
 

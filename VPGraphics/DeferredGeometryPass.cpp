@@ -93,9 +93,13 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 					{
 						for (const auto& material : curModel->m_Materials)
 						{
-							device->Context()->PSSetShaderResources(0, 1, material->m_AlbedoSRV.lock()->GetAddress());
-							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
-							//device->Context()->PSSetShaderResources(2, 1, material->m_SpecularSRV.lock()->GetAddress());
+							m_Device.lock()->Context()->PSSetShaderResources(5, 1, (material->m_AlbedoSRV.lock()->GetAddress()));
+							m_Device.lock()->Context()->PSSetShaderResources(6, 1, material->m_NormalSRV.lock()->GetAddress());
+							m_Device.lock()->Context()->PSSetShaderResources(7, 1, material->m_MetalicSRV.lock()->GetAddress());
+							m_Device.lock()->Context()->PSSetShaderResources(8, 1, material->m_RoughnessSRV.lock()->GetAddress());
+							//m_Device.lock()->Context()->PSSetShaderResources(9, 1, material->m_AOSRV.lock()->GetAddress());
+
+
 						}
 					}
 				}
@@ -130,9 +134,17 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 					{
 						for (const auto& material : curModel->m_Materials)
 						{
+							int index = 5;
+
 							device->Context()->PSSetShaderResources(0, 1, material->m_AlbedoSRV.lock()->GetAddress());
 							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
-							//m_Device->Context()->PSSetShaderResources(2, 1, material->m_SpecularSRV.lock()->GetAddress());
+
+							m_Device.lock()->Context()->PSSetShaderResources(index + 0, 1, (material->m_AlbedoSRV.lock()->GetAddress()));
+							m_Device.lock()->Context()->PSSetShaderResources(index + 1, 1, (material->m_NormalSRV.lock()->GetAddress()));
+							m_Device.lock()->Context()->PSSetShaderResources(index + 2, 1, material->m_MetalicSRV.lock()->GetAddress());
+							m_Device.lock()->Context()->PSSetShaderResources(index + 3, 1, material->m_RoughnessSRV.lock()->GetAddress());
+							m_Device.lock()->Context()->PSSetShaderResources(index + 4, 1, material->m_AOSRV.lock()->GetAddress());
+
 						}
 					}
 				}

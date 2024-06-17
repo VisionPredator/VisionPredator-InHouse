@@ -47,7 +47,8 @@ SkinningPass::SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/SkinningPS.cso");
-	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/MeshPS.cso");
+	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/MeshPS.cso");
+	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/PBR2.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 
 	m_state = PassState::Skinning;
@@ -107,12 +108,14 @@ void SkinningPass::Render()
 				//매번 분기를 타면서 어떤 srv가 있는지 확인할건가?
 				if (true)
 				{
-					m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
+					int index = 5;
+					m_Device.lock()->Context()->PSSetShaderResources(index + 0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-					m_Device.lock()->Context()->PSSetShaderResources(1, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
-					m_Device.lock()->Context()->PSSetSamplers(1, 1, linear->GetAddress());
-
+					m_Device.lock()->Context()->PSSetShaderResources(index + 1, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+					m_Device.lock()->Context()->PSSetShaderResources(index + 2, 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
+					m_Device.lock()->Context()->PSSetShaderResources(index + 3, 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
+					m_Device.lock()->Context()->PSSetShaderResources(index + 4, 1, curMaterial->m_AOSRV.lock()->GetAddress());
 					//m_device->Context()->PSSetShaderResources(1, 1, (m_Materials[i]->m_SpecularSRV->GetAddress()));
 					//m_device->Context()->PSSetSamplers(1, 1, m_Materials[i]->m_SpecularSRV->GetSamplerAddress());
 				}
@@ -131,7 +134,8 @@ StaticPass::StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceM
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
-	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
+	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
+	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/PBR2.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Static;
 }

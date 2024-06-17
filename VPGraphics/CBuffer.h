@@ -37,15 +37,10 @@ enum class Kind_of_Light
 
 struct LightData
 {
-	LightData() : ambient(0,0,0,0), diffuse(),specular(),direction(),range(-1),attenuation(),pad(), pos(0, 0, 0), spot(-1)
+	LightData() : direction(), range(-1), attenuation(), pad(), pos(0, 0, 0), spot(-1), color(1, 1, 1), pad2()
 	{
 
 	}
-
-
-	DirectX::XMFLOAT4 ambient;
-	DirectX::XMFLOAT4 diffuse;
-	DirectX::XMFLOAT4 specular;
 
 	DirectX::XMFLOAT3 direction;
 	float range;
@@ -56,7 +51,8 @@ struct LightData
 	DirectX::XMFLOAT3 pos;
 	float spot;
 
-
+	DirectX::XMFLOAT3 color;
+	float pad2;
 };
 
 
@@ -74,5 +70,19 @@ struct LightArray
 	float DirIndex;
 	float PointIndex;
 	float SpotIndex;
+	float pad;
+};
+
+struct MaterialData
+{
+	MaterialData() : albedo(1,1,1,1), metalness(0),roughness(0),ao(0),pad(-1)
+	{
+
+	}
+
+	DirectX::XMFLOAT4 albedo;
+	float metalness;
+	float roughness;
+	float ao; // Ambient Occlusion
 	float pad;
 };

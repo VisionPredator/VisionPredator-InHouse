@@ -49,7 +49,6 @@ void DeferredShadingPipeline::Render()
 	while (!m_RenderQueue.empty())
 	{
 		std::shared_ptr<ModelData> curModel = m_RenderQueue.front();
-
 		m_DeferredGeometryPass->Render(curModel);
 
 
