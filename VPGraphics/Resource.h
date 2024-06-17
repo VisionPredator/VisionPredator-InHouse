@@ -21,6 +21,7 @@ enum class ResourceType
 	PixelShader,
 	VertexShader,
 	Texture2D,
+	Sampler,
 
 	End
 };
@@ -31,10 +32,11 @@ class RenderTargetView;
 class RenderState;
 class DepthStencilView;
 class ShaderResourceView;
-struct ModelData;
+class ModelData;
 class PixelShader;
 class VertexShader;
 class Texture2D;
+class Sampler;
 
 
 /// <summary>
@@ -79,6 +81,8 @@ ResourceType Resource::GetResourceType()
 		return ResourceType::VertexShader;
 	if (std::is_base_of_v<Texture2D, T>)
 		return ResourceType::Texture2D;
+	if (std::is_base_of_v<Sampler, T>)
+		return ResourceType::Sampler;
 
 	return ResourceType::None;
 }

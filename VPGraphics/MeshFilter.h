@@ -6,8 +6,9 @@ enum class MeshFilter
 	Box = 1,
 	Grid,
 	TextureBox,
-	LoadModel,
+	Static,
 	Skinning,
+	Circle,
 
 	None
 };
@@ -15,11 +16,12 @@ enum class MeshFilter
 enum class PassState : unsigned int
 {
 	None = 0,
-	Base = 1 << 0,
-	Texture = 1 << 1,
-	Skinning = 1 << 2,
+	Static = 1 << 0,
+	Skinning = 1 << 1,
+	Debug = 1 << 2,
+	Deferred = 1 << 3,
 
-	End
+	End = 99999
 };
 
 // 비트 연산자 오버로딩

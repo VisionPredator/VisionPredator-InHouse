@@ -6,32 +6,16 @@ namespace BufferDESC
 {
 	namespace Constant
 	{
-		static D3D11_BUFFER_DESC DefaultWorld = {
-			sizeof(WorldTransformCB),
-			D3D11_USAGE_DEFAULT,
-			D3D11_BIND_CONSTANT_BUFFER,
-			0,
-			0
+		static D3D11_BUFFER_DESC DefaultTransform = {
+		sizeof(TransformData),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_CONSTANT_BUFFER,
+		0,
+		0
 		};
 
-		static D3D11_BUFFER_DESC DynamicWorld = {
-			sizeof(WorldTransformCB),
-			D3D11_USAGE_DYNAMIC,
-			D3D11_BIND_CONSTANT_BUFFER,
-			D3D11_CPU_ACCESS_WRITE,
-			0
-		};
-
-		static D3D11_BUFFER_DESC DefaultLocal = {
-			sizeof(LocalTransformCB),
-			D3D11_USAGE_DEFAULT,
-			D3D11_BIND_CONSTANT_BUFFER,
-			0,
-			0
-		};
-
-		static D3D11_BUFFER_DESC DynamicLocal = {
-			sizeof(LocalTransformCB),
+		static D3D11_BUFFER_DESC DynamicTransform = {
+			sizeof(TransformData),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,
@@ -54,19 +38,16 @@ namespace BufferDESC
 			0
 		};
 
-
-
-
-		static D3D11_BUFFER_DESC DefaultDirLight = {
-			sizeof(DirectionLightCB),
+		static D3D11_BUFFER_DESC DefaultLight = {
+			sizeof(LightData),
 			D3D11_USAGE_DEFAULT,
 			D3D11_BIND_CONSTANT_BUFFER,
 			0,
 			0
 		};
 
-		static D3D11_BUFFER_DESC DynamicDirLight = {
-			sizeof(DirectionLightCB),
+		static D3D11_BUFFER_DESC DynamicLight = {
+			sizeof(LightData),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,
@@ -74,7 +55,7 @@ namespace BufferDESC
 		};
 
 		static D3D11_BUFFER_DESC DefaultCamera = {
-			sizeof(CameraCB),
+			sizeof(CameraData),
 			D3D11_USAGE_DEFAULT,
 			D3D11_BIND_CONSTANT_BUFFER,
 			0,
@@ -82,12 +63,47 @@ namespace BufferDESC
 		};
 
 		static D3D11_BUFFER_DESC DynamicCamera = {
-			sizeof(CameraCB),
+			sizeof(CameraData),
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
 			D3D11_CPU_ACCESS_WRITE,
 			0
 		};
+
+
+		static D3D11_BUFFER_DESC DefaultLightArray = {
+			sizeof(LightArray),
+			D3D11_USAGE_DEFAULT,
+			D3D11_BIND_CONSTANT_BUFFER,
+			0,
+			0
+		};
+
+		static D3D11_BUFFER_DESC DynamicLightArray = {
+			sizeof(LightArray),
+			D3D11_USAGE_DYNAMIC,
+			D3D11_BIND_CONSTANT_BUFFER,
+			D3D11_CPU_ACCESS_WRITE,
+			0
+		};
+
+		static D3D11_BUFFER_DESC DefaultMaterial = {
+		sizeof(MaterialData),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_CONSTANT_BUFFER,
+		0,
+		0
+		};
+
+		static D3D11_BUFFER_DESC DynamicMaterial = {
+			sizeof(MaterialData),
+			D3D11_USAGE_DYNAMIC,
+			D3D11_BIND_CONSTANT_BUFFER,
+			D3D11_CPU_ACCESS_WRITE,
+			0
+		};
+
+
 
 	}
 
@@ -184,6 +200,19 @@ namespace SamplerDESC
 		D3D11_FLOAT32_MAX,
 	};
 
+	static D3D11_SAMPLER_DESC Point =
+	{
+		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		0.0f,
+		1,
+		D3D11_COMPARISON_NEVER,
+		{1.0f, 1.0f, 1.0f, 1.0f},
+		0,
+		D3D11_FLOAT32_MAX
+	};
 
 }
 

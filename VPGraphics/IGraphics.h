@@ -26,20 +26,18 @@ namespace Graphics
 		Interface() {};
 		virtual ~Interface() {};
 
-		//복사 생성자
 		Interface(Interface& other) = delete;
-		//복사 대입 연산자
 		Interface& operator=(Interface& other) = delete;
-		//이동생성자
 		Interface(Interface&& other) = delete;
-		//이동 대입 연산자
 		Interface&& operator=(Interface&& other) = delete;
 
 
 		virtual bool Initialize() abstract;
 		virtual void Update(double dt) abstract;
 		virtual bool Finalize() abstract;
+		virtual void BeginRender() abstract;
 		virtual void Render() abstract;
+		virtual void EndRender() abstract;
 		virtual void OnResize() abstract;
 
 
@@ -59,7 +57,17 @@ namespace Graphics
 		//렌더링
 		virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
 
-	private:
 
+		/// Light
+		virtual void AddLight(std::wstring name ,Kind_of_Light kind, LightData data) abstract;
+		virtual void EraseLight(std::wstring name ,Kind_of_Light kind) abstract;
+		virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) abstract;
+
+		/// Debug Draw
+
+
+		/// UI
+		
 	};
+
 }

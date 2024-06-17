@@ -7,41 +7,6 @@ struct BaseVertex
 {
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMFLOAT4 color;
-};
-
-const UINT BaseDescCount = 2;
-
-static D3D11_INPUT_ELEMENT_DESC BaseInputDesc[] = {
-	{"POSITION",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0},
-	{"COLOR",0,DXGI_FORMAT_R32G32B32_FLOAT,0,16,D3D11_INPUT_PER_VERTEX_DATA,0}
-};
-#pragma endregion BaseVertex
-
-#pragma region NormalVertex
-struct NormalVertex
-{
-	DirectX::XMFLOAT4 pos;
-	DirectX::XMFLOAT4 color;
-	DirectX::XMFLOAT4 normal;
-};
-
-
-const UINT NormalDescCount = 3;
-
-static D3D11_INPUT_ELEMENT_DESC NormalInputDesc[] = {
-	{"POSITION",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0},
-	{"COLOR",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,16,D3D11_INPUT_PER_VERTEX_DATA,0},
-	{"NORMAL",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,32,D3D11_INPUT_PER_VERTEX_DATA,0}
-};
-#pragma endregion NormalVertex
-
-
-
-#pragma region TextureVertex
-struct TextureVertex
-{
-	DirectX::XMFLOAT4 pos;
-	DirectX::XMFLOAT4 color;
 	DirectX::XMFLOAT4 normal;
 	DirectX::XMFLOAT4 tangent;
 	DirectX::XMFLOAT4 bitangent;
@@ -58,7 +23,7 @@ static D3D11_INPUT_ELEMENT_DESC TextureVertexInputDesc[] = {
 	{"BITANGENT",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,64,D3D11_INPUT_PER_VERTEX_DATA,0},
 	{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,80,D3D11_INPUT_PER_VERTEX_DATA,0}
 };
-#pragma endregion TextureVertex
+#pragma endregion BaseVertex
 
 #pragma region SkinningVertex
 struct SkinningVertex

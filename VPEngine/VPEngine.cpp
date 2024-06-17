@@ -118,10 +118,12 @@ void VPEngine::Update()
 	m_Graphics->Update(m_DeltaTime);
 }
 
-void VPEngine::Render()
-{
-	m_Graphics->Render();
-}
+	void VPEngine::Render()
+	{
+		m_Graphics->BeginRender();
+		m_Graphics->Render();
+		m_Graphics->EndRender();
+	}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
