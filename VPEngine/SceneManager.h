@@ -33,13 +33,14 @@ public:
 	bool HasComponent(uint32_t EntityID, entt::id_type compid) { return GetEntity(EntityID)->HasComponent(compid); }
 	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }
 
-
 	template<typename T>
 	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
 	Component* GetComponent(uint32_t EntityID, entt::id_type compId) { return GetEntity(EntityID)->GetComponent(compId); }
 	Entity* GetEntity(uint32_t entityID) { return m_CurrentScene->EntityMap[entityID]; }
 	std::unordered_map<uint32_t, Entity*>& GetEntityMap() { return m_CurrentScene->EntityMap; }
 	const std::string GetSceneName() { return m_CurrentScene->SceneName; }
+
+
 
 	void SetSceneName(std::string sceneName) { m_CurrentScene->SceneName = sceneName; }
 	
@@ -51,14 +52,18 @@ public:
 protected:
 	friend class CompIter;
 private:
-	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
+	void OpenNewScene();
+	void SceneSerialize(std::string FilePath);
+	void SceneDeSerialize(std::string FilePath);
+
+	void OnOpenNewScene(std::any null);
 
 
 	bool CheckParent(uint32_t parent, uint32_t child);
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
 
-	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
+	void SetEntityMap(uint32_t entityID, Entity* entity)			{ m_CurrentScene->EntityMap[entityID] = entity; }
 
 	void AddCompToPool(Component* comp); 
 
@@ -82,38 +87,22 @@ private:
 	void OnRemoveComponent(std::any data);
 	// 해당 Prefab을 serialize한다.
 	void OnSerializePrefab(std::any entityID);
-	void OnDeSerializePrefab(std::any data);
 	// 해당 Prefab을 Deserialize한다.
+	void OnDeSerializePrefab(std::any data);
+	//Entity를 Deserialize한다 : Map 전용.
+	Entity* DeSerializeEntity(const nlohmann::json entityjson);
 	void OnDeSerializeEntity(std::any data);
 
 	template<typename T>
-	void ReleaseCompFromPool(T* comp)
-	{
-		auto& pool = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
-		auto it = std::find(pool.begin(), pool.end(), comp);
-		if (it != pool.end())
-		{
-			std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
-			pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
-		}
-	}
+	void ReleaseCompFromPool(T* comp);
+	inline void ReleaseCompFromPool(entt::id_type compID, Component* comp);
 
-	void ReleaseCompFromPool(entt::id_type compID, Component* comp)
-	{
-		auto& pool = m_CurrentScene->m_ComponentPool[compID];
-		auto it = std::find(pool.begin(), pool.end(), comp);
-		if (it != pool.end())
-		{
-			delete* it; // 포인터가 가리키는 실제 객체를 삭제
-			std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
-			pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
-		}
-	}
 	friend class SceneSerializer;
-	Entity* DeSerializeEntity(const nlohmann::json entityjson);
+	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
 	Scene* m_CurrentScene = nullptr;
 
+	friend class Toolbar;
 };
 
 
@@ -127,4 +116,27 @@ inline std::vector<T*> SceneManager::GetComponentPool()
 	for (Component* comp : baseVec)
 		result.push_back(static_cast<T*>(comp));
 	return result;
+}
+
+template<typename T>
+inline void SceneManager::ReleaseCompFromPool(T* comp)
+{
+	auto& pool = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
+	auto it = std::find(pool.begin(), pool.end(), comp);
+	if (it != pool.end())
+	{
+		std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
+		pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
+	}
+}
+inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, Component* comp)
+{
+	auto& pool = m_CurrentScene->m_ComponentPool[compID];
+	auto it = std::find(pool.begin(), pool.end(), comp);
+	if (it != pool.end())
+	{
+		delete* it; // 포인터가 가리키는 실제 객체를 삭제
+		std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
+		pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
+	}
 }

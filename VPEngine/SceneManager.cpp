@@ -11,6 +11,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnResetScene", CreateSubscriber(&SceneManager::OnResetScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnEndScene", CreateSubscriber(&SceneManager::OnEndScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnOpenScene", CreateSubscriber(&SceneManager::OnOpenScene), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnOpenNewScene", CreateSubscriber(&SceneManager::OnOpenNewScene), EventType::SCENE);
 
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
@@ -123,6 +124,24 @@ void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
 	}
 }
+
+void SceneManager::OpenNewScene()
+{
+
+	EventManager::GetInstance().ScheduleEvent("OnOpenNewScene");
+}
+
+void SceneManager::SceneSerialize(std::string FilePath)
+{
+	EventManager::GetInstance().ScheduleEvent("OnSerializeScene",FilePath);
+}
+
+void SceneManager::SceneDeSerialize(std::string FilePath)
+{
+	EventManager::GetInstance().ScheduleEvent("OnDeSerializeScene", FilePath);
+}
+
+
 
 void SceneManager::OnRemoveChild(std::any data)
 {
@@ -277,7 +296,11 @@ void SceneManager::OnStartScene(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnInitialize");
 	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
 }
-
+void SceneManager::OnOpenNewScene(std::any null)
+{
+	EventManager::GetInstance().ImmediateEvent("OnEndScene");
+	EventManager::GetInstance().ImmediateEvent("OnResetScene");
+}
 void SceneManager::OnResetScene(std::any data)
 {
 	delete m_CurrentScene;

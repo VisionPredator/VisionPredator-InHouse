@@ -1,14 +1,10 @@
 [
     {
-        "EntityID": 1397688788,
+        "EntityID": 1781791958,
         "Component": [
             {
                 "ComponentID": 1365953231,
                 "Name": "Entity0"
-            },
-            {
-                "ComponentID": 3774279003,
-                "name": ""
             },
             {
                 "ComponentID": 3400599862,
@@ -27,25 +23,6 @@
                     "y": 1.0,
                     "z": 1.0
                 }
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": ""
-            },
-            {
-                "ComponentID": 4183631247,
-                "HP": 3452816845
-            },
-            {
-                "ComponentID": 1142749570,
-                "Name": ""
-            },
-            {
-                "ComponentID": 3575595261,
-                "FOV": 0.0,
-                "FarZ": 0.0,
-                "NearZ": 0.0,
-                "Ratio": 1.7777777910232544
             }
         ]
     }

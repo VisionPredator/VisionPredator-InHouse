@@ -36,7 +36,7 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	*/
 	m_editorcamera = new EditorCamera;
 	m_HierarchySystem = new HierarchySystem{m_SceneManager};
-	m_ImGuis.push_back(new Toolbar);
+	m_ImGuis.push_back(new Toolbar{ m_SceneManager });
 	m_ImGuis.push_back(new FolderTool);
 	m_ImGuis.push_back(new Hierarchy{m_SceneManager,m_HierarchySystem});
 	m_ImGuis.push_back(new Inspector{ m_SceneManager,m_HierarchySystem });
