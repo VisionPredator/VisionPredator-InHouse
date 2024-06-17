@@ -1,22 +1,13 @@
-#include"Common.hlsli"
-
-
+#include "Common.hlsli"
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
- 
-    float4 albedo = gAlbedo.Sample(samLinear, input.tex);
-    float4 position = gPosition.Sample(samLinear, input.tex);
-    float4 normal = gNormal.Sample(samLinear, input.tex);
     
-    float4 N = gNormal.Sample(samLinear, input.tex);
-    
-    float3 result = float3(0, 0, 0);
+    float3 result = float3(0,0,0);
     
     //View
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
-   
-    /*
+    
     //tangentspace를 계산해 normal을 만든다
     float4 N = normalize(input.normal);
     float4 vTangent = normalize(input.tangent);
@@ -26,7 +17,6 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, N.xyz); //면의 공간으로 옮기기위한 행렬
     N.xyz = mul(NormalTangentSpace, WorldTransform);
     N.xyz = normalize(N.xyz);
-    */
   
     //texture sampling
     float3 albedoColor = gMeshAlbedo.Sample(samLinear, input.tex).rgb;

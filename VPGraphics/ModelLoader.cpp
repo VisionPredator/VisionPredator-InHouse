@@ -29,8 +29,8 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
-	LoadModel("Flair.fbx", Filter::SKINNING);
-	//LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("Flair.fbx", Filter::SKINNING);
+	LoadModel("cerberus.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -282,16 +282,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		//finalPath =path.wstring();
-		newMaterial->m_DiffuseFilePath = finalPath;
-
-		//newMaterial->m_DiffuseSRV->Load(finalPath);
-
-
+		newMaterial->AlbeoPath = finalPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
-
-		//m_pBaseColor = ResourceManager::Instance->CreateTextureResource(finalPath);
-		//m_MaterialMapFlags |= MaterialMapFlags::BASECOLOR;
 	}
 	else
 	{
@@ -302,8 +294,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		newMaterial->m_NormalFilePath = finalPath;
-		//newMaterial->m_NormalSRV->Load(finalPath);
+		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
@@ -318,7 +309,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	path = (textureProperties[aiTextureType_SPECULAR].second);
 	if (!path.empty())
 	{
-		//finalPath = basePath + path.filename().wstring();
+		finalPath = basePath + path.filename().wstring();
 		//newMaterial->m_SpecularFilePath = finalPath;
 		//newMaterial->m_SpecularSRV->Load(finalPath);
 		//m_pSpecular = ResourceManager::Instance->CreateTextureResource(finalPath);
@@ -345,16 +336,16 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		//m_pMetalness = ResourceManager::Instance->CreateTextureResource(finalPath);
-		//m_MaterialMapFlags |= MaterialMapFlags::METALNESS;
+		newMaterial->NormalPath = finalPath;
+		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 	}
 
 	path = (textureProperties[aiTextureType_SHININESS].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		//m_pRoughness = ResourceManager::Instance->CreateTextureResource(finalPath);
-		//m_MaterialMapFlags |= MaterialMapFlags::ROUGHNESS;
+		newMaterial->RoughnessPath = finalPath;
+		newMaterial->m_RoughnessSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 	}
 
 

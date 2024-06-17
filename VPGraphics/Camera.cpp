@@ -45,6 +45,41 @@ void Camera::Update(double dt)
 {
 	UpdateView();
 
+	int speed = 10;
+	//w
+	if (GetAsyncKeyState(0x57))
+	{
+		Walk(dt * speed);
+	}
+	//s
+	if (GetAsyncKeyState(0x53))
+	{
+		Walk(dt * -speed);
+	}
+	//a
+	if (GetAsyncKeyState(0x41))
+	{
+		Strafe(dt * -speed);
+	}
+	//d
+	if (GetAsyncKeyState(0x44))
+	{
+		Strafe(dt * speed);
+	}
+	//q
+	if (GetAsyncKeyState(0x51))
+	{
+		RotateY(-dt);
+	}
+	//e
+	if (GetAsyncKeyState(0x45))
+	{
+		RotateY(dt);
+	}
+
+
+
+
 	m_worldviewprojMT = m_worldMT * m_viewMT * m_projMT;
 }
 
