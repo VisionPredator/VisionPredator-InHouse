@@ -226,7 +226,7 @@ void GraphicsEngine::BeginRender()
 void GraphicsEngine::Render()
 {
 	m_DeferredShadingPipeline->Render();
-	m_ForwardPipeline->Render();
+	//m_ForwardPipeline->Render();
 }
 
 void GraphicsEngine::EndRender()

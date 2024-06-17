@@ -19,17 +19,6 @@ struct SURFACE_DATA
 };
 
 
-// Unpack함수 일단 보류.
-SURFACE_DATA UnpackGBuffer(float2 uv)
-{
-	SURFACE_DATA output = {};
-
-    float depth = gDepthMap.Sample(gPointSample, uv.xy).x;
-    output.LinearDepth = depth;
-    output.Color = gAlbedoMap.Sample(gPointSample, uv);
-	
-}
-
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
