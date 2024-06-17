@@ -6,7 +6,7 @@
 
 class TimeManager;
 class SystemManager;
-class EntityManager;
+class SceneManager;
 class VPEngine
 {
 public:
@@ -20,7 +20,7 @@ protected:
 	virtual void Render();
 	TimeManager* m_TimeManager;
 	SystemManager* m_SystemManager;
-	EntityManager* m_EntityManager;
+	SceneManager* m_SceneManager;
 	float m_DeltaTime;
 
 

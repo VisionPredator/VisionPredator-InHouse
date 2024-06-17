@@ -5,7 +5,7 @@
 		public System,public IUpdatable,public IFixedUpdatable, public EventSubscriber
 	{
 	public:
-		TestSystem(EntityManager* entityManager);
+		TestSystem(SceneManager* entityManager);
 		~TestSystem() override = default;
 
 

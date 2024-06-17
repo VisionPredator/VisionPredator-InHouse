@@ -5,8 +5,8 @@
 #include <iostream>
 
 
-	TransformSystem::TransformSystem(EntityManager* entityManager)
-		:System(entityManager)
+	TransformSystem::TransformSystem(SceneManager* sceneManager)
+		:System(sceneManager)
 	{
 
 	}
@@ -24,14 +24,11 @@
 			updatelist.push_back(comp.GetEntityID());
 
 		}
-
-
-
 		while (!updatelist.empty())
 		{
 			uint32_t transformid = updatelist.front();
 
-			TransformComponent* transformcomp = m_EntityManager->GetComponent<TransformComponent>(transformid);
+			TransformComponent* transformcomp = m_SceneManager->GetComponent<TransformComponent>(transformid);
 
 			CalulateTransform(transformcomp);
 			updatelist.pop_front();
@@ -63,7 +60,7 @@
 		VPMath::Matrix tempWorldTrasnform;	//trasnform이 바뀌었는지 확인하는 용도!
 		if (transform->HasComponent<Parent>())
 		{
-			const TransformComponent parentTransform =*m_EntityManager->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
+			const TransformComponent parentTransform =*m_SceneManager->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
 			tempWorldTrasnform = transform->LocalTransform * parentTransform.WorldTransform;
 		}
 		else
@@ -73,12 +70,11 @@
 		{
 			transform->WorldTransform = tempWorldTrasnform;
 			transform->WorldTransform.Decompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
+			transform->FrontVector= transform->WorldTransform.Forward();
+			transform->UpVector = transform->WorldTransform.Up();
 		}
 	}
 	void TransformSystem::FixedUpdate(float deltaTime)
 	{
 
-	}
-	void TransformSystem::OnTest(std::any test)
-	{
 	}

@@ -1,30 +1,30 @@
 #pragma once
-#include "EntityManager.h"
+#include "SceneManager.h"
 #include "SystemInterface.h"
-
-#define COMPITER(ClassName) CompIter<ClassName>(m_EntityManager)
+#include "Components.h"
+#define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager)
 
 
 
 	class System
 	{
 	public:
-		System(EntityManager* entityManager) :m_EntityManager(entityManager) {}
+		System(SceneManager* entityManager) :m_SceneManager(entityManager) {}
 		virtual ~System() = default;
 
 
 		template<typename T>
 		class CompIter 
 		{
-			EntityManager* m_EntityManager; // EntityManager의 참조 추가
+			SceneManager* m_SceneManager; // sceneManager의 참조 추가
 		public:
 			std::vector<std::reference_wrapper<T>> innerVector;
 
-			CompIter(EntityManager* entityManager) : m_EntityManager(entityManager) {
-				if (!m_EntityManager) {
-					throw std::runtime_error("EntityManager is not initialized");
+			CompIter(SceneManager* sceneManager) : m_SceneManager(sceneManager) {
+				if (!m_SceneManager) {
+					throw std::runtime_error("sceneManager is not initialized");
 				}
-				auto components = m_EntityManager->GetComponentPool<T>(); // 반환된 벡터를 복사합니다.
+				auto components = m_SceneManager->GetComponentPool<T>(); // 반환된 벡터를 복사합니다.
 				for (T* comp : components) {
 					innerVector.emplace_back(*comp);
 				}
@@ -40,6 +40,6 @@
 		};
 
 	protected:
-		EntityManager* m_EntityManager;
+		SceneManager* m_SceneManager;
 	};
 

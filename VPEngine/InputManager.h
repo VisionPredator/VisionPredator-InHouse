@@ -10,19 +10,7 @@ enum class KEY_STATE
 	UP,
 };
 
-enum class KEY
-{
-	RIGHT,
-	LEFT,
-	UP,
-	DOWN,
-	A,	B,	C,	D,	E,	F,	G,	H,	I,		Q,	R,	S,		V,	W,	X,	Z,
-	NUM1,	NUM2,	NUM3,	NUM4,	NUM5,
-	SPACE,ENTER,ESC,LSHFIT,LCTRL,
-	LBUTTON,RBUTTON,
 
-	END
-};
 
 //enum class BUTTON
 //{
@@ -35,6 +23,24 @@ enum class KEY
 //	OPTION_BUTTON,
 //};
 
+
+
+
+enum class KEY
+{
+	RIGHT,
+	LEFT,
+	UP,
+	DOWN,
+	A, B, C, D, E,
+	F, G, H, Q, R,
+	S, V, W, X, Z,
+	NUM1, NUM2, NUM3, NUM4, NUM5,
+	SPACE, ENTER, ESC, LSHFIT, LCTRL,
+	LBUTTON, RBUTTON,
+
+	END
+};
 struct KeyInputInfo
 {
 	KEY_STATE KeyState;
@@ -45,7 +51,6 @@ struct ButtonInfo
 {
 	int key[(int)KEY::END];
 };
-
 
 class InputManager: public EventSubscriber
 {
@@ -60,7 +65,9 @@ class InputManager: public EventSubscriber
 		 VK_RIGHT,
 		 VK_UP,
 		 VK_DOWN,
-		 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',   'Q', 'R', 'S', 'V', 'W', 'X', 'Z',
+		 'A', 'B', 'C', 'D', 'E',
+		 'F', 'G', 'H', 'Q', 'R',
+		 'S', 'V', 'W', 'X', 'Z',
 		 '1', '2', '3', '4', '5',
 		 VK_SPACE, VK_RETURN, VK_ESCAPE, VK_LSHIFT,
 		 VK_LBUTTON, VK_RBUTTON,

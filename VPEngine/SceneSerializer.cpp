@@ -1,26 +1,22 @@
 #include "pch.h"
 #include "SceneSerializer.h"
-#include "EntityManager.h"
 #include "Components.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
 #include "Macro\VisPredMacro.h"
 
-SceneSerializer::SceneSerializer(EntityManager* entityManager) :System(entityManager)
+SceneSerializer::SceneSerializer(SceneManager* sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSerializeScene", CreateSubscriber(&SceneSerializer::OnSerializeScene));
-	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneSerializer::OnSerializePrefab));
-
 	EventManager::GetInstance().Subscribe("OnDeSerializeScene", CreateSubscriber(&SceneSerializer::OnDeSerializeScene));
-	EventManager::GetInstance().Subscribe("OnDeSerializePrefab", CreateSubscriber(&SceneSerializer::OnDeSerializePrefab));
 }
 SceneSerializer::~SceneSerializer()
 {
 }
-void SceneSerializer::Initialize(EntityManager* entityManager)
+void SceneSerializer::Initialize(SceneManager* sceneManager)
 {
-	m_EntityManager = entityManager;
+	m_SceneManager = sceneManager;
 }
 
 
@@ -28,7 +24,7 @@ void SceneSerializer::OnSerializeScene(std::any data)
 {
 	///Set FilePath
 	std::string folderName = "../Resource/Map/";
-	std::string sceneName = m_EntityManager->GetSceneName();
+	std::string sceneName = m_SceneManager->GetSceneName();
 	std::string fileExtension = ".json";
 	std::string filePath = folderName + sceneName + fileExtension;
 
@@ -41,7 +37,7 @@ void SceneSerializer::OnSerializeScene(std::any data)
 	}
 	///TODO 씬이름으로 json 파일 만들어서 넣기!!
 	try {
-		for (const auto& entityPair : m_EntityManager->GetEntityMap())
+		for (const auto& entityPair : m_SceneManager->GetEntityMap())
 		{
 			nlohmann::ordered_json entityJson;
 			entityJson["EntityID"] = entityPair.first;
@@ -97,32 +93,15 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 		{
 			for (auto& entityJson : sceneJson["Entitys"])
 			{
-				m_EntityManager->DeSerializeEntity(entityJson);
+				m_SceneManager->DeSerializeEntity(entityJson);
 			}
 		}
-		m_EntityManager->SetSceneName(sceneName);
+		m_SceneManager->SetSceneName(sceneName);
 	}
 	catch (const std::exception&)
 	{
 		VP_ASSERT(false, "JSON 처리 중 오류가 발생했습니다: ");
 	}
 	inputFile.close();
-}
-
-void SceneSerializer::OnSerializePrefab(std::any data)
-{
-	try
-	{
-		uint32_t entityID = std::any_cast<uint32_t>(data);
-		m_EntityManager->SerializePrefab(entityID);
-	}
-	catch (const std::bad_any_cast&)
-	{
-		VP_ASSERT(false, "std::any_cast에 실패하였습니다.");  // Wrong data type assertion
-	}
-}
-
-void SceneSerializer::OnDeSerializePrefab(std::any data)
-{
 }
 

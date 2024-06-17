@@ -18,7 +18,7 @@
 #include "VisPredDirectX\VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;
-
+#include <crtdbg.h>
 ///new로 인한 누수 잡기!!
 #ifdef _DEBUG
 #define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )

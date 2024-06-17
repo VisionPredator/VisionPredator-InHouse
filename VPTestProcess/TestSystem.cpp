@@ -3,7 +3,7 @@
 #include "Components.h"
 #include "EventManager.h"
 
-TestSystem::TestSystem(EntityManager* entityManager)
+TestSystem::TestSystem(SceneManager* entityManager)
 	:System(entityManager)
 
 {
@@ -32,7 +32,7 @@ void TestSystem::OnTest(std::any test)
 	static int s = 0;
 	while (s < 200)
 	{
-		m_EntityManager->CreateEntity();
+		m_SceneManager->CreateEntity();
 		s++;  
 	}
 
