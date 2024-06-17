@@ -19,30 +19,9 @@ struct SURFACE_DATA
 };
 
 
-// Unpack함수 일단 보류.
-SURFACE_DATA UnpackGBuffer(float2 uv)
-{
-	SURFACE_DATA output = {};
-
-    float depth = gDepthMap.Sample(gPointSample, uv.xy).x;
-    output.LinearDepth = depth;
-    output.Color = gAlbedoMap.Sample(gPointSample, uv);
-	
-}
-
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
-	float3 albedo = gAlbedoMap.Sample(samLinear, input.tex).xyz;
-    float3 normal = gNormalMap.Sample(samLinear, input.tex).xyz;
-    float3 worldPos = gPositionMap.Sample(samLinear, input.tex).xyz;
-
-    float3 finalColor = 0.f;
-    float3 ambientColor = 0.f;
-
-	Material material;
-	
-
     // Calculate Directional Light 
  
     float4 albedo = gAlbedo.Sample(samLinear, input.tex);
@@ -81,19 +60,13 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
     for (int i = 0; i < DirIndex; i++)
     {
-		
+        result += CalcDir(Dir[i], V, N.xyz, F0, albedoColor, roughnessValue);
     }    
 
     // Calculate Point Light
 
 
-    // Calculate Spot Light
-
-
-    return float4(1.f, 1.f ,1.f ,1.f);
-        result += CalcDir(Dir[i], V, N.xyz, F0, albedoColor, roughnessValue);
-    }
-    
+    // Calculate Spot Light    
     for (int j = 0; j < PointIndex; j++)
     {
         result += CalcPoint(Point[i], V, N.xyz, F0, albedoColor, roughnessValue);

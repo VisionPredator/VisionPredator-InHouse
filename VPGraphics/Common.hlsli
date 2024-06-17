@@ -76,17 +76,12 @@ Texture2D gDepth : register(t3);
 Texture2D gTangent : register(t4);
 
 
-<<<<<<< HEAD
+
 Texture2D gMeshAlbedo : register(t5);
 Texture2D gMeshNormal : register(t6);
 Texture2D gMeshMetalic : register(t7);
 Texture2D gMeshRoughness : register(t8);
 Texture2D gMeshAO : register(t9);
-
-=======
->>>>>>> fc5edd72a52567f4f80df95ec70737aeb1569e3f
-
-
 
 SamplerState samLinear : register(s0);
 
