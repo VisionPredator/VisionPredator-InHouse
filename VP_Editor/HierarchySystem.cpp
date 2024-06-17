@@ -66,10 +66,6 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 	}
 
 
-
-
-
-
 	/// 아이템 드래그 앤 드랍
 	ImGuiDragDropFlags target_flags = 0;
 	// 드래그 소스가 되는 게임오브젝트

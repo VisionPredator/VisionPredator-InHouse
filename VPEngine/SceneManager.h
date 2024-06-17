@@ -47,7 +47,7 @@ public:
 	inline std::vector<T*> GetComponentPool();
 
 	void AddChild(uint32_t Parent, uint32_t Child);
-	void RemoveParent(uint32_t child);
+	void RemoveParent(uint32_t child,bool Immediate = false);
 protected:
 	friend class CompIter;
 private:

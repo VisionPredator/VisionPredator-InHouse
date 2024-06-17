@@ -109,11 +109,17 @@ void SceneManager::OnAddChild(std::any data)
 
 
 
-void SceneManager::RemoveParent(uint32_t childID)
+void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 {
 	if (Parent* parent = GetComponent<Parent>(childID); parent)
 	{
 		std::pair<uint32_t, uint32_t> data{ parent->ParentID, childID };
+		if (Immediate)
+		{
+			EventManager::GetInstance().ImmediateEvent("OnRemoveChild", data);
+			return;
+		}
+
 		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
 	}
 }
@@ -167,6 +173,7 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 	{
 		Entity* parentEntity = GetEntity(GetComponent<Parent>(entityID)->ParentID);
 		auto parentsChildren = parentEntity->GetComponent<Children>();
+		RemoveParent(entityID);
 	}
 
 	while (!DeleteEntityIDs.empty())
