@@ -36,6 +36,8 @@ void ResourceManager::Initialize()
 {
 	///--------확정-----
 	Create<Sampler>(L"Linear", SamplerDESC::Linear);
+	Create<Sampler>(L"Point", SamplerDESC::Point);
+
 	//기본 RS
 	Create<RenderState>(L"Solid", RenderStateDESC::Solid::Desc);
 	Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
