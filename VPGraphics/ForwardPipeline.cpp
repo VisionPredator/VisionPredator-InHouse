@@ -63,6 +63,10 @@ void ForwardPipeline::Update(std::map<std::wstring, std::pair<PassState, std::sh
 
 void ForwardPipeline::Render()
 {
+
+
+
+
 	for (auto& pass : m_Passes)
 	{
 		pass.second->Render();

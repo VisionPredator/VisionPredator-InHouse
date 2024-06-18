@@ -4,7 +4,7 @@
 #include <windowsx.h>
 
 
-Camera::Camera() : m_pos(0, 5, -25), m_forward(0, 0, 1), m_up(0, 1, 0), m_right(1, 0, 0), m_nearZ(0), m_farZ(0), m_FOV(0), m_nearWindowHeight(0), m_farWindowHeight(0), m_ratio(1),
+Camera::Camera() : m_pos(0, 2, -25), m_forward(0, 0, 1), m_up(0, 1, 0), m_right(1, 0, 0), m_nearZ(0), m_farZ(0), m_FOV(0), m_nearWindowHeight(0), m_farWindowHeight(0), m_ratio(1),
 m_worldMT(DirectX::XMMatrixIdentity()), m_viewMT(DirectX::XMMatrixIdentity()), m_projMT(DirectX::XMMatrixIdentity()), m_worldviewprojMT(DirectX::XMMatrixIdentity()),
 m_world(), m_view(), m_proj(), m_worldviewproj(), m_moveSpeed(1)
 {
@@ -43,7 +43,6 @@ void Camera::Initialize(double ratio)
 
 void Camera::Update(double dt)
 {
-	UpdateView();
 
 	int speed = 10;
 	//w
@@ -76,7 +75,18 @@ void Camera::Update(double dt)
 	{
 		RotateY(dt);
 	}
+	//z
+	if (GetAsyncKeyState(0x5A))
+	{
+		UpDown(dt);
+	}
+	//x
+	if (GetAsyncKeyState(0x58))
+	{
+		UpDown(-dt);
+	}
 
+	UpdateView();
 
 
 

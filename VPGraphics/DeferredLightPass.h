@@ -25,6 +25,8 @@ private:
 	std::shared_ptr<ShaderResourceView> m_Normal;
 	std::shared_ptr<ShaderResourceView> m_Position;
 	std::shared_ptr<ShaderResourceView> m_Depth;
+
+	std::shared_ptr<ShaderResourceView> m_GBuffer;
 	
 	std::shared_ptr<DepthStencilView> m_DepthStencilView;
 
@@ -34,6 +36,7 @@ private:
 
 	std::weak_ptr <VertexBuffer> m_QuadVB;
 	std::weak_ptr < IndexBuffer > m_QuadIB;
+	std::weak_ptr<PixelShader> m_QuadPS;
 
 
 };

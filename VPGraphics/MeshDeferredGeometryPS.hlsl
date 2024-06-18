@@ -16,17 +16,6 @@ struct PS_OUTPUT
 	float4 Depth : SV_Target3;
 };
 
-struct PS_INPUT
-{
-	float4 Pos : SV_POSITION;
-	float4 PosWorld : WORLDPOSITION;
-	float4 Color : COLOR;	// TODO: Delete
-	float4 Normal : NORMAL;
-	float4 Tangent : TANGENT;
-	float4 BiTangent : BITANGENT;  // TODO: Delete. This can be calculated from Normal and Tangent
-	float2 UV : TEXCOORD;
-};
-
 PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 {
 	PS_OUTPUT output;
@@ -39,6 +28,5 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 	float d = input.pos.z / input.pos.w;
 	d *= 10;
 	output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
-
 	return output;
 }

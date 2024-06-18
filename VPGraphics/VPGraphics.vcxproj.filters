@@ -398,6 +398,9 @@
     <FxCompile Include="PBR2PS.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
+    <FxCompile Include="QuadPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDiagram.cd" />

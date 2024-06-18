@@ -73,9 +73,7 @@ Texture2D gAlbedo : register(t0);
 Texture2D gNormal : register(t1);
 Texture2D gPosition : register(t2);
 Texture2D gDepth : register(t3);
-Texture2D gTangent : register(t4);
-
-
+Texture2D gGBuffer : register(t4);
 
 Texture2D gMeshAlbedo : register(t5);
 Texture2D gMeshNormal : register(t6);
@@ -84,7 +82,6 @@ Texture2D gMeshRoughness : register(t8);
 Texture2D gMeshAO : register(t9);
 
 SamplerState samLinear : register(s0);
-
 
 //STRUCT
 
@@ -117,13 +114,6 @@ struct Quad
 {
     float4 pos : POSITION;
     float2 tex : TEXCOORD;
-};
-
-struct Material
-{
-	float4 albedo;
-    float3 normal;
-    // 더 추가해야할 수도..
 };
 
 //Light Function

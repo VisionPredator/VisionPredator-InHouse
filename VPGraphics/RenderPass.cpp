@@ -132,10 +132,11 @@ void SkinningPass::Render()
 
 StaticPass::StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
-	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
-	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/PBR2.cso");
+	m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/TexturePS.cso");
+	//m_PS = m_ResourceManager.lock()->Get<PixelShader>(L"../x64/Debug/PBR2.cso");
 	m_VS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Static;
 }
@@ -187,7 +188,13 @@ void StaticPass::Render()
 					m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
 					m_Device.lock()->Context()->PSSetShaderResources(1, 1, (curMaterial->m_NormalSRV.lock()->GetAddress()));
-					m_Device.lock()->Context()->PSSetSamplers(1, 1, linear->GetAddress());
+
+
+					m_Device.lock()->Context()->PSSetShaderResources(5, 1, curMaterial->m_AlbedoSRV.lock()->GetAddress());
+					m_Device.lock()->Context()->PSSetShaderResources(6, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+					m_Device.lock()->Context()->PSSetShaderResources(7, 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
+					m_Device.lock()->Context()->PSSetShaderResources(8, 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
+
 
 					//m_device->Context()->PSSetShaderResources(1, 1, (m_Materials[i]->m_SpecularSRV->GetAddress()));
 					//m_device->Context()->PSSetSamplers(1, 1, m_Materials[i]->m_SpecularSRV->GetSamplerAddress());

@@ -1,5 +1,6 @@
 #pragma once
 #include "IGraphics.h"
+#include "MeshFilter.h"
 
 #pragma region DX
 struct D3D11_VIEWPORT;
@@ -21,7 +22,6 @@ class DeferredShadingPipeline;
 class ForwardPipeline;
 class LightManager;
 
-#include "MeshFilter.h"
 
 class Camera;
 class ModelData;

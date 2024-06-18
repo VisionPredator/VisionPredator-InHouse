@@ -107,13 +107,12 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
-	//AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 
 
-	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
-	Dir.color = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -0.f);
+	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
 
 	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
 
@@ -183,18 +182,29 @@ void GraphicsEngine::BeginRender()
 	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
 
 	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
-	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[0].lock()->Get(), white);
-	m_Device->BeginRender(m_RTVs[2].lock()->Get(), m_DSVs[0].lock()->Get(), red);
-	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[0].lock()->Get(), green);
-	m_Device->BeginRender(m_RTVs[4].lock()->Get(), m_DSVs[0].lock()->Get(), blue);
-	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
-
-
+	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[1].lock()->Get(), white);
+	m_Device->BeginRender(m_RTVs[2].lock()->Get(), m_DSVs[1].lock()->Get(), red);
+	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[1].lock()->Get(), green);
+	m_Device->BeginRender(m_RTVs[4].lock()->Get(), m_DSVs[1].lock()->Get(), blue);
+	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[1].lock()->Get(), blue+ red);
 }
 
 void GraphicsEngine::Render()
 {
 	m_DeferredShadingPipeline->Render();
+
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	/*dsDesc.DepthEnable = TRUE;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	dsDesc.StencilEnable = FALSE;
+
+	ID3D11DepthStencilState* depthStencilState;
+	m_Device->CreateDepthStencilState(&dsDesc, &depthStencilState);
+	context->OMSetDepthStencilState(depthStencilState, 1);*/
+
+
+
 	m_ForwardPipeline->Render();
 }
 
@@ -409,7 +419,8 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-			newModel->m_pass = PassState::Skinning;
+			//newModel->m_pass = PassState::Skinning;
+			newModel->m_pass = PassState::Deferred;
 
 			newModel->world = DirectX::SimpleMath::Matrix::Identity;
 			newModel->world._11 *= 0.05f;
@@ -674,9 +685,10 @@ void GraphicsEngine::OnResize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Normal"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Position"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Depth"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Tangent"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"GBuffer"));
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
+	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));
 
 
 

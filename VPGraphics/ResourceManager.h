@@ -61,7 +61,7 @@ private:
 	std::weak_ptr<ConstantBuffer<LightArray>> m_UsingLights;
 
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
-
+	
 	std::array<std::wstring, 5> m_OffScreenName;
 
 

@@ -29,7 +29,7 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
-	//LoadModel("Flair.fbx", Filter::SKINNING);
+	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
 }
 

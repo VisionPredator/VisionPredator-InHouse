@@ -12,7 +12,7 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[1] = L"Normal";
 	m_OffScreenName[2] = L"Position";
 	m_OffScreenName[3] = L"Depth";
-	m_OffScreenName[4] = L"Tangent";
+	m_OffScreenName[4] = L"GBuffer";
 }
 
 ResourceManager::~ResourceManager()
@@ -49,7 +49,7 @@ void ResourceManager::Initialize()
 	m_Camera.lock()->Update();
 
 	m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
-	m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, (m_Camera.lock()->GetAddress()));
+	m_Device.lock()->Context()->PSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
 
 	std::shared_ptr<ConstantBuffer<TransformData>> transform =  Create<ConstantBuffer<TransformData>>(L"Transform", BufferDESC::Constant::DefaultTransform).lock();
 	m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, transform->GetAddress());
@@ -58,9 +58,10 @@ void ResourceManager::Initialize()
 	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_UsingLights.lock()->GetAddress());
 
 	UINT size = sizeof(QuadVertex);
-	Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+	Create<VertexBuffer>(L"Quad_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
+	Create<IndexBuffer>(L"Quad_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
 	Create<VertexShader>(L"Quad", VERTEXFILTER::QUAD, L"Quad");
+	Create<PixelShader>(L"Quad",L"Quad");
 
 
 	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
@@ -167,7 +168,6 @@ void ResourceManager::OnResize()
 		//기존에 있으면 지우고
 		Erase<ShaderResourceView>(m_OffScreenName[i]);
 		// 셰이더 리소스 뷰를 만듭니다.
-
 		Create<ShaderResourceView>(m_OffScreenName[i], newRTV, shaderResourceViewDesc);
 	}
 
@@ -180,6 +180,6 @@ void ResourceManager::OnResize()
 	}
 	DSVmap.clear();
 
-
 	Create<DepthStencilView>(L"DSV_Main", texDesc);
+	Create<DepthStencilView>(L"DSV_Deferred", texDesc);
 }
