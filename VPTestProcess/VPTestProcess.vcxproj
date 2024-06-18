@@ -158,6 +158,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)include;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /r /d "$(SolutionDir)Library\$(Platform)\$(Configuration)\*.dll" "$(TargetDir)"

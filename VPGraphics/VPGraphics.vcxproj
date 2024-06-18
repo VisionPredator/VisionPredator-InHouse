@@ -177,6 +177,7 @@
     <ClInclude Include="CBuffer.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DebugDrawManager.h" />
+    <ClInclude Include="DebugDrawPass.h" />
     <ClInclude Include="DeferredGeometryPass.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -192,7 +193,6 @@
     <ClInclude Include="DepthStencilView.h" />
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />
-    <ClInclude Include="framework.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
     <ClInclude Include="IndexBuffer.h" />
@@ -226,6 +226,7 @@
     <ClInclude Include="VertexData.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="vpGraphics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
@@ -233,6 +234,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />
+    <ClCompile Include="DebugDrawPass.cpp" />
     <ClCompile Include="DeferredGeometryPass.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -280,7 +282,6 @@
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
-    <ClCompile Include="VPGraphics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">

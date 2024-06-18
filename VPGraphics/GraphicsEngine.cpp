@@ -36,6 +36,7 @@
 #include "ModelLoader.h"
 #include "Animator.h"
 #include "LightManager.h"
+#include "DebugDrawManager.h"
 #pragma endregion Manager
 
 
@@ -646,6 +647,51 @@ void GraphicsEngine::UpdateLightData(std::wstring name, Kind_of_Light kind, Ligh
 		MessageBox(0, L"This Light Is Not Exist", 0, 0);
 		return;
 	}
+}
+
+void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawBox(const debug::BoxInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawOBB(const debug::OBBInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawFrustum(const debug::FrustumInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawGrid(const debug::GridInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawRing(const debug::RingInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawTriangle(const debug::TriangleInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawQuad(const debug::QuadInfo& info)
+{
+
+}
+
+void GraphicsEngine::DrawRay(const debug::RayInfo& info)
+{
+
 }
 
 void GraphicsEngine::OnResize()
