@@ -107,9 +107,9 @@ void Toolbar::ImGuiRender()
 			filePath += ".Scene";
 			m_SceneManager->SceneSerialize(filePath);
 			m_CurrentScenePath = filePath;
+		}
 			// close
 			ImGuiFileDialog::Instance()->Close();
-		}
 	}
 
 }
