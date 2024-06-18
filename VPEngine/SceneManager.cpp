@@ -269,36 +269,17 @@ void SceneManager::OnClearAllEntity(std::any data)
 //씬 체인지 이벤트 :: SchduleEvent로 호출 권장!
 void SceneManager::OnChangeScene(std::any data)
 {
-
-	try
-	{
-		if (data.type() != typeid(std::string))
-		{
-			// 데이터 타입이 std::string이 아니면 로그를 출력하고 함수를 종료합니다.
-			VP_ASSERT(false, "data에 std::string이 아닌  다른 자료형이 들어갔습니다.");
-			return;
-		}
-
-		//씬 끝나는 이벤트 즉시 실행
-		EventManager::GetInstance().GetInstance().ImmediateEvent("OnEndScene");
-		//씬 열기 이벤트 즉시 실행
-		EventManager::GetInstance().ImmediateEvent("OnOpenScene", data);
-
-	}
-	catch (const std::bad_any_cast&)
-	{
-		VP_ASSERT(false, "std::any_cast에 실패하였습니다.");  // Wrong data type assertion
-	}
+	//씬 끝나는 이벤트 즉시 실행
+	EventManager::GetInstance().GetInstance().ImmediateEvent("OnEndScene");
+	//씬 열기 이벤트 즉시 실행
+	EventManager::GetInstance().ImmediateEvent("OnOpenScene", data);
 }
-void SceneManager::OnStartScene(std::any data)
-{
-	///TODO: 씬 시작시 설정할 init??
-	EventManager::GetInstance().ImmediateEvent("OnInitialize");
-	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
-}
+
 void SceneManager::OnOpenNewScene(std::any null)
 {
+	//씬 끝나는 이벤트 즉시 실행
 	EventManager::GetInstance().ImmediateEvent("OnEndScene");
+	//씬 삭제 후 새로운 씬 생성
 	EventManager::GetInstance().ImmediateEvent("OnResetScene");
 }
 void SceneManager::OnResetScene(std::any data)
@@ -307,36 +288,28 @@ void SceneManager::OnResetScene(std::any data)
 	m_CurrentScene = nullptr;
 	m_CurrentScene = new Scene;
 }
+void SceneManager::OnStartScene(std::any data)
+{
+	///TODO: 씬 시작시 설정할 Initialize
+	EventManager::GetInstance().ImmediateEvent("OnInitialize");
+	///TODO: 씬 시작시 설정할 Initializesystem.
+	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
+}
 void SceneManager::OnEndScene(std::any data)
 {
 	///TODO:씬 끝났을 때 처리할 Finalize?
 	EventManager::GetInstance().ImmediateEvent("OnFinalize");
+	///TODO: 씬 끝났을 때 설정할 Initializesystem.
 	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystem");
 
 }
-
 void SceneManager::OnOpenScene(std::any data)
 {
-	try
-	{
-		if (data.type() != typeid(std::string))
-		{
-			// 데이터 타입이 std::string이 아니면 로그를 출력하고 함수를 종료합니다.
-			VP_ASSERT(false, "data에 std::string이 아닌  다른 자료형이 들어갔습니다.");
-			return;
-		}
-		//씬 초기화 이벤트 즉시 실행
-		EventManager::GetInstance().ImmediateEvent("OnResetScene");
-		//씬 시리얼라이즈 이벤트 즉시 실행
-		EventManager::GetInstance().ImmediateEvent("OnDeSerializeScene", data);
-		//씬 시작 이벤트 즉시 실행
-		EventManager::GetInstance().ImmediateEvent("OnStartScene");
-	}
-	catch (const std::bad_any_cast&)
-	{
-		VP_ASSERT(false, "std::any_cast에 실패하였습니다.");  // Wrong data type assertion
-	}
-
+	EventManager::GetInstance().ImmediateEvent("OnResetScene");
+	//씬 시리얼라이즈 이벤트 즉시 실행
+	EventManager::GetInstance().ImmediateEvent("OnDeSerializeScene", data);
+	//씬 시작 이벤트 즉시 실행
+	EventManager::GetInstance().ImmediateEvent("OnStartScene");
 }
 
 void SceneManager::SerializePrefab(uint32_t entityID)

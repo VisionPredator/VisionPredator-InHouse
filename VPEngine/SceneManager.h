@@ -56,7 +56,6 @@ private:
 	void SceneSerialize(std::string FilePath);
 	void SceneDeSerialize(std::string FilePath);
 
-	void OnOpenNewScene(std::any null);
 
 
 	bool CheckParent(uint32_t parent, uint32_t child);
@@ -66,6 +65,8 @@ private:
 	void SetEntityMap(uint32_t entityID, Entity* entity)			{ m_CurrentScene->EntityMap[entityID] = entity; }
 
 	void AddCompToPool(Component* comp); 
+	// »õ·Î¿î ¾ÀÀ» ¿¬´Ù.
+	void OnOpenNewScene(std::any null);
 
 	// ¾ÀÀ» ¹Ù²Û´Ù.
 	void OnChangeScene(std::any data);
