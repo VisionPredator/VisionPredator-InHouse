@@ -37,10 +37,13 @@ private:
 	std::shared_ptr<PixelShader> m_SkinningPS;
 
 	// Multi Render Target
-	enum { GBufferSize = 4 };	// 상수. #define 보다 디버깅할때 더 편하다.
+	enum { GBufferSize = 7 };	// 상수. #define 보다 디버깅할때 더 편하다.
 	std::shared_ptr<RenderTargetView> m_AlbedoRTV;
 	std::shared_ptr<RenderTargetView> m_NormalRTV;
 	std::shared_ptr<RenderTargetView> m_PositionRTV;
 	std::shared_ptr<RenderTargetView> m_DepthRTV;
+	std::shared_ptr<RenderTargetView> m_MetalicRTV;
+	std::shared_ptr<RenderTargetView> m_RoughnessRTV;
+	std::shared_ptr<RenderTargetView> m_AORTV;
 
 };

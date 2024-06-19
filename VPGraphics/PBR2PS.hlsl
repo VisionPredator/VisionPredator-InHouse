@@ -19,10 +19,10 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     N.xyz = normalize(N.xyz);
   
     //texture sampling
-    float3 albedoColor = gMeshAlbedo.Sample(samLinear, input.tex).rgb;
-    float metallicValue = gMeshMetalic.Sample(samLinear, input.tex).r;
-    float roughnessValue = gMeshRoughness.Sample(samLinear, input.tex).r;
-    float aoValue = gMeshAO.Sample(samLinear, input.tex).r;
+    float3 albedoColor = gAlbedo.Sample(samLinear, input.tex).rgb;
+    float metallicValue = gMetalic.Sample(samLinear, input.tex).r;
+    float roughnessValue = gRoughness.Sample(samLinear, input.tex).r;
+    float aoValue = gAO.Sample(samLinear, input.tex).r;
     
      //수직 입사 시의 반사율 - 비금속이면 0.04 금속이면 metalic RGB 언리얼4는 이렇게 쓴다
     float3 F0 = Fdielectric;

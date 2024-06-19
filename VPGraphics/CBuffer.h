@@ -75,12 +75,13 @@ struct LightArray
 
 struct MaterialData
 {
-	MaterialData() : albedo(1,1,1,1), metalness(0),roughness(0),ao(0),pad(-1)
+	MaterialData() : albedo(1,1,1,1), metalness(0),roughness(0),ao(0),pad(-1), AMRO(0,0,0,0)
 	{
 
 	}
 
 	DirectX::XMFLOAT4 albedo;
+	DirectX::XMFLOAT4 AMRO;	//텍스처를 가지고 있는가 albedo, metalic, roughness, AO
 	float metalness;
 	float roughness;
 	float ao; // Ambient Occlusion

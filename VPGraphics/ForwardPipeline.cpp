@@ -22,8 +22,7 @@ ForwardPipeline::~ForwardPipeline()
 
 void ForwardPipeline::Initialize()
 {
-	m_Passes.insert(std::make_pair<PassState,std::shared_ptr<RenderPass>>(PassState::Static,std::make_shared<StaticPass>(m_Device.lock(),m_Resourcemanager.lock())));
-	m_Passes.insert(std::make_pair<PassState,std::shared_ptr<RenderPass>>(PassState::Skinning,std::make_shared<SkinningPass>(m_Device.lock(), m_Resourcemanager.lock())));
+	m_Passes.insert(std::make_pair<PassState,std::shared_ptr<RenderPass>>(PassState::Foward,std::make_shared<FowardPass>(m_Device.lock(), m_Resourcemanager.lock())));
 	m_Passes.insert(std::make_pair<PassState,std::shared_ptr<RenderPass>>(PassState::Debug,std::make_shared<DebugPass>(m_Device.lock(), m_Resourcemanager.lock())));
 }
 
@@ -37,15 +36,9 @@ void ForwardPipeline::Update(std::map<std::wstring, std::pair<PassState, std::sh
 		PassState curState = model.second.first;
 		PassState temp = curState;
 		 
-		temp &= PassState::Static;
-		if (temp == PassState::Static)
-		{
-			m_Passes[temp]->AddModelData(model.second.second);
-		}
-
 		temp = curState;
-		temp &= PassState::Skinning;
-		if (temp == PassState::Skinning)
+		temp &= PassState::Foward;
+		if (temp == PassState::Foward)
 		{
 			m_Passes[temp]->AddModelData(model.second.second);
 		}
@@ -63,10 +56,6 @@ void ForwardPipeline::Update(std::map<std::wstring, std::pair<PassState, std::sh
 
 void ForwardPipeline::Render()
 {
-
-
-
-
 	for (auto& pass : m_Passes)
 	{
 		pass.second->Render();

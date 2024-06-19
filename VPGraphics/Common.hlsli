@@ -23,11 +23,17 @@ cbuffer Transform : register(b1)
     float4x4 gLocal;
 };
 
-///Skinning
-cbuffer MatrixPallete : register(b3)
+
+//Material
+cbuffer Material : register(b2)
 {
-    matrix MatrixPallete[128];
-}
+    float4 albedo;
+    float4 AMRO; // Ambient Occlusion
+    float metalness;
+    float roughness;
+    float ao; // Ambient Occlusion
+    float pad;
+};
 
 
 ///Light
@@ -37,18 +43,20 @@ struct LightData
     float Range;
 
     float3 Attenuation;
-    float pad;
+    float pad2;
   
     float3 pos;
     float spot;
     
     //direction 말고 다 없어져야할듯 pbr은 lightvector와 lightcolor로 계산하니까
     float3 Color;
-    float pad2;
+    float pad3;
 };
 
 
-cbuffer LightArray : register(b2)
+
+
+cbuffer LightArray : register(b3)
 {
     LightData Dir[100];
     LightData Point[100];
@@ -56,30 +64,29 @@ cbuffer LightArray : register(b2)
     float DirIndex;
     float PointIndex;
     float SpotIndex;
-    float pad;
+    float pad4;
 };
 
-//Material
-cbuffer Material : register(b4)
+
+
+///Skinning
+cbuffer MatrixPallete : register(b4)
 {
-    float4 albedo;
-    float metalness;
-    float roughness;
-    float ao; // Ambient Occlusion
-};
+    matrix MatrixPallete[128];
+}
+
+
 
 //TEXTURE
 Texture2D gAlbedo : register(t0);
 Texture2D gNormal : register(t1);
 Texture2D gPosition : register(t2);
 Texture2D gDepth : register(t3);
-Texture2D gGBuffer : register(t4);
+Texture2D gMetalic : register(t4);
+Texture2D gRoughness : register(t5);
+Texture2D gAO : register(t6);
 
-Texture2D gMeshAlbedo : register(t5);
-Texture2D gMeshNormal : register(t6);
-Texture2D gMeshMetalic : register(t7);
-Texture2D gMeshRoughness : register(t8);
-Texture2D gMeshAO : register(t9);
+Texture2D gGBuffer : register(t7);
 
 SamplerState samLinear : register(s0);
 

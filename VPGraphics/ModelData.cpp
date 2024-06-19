@@ -8,11 +8,14 @@ ModelData::ModelData() : m_name(L"need name"), m_RootNode(), RS(), m_pass(PassSt
 
 ModelData::ModelData(std::shared_ptr<ModelData> other)
 {
-	this->m_RootNode = other->m_RootNode;
-	this->m_Meshes = other->m_Meshes;
-	this->m_Materials = other->m_Materials;
-	this->m_Animations = other->m_Animations;
-	this->m_pass = other->m_pass;
+	if (other != nullptr)
+	{
+		this->m_RootNode = other->m_RootNode;
+		this->m_Meshes = other->m_Meshes;
+		this->m_Materials = other->m_Materials;
+		this->m_Animations = other->m_Animations;
+		this->m_pass = other->m_pass;
+	}
 }
 
 ModelData::~ModelData()

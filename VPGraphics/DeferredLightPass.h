@@ -25,6 +25,9 @@ private:
 	std::shared_ptr<ShaderResourceView> m_Normal;
 	std::shared_ptr<ShaderResourceView> m_Position;
 	std::shared_ptr<ShaderResourceView> m_Depth;
+	std::shared_ptr<ShaderResourceView> m_Metalic;
+	std::shared_ptr<ShaderResourceView> m_Roughness;
+	std::shared_ptr<ShaderResourceView> m_AO;
 
 	std::shared_ptr<ShaderResourceView> m_GBuffer;
 	

@@ -75,9 +75,11 @@ protected:
 
 	std::weak_ptr<Device> m_Device;
 
-	std::weak_ptr<VertexShader> m_VS;
-	std::weak_ptr<PixelShader> m_PS;
-	std::weak_ptr<RenderState> m_RS;
+	std::weak_ptr<PixelShader> m_DebugPS;
+
+	std::weak_ptr<VertexShader> m_SkinningVS;
+	std::weak_ptr<VertexShader> m_StaticVS;
+	std::weak_ptr<PixelShader> m_MeshPS;
 
 
 	std::weak_ptr<ResourceManager> m_ResourceManager;
@@ -101,22 +103,11 @@ public:
 
 
 //forward
-class SkinningPass : public RenderPass
+class FowardPass : public RenderPass
 {
 public:
-	SkinningPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
-	~SkinningPass();
-
-	virtual void Render() override;
-
-private:
-};
-
-class StaticPass : public RenderPass
-{
-public:
-	StaticPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
-	~StaticPass();
+	FowardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
+	~FowardPass();
 
 	virtual void Render() override;
 

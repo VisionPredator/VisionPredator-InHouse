@@ -19,9 +19,9 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     
     //texture sampling
     float3 albedoColor = gAlbedo.Sample(samLinear, input.tex).rgb;
-    float metallicValue = gMeshMetalic.Sample(samLinear, input.tex).r;  //quad에 텍스처를 샘플링해서 이상하게 나오는거였음
-    float roughnessValue = gMeshRoughness.Sample(samLinear, input.tex).r;
-    float aoValue = gMeshAO.Sample(samLinear, input.tex).r;
+    float metallicValue = gMetalic.Sample(samLinear, input.tex).r;  //quad에 텍스처를 샘플링해서 이상하게 나오는거였음
+    float roughnessValue = gRoughness.Sample(samLinear, input.tex).r;
+    float aoValue = gAO.Sample(samLinear, input.tex).r;
     
      //수직 입사 시의 반사율 - 비금속이면 0.04 금속이면 metalic RGB 언리얼4는 이렇게 쓴다
     float3 F0 = Fdielectric;
@@ -34,15 +34,13 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     }
 
     // Calculate Point Light
-
-
-    // Calculate Spot Light    
     for (int j = 0; j < PointIndex; j++)
     {
         result += CalcPoint(Point[i], V, N.xyz, F0, albedoColor, roughnessValue);
 
     }
     
+    // Calculate Spot Light    
     for (int k = 0; k < SpotIndex; k++)
     {
         result += CalcSpot(Spot[i], V, N.xyz, F0, albedoColor, roughnessValue);

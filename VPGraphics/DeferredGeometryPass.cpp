@@ -18,6 +18,11 @@ DeferredGeometryPass::DeferredGeometryPass(std::shared_ptr<Device> device, std::
 	m_NormalRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Normal").lock();
 	m_PositionRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Position").lock();
 	m_DepthRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Metalic").lock();
+	m_RoughnessRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Roughness").lock();
+	m_AORTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"AO").lock();
+
+
 
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base").lock();
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning").lock();
@@ -52,6 +57,9 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 		RTVs.push_back(m_NormalRTV->Get());
 		RTVs.push_back(m_PositionRTV->Get());
 		RTVs.push_back(m_DepthRTV->Get());
+		RTVs.push_back(m_MetalicRTV->Get());
+		RTVs.push_back(m_RoughnessRTV->Get());
+		RTVs.push_back(m_AORTV->Get());
 		device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView->Get());
 
 		device->Context()->PSSetShader(m_GeometryPS->GetPS(), nullptr, 0);
@@ -85,23 +93,6 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 					position->m_struct.world = curModel->world;
 					position->m_struct.local = curModel->local;
 					position->Update();	// == Bind
-
-					// Material Binding
-					if (!curModel->m_Materials.empty())
-					{
-						for (const auto& material : curModel->m_Materials)
-						{
-							device->Context()->PSSetShaderResources(0, 1, material->m_AlbedoSRV.lock()->GetAddress());
-							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
-
-							m_Device.lock()->Context()->PSSetShaderResources(5, 1, (material->m_AlbedoSRV.lock()->GetAddress()));
-							m_Device.lock()->Context()->PSSetShaderResources(6, 1, material->m_NormalSRV.lock()->GetAddress());
-							m_Device.lock()->Context()->PSSetShaderResources(7, 1, material->m_MetalicSRV.lock()->GetAddress());
-							m_Device.lock()->Context()->PSSetShaderResources(8, 1, material->m_RoughnessSRV.lock()->GetAddress());
-							//m_Device.lock()->Context()->PSSetShaderResources(9, 1, material->m_AOSRV.lock()->GetAddress());
-
-						}
-					}
 				}
 				// Skeletal Mesh Update & Bind
 				else
@@ -127,34 +118,56 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 					MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(model->m_name + L"MatrixPallete").lock();
 					pallete->Update(matrixPallete);
-					m_Device.lock()->Context()->VSSetConstantBuffers(3, 1, pallete->GetAddress());
+					m_Device.lock()->Context()->VSSetConstantBuffers(4, 1, pallete->GetAddress());
 
-					// Material Binding
-					if (!curModel->m_Materials.empty())
+				}
+
+				
+				// 텍스처와 샘플러를 셰이더에 바인딩
+				if (!curModel->m_Materials.empty())
+				{
+					std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+
+					//material이 일단 2개 인 경우가 거의 없으니까 일단 이렇게하자
+					for (auto& curMaterial : curModel->m_Materials)
 					{
-						for (const auto& material : curModel->m_Materials)
+						MaterialData curMaterialData = curMaterial->m_Data;
+						curData->Update(curMaterialData);
+
+						m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+						if (curMaterialData.AMRO.x > 0)
 						{
-							int index = 5;
+							m_Device.lock()->Context()->PSSetShaderResources(0, 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 
-							device->Context()->PSSetShaderResources(0, 1, material->m_AlbedoSRV.lock()->GetAddress());
-							device->Context()->PSSetShaderResources(1, 1, material->m_NormalSRV.lock()->GetAddress());
+						}
 
-							m_Device.lock()->Context()->PSSetShaderResources(index + 0, 1, (material->m_AlbedoSRV.lock()->GetAddress()));
-							m_Device.lock()->Context()->PSSetShaderResources(index + 1, 1, (material->m_NormalSRV.lock()->GetAddress()));
-							//m_Device.lock()->Context()->PSSetShaderResources(index + 2, 1, material->m_MetalicSRV.lock()->GetAddress());
-							//m_Device.lock()->Context()->PSSetShaderResources(index + 3, 1, material->m_RoughnessSRV.lock()->GetAddress());
-							//m_Device.lock()->Context()->PSSetShaderResources(index + 4, 1, material->m_AOSRV.lock()->GetAddress());
+						m_Device.lock()->Context()->PSSetShaderResources(1, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 
+						if (curMaterialData.AMRO.y > 0)
+						{
+							m_Device.lock()->Context()->PSSetShaderResources(4, 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
+						}
+
+						if (curMaterialData.AMRO.z > 0)
+						{
+							m_Device.lock()->Context()->PSSetShaderResources(5, 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
+						}
+
+						if (curMaterialData.AMRO.w > 0)
+						{
+							m_Device.lock()->Context()->PSSetShaderResources(6, 1, curMaterial->m_AOSRV.lock()->GetAddress());
 						}
 					}
 				}
 
-				// Make a Draw Call!!
 				device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+
 			}
+
+			//렌더타겟 해제해줘야지 srv도 해제
+			device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 		}
 	}
-
-	//렌더타겟 해제해줘야지 srv도 해제
-	device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 }

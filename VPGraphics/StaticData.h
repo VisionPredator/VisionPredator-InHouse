@@ -273,7 +273,7 @@ namespace Quad
 	namespace Vertex
 	{
 		//z값을 1로하는 이유는 foward를 하는 경우에는 quad(texture)가 깊이값에 의해 덮어 그려버릴수도있다
-		static float depth = 0.95f;
+		static float depth = 0.f;
 
 		static QuadVertex Buffer[] = {
 

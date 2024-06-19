@@ -107,9 +107,8 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
+	AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
-	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
-
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -0.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
@@ -193,19 +192,7 @@ void GraphicsEngine::Render()
 {
 	m_DeferredShadingPipeline->Render();
 
-	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-	/*dsDesc.DepthEnable = TRUE;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	dsDesc.StencilEnable = FALSE;
-
-	ID3D11DepthStencilState* depthStencilState;
-	m_Device->CreateDepthStencilState(&dsDesc, &depthStencilState);
-	context->OMSetDepthStencilState(depthStencilState, 1);*/
-
-
-
-	m_ForwardPipeline->Render();
+	//m_ForwardPipeline->Render();
 }
 
 void GraphicsEngine::EndRender()
@@ -398,7 +385,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
-			//newModel->m_pass = PassState::Static;
+			//newModel->m_pass = PassState::Foward;
 			newModel->m_pass = PassState::Deferred;
 
 			newModel->local = DirectX::SimpleMath::Matrix::Identity;
@@ -419,7 +406,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-			//newModel->m_pass = PassState::Skinning;
+			//newModel->m_pass = PassState::Foward;
 			newModel->m_pass = PassState::Deferred;
 
 			newModel->world = DirectX::SimpleMath::Matrix::Identity;

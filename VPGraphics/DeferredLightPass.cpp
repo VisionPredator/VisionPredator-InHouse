@@ -15,6 +15,9 @@ DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::share
 	m_Normal = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Normal").lock();
 	m_Position = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Position").lock();
 	m_Depth = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Depth").lock();
+	m_Metalic = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Metalic").lock();
+	m_Roughness = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Roughness").lock();
+	m_AO = m_ResourceManager.lock()->Get<ShaderResourceView>(L"AO").lock();
 	m_GBuffer = m_ResourceManager.lock()->Get<ShaderResourceView>(L"GBuffer").lock();
 
 
@@ -37,27 +40,16 @@ DeferredLightPass::~DeferredLightPass()
 
 void DeferredLightPass::Render()
 {
-	//create texture
+	//Save GBuffer texture
 	{
 
 
 		std::shared_ptr<Device> Device = m_Device.lock();
 		std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-		 std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
-		//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
+		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
 		std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 		std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
 		std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
-
-
-		const int num = 10;
-		ID3D11ShaderResourceView* pSRV[num] = { nullptr,nullptr,nullptr,nullptr };
-		Device->Context()->PSSetShaderResources(0, num, pSRV);
-
-		//렌더타겟 해제해줘야지 srv도 해제
-		//Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-
-		//Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 		Device->Context()->IASetInputLayout(m_VS.lock()->InputLayout());
 		Device->Context()->VSSetShader(m_VS.lock()->GetVS(), nullptr, 0);
@@ -73,21 +65,19 @@ void DeferredLightPass::Render()
 		Device->Context()->PSSetShaderResources(1, 1, m_Normal->GetAddress());
 		Device->Context()->PSSetShaderResources(2, 1, m_Position->GetAddress());
 		Device->Context()->PSSetShaderResources(3, 1, m_Depth->GetAddress());
+		Device->Context()->PSSetShaderResources(4, 1, m_Metalic->GetAddress());
+		Device->Context()->PSSetShaderResources(5, 1, m_Roughness->GetAddress());
+		Device->Context()->PSSetShaderResources(6, 1, m_AO->GetAddress());
 
 		Device->Context()->PSSetSamplers(0, 1, m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock()->GetAddress());
 
-		//Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
 
 
-
-
 	//draw quad
 	{
-
-		/*
 		std::shared_ptr<Device> Device = m_Device.lock();
 		std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
 		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
@@ -97,16 +87,11 @@ void DeferredLightPass::Render()
 		std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
 		std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
 
-
-		const int num = 10;
+		//기존 바인된 rtv srv 해제
+		const int num = 10; //이건 나중에 어떻게 할지 매번 하드코딩할 수는 없자나
 		ID3D11ShaderResourceView* pSRV[num] = { nullptr,nullptr,nullptr,nullptr };
 		Device->Context()->PSSetShaderResources(0, num, pSRV);
-
-		//렌더타겟 해제해줘야지 srv도 해제
 		Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-
-		//Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 
 		Device->Context()->IASetInputLayout(m_VS.lock()->InputLayout());
@@ -118,13 +103,14 @@ void DeferredLightPass::Render()
 		m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
 
 		m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		Device->Context()->PSSetShaderResources(4, 1, m_GBuffer->GetAddress());
+		
+		Device->Context()->PSSetShaderResources(7, 1, m_GBuffer->GetAddress());
 
 		Device->Context()->PSSetSamplers(0, 1, m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock()->GetAddress());
 
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
+		/*
 		*/
 	}
 

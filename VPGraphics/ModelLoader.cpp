@@ -31,6 +31,7 @@ void ModelLoader::Initialize()
 {
 	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("doorB2.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -278,18 +279,22 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//m_Color ={ color.r, color.g, color.b , 1};
 	}
 
+	///Albedo
 	path = (textureProperties[aiTextureType_DIFFUSE].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->AlbeoPath = finalPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.AMRO.x += 1;
+
 	}
 	else
 	{
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 	}
 
+	///Normal
 	path = (textureProperties[aiTextureType_NORMALS].second);
 	if (!path.empty())
 	{
@@ -332,21 +337,38 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//m_MaterialMapFlags |= MaterialMapFlags::OPACITY;
 	}
 
+	///Metalic
 	path = (textureProperties[aiTextureType_METALNESS].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
 		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.AMRO.y += 1;
+
 	}
 
+	///Roughness
 	path = (textureProperties[aiTextureType_SHININESS].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->RoughnessPath = finalPath;
 		newMaterial->m_RoughnessSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.AMRO.z += 1;
+
 	}
+
+	///AO
+	path = (textureProperties[aiTextureType_AMBIENT_OCCLUSION].second);
+	if (!path.empty())
+	{
+		finalPath = basePath + path.filename().wstring();
+		newMaterial->AlbeoPath = finalPath;
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.AMRO.w += 1;
+	}
+
 
 
 	Model->m_Materials.push_back(newMaterial);

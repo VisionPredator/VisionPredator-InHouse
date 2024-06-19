@@ -12,7 +12,10 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[1] = L"Normal";
 	m_OffScreenName[2] = L"Position";
 	m_OffScreenName[3] = L"Depth";
-	m_OffScreenName[4] = L"GBuffer";
+	m_OffScreenName[4] = L"Metalic";
+	m_OffScreenName[5] = L"Roughness";
+	m_OffScreenName[6] = L"AO";
+	m_OffScreenName[7] = L"GBuffer";
 }
 
 ResourceManager::~ResourceManager()
@@ -34,7 +37,6 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Initialize()
 {
-	///--------확정-----
 	Create<Sampler>(L"Linear", SamplerDESC::Linear);
 	Create<Sampler>(L"Point", SamplerDESC::Point);
 
@@ -53,21 +55,41 @@ void ResourceManager::Initialize()
 
 	std::shared_ptr<ConstantBuffer<TransformData>> transform =  Create<ConstantBuffer<TransformData>>(L"Transform", BufferDESC::Constant::DefaultTransform).lock();
 	m_Device.lock()->Context()->VSSetConstantBuffers(1, 1, transform->GetAddress());
+	m_Device.lock()->Context()->PSSetConstantBuffers(1, 1, transform->GetAddress());
 
 	m_UsingLights = Create<ConstantBuffer<LightArray>>(L"LightArray", BufferDESC::Constant::DefaultLightArray);
-	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_UsingLights.lock()->GetAddress());
+	m_Device.lock()->Context()->PSSetConstantBuffers(3, 1, m_UsingLights.lock()->GetAddress());
 
+	//쿼드용
 	UINT size = sizeof(QuadVertex);
 	Create<VertexBuffer>(L"Quad_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
 	Create<IndexBuffer>(L"Quad_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
 	Create<VertexShader>(L"Quad", VERTEXFILTER::QUAD, L"Quad");
 	Create<PixelShader>(L"Quad",L"Quad");
 
-
 	Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 
 	Create<PixelShader>(L"MeshDeferredLight",L"MeshDeferredLight");
 	Create<PixelShader>(L"MeshDeferredGeometry",L"MeshDeferredGeometry");
+
+	m_UsingMaterial = Create<ConstantBuffer<MaterialData>>(L"MaterialData", BufferDESC::Constant::DefaultMaterial);
+	m_Device.lock()->Context()->PSSetConstantBuffers(2, 1, m_UsingMaterial.lock()->GetAddress());
+
+	//출력용 backbuffer
+	Create<RenderTargetView>(L"RTV_Main");
+
+	//출력용
+	D3D11_TEXTURE2D_DESC dsd = TextureDESC::DSVDesc;
+	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+	dsd.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+	Create<DepthStencilView>(L"DSV_Main", dsd);
+
+	//포스트프로세싱용으로 텍스처를 저장하려고 쓸거
+	Create<DepthStencilView>(L"DSV_Deferred", dsd);
+
+	Create<PixelShader>(L"Base", L"Base");
+	Create<PixelShader>(L"Mesh", L"Mesh");
+
 
 	///------미정------
 	//디퍼드 용 쉐이더 테스트
@@ -76,15 +98,12 @@ void ResourceManager::Initialize()
 	//Create<PixelShader>(L"../x64/Debug/DeferredPS2.cso", L"Deferred");
 
 
-	Create<ConstantBuffer<MaterialData>>(L"Material", BufferDESC::Constant::DefaultMaterial);
-	m_Device.lock()->Context()->VSSetConstantBuffers(5, 1, transform->GetAddress());
+
+	
 
 
-
-	Create<PixelShader>(L"../x64/Debug/BasePS.cso", L"Base");
 	//Create<PixelShader>(L"../x64/Debug/SkinningPS.cso", L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
-	//Create<PixelShader>(L"../x64/Debug/MeshPS.cso", L"Mesh");
 	Create<PixelShader>(L"../x64/Debug/PBR2.cso", L"PBR2");
 
 	
@@ -94,8 +113,6 @@ void ResourceManager::Initialize()
 	texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
 	texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 
-	//출력용 backbuffer
-	Create<RenderTargetView>(L"RTV_Main");
 
 	///Deferred용
 	//임시로 5개
@@ -104,16 +121,7 @@ void ResourceManager::Initialize()
 		std::weak_ptr<Texture2D> offscreenTex = Create<Texture2D>(m_OffScreenName[i], texDesc);
 		Create<RenderTargetView>(m_OffScreenName[i], offscreenTex);
 	}
-
-	//쿼드용
 	
-
-
-	//출력용
-	D3D11_TEXTURE2D_DESC dsd = TextureDESC::DSVDesc;
-	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
-	dsd.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
-	Create<DepthStencilView>(L"DSV_Main", dsd);
 }
 
 

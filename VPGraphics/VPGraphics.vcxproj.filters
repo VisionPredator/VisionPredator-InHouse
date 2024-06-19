@@ -380,12 +380,6 @@
     <FxCompile Include="MeshPS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
-    <FxCompile Include="SkinningPS.hlsl">
-      <Filter>HLSL\PS</Filter>
-    </FxCompile>
-    <FxCompile Include="TexturePS.hlsl">
-      <Filter>HLSL\PS</Filter>
-    </FxCompile>
     <FxCompile Include="PBR.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
@@ -395,10 +389,10 @@
     <FxCompile Include="MeshVS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
-    <FxCompile Include="PBR2PS.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
     <FxCompile Include="QuadPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="PBR2PS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>
