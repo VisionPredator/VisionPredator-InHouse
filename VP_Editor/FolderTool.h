@@ -17,5 +17,8 @@ public:
     std::string m_AssetFolderPath{};
     std::string m_CurrentFolderPath{};
     SceneManager* m_SceneManager;
+    bool m_ShowDeleteCaution = false;
+    std::filesystem::path m_DeleteFilePath;
+    void DeleteCautionImGui();
 };
 

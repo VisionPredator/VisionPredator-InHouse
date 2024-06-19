@@ -88,6 +88,7 @@ void Inspector::EntityImGui(uint32_t entityID)
 					continue;
 
 				ImGui::PushID(ClassName.c_str());
+
 				if (ImGui::Button(ClassName.c_str(), ImVec2(235, 35)))
 					m_SceneManager->GetEntity(entityID)->AddComponent(MetaTypeID);
 				ImGui::PopID();

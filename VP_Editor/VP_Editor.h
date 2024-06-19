@@ -14,9 +14,11 @@ public:
 	HierarchySystem* m_HierarchySystem;
 	std::vector<IImGui*> m_ImGuis;
 	EditorCamera* m_editorcamera;
+	void SetUnityDarkThemeColors();
 
 	bool m_IsEditorMode = true;
 	void OnPlayButton(std::any);
 	void OnStopButton(std::any);
+	
 };
 
