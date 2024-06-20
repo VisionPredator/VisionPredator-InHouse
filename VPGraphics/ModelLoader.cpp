@@ -29,9 +29,9 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
-	LoadModel("Flair.fbx", Filter::SKINNING);
+	//LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
-	//LoadModel("doorB2.fbx", Filter::STATIC);
+	LoadModel("main.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -291,6 +291,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	}
 	else
 	{
+		finalPath = basePath + path.filename().wstring();
+		newMaterial->AlbeoPath = finalPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 	}
 
@@ -307,6 +309,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	}
 	else
 	{
+		finalPath = basePath + path.filename().wstring();
+		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png");
 
 	}

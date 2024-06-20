@@ -104,7 +104,6 @@ void ResourceManager::Initialize()
 
 	//Create<PixelShader>(L"../x64/Debug/SkinningPS.cso", L"Skinning");
 	Create<PixelShader>(L"../x64/Debug/TexturePS.cso", L"Texture");
-	Create<PixelShader>(L"../x64/Debug/PBR2.cso", L"PBR2");
 
 	
 

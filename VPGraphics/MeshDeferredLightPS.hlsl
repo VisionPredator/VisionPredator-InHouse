@@ -30,21 +30,21 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     
     for (int i = 0; i < DirIndex; i++)
     {
-        result += CalcDir(Dir[i], V, N.xyz, F0, albedoColor, roughnessValue);
+        result += CalcDir(array[i], V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
     }
 
-    // Calculate Point Light
-    for (int j = 0; j < PointIndex; j++)
+    // Calculate Spot Light    
+    for (int k = DirIndex; k < SpotIndex; k++)
     {
-        result += CalcPoint(Point[i], V, N.xyz, F0, albedoColor, roughnessValue);
+        result += CalcSpot(array[i], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+    }
+    // Calculate Point Light
+    for (int j = SpotIndex; j < PointIndex; j++)
+    {
+        result += CalcPoint(array[i], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
 
     }
     
-    // Calculate Spot Light    
-    for (int k = 0; k < SpotIndex; k++)
-    {
-        result += CalcSpot(Spot[i], V, N.xyz, F0, albedoColor, roughnessValue);
-    }
     
     float3 lightColor = float3(1.0, 1.0, 1.0); // Assuming white light
 

@@ -3,7 +3,7 @@
 #include "ResourceManager.h"
 #include "Desc.h"
 
-LightManager::LightManager(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager)
+LightManager::LightManager(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager), m_BufferStruct()
 {
 
 }
@@ -17,6 +17,11 @@ LightManager::~LightManager()
 
 void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)>& usinglight)
 {
+
+	float& dirindex = m_BufferStruct.DirIndex;
+	float& spotindex = m_BufferStruct.SpotIndex;
+
+
 	for (int i = 0; i < usinglight.size(); i++)
 	{
 		std::unordered_map <std::wstring, LightData> curLightMap = usinglight[i];
@@ -33,7 +38,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 				m_BufferStruct.DirIndex = static_cast<float>(size);
 				for (int i = 0; i < size; i++)
 				{
-					m_BufferStruct.Dir[i] = curData->second;
+					m_BufferStruct.array[i] = curData->second;
 					curData++;
 				}
 			}
@@ -43,7 +48,8 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 				m_BufferStruct.SpotIndex = static_cast<float>(size);
 				for (int i = 0; i < size; i++)
 				{
-					m_BufferStruct.Spot[i] = curData->second;
+
+					m_BufferStruct.array[static_cast<int>(dirindex) + i] = curData->second;
 					curData++;
 				}
 			}
@@ -53,7 +59,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 				m_BufferStruct.PointIndex= static_cast<float>(size);
 				for (int i = 0; i < size; i++)
 				{
-					m_BufferStruct.Point[i] = curData->second;
+					m_BufferStruct.array[static_cast<int>(dirindex + spotindex) + i] = curData->second;
 					curData++;
 				}
 			}

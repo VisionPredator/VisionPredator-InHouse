@@ -101,19 +101,32 @@ bool GraphicsEngine::Initialize()
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
 
-
-	// Pipeline
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
-
 	AddRenderModel(MeshFilter::Axis, L"Axis");
-	AddRenderModel(MeshFilter::Grid, L"Grid");
-	AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
+	//AddRenderModel(MeshFilter::Grid, L"Grid");
+	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
+	AddRenderModel(MeshFilter::Static, L"main", L"main");
 
-	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -0.f);
+	Dir.direction = DirectX::XMFLOAT3(1.f, -1.f, 1.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
+	Dir.intensity = 1;
+
+	Point.attenuation = DirectX::XMFLOAT3(0, 0, 1);
+	Point.color = DirectX::XMFLOAT3(0, 0, 1);
+	Point.intensity = 1000;
+	Point.pos = DirectX::XMFLOAT3(0,3,-2);
+	Point.range = 3;
+
+	Spot.attenuation = DirectX::XMFLOAT3(0, 0, 1);
+	Spot.color = DirectX::XMFLOAT3(1, 1, 1);
+	Spot.intensity = 100;
+	Spot.pos = DirectX::XMFLOAT3(0, 3, -2);
+	Spot.range = 3;
+	Spot.spot = 8;
 
 	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
+	AddLight(L"point", Kind_of_Light::Point, Point);
+	//AddLight(L"point", Kind_of_Light::Spot, Spot);
 
 	return true;
 
@@ -192,7 +205,7 @@ void GraphicsEngine::Render()
 {
 	m_DeferredShadingPipeline->Render();
 
-	//m_ForwardPipeline->Render();
+	m_ForwardPipeline->Render();
 }
 
 void GraphicsEngine::EndRender()
@@ -395,7 +408,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 			newModel->world = DirectX::SimpleMath::Matrix::Identity;
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"static", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
 		}
 		break;
 
@@ -406,8 +419,8 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-			//newModel->m_pass = PassState::Foward;
-			newModel->m_pass = PassState::Deferred;
+			newModel->m_pass = PassState::Foward;
+			//newModel->m_pass = PassState::Deferred;
 
 			newModel->world = DirectX::SimpleMath::Matrix::Identity;
 			newModel->world._11 *= 0.05f;

@@ -25,7 +25,22 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 
 	// TODO: If the material is not present, default values should be set.
 	output.Albedo = gAlbedo.Sample(samLinear, input.tex);
-	output.Normal = gNormal.Sample(samLinear, input.tex);
+	
+	
+	 //tangentspace를 계산해 normal을 만든다
+    float4 N = normalize(input.normal);
+    float4 vTangent = normalize(input.tangent);
+    float4 vBitangent = normalize(input.bitangent);
+        
+    float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
+    float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, N.xyz); //면의 공간으로 옮기기위한 행렬
+    N.xyz = mul(NormalTangentSpace, WorldTransform);
+    N.xyz = normalize(N.xyz);
+	
+    output.Normal = N;
+	
+	
+	
 	output.Position = input.posWorld;
     output.Metalic = gMetalic.Sample(samLinear, input.tex);
     output.Roughness = gRoughness.Sample(samLinear, input.tex);

@@ -78,12 +78,12 @@ void Camera::Update(double dt)
 	//z
 	if (GetAsyncKeyState(0x5A))
 	{
-		UpDown(dt);
+		UpDown(dt * speed);
 	}
 	//x
 	if (GetAsyncKeyState(0x58))
 	{
-		UpDown(-dt);
+		UpDown(-dt * speed);
 	}
 
 	UpdateView();
