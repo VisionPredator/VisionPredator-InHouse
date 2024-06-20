@@ -223,9 +223,6 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="RenderPass.h">
-      <Filter>Pipeline\Pass</Filter>
-    </ClInclude>
     <ClInclude Include="ShadowPass.h">
       <Filter>Pipeline\Pass\Forward</Filter>
     </ClInclude>
@@ -249,6 +246,12 @@
     </ClInclude>
     <ClInclude Include="DebugDrawManager.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Slot.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>Pipeline\Pass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -339,9 +342,6 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="RenderPass.cpp">
-      <Filter>Pipeline\Pass</Filter>
-    </ClCompile>
     <ClCompile Include="ShadowPass.cpp">
       <Filter>Pipeline\Pass\Forward</Filter>
     </ClCompile>
@@ -366,6 +366,9 @@
     <ClCompile Include="DebugDrawManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Pipeline\Pass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -380,9 +383,6 @@
     <FxCompile Include="MeshPS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
-    <FxCompile Include="PBR.hlsl">
-      <Filter>HLSL\PS</Filter>
-    </FxCompile>
     <FxCompile Include="QuadVS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
@@ -390,9 +390,6 @@
       <Filter>HLSL\VS</Filter>
     </FxCompile>
     <FxCompile Include="QuadPS.hlsl">
-      <Filter>HLSL\PS</Filter>
-    </FxCompile>
-    <FxCompile Include="PBR2PS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>

@@ -95,37 +95,40 @@ bool GraphicsEngine::Initialize()
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
 
-	//출력병합기
-	// TODO: RTV와 뷰포트 바인딩은 이제 여기서 안하고 패스마다 필요시에 바인딩할 것임. 즉. 여기 있는거 삭제해야함.
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP.get());
-
-
-	AddRenderModel(MeshFilter::Axis, L"Axis");
+	//AddRenderModel(MeshFilter::Axis, L"Axis");
 	//AddRenderModel(MeshFilter::Grid, L"Grid");
 	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
-	AddRenderModel(MeshFilter::Static, L"main", L"main");
+	//AddRenderModel(MeshFilter::Box, L"a", L"a");
+	AddRenderModel(MeshFilter::Static, L"engine_sizedown_1", L"engine_sizedown_1");
 
-	Dir.direction = DirectX::XMFLOAT3(1.f, -1.f, 1.f);
+	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
-	Dir.intensity = 1;
+	Dir.intensity = 10;
 
 	Point.attenuation = DirectX::XMFLOAT3(0, 0, 1);
-	Point.color = DirectX::XMFLOAT3(0, 0, 1);
-	Point.intensity = 1000;
+	Point.color = DirectX::XMFLOAT3(1, 1, 1);
+	Point.intensity = 1;
 	Point.pos = DirectX::XMFLOAT3(0,3,-2);
-	Point.range = 3;
+	Point.range = 100;
+
+	LightData Point2;
+	Point2.attenuation = DirectX::XMFLOAT3(0, 0, 1);
+	Point2.color = DirectX::XMFLOAT3(1, 1, 1);
+	Point2.intensity = 1;
+	Point2.pos = DirectX::XMFLOAT3(25, 3, -2);
+	Point2.range = 100;
 
 	Spot.attenuation = DirectX::XMFLOAT3(0, 0, 1);
 	Spot.color = DirectX::XMFLOAT3(1, 1, 1);
 	Spot.intensity = 100;
 	Spot.pos = DirectX::XMFLOAT3(0, 3, -2);
-	Spot.range = 3;
+	Spot.range = 100;
 	Spot.spot = 8;
 
 	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
 	AddLight(L"point", Kind_of_Light::Point, Point);
+	AddLight(L"point2", Kind_of_Light::Point, Point2);
 	//AddLight(L"point", Kind_of_Light::Spot, Spot);
 
 	return true;
@@ -347,48 +350,17 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
 			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			BoxModel->m_pass = PassState::Static;
+			BoxModel->m_pass = PassState::Debug;
 
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
-			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
-
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
-		}
-		break;
-		case MeshFilter::TextureBox:
-		{
-			std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
-
-			BoxModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-
-			BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-			UINT size = static_cast<UINT>(sizeof(BaseVertex));
-			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
-			BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
-
-
-			D3D11_BUFFER_DESC bufferDesc{};
-			bufferDesc.Usage = D3D11_USAGE_DEFAULT; //동적 리소스 만들거면 dynamic , upadate시 map,unmap 사용
-			bufferDesc.ByteWidth = sizeof(TransformData); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
-			bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			bufferDesc.CPUAccessFlags = 0;	//동적 리소스면 write
-			bufferDesc.MiscFlags = 0;
-
-			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
-			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
 			BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
-			BoxModel->m_Materials[0]->m_AlbedoSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
-			BoxModel->m_Materials[0]->m_NormalSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+			BoxModel->m_Materials.back()->m_Data.useAMRO = DirectX::XMFLOAT4(0, 0, 0, 0);
+			BoxModel->m_Materials.back()->m_Data.useN = 0;
 
-			BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
+			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
 
-			BoxModel->m_pass = PassState::Static;
-
-			m_ResourceManager->Add<ModelData>(L"TextureBox", BoxModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"TextureBox", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
-
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(BoxModel->m_pass, BoxModel)));
 		}
 		break;
 		case MeshFilter::Static:
@@ -398,13 +370,12 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
-			//newModel->m_pass = PassState::Foward;
 			newModel->m_pass = PassState::Deferred;
 
 			newModel->local = DirectX::SimpleMath::Matrix::Identity;
-			newModel->local._11 *= 0.05f;
-			newModel->local._22 *= 0.05f;
-			newModel->local._33 *= 0.05f;
+			newModel->local._11 *= 0.03f;
+			newModel->local._22 *= 0.03f;
+			newModel->local._33 *= 0.03f;
 
 			newModel->world = DirectX::SimpleMath::Matrix::Identity;
 
@@ -419,8 +390,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			newModel->m_name = name;
 
 			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-			newModel->m_pass = PassState::Foward;
-			//newModel->m_pass = PassState::Deferred;
+			newModel->m_pass = PassState::Deferred;
 
 			newModel->world = DirectX::SimpleMath::Matrix::Identity;
 			newModel->world._11 *= 0.05f;

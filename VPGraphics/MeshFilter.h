@@ -5,7 +5,6 @@ enum class MeshFilter
 	Axis = 0,
 	Box = 1,
 	Grid,
-	TextureBox,
 	Static,
 	Skinning,
 	Circle,
@@ -16,7 +15,6 @@ enum class MeshFilter
 enum class PassState : unsigned int
 {
 	None = 0,
-	Static = 1 << 0,
 	Foward = 1 << 1,
 	Debug = 1 << 2,
 	Deferred = 1 << 3,

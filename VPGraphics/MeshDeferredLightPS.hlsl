@@ -65,7 +65,8 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     result = pow(result, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2));
         
     output.Gbuffer = float4(result, 1);
+    //output.Gbuffer = float4(albedoColor, 1);
     
     return output;
-    //return float4(result, 1);
+    //return float4(albedoColor, 1);
 }

@@ -9,6 +9,7 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 #include "ShaderResourceView.h"
+#include "Slot.h"
 
 Device::Device(HWND hWnd) : ableMSAA(false), m_Device(nullptr), m_Context(nullptr), m_FeatureLevel(), MSAAQuality(), m_hWnd(hWnd), m_SwapChain(nullptr), m_wndSize()
 {
@@ -123,35 +124,20 @@ void Device::EndRender()
 	m_Context->RSSetState(0);
 }
 
-
-void Device::BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs)
+void Device::UnBindSRV()
 {
-	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	FLOAT Red[4] = { 1.f,0.f,0.f,1.f };
-	FLOAT Green[4] = { 0.f,1.f,0.f,1.f };
-	FLOAT Blue[4] = { 0.f,0.f,1.f,1.f };
-	FLOAT Yellow[4] = { 1.f,1.f,0.f,1.f };
-	FLOAT Purple[4] = { 1.f,0.f,1.f,1.f };
+	//±‚¡∏ πŸ¿Œµ» rtv srv «ÿ¡¶
+	const int num = static_cast<int>(Slot_T::End);
+	ID3D11ShaderResourceView* pSRV[num] = {};
 
-	ID3D11RenderTargetView* MRT0 = RTVs[0]->Get();
-	ID3D11RenderTargetView* MRT1 = RTVs[1]->Get();
-	ID3D11RenderTargetView* MRT2 = RTVs[2]->Get();
+	for (int i = 0; i < num; i++)
+	{
+		pSRV[i] = nullptr;
+	}
 
-	m_Context->ClearRenderTargetView(RTVs[0]->Get(), Black); //√‚∑¬«“ ∑ª¥ı ≈∏∞Ÿ
 
-	///SRV ªÃæ∆≥æ ∑ª¥ı≈∏∞Ÿ
-	m_Context->ClearRenderTargetView(RTVs[1]->Get(), Red);
-	m_Context->ClearRenderTargetView(RTVs[2]->Get(), Green);
-	m_Context->ClearRenderTargetView(RTVs[3]->Get(), Blue);
-	m_Context->ClearRenderTargetView(RTVs[4]->Get(), Yellow);
-	m_Context->ClearRenderTargetView(RTVs[5]->Get(), Purple);
-
-	m_Context->ClearDepthStencilView(DSVs, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-}
-void Device::DrawQuard(ShaderResourceView* srv)
-{
-	m_Context->PSSetShaderResources(0, 1, srv->GetAddress());
+	m_Context->PSSetShaderResources(0, num, pSRV);
+	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 bool Device::CreateSwapChain()

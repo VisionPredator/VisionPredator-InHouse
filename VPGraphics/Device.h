@@ -25,11 +25,7 @@ public:
 	void BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DSV, const float* color);
 	void EndRender();
 
-
-
-	void BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs);
-
-	void DrawQuard(ShaderResourceView* srv);
+	void UnBindSRV();
 
 
 	bool ableMSAA;
@@ -46,9 +42,5 @@ private:
 	IDXGISwapChain* m_SwapChain;
 	HWND m_hWnd;
 	RECT m_wndSize;
-
-
-	ID3D11RenderTargetView* MRT[5];
-
 };
 

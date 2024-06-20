@@ -16,10 +16,9 @@ class ShaderResourceView;
 
 #pragma region Pipeline
 class DeferredShadingPipeline;
-// class ForwardShadingPipeline;
+class ForwardPipeline;
 #pragma endregion
 
-class ForwardPipeline;
 class LightManager;
 
 

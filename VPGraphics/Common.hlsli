@@ -27,12 +27,12 @@ cbuffer Transform : register(b1)
 //Material
 cbuffer Material : register(b2)
 {
-    float4 albedo;
     float4 AMRO;
+    float useN;
     float metalness;
     float roughness;
     float ao; // Ambient Occlusion
-    float pad;
+    float4 albedo;
 };
 
 
@@ -52,9 +52,6 @@ struct LightData
     float Intensity;
 };
 
-
-
-
 cbuffer LightArray : register(b3)
 {
     LightData array[100];
@@ -64,15 +61,11 @@ cbuffer LightArray : register(b3)
     float pad4;
 };
 
-
-
 ///Skinning
 cbuffer MatrixPallete : register(b4)
 {
     matrix MatrixPallete[128];
 }
-
-
 
 //TEXTURE
 Texture2D gAlbedo : register(t0);
@@ -85,6 +78,7 @@ Texture2D gAO : register(t6);
 
 Texture2D gGBuffer : register(t7);
 
+//sampler
 SamplerState samLinear : register(s0);
 
 //STRUCT
