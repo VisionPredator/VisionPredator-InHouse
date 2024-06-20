@@ -3,11 +3,11 @@
 #include "ImGuiFileDialog.h"
 #include "SceneManager.h"
 #include <EventManager.h>
-
+bool Toolbar::m_IsPlaying = false;
 Toolbar::Toolbar()
 {
 }
-
+std::string Toolbar::m_CurrentScenePath = {};
 Toolbar::Toolbar(SceneManager* sceneManager): m_SceneManager { sceneManager }
 {
 }
@@ -31,6 +31,9 @@ void Toolbar::ImGuiRender()
 		if (ImGui::Button("Play", ImVec2(60, 0)))
 		{
 			EventManager::GetInstance().ScheduleEvent("OnPlayButton");
+			EventManager::GetInstance().ScheduleEvent("OnSaveCurrentToTemp");
+
+
 			m_IsPlaying = true;
 		}
 
@@ -40,6 +43,7 @@ void Toolbar::ImGuiRender()
 		if (ImGui::Button("Stop", ImVec2(60, 0)))
 		{
 			EventManager::GetInstance().ScheduleEvent("OnStopButton");
+			EventManager::GetInstance().ScheduleEvent("OnOverwriteTempToCurrent");
 			m_IsPlaying = false;
 		}
 	}
@@ -62,9 +66,12 @@ void Toolbar::ImGuiRender()
 
 		}
 	}
+	ImGui::SameLine(ImGui::GetWindowWidth() - 300);
+
+	ImGui::Text("Scene : %s", m_SceneManager->GetSceneName().c_str());
+
+
 	ImGui::EndMainMenuBar();
-
-
 
 	if (ImGuiFileDialog::Instance()->Display("ChooseSceneDlgKey", ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove, { 1000, 500 }))
 	{
@@ -74,14 +81,6 @@ void Toolbar::ImGuiRender()
 			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 			m_CurrentScenePath = filePathName;
 			EventManager::GetInstance().ScheduleEvent("OnOpenScene", filePathName);
-			// action
-			//pcSys.Start();
-
-			//CurrentSceneName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-			//size_t lastindex = CurrentSceneName.find_last_of(".");
-			//CurrentSceneName = CurrentSceneName.substr(0, lastindex);
-			//CurrentScenePath = filePath + "/";
-
 		}
 
 		// close

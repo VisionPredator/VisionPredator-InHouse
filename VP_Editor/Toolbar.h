@@ -16,9 +16,10 @@ public:
     void Help();
     void Serialize();
     void Dialog_SaveAs();
-    bool m_IsPlaying=false;
+    static bool m_IsPlaying;
     bool m_IsPause = false;
-    std::string m_CurrentScenePath;
+   static std::string m_CurrentScenePath;
+
     SceneManager* m_SceneManager;
 };
 

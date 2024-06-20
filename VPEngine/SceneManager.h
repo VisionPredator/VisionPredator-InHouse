@@ -66,18 +66,23 @@ private:
 
 	void AddCompToPool(Component* comp); 
 	// 새로운 씬을 연다.
+	void OnNewScene(std::any data);
+
+	// 새로운 씬을 연다.
 	void OnOpenNewScene(std::any null);
 
 	// 씬을 바꾼다.
 	void OnChangeScene(std::any data);
 	// 씬 시작 이벤트를 호출한다.
 	void OnStartScene(std::any data);
-	// 씬을 삭제 후 생성한다.
-	void OnResetScene(std::any data);
+
 	// 씬 끝나는 이벤트를 호출한다.
 	void OnEndScene(std::any data);
 	// 해당 씬을 연다.
 	void OnOpenScene(std::any data);
+	//현재씬에 Temp씬 데이터 덮어씌우기.
+	void OnOverwriteTempToCurrent(std::any data);
+	void OnSaveCurrentToTemp(std::any data);
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
 	// Entity를 삭제한다.

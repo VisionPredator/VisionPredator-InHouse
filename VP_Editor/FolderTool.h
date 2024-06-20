@@ -18,7 +18,10 @@ public:
     std::string m_CurrentFolderPath{};
     SceneManager* m_SceneManager;
     bool m_ShowDeleteCaution = false;
+    bool m_ShowOpenSceneCaution = false;
     std::filesystem::path m_DeleteFilePath;
+    std::string m_OpenScenePath;
     void DeleteCautionImGui();
+    void OpenCautionImGui();
 };
 
