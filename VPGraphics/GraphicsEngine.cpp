@@ -657,42 +657,42 @@ void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
 
 void GraphicsEngine::DrawBox(const debug::AABBInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::DrawOBB(const debug::OBBInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::DrawFrustum(const debug::FrustumInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::DrawGrid(const debug::GridInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::DrawRing(const debug::RingInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::DrawTriangle(const debug::TriangleInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::DrawQuad(const debug::QuadInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info); 
 }
 
 void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 {
-
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::OnResize()
