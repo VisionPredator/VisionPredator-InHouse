@@ -78,6 +78,18 @@ void DebugDrawManager::Draw(const debug::SphereInfo& info)
     ringInfo.MajorAxis = yaxis;
     ringInfo.MinorAxis = zaxis;
     DrawRing(ringInfo);
+
+    float angle = DirectX::XM_PIDIV4; // 45µµ È¸Àü
+
+    Vector3 rotatedX1 = -zaxis * sin(angle) + xaxis * cos(angle);
+    ringInfo.MajorAxis = rotatedX1;
+    ringInfo.MinorAxis = yaxis;
+    DrawRing(ringInfo);
+
+    angle += DirectX::XM_PIDIV4 + DirectX::XM_PIDIV4;
+    Vector3 rotatedX2 = -zaxis * sin(angle) + xaxis * cos(angle);
+    ringInfo.MajorAxis = rotatedX2;
+    DrawRing(ringInfo);
 }
 
 void DebugDrawManager::Draw(const debug::AABBInfo& info)
