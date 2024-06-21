@@ -60,6 +60,16 @@ public:
 
 	virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) override;
 
+	/// Debug Draw
+	void DrawSphere(const debug::SphereInfo& info) override;
+	void DrawBox(const debug::AABBInfo& info) override;
+	void DrawOBB(const debug::OBBInfo& info) override;
+	void DrawFrustum(const debug::FrustumInfo& info) override;
+	void DrawGrid(const debug::GridInfo& info) override;
+	void DrawRing(const debug::RingInfo& info) override;
+	void DrawTriangle(const debug::TriangleInfo& info) override;
+	void DrawQuad(const debug::QuadInfo& info) override;
+	void DrawRay(const debug::RayInfo& info) override;
 
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
@@ -77,6 +87,7 @@ private:
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<LightManager> m_LightManager;
+	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;
 
 private:
 	HWND m_hWnd;
@@ -95,7 +106,8 @@ private:
 
 
 	//test
-	Camera* m_Camera;
+	std::shared_ptr<Camera> m_Camera;
+	//Camera* m_Camera;
 
 	LightData Dir;
 	LightData Spot;

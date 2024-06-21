@@ -36,6 +36,7 @@
 #include "ModelLoader.h"
 #include "Animator.h"
 #include "LightManager.h"
+#include "DebugDrawManager.h"
 #pragma endregion Manager
 
 
@@ -60,7 +61,8 @@ bool GraphicsEngine::Initialize()
 	m_VP->MinDepth = 0.0f;
 	m_VP->MaxDepth = 1.0f;
 
-	m_Camera = new Camera();
+	//m_Camera = new Camera();
+	m_Camera = std::make_shared<Camera>();
 	m_Camera->Initialize(m_VP->Width / m_VP->Height);
 
 	m_Device = std::make_shared<Device>(m_hWnd);
@@ -76,38 +78,33 @@ bool GraphicsEngine::Initialize()
 	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
 	m_ResourceManager->Initialize();
 
-	OnResize();
-
+	
 	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
 	m_Loader->Initialize();
+	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
+	m_Animator = std::make_shared <Animator>();
+	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
+	m_DebugDrawManager->Initialize(m_Device);
+	OnResize();
+
+	// Pipeline
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_Camera);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
 
-	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
-
-	m_Animator = std::make_shared <Animator>();
-
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>(m_Device, m_ResourceManager);
-
 	//output
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
-
 
 	//출력병합기
 	// TODO: RTV와 뷰포트 바인딩은 이제 여기서 안하고 패스마다 필요시에 바인딩할 것임. 즉. 여기 있는거 삭제해야함.
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
-
-
-	// Pipeline
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_wndSize.right - m_wndSize.left, m_wndSize.bottom - m_wndSize.top);
-
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
-	//AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 
@@ -161,7 +158,7 @@ void GraphicsEngine::Update(double dt)
 
 bool GraphicsEngine::Finalize()
 {
-	delete m_Camera;
+	//delete m_Camera;
 
 	m_RenderList.clear();
 	m_VP.reset();
@@ -194,7 +191,12 @@ void GraphicsEngine::BeginRender()
 
 void GraphicsEngine::Render()
 {
+	// 디퍼드 렌더링 기법을 사용한 파이프라인.
+	// 디퍼드 패스 + 포워드 패스.
 	m_DeferredShadingPipeline->Render();
+
+	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
+	// 오로지 포워드 패스만 존재.
 	m_ForwardPipeline->Render();
 }
 
@@ -340,9 +342,9 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->m_pass = PassState::Static;
 
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
-			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
+			m_ResourceManager->Add<ModelData>(L"AABB", BoxModel);
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"AABB", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 		}
 		break;
 		case MeshFilter::TextureBox:
@@ -646,6 +648,51 @@ void GraphicsEngine::UpdateLightData(std::wstring name, Kind_of_Light kind, Ligh
 		MessageBox(0, L"This Light Is Not Exist", 0, 0);
 		return;
 	}
+}
+
+void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawBox(const debug::AABBInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawOBB(const debug::OBBInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawFrustum(const debug::FrustumInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawGrid(const debug::GridInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawRing(const debug::RingInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawTriangle(const debug::TriangleInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawQuad(const debug::QuadInfo& info)
+{
+	m_DebugDrawManager->AddTask(info); 
+}
+
+void GraphicsEngine::DrawRay(const debug::RayInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
 }
 
 void GraphicsEngine::OnResize()
