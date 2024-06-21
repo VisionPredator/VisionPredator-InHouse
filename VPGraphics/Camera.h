@@ -1,4 +1,7 @@
 #pragma once
+
+using namespace DirectX::SimpleMath;
+
 class Camera
 {
 public:
@@ -7,11 +10,11 @@ public:
 
 	void Initialize(double ratio);
 	void Update(double dt);
-	DirectX::XMFLOAT3 GetPosition() const;
+	Vector3 GetPosition() const;
 
-	DirectX::XMFLOAT4X4 World() const;
-	DirectX::XMFLOAT4X4 View() const;
-	DirectX::XMFLOAT4X4 Proj() const;
+	Matrix World() const;
+	Matrix View() const;
+	Matrix Proj() const;
 
 	void Strafe(float d);
 	void Walk(float d);
@@ -34,11 +37,15 @@ private:
 
 private:
 
-	DirectX::XMFLOAT3 m_pos;		//카메라 위치
-	DirectX::XMFLOAT3 m_forward;	//카메라의 전방 벡터
-	DirectX::XMFLOAT3 m_up;			//카메라의 업 벡터
-	DirectX::XMFLOAT3 m_right;		//카메라의 오른쪽벡터
+	//DirectX::XMFLOAT3 m_pos;		//카메라 위치
+	//DirectX::XMFLOAT3 m_forward;	//카메라의 전방 벡터
+	//DirectX::XMFLOAT3 m_up;			//카메라의 업 벡터
+	//DirectX::XMFLOAT3 m_right;		//카메라의 오른쪽벡터
 
+	Vector3 m_pos;		//카메라 위치
+	Vector3 m_forward;	//카메라의 전방 벡터
+	Vector3 m_up;			//카메라의 업 벡터
+	Vector3 m_right;		//카메라의 오른쪽벡터
 
 	float m_nearZ;
 	float m_farZ;
@@ -49,15 +56,25 @@ private:
 	float m_farWindowHeight;
 	float m_ratio;
 
-	DirectX::XMMATRIX m_worldMT;
-	DirectX::XMMATRIX m_viewMT;
-	DirectX::XMMATRIX m_projMT;
-	DirectX::XMMATRIX m_worldviewprojMT;
+	//DirectX::XMMATRIX m_worldMT;
+	//DirectX::XMMATRIX m_viewMT;
+	//DirectX::XMMATRIX m_projMT;
+	//DirectX::XMMATRIX m_worldviewprojMT;
 
-	DirectX::XMFLOAT4X4 m_world;
-	DirectX::XMFLOAT4X4 m_view;
-	DirectX::XMFLOAT4X4 m_proj;
-	DirectX::XMFLOAT4X4 m_worldviewproj;
+	Matrix m_worldMT;
+	Matrix m_viewMT;
+	Matrix m_projMT;
+	Matrix m_worldviewprojMT;
+
+	Matrix m_world;
+	Matrix m_view;
+	Matrix m_proj;
+	Matrix m_worldviewproj;
+
+	//DirectX::XMFLOAT4X4 m_world;
+	//DirectX::XMFLOAT4X4 m_view;
+	//DirectX::XMFLOAT4X4 m_proj;
+	//DirectX::XMFLOAT4X4 m_worldviewproj;
 
 private:
 	float m_moveSpeed;

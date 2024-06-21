@@ -67,4 +67,6 @@ void ForwardPipeline::Render()
 	{
 		pass.second->Render();
 	}
+
+
 }

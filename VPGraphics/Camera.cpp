@@ -5,7 +5,7 @@
 
 
 Camera::Camera() : m_pos(0, 5, -25), m_forward(0, 0, 1), m_up(0, 1, 0), m_right(1, 0, 0), m_nearZ(0), m_farZ(0), m_FOV(0), m_nearWindowHeight(0), m_farWindowHeight(0), m_ratio(1),
-m_worldMT(DirectX::XMMatrixIdentity()), m_viewMT(DirectX::XMMatrixIdentity()), m_projMT(DirectX::XMMatrixIdentity()), m_worldviewprojMT(DirectX::XMMatrixIdentity()),
+m_worldMT(Matrix::Identity), m_viewMT(Matrix::Identity), m_projMT(Matrix::Identity), m_worldviewprojMT(Matrix::Identity),
 m_world(), m_view(), m_proj(), m_worldviewproj(), m_moveSpeed(1)
 {
 
@@ -19,16 +19,21 @@ Camera::~Camera()
 void Camera::Initialize(double ratio)
 {
 	m_ratio = static_cast<float>(ratio);
-	m_worldMT = DirectX::XMMatrixIdentity();
-	m_viewMT = DirectX::XMMatrixIdentity();
-	m_projMT = DirectX::XMMatrixIdentity();
-	m_worldviewprojMT = DirectX::XMMatrixIdentity();
+	m_worldMT = Matrix::Identity;
+	m_viewMT = Matrix::Identity;
+	m_projMT = Matrix::Identity;
+	m_worldviewprojMT = Matrix::Identity;
 
-	XMStoreFloat4x4(&m_world, m_worldMT);
-	XMStoreFloat4x4(&m_view, m_viewMT);
-	XMStoreFloat4x4(&m_proj, m_projMT);
-	XMStoreFloat4x4(&m_worldviewproj, m_projMT);
+	//XMStoreFloat4x4(&m_world, m_worldMT);
+	//XMStoreFloat4x4(&m_view, m_viewMT);
+	//XMStoreFloat4x4(&m_proj, m_projMT);
+	//XMStoreFloat4x4(&m_worldviewproj, m_projMT);
 
+	m_world = m_worldMT;
+	m_view = m_viewMT;
+	m_proj = m_projMT;
+	m_worldviewproj = m_projMT;
+	
 
 	m_FOV = 0.25f * 3.14f;
 	m_nearZ = 1.f;
@@ -37,8 +42,9 @@ void Camera::Initialize(double ratio)
 	m_nearWindowHeight = 2 * m_nearZ * tanf(0.5f * m_FOV);
 	m_farWindowHeight = 2 * m_farZ * tanf(0.5f * m_FOV);
 
-	m_projMT = DirectX::XMMatrixPerspectiveFovLH(m_FOV, m_ratio, m_nearZ, m_farZ);
-	XMStoreFloat4x4(&m_proj, m_projMT);
+	m_proj = DirectX::XMMatrixPerspectiveFovLH(m_FOV, m_ratio, m_nearZ, m_farZ);
+	//m_projMT = DirectX::XMMatrixPerspectiveFovLH(m_FOV, m_ratio, m_nearZ, m_farZ);
+	//XMStoreFloat4x4(&m_proj, m_projMT);
 }
 
 void Camera::Update(double dt)
@@ -83,33 +89,39 @@ void Camera::Update(double dt)
 	m_worldviewprojMT = m_worldMT * m_viewMT * m_projMT;
 }
 
-DirectX::XMFLOAT3 Camera::GetPosition() const
+Vector3 Camera::GetPosition() const
 {
 	return m_pos;
 }
 
-DirectX::XMFLOAT4X4 Camera::World() const
+Matrix Camera::World() const
 {
 	return m_world;
 }
 
-DirectX::XMFLOAT4X4 Camera::View() const
+Matrix Camera::View() const
 {
 	return m_view;
 }
 
 
-DirectX::XMFLOAT4X4 Camera::Proj() const
+Matrix Camera::Proj() const
 {
 	return m_proj;
 }
 
 void Camera::Walk(float d)
 {
-	DirectX::XMVECTOR s = DirectX::XMVectorReplicate(d);
-	DirectX::XMVECTOR f = DirectX::XMLoadFloat3(&m_forward);
-	DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&m_pos);
-	XMStoreFloat3(&m_pos, DirectX::XMVectorMultiplyAdd(s, f, p));
+	//DirectX::XMVECTOR s = DirectX::XMVectorReplicate(d);
+	//DirectX::XMVECTOR f = DirectX::XMLoadFloat3(&m_forward);
+	//DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&m_pos);
+	//XMStoreFloat3(&m_pos, DirectX::XMVectorMultiplyAdd(s, f, p));
+
+	Vector3 s = Vector3(d, d, d);
+	Vector3 f = m_forward;
+	Vector3 p = m_pos;
+
+	m_pos = s * f + p;
 }
 
 void Camera::UpDown(float d)

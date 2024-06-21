@@ -1,6 +1,5 @@
 #pragma once
 #include "VPEngine.h"
-
 class GameProcessor :public VPEngine
 {
 public:

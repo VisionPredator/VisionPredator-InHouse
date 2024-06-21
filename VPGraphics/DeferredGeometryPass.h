@@ -15,8 +15,7 @@ class ResourceManager;
 class DeferredGeometryPass
 {
 public:
-	DeferredGeometryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager);
-	~DeferredGeometryPass();
+	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager);
 
 	void Render(const std::shared_ptr<ModelData>& model);
 
