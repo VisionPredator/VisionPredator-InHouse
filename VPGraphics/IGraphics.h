@@ -65,7 +65,7 @@ namespace Graphics
 
 		/// Debug Draw
 		virtual void DrawSphere(const debug::SphereInfo& info) abstract;
-		virtual void DrawBox(const debug::BoxInfo& info) abstract;
+		virtual void DrawBox(const debug::AABBInfo& info) abstract;
 		virtual void DrawOBB(const debug::OBBInfo& info) abstract;
 		virtual void DrawFrustum(const debug::FrustumInfo& info) abstract;
 		virtual void DrawGrid(const debug::GridInfo& info) abstract;

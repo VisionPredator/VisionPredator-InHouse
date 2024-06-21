@@ -62,7 +62,7 @@ public:
 
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
-	void DrawBox(const debug::BoxInfo& info) override;
+	void DrawBox(const debug::AABBInfo& info) override;
 	void DrawOBB(const debug::OBBInfo& info) override;
 	void DrawFrustum(const debug::FrustumInfo& info) override;
 	void DrawGrid(const debug::GridInfo& info) override;

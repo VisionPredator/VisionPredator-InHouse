@@ -10,15 +10,18 @@ namespace debug
 		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
-	struct BoxInfo	// AABB
+	struct AABBInfo	// AABB
 	{
-		DirectX::BoundingBox Box;
+		DirectX::BoundingBox AABB;
 		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct OBBInfo
 	{
 		DirectX::BoundingOrientedBox OBB;
+		float xAxisAngle = 0.f;
+		float yAxisAngle = 0.f;
+		float zAxisAngle = 0.f;
 		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
@@ -35,6 +38,7 @@ namespace debug
 		DirectX::SimpleMath::Vector3 Origin;
 		size_t XDivs;
 		size_t YDivs;
+		float GridSize;
 		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 

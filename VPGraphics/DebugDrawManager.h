@@ -23,23 +23,24 @@ public:
 	void Execute(const std::shared_ptr<Device>& device, const std::shared_ptr<Camera>& camera);
 
 	void AddTask(const debug::SphereInfo& info) { m_SphereInfos.push(info); }
-	void AddTask(const debug::BoxInfo& info);
-	void AddTask(const debug::OBBInfo& info);
-	void AddTask(const debug::FrustumInfo& info);
-	void AddTask(const debug::GridInfo& info);
-	void AddTask(const debug::RingInfo& info);
-	void AddTask(const debug::TriangleInfo& info);
-	void AddTask(const debug::QuadInfo& info);
-	void AddTask(const debug::RayInfo& info);
+	void AddTask(const debug::AABBInfo& info) { m_BoxInfos.push(info); }
+	void AddTask(const debug::OBBInfo& info) { m_OBBInfos.push(info); }
+	void AddTask(const debug::FrustumInfo& info) { m_FrustumInfos.push(info); }
+	void AddTask(const debug::GridInfo& info) { m_GridInfos.push(info); }
+	void AddTask(const debug::RayInfo& info) { m_RayInfos.push(info); }
+	void AddTask(const debug::TriangleInfo& info) { m_TriangleInfos.push(info); }
+	void AddTask(const debug::QuadInfo& info) { m_QuadInfos.push(info); }
+	void AddTask(const debug::RingInfo& info) { m_RingInfos.push(info); }
 
 private:
 	void Draw(const debug::SphereInfo& info);
-	void Draw(const debug::BoxInfo& info);
+	void Draw(const debug::AABBInfo& info);
 	void Draw(const debug::OBBInfo& info);
 	void Draw(const debug::FrustumInfo& info);
+	void Draw(const debug::GridInfo& info);
+	void Draw(const debug::RayInfo& info);
 	void Draw(const debug::TriangleInfo& info);
 	void Draw(const debug::QuadInfo& info);
-	void Draw(const debug::RayInfo& info);
 
 	void DrawRing(const debug::RingInfo& info);
 	void DrawCube(const SimpleMath::Matrix& worldTransform, const SimpleMath::Color& color);
@@ -52,6 +53,14 @@ private:
 
 	// Task Container
 	std::queue<debug::SphereInfo> m_SphereInfos;
+	std::queue<debug::AABBInfo> m_BoxInfos;
+	std::queue<debug::OBBInfo> m_OBBInfos;
+	std::queue<debug::FrustumInfo> m_FrustumInfos;
+	std::queue<debug::GridInfo> m_GridInfos;
+	std::queue<debug::RayInfo> m_RayInfos;
+	std::queue<debug::TriangleInfo> m_TriangleInfos;
+	std::queue<debug::QuadInfo> m_QuadInfos;
+	std::queue<debug::RingInfo> m_RingInfos;
 	// etc...
 	
 };

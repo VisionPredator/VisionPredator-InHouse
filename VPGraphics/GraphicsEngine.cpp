@@ -342,9 +342,9 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->m_pass = PassState::Static;
 
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
-			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
+			m_ResourceManager->Add<ModelData>(L"AABB", BoxModel);
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"AABB", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 		}
 		break;
 		case MeshFilter::TextureBox:
@@ -655,7 +655,7 @@ void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
 	m_DebugDrawManager->AddTask(info);
 }
 
-void GraphicsEngine::DrawBox(const debug::BoxInfo& info)
+void GraphicsEngine::DrawBox(const debug::AABBInfo& info)
 {
 
 }
