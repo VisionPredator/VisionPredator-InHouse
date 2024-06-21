@@ -6,8 +6,6 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 
-#define M_PI 3.14159265358979323846
-
 void DebugDrawPass::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<DebugDrawManager>& debugDrawManager, const std::shared_ptr<ResourceManager>& resourceManager,
 	const std::shared_ptr<Camera>& camera)
@@ -80,6 +78,21 @@ void DebugDrawPass::Render()
 	rayInfo.Normalize = false;
 	rayInfo.Color = SimpleMath::Color{ 0.5, 0.5, 1.f, 1 };
 	m_DebugDrawManager->AddTask(rayInfo);
+
+	debug::QuadInfo quadInfo;
+	quadInfo.PointA = SimpleMath::Vector2{ 0.f, 0.f };
+	quadInfo.PointB = SimpleMath::Vector2{ 10.f, 0.f };
+	quadInfo.PointC = SimpleMath::Vector2{ 10.f, 10.f };
+	quadInfo.PointD = SimpleMath::Vector2{ 0.f, 10.f };
+	quadInfo.Color = SimpleMath::Color{ 1, 0.5, 0.5f, 1 };
+	m_DebugDrawManager->AddTask(quadInfo);
+
+	debug::TriangleInfo triangleInfo;
+	triangleInfo.PointA = SimpleMath::Vector2{ 2.f, 2.f };
+	triangleInfo.PointB = SimpleMath::Vector2{ 12.f, 2.f };
+	triangleInfo.PointC = SimpleMath::Vector2{ 7.f, 12.f };
+	triangleInfo.Color = SimpleMath::Color{ 0, 1, 1,1 };
+	m_DebugDrawManager->AddTask(triangleInfo);
 #pragma endregion TEST
 
 	m_DebugDrawManager->Execute(m_Device, m_Camera);

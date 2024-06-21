@@ -215,14 +215,14 @@ void DebugDrawManager::Draw(const debug::TriangleInfo& info)
     XMStoreFloat3(&verts[0].position, info.PointA);
     XMStoreFloat3(&verts[1].position, info.PointB);
     XMStoreFloat3(&verts[2].position, info.PointC);
-    XMStoreFloat3(&verts[0].position, info.PointA);
+    XMStoreFloat3(&verts[3].position, info.PointA);
 
     XMStoreFloat4(&verts[0].color, info.Color);
     XMStoreFloat4(&verts[1].color, info.Color);
     XMStoreFloat4(&verts[2].color, info.Color);
     XMStoreFloat4(&verts[3].color, info.Color);
 
-    m_Batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP, verts, 2);
+    m_Batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP, verts, 4);
 }
 
 void DebugDrawManager::Draw(const debug::QuadInfo& info)
