@@ -152,9 +152,11 @@ void FolderTool::FileImGui()
 				if (!Toolbar::m_IsPlaying)
 					if (entry.path().extension() == ".prefab")
 					{
+						m_SceneManager->DeSerializePrefab(entryPathString);
+
 						// Handle double click for .prefab files
 					}
-					else if (entry.path().extension() == ".Scene")
+					else if (entry.path().extension() == ".scene")
 					{
 						// Handle double click for .Scene files
 						m_ShowOpenSceneCaution = true;
@@ -169,7 +171,7 @@ void FolderTool::FileImGui()
 			}
 			if (ImGui::BeginPopup("ItemOptions"))
 			{
-				if (entry.path().extension() == ".prefab" || entry.path().extension() == ".Scene" || entry.path().extension() == ".fbx")
+				if (entry.path().extension() == ".prefab" || entry.path().extension() == ".scene" || entry.path().extension() == ".fbx")
 				{
 					if (ImGui::MenuItem("Copy Filename"))
 					{

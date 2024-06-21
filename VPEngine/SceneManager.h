@@ -36,7 +36,7 @@ public:
 	template<typename T>
 	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
 	Component* GetComponent(uint32_t EntityID, entt::id_type compId) { return GetEntity(EntityID)->GetComponent(compId); }
-	Entity* GetEntity(uint32_t entityID) { return m_CurrentScene->EntityMap[entityID]; }
+	Entity* GetEntity(uint32_t entityID) { if (HasEntity(entityID)) return m_CurrentScene->EntityMap[entityID]; return nullptr; }
 	std::unordered_map<uint32_t, Entity*>& GetEntityMap() { return m_CurrentScene->EntityMap; }
 	const std::string GetSceneName() { return m_CurrentScene->SceneName; }
 

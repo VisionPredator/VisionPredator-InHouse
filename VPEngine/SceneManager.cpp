@@ -303,14 +303,14 @@ void SceneManager::OnOpenScene(std::any data)
 void SceneManager::OnOverwriteTempToCurrent(std::any Null)
 {
 	std::string curName = GetSceneName();
-	std::string tempMapPath = "../Data/Temp/Temp.Scene";
+	std::string tempMapPath = "../Data/Temp/Temp.scene";
 	EventManager::GetInstance().ImmediateEvent("OnOpenScene", tempMapPath);
 	SetSceneName(curName);
 
 }
 void SceneManager::OnSaveCurrentToTemp(std::any Null)
 {
-	std::string tempMapPath = "../Data/Temp/Temp.Scene";
+	std::string tempMapPath = "../Data/Temp/Temp.scene";
 	EventManager::GetInstance().ImmediateEvent("OnSerializeScene", tempMapPath);
 }
 
@@ -345,11 +345,11 @@ void SceneManager::OnSerializePrefab(std::any data)
 	uint32_t entityID = std::any_cast<uint32_t>(data);
 	std::list<uint32_t>  serializeIDs;
 	serializeIDs.push_back(entityID);
-
+	
 	///Set FilePath
-	std::string folderName = "../Resource/Prefab/";
+	std::string folderName = "../Data/Prefab/";
 	std::string entityName = GetEntity(entityID)->GetComponent<IDComponent>()->Name;
-	std::string fileExtension = ".json";
+	std::string fileExtension = ".prefab";
 	std::string filePath = folderName + entityName + fileExtension;
 
 	// Ensure directory exists before creating the file
@@ -370,6 +370,9 @@ void SceneManager::OnSerializePrefab(std::any data)
 		entityJson["EntityID"] = serializeEntity->GetEntityID();
 		for (const auto& [id, comp] : serializeEntity->m_OwnedComp)
 		{
+			if (entityID == serializeID)
+				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
+					continue;
 			nlohmann::json compnentEntity;
 			comp->SerializeComponent(compnentEntity);
 			compnentEntity["ComponentID"] = id;
@@ -393,11 +396,10 @@ void SceneManager::DeSerializePrefab(std::string filePath)
 	EventManager::GetInstance().ScheduleEvent("OnDeSerializePrefab", filePath);
 }
 
-void SceneManager::OnDeSerializePrefab(std::any name)
+void SceneManager::OnDeSerializePrefab(std::any data)
 {
-	std::string filePath = std::any_cast<std::string>(name);
+	std::string filePath = std::any_cast<std::string>(data);
 
-	filePath = "../Resource/Prefab/TesParent.json";
 
 	std::ifstream inputFile(filePath);
 	std::vector<std::pair<uint32_t, uint32_t> > entityResettingPair{};

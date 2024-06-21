@@ -34,7 +34,6 @@ void Inspector::EntityImGui(uint32_t entityID)
 	if (ImGui::Button("Save"))
 	{
 		m_SceneManager->SerializePrefab(entityID);
-		m_SceneManager->DeSerializePrefab("ff");
 	}
 		ImGui::Text(" ");
 
@@ -331,7 +330,7 @@ void Inspector::TypeImGui_unsigned_int(entt::meta_data memberMetaData, Component
 	unsigned int tempUnsignedint = memberMetaData.get(component->GetHandle()).cast<uint32_t>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::InputScalar(memberName.c_str(), ImGuiDataType_U32, &tempUnsignedint))
+	if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_U32, &tempUnsignedint))
 		memberMetaData.set(component->GetHandle(), tempUnsignedint);
 	ImGui::PopID();
 }
@@ -340,7 +339,7 @@ void Inspector::TypeImGui_double(entt::meta_data memberMetaData, Component* comp
 	double tempDouble = memberMetaData.get(component->GetHandle()).cast<double>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::InputDouble(memberName.c_str(), &tempDouble))
+	if (ImGui::DragScalar(memberName.c_str(),ImGuiDataType_Double, &tempDouble))
 		memberMetaData.set(component->GetHandle(), tempDouble);
 	ImGui::PopID();
 }
@@ -349,7 +348,7 @@ void Inspector::TypeImGui_float(entt::meta_data memberMetaData, Component* compo
 	float tempfloat = memberMetaData.get(component->GetHandle()).cast<float>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::InputFloat(memberName.c_str(), &tempfloat))
+	if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat))
 		memberMetaData.set(component->GetHandle(), tempfloat);
 	ImGui::PopID();
 }

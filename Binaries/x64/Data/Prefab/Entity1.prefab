@@ -1,14 +1,10 @@
 [
     {
-        "EntityID": 1592149081,
+        "EntityID": 2679620197,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "child1"
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 4284324986
+                "Name": "Entity1"
             },
             {
                 "ComponentID": 3400599862,

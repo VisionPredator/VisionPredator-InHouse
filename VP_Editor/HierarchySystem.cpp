@@ -9,6 +9,8 @@ HierarchySystem::HierarchySystem(SceneManager* sceneManager) :System(sceneManage
 
 void HierarchySystem::ShowEntitys()
 {
+
+
 	for (TransformComponent& transcomp :COMPITER(TransformComponent))
 	{
 
@@ -18,6 +20,7 @@ void HierarchySystem::ShowEntitys()
 
 		ShowParentEntity(transcomp.GetEntityID());
 	}
+
 }
 
 void HierarchySystem::ShowParentEntity(uint32_t entityID)
@@ -67,20 +70,19 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 
 	/// 아이템 드래그 앤 드랍
 	ImGuiDragDropFlags target_flags = 0;
-	// 드래그 소스가 되는 게임오브젝트
+	// 드래그 Entity
 	if (ImGui::BeginDragDropSource(target_flags))
 	{
-		//int data = HierarchySystem::S
-		ImGui::SetDragDropPayload("GameObject", &entityID, sizeof(uint32_t));
+		ImGui::SetDragDropPayload("Entity", &entityID, sizeof(uint32_t));
 
 		ImGui::Text("%s", IDcomp->Name.data());
 		ImGui::EndDragDropSource();
 	}
-	// 드랍이 될 게임오브젝트
+	// 드랍이 Entity
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GameObject", target_flags))
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity", target_flags))
 		{
 			auto childEntity = *(const int*)payload->Data;
 			auto parentEntity = entityID;

@@ -103,7 +103,7 @@ void Toolbar::ImGuiRender()
 			filePath += "/";
 
 			filePath += m_SceneManager->GetSceneName();
-			filePath += ".Scene";
+			filePath += ".scene";
 			m_SceneManager->SceneSerialize(filePath);
 			m_CurrentScenePath = filePath;
 		}
@@ -125,7 +125,7 @@ void Toolbar::Menu()
 		IGFD::FileDialogConfig config;
 		config.path = "../Data/Scene";
 		config.flags = ImGuiFileDialogFlags_Modal;
-		ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneDlgKey", "Choose Scene", ".Scene", config);
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneDlgKey", "Choose Scene", ".scene", config);
 	}
 	if (ImGui::MenuItem("Save"))
 	{
@@ -155,6 +155,6 @@ void Toolbar::Dialog_SaveAs()
 	IGFD::FileDialogConfig config;
 	config.path = "../Data/Scene";
 	config.flags = ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_ConfirmOverwrite;
-	ImGuiFileDialog::Instance()->OpenDialog("SaveAsDlgKey", "Save As...", ".Scene", config);
+	ImGuiFileDialog::Instance()->OpenDialog("SaveAsDlgKey", "Save As...", ".scene", config);
 
 }

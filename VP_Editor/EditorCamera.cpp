@@ -126,9 +126,9 @@ void EditorCamera::CalculateCamera()
 
 
 	  m_ratio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
-	  if (m_ratio < 0.00001)
+	  if (m_ratio < 0.00001f)
 	  {
-		  m_ratio = 0.00002;
+		  m_ratio = 0.00002f;
 	  }
 
 
@@ -192,9 +192,9 @@ void EditorCamera::ImGuiRender()
 		ImGui::DragFloat("MaxSpeed", &m_ShiftSpeed, 1.f, -FLT_MAX, FLT_MAX);
 
 
-		int CameraSize[2] = { m_Width,m_Height };
+		int CameraSize[2] = { (int)m_Width,(int)m_Height };
 		ImGui::SetNextItemWidth(dragBoxWidth);
-		ImGui::DragInt2("Width/Height", CameraSize, 1, 1, FLT_MAX);
+		ImGui::DragInt2("Width/Height", CameraSize, 1, 1, INT_MAX);
 
 		ImGui::SameLine();
 

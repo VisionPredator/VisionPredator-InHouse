@@ -75,6 +75,9 @@
     <ClInclude Include="ImGuiFileDialogConfig.h">
       <Filter>ImGuiDialog</Filter>
     </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VPMain.cpp">
@@ -109,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="ImGuiFileDialog.cpp">
       <Filter>ImGuiDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
