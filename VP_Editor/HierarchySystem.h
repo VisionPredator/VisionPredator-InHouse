@@ -8,7 +8,7 @@ public:
 	~HierarchySystem() override = default;
 
 	void ShowParentEntity(uint32_t entityID);
-	uint32_t m_SelectedEntityID=0;
+	static uint32_t m_SelectedEntityID;
 	uint32_t m_RClickedEntityID = 0;
 
 	bool m_IsEntityRClicked = false;

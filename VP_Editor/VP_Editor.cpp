@@ -3,14 +3,15 @@
 #include "SystemManager.h"
 #include "Toolbar.h"
 #include <TransformSystem.h>
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
+#include "../include/imgui_impl_win32.h"
+#include "../include/imgui_impl_dx11.h"
 #include "EditorCamera.h"
 #include "FolderTool.h"
 #include "Hierarchy.h"
 #include "Inspector.h"
 #include "EventManager.h"
 #include "HierarchySystem.h"
+#include "EditorViewPort.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 16.5f);
@@ -42,6 +43,7 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	m_ImGuis.push_back(new FolderTool{ m_SceneManager });
 	m_ImGuis.push_back(new Hierarchy{m_SceneManager,m_HierarchySystem});
 	m_ImGuis.push_back(new Inspector{ m_SceneManager,m_HierarchySystem });
+	m_ImGuis.push_back(new EditorViewPort{ m_SceneManager,m_editorcamera, m_Graphics });
 	m_ImGuis.push_back(m_editorcamera);
 	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&VP_Editor::OnPlayButton));
 	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&VP_Editor::OnStopButton));
@@ -80,7 +82,7 @@ void VP_Editor::Render()
 
 	// Create a window called "Hello, world!" and append into it.
 
-	//ImGui::DockSpaceOverViewport();
+	ImGui::DockSpaceOverViewport();
 
 	// Renderin
 	for (auto& ImGui : m_ImGuis)

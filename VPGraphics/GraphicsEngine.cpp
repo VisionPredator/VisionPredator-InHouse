@@ -92,7 +92,7 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
-	AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
+	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	//AddRenderModel(MeshFilter::Static, L"engine_sizedown_1", L"engine_sizedown_1");
 

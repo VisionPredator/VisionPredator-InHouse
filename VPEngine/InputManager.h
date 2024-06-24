@@ -36,7 +36,7 @@ enum class KEY
 	F, G, H, Q, R,
 	S, V, W, X, Z,
 	NUM1, NUM2, NUM3, NUM4, NUM5,
-	SPACE, ENTER, ESC, LSHFIT,
+	SPACE, ENTER, ESC, LSHFIT,LCTRL,
 	LBUTTON, RBUTTON,
 
 	END
@@ -69,7 +69,7 @@ class InputManager: public EventSubscriber
 		 'F', 'G', 'H', 'Q', 'R',
 		 'S', 'V', 'W', 'X', 'Z',
 		 '1', '2', '3', '4', '5',
-		 VK_SPACE, VK_RETURN, VK_ESCAPE, VK_SHIFT,
+		 VK_SPACE, VK_RETURN, VK_ESCAPE, VK_SHIFT,VK_CONTROL,
 		 VK_LBUTTON, VK_RBUTTON,
 	 };
 	 VPMath::Vector2 m_CurPos;
