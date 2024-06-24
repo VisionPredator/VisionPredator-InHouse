@@ -70,7 +70,10 @@ public:
 	void DrawTriangle(const debug::TriangleInfo& info) override;
 	void DrawQuad(const debug::QuadInfo& info) override;
 	void DrawRay(const debug::RayInfo& info) override;
-
+	void InitializeImGui();
+	void BeginImGui();
+	void EndImGui();
+	void DestroyImGui();
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;

@@ -38,7 +38,9 @@
 #include "LightManager.h"
 #include "DebugDrawManager.h"
 #pragma endregion Manager
-
+#include "../include/imgui.h"
+#include "../include/imgui_impl_win32.h"
+#include "../include/imgui_impl_dx11.h"
 
 
 
@@ -113,7 +115,7 @@ bool GraphicsEngine::Initialize()
 	Dir.color = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
-
+	InitializeImGui();
 	return true;
 
 }
@@ -197,11 +199,13 @@ void GraphicsEngine::Render()
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
-	m_ForwardPipeline->Render();
+	m_ForwardPipeline->Render(); 
+	BeginImGui();
 }
 
 void GraphicsEngine::EndRender()
 {
+	EndImGui();
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 	m_Device->EndRender();
@@ -731,3 +735,40 @@ void GraphicsEngine::OnResize()
 	m_Device->Context()->RSSetViewports(1, m_VP.get());
 }
 
+
+void GraphicsEngine::InitializeImGui()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+
+	// Setup Platform/Renderer bindings
+	ImGui_ImplWin32_Init(m_hWnd);
+	ImGui_ImplDX11_Init(m_Device->Get(), m_Device->Context());
+
+
+}
+
+void GraphicsEngine::BeginImGui()
+{
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+}
+void GraphicsEngine::EndImGui()
+{
+	ImGui::EndFrame();
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+void GraphicsEngine::DestroyImGui()
+{
+	// Cleanup
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}

@@ -2,7 +2,7 @@
 #include "HierarchySystem.h"
 #include "Components.h"
 #include <imgui.h>
-
+uint32_t HierarchySystem::m_SelectedEntityID=0;
 HierarchySystem::HierarchySystem(SceneManager* sceneManager) :System(sceneManager)
 {
 }

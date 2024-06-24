@@ -211,6 +211,7 @@ void EditorCamera::ImGuiRender()
 		m_Height = CameraSize[1];
 
 	}
+
 	ImGui::End();
 }
 
