@@ -3,14 +3,14 @@
 //#include "SceneManager.h"
 struct Component
 {
-	Component() = default;
+	Component();
 	virtual ~Component()
 	{
 		OwnedEntity = nullptr; // Then set the pointer to nullptr (mostly for safety in this scope)
 	}
 
 	virtual void SerializeComponent(nlohmann::json& json) const {};
-	virtual void* DeserializeComponent(const nlohmann::json json,Entity* parentEntity) const { return nullptr; }
+	virtual Component* DeserializeComponent(const nlohmann::json json,Entity* parentEntity) const { return nullptr; }
 	virtual Component* AddComponent(Entity* parentEntity) { return nullptr; }
 	template <typename T>
 	T* GetComponent()
@@ -28,7 +28,9 @@ struct Component
 	}
 	Entity* GetEntity() { return OwnedEntity; }
 	void SetEntity(Entity* entity) { OwnedEntity = entity; }
-	virtual entt::id_type GetTypeID() const = 0;
+	virtual entt::meta_handle GetHandle() abstract;
+
+
 protected:
 	Entity* OwnedEntity = nullptr;
 	friend class SceneManager;

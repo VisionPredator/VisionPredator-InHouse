@@ -5,3 +5,4 @@
 #include "MeshComponent.h"
 #include "SkinningMeshComponent.h"
 #include "CameraComponent.h"
+#include "PlayerComponent.h"

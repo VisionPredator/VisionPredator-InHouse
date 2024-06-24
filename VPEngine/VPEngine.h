@@ -7,6 +7,7 @@
 class TimeManager;
 class SystemManager;
 class SceneManager;
+
 class VPEngine
 {
 public:
@@ -18,6 +19,7 @@ public:
 protected:
 	virtual void Update();
 	virtual void Render();
+	virtual void EndRender();
 	TimeManager* m_TimeManager;
 	SystemManager* m_SystemManager;
 	SceneManager* m_SceneManager;

@@ -6,11 +6,16 @@
 void PlayerSystem::Update(float deltaTime)
 {
 
-	for (IDComponent& IDComp :COMPITER(IDComponent))
+	for (PlayerComponent& player :COMPITER(PlayerComponent))
 	{
+		auto comp = player.GetComponent<TransformComponent>();
+
+		comp->World_Location = {};
 		//IDComp.Name == "Player";
 		//IDComp.GetComponent<TransformComponent>();
 
 		//InputManager::GetInstance().GetKeyDown(KEY::A);
 	}
+
+	
 }
