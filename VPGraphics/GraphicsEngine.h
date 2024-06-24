@@ -13,17 +13,18 @@ class DepthStencilView;
 class ShaderResourceView;
 #pragma endregion DX
 
-#pragma region Pass
-class ForwardPass;
-class SkinnigPass;
-class TexturePass;
-#pragma endregion Pass
+#pragma region Pipeline
+class DeferredShadingPipeline;
+// class ForwardShadingPipeline;
+#pragma endregion
+
+class ForwardPipeline;
+class LightManager;
 
 #include "MeshFilter.h"
 
 class Camera;
 class ModelData;
-
 
 
 
@@ -42,7 +43,10 @@ public:
 	virtual bool Initialize() override;
 	virtual void Update(double dt) override;
 	virtual bool Finalize() override;
+	virtual void BeginRender() override;
 	virtual void Render() override;
+	virtual void EndRender() override;
+
 	virtual void OnResize() override;
 
 	virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
@@ -51,39 +55,64 @@ public:
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	virtual void UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world) override;
 
+	virtual void AddLight(std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void EraseLight(std::wstring name, Kind_of_Light kind) override;
 
+	virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) override;
+
+	/// Debug Draw
+	void DrawSphere(const debug::SphereInfo& info) override;
+	void DrawBox(const debug::AABBInfo& info) override;
+	void DrawOBB(const debug::OBBInfo& info) override;
+	void DrawFrustum(const debug::FrustumInfo& info) override;
+	void DrawGrid(const debug::GridInfo& info) override;
+	void DrawRing(const debug::RingInfo& info) override;
+	void DrawTriangle(const debug::TriangleInfo& info) override;
+	void DrawQuad(const debug::QuadInfo& info) override;
+	void DrawRay(const debug::RayInfo& info) override;
 
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
 	std::map<std::wstring, std::pair<PassState,std::shared_ptr<ModelData>>> m_RenderList;
-
-	void DrawQuad(ShaderResourceView* srv);
+	std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)> m_LightList;
 
 private:
 	std::shared_ptr<Device> m_Device;
-	D3D11_VIEWPORT* m_VP;
+	std::shared_ptr<D3D11_VIEWPORT> m_VP;
 
 private:
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
+	std::shared_ptr<LightManager> m_LightManager;
+	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;
 
 private:
 	HWND m_hWnd;
 	RECT m_wndSize;
-
-	Camera* m_Camera;
-
+	
 	//camera
 	DirectX::SimpleMath::Matrix m_View;
 	DirectX::SimpleMath::Matrix m_Proj;
 	DirectX::SimpleMath::Matrix m_ViewProj;
 
+	// Pipeline
+	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
+	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
+
+
+
+
+	//test
+	std::shared_ptr<Camera> m_Camera;
+	//Camera* m_Camera;
+
+	LightData Dir;
+	LightData Spot;
+	LightData Point;
 	
-	ForwardPass* m_BasePass;
-	TexturePass* m_TexturePass;
-	SkinnigPass* m_SkinningPass;
+
 
 };

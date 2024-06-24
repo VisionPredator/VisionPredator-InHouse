@@ -46,7 +46,7 @@ RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, std::weak_ptr
 	m_Device.lock()->Get()->CreateRenderTargetView(backbuffer.lock()->Get(), &desc, &m_RTV);
 }
 
-RenderTargetView::RenderTargetView(Device* device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height)
+RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height)
 {
 	switch (type)
 	{

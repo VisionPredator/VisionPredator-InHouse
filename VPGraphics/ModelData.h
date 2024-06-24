@@ -17,19 +17,10 @@ class ModelData :
 	public Resource, public std::enable_shared_from_this<ModelData>
 {
 public:
-	ModelData() : m_name(L"need name"), m_RootNode(),RS()
-	{
-	}
-
+	ModelData();
 	~ModelData();
 
-	ModelData(std::shared_ptr<ModelData> other)
-	{
-		this->m_RootNode = other->m_RootNode;
-		this->m_Meshes = other->m_Meshes;
-		this->m_Materials = other->m_Materials;
-		this->m_Animations = other->m_Animations;
-	}
+	ModelData(std::shared_ptr<ModelData> other);
 
 
 	virtual void Release() override;
@@ -41,8 +32,6 @@ public:
 	std::vector<std::shared_ptr<Mesh>> m_Meshes; // VB + IB + BONE + PRIMITIVE
 	std::vector<std::shared_ptr<Material>> m_Materials; //SRV
 	std::vector<std::shared_ptr<Animation>> m_Animations; //애니메이션 전체를 담고있는 컨테이너
-
-
 
 	///여기 데이터를 따로 때서 Modeldata를 갖는 형식으로 해야할까?
 	//위치 data

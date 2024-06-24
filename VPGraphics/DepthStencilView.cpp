@@ -1,6 +1,8 @@
 #include "pch.h"	
 
 #include "DepthStencilView.h"
+
+#include "Defines.h"
 #include "Texture2D.h"
 #include "Desc.h"
 
@@ -64,6 +66,46 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_S
 	}
 }
 
+DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, DepthStencilViewType type, const uint32_t& width,
+	const uint32_t& height)
+{
+	Microsoft::WRL::ComPtr<ID3D11Device> d3dDevice = device->Get();
+
+	D3D11_TEXTURE2D_DESC textureDesc = {};
+	textureDesc.Width = width;
+	textureDesc.Height = height;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
+	depthStencilViewDesc.Flags = 0;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+	switch (type)
+	{
+	case DepthStencilViewType::Default:
+		{
+		textureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		}
+		break;
+	default:
+		break;
+	}
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> buffer;
+	HR_CHECK(d3dDevice->CreateTexture2D(&textureDesc, 0, &buffer));
+	HR_CHECK(d3dDevice->CreateDepthStencilView(buffer.Get(), &depthStencilViewDesc, m_DSV.GetAddressOf()));
+}
+
 DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
 {
 	/*HRESULT hr;
@@ -85,7 +127,7 @@ DepthStencilView::~DepthStencilView()
 
 ID3D11DepthStencilView* DepthStencilView::Get() const
 {
-	return m_DSV;
+	return m_DSV.Get();
 }
 
 ID3D11DepthStencilView** DepthStencilView::GetAddress()
@@ -95,5 +137,5 @@ ID3D11DepthStencilView** DepthStencilView::GetAddress()
 
 void DepthStencilView::Release()
 {
-	m_DSV->Release();
+	//m_DSV->Release();
 }

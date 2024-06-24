@@ -1,49 +1,21 @@
-struct DirectionLight
+struct LightData
 {
     float4 Ambient;
     float4 Diffuse;
     float4 Specular;
+
     float3 Direction;
-    float pad;
-    
-};
-
-struct PointLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    
-    float3 Position;
     float Range;
-    
-    float3 Att;
+
+    float3 Attenuation;
     float pad;
+  
+    float3 pos;
+    float spot;
 };
 
-struct SpotLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    
-    float3 Position;
-    float Range;
-    
-    float3 Direction;
-    float Spot;
-    
-    float3 Att;
-    float pad;
-    
-};
 
-cbuffer Transform : register(b0)
-{
-    float4x4 glocal;
-}
-
-cbuffer Camera : register(b1)
+cbuffer Camera : register(b0)
 {
     float4x4 gWorldViewProj;
     float4x4 gView;
@@ -51,26 +23,30 @@ cbuffer Camera : register(b1)
     float4x4 gViewInverse;
 };
 
-cbuffer Light : register(b2)
+cbuffer Transform : register(b1)
 {
-    DirectionLight gDirLight;
-    PointLight gPointLight;
-    SpotLight gSpotLight;
-};
+    float4x4 gWorld;
+    float4x4 glocal;
+}
 
+
+
+cbuffer LightArray : register(b2)
+{
+    LightData Dir[100];
+    LightData Point[100];
+    LightData Spot[100];
+    float DirIndex;
+    float PointIndex;
+    float SpotIndex;
+    float pad;
+};
 
 Texture2D gDiffuseMap : register(t0);
 Texture2D gNormalMap : register(t1);
 Texture2D gSpecularMap : register(t2);
 
-SamplerState samAnisotropic : register(s0)
-{
-    //Filter = ANISOTROPIC;
-    //MaxAnisotropy = 4;
-    //AddressU = WRAP;
-    //AddressV = WRAP;
-};
-
+SamplerState samAnisotropic : register(s0);
 SamplerState samLinear : register(s1);
 
 struct PS_INPUT
@@ -87,6 +63,7 @@ struct PS_INPUT
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
+
     float4 ambient = { 0.1, 0.1, 0.1, 0 };
     float4 diffuse = { 0, 0, 0, 0 };
     float4 specular = { 0, 0, 0, 0 };
@@ -94,9 +71,13 @@ float4 main(PS_INPUT input) : SV_TARGET
     //눈위치는 FPS니까 카메라랑 똑같다 - view는 카메라 행렬의 역행렬이다 viewinverse == camera
     float3 eyepos = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
     
+    LightData gDirLight = Dir[0];
+    
+    
     //표면점에서 광원으로의 벡터 
     float3 lightVec = -normalize(gDirLight.Direction); //directionlight는 모든 표면점에서 일정한 방향으로 들어오는 빛이므로 빛의 방향을 역으로 쓰자
     //float3 lightVec = normalize(gDirLight.Direction)- input.pos;  //point light나 spot light는 위치에따라 빛의 방향이 바뀜
+    
     
     //빛의 색상
     ambient = gDirLight.Ambient;
@@ -123,7 +104,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     //float3 v = reflect(-lightVec, input.normal.xyz);
     float3 v = reflect(-lightVec, vNormal.xyz);
         
-    /*물질의 광택 계수*/
+    //물질의 광택 계수
     float materialCoefficient = 64.f;
     
     //거듭제곱을 통해 광택을 간접적으로 표현
@@ -133,8 +114,9 @@ float4 main(PS_INPUT input) : SV_TARGET
     specular = specularfactor * gDirLight.Specular;
         
     float4 litColor;
+
     //ambient에 albedo를 곱해 더 선명한 색상을 출력해 낼수 있다
-    //litColor = ambient * albedo + diffuse * albedo + specular;
+    litColor = ambient * albedo + diffuse * albedo + specular;
     
     //litColor = diffuse * specular;
     //litColor = ambient * specular;
@@ -149,7 +131,10 @@ float4 main(PS_INPUT input) : SV_TARGET
     //litColor = input.tangent;
     //litColor = input.bitangent;
     //litColor = vNormal;
-    litColor = albedo;
+    //litColor = albedo;
     
+ 
     return litColor;
+    
+
 }

@@ -15,6 +15,9 @@
 #include "Texture2D.h"
 
 #include "RenderPass.h"
+
+#include "DeferredShadingPipeline.h"
+#include "ForwardPipeline.h"
 #pragma endregion DX
 
 #pragma region Util
@@ -32,6 +35,8 @@
 #include "ResourceManager.h"
 #include "ModelLoader.h"
 #include "Animator.h"
+#include "LightManager.h"
+#include "DebugDrawManager.h"
 #pragma endregion Manager
 
 
@@ -39,7 +44,6 @@
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_VP(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
 {
-
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -49,7 +53,7 @@ GraphicsEngine::~GraphicsEngine()
 bool GraphicsEngine::Initialize()
 {
 	GetClientRect(m_hWnd, &m_wndSize);
-	m_VP = new D3D11_VIEWPORT();
+	m_VP = std::make_shared<D3D11_VIEWPORT>();
 	m_VP->TopLeftX = static_cast<float>(m_wndSize.left);
 	m_VP->TopLeftY = static_cast<float>(m_wndSize.top);
 	m_VP->Width = static_cast<float>(m_wndSize.right - m_wndSize.left);
@@ -57,65 +61,61 @@ bool GraphicsEngine::Initialize()
 	m_VP->MinDepth = 0.0f;
 	m_VP->MaxDepth = 1.0f;
 
-	m_Camera = new Camera();
+	//m_Camera = new Camera();
+	m_Camera = std::make_shared<Camera>();
 	m_Camera->Initialize(m_VP->Width / m_VP->Height);
 
 	m_Device = std::make_shared<Device>(m_hWnd);
-	if (m_Device != nullptr)
-	{
-		m_Device->Initialize();
-		m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
-		m_ResourceManager->Initialize();
 
-		m_Loader = std::make_shared <ModelLoader>(m_ResourceManager,m_Device);
-		m_Loader->Initialize();
+	if (m_Device == nullptr)
+		return false;
 
-		m_Animator = std::make_shared <Animator>();
+	m_Device->Initialize();
 
-		if (m_Device->SwapChain())
-		{
-			//output
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
+	if (m_Device->SwapChain() == nullptr)
+		return false;
 
-			//deferred
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_2"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_3"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_4"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_5"));
-			m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_6"));
+	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
+	m_ResourceManager->Initialize();
 
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_1"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_2"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_3"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_4"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_5"));
-			m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_6"));
+	
+	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
+	m_Loader->Initialize();
+	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
+	m_Animator = std::make_shared <Animator>();
+	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
+	m_DebugDrawManager->Initialize(m_Device);
+	OnResize();
 
-			//출력병합기
-			m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-			m_Device->Context()->RSSetViewports(1, m_VP);
+	// Pipeline
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_Camera);
 
+	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
+	m_ForwardPipeline->Initialize();
 
-			//test
-			m_BasePass = new ForwardPass(m_Device, m_ResourceManager, m_VP);
-			m_TexturePass = new TexturePass(m_Device, m_ResourceManager, m_VP);
-			m_SkinningPass = new SkinnigPass(m_Device, m_ResourceManager, m_VP);
+	//output
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
+	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-			AddRenderModel(MeshFilter::Axis, L"Axis");
-			AddRenderModel(MeshFilter::Grid, L"Grid");
-			AddRenderModel(MeshFilter::TextureBox, L"TextureBox");
-			EraseObject(L"TextureBox");
-			AddRenderModel(MeshFilter::Skinning, L"test",L"Flair");
+	//출력병합기
+	// TODO: RTV와 뷰포트 바인딩은 이제 여기서 안하고 패스마다 필요시에 바인딩할 것임. 즉. 여기 있는거 삭제해야함.
+	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
+	m_Device->Context()->RSSetViewports(1, m_VP.get());
 
-			
+	AddRenderModel(MeshFilter::Axis, L"Axis");
+	AddRenderModel(MeshFilter::Grid, L"Grid");
+	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
+	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 
 
-			return true;
-		}
-	}
+	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, -1.f);
+	Dir.color = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 
+	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
 
-	return false;
+	return true;
+
 }
 
 void GraphicsEngine::Update(double dt)
@@ -140,166 +140,75 @@ void GraphicsEngine::Update(double dt)
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
 
-	std::weak_ptr<ConstantBuffer<CameraCB>> test = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	std::weak_ptr<ConstantBuffer<CameraData>> test = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
+
 	test.lock()->m_struct.view = cb_view;
 	test.lock()->m_struct.viewInverse = cb_viewInverse;
 	test.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	test.lock()->Update();
 
 
-	m_Animator->Update(dt,m_RenderList);
+	m_Animator->Update(dt, m_RenderList);
 
+	m_DeferredShadingPipeline->Update(m_RenderList);
+	m_ForwardPipeline->Update(m_RenderList);
 
-	//비트 연산으로 해보자
-
-	for (auto& model : m_RenderList)
-	{
-		PassState temp = model.second.first;
-
-		temp &= PassState::Base;
-		if (temp == PassState::Base)
-		{
-			m_BasePass->AddModelData(model.second.second);
-
-		}
-
-		temp = model.second.first;
-		temp &= PassState::Texture;
-		if (temp == PassState::Texture)
-		{
-			m_TexturePass->AddModelData(model.second.second);
-
-		}
-
-		temp = model.second.first;
-		temp &= PassState::Skinning;
-		if (temp == PassState::Skinning)
-		{
-			m_SkinningPass->AddModelData(model.second.second);
-		}
-
-	}
+	m_LightManager->Update(m_LightList);
 }
 
 bool GraphicsEngine::Finalize()
 {
-	//delete m_Loader;
-	//m_ResourceManager;
+	//delete m_Camera;
 
-	delete m_Camera;
-	delete m_VP;
+	m_RenderList.clear();
+	m_VP.reset();
 
 	m_Device.reset();
 	m_ResourceManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
 
-	//test
-	delete m_TexturePass;
-	delete m_SkinningPass;
-	delete m_BasePass;
-
 	return true;
+}
+
+void GraphicsEngine::BeginRender()
+{
+	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
+	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 1.f };
+	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
+	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
+	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+
+	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[0].lock()->Get(), white);
+	m_Device->BeginRender(m_RTVs[2].lock()->Get(), m_DSVs[0].lock()->Get(), red);
+	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[0].lock()->Get(), green);
+	m_Device->BeginRender(m_RTVs[4].lock()->Get(), m_DSVs[0].lock()->Get(), blue);
+	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+
+
 }
 
 void GraphicsEngine::Render()
 {
-	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+	// 디퍼드 렌더링 기법을 사용한 파이프라인.
+	// 디퍼드 패스 + 포워드 패스.
+	m_DeferredShadingPipeline->Render();
 
-	m_BasePass->StaticRender();
-	m_TexturePass->StaticRender();
-	m_SkinningPass->Render();
+	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
+	// 오로지 포워드 패스만 존재.
+	m_ForwardPipeline->Render();
+}
 
+void GraphicsEngine::EndRender()
+{
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP);
+	m_Device->Context()->RSSetViewports(1, m_VP.get());
 	m_Device->EndRender();
 }
 
-
-//void GraphicsEngine::DeferredRender()
-//{
-//	//m_Device->BeginDeferredRender(m_RTVs, m_DSVs[0]->Get());
-//	//m_Device->Context()->RSSetViewports(1, m_VP);
-//
-//	//ID3D11RenderTargetView* MRT[5];
-//	//MRT[0] = m_RTVs[1]->Get(); //albedo
-//	//MRT[1] = m_RTVs[2]->Get(); //normal
-//	//MRT[2] = m_RTVs[3]->Get(); //position
-//	//MRT[3] = m_RTVs[4]->Get(); //depth
-//	//MRT[4] = m_RTVs[5]->Get(); //tangent
-//
-//	//std::weak_ptr<ShaderResourceView> SRVS[5];
-//	//SRVS[0] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_1");
-//	//SRVS[1] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_2");
-//	//SRVS[2] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_3");
-//	//SRVS[3] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_4");
-//	//SRVS[4] = m_ResourceManager->Get<ShaderResourceView>(L"OffScreenSRV_5");
-//
-//	////렌더타겟 바인딩
-//	//m_Device->Context()->OMSetRenderTargets(5, MRT, m_DSVs[0]->Get());
-//	//{
-//	//	m_Device->Context()->PSSetShader(m_ResourceManager->Create<PixelShader>(L"../x64/Debug/GeoMetryPS.cso", L"GeoMetry").lock()->GetPS(), nullptr, 0);
-//
-//	//	/*for (auto& ob : m_FowardRenderObjects)
-//	//	{
-//	//		m_Device->DeferredRender(ob.second, m_RTVs, m_DSVs);
-//	//	}*/
-//
-//	//	//m_device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
-//	//}
-//
-//
-//	////ImGui::Text("test");
-//	//float aspectRatio = 16.0f / 9.0f;
-//	//float newWidth = 300 * aspectRatio;
-//
-//	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0]->GetAddress(), m_DSVs[0]->Get());
-//
-//	////pass2
-//	////UINT size = static_cast<UINT>(sizeof(QuadVertex));
-//	////VertexBuffer* vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-//	////IndexBuffer* ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-//	////ConstantBuffer<WorldTransformCB>* cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
-//	////VertexShader* vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-//	////PixelShader* ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/DeferredPS.cso", L"Deferred");
-//	////RenderState* rs = m_ResourceManager->Get<RenderState>(L"Solid");
-//	////
-//	////
-//	////m_device->Context()->IASetInputLayout(vs->InputLayout());
-//	////
-//	////m_device->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-//	////m_device->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-//	////
-//	////m_device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-//	////m_device->Context()->RSSetState(rs->Get());
-//	////
-//	////m_device->Context()->VSSetShader(vs->GetVS(), nullptr, 0);
-//	////
-//	////
-//	////m_device->Context()->VSSetConstantBuffers(1, 1, cb->GetAddress());
-//	////m_device->Context()->PSSetConstantBuffers(0, 1, cb->GetAddress());
-//	////
-//	////for (int i = 0; i < 5; i++)
-//	////{
-//	////	m_device->Context()->PSSetShaderResources(i, 1, SRVS[i]->GetAddress());
-//	////}
-//	////
-//	////m_device->Context()->PSSetSamplers(1, 1, SRVS[0]->GetSamplerAddress());
-//	////
-//	////m_device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
-//	////m_device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-//	////
-//	//m_Device->EndRender();
-//}
-
-
 bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx)
 {
-
-	//std::wstring VSPath = L"../x64/Debug/" + VSname + L"VS.cso";
-	//std::wstring PSPath = L"../x64/Debug/" + PSname + L"PS.cso";
-
 	switch (mesh)
 	{
 		case MeshFilter::Axis:
@@ -319,10 +228,10 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			AxisModel->world = DirectX::SimpleMath::Matrix::Identity;
 			AxisModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			AxisModel->m_pass = PassState::Base;
+			AxisModel->m_pass = PassState::Debug;
 
 			m_ResourceManager->Add<ModelData>(L"Axis", AxisModel);
-			m_RenderList.insert(std::pair<std::wstring,std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, AxisModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(AxisModel->m_pass, AxisModel)));
 		}
 		break;
 		case MeshFilter::Grid:
@@ -407,10 +316,10 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			GridModel->world = DirectX::SimpleMath::Matrix::Identity;
 			GridModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			GridModel->m_pass = PassState::Base;
+			GridModel->m_pass = PassState::Debug;
 
 			m_ResourceManager->Add<ModelData>(L"Grid", GridModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, GridModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(GridModel->m_pass, GridModel)));
 		}
 		break;
 		case MeshFilter::Box:
@@ -430,82 +339,193 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
 			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-			BoxModel->m_pass = PassState::Base;
+			BoxModel->m_pass = PassState::Static;
 
 			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
-			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
+			m_ResourceManager->Add<ModelData>(L"AABB", BoxModel);
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Box", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Base, BoxModel)));
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"AABB", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 		}
 		break;
 		case MeshFilter::TextureBox:
-			{
-				std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
+		{
+			std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
 
-				BoxModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
+			BoxModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
 
-				BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
+			BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
 
-				UINT size = static_cast<UINT>(sizeof(TextureVertex));
-				BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
-				BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
+			UINT size = static_cast<UINT>(sizeof(BaseVertex));
+			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
+			BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
 
 
-				D3D11_BUFFER_DESC bufferDesc{};
-				bufferDesc.Usage = D3D11_USAGE_DEFAULT; //동적 리소스 만들거면 dynamic , upadate시 map,unmap 사용
-				bufferDesc.ByteWidth = sizeof(WorldTransformCB); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
-				bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-				bufferDesc.CPUAccessFlags = 0;	//동적 리소스면 write
-				bufferDesc.MiscFlags = 0;
+			D3D11_BUFFER_DESC bufferDesc{};
+			bufferDesc.Usage = D3D11_USAGE_DEFAULT; //동적 리소스 만들거면 dynamic , upadate시 map,unmap 사용
+			bufferDesc.ByteWidth = sizeof(TransformData); // 상수 버퍼의 크기는 상수 데이터의 크기와 같아야 합니다.
+			bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			bufferDesc.CPUAccessFlags = 0;	//동적 리소스면 write
+			bufferDesc.MiscFlags = 0;
 
-				BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
-				BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
+			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
+			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
 
-				BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
-				BoxModel->m_Materials[0]->m_DiffuseSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
-				BoxModel->m_Materials[0]->m_NormalSRV= m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png", SamplerDESC::Linear);
+			BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
+			BoxModel->m_Materials[0]->m_AlbedoSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+			BoxModel->m_Materials[0]->m_NormalSRV = m_ResourceManager->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 
-				BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
+			BoxModel->m_Meshes[0]->m_primitive = TextureBox::PRIMITIVE_TOPOLOGY;
 
-				BoxModel->m_pass = PassState::Texture;
+			BoxModel->m_pass = PassState::Static;
 
-				m_ResourceManager->Add<ModelData>(L"TextureBox", BoxModel);
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"TextureBox", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Texture, BoxModel)));
+			m_ResourceManager->Add<ModelData>(L"TextureBox", BoxModel);
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"TextureBox", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Static, BoxModel)));
 
-			}
-			break;
-		case MeshFilter::LoadModel:
-			/*{
-				newObject->Set<VertexShader>(m_ResourceManager->Create<VertexShader>(VSPath, VERTEXFILTER::TEXTURE, VSname));
-				newObject->Set<PixelShader>(m_ResourceManager->Create<PixelShader>(PSPath, PSname));
-				newObject->Set<ModelData>(m_ResourceManager->Get<ModelData>(name));
-				newObject->Set<RenderState>(m_ResourceManager->Get<RenderState>(L"Solid"));
-				newObject->Set<WorldTransformCB>(m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(name + L"Transform", BufferDESC::Constant::DefaultWorld), name + L"Transform");
-				newObject->Set<LocalTransformCB>(m_ResourceManager->Create<ConstantBuffer<LocalTransformCB>>(name + L"Local", BufferDESC::Constant::DefaultWorld), name + L"Local");
-			}*/
-			break;
+		}
+		break;
+		case MeshFilter::Static:
+		{
+			std::wstring fbxpath = fbx + L".fbx";
+			std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
+			newModel->m_name = name;
+
+			newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
+			//newModel->m_pass = PassState::Static;
+			newModel->m_pass = PassState::Deferred;
+
+			newModel->local = DirectX::SimpleMath::Matrix::Identity;
+			newModel->local._11 *= 0.05f;
+			newModel->local._22 *= 0.05f;
+			newModel->local._33 *= 0.05f;
+
+			newModel->world = DirectX::SimpleMath::Matrix::Identity;
+
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"static", std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+		}
+		break;
 
 		case MeshFilter::Skinning:
+		{
+			std::wstring fbxpath = fbx + L".fbx";
+			std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
+			newModel->m_name = name;
+
+			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
+			newModel->m_pass = PassState::Skinning;
+
+			newModel->world = DirectX::SimpleMath::Matrix::Identity;
+			newModel->world._11 *= 0.05f;
+			newModel->world._22 *= 0.05f;
+			newModel->world._33 *= 0.05f;
+
+			newModel->local = DirectX::SimpleMath::Matrix::Identity;
+
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+			m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
+		}
+		break;
+
+		case MeshFilter::Circle:
+		{
+			std::shared_ptr<ModelData> CircleModel = std::make_shared<ModelData>();
+
+			CircleModel->m_name = name;
+			CircleModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
+
+			CircleModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
+
+			UINT size = static_cast<UINT>(sizeof(BaseVertex));
+
+			int segmentCount = 60;
+			int radius = 1;
+			const float angleStep = DirectX::XM_2PI / segmentCount; //2pi = 360
+
+			std::vector<BaseVertex> vertices;
+
+			//xy
+			for (int i = 0; i <= segmentCount; ++i)
 			{
-				std::wstring fbxpath = fbx + L".fbx";
-				std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
-				newModel->m_name = name;
+				float angle = i * angleStep;
+				float x = radius * cosf(angle);
+				float y = radius * sinf(angle);
 
-				newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-				newModel->m_pass = PassState::Skinning;
+				BaseVertex temp1;
+				temp1.pos = DirectX::XMFLOAT4(x, y, 0, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴
+				temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+				vertices.push_back(temp1);
 
-				newModel->world = DirectX::SimpleMath::Matrix::Identity;
-				newModel->world._11 *= 0.05f;
-				newModel->world._22 *= 0.05f;
-				newModel->world._33 *= 0.05f;
-
-				newModel->local = DirectX::SimpleMath::Matrix::Identity;
-
-				m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"test", std::pair<PassState, std::shared_ptr<ModelData>>(PassState::Skinning, newModel)));
-				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
 			}
-			break;
 
+			//xz
+			for (int i = 0; i <= segmentCount; ++i)
+			{
+				float angle = i * angleStep;
+				float x = radius * cosf(angle);
+				float y = radius * sinf(angle);
+
+				BaseVertex temp1;
+				temp1.pos = DirectX::XMFLOAT4(x, 0, y, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴 0은 벡터
+				temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+				vertices.push_back(temp1);
+
+			}
+
+
+			D3D11_BUFFER_DESC vbd;
+			vbd.Usage = D3D11_USAGE_IMMUTABLE;
+			vbd.ByteWidth = sizeof(BaseVertex) * static_cast<int>(vertices.size());
+			vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			vbd.CPUAccessFlags = 0;
+			vbd.MiscFlags = 0;
+			vbd.StructureByteStride = 0;
+
+			D3D11_SUBRESOURCE_DATA data;
+			data.pSysMem = &(vertices[0]);
+
+			size = static_cast<UINT>(sizeof(BaseVertex));
+			CircleModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"Circle_VB", vbd, data, size);
+
+			std::vector<UINT> indexList;
+
+			for (int i = 0; i < vertices.size() / 2; i++)
+			{
+				indexList.push_back(i);
+			}
+
+			indexList.back() = 0;
+
+			int verticesize = static_cast<int>(vertices.size());
+
+			for (int i = verticesize / 2; i < verticesize; i++)
+			{
+				indexList.push_back(i);
+			}
+			indexList.back() = verticesize / 2;
+
+			D3D11_BUFFER_DESC ibd;
+			ibd.Usage = D3D11_USAGE_IMMUTABLE;
+			ibd.ByteWidth = sizeof(UINT) * static_cast<int>(indexList.size());
+			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			ibd.CPUAccessFlags = 0;
+			ibd.MiscFlags = 0;
+			ibd.StructureByteStride = 0;
+
+			D3D11_SUBRESOURCE_DATA iinitData;
+			iinitData.pSysMem = &(indexList[0]);
+
+			CircleModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"Circle_IB", ibd, iinitData, static_cast<int>(indexList.size()));
+			CircleModel->m_Meshes[0]->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+
+			CircleModel->world = DirectX::SimpleMath::Matrix::Identity;
+			CircleModel->local = DirectX::SimpleMath::Matrix::Identity;
+
+			CircleModel->m_pass = PassState::Debug;
+
+			m_ResourceManager->Add<ModelData>(name, CircleModel);
+			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(CircleModel->m_pass, CircleModel)));
+		}
+
+		break;
 		case MeshFilter::None:
 			break;
 		default:
@@ -514,7 +534,6 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 	return true;
 }
-
 
 void GraphicsEngine::EraseObject(std::wstring name)
 {
@@ -541,7 +560,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
-	std::weak_ptr<ConstantBuffer<CameraCB>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraCB>>(L"Camera");
+	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
@@ -553,12 +572,135 @@ void GraphicsEngine::UpdateModelTransform(std::wstring name, DirectX::SimpleMath
 	m_RenderList[name].second->world = world;
 }
 
+void GraphicsEngine::AddLight(std::wstring name, Kind_of_Light kind, LightData data)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(name) == curMap.end())
+	{
+		curMap.insert(std::pair<std::wstring, LightData>(name, data));
+		AddRenderModel(MeshFilter::Circle, name);
+
+		curMap[name] = data;
+		std::shared_ptr<ModelData> debugmodel = m_ResourceManager->Get<ModelData>(name).lock();
+
+		//scale
+		if (data.range > 0)
+		{
+			debugmodel->local._11 = data.range;
+			debugmodel->local._22 = data.range;
+			debugmodel->local._33 = data.range;
+		}
+
+		//상수버퍼로 넘겨야하니까 전치해서 보내버리자
+		//translate
+		debugmodel->local._14 = data.pos.x;
+		debugmodel->local._24 = data.pos.y;
+		debugmodel->local._34 = data.pos.z;
+
+	}
+	else
+	{
+		MessageBox(0, L"This Light already Exist", 0, 0);
+		return;
+	}
+
+}
+
+
+void GraphicsEngine::EraseLight(std::wstring name, Kind_of_Light kind)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(name) != curMap.end())
+	{
+		curMap.erase(name);
+		EraseObject(name);
+	}
+	else
+	{
+		MessageBox(0, L"This Light Is Not Exist", 0, 0);
+		return;
+	}
+}
+
+void GraphicsEngine::UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data)
+{
+	int index = static_cast<int>(kind);
+	std::unordered_map <std::wstring, LightData> curMap = m_LightList[index];
+
+	if (curMap.find(name) != curMap.end())
+	{
+		curMap[name] = data;
+		m_ResourceManager->Get<ModelData>(name).lock()->local._31 = data.pos.x;
+		m_ResourceManager->Get<ModelData>(name).lock()->local._32 = data.pos.y;
+		m_ResourceManager->Get<ModelData>(name).lock()->local._33 = data.pos.z;
+
+		if (data.range > 0)
+		{
+			m_ResourceManager->Get<ModelData>(name).lock()->local * data.range;
+		}
+	}
+	else
+	{
+		MessageBox(0, L"This Light Is Not Exist", 0, 0);
+		return;
+	}
+}
+
+void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawBox(const debug::AABBInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawOBB(const debug::OBBInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawFrustum(const debug::FrustumInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawGrid(const debug::GridInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawRing(const debug::RingInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawTriangle(const debug::TriangleInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
+void GraphicsEngine::DrawQuad(const debug::QuadInfo& info)
+{
+	m_DebugDrawManager->AddTask(info); 
+}
+
+void GraphicsEngine::DrawRay(const debug::RayInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
 void GraphicsEngine::OnResize()
 {
-	delete m_VP;
+	m_VP.reset();
 
 	GetClientRect(m_hWnd, &m_wndSize);
-	m_VP = new D3D11_VIEWPORT();
+	m_VP = std::make_shared<D3D11_VIEWPORT>();
 	m_VP->TopLeftX = static_cast<float>(m_wndSize.left);
 	m_VP->TopLeftY = static_cast<float>(m_wndSize.top);
 	m_VP->Width = static_cast<float>(m_wndSize.right - m_wndSize.left);
@@ -574,67 +716,18 @@ void GraphicsEngine::OnResize()
 	m_Device->OnResize();
 	m_ResourceManager->OnResize();
 
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_1"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_2"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_3"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_4"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_5"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_6"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Albedo"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Normal"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Position"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Depth"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Tangent"));
 
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_1"));
-	/*m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_2"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_3"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_4"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_5"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_6"));*/
+	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
+
 
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_VP);
+	m_Device->Context()->RSSetViewports(1, m_VP.get());
 }
 
-void GraphicsEngine::DrawQuad(ShaderResourceView* srv)
-{
-
-
-
-
-	UINT size = static_cast<UINT>(sizeof(QuadVertex));
-
-	std::weak_ptr<VertexBuffer> vb = m_ResourceManager->Create<VertexBuffer>(L"Quard_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
-	std::weak_ptr<IndexBuffer> ib = m_ResourceManager->Create<IndexBuffer>(L"Quard_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
-	std::weak_ptr<ConstantBuffer<WorldTransformCB>> cb = m_ResourceManager->Create<ConstantBuffer<WorldTransformCB>>(L"QuadTransform", BufferDESC::Constant::DefaultWorld);
-
-	std::weak_ptr<VertexShader> vs = m_ResourceManager->Create<VertexShader>(L"../x64/Debug/QuadVS.cso", VERTEXFILTER::QUAD, L"Quad");
-	std::weak_ptr<PixelShader> ps = m_ResourceManager->Create<PixelShader>(L"../x64/Debug/QuadPS.cso", L"Quad");
-	std::weak_ptr<RenderState> rs = m_ResourceManager->Get<RenderState>(L"Solid");
-
-
-
-	m_Device->Context()->IASetInputLayout(vs.lock()->InputLayout());
-
-	m_Device->Context()->IASetVertexBuffers(0, 1, vb.lock()->GetAddress(), vb.lock()->Size(), vb.lock()->Offset());
-	m_Device->Context()->IASetIndexBuffer(ib.lock()->Get(), DXGI_FORMAT_R32_UINT, 0);
-
-	m_Device->Context()->IASetPrimitiveTopology(Quad::PRIMITIVE_TOPOLOGY);
-	m_Device->Context()->RSSetState(rs.lock()->Get());
-
-	m_Device->Context()->VSSetShader(vs.lock()->GetVS(), nullptr, 0);
-
-
-	m_Device->Context()->VSSetConstantBuffers(1, 1, cb.lock()->GetAddress());
-	m_Device->Context()->PSSetConstantBuffers(0, 1, cb.lock()->GetAddress());
-
-
-	m_Device->Context()->PSSetShaderResources(0, 1, srv->GetAddress());
-	m_Device->Context()->PSSetSamplers(0, 1, srv->GetSamplerAddress());
-
-
-	m_Device->Context()->PSSetShader(ps.lock()->GetPS(), nullptr, 0);
-	m_Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-
-
-
-
-
-}
