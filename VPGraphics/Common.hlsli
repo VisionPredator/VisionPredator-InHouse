@@ -1,4 +1,3 @@
-//CONSTANT
 
 //PI
 static const float Pi = 3.141592;
@@ -7,6 +6,7 @@ static const float Epsilon = 0.00001;
 //모든 유전체에 대한 일정한 수직 입사 프레넬 계수
 static const float3 Fdielectric = { 0.04, 0.04, 0.04 };
 
+//CONSTANT
 ///Camera
 cbuffer Camera : register(b0)
 {
@@ -28,11 +28,12 @@ cbuffer Transform : register(b1)
 cbuffer Material : register(b2)
 {
     float4 AMRO;
-    float useN;
+    float4 useNE;
+    float4 albedo;
     float metalness;
     float roughness;
     float ao; // Ambient Occlusion
-    float4 albedo;
+    float pad; 
 };
 
 
@@ -75,8 +76,9 @@ Texture2D gDepth : register(t3);
 Texture2D gMetalic : register(t4);
 Texture2D gRoughness : register(t5);
 Texture2D gAO : register(t6);
+Texture2D gEmissive : register(t7);
 
-Texture2D gGBuffer : register(t7);
+Texture2D gGBuffer : register(t8);
 
 //sampler
 SamplerState samLinear : register(s0);

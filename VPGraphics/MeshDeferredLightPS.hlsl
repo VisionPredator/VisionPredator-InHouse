@@ -22,6 +22,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     float metallicValue = gMetalic.Sample(samLinear, input.tex).r;  //quad에 텍스처를 샘플링해서 이상하게 나오는거였음
     float roughnessValue = gRoughness.Sample(samLinear, input.tex).r;
     float aoValue = gAO.Sample(samLinear, input.tex).r;
+    float3 EmissiveValue = gEmissive.Sample(samLinear, input.tex).r;
     
      //수직 입사 시의 반사율 - 비금속이면 0.04 금속이면 metalic RGB 언리얼4는 이렇게 쓴다
     float3 F0 = Fdielectric;
@@ -62,7 +63,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     result = result / (result + float3(1.0, 1.0, 1.0));
     
     // gamma correct
-    result = pow(result, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2));
+    result = pow(result, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)) + EmissiveValue;
         
     output.Gbuffer = float4(result, 1);
     //output.Gbuffer = float4(albedoColor, 1);

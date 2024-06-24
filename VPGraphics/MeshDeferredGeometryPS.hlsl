@@ -17,6 +17,7 @@ struct PS_OUTPUT
     float4 Metalic : SV_Target4;
     float4 Roughness : SV_Target5;
     float4 AO : SV_Target6;
+    float4 Emissive : SV_Target7;
 };
 
 PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
@@ -29,10 +30,37 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         output.Albedo = gAlbedo.Sample(samLinear, input.tex);
     }
 	
+    if (AMRO.y > 0)
+    {
+        output.Metalic = gMetalic.Sample(samLinear, input.tex);
+    }
+    else
+    {
+        output.Metalic = 0.04;
+    }
+    
+    if (AMRO.z > 0)
+    {
+        output.Roughness = gRoughness.Sample(samLinear, input.tex);
+    }
+    else
+    {
+        output.Roughness = 0.f;
+    }
+    
+    if (AMRO.w > 0)
+    {
+        output.AO = gAO.Sample(samLinear, input.tex);
+    }
+    else
+    {
+        output.AO = 0.f;
+    }
+    
 	
 	 //tangentspace를 계산해 normal을 만든다
     float4 N = normalize(input.normal);
-    if (useN > 0)
+    if (useNE.x > 0)
     {
         float4 vTangent = normalize(input.tangent);
         float4 vBitangent = normalize(input.bitangent);
@@ -42,18 +70,25 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         N.xyz = mul(NormalTangentSpace, WorldTransform);
         N.xyz = normalize(N.xyz);
     }
-	
     output.Normal = N;
 	
+    if (useNE.y > 0)
+    {
+        output.Emissive = gEmissive.Sample(samLinear, input.tex);
+    }
 	
 	
     output.Position = input.posWorld;
-    output.Metalic = gMetalic.Sample(samLinear, input.tex);
-    output.Roughness = gRoughness.Sample(samLinear, input.tex);
-    output.AO = gAO.Sample(samLinear, input.tex);
+    //output.Metalic = gMetalic.Sample(samLinear, input.tex);
+    //output.Roughness = gRoughness.Sample(samLinear, input.tex);
+    //output.AO = gAO.Sample(samLinear, input.tex);
 
     float d = input.pos.z / input.pos.w;
     d *= 10;
     output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
+    
+    
+    
+    
     return output;
 }

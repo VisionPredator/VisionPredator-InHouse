@@ -13,13 +13,12 @@ float4 main(VS_OUTPUT input) : SV_TARGET
      //// Calculate Directional Light 
  
     float4 albedo = gAlbedo.Sample(samLinear, input.tex);
-    
+    float4 emissive = gEmissive.Sample(samLinear, input.tex);    
     
     float3 result = float3(0, 0, 0);
     
     //View
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
-    //float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - position.xyz);
    
     //tangentspace를 계산해 normal을 만든다
     float4 N = normalize(input.normal);
@@ -95,11 +94,13 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 
     float3 color = ambient + result;
 
+    
     // HDR tonemapping
     color = color / (color + float3(1.0, 1.0, 1.0));
     
     // gamma correct
-    color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2));
+    color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)) + emissive;
+    
     
     return float4(color, 1);
 

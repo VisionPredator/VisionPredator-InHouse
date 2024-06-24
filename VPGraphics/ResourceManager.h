@@ -63,7 +63,7 @@ private:
 
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 	
-	std::array<std::wstring, 8> m_OffScreenName;
+	std::array<std::wstring, 9> m_OffScreenName;
 
 
 };

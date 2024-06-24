@@ -81,7 +81,7 @@ bool GraphicsEngine::Initialize()
 	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
 	m_Loader->Initialize();
 
-	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
+	m_ForwardPipeline = std::make_shared <PassManager>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
 
 	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
@@ -95,22 +95,32 @@ bool GraphicsEngine::Initialize()
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
 
-	//AddRenderModel(MeshFilter::Axis, L"Axis");
-	//AddRenderModel(MeshFilter::Grid, L"Grid");
+	AddRenderModel(MeshFilter::Axis, L"Axis");
+	AddRenderModel(MeshFilter::Grid, L"Grid");
 	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
-	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
-	//AddRenderModel(MeshFilter::Box, L"a", L"a");
+	//AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
 	AddRenderModel(MeshFilter::Static, L"engine_sizedown_1", L"engine_sizedown_1");
 
-	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
+	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 0.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
-	Dir.intensity = 10;
+	Dir.intensity = 20;
+	
+	LightData Dir2;
+	Dir2.direction = DirectX::XMFLOAT3(0.f, 0.f, -1.f);
+	Dir2.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
+	Dir2.intensity = 10;
+
+	LightData Dir3;
+	Dir2.direction = DirectX::XMFLOAT3(1.f, 0.f, 0.f);
+	Dir2.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
+	Dir2.intensity = 10;
+
 
 	Point.attenuation = DirectX::XMFLOAT3(0, 0, 1);
-	Point.color = DirectX::XMFLOAT3(1, 1, 1);
+	Point.color = DirectX::XMFLOAT3(1, 0, 0);
 	Point.intensity = 1;
 	Point.pos = DirectX::XMFLOAT3(0,3,-2);
-	Point.range = 100;
+	Point.range = 10.f;
 
 	LightData Point2;
 	Point2.attenuation = DirectX::XMFLOAT3(0, 0, 1);
@@ -127,8 +137,10 @@ bool GraphicsEngine::Initialize()
 	Spot.spot = 8;
 
 	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
+	//AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
+	//AddLight(L"Sun3", Kind_of_Light::Direction, Dir3);
 	AddLight(L"point", Kind_of_Light::Point, Point);
-	AddLight(L"point2", Kind_of_Light::Point, Point2);
+	//AddLight(L"point2", Kind_of_Light::Point, Point2);
 	//AddLight(L"point", Kind_of_Light::Spot, Spot);
 
 	return true;
@@ -202,11 +214,14 @@ void GraphicsEngine::BeginRender()
 	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[1].lock()->Get(), green);
 	m_Device->BeginRender(m_RTVs[4].lock()->Get(), m_DSVs[1].lock()->Get(), blue);
 	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[1].lock()->Get(), blue+ red);
+	m_Device->BeginRender(m_RTVs[6].lock()->Get(), m_DSVs[1].lock()->Get(), green+ red);
+	m_Device->BeginRender(m_RTVs[7].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), blue + green);
 }
 
 void GraphicsEngine::Render()
 {
-	m_DeferredShadingPipeline->Render();
+	//m_DeferredShadingPipeline->Render();
 
 	m_ForwardPipeline->Render();
 }
@@ -356,7 +371,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 
 			BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
 			BoxModel->m_Materials.back()->m_Data.useAMRO = DirectX::XMFLOAT4(0, 0, 0, 0);
-			BoxModel->m_Materials.back()->m_Data.useN = 0;
+			BoxModel->m_Materials.back()->m_Data.useNE.x = 0;
 
 			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
 
@@ -655,6 +670,10 @@ void GraphicsEngine::OnResize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Normal"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Position"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Depth"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Metalic"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Roughness"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"AO"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Emissive"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"GBuffer"));
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));

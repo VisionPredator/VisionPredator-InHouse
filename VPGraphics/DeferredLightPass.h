@@ -28,6 +28,7 @@ private:
 	std::shared_ptr<ShaderResourceView> m_Metalic;
 	std::shared_ptr<ShaderResourceView> m_Roughness;
 	std::shared_ptr<ShaderResourceView> m_AO;
+	std::shared_ptr<ShaderResourceView> m_Emissive;
 
 	std::shared_ptr<ShaderResourceView> m_GBuffer;
 	

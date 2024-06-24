@@ -9,6 +9,9 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 #include "ShaderResourceView.h"
+#include "Material.h"
+#include "Mesh.h"
+
 #include "Slot.h"
 
 Device::Device(HWND hWnd) : ableMSAA(false), m_Device(nullptr), m_Context(nullptr), m_FeatureLevel(), MSAAQuality(), m_hWnd(hWnd), m_SwapChain(nullptr), m_wndSize()
@@ -138,6 +141,56 @@ void Device::UnBindSRV()
 
 	m_Context->PSSetShaderResources(0, num, pSRV);
 	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
+}
+
+void Device::BindMaterialSRV(std::shared_ptr<Material> curMaterial)
+{
+	MaterialData curMaterialData = curMaterial->m_Data;
+
+	if (curMaterialData.useAMRO.x > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
+	}
+
+	if (curMaterialData.useAMRO.y > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useAMRO.z > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useAMRO.w > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useNE.x > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useNE.y > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
+	}
+}
+
+void Device::BindMeshBuffer(std::shared_ptr<Mesh> mesh)
+{
+	// VB & IB Binding
+	m_Context->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
+	m_Context->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+	m_Context->IASetPrimitiveTopology(mesh->m_primitive);
+}
+
+void Device::BindVS(std::shared_ptr<VertexShader> vs)
+{
+	// Shader Binding
+	m_Context->IASetInputLayout(vs->InputLayout());
+	m_Context->VSSetShader(vs->GetVS(), nullptr, 0);
 }
 
 bool Device::CreateSwapChain()

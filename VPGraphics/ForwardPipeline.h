@@ -18,11 +18,11 @@
 
 class ModelData;
 
-class ForwardPipeline
+class PassManager
 {
 public:
-	ForwardPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource);
-	~ForwardPipeline();
+	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource);
+	~PassManager();
 
 	void Initialize();
 	void Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList);

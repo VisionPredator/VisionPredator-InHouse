@@ -10,6 +10,7 @@ Material::Material(std::shared_ptr<Device> device) : m_Device(device), m_AlbedoS
 	m_MetalicSRV =  std::make_shared<ShaderResourceView>(device);
 	m_RoughnessSRV =  std::make_shared<ShaderResourceView>(device);
 	m_AOSRV =  std::make_shared<ShaderResourceView>(device);
+	m_EmissiveSRV =  std::make_shared<ShaderResourceView>(device);
 	
 }
 

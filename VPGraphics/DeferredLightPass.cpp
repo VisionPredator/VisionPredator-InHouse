@@ -20,6 +20,7 @@ DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::share
 	m_Metalic = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Metalic").lock();
 	m_Roughness = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Roughness").lock();
 	m_AO = m_ResourceManager.lock()->Get<ShaderResourceView>(L"AO").lock();
+	m_Emissive = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Emissive").lock();
 	m_GBuffer = m_ResourceManager.lock()->Get<ShaderResourceView>(L"GBuffer").lock();
 
 
@@ -64,6 +65,8 @@ void DeferredLightPass::Render()
 
 		m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		Device->UnBindSRV();
+
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, m_Albedo->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, m_Normal->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Position), 1, m_Position->GetAddress());
@@ -71,6 +74,7 @@ void DeferredLightPass::Render()
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, m_Metalic->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, m_Roughness->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, m_AO->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, m_Emissive->GetAddress());
 
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
@@ -91,6 +95,7 @@ void DeferredLightPass::Render()
 		Device->Context()->PSSetShader(m_QuadPS.lock()->GetPS(), nullptr, 0);
 
 		Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
+
 		m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
 		m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
 

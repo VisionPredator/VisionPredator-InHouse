@@ -4,9 +4,14 @@
 #include <vector>
 #pragma comment(lib, "d3d11.lib")
 
+
 class RenderTargetView;
 class DepthStencilView;
 class ShaderResourceView;
+class VertexShader;
+
+class Material;
+class Mesh;
 
 class Device
 {
@@ -26,6 +31,10 @@ public:
 	void EndRender();
 
 	void UnBindSRV();
+	void BindMaterialSRV(std::shared_ptr<Material> curMaterial);
+
+	void BindMeshBuffer(std::shared_ptr<Mesh> mesh);
+	void BindVS(std::shared_ptr<VertexShader> vs);
 
 
 	bool ableMSAA;

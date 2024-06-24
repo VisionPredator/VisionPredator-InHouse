@@ -22,6 +22,7 @@ DeferredGeometryPass::DeferredGeometryPass(std::shared_ptr<Device> device, std::
 	m_MetalicRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Metalic").lock();
 	m_RoughnessRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Roughness").lock();
 	m_AORTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive").lock();
 
 
 
@@ -47,6 +48,8 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 	{
 		Device->UnBindSRV();
 		std::vector<ID3D11RenderTargetView*> RTVs;
+
+		int GBufferSize = static_cast<UINT>(Slot_T::End) - 1;
 		RTVs.reserve(GBufferSize);
 
 		RTVs.push_back(m_AlbedoRTV->Get());
@@ -56,6 +59,7 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 		RTVs.push_back(m_MetalicRTV->Get());
 		RTVs.push_back(m_RoughnessRTV->Get());
 		RTVs.push_back(m_AORTV->Get());
+		RTVs.push_back(m_EmissiveRTV->Get());
 		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView->Get());
 
 		Device->Context()->PSSetShader(m_GeometryPS->GetPS(), nullptr, 0);
@@ -72,18 +76,13 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 
 		for (const auto& mesh : curModel->m_Meshes)
 		{
-			Device->Context()->IASetPrimitiveTopology(mesh->m_primitive);
+			Device->BindMeshBuffer(mesh);
 
 			// Static Mesh Data Update & Bind
 			if (!mesh->IsSkinned())
 			{
-				// Shader Binding
-				Device->Context()->IASetInputLayout(m_StaticMeshVS->InputLayout());
-				Device->Context()->VSSetShader(m_StaticMeshVS->GetVS(), nullptr, 0);
 
-				// VB & IB Binding
-				Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
-				Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+				Device->BindVS(m_StaticMeshVS);
 
 				// CB Update
 				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
@@ -95,15 +94,9 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 			// Skeletal Mesh Update & Bind
 			else
 			{
+				Device->BindVS(m_SkeletalMeshVS);
+
 				std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
-
-				// Shader Binding
-				Device->Context()->IASetInputLayout(m_SkeletalMeshVS->InputLayout());
-				Device->Context()->VSSetShader(m_SkeletalMeshVS->GetVS(), nullptr, 0);
-
-				// VB & IB Binding
-				Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
-				Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 
 				// CB Update
 				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
@@ -116,7 +109,7 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 				MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
 				std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(model->m_name + L"MatrixPallete").lock();
 				pallete->Update(matrixPallete);
-				m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
+				Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 
 			}
 
@@ -131,31 +124,7 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 
 				Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-				if (curMaterialData.useAMRO.x > 0)
-				{
-					Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
-				}
-
-				if (curMaterialData.useN > 0)
-				{
-					Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
-				}
-
-				if (curMaterialData.useAMRO.y > 0)
-				{
-					Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
-				}
-
-				if (curMaterialData.useAMRO.z > 0)
-				{
-					Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
-				}
-
-				if (curMaterialData.useAMRO.w > 0)
-				{
-					Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
-				}
-
+				Device->BindMaterialSRV(curMaterial);
 			}
 
 			Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);

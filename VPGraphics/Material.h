@@ -17,12 +17,14 @@ public:
 	std::wstring MetalicPath;
 	std::wstring RoughnessPath;
 	std::wstring AOPath;
+	std::wstring EmissivePath;
 
 	std::weak_ptr <ShaderResourceView> m_AlbedoSRV;
 	std::weak_ptr <ShaderResourceView> m_NormalSRV;
 	std::weak_ptr <ShaderResourceView> m_MetalicSRV;
 	std::weak_ptr <ShaderResourceView> m_RoughnessSRV;
 	std::weak_ptr <ShaderResourceView> m_AOSRV;
+	std::weak_ptr <ShaderResourceView> m_EmissiveSRV;
 
 	MaterialData m_Data;
 
