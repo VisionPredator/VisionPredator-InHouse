@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Components.h"
 #include "CameraSystem.h"
-
+#include "../VPGraphics/IGraphics.h"
 
 CameraSystem::CameraSystem(SceneManager* sceneManager) :System(sceneManager)
 {
@@ -50,28 +50,10 @@ void CameraSystem::FixedUpdate(float deltaTime)
 	{
 		if (cameracomp.IsMain != true)
 			continue;
-
-
-
-
-		/*if (InputManager::GetInstance().GetKey(KEY::RIGHT))
-		{
-
-		}*/
+		IsMainCameraExist = true;
 		
-
-		///TODO:유승운 여기서 그래픽스한테 메인카메라 설정 보내주기!
-		{
-			TransformComponent cameratrans= *cameracomp.GetComponent<TransformComponent>();
-			cameratrans.World_Location;
-			cameratrans.World_Quaternion;
-
-			cameracomp.GetComponent<TransformComponent>()->World_Quaternion;
-			//	Graphics::Interface->SetCamera(cameracomp의정보);
-			//	Graphics::Interface->SetMeshrender(uint32_t id,cameracomp의정보);
-		}
-
-
+		CameraCalculation(cameracomp);
+		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
 		///그런다음 for문 종료하기!
 		break;
 	}
@@ -79,5 +61,22 @@ void CameraSystem::FixedUpdate(float deltaTime)
 	if (!IsMainCameraExist)
 	{
 		///존재하지 않는다면, 0,0,0에 해당하는 카메라 정보값을 건네주기!
+		//기본 카메라 같은거 만들어 두면 좋을 듯?
+		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
+
 	}
 }
+
+void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
+{
+	TransformComponent* cameraTransform = mainCamera.GetComponent<TransformComponent>();
+	// To get view matrix, we need to invert the world matrix
+	VPMath::Vector3 eye = cameraTransform->World_Location;
+	VPMath::Vector3 target = eye + cameraTransform->FrontVector; // Assuming the camera looks along the FrontVector
+	VPMath::Vector3 up = cameraTransform->UpVector;
+	mainCamera.View = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
+	// Calculate projection matrix
+	// Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
+	mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, mainCamera.Ratio, mainCamera.NearZ, mainCamera.FarZ);
+}
+

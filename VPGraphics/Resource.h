@@ -22,6 +22,7 @@ enum class ResourceType
 	VertexShader,
 	Texture2D,
 	Sampler,
+	ViewPort,
 
 	End
 };
@@ -37,7 +38,7 @@ class PixelShader;
 class VertexShader;
 class Texture2D;
 class Sampler;
-
+class ViewPort;
 
 /// <summary>
 /// IResource의 구현 클래스
@@ -50,7 +51,6 @@ public:
 	virtual ~Resource();
 
 	virtual void Release() abstract;
-
 
 	template<typename T>
 	static ResourceType GetResourceType();
@@ -83,6 +83,8 @@ ResourceType Resource::GetResourceType()
 		return ResourceType::Texture2D;
 	if (std::is_base_of_v<Sampler, T>)
 		return ResourceType::Sampler;
+	if (std::is_base_of_v<ViewPort, T>)
+		return ResourceType::ViewPort;
 
 	return ResourceType::None;
 }

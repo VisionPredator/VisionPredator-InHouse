@@ -7,6 +7,33 @@
 #include"StaticData.h"
 #include "Slot.h"
 
+void DeferredLightPass::Initialize(const std::shared_ptr<Device>& device,
+	const std::shared_ptr<ResourceManager>& resourceManager)
+{
+	m_Device = device;
+	m_ResourceManager = resourceManager;
+
+	m_DepthStencilView = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
+
+	m_Albedo = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Albedo").lock();
+	m_Normal = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Normal").lock();
+	m_Position = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Position").lock();
+	m_Depth = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Depth").lock();
+	m_Metalic = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Metalic").lock();
+	m_Roughness = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Roughness").lock();
+	m_AO = m_ResourceManager.lock()->Get<ShaderResourceView>(L"AO").lock();
+	m_Emissive = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBuffer = m_ResourceManager.lock()->Get<ShaderResourceView>(L"GBuffer").lock();
+
+
+	m_PS = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
+	m_VS = resourceManager->Get<VertexShader>(L"Quad");
+
+	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quad_VB");
+	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
+	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
+
+}
 
 
 DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
@@ -31,13 +58,6 @@ DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::share
 	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
 	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
 
-
-}
-
-
-
-DeferredLightPass::~DeferredLightPass()
-{
 
 }
 

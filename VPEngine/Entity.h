@@ -33,7 +33,7 @@
 		void AddComponentToMap(Component* comp);
 
 		template<typename T>
-		T* AddComponent()
+		T* AddComponent(bool Immediately = false)
 		{
 			if (HasComponent<T>())
 			{
@@ -43,7 +43,10 @@
 			T* newcomp = new T;
 			AddComponentToMap(newcomp);
 			newcomp->SetEntity(this);
+			if (!Immediately)
 			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
+			else
+				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
 			return newcomp;
 		}
 		Component* AddComponent(entt::id_type compID);
@@ -58,18 +61,39 @@
 		{
 			EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(compID));
 		}
-	private:
 
+	private:
+		std::vector<Component*> GetOwnedComponent()
+		{
+			std::vector<Component*> tempComponentPool;
+			for (auto& component : m_OwnedComp)
+			{
+				tempComponentPool.push_back(component.second);
+			}
+			return tempComponentPool;
+		}
 		void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
 
 		template<typename T>
 		inline T* FindComponent()
 		{
-			return (T*)m_OwnedComp[Reflection::GetTypeID<T>()];
+			if (!HasComponent<T>())
+			{
+				return nullptr;
+			}
+			auto it = m_OwnedComp.find(Reflection::GetTypeID<T>());
+			return static_cast<T*>(it->second);
 		}
 		Component* FindComponent(entt::id_type compID)
 		{
-			return m_OwnedComp[compID];
+			if (!HasComponent(compID))
+			{
+				VP_ASSERT(false,"Component not found in m_OwnedComp");
+				return nullptr;
+			}
+
+			auto it = m_OwnedComp.find(compID);
+			return it->second;
 		}
 
 	

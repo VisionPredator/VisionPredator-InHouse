@@ -10,8 +10,11 @@
 #include <vector>
 
 
-DeferredGeometryPass::DeferredGeometryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
+void DeferredGeometryPass::Initialize(const std::shared_ptr<Device>& device,
+	const std::shared_ptr<ResourceManager>& resourceManager)
 {
+	m_Device = device;
+	m_ResourceManager = resourceManager;
 
 	m_DepthStencilView = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
@@ -32,12 +35,6 @@ DeferredGeometryPass::DeferredGeometryPass(std::shared_ptr<Device> device, std::
 
 
 }
-
-DeferredGeometryPass::~DeferredGeometryPass()
-{
-
-}
-
 
 void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 {

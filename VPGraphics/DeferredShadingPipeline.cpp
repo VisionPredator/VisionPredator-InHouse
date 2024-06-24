@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "DeferredShadingPipeline.h"
 
+#include "DebugDrawManager.h"
 #include "DeferredGeometryPass.h"
 #include "DeferredLightPass.h"
+#include "DebugDrawPass.h"
 #include "Device.h"
 #include "ResourceManager.h"
 #include "RenderTargetView.h"
@@ -11,16 +13,26 @@
 /// <summary>
 /// 디퍼드 렌더링에서 사용할 패스 모두 생성
 /// </summary>
-DeferredShadingPipeline::DeferredShadingPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager)
+DeferredShadingPipeline::DeferredShadingPipeline()
 {
-	m_DeferredGeometryPass = std::make_shared<DeferredGeometryPass>(device,resourceManager);
-	m_DeferredLightPass = std::make_shared<DeferredLightPass>(device, resourceManager);
+	m_DeferredGeometryPass = std::make_shared<DeferredGeometryPass>();
+	m_DeferredLightPass = std::make_shared<DeferredLightPass>();
+	m_DebugDrawPass = std::make_shared<DebugDrawPass>();
+}
+
+
+DeferredShadingPipeline::DeferredShadingPipeline(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
+{
 
 }
 
-DeferredShadingPipeline::~DeferredShadingPipeline()
+void DeferredShadingPipeline::Initialize(const std::shared_ptr<Device>& device,
+	const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DebugDrawManager>& debugDrawManager,
+	const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
-
+	m_DeferredGeometryPass->Initialize(device, resourceManager);
+	m_DeferredLightPass->Initialize(device, resourceManager);
+	m_DebugDrawPass->Initialize(device, debugDrawManager, resourceManager, view, proj);
 }
 
 void DeferredShadingPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
@@ -60,5 +72,7 @@ void DeferredShadingPipeline::Render()
 	}
 
 	m_DeferredLightPass->Render();
+
+	m_DebugDrawPass->Render();
 }
 

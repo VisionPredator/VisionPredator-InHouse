@@ -1,28 +1,19 @@
 #pragma once
-
-
 #include "MeshFilter.h"
 #include "RenderPass.h"
 
-
-
 /// <summary>
-/// 2024.06.05
-/// 늘어나는 pass의 인스턴스를 관리하자 각종 render pass를 관리할 매니저 클래스
-/// 그냥 패스를 타면 foward
-/// 패스를 타기전에 gbuffer 뽑아서 무언가를하고 패스를 타면 deferred 쉽게 말하면 gbuffer + foward
-
-///
+/// 전통적인 렌더링 기법을 사용하는 파이프라인
+///	라이팅 처리를 미리 한 후 오브젝트를 그린다.
 /// </summary>
-
 
 class ModelData;
 
-class PassManager
+class ForwardPipeline
 {
 public:
-	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource);
-	~PassManager();
+	ForwardPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource);
+	~ForwardPipeline();
 
 	void Initialize();
 	void Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList);

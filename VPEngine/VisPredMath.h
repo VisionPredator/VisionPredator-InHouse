@@ -1,11 +1,6 @@
 //-------------------------------------------------------------------------------------
-// SimpleMath.h -- Simplified C++ Math wrapper for DirectXMath
-//
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
+// 
+// 
 //-------------------------------------------------------------------------------------
 
 #pragma once
@@ -26,9 +21,8 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
-#include <nlohmann/json.hpp>
-#include <entt/entt.hpp>
-
+#include "../include/nlohmann/json.hpp"
+#include "../include/entt/entt.hpp"
 
 using namespace entt::literals;
 
@@ -45,6 +39,7 @@ namespace VisPred
     namespace SimpleMath
     {
         using namespace DirectX;
+
         struct Vector2;
         struct Vector4;
         struct Matrix;
@@ -599,12 +594,14 @@ namespace VisPred
             static Matrix CreateFromAxisAngle(const Vector3& axis, float angle) noexcept;
 
             static Matrix CreatePerspectiveFieldOfView(float fov, float aspectRatio, float nearPlane, float farPlane) noexcept;
+            static Matrix CreatePerspectiveFieldOfView_LH(float fov, float aspectRatio, float nearPlane, float farPlane) noexcept;
             static Matrix CreatePerspective(float width, float height, float nearPlane, float farPlane) noexcept;
             static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top, float nearPlane, float farPlane) noexcept;
             static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) noexcept;
             static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane) noexcept;
 
             static Matrix CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up) noexcept;
+            static Matrix CreateLookAt_LH(const Vector3& position, const Vector3& target, const Vector3& up) noexcept;
             static Matrix CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept;
 
             static Matrix CreateFromQuaternion(const Quaternion& quat) noexcept;

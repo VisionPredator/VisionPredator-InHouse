@@ -10,6 +10,7 @@
 #include "SceneSerializer.h"
 
 #include "../VPGraphics/GraphicsEngine.h"
+#include <imgui.h>
 
 
 #ifdef _DEBUG
@@ -93,6 +94,7 @@ void VPEngine::Loop()
 		{
 			Update();
 			Render();
+			EndRender();
 
 		}
 	}
@@ -118,15 +120,25 @@ void VPEngine::Update()
 	m_Graphics->Update(m_DeltaTime);
 }
 
-	void VPEngine::Render()
-	{
-		m_Graphics->BeginRender();
-		m_Graphics->Render();
-		m_Graphics->EndRender();
-	}
+
+void VPEngine::Render()
+{
+	m_Graphics->BeginRender();
+	m_Graphics->Render();
+
+}
+
+void VPEngine::EndRender()
+{
+	m_Graphics->EndRender();
+}
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return 0;
 	switch (message)
 	{
 	case WM_SIZE:
@@ -157,7 +169,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
 		break;
 	}
-
+	case WM_LBUTTONDOWN:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_LBUTTON), KEY_STATE::DOWN };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_LBUTTON), KEY_STATE::UP };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_RBUTTON), KEY_STATE::DOWN };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_RBUTTON), KEY_STATE::UP };
+		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
+		break;
+	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

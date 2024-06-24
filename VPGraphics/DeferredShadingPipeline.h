@@ -1,5 +1,4 @@
 #pragma once
-
 #include "MeshFilter.h"
 #include "ModelData.h"
 
@@ -8,17 +7,27 @@
 #include <memory>
 #include <queue>
 
+#include "DebugDrawManager.h"
+
+/// <summary>
+///	디퍼드 쉐이딩에서 실행할 패스들을 모아놓은 클래스
+/// </summary>
 
 class ShaderResourceView;
 class RenderTargetView;
 class ResourceManager;
-class Device;
 
 class DeferredShadingPipeline
 {
 public:
-	DeferredShadingPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resourceManager);
-	~DeferredShadingPipeline();
+	DeferredShadingPipeline();
+	DeferredShadingPipeline(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager);
+	~DeferredShadingPipeline() = default;
+
+	void Initialize(const std::shared_ptr<Device>& device,
+		const std::shared_ptr<ResourceManager>& resourceManager,
+		const std::shared_ptr<DebugDrawManager>& debugDrawManager,
+		const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj);
 
 	void Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList);
 
@@ -32,6 +41,7 @@ private:
 	// Passes
 	std::shared_ptr<class DeferredGeometryPass> m_DeferredGeometryPass;
 	std::shared_ptr<class DeferredLightPass> m_DeferredLightPass;
+	std::shared_ptr<class DebugDrawPass> m_DebugDrawPass;
 
 	// Multi Render Target
 	enum { GBufferSize = 4 };	// 상수. 일단 만들어는 뒀는데 언제 쓸까.
@@ -46,9 +56,5 @@ private:
 	std::shared_ptr<ShaderResourceView> m_PositionSRV;
 	std::shared_ptr<ShaderResourceView> m_DepthSRV;
 
-
-
 	std::queue<std::shared_ptr<ModelData>> m_RenderQueue;
-
-
 };

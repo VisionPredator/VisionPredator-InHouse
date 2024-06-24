@@ -12,8 +12,11 @@
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
+#include "vpGraphics.h"
 
 
+///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
+#include <d3d11.h>
 
 /// <summary>
 /// 게임 엔진에서 사용할 인터페이스 클래스
@@ -64,10 +67,20 @@ namespace Graphics
 		virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) abstract;
 
 		/// Debug Draw
-
+		virtual void DrawSphere(const debug::SphereInfo& info) abstract;
+		virtual void DrawBox(const debug::AABBInfo& info) abstract;
+		virtual void DrawOBB(const debug::OBBInfo& info) abstract;
+		virtual void DrawFrustum(const debug::FrustumInfo& info) abstract;
+		virtual void DrawGrid(const debug::GridInfo& info) abstract;
+		virtual void DrawRing(const debug::RingInfo& info) abstract;
+		virtual void DrawTriangle(const debug::TriangleInfo& info) abstract;
+		virtual void DrawQuad(const debug::QuadInfo& info) abstract;
+		virtual void DrawRay(const debug::RayInfo& info) abstract;
 
 		/// UI
 		
+		///Editor 전용
+		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
 	};
 
 }

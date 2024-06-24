@@ -14,7 +14,7 @@ RenderSystem::RenderSystem(SceneManager* sceneManager)
 void RenderSystem::OnAddedComponent(std::any data)
 {
 	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetTypeID() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 
@@ -22,7 +22,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 	}
 
 	//Skinned
-	if (comp->GetTypeID() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 
@@ -30,7 +30,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 	}
 
 	//
-	if (comp->GetTypeID() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 
@@ -43,7 +43,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 void RenderSystem::OnReleasedComponent(std::any data)
 {
 	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetTypeID() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 
@@ -51,7 +51,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	}
 
 	//Skinned
-	if (comp->GetTypeID() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 
@@ -59,7 +59,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	}
 
 	//
-	if (comp->GetTypeID() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 

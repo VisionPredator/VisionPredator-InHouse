@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -144,20 +145,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="EditorCamera.h" />
+    <ClInclude Include="FolderTool.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Hierarchy.h" />
+    <ClInclude Include="HierarchySystem.h" />
+    <ClInclude Include="IImGui.h" />
+    <ClInclude Include="ImGuiFileDialog.h" />
+    <ClInclude Include="ImGuiFileDialogConfig.h" />
+    <ClInclude Include="Inspector.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Toolbar.h" />
+    <ClInclude Include="ViewPort.h" />
     <ClInclude Include="VPMain.h" />
     <ClInclude Include="VP_Editor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EditorCamera.cpp" />
+    <ClCompile Include="FolderTool.cpp" />
+    <ClCompile Include="Hierarchy.cpp" />
+    <ClCompile Include="HierarchySystem.cpp" />
+    <ClCompile Include="IImGui.cpp" />
+    <ClCompile Include="ImGuiFileDialog.cpp" />
+    <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Toolbar.cpp" />
+    <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="VPMain.cpp" />
     <ClCompile Include="VP_Editor.cpp" />
   </ItemGroup>

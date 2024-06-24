@@ -22,16 +22,20 @@ void SceneSerializer::Initialize(SceneManager* sceneManager)
 
 void SceneSerializer::OnSerializeScene(std::any data)
 {
+	std::string FilePath = std::any_cast<std::string>(data);
 	///Set FilePath
-	std::string folderName = "../Resource/Map/";
-	std::string sceneName = m_SceneManager->GetSceneName();
-	std::string fileExtension = ".json";
-	std::string filePath = folderName + sceneName + fileExtension;
-
+	std::string folderName = "../Data/Scene";
+	std::string folderName2 = "../Data/Temp";
+	//std::string sceneName = m_SceneManager->GetSceneName();
+	//std::string fileExtension = ".json";
+	//std::string filePath = folderName + sceneName + fileExtension;
+	// Ensure directory exists before creating the file
+	std::filesystem::create_directories(folderName);
+	std::filesystem::create_directories(folderName2);
 	///엔티티들을 담을 공간!
 	nlohmann::ordered_json SceneJson;			///ordered_json 하고 json의 차이 알아보기!
 	///Json을 저장할 파일 위치!
-	std::ofstream ofsmapFilePath(filePath);
+	std::ofstream ofsmapFilePath(FilePath);
 	if (!ofsmapFilePath) {
 		VP_ASSERT(false, "파일을 여는데 실패하였습니다!");
 	}
@@ -62,10 +66,7 @@ void SceneSerializer::OnSerializeScene(std::any data)
 
 
 
-/// <summary>
-/// 함수를 쓰기전에 Scene초기화 해주기!!
-/// </summary>
-/// <param name="data"></param>
+
 void SceneSerializer::OnDeSerializeScene(std::any data)
 {
 	if (data.type() != typeid(std::string))
@@ -76,13 +77,25 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 	}
 
 	///Set FilePath
-	std::string floderName = "..\\Resource\\Map\\";
-	std::string sceneName = std::any_cast<std::string>(data);
-	std::string fileExtension = ".json";
-	std::string filePath = floderName + sceneName + fileExtension;
+	//std::string floderName = "../Data/Scene";
+	//std::string sceneName = std::any_cast<std::string>(data);
+	//std::string fileExtension = ".json";
+	//std::string filePath = floderName + sceneName + fileExtension;
+
+	std::string FilePath = std::any_cast<std::string>(data);
+
+	std::string path = FilePath;
+	std::replace(path.begin(), path.end(), '/', '\\');
+	// Find the position of the last backslash (\)
+	size_t lastBackslash = path.find_last_of('\\');
+	// Find the position of the dot (.) after the last backslash
+	size_t dotPosition = path.find('.', lastBackslash);
+	// Extract the substring between the last backslash and the dot
+	std::string SceneName = path.substr(lastBackslash + 1, dotPosition - lastBackslash - 1);
+
 
 	///씬 데이터 가져오기 + 복사.
-	std::ifstream inputFile(filePath);
+	std::ifstream inputFile(FilePath);
 	if (!inputFile.is_open())
 		VP_ASSERT(false, "파일이 존재하지 않아 열 수 없습니다.");
 	try {
@@ -93,10 +106,11 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 		{
 			for (auto& entityJson : sceneJson["Entitys"])
 			{
+				EventManager::GetInstance().ImmediateEvent("OnDeSerializeEntity", entityJson);
 				m_SceneManager->DeSerializeEntity(entityJson);
 			}
 		}
-		m_SceneManager->SetSceneName(sceneName);
+		m_SceneManager->SetSceneName(SceneName);
 	}
 	catch (const std::exception&)
 	{

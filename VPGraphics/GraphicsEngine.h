@@ -3,8 +3,7 @@
 #include "MeshFilter.h"
 
 #pragma region DX
-struct D3D11_VIEWPORT;
-
+class ViewPort;
 class Device;
 class ResourceManager;
 class ModelLoader;
@@ -16,13 +15,11 @@ class ShaderResourceView;
 
 #pragma region Pipeline
 class DeferredShadingPipeline;
-class PassManager;
+class ForwardPipeline;
 #pragma endregion
 
 class LightManager;
 
-
-class Camera;
 class ModelData;
 
 
@@ -59,6 +56,19 @@ public:
 
 	virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) override;
 
+	/// Debug Draw
+	void DrawSphere(const debug::SphereInfo& info) override;
+	void DrawBox(const debug::AABBInfo& info) override;
+	void DrawOBB(const debug::OBBInfo& info) override;
+	void DrawFrustum(const debug::FrustumInfo& info) override;
+	void DrawGrid(const debug::GridInfo& info) override;
+	void DrawRing(const debug::RingInfo& info) override;
+	void DrawTriangle(const debug::TriangleInfo& info) override;
+	void DrawQuad(const debug::QuadInfo& info) override;
+	void DrawRay(const debug::RayInfo& info) override;
+
+	///Editor
+	virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
 
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
@@ -69,13 +79,14 @@ protected:
 
 private:
 	std::shared_ptr<Device> m_Device;
-	std::shared_ptr<D3D11_VIEWPORT> m_VP;
+	std::shared_ptr<ViewPort> m_CurViewPort;
 
 private:
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<LightManager> m_LightManager;
+	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;
 
 private:
 	HWND m_hWnd;
@@ -87,19 +98,24 @@ private:
 	DirectX::SimpleMath::Matrix m_ViewProj;
 
 	// Pipeline
-	std::shared_ptr<PassManager> m_ForwardPipeline;
+	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
 	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
 
 
 
 	//test
-	Camera* m_Camera;
-
 	LightData Dir;
 	LightData Spot;
 	LightData Point;
 	
+
+///editor
+private:
+	void InitializeImGui();
+	void BeginImGui();
+	void EndImGui();
+	void DestroyImGui();
 
 
 };

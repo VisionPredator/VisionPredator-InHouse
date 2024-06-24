@@ -23,6 +23,8 @@
 
 #include "VertexData.h"
 
+#include "ViewPort.h"
+
 
 
 
@@ -52,7 +54,7 @@ public:
 
 
 	void Initialize();
-	void OnResize();
+	void OnResize(RECT& wndsize);
 
 private:
 	std::weak_ptr<Device> m_Device;
@@ -60,7 +62,7 @@ private:
 	std::weak_ptr<ConstantBuffer<LightData>> m_DirectionalLight;
 	std::weak_ptr<ConstantBuffer<LightArray>> m_UsingLights;
 	std::weak_ptr<ConstantBuffer<MaterialData>> m_UsingMaterial;
-
+	std::weak_ptr<ConstantBuffer<TransformData>> m_Transform;
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 	
 	std::array<std::wstring, 9> m_OffScreenName;

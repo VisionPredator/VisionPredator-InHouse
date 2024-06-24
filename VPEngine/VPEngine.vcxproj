@@ -172,6 +172,7 @@
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="VisPredMath.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="TransformSystem.cpp" />
+    <ClCompile Include="VisPredMath.cpp" />
     <ClCompile Include="VPEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +229,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="VisPredMath.inl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VPGraphics\VPGraphics.vcxproj">
