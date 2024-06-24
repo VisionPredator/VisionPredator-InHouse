@@ -5,9 +5,13 @@
 class DeferredLightPass
 {
 public:
+	DeferredLightPass() = default;
+	DeferredLightPass(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager);
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager);
 
 	void Render();
+
+
 
 private:
 	// Vertex Buffer
@@ -24,6 +28,12 @@ private:
 	std::shared_ptr<ShaderResourceView> m_Normal;
 	std::shared_ptr<ShaderResourceView> m_Position;
 	std::shared_ptr<ShaderResourceView> m_Depth;
+	std::shared_ptr<ShaderResourceView> m_Metalic;
+	std::shared_ptr<ShaderResourceView> m_Roughness;
+	std::shared_ptr<ShaderResourceView> m_AO;
+	std::shared_ptr<ShaderResourceView> m_Emissive;
+
+	std::shared_ptr<ShaderResourceView> m_GBuffer;
 	
 	std::shared_ptr<DepthStencilView> m_DepthStencilView;
 
@@ -33,6 +43,7 @@ private:
 
 	std::weak_ptr <VertexBuffer> m_QuadVB;
 	std::weak_ptr < IndexBuffer > m_QuadIB;
+	std::weak_ptr<PixelShader> m_QuadPS;
 
 
 };

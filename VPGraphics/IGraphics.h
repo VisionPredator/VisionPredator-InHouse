@@ -12,8 +12,11 @@
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
-
 #include "vpGraphics.h"
+
+
+///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
+#include <d3d11.h>
 
 /// <summary>
 /// 게임 엔진에서 사용할 인터페이스 클래스
@@ -76,6 +79,8 @@ namespace Graphics
 
 		/// UI
 		
+		///Editor 전용
+		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
 	};
 
 }

@@ -123,6 +123,7 @@ void VPEngine::Update()
 
 void VPEngine::Render()
 {
+	m_Graphics->BeginRender();
 	m_Graphics->Render();
 
 }
