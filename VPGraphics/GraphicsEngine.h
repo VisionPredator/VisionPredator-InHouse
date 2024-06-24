@@ -1,9 +1,9 @@
 #pragma once
 #include "IGraphics.h"
+#include "MeshFilter.h"
 
 #pragma region DX
-struct D3D11_VIEWPORT;
-
+class ViewPort;
 class Device;
 class ResourceManager;
 class ModelLoader;
@@ -15,15 +15,11 @@ class ShaderResourceView;
 
 #pragma region Pipeline
 class DeferredShadingPipeline;
-// class ForwardShadingPipeline;
+class ForwardPipeline;
 #pragma endregion
 
-class ForwardPipeline;
 class LightManager;
 
-#include "MeshFilter.h"
-
-class Camera;
 class ModelData;
 
 
@@ -70,10 +66,10 @@ public:
 	void DrawTriangle(const debug::TriangleInfo& info) override;
 	void DrawQuad(const debug::QuadInfo& info) override;
 	void DrawRay(const debug::RayInfo& info) override;
-	void InitializeImGui();
-	void BeginImGui();
-	void EndImGui();
-	void DestroyImGui();
+
+	///Editor
+	virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
+
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
@@ -83,7 +79,7 @@ protected:
 
 private:
 	std::shared_ptr<Device> m_Device;
-	std::shared_ptr<D3D11_VIEWPORT> m_VP;
+	std::shared_ptr<ViewPort> m_CurViewPort;
 
 private:
 	std::shared_ptr<ResourceManager> m_ResourceManager;
@@ -109,13 +105,17 @@ private:
 
 
 	//test
-	std::shared_ptr<Camera> m_Camera;
-	//Camera* m_Camera;
-
 	LightData Dir;
 	LightData Spot;
 	LightData Point;
 	
+
+///editor
+private:
+	void InitializeImGui();
+	void BeginImGui();
+	void EndImGui();
+	void DestroyImGui();
 
 
 };

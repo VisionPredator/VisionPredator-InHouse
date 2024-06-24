@@ -20,7 +20,7 @@ class DebugDrawManager
 public:
 	void Initialize(const std::shared_ptr<Device>& device);
 
-	void Execute(const std::shared_ptr<Device>& device, const std::shared_ptr<Camera>& camera);
+	void Execute(const std::shared_ptr<Device>& device, const DirectX::SimpleMath::Matrix view,const DirectX::SimpleMath::Matrix proj);
 
 	void AddTask(const debug::SphereInfo& info) { m_SphereInfos.push(info); }
 	void AddTask(const debug::AABBInfo& info) { m_BoxInfos.push(info); }

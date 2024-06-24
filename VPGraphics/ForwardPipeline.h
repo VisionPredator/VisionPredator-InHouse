@@ -24,6 +24,6 @@ private:
 	std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;
 
 	std::weak_ptr<Device> m_Device;
-	std::weak_ptr<ResourceManager> m_Resourcemanager;
+	std::weak_ptr<ResourceManager> m_ResourceManager;
 };
 

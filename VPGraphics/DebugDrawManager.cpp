@@ -2,7 +2,9 @@
 #include "DebugDrawManager.h"
 #include "Device.h"
 #include "Defines.h"
-#include "Camera.h"
+#include "../include/directxtk/SimpleMath.h"
+
+using namespace DirectX::SimpleMath;
 
 void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
 {
@@ -22,15 +24,15 @@ void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
         &m_BatchInputLayout));
 }
 
-void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const std::shared_ptr<Camera>& camera)
+void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
     device->Context()->OMSetBlendState(m_States->Opaque(), nullptr, 0xFFFFFFFF);
     device->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
     device->Context()->RSSetState(m_States->CullNone());
 
     m_BatchEffect->Apply(device->Context());
-    m_BatchEffect->SetView(camera->View());
-    m_BatchEffect->SetProjection(camera->Proj());
+    m_BatchEffect->SetView(view);
+    m_BatchEffect->SetProjection(proj);
 
     device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
 

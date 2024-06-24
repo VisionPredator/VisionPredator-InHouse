@@ -29,8 +29,10 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
-	//LoadModel("Flair.fbx", Filter::SKINNING);
+	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐
+	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("engine_sizedown_1.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -278,30 +280,39 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//m_Color ={ color.r, color.g, color.b , 1};
 	}
 
+	///Albedo
 	path = (textureProperties[aiTextureType_DIFFUSE].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->AlbeoPath = finalPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.useAMRO.x += 1;
+
 	}
 	else
 	{
+		finalPath = basePath + path.filename().wstring();
+		newMaterial->AlbeoPath = finalPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 	}
 
+	///Normal
 	path = (textureProperties[aiTextureType_NORMALS].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.useNE.x += true;
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
 	}
 	else
 	{
+		finalPath = basePath + path.filename().wstring();
+		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png");
 
 	}
@@ -320,8 +331,9 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		//m_pEmissive = ResourceManager::Instance->CreateTextureResource(finalPath);
-		//m_MaterialMapFlags |= MaterialMapFlags::EMISSIVE;
+		newMaterial->EmissivePath = finalPath;
+		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.useNE.y += true;
 	}
 
 	path = (textureProperties[aiTextureType_OPACITY].second);
@@ -332,21 +344,38 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		//m_MaterialMapFlags |= MaterialMapFlags::OPACITY;
 	}
 
+	///Metalic
 	path = (textureProperties[aiTextureType_METALNESS].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		newMaterial->NormalPath = finalPath;
+		newMaterial->MetalicPath = finalPath;
 		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.useAMRO.y += 1;
+
 	}
 
+	///Roughness
 	path = (textureProperties[aiTextureType_SHININESS].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->RoughnessPath = finalPath;
 		newMaterial->m_RoughnessSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.useAMRO.z += 1;
+
 	}
+
+	///AO
+	path = (textureProperties[aiTextureType_AMBIENT_OCCLUSION].second);
+	if (!path.empty())
+	{
+		finalPath = basePath + path.filename().wstring();
+		newMaterial->AlbeoPath = finalPath;
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_Data.useAMRO.w += 1;
+	}
+
 
 
 	Model->m_Materials.push_back(newMaterial);

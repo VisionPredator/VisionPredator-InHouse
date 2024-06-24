@@ -8,19 +8,27 @@
 
 void DebugDrawPass::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<DebugDrawManager>& debugDrawManager, const std::shared_ptr<ResourceManager>& resourceManager,
-	const std::shared_ptr<Camera>& camera)
+	const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
 	m_Device = device;
 	m_DebugDrawManager = debugDrawManager;
 	m_ResourceManager = resourceManager;
-	m_Camera = camera;
 
 	m_FullScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
 	m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
+
+	m_View = view;
+	m_Proj = proj;
 }
 
 void DebugDrawPass::Render()
 {
+
+	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
+	XMStoreFloat4x4(&m_View, XMMatrixTranspose(Camera.lock()->m_struct.view));
+	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(Camera.lock()->m_struct.proj));
+
+
 	m_Device->Context()->OMSetRenderTargets(1, m_FullScreenRTV->GetAddress(), m_DepthStencilView->Get());
 
 #pragma region TEST
@@ -95,5 +103,5 @@ void DebugDrawPass::Render()
 	m_DebugDrawManager->AddTask(triangleInfo);
 #pragma endregion TEST
 
-	m_DebugDrawManager->Execute(m_Device, m_Camera);
+	m_DebugDrawManager->Execute(m_Device, m_View, m_Proj);
 }

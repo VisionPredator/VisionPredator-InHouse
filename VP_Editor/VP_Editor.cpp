@@ -84,7 +84,7 @@ void VP_Editor::Render()
 
 	//ImGui::DockSpaceOverViewport();
 
-	// Rendering
+	// Renderin
 	for (auto& ImGui : m_ImGuis)
 	{
 		ImGui->ImGuiRender();

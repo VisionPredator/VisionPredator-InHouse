@@ -21,13 +21,18 @@ DeferredShadingPipeline::DeferredShadingPipeline()
 }
 
 
+DeferredShadingPipeline::DeferredShadingPipeline(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
+{
+
+}
+
 void DeferredShadingPipeline::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DebugDrawManager>& debugDrawManager,
-	const std::shared_ptr<Camera>& camera)
+	const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
 	m_DeferredGeometryPass->Initialize(device, resourceManager);
 	m_DeferredLightPass->Initialize(device, resourceManager);
-	m_DebugDrawPass->Initialize(device, debugDrawManager, resourceManager, camera);
+	m_DebugDrawPass->Initialize(device, debugDrawManager, resourceManager, view, proj);
 }
 
 void DeferredShadingPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
@@ -56,6 +61,10 @@ void DeferredShadingPipeline::Render()
 	while (!m_RenderQueue.empty())
 	{
 		std::shared_ptr<ModelData> curModel = m_RenderQueue.front();
+		if (curModel->m_Meshes.empty())
+		{
+			MessageBox(0, L"Please Load FBX in ModelLoader ", 0, 0);
+		}
 		m_DeferredGeometryPass->Render(curModel);
 
 
@@ -64,6 +73,6 @@ void DeferredShadingPipeline::Render()
 
 	m_DeferredLightPass->Render();
 
-	m_DebugDrawPass->Render();
+	//m_DebugDrawPass->Render();
 }
 
