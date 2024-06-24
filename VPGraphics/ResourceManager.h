@@ -65,7 +65,7 @@ private:
 	std::weak_ptr<ConstantBuffer<TransformData>> m_Transform;
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 	
-	std::array<std::wstring, 9> m_OffScreenName;
+	std::array<std::wstring, 10> m_OffScreenName;
 
 
 };

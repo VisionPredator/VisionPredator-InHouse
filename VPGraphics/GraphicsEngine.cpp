@@ -184,6 +184,7 @@ void GraphicsEngine::BeginRender()
 	m_Device->BeginRender(m_RTVs[6].lock()->Get(), m_DSVs[1].lock()->Get(), green + red);
 	m_Device->BeginRender(m_RTVs[7].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
 	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), blue + green);
+	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), blue + green);
 }
 
 void GraphicsEngine::Render()
@@ -191,7 +192,7 @@ void GraphicsEngine::Render()
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
 
-	//m_DeferredShadingPipeline->Render();
+	m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.

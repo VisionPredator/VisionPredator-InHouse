@@ -73,6 +73,6 @@ void DeferredShadingPipeline::Render()
 
 	m_DeferredLightPass->Render();
 
-	m_DebugDrawPass->Render();
+	//m_DebugDrawPass->Render();
 }
 

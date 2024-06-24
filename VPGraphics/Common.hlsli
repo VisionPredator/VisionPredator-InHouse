@@ -79,6 +79,7 @@ Texture2D gAO : register(t6);
 Texture2D gEmissive : register(t7);
 
 Texture2D gGBuffer : register(t8);
+Texture2D gIMGUI : register(t9);
 
 //sampler
 SamplerState samLinear : register(s0);
