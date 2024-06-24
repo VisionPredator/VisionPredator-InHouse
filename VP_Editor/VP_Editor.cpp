@@ -43,7 +43,7 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	m_ImGuis.push_back(new FolderTool{ m_SceneManager });
 	m_ImGuis.push_back(new Hierarchy{m_SceneManager,m_HierarchySystem});
 	m_ImGuis.push_back(new Inspector{ m_SceneManager,m_HierarchySystem });
-	m_ImGuis.push_back(new EditorViewPort{ m_SceneManager,m_editorcamera });
+	m_ImGuis.push_back(new EditorViewPort{ m_SceneManager,m_editorcamera, m_Graphics });
 	m_ImGuis.push_back(m_editorcamera);
 	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&VP_Editor::OnPlayButton));
 	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&VP_Editor::OnStopButton));
@@ -82,7 +82,7 @@ void VP_Editor::Render()
 
 	// Create a window called "Hello, world!" and append into it.
 
-	//ImGui::DockSpaceOverViewport();
+	ImGui::DockSpaceOverViewport();
 
 	// Renderin
 	for (auto& ImGui : m_ImGuis)

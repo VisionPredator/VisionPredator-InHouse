@@ -3,9 +3,12 @@
 #include "Toolbar.h"
 #include "HierarchySystem.h"
 #include <InputManager.h>
+#include "..\VPGraphics\GraphicsEngine.h"
 
 
-EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera) :m_SceneManager{ sceneManager }, m_Camera{ Camera }
+#include "..\include\imgui_internal.h"
+
+EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
 {
 }
 
@@ -33,11 +36,26 @@ void EditorViewPort::PlayingImGui()
 
 void EditorViewPort::EditingImGui()
 {  
+	
+	auto current = ImGui::GetCurrentContext();
+	auto pos = ImVec2{ current->CurrentWindow->Pos.x, current->CurrentWindow->Pos.y + 25.f };
+	auto size = ImVec2{ current->CurrentWindow->Size.x, current->CurrentWindow->Size.y - 25.f };
+	auto idealSize = ImVec2(size.x, size.y);
+	auto maxpos = ImVec2(pos.x + idealSize.x, pos.y + idealSize.y);
+	auto borderSize = current->CurrentWindow->WindowBorderSize;
+
+
+	ImGui::GetWindowDrawList()->AddImage(
+		(void*)m_Graphics->GetSRV(L"IMGUI"),
+		ImVec2(pos.x, pos.y),
+		ImVec2(maxpos.x, maxpos.y));
 	ImGuizmoRender();
+
 }
 
 void EditorViewPort::ImGuizmoRender()
 {
+
 
 	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
 		return;
@@ -45,7 +63,7 @@ void EditorViewPort::ImGuizmoRender()
 	TransformComponent* transformComp 
 		= m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 	
-	ImGuizmo::SetDrawlist();	// 먼지 모름 
+	ImGuizmo::SetDrawlist();
 	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 	VPMath::Matrix worldMatrix = transformComp->WorldTransform;
 
@@ -71,5 +89,8 @@ void EditorViewPort::UsingImGuizmo()
 {
 	if (!ImGuizmo::IsUsing())
 		return;
+
+
+
 
 }

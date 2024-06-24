@@ -3,11 +3,14 @@
 #include "EditorCamera.h"
 class SceneManager;
 using namespace VPMath;
-
+namespace Graphics
+{
+	class Interface;
+}
 class EditorViewPort:public IImGui
 {
 public:
-	EditorViewPort(SceneManager* sceneManager, EditorCamera* m_Camera);
+	EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics);
 	// IImGui을(를) 통해 상속됨
 	void ImGuiRender() override;
 	void PlayingImGui();
@@ -23,6 +26,7 @@ private:
 
 	SceneManager* m_SceneManager;
 	EditorCamera* m_Camera;
+	Graphics::Interface* m_Graphics;
 	ImGuizmo::OPERATION Operation = ImGuizmo::TRANSLATE;
 	ImGuizmo::MODE Mode = ImGuizmo::MODE::LOCAL;
 };
