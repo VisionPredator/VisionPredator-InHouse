@@ -57,12 +57,15 @@ public:
 	void OnResize(RECT& wndsize);
 
 private:
+	void CreateAxisGridBox();
+
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ConstantBuffer<CameraData>> m_Camera;
 	std::weak_ptr<ConstantBuffer<LightData>> m_DirectionalLight;
 	std::weak_ptr<ConstantBuffer<LightArray>> m_UsingLights;
 	std::weak_ptr<ConstantBuffer<MaterialData>> m_UsingMaterial;
 	std::weak_ptr<ConstantBuffer<TransformData>> m_Transform;
+	std::weak_ptr<ConstantBuffer<MatrixPallete>> m_Pallete;
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 	
 	std::array<std::wstring, 10> m_OffScreenName;

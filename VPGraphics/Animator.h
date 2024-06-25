@@ -14,8 +14,9 @@ class Animator
 public:
 	Animator();
 	~Animator();
+	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
 
-	void Update(double dt, std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& models);
+	void Update(double dt, std::vector<std::shared_ptr<ModelData>>& models);
 
 private:
 

@@ -16,7 +16,7 @@
 
 #include "RenderPass.h"
 
-#include "DeferredShadingPipeline.h"
+//#include "DeferredShadingPipeline.h"
 #include "ForwardPipeline.h"
 #pragma endregion DX
 
@@ -80,8 +80,8 @@ bool GraphicsEngine::Initialize()
 	OnResize();
 
 	// Pipeline
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
@@ -90,11 +90,9 @@ bool GraphicsEngine::Initialize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-	AddRenderModel(MeshFilter::Axis, L"Axis");
-	AddRenderModel(MeshFilter::Grid, L"Grid");
-	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
-	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
-	//AddRenderModel(MeshFilter::Static, L"engine_sizedown_1", L"engine_sizedown_1");
+	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
+	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
+	AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
@@ -131,7 +129,8 @@ bool GraphicsEngine::Initialize()
 	Spot.range = 100;
 	Spot.spot = 8;
 
-	AddLight(L"Sun", Kind_of_Light::Direction, Dir);
+	AddLight(999,L"Sun", Kind_of_Light::Direction, Dir);
+	//EraseLight(999, L"Sun", Kind_of_Light::Direction);
 	//AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
 	//AddLight(L"Sun3", Kind_of_Light::Direction, Dir3);
 	//AddLight(L"point", Kind_of_Light::Point, Point);
@@ -146,9 +145,10 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
-	m_Animator->Update(dt, m_RenderList);
+	m_Animator->Update(dt, m_AnimationModel);
 
-	m_DeferredShadingPipeline->Update(m_RenderList);
+	//m_DeferredShadingPipeline->Update(m_RenderList);
+	//m_ForwardPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_LightList);
@@ -156,7 +156,7 @@ void GraphicsEngine::Update(double dt)
 
 bool GraphicsEngine::Finalize()
 {
-	m_RenderList.clear();
+	m_AnimationModel.clear();
 	m_CurViewPort.reset();
 
 	m_Device.reset();
@@ -183,8 +183,8 @@ void GraphicsEngine::BeginRender()
 	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[1].lock()->Get(), blue + red);
 	m_Device->BeginRender(m_RTVs[6].lock()->Get(), m_DSVs[1].lock()->Get(), green + red);
 	m_Device->BeginRender(m_RTVs[7].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
-	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), blue + green);
-	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), blue + green);
+	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
 }
 
 void GraphicsEngine::Render()
@@ -192,7 +192,7 @@ void GraphicsEngine::Render()
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
 
-	m_DeferredShadingPipeline->Render();
+	//m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
@@ -211,294 +211,83 @@ void GraphicsEngine::EndRender()
 	m_Device->EndRender();
 }
 
-bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx)
+bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx)
 {
+
+	std::shared_ptr<RenderData> newData = std::make_shared<RenderData>();
+	newData->Name = name;
+	newData->EntityID = EntityID;
+	newData->FBX = fbx;
+	newData->Filter = mesh;
+
 	switch (mesh)
 	{
 		case MeshFilter::Axis:
 		{
-			std::shared_ptr<ModelData> AxisModel = std::make_shared<ModelData>();
-			AxisModel->m_name = name;
-			AxisModel->RS = m_ResourceManager->Get<RenderState>(L"Wire");
+			newData->Pass = PassState::Debug;
+			newData->local = DirectX::SimpleMath::Matrix::Identity;
+			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			AxisModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-			AxisModel->m_Meshes[0]->m_primitive = Axis::PRIMITIVE_TOPOLOGY;
-
-			UINT size = static_cast<UINT>(sizeof(BaseVertex));
-			AxisModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(name + L"_VB", Axis::Vertex::Desc, Axis::Vertex::Data, size);
-			AxisModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(name + L"_IB", Axis::Index::Desc, Axis::Index::Data, Axis::Index::count);
-
-			AxisModel->world = DirectX::SimpleMath::Matrix::Identity;
-			AxisModel->local = DirectX::SimpleMath::Matrix::Identity;
-
-			AxisModel->m_pass = PassState::Debug;
-
-			m_ResourceManager->Add<ModelData>(L"Axis", AxisModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Axis", std::pair<PassState, std::shared_ptr<ModelData>>(AxisModel->m_pass, AxisModel)));
+			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Grid:
 		{
-			std::shared_ptr<ModelData> GridModel = std::make_shared<ModelData>();
-			GridModel->m_name = name;
-			GridModel->RS = m_ResourceManager->Get<RenderState>(L"Wire");
+			newData->Pass = PassState::Debug;
+			newData->local = DirectX::SimpleMath::Matrix::Identity;
+			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			//범위 -100~100
-			int row = 200;
-			int col = 200;
-
-			std::vector<BaseVertex> vertexBuffer;
-
-			//울타리 말뚝 오류 == +1
-			for (int i = 0; i < row + 1; i++)
-			{
-				BaseVertex gridstart{};
-				gridstart.pos = DirectX::XMFLOAT4(-100.f, 0, -100.f + i, 1.0f);
-				gridstart.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				vertexBuffer.push_back(gridstart);
-
-				BaseVertex gridend{};
-				gridend.pos = DirectX::XMFLOAT4(100.f, 0, -100.f + i, 1.0f);
-				gridend.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				vertexBuffer.push_back(gridend);
-			}
-
-			for (int j = 0; j < col + 1; j++)
-			{
-
-				BaseVertex gridstart{};
-				gridstart.pos = DirectX::XMFLOAT4(-100.f + j, 0, -100, 1.0f);
-				gridstart.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				vertexBuffer.push_back(gridstart);
-
-				BaseVertex gridend{};
-				gridend.pos = DirectX::XMFLOAT4(-100.f + j, 0, 100, 1.0f);
-				gridend.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				vertexBuffer.push_back(gridend);
-			}
-
-			std::vector<UINT> indexList;
-
-			int GridSize = (col + 1 + row + 1) * 2;
-
-			for (int index = 0; index < GridSize; ++index)
-			{
-				indexList.push_back(index);
-			}
-
-			D3D11_BUFFER_DESC vbd;
-			vbd.Usage = D3D11_USAGE_IMMUTABLE;
-			vbd.ByteWidth = sizeof(BaseVertex) * static_cast<int>(vertexBuffer.size());
-			vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			vbd.CPUAccessFlags = 0;
-			vbd.MiscFlags = 0;
-			vbd.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA data;
-			data.pSysMem = &(vertexBuffer[0]);
-
-			GridModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-			UINT size = static_cast<UINT>(sizeof(BaseVertex));
-			GridModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(name + L"_VB", vbd, data, size);
-
-
-			D3D11_BUFFER_DESC ibd;
-			ibd.Usage = D3D11_USAGE_IMMUTABLE;
-			ibd.ByteWidth = sizeof(UINT) * static_cast<int>(indexList.size());
-			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			ibd.CPUAccessFlags = 0;
-			ibd.MiscFlags = 0;
-			ibd.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA iinitData;
-			iinitData.pSysMem = &(indexList[0]);
-
-			GridModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(name + L"_IB", ibd, iinitData, static_cast<int>(indexList.size()));
-			GridModel->m_Meshes[0]->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-
-			GridModel->world = DirectX::SimpleMath::Matrix::Identity;
-			GridModel->local = DirectX::SimpleMath::Matrix::Identity;
-
-			GridModel->m_pass = PassState::Debug;
-
-			m_ResourceManager->Add<ModelData>(L"Grid", GridModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(L"Grid", std::pair<PassState, std::shared_ptr<ModelData>>(GridModel->m_pass, GridModel)));
+			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Box:
 		{
-			std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
+			newData->Pass = PassState::Debug;
+			newData->local = DirectX::SimpleMath::Matrix::Identity;
+			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			BoxModel->m_name = name;
-			BoxModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
-
-			BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-			UINT size = static_cast<UINT>(sizeof(BaseVertex));
-
-			BoxModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"Box_VB", Box::Vertex::Desc, Box::Vertex::Data, size);
-			BoxModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"Box_IB", Box::Index::Desc, Box::Index::Data, Box::Index::count);
-
-			BoxModel->world = DirectX::SimpleMath::Matrix::Identity;
-			BoxModel->local = DirectX::SimpleMath::Matrix::Identity;
-
-			BoxModel->m_pass = PassState::Debug;
-
-			BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
-			m_ResourceManager->Add<ModelData>(L"AABB", BoxModel);
-
-			BoxModel->m_Materials.push_back(std::make_shared<Material>(m_Device));
-			BoxModel->m_Materials.back()->m_Data.useAMRO = DirectX::XMFLOAT4(0, 0, 0, 0);
-			BoxModel->m_Materials.back()->m_Data.useNE.x = 0;
-
-			m_ResourceManager->Add<ModelData>(L"Box", BoxModel);
-
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(BoxModel->m_pass, BoxModel)));
+			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Static:
 		{
-			std::wstring fbxpath = fbx + L".fbx";
-			std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
-			newModel->m_name = name;
+			newData->Pass = PassState::Deferred;
 
-			newModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
-			newModel->m_pass = PassState::Deferred;
+			newData->FBX = fbx + L".fbx";
+			newData->local._11 *= 0.03f;
+			newData->local._22 *= 0.03f;
+			newData->local._33 *= 0.03f;
 
-			newModel->local = DirectX::SimpleMath::Matrix::Identity;
-			newModel->local._11 *= 0.03f;
-			newModel->local._22 *= 0.03f;
-			newModel->local._33 *= 0.03f;
-
-			newModel->world = DirectX::SimpleMath::Matrix::Identity;
-
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
+			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Skinning:
 		{
-			std::wstring fbxpath = fbx + L".fbx";
-			std::shared_ptr<ModelData> newModel = std::make_shared<ModelData>(m_ResourceManager->Get<ModelData>(fbxpath).lock());
-			newModel->m_name = name;
+			newData->Pass = PassState::Deferred;
 
-			newModel->RS = (m_ResourceManager->Get<RenderState>(L"Solid"));
-			newModel->m_pass = PassState::Deferred;
+			newData->FBX = fbx + L".fbx";
 
-			newModel->world = DirectX::SimpleMath::Matrix::Identity;
-			newModel->world._11 *= 0.05f;
-			newModel->world._22 *= 0.05f;
-			newModel->world._33 *= 0.05f;
+			newData->local._11 *= 0.05f;
+			newData->local._22 *= 0.05f;
+			newData->local._33 *= 0.05f;
 
-			newModel->local = DirectX::SimpleMath::Matrix::Identity;
+			newData->world *= newData->local;
+			m_RenderList[EntityID] = newData;
 
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(newModel->m_pass, newModel)));
-			m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(name + L"MatrixPallete", BufferDESC::Constant::DefaultMatrixPallete);
+			m_AnimationModel.push_back(m_ResourceManager->Get<ModelData>(newData->FBX).lock());
+
 		}
 			break;
 
 		case MeshFilter::Circle:
-		{
-			std::shared_ptr<ModelData> CircleModel = std::make_shared<ModelData>();
+		{	
+			newData->Pass = PassState::Debug;
 
-			CircleModel->m_name = name;
-			CircleModel->RS = m_ResourceManager->Get<RenderState>(L"Solid");
-
-			CircleModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-			UINT size = static_cast<UINT>(sizeof(BaseVertex));
-
-			int segmentCount = 60;
-			int radius = 1;
-			const float angleStep = DirectX::XM_2PI / segmentCount; //2pi = 360
-
-			std::vector<BaseVertex> vertices;
-
-			//xy
-			for (int i = 0; i <= segmentCount; ++i)
-			{
-				float angle = i * angleStep;
-				float x = radius * cosf(angle);
-				float y = radius * sinf(angle);
-
-				BaseVertex temp1;
-				temp1.pos = DirectX::XMFLOAT4(x, y, 0, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴
-				temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
-				vertices.push_back(temp1);
-
-			}
-
-			//xz
-			for (int i = 0; i <= segmentCount; ++i)
-			{
-				float angle = i * angleStep;
-				float x = radius * cosf(angle);
-				float y = radius * sinf(angle);
-
-				BaseVertex temp1;
-				temp1.pos = DirectX::XMFLOAT4(x, 0, y, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴 0은 벡터
-				temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
-				vertices.push_back(temp1);
-
-			}
-
-
-			D3D11_BUFFER_DESC vbd;
-			vbd.Usage = D3D11_USAGE_IMMUTABLE;
-			vbd.ByteWidth = sizeof(BaseVertex) * static_cast<int>(vertices.size());
-			vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			vbd.CPUAccessFlags = 0;
-			vbd.MiscFlags = 0;
-			vbd.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA data;
-			data.pSysMem = &(vertices[0]);
-
-			size = static_cast<UINT>(sizeof(BaseVertex));
-			CircleModel->m_Meshes[0]->m_VB = m_ResourceManager->Create<VertexBuffer>(L"Circle_VB", vbd, data, size);
-
-			std::vector<UINT> indexList;
-
-			for (int i = 0; i < vertices.size() / 2; i++)
-			{
-				indexList.push_back(i);
-			}
-
-			indexList.back() = 0;
-
-			int verticesize = static_cast<int>(vertices.size());
-
-			for (int i = verticesize / 2; i < verticesize; i++)
-			{
-				indexList.push_back(i);
-			}
-			indexList.back() = verticesize / 2;
-
-			D3D11_BUFFER_DESC ibd;
-			ibd.Usage = D3D11_USAGE_IMMUTABLE;
-			ibd.ByteWidth = sizeof(UINT) * static_cast<int>(indexList.size());
-			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			ibd.CPUAccessFlags = 0;
-			ibd.MiscFlags = 0;
-			ibd.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA iinitData;
-			iinitData.pSysMem = &(indexList[0]);
-
-			CircleModel->m_Meshes[0]->m_IB = m_ResourceManager->Create<IndexBuffer>(L"Circle_IB", ibd, iinitData, static_cast<int>(indexList.size()));
-			CircleModel->m_Meshes[0]->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-
-			CircleModel->world = DirectX::SimpleMath::Matrix::Identity;
-			CircleModel->local = DirectX::SimpleMath::Matrix::Identity;
-
-			CircleModel->m_pass = PassState::Debug;
-
-			m_ResourceManager->Add<ModelData>(name, CircleModel);
-			m_RenderList.insert(std::pair<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>(name, std::pair<PassState, std::shared_ptr<ModelData>>(CircleModel->m_pass, CircleModel)));
+			m_RenderList[EntityID] = newData;
 		}
 			break;
 
@@ -512,9 +301,15 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, std::wstring name, std::wst
 	return true;
 }
 
-void GraphicsEngine::EraseObject(std::wstring name)
+void GraphicsEngine::EraseObject(uint32_t EntityID)
 {
-	m_RenderList.erase(name);
+	if (m_RenderList.find(EntityID) != m_RenderList.end())
+	{
+
+		//애니메이션 빼줘야할거같은데?
+
+		m_RenderList.erase(EntityID);
+	}
 }
 
 void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -544,12 +339,12 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Camera.lock()->Update();
 }
 
-void GraphicsEngine::UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world)
+void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)
 {
-	m_RenderList[name].second->world = world;
+	m_RenderList[EntityID] = data;
 }
 
-void GraphicsEngine::AddLight(std::wstring name, Kind_of_Light kind, LightData data)
+void GraphicsEngine::AddLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data)
 {
 	int index = static_cast<int>(kind);
 	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
@@ -557,24 +352,25 @@ void GraphicsEngine::AddLight(std::wstring name, Kind_of_Light kind, LightData d
 	if (curMap.find(name) == curMap.end())
 	{
 		curMap.insert(std::pair<std::wstring, LightData>(name, data));
-		AddRenderModel(MeshFilter::Circle, name);
+		AddRenderModel(MeshFilter::Circle, EntityID, name,L"Circle");
 
 		curMap[name] = data;
-		std::shared_ptr<ModelData> debugmodel = m_ResourceManager->Get<ModelData>(name).lock();
+
+		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
 
 		//scale
 		if (data.range > 0)
 		{
-			debugmodel->local._11 = data.range;
-			debugmodel->local._22 = data.range;
-			debugmodel->local._33 = data.range;
+			curData->local._11 = data.range;
+			curData->local._22 = data.range;
+			curData->local._33 = data.range;
 		}
 
 		//상수버퍼로 넘겨야하니까 전치해서 보내버리자
 		//translate
-		debugmodel->local._14 = data.pos.x;
-		debugmodel->local._24 = data.pos.y;
-		debugmodel->local._34 = data.pos.z;
+		curData->local._14 = data.pos.x;
+		curData->local._24 = data.pos.y;
+		curData->local._34 = data.pos.z;
 
 	}
 	else
@@ -586,7 +382,7 @@ void GraphicsEngine::AddLight(std::wstring name, Kind_of_Light kind, LightData d
 }
 
 
-void GraphicsEngine::EraseLight(std::wstring name, Kind_of_Light kind)
+void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind)
 {
 	int index = static_cast<int>(kind);
 	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
@@ -594,7 +390,7 @@ void GraphicsEngine::EraseLight(std::wstring name, Kind_of_Light kind)
 	if (curMap.find(name) != curMap.end())
 	{
 		curMap.erase(name);
-		EraseObject(name);
+		EraseObject(EntityID);
 	}
 	else
 	{
@@ -603,21 +399,23 @@ void GraphicsEngine::EraseLight(std::wstring name, Kind_of_Light kind)
 	}
 }
 
-void GraphicsEngine::UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data)
+void GraphicsEngine::UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data)
 {
 	int index = static_cast<int>(kind);
 	std::unordered_map <std::wstring, LightData> curMap = m_LightList[index];
 
 	if (curMap.find(name) != curMap.end())
 	{
+		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
+
 		curMap[name] = data;
-		m_ResourceManager->Get<ModelData>(name).lock()->local._31 = data.pos.x;
-		m_ResourceManager->Get<ModelData>(name).lock()->local._32 = data.pos.y;
-		m_ResourceManager->Get<ModelData>(name).lock()->local._33 = data.pos.z;
+		curData->local._31 = data.pos.x;
+		curData->local._32 = data.pos.y;
+		curData->local._33 = data.pos.z;
 
 		if (data.range > 0)
 		{
-			m_ResourceManager->Get<ModelData>(name).lock()->local* data.range;
+			curData->local* data.range;
 		}
 	}
 	else

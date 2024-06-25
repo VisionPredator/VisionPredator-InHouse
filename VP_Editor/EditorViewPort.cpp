@@ -56,6 +56,9 @@ void EditorViewPort::EditingImGui()
 	case EditorViewPort::RENDERMODE::Position:
 		EditViewPortImGui(L"Position", pos, maxpos);
 		break;
+	case EditorViewPort::RENDERMODE::Depth:
+		EditViewPortImGui(L"Depth", pos, maxpos);
+		break;
 	case EditorViewPort::RENDERMODE::Metalic:
 		EditViewPortImGui(L"Metalic", pos, maxpos);
 		break;
@@ -80,6 +83,7 @@ void EditorViewPort::EditingImGui()
 
 
 	ImGuizmoRender();
+}
 
 
 
@@ -100,22 +104,24 @@ void EditorViewPort::EditingImGui()
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 		ImGui::BeginChild("Tools", ImVec2{ 110,0 }, child_flags2, window_flags2);
-		if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
-			m_CurrentRenderMode = RENDERMODE::Albedo;
-		if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
-			m_CurrentRenderMode = RENDERMODE::Normal;
-		if (ImGui::RadioButton("Position", m_CurrentRenderMode == RENDERMODE::Position))
-			m_CurrentRenderMode = RENDERMODE::Position;
-		if (ImGui::RadioButton("Metalic", m_CurrentRenderMode == RENDERMODE::Metalic))
-			m_CurrentRenderMode = RENDERMODE::Metalic;
-		if (ImGui::RadioButton("Roughness", m_CurrentRenderMode == RENDERMODE::Roughness))
-			m_CurrentRenderMode = RENDERMODE::Roughness;
-		if (ImGui::RadioButton("Emissive", m_CurrentRenderMode == RENDERMODE::Emissive))
-			m_CurrentRenderMode = RENDERMODE::Emissive;
-		if (ImGui::RadioButton("GBuffer", m_CurrentRenderMode == RENDERMODE::GBuffer))
-			m_CurrentRenderMode = RENDERMODE::GBuffer;
-		if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
-			m_CurrentRenderMode = RENDERMODE::IMGUI;
+	if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
+		m_CurrentRenderMode = RENDERMODE::Albedo;
+	if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
+		m_CurrentRenderMode = RENDERMODE::Normal;
+	if (ImGui::RadioButton("Position", m_CurrentRenderMode == RENDERMODE::Position))
+		m_CurrentRenderMode = RENDERMODE::Position;
+	if (ImGui::RadioButton("Depth", m_CurrentRenderMode == RENDERMODE::Depth))
+		m_CurrentRenderMode = RENDERMODE::Depth;
+	if (ImGui::RadioButton("Metalic", m_CurrentRenderMode == RENDERMODE::Metalic))
+		m_CurrentRenderMode = RENDERMODE::Metalic;
+	if (ImGui::RadioButton("Roughness", m_CurrentRenderMode == RENDERMODE::Roughness))
+		m_CurrentRenderMode = RENDERMODE::Roughness;
+	if (ImGui::RadioButton("Emissive", m_CurrentRenderMode == RENDERMODE::Emissive))
+		m_CurrentRenderMode = RENDERMODE::Emissive;
+	if (ImGui::RadioButton("GBuffer", m_CurrentRenderMode == RENDERMODE::GBuffer))
+		m_CurrentRenderMode = RENDERMODE::GBuffer;
+	if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
+		m_CurrentRenderMode = RENDERMODE::IMGUI;
 		ImGui::EndChild();
 		ImGui::PopStyleVar();
 	}
