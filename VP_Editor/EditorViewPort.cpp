@@ -83,19 +83,6 @@ void EditorViewPort::EditingImGui()
 
 
 	ImGuizmoRender();
-}
-
-
-
-
-
-
-
-
-
-
-
-
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
 	ImVec2 childWindowPos = ImVec2(maxpos.x - 110, pos.y);

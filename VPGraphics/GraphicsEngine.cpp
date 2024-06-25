@@ -92,7 +92,7 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
 	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
-	AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
+	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
