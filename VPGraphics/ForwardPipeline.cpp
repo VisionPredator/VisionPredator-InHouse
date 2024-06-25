@@ -29,36 +29,16 @@ void ForwardPipeline::Initialize()
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock())));
 }
 
-void ForwardPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
-{
-	int index = 0;
 
+void ForwardPipeline::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
+{
 	//비트 연산으로 해보자
 	for (auto& model : RenderList)
 	{
-		PassState curState = model.second.first;
-		PassState temp = curState;
-
-		temp = curState;
-		temp &= PassState::Foward;
-		if (temp == PassState::Foward)
-		{
-			m_Passes[temp]->AddModelData(model.second.second);
-		}
-
-		temp = curState;
-		temp &= PassState::Debug;
-		if (temp == PassState::Debug)
-		{
-			m_Passes[temp]->AddModelData(model.second.second);
-		}
-
-		temp = curState;
-		temp &= PassState::Deferred;
-		if (temp == PassState::Deferred)
-		{
-			m_Passes[temp]->AddModelData(model.second.second);
-		}
+		std::shared_ptr<RenderData> curModel = model.second;
+		CheckPassState(curModel, PassState::Deferred);
+		CheckPassState(curModel, PassState::Foward);
+		CheckPassState(curModel, PassState::Debug);
 	}
 }
 
@@ -101,5 +81,15 @@ void ForwardPipeline::Render()
 
 		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
+	}
+}
+
+void ForwardPipeline::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
+{
+	PassState temp = model->Pass;
+	temp &= pass;
+	if (temp == pass)
+	{
+		m_Passes[pass]->AddModelData(model);
 	}
 }

@@ -16,12 +16,12 @@ Animator::~Animator()
 
 }
 
-void Animator::Update(double dt, std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& models)
+void Animator::Update(double dt, std::vector<std::shared_ptr<ModelData>>& models)
 {
 	for (auto& model : models)
 	{
-		UpdateWorld(dt, model.second.second);
-		UpdateMatrixPallete(model.second.second);
+		UpdateWorld(dt, model);
+		UpdateMatrixPallete(model);
 	}
 }
 
