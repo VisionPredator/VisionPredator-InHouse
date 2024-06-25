@@ -31,7 +31,6 @@ public:
 	void EditingImGui();
 	void EditViewPortImGui(std::wstring mode,ImVec2 pos, ImVec2 maxPos);
 	void ImGuizmoRender();
-	void UsingImGuizmo();
 private:
 	RENDERMODE m_CurrentRenderMode = RENDERMODE::IMGUI;
 	Vector3 m_TranslationSnapValue = Vector3(1.0f);
@@ -42,7 +41,7 @@ private:
 	SceneManager* m_SceneManager;
 	EditorCamera* m_Camera;
 	Graphics::Interface* m_Graphics;
-	ImGuizmo::OPERATION Operation = ImGuizmo::TRANSLATE;
+	ImGuizmo::OPERATION m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
 	ImGuizmo::MODE Mode = ImGuizmo::MODE::LOCAL;
 };
 
