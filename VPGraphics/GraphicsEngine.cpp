@@ -94,7 +94,7 @@ bool GraphicsEngine::Initialize()
 	AddRenderModel(MeshFilter::Grid, L"Grid");
 	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
-	//AddRenderModel(MeshFilter::Static, L"engine_sizedown_1", L"engine_sizedown_1");
+	AddRenderModel(MeshFilter::Static, L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
 	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
@@ -192,7 +192,7 @@ void GraphicsEngine::Render()
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
 
-	m_DeferredShadingPipeline->Render();
+	//m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.

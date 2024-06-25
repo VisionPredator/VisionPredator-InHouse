@@ -57,7 +57,7 @@ void ForwardPipeline::Update(std::map<std::wstring, std::pair<PassState, std::sh
 		temp &= PassState::Deferred;
 		if (temp == PassState::Deferred)
 		{
-			//m_Passes[temp]->AddModelData(model.second.second);
+			m_Passes[temp]->AddModelData(model.second.second);
 		}
 	}
 }
@@ -74,10 +74,10 @@ void ForwardPipeline::Render()
 	{
 		std::shared_ptr<Device> Device = m_Device.lock();
 		std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
+		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 		std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"Linear").lock();
 		std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
 		std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
-		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 		std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
 		std::shared_ptr<VertexShader> vs = resourcemanager->Get<VertexShader>(L"Quad").lock();
 		std::shared_ptr<ShaderResourceView> gui = m_ResourceManager.lock()->Get<ShaderResourceView>(L"IMGUI").lock();
