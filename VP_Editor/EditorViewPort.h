@@ -15,6 +15,7 @@ class EditorViewPort:public IImGui
 		Albedo,
 		Normal,
 		Position,
+		Depth,
 		Metalic, 
 		Roughness,
 		Emissive,

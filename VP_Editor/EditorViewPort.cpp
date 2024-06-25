@@ -56,6 +56,9 @@ void EditorViewPort::EditingImGui()
 	case EditorViewPort::RENDERMODE::Position:
 		EditViewPortImGui(L"Position", pos, maxpos);
 		break;
+	case EditorViewPort::RENDERMODE::Depth:
+		EditViewPortImGui(L"Depth", pos, maxpos);
+		break;
 	case EditorViewPort::RENDERMODE::Metalic:
 		EditViewPortImGui(L"Metalic", pos, maxpos);
 		break;
@@ -91,6 +94,8 @@ void EditorViewPort::EditingImGui()
 		m_CurrentRenderMode = RENDERMODE::Normal;
 	if (ImGui::RadioButton("Position", m_CurrentRenderMode == RENDERMODE::Position))
 		m_CurrentRenderMode = RENDERMODE::Position;
+	if (ImGui::RadioButton("Depth", m_CurrentRenderMode == RENDERMODE::Depth))
+		m_CurrentRenderMode = RENDERMODE::Depth;
 	if (ImGui::RadioButton("Metalic", m_CurrentRenderMode == RENDERMODE::Metalic))
 		m_CurrentRenderMode = RENDERMODE::Metalic;
 	if (ImGui::RadioButton("Roughness", m_CurrentRenderMode == RENDERMODE::Roughness))
