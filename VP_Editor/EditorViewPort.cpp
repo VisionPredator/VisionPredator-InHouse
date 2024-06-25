@@ -15,7 +15,7 @@ EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera,
 void EditorViewPort::ImGuiRender()
 {
 	ImGuiWindowFlags wflags = 0;
-	wflags |= ImGuiWindowFlags_NoScrollWithMouse| ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse;
+	wflags |= ImGuiWindowFlags_NoScrollWithMouse| ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse| ImGuiWindowFlags_NoResize;
 	ImGui::Begin("ViewPort" ,0, wflags);
 	if (Toolbar::m_IsPlaying)
 	{
@@ -79,32 +79,47 @@ void EditorViewPort::EditingImGui()
 
 
 
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar |ImGuiWindowFlags_NoTitleBar;
-	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
+	ImGuizmoRender();
+
+
+
+
+
+
+
+
+
+
+
+
+	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoTitleBar;
+	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
 	ImVec2 childWindowPos = ImVec2(maxpos.x - 110, pos.y);
 	ImGui::SetNextWindowPos(childWindowPos);
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-	ImGui::BeginChild("Tools", ImVec2{ 110,0 }, child_flags, window_flags);
-	if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
-		m_CurrentRenderMode = RENDERMODE::Albedo;
-	if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
-		m_CurrentRenderMode = RENDERMODE::Normal;
-	if (ImGui::RadioButton("Position", m_CurrentRenderMode == RENDERMODE::Position))
-		m_CurrentRenderMode = RENDERMODE::Position;
-	if (ImGui::RadioButton("Metalic", m_CurrentRenderMode == RENDERMODE::Metalic))
-		m_CurrentRenderMode = RENDERMODE::Metalic;
-	if (ImGui::RadioButton("Roughness", m_CurrentRenderMode == RENDERMODE::Roughness))
-		m_CurrentRenderMode = RENDERMODE::Roughness;
-	if (ImGui::RadioButton("Emissive", m_CurrentRenderMode == RENDERMODE::Emissive))
-		m_CurrentRenderMode = RENDERMODE::Emissive;
-	if (ImGui::RadioButton("GBuffer", m_CurrentRenderMode == RENDERMODE::GBuffer))
-		m_CurrentRenderMode = RENDERMODE::GBuffer;
-	if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
-		m_CurrentRenderMode = RENDERMODE::IMGUI;
-	ImGui::EndChild();
-	ImGui::PopStyleVar();
+	/// RenderMode 버튼 설정.
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+		ImGui::BeginChild("Tools", ImVec2{ 110,0 }, child_flags2, window_flags2);
+		if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
+			m_CurrentRenderMode = RENDERMODE::Albedo;
+		if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
+			m_CurrentRenderMode = RENDERMODE::Normal;
+		if (ImGui::RadioButton("Position", m_CurrentRenderMode == RENDERMODE::Position))
+			m_CurrentRenderMode = RENDERMODE::Position;
+		if (ImGui::RadioButton("Metalic", m_CurrentRenderMode == RENDERMODE::Metalic))
+			m_CurrentRenderMode = RENDERMODE::Metalic;
+		if (ImGui::RadioButton("Roughness", m_CurrentRenderMode == RENDERMODE::Roughness))
+			m_CurrentRenderMode = RENDERMODE::Roughness;
+		if (ImGui::RadioButton("Emissive", m_CurrentRenderMode == RENDERMODE::Emissive))
+			m_CurrentRenderMode = RENDERMODE::Emissive;
+		if (ImGui::RadioButton("GBuffer", m_CurrentRenderMode == RENDERMODE::GBuffer))
+			m_CurrentRenderMode = RENDERMODE::GBuffer;
+		if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
+			m_CurrentRenderMode = RENDERMODE::IMGUI;
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
+	}
 
-	ImGuizmoRender();
 }
 
 void EditorViewPort::EditViewPortImGui(std::wstring mode, ImVec2 pos, ImVec2 maxPos)
@@ -112,38 +127,97 @@ void EditorViewPort::EditViewPortImGui(std::wstring mode, ImVec2 pos, ImVec2 max
 	ImGui::GetWindowDrawList()->AddImage((void*)m_Graphics->GetSRV(mode), ImVec2(pos.x, pos.y), ImVec2(maxPos.x, maxPos.y));
 }
 
+
+
 void EditorViewPort::ImGuizmoRender()
 {
-	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
-		return;
-
-	TransformComponent* transformComp 
-		= m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
-	
 	ImGuizmo::SetDrawlist();
 	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-	VPMath::Matrix worldMatrix = transformComp->WorldTransform;
-
 	VPMath::Matrix view = m_Camera->GetView();
 	VPMath::Matrix proj = m_Camera->GetProj();
 
-	float* snapValue = 0;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
+	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
+	/// ImGuizmo 모드 선택
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+	ImGui::BeginChild("Setting", ImVec2{ 110,0 }, child_flags, window_flags);
+	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE))
+	{
+		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
+		m_CurrentModeSnap = &m_TranslationSnapValue;
+	}
+	if (ImGui::RadioButton("Rotate", m_ImGuizmoMode == ImGuizmo::ROTATE))
+	{
+		m_ImGuizmoMode = ImGuizmo::OPERATION::ROTATE;
+		m_CurrentModeSnap = &m_RotationSnapValue;
+	}
+	if (ImGui::RadioButton("Scale", m_ImGuizmoMode == ImGuizmo::SCALE))
+	{
+		m_ImGuizmoMode = ImGuizmo::OPERATION::SCALE;
+		m_CurrentModeSnap = &m_ScaleSnapValue;
+	}
+	ImGui::EndChild();
+	ImGui::PopStyleVar();
+
+
+	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+		return;
+	TransformComponent* transformComp
+		= m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
+	float* snapValue =nullptr;
+
 	if (InputManager::GetInstance().GetKey(KEY::LCTRL))
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
+
+	VPMath::Matrix ImGuizmoMatrix = transformComp->WorldTransform;
+
 
 	ImGuizmo::Manipulate(
 		&view.m[0][0],
 		&proj.m[0][0],
-		Operation,
+		m_ImGuizmoMode,
 		Mode,
-		&worldMatrix.m[0][0], 0, snapValue
+		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
 
-	UsingImGuizmo();
+	if (ImGuizmo::IsUsing())
+	{
+		TransformComponent* selectedTransform = m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
+
+		if (Parent* parent = m_SceneManager->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID); parent)
+		{
+			TransformComponent* parentTransform = m_SceneManager->GetComponent<TransformComponent>(parent->ParentID);
+			// Combine the parent transform with the ImGuizmoMatrix
+			ImGuizmoMatrix = ImGuizmoMatrix * parentTransform->WorldTransform.Invert();
+		}
+		// Decompose the matrix back to the local transform components
+		VPMath::Vector3 scale, translation;
+		VPMath::Quaternion rotation;
+		ImGuizmoMatrix.Decompose(scale, rotation, translation);
+
+
+		switch (m_ImGuizmoMode)
+		{
+		case ImGuizmo::OPERATION::TRANSLATE:
+			selectedTransform->Local_Location = translation;
+			break;
+
+		case ImGuizmo::OPERATION::ROTATE:
+			selectedTransform->Local_Quaternion = rotation;
+
+			break;
+		case ImGuizmo::OPERATION::SCALE:
+			selectedTransform->Local_Scale = scale;
+			break;
+
+		default:
+			break;
+		}
+
+		///여기서 바뀐 Quaternion 을 활용하여, Local_Rotation을 다시 넣고싶어
+
+	}
+
 }
 
-void EditorViewPort::UsingImGuizmo()
-{
-	if (!ImGuizmo::IsUsing())
-		return;
-}
