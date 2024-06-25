@@ -22,6 +22,26 @@ enum class PassState : unsigned int
 	End = 99999
 };
 
+
+struct RenderData
+{
+public:
+	RenderData() : Name(L"Need Name"), EntityID(0), FBX(L"Need Path"), Pass(PassState::None)
+	{
+
+	}
+
+	std::wstring Name;
+	uint32_t EntityID;
+	std::wstring FBX;
+	PassState Pass;
+	MeshFilter Filter;
+
+	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
+	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
+};
+
+
 // 비트 연산자 오버로딩
 inline PassState operator|(PassState a, PassState b) {
 	return static_cast<PassState>(static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
