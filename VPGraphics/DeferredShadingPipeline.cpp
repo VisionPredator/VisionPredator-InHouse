@@ -30,7 +30,7 @@ void DeferredShadingPipeline::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DebugDrawManager>& debugDrawManager,
 	const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
-	m_DeferredGeometryPass->Initialize(device, resourceManager);
+	m_DeferredGeometryPass->Initialize(device, resourceManager, view, proj);
 	m_DeferredLightPass->Initialize(device, resourceManager);
 	m_DebugDrawPass->Initialize(device, debugDrawManager, resourceManager, view, proj);
 }
@@ -73,6 +73,6 @@ void DeferredShadingPipeline::Render()
 
 	m_DeferredLightPass->Render();
 
-	//m_DebugDrawPass->Render();
+	m_DebugDrawPass->Render();
 }
 

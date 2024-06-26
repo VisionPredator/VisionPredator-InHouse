@@ -195,6 +195,7 @@
     <ClInclude Include="DepthStencilView.h" />
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="FinalPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
     <ClInclude Include="IndexBuffer.h" />
@@ -252,6 +253,7 @@
     </ClCompile>
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="Device.cpp" />
+    <ClCompile Include="FinalPass.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="LightManager.cpp" />

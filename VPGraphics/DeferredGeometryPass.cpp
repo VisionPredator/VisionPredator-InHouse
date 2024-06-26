@@ -11,10 +11,14 @@
 
 
 void DeferredGeometryPass::Initialize(const std::shared_ptr<Device>& device,
-	const std::shared_ptr<ResourceManager>& resourceManager)
+	const std::shared_ptr<ResourceManager>& resourceManager,
+	const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	m_Device = device;
 	m_ResourceManager = resourceManager;
+
+	m_View = view;
+	m_Proj = proj;
 
 	m_DepthStencilView = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
@@ -27,12 +31,30 @@ void DeferredGeometryPass::Initialize(const std::shared_ptr<Device>& device,
 	m_AORTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"AO").lock();
 	m_EmissiveRTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive").lock();
 
-
-
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base").lock();
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning").lock();
 	m_GeometryPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry").lock();
 
+	m_TransformCB = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+	m_SkeletalCB = m_ResourceManager.lock()->Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+	m_CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera");
+
+#pragma region TEST
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.StencilEnable = FALSE;
+
+	m_Device.lock()->Get()->CreateDepthStencilState(&depthStencilDesc, &m_DSS_Null);
+
+	D3D11_BLEND_DESC blendDesc = {};
+	blendDesc.RenderTarget[0].BlendEnable = FALSE;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	m_Device.lock()->Get()->CreateBlendState(&blendDesc, &m_BS_Null);
+
+#pragma endregion TEST
 
 }
 
@@ -49,6 +71,9 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 		int GBufferSize = static_cast<UINT>(Slot_T::End) - 1;
 		RTVs.reserve(GBufferSize);
 
+		Device->Context()->OMSetDepthStencilState(m_DSS_Null.Get(), 0);
+		Device->Context()->OMSetBlendState(m_BS_Null.Get(), nullptr, 0xFFFFFFFF);
+
 		RTVs.push_back(m_AlbedoRTV->Get());
 		RTVs.push_back(m_NormalRTV->Get());
 		RTVs.push_back(m_PositionRTV->Get());
@@ -61,6 +86,10 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 
 		Device->Context()->PSSetShader(m_GeometryPS->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_TransformCB->GetAddress());
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, m_SkeletalCB->GetAddress());
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, m_CameraCB.lock()->GetAddress());
 	}
 
 	// Mesh Update & Bind & Draw
@@ -82,11 +111,9 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 				Device->BindVS(m_StaticMeshVS);
 
 				// CB Update
-				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
-
-				position->m_struct.world = curModel->world;
-				position->m_struct.local = curModel->local;
-				position->Update();	// == Bind
+				m_TransformCB->m_struct.world = curModel->world;
+				m_TransformCB->m_struct.local = curModel->local;
+				m_TransformCB->Update();	// == Bind
 			}
 			// Skeletal Mesh Update & Bind
 			else
@@ -96,17 +123,15 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 				std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
 
 				// CB Update
-				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
-
-				position->m_struct.world = curModel->world;
-				position->m_struct.local = curMesh->m_node.lock()->m_World;
-
-				position->Update();	// == Bind
+				m_TransformCB->m_struct.world = curModel->world;
+				m_TransformCB->m_struct.local = curMesh->m_node.lock()->m_World;
+				m_TransformCB->Update();	// == Bind
 
 				MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-				std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(model->m_name + L"MatrixPallete").lock();
-				pallete->Update(matrixPallete);
-				Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
+				m_SkeletalCB->Update(matrixPallete);
+
+				//m_Camera = Create<ConstantBuffer<CameraData>>(L"Camera", BufferDESC::Constant::DefaultCamera);
+				//m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
 
 			}
 

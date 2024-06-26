@@ -90,7 +90,7 @@ bool GraphicsEngine::Initialize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-	AddRenderModel(MeshFilter::Axis, L"Axis");
+	//AddRenderModel(MeshFilter::Axis, L"Axis");
 	AddRenderModel(MeshFilter::Grid, L"Grid");
 	//AddRenderModel(MeshFilter::Skinning, L"test", L"Flair");
 	AddRenderModel(MeshFilter::Static, L"cerberus", L"cerberus");
@@ -196,7 +196,12 @@ void GraphicsEngine::Render()
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
-	m_ForwardPipeline->Render();
+	//m_ForwardPipeline->Render();
+
+#pragma region TEST
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+#pragma endregion TEST
 
 	BeginImGui();
 
@@ -206,8 +211,8 @@ void GraphicsEngine::EndRender()
 {
 	EndImGui();
 
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
+	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
+	//m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 	m_Device->EndRender();
 }
 
@@ -539,6 +544,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
+	Camera.lock()->m_struct.proj = cb_proj;
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	Camera.lock()->Update();

@@ -26,6 +26,7 @@ void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
 
 void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
+
     device->Context()->OMSetBlendState(m_States->Opaque(), nullptr, 0xFFFFFFFF);
     device->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
     device->Context()->RSSetState(m_States->CullNone());
