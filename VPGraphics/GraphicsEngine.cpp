@@ -254,7 +254,7 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 
 		case MeshFilter::Static:
 		{
-			newData->Pass = PassState::Deferred;
+			newData->Pass = PassState::Foward;
 
 			newData->FBX = fbx + L".fbx";
 			newData->local._11 *= 0.03f;

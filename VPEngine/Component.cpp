@@ -12,7 +12,7 @@ META_REGISTRATION
 		, TransformComponent::Local_Quaternion
 		, TransformComponent::Local_Scale)
 	META_ADD_MEMBER(MeshComponent
-		, MeshComponent::name)
+		, MeshComponent::FBX)
 	META_ADD_MEMBER(PlayerComponent
 		,PlayerComponent::HP)
 	META_ADD_MEMBER(SkinningMeshComponent

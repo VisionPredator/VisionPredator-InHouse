@@ -5,12 +5,12 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "cerberus.fbx"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": 0.0,
+                        "x": -10.0,
                         "y": 0.0,
                         "z": 0.0
                     },
@@ -24,6 +24,10 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "cerberus.fbx"
                 }
             ]
         }

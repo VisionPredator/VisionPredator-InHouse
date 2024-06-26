@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include "SceneSerializer.h"
+#include "RenderSystem.h"
 
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
@@ -43,23 +44,22 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
 
+	m_Graphics = new GraphicsEngine(m_hWnd);
+	m_Graphics->Initialize();
+
 	m_TimeManager = new TimeManager;
 	m_SceneManager = new SceneManager;
-	m_SceneManager->Initialize();
 	m_SystemManager = new SystemManager;
-	m_SystemManager->Initialize(m_SceneManager);
+	m_SceneManager->Initialize();
+	m_SystemManager->Initialize(m_SceneManager,m_Graphics);
 
 	InputManager::GetInstance().Initialize();
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
-	m_SystemManager->AddSystem<TransformSystem>();
 	m_SystemManager->AddSystem<SceneSerializer>();
-
-
-	m_Graphics = new GraphicsEngine(m_hWnd);
-	m_Graphics->Initialize();
-
+	m_SystemManager->AddSystem<RenderSystem>();
+	m_SystemManager->AddSystem<TransformSystem>();
 
 }
 
