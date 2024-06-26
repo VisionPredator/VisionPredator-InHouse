@@ -16,6 +16,7 @@
 #include <entt/entt.hpp>
 #include <d3d11.h>
 #include "VisPredMath.h"
+#include "../include/directxtk/SimpleMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;
 #include <crtdbg.h>

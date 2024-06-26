@@ -1,8 +1,9 @@
 #pragma once
 #include "System.h"
 #include "EventSubscriber.h"
+
 class RenderSystem :
-    public System, public EventSubscriber,public IFixedUpdatable,public IRenderable
+    public System, public EventSubscriber,public IFixedUpdatable, public IRenderable
 {
 public:
     RenderSystem(SceneManager* entityManager);
@@ -15,7 +16,7 @@ public:
     // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
 
-
+    
 
 };
 

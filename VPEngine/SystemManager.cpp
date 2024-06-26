@@ -7,9 +7,10 @@
 		EventManager::GetInstance().Subscribe("OnInitialize", CreateSubscriber(&SystemManager::OnInitialize));
 		EventManager::GetInstance().Subscribe("OnFinalize",CreateSubscriber(&SystemManager::OnFinalize));
 	}
-	void SystemManager::Initialize(SceneManager* entitymanager)
+	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* Interfaces)
 	{
 		m_SceneManager = entitymanager;
+		m_Graphics = Interfaces;
 	}
 
 	void SystemManager::Update(float deltatime)
