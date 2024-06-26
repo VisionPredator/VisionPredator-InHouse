@@ -55,6 +55,8 @@ GraphicsEngine::~GraphicsEngine()
 
 bool GraphicsEngine::Initialize()
 {
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
 	GetClientRect(m_hWnd, &m_wndSize);
 
 	m_Device = std::make_shared<Device>(m_hWnd);
