@@ -40,6 +40,8 @@ ConstantBuffer<T>::ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data
 template<typename T>
 void ConstantBuffer<T>::Release()
 {
+	if (m_buffer == nullptr)
+		return;
 	m_buffer->Release();
 }
 
@@ -49,7 +51,6 @@ ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_D
 	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
 
 	m_struct = T();
-
 }
 
 template<typename T>

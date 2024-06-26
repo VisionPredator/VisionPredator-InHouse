@@ -16,7 +16,9 @@ void DebugDrawPass::Initialize(const std::shared_ptr<Device>& device,
 
 	m_FullScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"IMGUI").lock();
 	//m_FullScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
-	m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
+
+	m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+	//m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 	m_View = view;
 	m_Proj = proj;

@@ -191,7 +191,6 @@ void GraphicsEngine::Render()
 {
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
-
 	m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인

@@ -90,6 +90,7 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_TransformCB->GetAddress());
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, m_SkeletalCB->GetAddress());
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, m_CameraCB.lock()->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, m_CameraCB.lock()->GetAddress());
 	}
 
 	// Mesh Update & Bind & Draw
