@@ -4,9 +4,14 @@
 #include <vector>
 #pragma comment(lib, "d3d11.lib")
 
+
 class RenderTargetView;
 class DepthStencilView;
 class ShaderResourceView;
+class VertexShader;
+
+class Material;
+class Mesh;
 
 class Device
 {
@@ -25,11 +30,11 @@ public:
 	void BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DSV, const float* color);
 	void EndRender();
 
+	void UnBindSRV();
+	void BindMaterialSRV(std::shared_ptr<Material> curMaterial);
 
-
-	void BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs);
-
-	void DrawQuard(ShaderResourceView* srv);
+	void BindMeshBuffer(std::shared_ptr<Mesh> mesh);
+	void BindVS(std::shared_ptr<VertexShader> vs);
 
 
 	bool ableMSAA;
@@ -46,9 +51,5 @@ private:
 	IDXGISwapChain* m_SwapChain;
 	HWND m_hWnd;
 	RECT m_wndSize;
-
-
-	ID3D11RenderTargetView* MRT[5];
-
 };
 

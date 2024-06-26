@@ -1,4 +1,3 @@
-//CONSTANT
 
 //PI
 static const float Pi = 3.141592;
@@ -7,6 +6,7 @@ static const float Epsilon = 0.00001;
 //모든 유전체에 대한 일정한 수직 입사 프레넬 계수
 static const float3 Fdielectric = { 0.04, 0.04, 0.04 };
 
+//CONSTANT
 ///Camera
 cbuffer Camera : register(b0)
 {
@@ -23,11 +23,18 @@ cbuffer Transform : register(b1)
     float4x4 gLocal;
 };
 
-///Skinning
-cbuffer MatrixPallete : register(b3)
+
+//Material
+cbuffer Material : register(b2)
 {
-    matrix MatrixPallete[128];
-}
+    float4 AMRO;
+    float4 useNE;
+    float4 albedo;
+    float metalness;
+    float roughness;
+    float ao; // Ambient Occlusion
+    float pad; 
+};
 
 
 ///Light
@@ -37,54 +44,45 @@ struct LightData
     float Range;
 
     float3 Attenuation;
-    float pad;
+    float pad2;
   
     float3 pos;
     float spot;
     
-    //direction 말고 다 없어져야할듯 pbr은 lightvector와 lightcolor로 계산하니까
     float3 Color;
-    float pad2;
+    float Intensity;
 };
 
-
-cbuffer LightArray : register(b2)
+cbuffer LightArray : register(b3)
 {
-    LightData Dir[100];
-    LightData Point[100];
-    LightData Spot[100];
+    LightData array[100];
     float DirIndex;
     float PointIndex;
     float SpotIndex;
-    float pad;
+    float pad4;
 };
 
-//Material
-cbuffer Material : register(b4)
+///Skinning
+cbuffer MatrixPallete : register(b4)
 {
-    float4 albedo;
-    float metalness;
-    float roughness;
-    float ao; // Ambient Occlusion
-};
+    matrix MatrixPallete[128];
+}
 
 //TEXTURE
 Texture2D gAlbedo : register(t0);
 Texture2D gNormal : register(t1);
 Texture2D gPosition : register(t2);
 Texture2D gDepth : register(t3);
-Texture2D gTangent : register(t4);
+Texture2D gMetalic : register(t4);
+Texture2D gRoughness : register(t5);
+Texture2D gAO : register(t6);
+Texture2D gEmissive : register(t7);
 
+Texture2D gGBuffer : register(t8);
+Texture2D gIMGUI : register(t9);
 
-
-Texture2D gMeshAlbedo : register(t5);
-Texture2D gMeshNormal : register(t6);
-Texture2D gMeshMetalic : register(t7);
-Texture2D gMeshRoughness : register(t8);
-Texture2D gMeshAO : register(t9);
-
+//sampler
 SamplerState samLinear : register(s0);
-
 
 //STRUCT
 
@@ -119,13 +117,6 @@ struct Quad
     float2 tex : TEXCOORD;
 };
 
-struct Material
-{
-	float4 albedo;
-    float3 normal;
-    // 더 추가해야할 수도..
-};
-
 //Light Function
 
 
@@ -144,17 +135,14 @@ float Calc_D(float3 N, float3 H, float roughness)
 
     float num = a2;
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = 3.14159 * denom * denom;
+    denom = Pi * denom * denom;
 
     return num / denom;
 }
 
-float GeometrySchlickGGX(float NdotV, float roughness)
+float GeometrySchlickGGX(float NdotV, float k)
 {
     //GeometrySchlickGGX
-    float r = (roughness + 1.0);
-    float k = (r * r) / 8.0;
-
     float num = NdotV;
     float denom = NdotV * (1.0 - k) + k;
 
@@ -163,18 +151,23 @@ float GeometrySchlickGGX(float NdotV, float roughness)
 
 float Calc_G(float3 N, float3 V, float3 L, float roughness)
 {
+    float r = (roughness + 1.0);
+    float k = (r * r) / 8.0;
+
+    
     //GeometrySmith
-    float NdotV = max(dot(N, V), 0.0);
-    float NdotL = max(dot(N, L), 0.0);
-    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+    float NdotV = saturate(dot(N, V));
+    float NdotL = saturate(dot(N, L));
+        
+    float ggx1 = GeometrySchlickGGX(NdotL, k); 
+    float ggx2 = GeometrySchlickGGX(NdotV, k);
 
     return ggx1 * ggx2;
 }
 
 
 //빛 들어갈때 단순 대입이 아닌 연산필요
-float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, float roughness)
+float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, float roughness, float metalicValue)
 {
     float3 result  = float3(0,0,0);
     
@@ -189,7 +182,7 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, 
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
     float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
-    kD *= 1.0 - metalness;
+    kD *= 1.0 - metalicValue;
     
     
     diffuse = kD * albedo / Pi;
@@ -205,12 +198,15 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, 
     
     specular = n / d;
     
-    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    
+    result += (specular + diffuse) * lightData.Intensity * lightData.Color/*radiance 복사-(빛날)휘도*/ * NdotL;
     
     return result;
+    //return specular;
 }
 
-float3 CalcPoint(LightData lightData, float3 V, float3 N, float3 F, float3 albedo, float roughness)
+float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F, float3 albedo, float roughness, float metalicValue)
 {
     float3 result  = float3(0,0,0);
         
@@ -218,7 +214,7 @@ float3 CalcPoint(LightData lightData, float3 V, float3 N, float3 F, float3 albed
     float3 diffuse = float3(0, 0, 0);
     float3 specular = float3(0, 0, 0);
     
-    float3 L = lightData.pos - V;
+    float3 L = lightData.pos - pos.xyz;
     
     //광원과 표면의 거리
     float distance = length(L);
@@ -233,7 +229,7 @@ float3 CalcPoint(LightData lightData, float3 V, float3 N, float3 F, float3 albed
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
     float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
-    kD *= 1.0 - metalness;
+    kD *= 1.0 - metalicValue;
     
     diffuse = kD * albedo / Pi;
     
@@ -260,7 +256,7 @@ float3 CalcPoint(LightData lightData, float3 V, float3 N, float3 F, float3 albed
     
 }
 
-float3 CalcSpot(LightData lightData, float3 V, float3 N, float3 F, float3 albedo, float roughness)
+float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F, float3 albedo, float roughness, float metalicValue)
 {
     float3 result  = float3(0,0,0);
     
@@ -270,7 +266,7 @@ float3 CalcSpot(LightData lightData, float3 V, float3 N, float3 F, float3 albedo
     float3 specular = float3(0, 0, 0);
     
     //빛 벡터
-    float3 L = lightData.pos - V;
+    float3 L = lightData.pos - pos;
     
     //광원과 표면의 거리
     float distance = length(L);
@@ -285,7 +281,7 @@ float3 CalcSpot(LightData lightData, float3 V, float3 N, float3 F, float3 albedo
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
     float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
-    kD *= 1.0 - metalness;
+    kD *= 1.0 - metalicValue;
     
     diffuse = kD * albedo / Pi;
     

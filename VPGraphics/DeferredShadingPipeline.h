@@ -21,14 +21,15 @@ class DeferredShadingPipeline
 {
 public:
 	DeferredShadingPipeline();
+	DeferredShadingPipeline(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager);
 	~DeferredShadingPipeline() = default;
 
 	void Initialize(const std::shared_ptr<Device>& device,
 		const std::shared_ptr<ResourceManager>& resourceManager,
 		const std::shared_ptr<DebugDrawManager>& debugDrawManager,
-		const std::shared_ptr<Camera>& camera);
+		const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj);
 
-	void Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList);
+	void Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList);
 
 
 	void Render();
@@ -55,9 +56,5 @@ private:
 	std::shared_ptr<ShaderResourceView> m_PositionSRV;
 	std::shared_ptr<ShaderResourceView> m_DepthSRV;
 
-
-
-	std::queue<std::shared_ptr<ModelData>> m_RenderQueue;
-
-
+	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
 };

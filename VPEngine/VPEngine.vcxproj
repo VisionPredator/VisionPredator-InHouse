@@ -78,6 +78,9 @@
     <OutDir>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -129,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>VPGraphics.lib</AdditionalDependencies>
+      <AdditionalDependencies>VPGraphics.lib;imguid.lib;imguizmo.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
@@ -172,6 +175,7 @@
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="VisPredMath.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />
@@ -220,6 +224,7 @@
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="TransformSystem.cpp" />
+    <ClCompile Include="VisPredMath.cpp" />
     <ClCompile Include="VPEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="VisPredMath.inl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VPGraphics\VPGraphics.vcxproj">

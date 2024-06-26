@@ -16,12 +16,12 @@ Animator::~Animator()
 
 }
 
-void Animator::Update(double dt, std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& models)
+void Animator::Update(double dt, std::vector<std::shared_ptr<ModelData>>& models)
 {
 	for (auto& model : models)
 	{
-		UpdateWorld(dt, model.second.second);
-		UpdateMatrixPallete(model.second.second);
+		UpdateWorld(dt, model);
+		UpdateMatrixPallete(model);
 	}
 }
 
@@ -40,6 +40,7 @@ void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
 	static double time = 0; //현재 애니메이션 플레이시간
 	double speed = ob->m_Animations[0]->m_TickFrame;
+	//double speed = 1;
 	time += dt * speed;
 
 	if (time > ob->m_Animations[0]->m_Duration)
@@ -90,7 +91,7 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
 {
 	auto next = std::lower_bound(channel.begin(), channel.end(), time,
-		[](const std::shared_ptr<Key> key, double t) { return key->time < t; });
+		[](const std::shared_ptr<Key> key, double t) { return key->time <= t; });
 
 	std::vector<std::shared_ptr<Key>>::iterator cur;
 

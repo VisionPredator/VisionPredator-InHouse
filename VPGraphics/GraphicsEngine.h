@@ -1,9 +1,9 @@
 #pragma once
 #include "IGraphics.h"
+#include "MeshFilter.h"
 
 #pragma region DX
-struct D3D11_VIEWPORT;
-
+class ViewPort;
 class Device;
 class ResourceManager;
 class ModelLoader;
@@ -15,17 +15,13 @@ class ShaderResourceView;
 
 #pragma region Pipeline
 class DeferredShadingPipeline;
-// class ForwardShadingPipeline;
+class ForwardPipeline;
 #pragma endregion
 
-class ForwardPipeline;
 class LightManager;
 
-#include "MeshFilter.h"
-
-class Camera;
 class ModelData;
-
+class RenderData;
 
 
 /// <summary>
@@ -49,16 +45,17 @@ public:
 
 	virtual void OnResize() override;
 
-	virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
-	virtual void EraseObject(std::wstring name) override;
+	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx = L"") override;
+	virtual void EraseObject(uint32_t EntityID) override;
 
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-	virtual void UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world) override;
+	virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)override;
 
-	virtual void AddLight(std::wstring name, Kind_of_Light kind, LightData data) override;
-	virtual void EraseLight(std::wstring name, Kind_of_Light kind) override;
 
-	virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void AddLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind) override;
+
+	virtual void UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) override;
 
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
@@ -71,16 +68,21 @@ public:
 	void DrawQuad(const debug::QuadInfo& info) override;
 	void DrawRay(const debug::RayInfo& info) override;
 
+	///Editor
+	virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
+
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
-	std::map<std::wstring, std::pair<PassState,std::shared_ptr<ModelData>>> m_RenderList;
+	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
+
+	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
 	std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)> m_LightList;
 
 private:
 	std::shared_ptr<Device> m_Device;
-	std::shared_ptr<D3D11_VIEWPORT> m_VP;
+	std::shared_ptr<ViewPort> m_CurViewPort;
 
 private:
 	std::shared_ptr<ResourceManager> m_ResourceManager;
@@ -106,13 +108,17 @@ private:
 
 
 	//test
-	std::shared_ptr<Camera> m_Camera;
-	//Camera* m_Camera;
-
 	LightData Dir;
 	LightData Spot;
 	LightData Point;
 	
+
+///editor
+private:
+	void InitializeImGui();
+	void BeginImGui();
+	void EndImGui();
+	void DestroyImGui();
 
 
 };

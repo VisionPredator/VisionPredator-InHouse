@@ -9,6 +9,10 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 #include "ShaderResourceView.h"
+#include "Material.h"
+#include "Mesh.h"
+
+#include "Slot.h"
 
 Device::Device(HWND hWnd) : ableMSAA(false), m_Device(nullptr), m_Context(nullptr), m_FeatureLevel(), MSAAQuality(), m_hWnd(hWnd), m_SwapChain(nullptr), m_wndSize()
 {
@@ -120,38 +124,73 @@ void Device::BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DS
 void Device::EndRender()
 {
 	m_SwapChain->Present(0, 0);
-	m_Context->RSSetState(0);
+	//m_Context->RSSetState(0);
 }
 
-
-void Device::BeginDeferredRender(std::vector<RenderTargetView*>& RTVs, ID3D11DepthStencilView* DSVs)
+void Device::UnBindSRV()
 {
-	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	FLOAT Red[4] = { 1.f,0.f,0.f,1.f };
-	FLOAT Green[4] = { 0.f,1.f,0.f,1.f };
-	FLOAT Blue[4] = { 0.f,0.f,1.f,1.f };
-	FLOAT Yellow[4] = { 1.f,1.f,0.f,1.f };
-	FLOAT Purple[4] = { 1.f,0.f,1.f,1.f };
+	//±‚¡∏ πŸ¿Œµ» rtv srv «ÿ¡¶
+	const int num = static_cast<int>(Slot_T::End);
+	ID3D11ShaderResourceView* pSRV[num] = {};
 
-	ID3D11RenderTargetView* MRT0 = RTVs[0]->Get();
-	ID3D11RenderTargetView* MRT1 = RTVs[1]->Get();
-	ID3D11RenderTargetView* MRT2 = RTVs[2]->Get();
+	for (int i = 0; i < num; i++)
+	{
+		pSRV[i] = nullptr;
+	}
 
-	m_Context->ClearRenderTargetView(RTVs[0]->Get(), Black); //√‚∑¬«“ ∑ª¥ı ≈∏∞Ÿ
 
-	///SRV ªÃæ∆≥æ ∑ª¥ı≈∏∞Ÿ
-	m_Context->ClearRenderTargetView(RTVs[1]->Get(), Red);
-	m_Context->ClearRenderTargetView(RTVs[2]->Get(), Green);
-	m_Context->ClearRenderTargetView(RTVs[3]->Get(), Blue);
-	m_Context->ClearRenderTargetView(RTVs[4]->Get(), Yellow);
-	m_Context->ClearRenderTargetView(RTVs[5]->Get(), Purple);
-
-	m_Context->ClearDepthStencilView(DSVs, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+	m_Context->PSSetShaderResources(0, num, pSRV);
+	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
 }
-void Device::DrawQuard(ShaderResourceView* srv)
+
+void Device::BindMaterialSRV(std::shared_ptr<Material> curMaterial)
 {
-	m_Context->PSSetShaderResources(0, 1, srv->GetAddress());
+	MaterialData curMaterialData = curMaterial->m_Data;
+
+	if (curMaterialData.useAMRO.x > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
+	}
+
+	if (curMaterialData.useAMRO.y > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useAMRO.z > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useAMRO.w > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useNE.x > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+	}
+
+	if (curMaterialData.useNE.y > 0)
+	{
+		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
+	}
+}
+
+void Device::BindMeshBuffer(std::shared_ptr<Mesh> mesh)
+{
+	// VB & IB Binding
+	m_Context->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
+	m_Context->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+	m_Context->IASetPrimitiveTopology(mesh->m_primitive);
+}
+
+void Device::BindVS(std::shared_ptr<VertexShader> vs)
+{
+	// Shader Binding
+	m_Context->IASetInputLayout(vs->InputLayout());
+	m_Context->VSSetShader(vs->GetVS(), nullptr, 0);
 }
 
 bool Device::CreateSwapChain()

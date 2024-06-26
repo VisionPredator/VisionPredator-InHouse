@@ -6,14 +6,18 @@
 #include <memory> //smart pointer
 #include <vector>
 #include <map>
+#include <queue>
 #pragma endregion STL
 
 #include "../include/directxtk/SimpleMath.h"
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
-
 #include "vpGraphics.h"
+
+
+///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
+#include <d3d11.h>
 
 /// <summary>
 /// 게임 엔진에서 사용할 인터페이스 클래스
@@ -42,11 +46,11 @@ namespace Graphics
 
 
 		//엔티티가 사라지면 그래픽스 안에 있는 해당 오브젝트도 지워주는 함수
-		virtual void EraseObject(std::wstring name) abstract;
+		virtual void EraseObject(uint32_t EntityID) abstract;
 
 		///추가해야할거
 		//엔티티의 데이터가 업데이트 되면 그값을 renderlist의 값에 갱신 시켜줘야하는 함수 근데 이게 맞아? 매번 엔티티마다 이함수를 부를거야? 그건 좀..
-		virtual void UpdateModelTransform(std::wstring name,DirectX::SimpleMath::Matrix world) abstract;
+		virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)abstract;
 
 		//애니메이션 변경
 		//virtual void ChangeAnimation(std::wstring name, animationfilter filter) abstract;
@@ -55,13 +59,13 @@ namespace Graphics
 		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
 
 		//렌더링
-		virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") abstract;
+		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx = L"") abstract;
 
 
 		/// Light
-		virtual void AddLight(std::wstring name ,Kind_of_Light kind, LightData data) abstract;
-		virtual void EraseLight(std::wstring name ,Kind_of_Light kind) abstract;
-		virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) abstract;
+		virtual void AddLight(uint32_t EntityID, std::wstring name ,Kind_of_Light kind, LightData data) abstract;
+		virtual void EraseLight(uint32_t EntityID, std::wstring name ,Kind_of_Light kind) abstract;
+		virtual void UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) abstract;
 
 		/// Debug Draw
 		virtual void DrawSphere(const debug::SphereInfo& info) abstract;
@@ -76,6 +80,8 @@ namespace Graphics
 
 		/// UI
 		
+		///Editor 전용
+		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
 	};
 
 }

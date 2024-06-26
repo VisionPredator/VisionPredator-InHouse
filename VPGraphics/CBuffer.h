@@ -37,7 +37,7 @@ enum class Kind_of_Light
 
 struct LightData
 {
-	LightData() : direction(), range(-1), attenuation(), pad(), pos(0, 0, 0), spot(-1), color(1, 1, 1), pad2()
+	LightData() : direction(0,0,0), range(-1), attenuation(0,0,0), pad(-1), pos(0, 0, 0), spot(-1), color(1, 1, 1), intensity(1)
 	{
 
 	}
@@ -52,21 +52,19 @@ struct LightData
 	float spot;
 
 	DirectX::XMFLOAT3 color;
-	float pad2;
+	float intensity;
 };
 
 
 struct LightArray
 {
-	LightArray() : Dir(),Point(),Spot(),DirIndex(0),PointIndex(0), SpotIndex(0),pad(0)
+	LightArray() : DirIndex(0),PointIndex(0), SpotIndex(0),pad(0)
 	{
-
 	}
 
+
 	//여유있게 대충 100개 했음
-	LightData Dir[100];
-	LightData Point[100];
-	LightData Spot[100];
+	LightData array[100];
 	float DirIndex;
 	float PointIndex;
 	float SpotIndex;
@@ -75,11 +73,13 @@ struct LightArray
 
 struct MaterialData
 {
-	MaterialData() : albedo(1,1,1,1), metalness(0),roughness(0),ao(0),pad(-1)
+	MaterialData() : albedo(1,1,1,1), metalness(0),roughness(0),ao(0),useNE(0,0,0,0), useAMRO(0,0,0,0)
 	{
 
 	}
 
+	DirectX::XMFLOAT4 useAMRO;	//텍스처를 가지고 있는가 albedo, metalic, roughness, AO
+	DirectX::XMFLOAT4 useNE;	//텍스처를 가지고 있는가 normal, Emissive
 	DirectX::XMFLOAT4 albedo;
 	float metalness;
 	float roughness;
