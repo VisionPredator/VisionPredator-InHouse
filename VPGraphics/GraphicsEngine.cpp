@@ -57,6 +57,7 @@ GraphicsEngine::~GraphicsEngine()
 
 bool GraphicsEngine::Initialize()
 {
+	//srv 생성을 위한 com 초기화
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	GetClientRect(m_hWnd, &m_wndSize);
@@ -84,8 +85,8 @@ bool GraphicsEngine::Initialize()
 	OnResize();
 
 	// Pipeline
-	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
@@ -94,8 +95,8 @@ bool GraphicsEngine::Initialize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
-	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
+	//AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
+	//AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
 	//AddRenderModel(MeshFilter::Skinning, 2, L"Flair", L"Flair");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
@@ -146,7 +147,7 @@ void GraphicsEngine::Update(double dt)
 {
 	m_Animator->Update(dt, m_AnimationModel);
 
-	//m_DeferredShadingPipeline->Update(m_RenderList);
+	m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_LightList);
@@ -189,7 +190,7 @@ void GraphicsEngine::Render()
 {
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
-	//m_DeferredShadingPipeline->Render();
+	m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.

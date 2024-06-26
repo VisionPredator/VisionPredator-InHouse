@@ -24,7 +24,7 @@ ForwardPipeline::~ForwardPipeline()
 
 void ForwardPipeline::Initialize()
 {
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
+	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Foward, std::make_shared<FowardPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock())));
 }
@@ -36,7 +36,7 @@ void ForwardPipeline::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Re
 	for (auto& model : RenderList)
 	{
 		std::shared_ptr<RenderData> curModel = model.second;
-		CheckPassState(curModel, PassState::Deferred);
+		//CheckPassState(curModel, PassState::Deferred);
 		CheckPassState(curModel, PassState::Foward);
 		CheckPassState(curModel, PassState::Debug);
 	}

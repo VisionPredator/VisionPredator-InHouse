@@ -62,11 +62,6 @@ void DeferredShadingPipeline::Render()
 	{
 		std::shared_ptr<RenderData> curModel = m_RenderQueue.front();
 
-		
-		if (curModel->FBX.empty())
-		{
-			MessageBox(0, L"Please Load FBX in ModelLoader ", 0, 0);
-		}
 		m_DeferredGeometryPass->Render(curModel);
 
 

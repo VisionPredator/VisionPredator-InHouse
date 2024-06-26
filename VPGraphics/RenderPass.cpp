@@ -320,7 +320,6 @@ void DeferredPass::Geometry()
 
 	while (!m_RenderDataQueue.empty())
 	{
-
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
