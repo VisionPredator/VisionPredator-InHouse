@@ -8,15 +8,17 @@
 class Node;
 struct Key;
 class ModelData;
+class ResourceManager;
 
 class Animator
 {
 public:
-	Animator();
+	Animator(std::weak_ptr<ResourceManager> manager);
 	~Animator();
 	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
 
 	void Update(double dt, std::vector<std::shared_ptr<ModelData>>& models);
+	void Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist);
 
 private:
 
@@ -29,6 +31,7 @@ private:
 
 	void UpdateMatrixPallete(std::shared_ptr<ModelData> ob);
 
+	std::weak_ptr<ResourceManager> m_ResourceManager;
 
 };
 

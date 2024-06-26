@@ -79,7 +79,7 @@ bool GraphicsEngine::Initialize()
 	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
 	m_Loader->Initialize();
 	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
-	m_Animator = std::make_shared <Animator>();
+	m_Animator = std::make_shared <Animator>(m_ResourceManager);
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
 	OnResize();
@@ -97,7 +97,7 @@ bool GraphicsEngine::Initialize()
 
 	//AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
 	//AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
-	//AddRenderModel(MeshFilter::Skinning, 2, L"Flair", L"Flair");
+	AddRenderModel(MeshFilter::Skinning, 2, L"Flair.fbx", L"Flair");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
@@ -145,7 +145,8 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
-	m_Animator->Update(dt, m_AnimationModel);
+	// m_Animator->Update(dt, m_AnimationModel);
+	m_Animator->Update(dt, m_RenderList);
 
 	m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);

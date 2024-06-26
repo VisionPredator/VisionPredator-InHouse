@@ -5,8 +5,9 @@
 #include "Animation.h"
 #include "Node.h"
 #include "Mesh.h"
+#include "ResourceManager.h"
 
-Animator::Animator()
+Animator::Animator(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager)
 {
 
 }
@@ -25,6 +26,22 @@ void Animator::Update(double dt, std::vector<std::shared_ptr<ModelData>>& models
 	}
 }
 
+void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
+{
+
+	for (auto& data : renderlist)
+	{
+		std::shared_ptr<RenderData> curData = data.second;
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+
+		if (curModel != nullptr)
+		{
+			UpdateWorld(dt, curModel);
+			UpdateMatrixPallete(curModel);
+		}
+	}
+}
+
 void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
 {
 	//오브젝트마다 애니메이션의 길이 시간등등이 다른데 시간을 어떻게 처리할까???
@@ -39,14 +56,14 @@ void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
 
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
 	static double time = 0; //현재 애니메이션 플레이시간
-	//double speed = ob->m_Animations[0]->m_TickFrame;
-	double speed = 1;
+	double speed = ob->m_Animations[0]->m_TickFrame;
+	//double speed = 1;
 	time += dt * speed;
 
 	if (time > ob->m_Animations[0]->m_Duration)
 	{
-		//time -= ob->m_Animations[0]->m_Duration;
-		time = 0;
+		time -= ob->m_Animations[0]->m_Duration;
+		//time = 0;
 	}
 
 	for (auto& ani : ob->m_Animations[0]->m_Channels)
