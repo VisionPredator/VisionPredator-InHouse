@@ -1,4 +1,9 @@
 #pragma once
+namespace Graphics
+{
+	class Interface;
+}
+
 class IUpdatable
 {
 public:
@@ -15,6 +20,8 @@ class IRenderable
 {
 public:
 	virtual void RenderUpdate(float deltaTime) = 0;
+	virtual void SetGraphics(Graphics::Interface* Graphics) { m_Graphics= Graphics; }
+	Graphics::Interface* m_Graphics;
 };
 
 class IStartable
