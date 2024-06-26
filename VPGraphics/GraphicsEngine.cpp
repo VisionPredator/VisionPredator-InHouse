@@ -43,6 +43,8 @@
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
+
+#include "DeferredShadingPipeline.h"
 #pragma endregion IMGUI
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_CurViewPort(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
@@ -55,6 +57,8 @@ GraphicsEngine::~GraphicsEngine()
 
 bool GraphicsEngine::Initialize()
 {
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
 	GetClientRect(m_hWnd, &m_wndSize);
 
 	m_Device = std::make_shared<Device>(m_hWnd);
@@ -80,8 +84,8 @@ bool GraphicsEngine::Initialize()
 	OnResize();
 
 	// Pipeline
-	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
@@ -92,6 +96,7 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
 	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
+	AddRenderModel(MeshFilter::Static, 2, L"cerberus", L"cerberus");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
@@ -138,17 +143,16 @@ bool GraphicsEngine::Initialize()
 	//AddLight(L"point", Kind_of_Light::Spot, Spot);
 
 
+
 	InitializeImGui();
 	return true;
-
 }
 
 void GraphicsEngine::Update(double dt)
 {
 	m_Animator->Update(dt, m_AnimationModel);
 
-	//m_DeferredShadingPipeline->Update(m_RenderList);
-	//m_ForwardPipeline->Update(m_RenderList);
+	m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_LightList);
@@ -191,12 +195,16 @@ void GraphicsEngine::Render()
 {
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
-
-	//m_DeferredShadingPipeline->Render();
+	m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
-	m_ForwardPipeline->Render();
+	//m_ForwardPipeline->Render();
+
+#pragma region TEST
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+#pragma endregion TEST
 
 	BeginImGui();
 
@@ -206,8 +214,8 @@ void GraphicsEngine::EndRender()
 {
 	EndImGui();
 
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
+	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
+	//m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 	m_Device->EndRender();
 }
 
@@ -334,6 +342,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
+	Camera.lock()->m_struct.proj = cb_proj;
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	Camera.lock()->Update();
