@@ -53,6 +53,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+		m_Graphics->EraseObject(meshComponent->GetEntityID());
 
 		return;
 	}
@@ -77,10 +78,17 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 void RenderSystem::FixedUpdate(float deltaTime)
 {
+
+}
+
+
+void RenderSystem::RenderUpdate(float deltaTime)
+{
+
 	for (MeshComponent& meshComp : COMPITER(MeshComponent))
 	{
 		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>(); 
+		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
 		IDComponent* idComp = meshComp.GetComponent<IDComponent>();
 		std::wstring FbxName{};
 		std::wstring Name{};
@@ -94,32 +102,6 @@ void RenderSystem::FixedUpdate(float deltaTime)
 		temp->Pass = PassState::Foward;
 		temp->Name = Name;
 		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
-
-
-
-	}
-
-}
-
-
-void RenderSystem::RenderUpdate(float deltaTime)
-{
-
-	for (MeshComponent& meshComp : COMPITER(MeshComponent))
-	{
-		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-		std::shared_ptr<RenderData> temp=std::make_shared<RenderData>();
-		std::wstring FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-		temp->EntityID= meshComp.GetEntityID();
-		temp->FBX= FbxName;
-		temp->Filter= meshComp.FBXFilter;
-		temp->local = VPMath::Matrix::Identity;
-		temp->world= meshComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp->Pass= PassState::Foward ;
-
-		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
-
-
 
 	}
 

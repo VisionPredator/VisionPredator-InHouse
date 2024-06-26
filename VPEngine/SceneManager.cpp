@@ -14,7 +14,6 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnOpenNewScene", CreateSubscriber(&SceneManager::OnOpenNewScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnSaveCurrentToTemp", CreateSubscriber(&SceneManager::OnSaveCurrentToTemp), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnOverwriteTempToCurrent", CreateSubscriber(&SceneManager::OnOverwriteTempToCurrent), EventType::SCENE);
-
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
 
@@ -105,6 +104,7 @@ void SceneManager::OnAddChild(std::any data)
 		children->ChildrenID.push_back(child);
 	else
 		GetEntity(parent)->AddComponent<Children>(true)->ChildrenID.push_back(child);
+	EventManager::GetInstance().ImmediateEvent("OnSetParentAndChild", data);
 }
 
 
@@ -119,10 +119,12 @@ void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 		if (Immediate)
 		{
 			EventManager::GetInstance().ImmediateEvent("OnRemoveChild", data);
+
 			return;
 		}
 
 		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
+
 	}
 }
 
@@ -153,6 +155,7 @@ void SceneManager::OnRemoveChild(std::any data)
 
 	if (Parent* parentOfChild = GetComponent<Parent>(child); parentOfChild)
 	{
+
 		if (parentOfChild->ParentID == parent)
 		{
 			Children* children =GetComponent<Children>(parent);
@@ -168,6 +171,8 @@ void SceneManager::OnRemoveChild(std::any data)
 				OnRemoveComponent(static_cast<Component*>(children));
 			}
 			OnRemoveComponent(static_cast<Component*>(parentOfChild));
+
+			EventManager::GetInstance().ImmediateEvent("OnRelaseParentAndChild", child);
 
 		}
 	}
@@ -240,6 +245,7 @@ void SceneManager::OnDestroyEntity(std::any data)
 			// 제거된 컴포넌트들을 삭제합니다.
 			for (auto* comp : toDelete)
 			{
+				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
 				delete comp;
 			}
 		}
