@@ -28,7 +28,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
     float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, N.xyz); //면의 공간으로 옮기기위한 행렬
     N.xyz = mul(NormalTangentSpace, WorldTransform);
-    N.xyz = normalize(N.xyz);
+    N = float4(normalize(N.xyz), 1);
     /*
     */
   
