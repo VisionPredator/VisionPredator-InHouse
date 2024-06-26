@@ -39,14 +39,14 @@ void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
 
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
 	static double time = 0; //현재 애니메이션 플레이시간
-	double speed = ob->m_Animations[0]->m_TickFrame;
-	//double speed = 1;
+	//double speed = ob->m_Animations[0]->m_TickFrame;
+	double speed = 1;
 	time += dt * speed;
 
 	if (time > ob->m_Animations[0]->m_Duration)
 	{
-		time -= ob->m_Animations[0]->m_Duration;
-		//time = 0;
+		//time -= ob->m_Animations[0]->m_Duration;
+		time = 0;
 	}
 
 	for (auto& ani : ob->m_Animations[0]->m_Channels)

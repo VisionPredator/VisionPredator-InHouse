@@ -84,8 +84,8 @@ bool GraphicsEngine::Initialize()
 	OnResize();
 
 	// Pipeline
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
@@ -96,7 +96,7 @@ bool GraphicsEngine::Initialize()
 
 	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
 	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
-	AddRenderModel(MeshFilter::Static, 2, L"cerberus", L"cerberus");
+	//AddRenderModel(MeshFilter::Skinning, 2, L"Flair", L"Flair");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
@@ -135,12 +135,6 @@ bool GraphicsEngine::Initialize()
 	Spot.spot = 8;
 
 	AddLight(999,L"Sun", Kind_of_Light::Direction, Dir);
-	//EraseLight(999, L"Sun", Kind_of_Light::Direction);
-	//AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
-	//AddLight(L"Sun3", Kind_of_Light::Direction, Dir3);
-	//AddLight(L"point", Kind_of_Light::Point, Point);
-	//AddLight(L"point2", Kind_of_Light::Point, Point2);
-	//AddLight(L"point", Kind_of_Light::Spot, Spot);
 
 
 
@@ -152,7 +146,7 @@ void GraphicsEngine::Update(double dt)
 {
 	m_Animator->Update(dt, m_AnimationModel);
 
-	m_DeferredShadingPipeline->Update(m_RenderList);
+	//m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_LightList);
@@ -195,11 +189,11 @@ void GraphicsEngine::Render()
 {
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
-	m_DeferredShadingPipeline->Render();
+	//m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
-	//m_ForwardPipeline->Render();
+	m_ForwardPipeline->Render();
 
 #pragma region TEST
 	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
@@ -224,7 +218,6 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 
 	std::shared_ptr<RenderData> newData = std::make_shared<RenderData>();
 	newData->Name = name;
-	newData->EntityID = EntityID;
 	newData->FBX = fbx;
 	newData->Filter = mesh;
 
@@ -233,58 +226,32 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 		case MeshFilter::Axis:
 		{
 			newData->Pass = PassState::Debug;
-			newData->local = DirectX::SimpleMath::Matrix::Identity;
-			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Grid:
 		{
 			newData->Pass = PassState::Debug;
-			newData->local = DirectX::SimpleMath::Matrix::Identity;
-			newData->world = DirectX::SimpleMath::Matrix::Identity;
-
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Box:
 		{
 			newData->Pass = PassState::Debug;
-			newData->local = DirectX::SimpleMath::Matrix::Identity;
-			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Static:
 		{
-			newData->Pass = PassState::Foward;
-
 			newData->FBX = fbx + L".fbx";
-			newData->local._11 *= 0.03f;
-			newData->local._22 *= 0.03f;
-			newData->local._33 *= 0.03f;
-
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Skinning:
 		{
-			newData->Pass = PassState::Deferred;
-
 			newData->FBX = fbx + L".fbx";
-
-			newData->local._11 *= 0.05f;
-			newData->local._22 *= 0.05f;
-			newData->local._33 *= 0.05f;
-
-			newData->world *= newData->local;
-			m_RenderList[EntityID] = newData;
 
 			m_AnimationModel.push_back(m_ResourceManager->Get<ModelData>(newData->FBX).lock());
 
@@ -294,8 +261,6 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 		case MeshFilter::Circle:
 		{	
 			newData->Pass = PassState::Debug;
-
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
@@ -305,6 +270,9 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 		default:
 			break;
 	}
+
+	m_RenderList[EntityID] = newData;
+
 
 	return true;
 }

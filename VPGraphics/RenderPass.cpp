@@ -108,9 +108,10 @@ void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)
 
 	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 
+
 	TransformData renew;
-	renew.local = curModel->local;
-	renew.world = renew.local * curModel->world;
+	XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curModel->world));
+	XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curModel->world));
 	position->Update(renew);
 }
 
@@ -126,7 +127,7 @@ void RenderPass::BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_
 	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 
 	TransformData renew;
-	renew.world = curModel->world;
+	XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curModel->world));
 	renew.local = curMesh->m_node.lock()->m_World;
 
 	position->Update(renew);
@@ -135,7 +136,7 @@ void RenderPass::BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_
 	{
 		MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
 
-		std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(curModel->Name + L"MatrixPallete").lock();
+		std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
 		pallete->Update(matrixPallete);
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 	}
@@ -190,45 +191,51 @@ void DebugPass::Render()
 
 	while (!m_RenderDataQueue.empty())
 	{
+
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
-		Device->Context()->RSSetState(curModel->RS.lock()->Get());
-
-		int materialindex = 0; //mesh의 숫자와 동일
-
-		for (auto& mesh : curModel->m_Meshes)
+		if (curModel != nullptr)
 		{
-			std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
-			position->m_struct.world = curData->world;
-			position->m_struct.local = curData->local;
-			position->Update();
 
-			Device->BindMeshBuffer(mesh);
 
-			m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
-			m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
+			Device->Context()->RSSetState(curModel->RS.lock()->Get());
 
-			if (!curModel->m_Materials.empty())
+			int materialindex = 0; //mesh의 숫자와 동일
+
+			for (auto& mesh : curModel->m_Meshes)
 			{
-				static int materialindex = 0;
+				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+				position->m_struct.world = curData->world;
+				position->m_struct.local = curData->local;
+				position->Update();
 
-				std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+				Device->BindMeshBuffer(mesh);
 
-				std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+				m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
+				m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
 
-				MaterialData curMaterialData = curMaterial->m_Data;
-				curData->Update(curMaterialData);
-
-				Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
-				Device->BindMaterialSRV(curMaterial);
-
-				if (curModel->m_Materials.size() < materialindex)
+				if (!curModel->m_Materials.empty())
 				{
-					materialindex++;
-				}
-			}
+					static int materialindex = 0;
 
-			Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+
+					MaterialData curMaterialData = curMaterial->m_Data;
+					curData->Update(curMaterialData);
+
+					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+					Device->BindMaterialSRV(curMaterial);
+
+					if (curModel->m_Materials.size() < materialindex)
+					{
+						materialindex++;
+					}
+				}
+
+				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+			}
 		}
 		m_RenderDataQueue.pop();
 	}
@@ -313,72 +320,74 @@ void DeferredPass::Geometry()
 
 	while (!m_RenderDataQueue.empty())
 	{
+
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
-
-		int materialindex = 0; //mesh의 숫자와 동일
-
-		for (const auto& mesh : curModel->m_Meshes)
+		if (curModel != nullptr)
 		{
-			Device->BindMeshBuffer(mesh);
+			int materialindex = 0; //mesh의 숫자와 동일
 
-			// Static Mesh Data Update & Bind
-			if (!mesh->IsSkinned())
+			for (const auto& mesh : curModel->m_Meshes)
 			{
+				Device->BindMeshBuffer(mesh);
 
-				Device->BindVS(m_StaticMeshVS.lock());
+				// Static Mesh Data Update & Bind
+				if (!mesh->IsSkinned())
+				{
 
-				// CB Update
-				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+					Device->BindVS(m_StaticMeshVS.lock());
 
-				position->m_struct.world = curData->world;
-				position->m_struct.local = curData->local;
-				position->Update();	// == Bind
+					// CB Update
+					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+
+					TransformData renew;
+					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
+					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					position->Update(renew);	// == Bind
+				}
+				// Skeletal Mesh Update & Bind
+				else
+				{
+					Device->BindVS(m_SkeletalMeshVS.lock());
+
+					std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+
+					// CB Update
+					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+
+					TransformData renew;
+					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					renew.local = curMesh->m_node.lock()->m_World;
+
+					position->Update(renew);
+
+					MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+					pallete->Update(matrixPallete);
+					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
+				}
+
+				// 텍스처와 샘플러를 셰이더에 바인딩
+				if (!curModel->m_Materials.empty())
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+					MaterialData curMaterialData = curMaterial->m_Data;
+					curData->Update(curMaterialData);
+
+					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+					Device->BindMaterialSRV(curMaterial);
+				}
+
+				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+
+				materialindex++;
+
 			}
-			// Skeletal Mesh Update & Bind
-			else
-			{
-				Device->BindVS(m_SkeletalMeshVS.lock());
-
-				std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
-
-				// CB Update
-				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
-
-				position->m_struct.world = curData->world;
-				position->m_struct.local = curMesh->m_node.lock()->m_World;
-
-				position->Update();	// == Bind
-
-				MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-				std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
-				pallete->Update(matrixPallete);
-				Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
-
-			}
-
-			// 텍스처와 샘플러를 셰이더에 바인딩
-			if (!curModel->m_Materials.empty())
-			{
-				std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-
-				std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
-				MaterialData curMaterialData = curMaterial->m_Data;
-				curData->Update(curMaterialData);
-
-				Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
-
-				Device->BindMaterialSRV(curMaterial);
-			}
-
-			Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
-
-			materialindex++;
-
 		}
-
-
 		m_RenderDataQueue.pop();
 	}
 	//렌더타겟 해제해줘야지 srv도 해제

@@ -53,6 +53,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+		m_Graphics->EraseObject(meshComponent->GetEntityID());
 
 		return;
 	}
@@ -86,12 +87,9 @@ void RenderSystem::FixedUpdate(float deltaTime)
 		std::wstring Name{};
 		FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
 		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-		temp->EntityID = meshComp.GetEntityID();
 		temp->FBX = FbxName;
 		temp->Filter = meshComp.FBXFilter;
-		temp->local = VPMath::Matrix::Identity;
 		temp->world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp->Pass = PassState::Foward;
 		temp->Name = Name;
 		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 
@@ -110,12 +108,10 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		//IGraphics::Getinstance().Render(uint32_t, transform, ~~Á¤º¸);
 		std::shared_ptr<RenderData> temp=std::make_shared<RenderData>();
 		std::wstring FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-		temp->EntityID= meshComp.GetEntityID();
+		//temp->EntityID= meshComp.GetEntityID();
 		temp->FBX= FbxName;
 		temp->Filter= meshComp.FBXFilter;
-		temp->local = VPMath::Matrix::Identity;
 		temp->world= meshComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp->Pass= PassState::Foward ;
 
 		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 

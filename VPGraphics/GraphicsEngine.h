@@ -14,7 +14,7 @@ class ShaderResourceView;
 #pragma endregion DX
 
 #pragma region Pipeline
-class DeferredShadingPipeline;
+//class DeferredShadingPipeline;
 class ForwardPipeline;
 #pragma endregion
 
@@ -102,7 +102,7 @@ private:
 
 	// Pipeline
 	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
-	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
+	//std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
 
 
