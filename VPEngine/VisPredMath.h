@@ -741,7 +741,7 @@ namespace VisPred
 
             void Conjugate() noexcept;
             void Conjugate(Quaternion& result) const noexcept;
-
+            Vector3 ToYawPitchRoll() const  noexcept; 
             void Inverse(Quaternion& result) const noexcept;
 
             float Dot(const Quaternion& Q) const noexcept;

@@ -29,21 +29,49 @@ public:
 
 
 	template<typename T>
-	bool HasComponent(uint32_t EntityID) { return GetEntity(EntityID)->HasComponent<T>(); }
-	bool HasComponent(uint32_t EntityID, entt::id_type compid) { return GetEntity(EntityID)->HasComponent(compid); }
+	bool HasComponent(uint32_t EntityID) 
+	{
+		if (!HasEntity(EntityID))
+			return false;
+		return GetEntity(EntityID)->HasComponent<T>();
+	}
+	bool HasComponent(uint32_t EntityID, entt::id_type compid)
+	{
+		if (!HasEntity(EntityID))
+			return false;
+		return GetEntity(EntityID)->HasComponent(compid);
+	}
 	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }
 
 	template<typename T>
-	T* GetComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetComponent<T>(); }
-	Component* GetComponent(uint32_t EntityID, entt::id_type compId) { return GetEntity(EntityID)->GetComponent(compId); }
-	Entity* GetEntity(uint32_t entityID) { if (HasEntity(entityID)) return m_CurrentScene->EntityMap[entityID]; return nullptr; }
-	std::unordered_map<uint32_t, Entity*>& GetEntityMap() { return m_CurrentScene->EntityMap; }
+	T* GetComponent(uint32_t EntityID)
+	{
+		if (!HasEntity(EntityID))
+			return nullptr;
+		return GetEntity(EntityID)->GetComponent<T>();
+	}
+	Component* GetComponent(uint32_t EntityID, entt::id_type compId)
+	{
+		if (!HasEntity(EntityID))
+			return nullptr;
+		return GetEntity(EntityID)->GetComponent(compId);
+	}
+	Entity* GetEntity(uint32_t entityID)
+	{
+		if (!HasEntity(entityID))
+			return nullptr;
+		return m_CurrentScene->EntityMap[entityID];
+	}
+	std::unordered_map<uint32_t, Entity*>& GetEntityMap()
+	{
+		return m_CurrentScene->EntityMap;
+	}
 	const std::string GetSceneName() { return m_CurrentScene->SceneName; }
 
 
 
 	void SetSceneName(std::string sceneName) { m_CurrentScene->SceneName = sceneName; }
-	
+
 	template<typename T>
 	inline std::vector<T*> GetComponentPool();
 

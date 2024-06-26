@@ -81,6 +81,7 @@ namespace VisPred
 				.data<&Viewport::height>("height"_hs)
 				.data<&Viewport::minDepth>("minDepth"_hs)
 				.data<&Viewport::maxDepth>("maxDepth"_hs);
+
 		}
 
 
@@ -207,7 +208,27 @@ void Quaternion::LookRotation(const Vector3& forward, const Vector3& up, Quatern
 
 	XMStoreFloat4(&result, XMQuaternionMultiply(q2, q1));
 }
+Vector3 Quaternion::ToYawPitchRoll() const noexcept
+{
+	// Roll (around z axis)
 
+	float roll = 0.f;
+	float pitch = 0.f;
+	float yaw = 0.f;
+	roll = atan2(2.0f * (w * z + x * y), 1.0f - 2.0f * (y * y + z * z));
+
+	// Pitch (around x axis)
+	float sinp = 2.0f * (w * y - z * x);
+	if (fabs(sinp) >= 1)
+		pitch = copysign(3.14159265358979323846 / 2, sinp); // use 90 degrees if out of range
+	else
+		 pitch = asin(sinp);
+
+	// Yaw (around y axis)
+	yaw = atan2(2.0f * (w * x + y * z), 1.0f - 2.0f * (x * x + y * y));
+
+	return VPMath::Vector3{ yaw,  pitch, roll };
+}
 
 /****************************************************************************
 *

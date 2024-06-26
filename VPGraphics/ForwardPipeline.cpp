@@ -29,36 +29,16 @@ void ForwardPipeline::Initialize()
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock())));
 }
 
-void ForwardPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
-{
-	int index = 0;
 
+void ForwardPipeline::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
+{
 	//비트 연산으로 해보자
 	for (auto& model : RenderList)
 	{
-		PassState curState = model.second.first;
-		PassState temp = curState;
-
-		temp = curState;
-		temp &= PassState::Foward;
-		if (temp == PassState::Foward)
-		{
-			m_Passes[temp]->AddModelData(model.second.second);
-		}
-
-		temp = curState;
-		temp &= PassState::Debug;
-		if (temp == PassState::Debug)
-		{
-			m_Passes[temp]->AddModelData(model.second.second);
-		}
-
-		temp = curState;
-		temp &= PassState::Deferred;
-		if (temp == PassState::Deferred)
-		{
-			//m_Passes[temp]->AddModelData(model.second.second);
-		}
+		std::shared_ptr<RenderData> curModel = model.second;
+		CheckPassState(curModel, PassState::Deferred);
+		CheckPassState(curModel, PassState::Foward);
+		CheckPassState(curModel, PassState::Debug);
 	}
 }
 
@@ -74,10 +54,10 @@ void ForwardPipeline::Render()
 	{
 		std::shared_ptr<Device> Device = m_Device.lock();
 		std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
+		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 		std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"Linear").lock();
 		std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
 		std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
-		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 		std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
 		std::shared_ptr<VertexShader> vs = resourcemanager->Get<VertexShader>(L"Quad").lock();
 		std::shared_ptr<ShaderResourceView> gui = m_ResourceManager.lock()->Get<ShaderResourceView>(L"IMGUI").lock();
@@ -101,5 +81,15 @@ void ForwardPipeline::Render()
 
 		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
+	}
+}
+
+void ForwardPipeline::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
+{
+	PassState temp = model->Pass;
+	temp &= pass;
+	if (temp == pass)
+	{
+		m_Passes[pass]->AddModelData(model);
 	}
 }

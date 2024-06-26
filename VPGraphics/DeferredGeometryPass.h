@@ -21,7 +21,7 @@ public:
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
 		const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 
-	void Render(const std::shared_ptr<ModelData>& model);
+	void Render(const std::shared_ptr<RenderData>& model);
 
 private:
 	std::weak_ptr<Device> m_Device;

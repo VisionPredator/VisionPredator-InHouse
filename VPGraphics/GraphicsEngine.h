@@ -21,7 +21,7 @@ class ForwardPipeline;
 class LightManager;
 
 class ModelData;
-
+class RenderData;
 
 
 /// <summary>
@@ -45,16 +45,17 @@ public:
 
 	virtual void OnResize() override;
 
-	virtual bool AddRenderModel(MeshFilter mesh, std::wstring name, std::wstring fbx = L"") override;
-	virtual void EraseObject(std::wstring name) override;
+	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx = L"") override;
+	virtual void EraseObject(uint32_t EntityID) override;
 
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-	virtual void UpdateModelTransform(std::wstring name, DirectX::SimpleMath::Matrix world) override;
+	virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)override;
 
-	virtual void AddLight(std::wstring name, Kind_of_Light kind, LightData data) override;
-	virtual void EraseLight(std::wstring name, Kind_of_Light kind) override;
 
-	virtual void UpdateLightData(std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void AddLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind) override;
+
+	virtual void UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) override;
 
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
@@ -74,7 +75,9 @@ protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
-	std::map<std::wstring, std::pair<PassState,std::shared_ptr<ModelData>>> m_RenderList;
+	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
+
+	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
 	std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)> m_LightList;
 
 private:

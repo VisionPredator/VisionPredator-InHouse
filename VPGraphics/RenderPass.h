@@ -6,6 +6,7 @@
 class Device;
 
 class ModelData;
+class RenderData;
 class Mesh;
 
 class VertexShader;
@@ -70,16 +71,14 @@ public:
 	~RenderPass();
 
 	virtual void Render();
-	void AddModelData(std::shared_ptr<ModelData> model);
-	void AddModelData(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& model_list);
+	void AddModelData(std::shared_ptr<RenderData> model);
 
 protected:
+	void BindStatic(std::shared_ptr<RenderData> curModel);
+	void BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_ptr<Mesh> mesh);
 
-	void BindStatic(std::shared_ptr<ModelData> curModel);
-	void BindSkeletal(std::shared_ptr<ModelData> curModel, std::shared_ptr<Mesh> mesh);
 
-
-	std::queue<std::weak_ptr<ModelData>> m_RenderModelQueue;
+	std::queue<std::weak_ptr<RenderData>> m_RenderDataQueue;
 
 	std::weak_ptr<Device> m_Device;
 

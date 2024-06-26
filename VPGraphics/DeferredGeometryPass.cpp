@@ -58,7 +58,7 @@ void DeferredGeometryPass::Initialize(const std::shared_ptr<Device>& device,
 
 }
 
-void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
+void DeferredGeometryPass::Render(const std::shared_ptr<RenderData>& model)
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
@@ -94,10 +94,9 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 	}
 
 	// Mesh Update & Bind & Draw
-
 	{
-		std::shared_ptr<ModelData> curModel = model;
-
+		std::shared_ptr<RenderData> curData = model;
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		int materialindex = 0; //mesh의 숫자와 동일
 
@@ -110,10 +109,10 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 			{
 
 				Device->BindVS(m_StaticMeshVS);
-
+				
 				// CB Update
-				m_TransformCB->m_struct.world = curModel->world;
-				m_TransformCB->m_struct.local = curModel->local;
+				m_TransformCB->m_struct.world = curData->world;
+				m_TransformCB->m_struct.local = curData->local;
 				m_TransformCB->Update();	// == Bind
 			}
 			// Skeletal Mesh Update & Bind
@@ -124,7 +123,7 @@ void DeferredGeometryPass::Render(const std::shared_ptr<ModelData>& model)
 				std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
 
 				// CB Update
-				m_TransformCB->m_struct.world = curModel->world;
+				m_TransformCB->m_struct.world = curData->world;
 				m_TransformCB->m_struct.local = curMesh->m_node.lock()->m_World;
 				m_TransformCB->Update();	// == Bind
 

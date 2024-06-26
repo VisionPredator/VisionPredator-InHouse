@@ -30,7 +30,7 @@ ModelLoader::~ModelLoader()
 void ModelLoader::Initialize()
 {
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐
-	LoadModel("Flair.fbx", Filter::SKINNING);
+	//LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
 	//LoadModel("engine_sizedown_1.fbx", Filter::STATIC);
 }
@@ -98,6 +98,7 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 	std::shared_ptr<ModelData> newData = std::make_shared<ModelData>();
 	newData->m_name.assign(name.begin(), name.end());
 	newData->m_RootNode = std::make_shared<Node>();
+	newData->RS = m_ResourceManager.lock()->Get<RenderState>(L"Solid");
 
 	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
 	{

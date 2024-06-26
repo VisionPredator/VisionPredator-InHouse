@@ -11,7 +11,7 @@
 		SystemManager();
 		~SystemManager() = default;
 		void Update(float deltatime);
-		void Initialize(SceneManager* entitymanager);
+		void Initialize(SceneManager* entitymanager,Graphics::Interface* Interfaces);
 
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
@@ -49,6 +49,9 @@
 			if constexpr (std::is_base_of_v<IRenderable, T>)
 			{
 				m_Renderables.push_back(static_cast<T*>(m_Systems.back().get()));
+				static_cast<T*>(m_Systems.back().get())->SetGraphics(m_Graphics);
+
+
 			}
 
 			if constexpr (std::is_base_of_v<IStartable, T>)
@@ -129,6 +132,7 @@
 
 
 		SceneManager* m_SceneManager = nullptr;
+		Graphics::Interface* m_Graphics = nullptr;
 
 		std::vector<std::unique_ptr<System>> m_Systems;
 		std::vector<IFixedUpdatable*> m_FixedUpdatables;

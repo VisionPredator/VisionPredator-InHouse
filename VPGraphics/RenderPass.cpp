@@ -41,72 +41,64 @@ void RenderPass::Render()
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
 
-	while (!m_RenderModelQueue.empty())
+	while (!m_RenderDataQueue.empty())
 	{
-		std::shared_ptr<ModelData> curModel = m_RenderModelQueue.front().lock();
-		Device->Context()->RSSetState(curModel->RS.lock()->Get());
-
-		int materialindex = 0; //mesh의 수와 같음
-
-		for (auto& mesh : curModel->m_Meshes)
+		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+		if (curModel != nullptr)
 		{
-			Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
-			Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
-			Device->Context()->IASetPrimitiveTopology(mesh->m_primitive);
+			Device->Context()->RSSetState(curModel->RS.lock()->Get());
 
-			if (mesh->IsSkinned())
+			int materialindex = 0; //mesh의 수와 같음
+
+			for (auto& mesh : curModel->m_Meshes)
 			{
-				BindSkeletal(curModel, mesh);
-			}
-			else
-			{
-				BindStatic(curModel);
-			}
+				Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
+				Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+				Device->Context()->IASetPrimitiveTopology(mesh->m_primitive);
 
-			if (!curModel->m_Materials.empty())
-			{
-
-				std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
-				std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-
-				MaterialData curMaterialData = curMaterial->m_Data;
-				curData->Update(curMaterialData);
-
-				Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+				if (mesh->IsSkinned())
 				{
-					Device->BindMaterialSRV(curMaterial);
+					BindSkeletal(curData, mesh);
 				}
+				else
+				{
+					BindStatic(curData);
+				}
+
+				if (!curModel->m_Materials.empty())
+				{
+
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+
+					MaterialData curMaterialData = curMaterial->m_Data;
+					curData->Update(curMaterialData);
+
+					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+					{
+						Device->BindMaterialSRV(curMaterial);
+					}
+				}
+
+				materialindex++;
+
+				///Draw
+				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
 
-			materialindex++;
-
-			///Draw
-			Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 		}
-
-		m_RenderModelQueue.pop();
+		m_RenderDataQueue.pop();
 	}
 }
 
-void RenderPass::AddModelData(std::shared_ptr<ModelData> model)
+void RenderPass::AddModelData(std::shared_ptr<RenderData> model)
 {
-	m_RenderModelQueue.push(model);
+
+	m_RenderDataQueue.push(model);
 }
 
-void RenderPass::AddModelData(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& model_list)
-{
-	for (auto& model : model_list)
-	{
-		PassState temp = model.second.first;
-		temp &= m_state;
-		if (temp == m_state)
-		{
-			m_RenderModelQueue.push(model.second.second);
-		}
-	}
-}
-
-void RenderPass::BindStatic(std::shared_ptr<ModelData> curModel)
+void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 
@@ -117,15 +109,12 @@ void RenderPass::BindStatic(std::shared_ptr<ModelData> curModel)
 	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 
 	TransformData renew;
-	renew.world = curModel->world;
 	renew.local = curModel->local;
+	renew.world = renew.local * curModel->world;
 	position->Update(renew);
-
-	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
-	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
 }
 
-void RenderPass::BindSkeletal(std::shared_ptr<ModelData> curModel, std::shared_ptr<Mesh> mesh)
+void RenderPass::BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_ptr<Mesh> mesh)
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 
@@ -146,13 +135,10 @@ void RenderPass::BindSkeletal(std::shared_ptr<ModelData> curModel, std::shared_p
 	{
 		MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
 
-		std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(curModel->m_name + L"MatrixPallete").lock();
+		std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(curModel->Name + L"MatrixPallete").lock();
 		pallete->Update(matrixPallete);
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 	}
-
-	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
-	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
 }
 
 FowardPass::FowardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
@@ -202,9 +188,10 @@ void DebugPass::Render()
 	Device->BindVS(m_StaticMeshVS.lock());
 	Device->Context()->PSSetShader(m_DebugPS.lock()->GetPS(), nullptr, 0);
 
-	while (!m_RenderModelQueue.empty())
+	while (!m_RenderDataQueue.empty())
 	{
-		std::shared_ptr<ModelData> curModel = m_RenderModelQueue.front().lock();
+		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 		Device->Context()->RSSetState(curModel->RS.lock()->Get());
 
 		int materialindex = 0; //mesh의 숫자와 동일
@@ -212,8 +199,8 @@ void DebugPass::Render()
 		for (auto& mesh : curModel->m_Meshes)
 		{
 			std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
-			position->m_struct.world = curModel->world;
-			position->m_struct.local = curModel->local;
+			position->m_struct.world = curData->world;
+			position->m_struct.local = curData->local;
 			position->Update();
 
 			Device->BindMeshBuffer(mesh);
@@ -243,7 +230,7 @@ void DebugPass::Render()
 
 			Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 		}
-		m_RenderModelQueue.pop();
+		m_RenderDataQueue.pop();
 	}
 }
 
@@ -324,9 +311,10 @@ void DeferredPass::Geometry()
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 	}
 
-	while (!m_RenderModelQueue.empty())
+	while (!m_RenderDataQueue.empty())
 	{
-		std::shared_ptr<ModelData> curModel = m_RenderModelQueue.front().lock();
+		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 
 		int materialindex = 0; //mesh의 숫자와 동일
@@ -344,8 +332,8 @@ void DeferredPass::Geometry()
 				// CB Update
 				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 
-				position->m_struct.world = curModel->world;
-				position->m_struct.local = curModel->local;
+				position->m_struct.world = curData->world;
+				position->m_struct.local = curData->local;
 				position->Update();	// == Bind
 			}
 			// Skeletal Mesh Update & Bind
@@ -358,13 +346,13 @@ void DeferredPass::Geometry()
 				// CB Update
 				std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 
-				position->m_struct.world = curModel->world;
+				position->m_struct.world = curData->world;
 				position->m_struct.local = curMesh->m_node.lock()->m_World;
 
 				position->Update();	// == Bind
 
 				MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-				std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(curModel->m_name + L"MatrixPallete").lock();
+				std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
 				pallete->Update(matrixPallete);
 				Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 
@@ -391,7 +379,7 @@ void DeferredPass::Geometry()
 		}
 
 
-		m_RenderModelQueue.pop();
+		m_RenderDataQueue.pop();
 	}
 	//렌더타겟 해제해줘야지 srv도 해제
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
@@ -437,7 +425,7 @@ void DeferredPass::Light()
 
 	//draw quad
 	{
-		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
+		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
 		std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 		Device->UnBindSRV();

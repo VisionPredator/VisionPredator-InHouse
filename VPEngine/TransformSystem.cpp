@@ -77,24 +77,36 @@
 				while (angle > 360.0f) angle -= 720.0f;
 				return angle;
 				};
+
 			transform->Local_Rotation.x = wrapAngle(transform->Local_Rotation.x);
 			transform->Local_Rotation.y = wrapAngle(transform->Local_Rotation.y);
 			transform->Local_Rotation.z = wrapAngle(transform->Local_Rotation.z);
 
-			transform->Previous_Location = transform->Local_Location;
-			transform->Previous_Rotation = transform->Local_Rotation;
-			transform->Previous_Scale = transform->Local_Scale;
-			
-			// Update the quaternion from the wrapped euler angles
-			transform->Local_Quaternion =VPMath::Quaternion::CreateFromYawPitchRoll(
-				VPMath::XMConvertToRadians(transform->Local_Rotation.y),
-				VPMath::XMConvertToRadians(transform->Local_Rotation.x),
-				VPMath::XMConvertToRadians(transform->Local_Rotation.z)
-			);
+			if (transform->Local_Quaternion == transform->Previous_Quaternion)
+			{
+				// Update the quaternion from the wrapped euler angles
+				transform->Local_Quaternion = VPMath::Quaternion::CreateFromYawPitchRoll(
+					VPMath::XMConvertToRadians(transform->Local_Rotation.y),
+					VPMath::XMConvertToRadians(transform->Local_Rotation.x),
+					VPMath::XMConvertToRadians(transform->Local_Rotation.z));
+			}
+			else
+			{
+				VPMath::Quaternion temp = transform->Local_Quaternion;
+				VPMath::Vector3 temp2 = (temp.ToEuler() * 180 / VPMath::XM_PI) ;
+				transform->Local_Rotation = temp2;
+			}
+
 
 			transform->LocalTransform = VPMath::Matrix::CreateScale(transform->Local_Scale) *
 			VPMath::Matrix::CreateFromQuaternion(transform->Local_Quaternion) *
 			VPMath::Matrix::CreateTranslation(transform->Local_Location);
+
+			transform->Previous_Location = transform->Local_Location;
+			transform->Previous_Rotation = transform->Local_Rotation;
+			transform->Previous_Quaternion = transform->Local_Quaternion;
+			transform->Previous_Scale = transform->Local_Scale;
+
 		}
 
 
