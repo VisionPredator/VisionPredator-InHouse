@@ -6,3 +6,4 @@
 #include "SkinningMeshComponent.h"
 #include "CameraComponent.h"
 #include "PlayerComponent.h"
+#include "LightComponent.h"
