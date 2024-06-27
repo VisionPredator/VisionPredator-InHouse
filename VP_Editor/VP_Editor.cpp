@@ -14,7 +14,7 @@
 #include "EditorViewPort.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 16.5f);
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\consolab.ttf", 17.f);
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();

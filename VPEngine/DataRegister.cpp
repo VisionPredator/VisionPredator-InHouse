@@ -55,14 +55,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
 
 void VPRegister::Register_Components()
 {
-
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
 	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBX);
+	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(LightComponent, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
+	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_MEMBER(Parent, Parent::ParentID);
 	META_ADD_MEMBER(Children, Children::ChildrenID);
 	META_ADD_MEMBER(CameraComponent, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
