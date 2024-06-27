@@ -360,7 +360,7 @@ void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
 }
 
 
-void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, LightType kind)
+void GraphicsEngine::EraseLight(uint32_t EntityID, LightType kind)
 {
 	int index = static_cast<int>(kind);
 	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
