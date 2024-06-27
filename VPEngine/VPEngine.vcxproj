@@ -172,6 +172,7 @@
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="EventSubscriber.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="LightComponent.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="IDComponent.cpp" />
     <ClCompile Include="IdentityComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="pch.cpp">

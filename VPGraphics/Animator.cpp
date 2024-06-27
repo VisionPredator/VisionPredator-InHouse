@@ -5,8 +5,9 @@
 #include "Animation.h"
 #include "Node.h"
 #include "Mesh.h"
+#include "ResourceManager.h"
 
-Animator::Animator()
+Animator::Animator(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager)
 {
 
 }
@@ -22,6 +23,22 @@ void Animator::Update(double dt, std::vector<std::shared_ptr<ModelData>>& models
 	{
 		UpdateWorld(dt, model);
 		UpdateMatrixPallete(model);
+	}
+}
+
+void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
+{
+
+	for (auto& data : renderlist)
+	{
+		std::shared_ptr<RenderData> curData = data.second;
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+
+		if (curModel != nullptr)
+		{
+			UpdateWorld(dt, curModel);
+			UpdateMatrixPallete(curModel);
+		}
 	}
 }
 

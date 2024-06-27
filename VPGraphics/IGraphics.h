@@ -59,13 +59,13 @@ namespace Graphics
 		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
 
 		//·»´õ¸µ
-		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx = L"") abstract;
+		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") abstract;
 
 
 		/// Light
-		virtual void AddLight(uint32_t EntityID, std::wstring name ,Kind_of_Light kind, LightData data) abstract;
-		virtual void EraseLight(uint32_t EntityID, std::wstring name ,Kind_of_Light kind) abstract;
-		virtual void UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) abstract;
+		virtual void AddLight(uint32_t EntityID,LightType kind, LightData data) abstract;
+		virtual void EraseLight(uint32_t EntityID, std::wstring name ,LightType kind) abstract;
+		virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) abstract;
 
 		/// Debug Draw
 		virtual void DrawSphere(const debug::SphereInfo& info) abstract;
