@@ -80,6 +80,8 @@ protected:
 	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
 	std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)> m_LightList;
 
+	std::unordered_map<uint32_t, LightData> m_Lights;
+
 private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<ViewPort> m_CurViewPort;
