@@ -360,18 +360,18 @@ void Inspector::TypeImGui_float(entt::meta_data memberMetaData, Component* compo
 void Inspector::TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* component)
 {
 	// Static cache for enum members to avoid recomputation
-	static std::map<int, entt::meta_data> enumCache;
+	std::map<int, entt::meta_data> enumMap;
 	// eunmMember string table 생성
 
-	if (enumCache.empty()) {
+	if (enumMap.empty()) {
 		for (auto [id, metaData] : memberMetaData.type().data()) {
 			entt::meta_any any = metaData.get({});
 			if (any.allow_cast<int>()) {
 				int memberInt = any.cast<int>();
-				enumCache[memberInt] = metaData;
+				enumMap[memberInt] = metaData;
 			}
 		}
-		assert(!enumCache.empty());
+		assert(!enumMap.empty());
 	}
 
 	// 현재 enum 값 int로 가져오기
@@ -382,14 +382,14 @@ void Inspector::TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* c
 		currentEnumInt = currentEnum.cast<int>();
 
 	std::string memberName = Reflection::GetName(memberMetaData);
-	auto iter = enumCache.find(currentEnumInt);
-	assert(iter != enumCache.end());
+	auto iter = enumMap.find(currentEnumInt);
+	assert(iter != enumMap.end());
 	std::string currentEnumName = Reflection::GetName(iter->second);
 
 	// Combo 창
 	if (ImGui::BeginCombo(memberName.c_str(), currentEnumName.c_str()))
 	{
-		for (const auto& [val, metaData] : enumCache)
+		for (const auto& [val, metaData] : enumMap)
 		{
 			std::string memberName = Reflection::GetName(metaData);
 			const bool bIsSelected = val == currentEnumInt;
