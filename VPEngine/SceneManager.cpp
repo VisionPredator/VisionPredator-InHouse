@@ -377,8 +377,24 @@ void SceneManager::OnSerializePrefab(std::any data)
 		for (const auto& [id, comp] : serializeEntity->m_OwnedComp)
 		{
 			if (entityID == serializeID)
+			{
 				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
 					continue;
+				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
+				{
+					auto temp = static_cast<TransformComponent*>(comp);
+					TransformComponent Temp = *temp;
+					Temp.Local_Location= Temp.World_Location;
+					Temp.Local_Quaternion = Temp.World_Quaternion;
+					Temp.Local_Scale = Temp.World_Scale;
+					nlohmann::json compnentEntity;
+					Temp.SerializeComponent(compnentEntity);
+					compnentEntity["ComponentID"] = id;
+					entityJson["Component"].push_back(compnentEntity);
+					continue;
+				}
+			}
+
 
 
 			nlohmann::json compnentEntity;
