@@ -78,24 +78,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 void RenderSystem::FixedUpdate(float deltaTime)
 {
-	for (MeshComponent& meshComp : COMPITER(MeshComponent))
-	{
-		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>(); 
-		IDComponent* idComp = meshComp.GetComponent<IDComponent>();
-		std::wstring FbxName{};
-		std::wstring Name{};
-		FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-		temp->FBX = FbxName;
-		temp->Filter = meshComp.FBXFilter;
-		temp->world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp->Name = Name;
-		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 
-
-
-	}
 
 }
 
@@ -106,20 +89,34 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	for (MeshComponent& meshComp : COMPITER(MeshComponent))
 	{
 		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-		std::shared_ptr<RenderData> temp=std::make_shared<RenderData>();
-		std::wstring FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-		//temp->EntityID= meshComp.GetEntityID();
-		temp->FBX= FbxName;
-		temp->Filter= meshComp.FBXFilter;
-		temp->world= meshComp.GetComponent<TransformComponent>()->WorldTransform;
-
+		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
+		IDComponent* idComp = meshComp.GetComponent<IDComponent>();
+		std::wstring FbxName{};
+		std::wstring Name{};
+		FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
+		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+		temp->FBX = FbxName;
+		temp->Filter = meshComp.FBXFilter;
+		temp->world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
+		temp->Name = Name;
 		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
-
-
-
 	}
 
-
+	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
+	{
+		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
+		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
+		IDComponent* idComp = skinComp.GetComponent<IDComponent>();
+		std::wstring FbxName{};
+		std::wstring Name{};
+		FbxName = FbxName.assign(skinComp.FBX.begin(), skinComp.FBX.end());
+		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+		temp->FBX = FbxName;
+		temp->Filter = skinComp.FBXFilter;
+		temp->world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
+		temp->Name = Name;
+		m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
+	}
 
 }
 

@@ -16,7 +16,7 @@ META_REGISTRATION
 	META_ADD_MEMBER(PlayerComponent
 		,PlayerComponent::HP)
 	META_ADD_MEMBER(SkinningMeshComponent
-		,SkinningMeshComponent::Name)
+		,SkinningMeshComponent::FBX)
 	META_ADD_MEMBER(Parent
 		, Parent::ParentID)
 	META_ADD_MEMBER(Children
