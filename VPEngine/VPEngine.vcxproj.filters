@@ -159,6 +159,9 @@
     <ClInclude Include="VisPredMath.h">
       <Filter>VisPredMath</Filter>
     </ClInclude>
+    <ClInclude Include="DataRegister.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -235,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="VisPredMath.cpp">
       <Filter>VisPredMath</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

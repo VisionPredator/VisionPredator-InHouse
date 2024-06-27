@@ -379,6 +379,8 @@ void SceneManager::OnSerializePrefab(std::any data)
 			if (entityID == serializeID)
 				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
 					continue;
+
+
 			nlohmann::json compnentEntity;
 			comp->SerializeComponent(compnentEntity);
 			compnentEntity["ComponentID"] = id;

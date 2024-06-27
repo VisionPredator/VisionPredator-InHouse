@@ -56,6 +56,7 @@ VP_Editor::~VP_Editor()
 		delete ImGui;
 	}
 	m_ImGuis.clear();
+	delete    m_HierarchySystem;
 }
 
 void VP_Editor::Update()

@@ -172,6 +172,7 @@
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="EventSubscriber.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="DataRegister.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="EventSubscriber.cpp" />
+    <ClCompile Include="DataRegister.cpp" />
     <ClCompile Include="IDComponent.cpp" />
     <ClCompile Include="IdentityComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />

@@ -1,23 +1,23 @@
 {
     "Entitys": [
         {
-            "EntityID": 1904538668,
+            "EntityID": 2447629240,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "cerberus.fbx"
+                    "Name": "Entity0"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -10.0,
+                        "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
                     "Local_Rotation": {
-                        "x": -7.0573906898498535,
-                        "y": 16.375572204589844,
-                        "z": -63.30607604980469
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "Local_Scale": {
                         "x": 1.0,
@@ -26,8 +26,68 @@
                     }
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx"
+                    "ComponentID": 1142749570,
+                    "Name": "",
+                    "Test": "a"
+                }
+            ]
+        },
+        {
+            "EntityID": 3150880998,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2624971272,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "Name": "",
+                    "Test": "a"
                 }
             ]
         }

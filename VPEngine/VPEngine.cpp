@@ -9,10 +9,9 @@
 #include <io.h>
 #include "SceneSerializer.h"
 #include "RenderSystem.h"
-
+#include "DataRegister.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
-
 
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -33,7 +32,6 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = wTitle.c_str();
-
 	RegisterClass(&wndclass);
 	RECT rcClient = { 0, 0, (LONG)width, (LONG)height };
 	AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
@@ -46,6 +44,8 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 
 	m_Graphics = new GraphicsEngine(m_hWnd);
 	m_Graphics->Initialize();
+	VPRegister::Register_Components();
+	VPRegister::Register_EnumClass();
 
 	m_TimeManager = new TimeManager;
 	m_SceneManager = new SceneManager;
@@ -113,6 +113,7 @@ void VPEngine::Update()
 	//if (m_DeltaTime > 1)
 	//	m_DeltaTime = 1/165;
 	m_SystemManager->Update(m_DeltaTime);
+	m_SystemManager->RenderUpdate(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
