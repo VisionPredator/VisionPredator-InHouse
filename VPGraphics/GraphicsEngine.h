@@ -53,7 +53,7 @@ public:
 
 
 	virtual void AddLight(uint32_t EntityID, LightType kind, LightData data) override;
-	virtual void EraseLight(uint32_t EntityID, std::wstring name, LightType kind) override;
+	virtual void EraseLight(uint32_t EntityID, LightType kind) override;
 
 	virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) override;
 
