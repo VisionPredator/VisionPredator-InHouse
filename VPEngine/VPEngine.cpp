@@ -115,6 +115,7 @@ void VPEngine::Update()
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->RenderUpdate(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
+	m_SystemManager->RenderUpdate(m_DeltaTime);
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 	SetWindowTextW(m_hWnd, newname.c_str());

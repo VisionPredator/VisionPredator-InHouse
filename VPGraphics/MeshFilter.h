@@ -26,13 +26,13 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() : Name(L"Need Name"), EntityID(0), FBX(L"Need Path"), Pass(PassState::None)
+	RenderData() : Name(L"Need Name"), FBX(L"Need Path"), Pass(PassState::Deferred)
+		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
 	{
 
 	}
 
 	std::wstring Name;
-	uint32_t EntityID;
 	std::wstring FBX;
 	PassState Pass;
 	MeshFilter Filter;

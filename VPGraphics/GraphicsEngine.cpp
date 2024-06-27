@@ -43,6 +43,8 @@
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
+
+#include "DeferredShadingPipeline.h"
 #pragma endregion IMGUI
 
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_CurViewPort(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
@@ -55,6 +57,9 @@ GraphicsEngine::~GraphicsEngine()
 
 bool GraphicsEngine::Initialize()
 {
+	//srv 생성을 위한 com 초기화
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
 	GetClientRect(m_hWnd, &m_wndSize);
 
 	m_Device = std::make_shared<Device>(m_hWnd);
@@ -74,14 +79,14 @@ bool GraphicsEngine::Initialize()
 	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
 	m_Loader->Initialize();
 	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
-	m_Animator = std::make_shared <Animator>();
+	m_Animator = std::make_shared <Animator>(m_ResourceManager);
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
 	OnResize();
 
 	// Pipeline
-	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
@@ -90,8 +95,9 @@ bool GraphicsEngine::Initialize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
-	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
+	//AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
+	//AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
+	//AddRenderModel(MeshFilter::Skinning, 2, L"Flair.fbx", L"Flair");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
@@ -129,26 +135,20 @@ bool GraphicsEngine::Initialize()
 	Spot.range = 100;
 	Spot.spot = 8;
 
-	AddLight(999,L"Sun", Kind_of_Light::Direction, Dir);
-	//EraseLight(999, L"Sun", Kind_of_Light::Direction);
-	//AddLight(L"Sun2", Kind_of_Light::Direction, Dir2);
-	//AddLight(L"Sun3", Kind_of_Light::Direction, Dir3);
-	//AddLight(L"point", Kind_of_Light::Point, Point);
-	//AddLight(L"point2", Kind_of_Light::Point, Point2);
-	//AddLight(L"point", Kind_of_Light::Spot, Spot);
+	AddLight(999, LightType::Direction, Dir);
+
 
 
 	InitializeImGui();
 	return true;
-
 }
 
 void GraphicsEngine::Update(double dt)
 {
-	m_Animator->Update(dt, m_AnimationModel);
+	// m_Animator->Update(dt, m_AnimationModel);
+	m_Animator->Update(dt, m_RenderList);
 
-	//m_DeferredShadingPipeline->Update(m_RenderList);
-	//m_ForwardPipeline->Update(m_RenderList);
+	m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_LightList);
@@ -191,12 +191,16 @@ void GraphicsEngine::Render()
 {
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
-
 	//m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
 	m_ForwardPipeline->Render();
+
+#pragma region TEST
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+#pragma endregion TEST
 
 	BeginImGui();
 
@@ -206,17 +210,15 @@ void GraphicsEngine::EndRender()
 {
 	EndImGui();
 
-	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
+	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
+	//m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 	m_Device->EndRender();
 }
 
-bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx)
+bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx)
 {
 
 	std::shared_ptr<RenderData> newData = std::make_shared<RenderData>();
-	newData->Name = name;
-	newData->EntityID = EntityID;
 	newData->FBX = fbx;
 	newData->Filter = mesh;
 
@@ -225,58 +227,32 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 		case MeshFilter::Axis:
 		{
 			newData->Pass = PassState::Debug;
-			newData->local = DirectX::SimpleMath::Matrix::Identity;
-			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Grid:
 		{
 			newData->Pass = PassState::Debug;
-			newData->local = DirectX::SimpleMath::Matrix::Identity;
-			newData->world = DirectX::SimpleMath::Matrix::Identity;
-
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Box:
 		{
 			newData->Pass = PassState::Debug;
-			newData->local = DirectX::SimpleMath::Matrix::Identity;
-			newData->world = DirectX::SimpleMath::Matrix::Identity;
 
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Static:
 		{
-			newData->Pass = PassState::Foward;
-
 			newData->FBX = fbx + L".fbx";
-			newData->local._11 *= 0.03f;
-			newData->local._22 *= 0.03f;
-			newData->local._33 *= 0.03f;
-
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
 		case MeshFilter::Skinning:
 		{
-			newData->Pass = PassState::Deferred;
-
 			newData->FBX = fbx + L".fbx";
-
-			newData->local._11 *= 0.05f;
-			newData->local._22 *= 0.05f;
-			newData->local._33 *= 0.05f;
-
-			newData->world *= newData->local;
-			m_RenderList[EntityID] = newData;
 
 			m_AnimationModel.push_back(m_ResourceManager->Get<ModelData>(newData->FBX).lock());
 
@@ -286,8 +262,6 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 		case MeshFilter::Circle:
 		{	
 			newData->Pass = PassState::Debug;
-
-			m_RenderList[EntityID] = newData;
 		}
 			break;
 
@@ -297,6 +271,9 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 		default:
 			break;
 	}
+
+	m_RenderList[EntityID] = newData;
+
 
 	return true;
 }
@@ -334,6 +311,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
+	Camera.lock()->m_struct.proj = cb_proj;
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	Camera.lock()->Update();
@@ -344,17 +322,17 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> 
 	m_RenderList[EntityID] = data;
 }
 
-void GraphicsEngine::AddLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data)
+void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
 {
 	int index = static_cast<int>(kind);
-	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
 
-	if (curMap.find(name) == curMap.end())
+	if (curMap.find(EntityID) == curMap.end())
 	{
-		curMap.insert(std::pair<std::wstring, LightData>(name, data));
-		AddRenderModel(MeshFilter::Circle, EntityID, name,L"Circle");
+		curMap.insert(std::pair<uint32_t, LightData>(EntityID, data));
+		AddRenderModel(MeshFilter::Circle, EntityID,L"Circle");
 
-		curMap[name] = data;
+		curMap[EntityID] = data;
 
 		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
 
@@ -382,14 +360,14 @@ void GraphicsEngine::AddLight(uint32_t EntityID, std::wstring name, Kind_of_Ligh
 }
 
 
-void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind)
+void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, LightType kind)
 {
 	int index = static_cast<int>(kind);
-	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
 
-	if (curMap.find(name) != curMap.end())
+	if (curMap.find(EntityID) != curMap.end())
 	{
-		curMap.erase(name);
+		curMap.erase(EntityID);
 		EraseObject(EntityID);
 	}
 	else
@@ -399,16 +377,16 @@ void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Li
 	}
 }
 
-void GraphicsEngine::UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data)
+void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightData data)
 {
 	int index = static_cast<int>(kind);
-	std::unordered_map <std::wstring, LightData> curMap = m_LightList[index];
+	std::unordered_map <uint32_t, LightData> curMap = m_LightList[index];
 
-	if (curMap.find(name) != curMap.end())
+	if (curMap.find(EntityID) != curMap.end())
 	{
 		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
 
-		curMap[name] = data;
+		curMap[EntityID] = data;
 		curData->local._31 = data.pos.x;
 		curData->local._32 = data.pos.y;
 		curData->local._33 = data.pos.z;

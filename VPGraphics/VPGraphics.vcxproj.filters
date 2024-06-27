@@ -247,6 +247,9 @@
       <Filter>Resource\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="ViewPort.h" />
+    <ClInclude Include="FinalPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -364,6 +367,9 @@
       <Filter>Resource\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="ViewPort.cpp" />
+    <ClCompile Include="FinalPass.cpp">
+      <Filter>Pass\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">

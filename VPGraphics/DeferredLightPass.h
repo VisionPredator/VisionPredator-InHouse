@@ -46,5 +46,8 @@ private:
 	std::weak_ptr<PixelShader> m_QuadPS;
 
 
+	/// TEST
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DSS_Null;
+	Microsoft::WRL::ComPtr<ID3D11BlendState> m_BS_Null;
 };
 

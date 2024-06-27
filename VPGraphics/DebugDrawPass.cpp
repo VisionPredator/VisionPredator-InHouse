@@ -14,8 +14,11 @@ void DebugDrawPass::Initialize(const std::shared_ptr<Device>& device,
 	m_DebugDrawManager = debugDrawManager;
 	m_ResourceManager = resourceManager;
 
-	m_FullScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
-	m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
+	m_FullScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"IMGUI").lock();
+	//m_FullScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
+
+	m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+	//m_DepthStencilView = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 	m_View = view;
 	m_Proj = proj;
@@ -23,13 +26,12 @@ void DebugDrawPass::Initialize(const std::shared_ptr<Device>& device,
 
 void DebugDrawPass::Render()
 {
-
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	XMStoreFloat4x4(&m_View, XMMatrixTranspose(Camera.lock()->m_struct.view));
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(Camera.lock()->m_struct.proj));
 
-
 	m_Device->Context()->OMSetRenderTargets(1, m_FullScreenRTV->GetAddress(), m_DepthStencilView->Get());
+	//m_Device->Context()->OMSetRenderTargets(1, m_FullScreenRTV->GetAddress(), nullptr);
 
 #pragma region TEST
 	debug::SphereInfo sphereInfo;

@@ -30,24 +30,24 @@ void DeferredShadingPipeline::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DebugDrawManager>& debugDrawManager,
 	const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
 {
-	m_DeferredGeometryPass->Initialize(device, resourceManager);
+	m_DeferredGeometryPass->Initialize(device, resourceManager, view, proj);
 	m_DeferredLightPass->Initialize(device, resourceManager);
 	m_DebugDrawPass->Initialize(device, debugDrawManager, resourceManager, view, proj);
 }
 
-void DeferredShadingPipeline::Update(std::map<std::wstring, std::pair<PassState, std::shared_ptr<ModelData>>>& RenderList)
+void DeferredShadingPipeline::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
 {
 	for (auto& model : RenderList)
 	{
-		PassState curState = model.second.first;
-		PassState temp = curState;
+		std::shared_ptr<RenderData> curModel = model.second;
+
+		PassState temp = model.second->Pass;
 
 		temp &= PassState::Deferred;
 		if (temp == PassState::Deferred)
 		{
-			std::shared_ptr<ModelData> curModel = model.second.second;
-			m_RenderQueue.push(curModel);
 		}
+		m_RenderQueue.push(curModel);
 	}
 
 }
@@ -60,11 +60,8 @@ void DeferredShadingPipeline::Render()
 {
 	while (!m_RenderQueue.empty())
 	{
-		std::shared_ptr<ModelData> curModel = m_RenderQueue.front();
-		if (curModel->m_Meshes.empty())
-		{
-			MessageBox(0, L"Please Load FBX in ModelLoader ", 0, 0);
-		}
+		std::shared_ptr<RenderData> curModel = m_RenderQueue.front();
+
 		m_DeferredGeometryPass->Render(curModel);
 
 
@@ -73,6 +70,6 @@ void DeferredShadingPipeline::Render()
 
 	m_DeferredLightPass->Render();
 
-	//m_DebugDrawPass->Render();
+	m_DebugDrawPass->Render();
 }
 

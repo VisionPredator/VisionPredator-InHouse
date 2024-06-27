@@ -26,7 +26,7 @@ struct MatrixPallete
 };
 
 
-enum class Kind_of_Light
+enum class LightType
 {
 	Direction = 0,
 	Spot,

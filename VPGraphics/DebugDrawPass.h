@@ -28,6 +28,5 @@ private:
 
 	DirectX::SimpleMath::Matrix m_View;
 	DirectX::SimpleMath::Matrix m_Proj;
-
 };
 

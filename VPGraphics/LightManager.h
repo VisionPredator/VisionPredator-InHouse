@@ -30,7 +30,7 @@ public:
 	LightManager(std::weak_ptr<ResourceManager> manager);
 	~LightManager();
 
-	void Update(std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)>& usinglight);
+	void Update(std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)>& usinglight);
 
 
 private:

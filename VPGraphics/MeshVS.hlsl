@@ -5,7 +5,7 @@ VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
     
-    output.posWorld = mul(input.pos, gLocal);
+    output.posWorld = mul(input.pos, gWorld);
     output.pos = mul(output.posWorld, gWorldViewProj);
     output.color = input.color;
     output.normal = input.normal;

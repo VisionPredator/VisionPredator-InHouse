@@ -14,7 +14,7 @@ class ShaderResourceView;
 #pragma endregion DX
 
 #pragma region Pipeline
-//class DeferredShadingPipeline;
+class DeferredShadingPipeline;
 class ForwardPipeline;
 #pragma endregion
 
@@ -45,17 +45,17 @@ public:
 
 	virtual void OnResize() override;
 
-	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx = L"") override;
+	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
 	virtual void EraseObject(uint32_t EntityID) override;
 
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)override;
 
 
-	virtual void AddLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) override;
-	virtual void EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind) override;
+	virtual void AddLight(uint32_t EntityID, LightType kind, LightData data) override;
+	virtual void EraseLight(uint32_t EntityID, std::wstring name, LightType kind) override;
 
-	virtual void UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) override;
+	virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) override;
 
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
@@ -78,7 +78,7 @@ protected:
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
 
 	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
-	std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)> m_LightList;
+	std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)> m_LightList;
 
 private:
 	std::shared_ptr<Device> m_Device;
@@ -102,7 +102,7 @@ private:
 
 	// Pipeline
 	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
-	//std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
+	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
 
 

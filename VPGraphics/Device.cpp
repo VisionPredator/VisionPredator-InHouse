@@ -124,7 +124,7 @@ void Device::BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DS
 void Device::EndRender()
 {
 	m_SwapChain->Present(0, 0);
-	m_Context->RSSetState(0);
+	//m_Context->RSSetState(0);
 }
 
 void Device::UnBindSRV()
