@@ -165,6 +165,9 @@
     <ClInclude Include="DataRegister.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="LightSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -246,6 +249,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="DataRegister.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

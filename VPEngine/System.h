@@ -2,6 +2,8 @@
 #include "SceneManager.h"
 #include "SystemInterface.h"
 #include "Components.h"
+#include "../VPGraphics/IGraphics.h"
+
 #define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager)
 
 

@@ -233,7 +233,7 @@ void Inspector::TypeImGui_Vector3(entt::meta_data memberMetaData, Component* com
 	float tempFloat[3]{ tempVector.x,tempVector.y,tempVector.z };
 	ImGui::PushID(memberName.c_str());
 
-	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
+	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, .01f, -FLT_MAX, FLT_MAX))
 	{
 		tempVector.x = tempFloat[0];
 		tempVector.y = tempFloat[1];
