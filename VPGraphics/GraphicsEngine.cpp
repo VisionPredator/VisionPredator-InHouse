@@ -97,7 +97,7 @@ bool GraphicsEngine::Initialize()
 
 	//AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
 	//AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
-	AddRenderModel(MeshFilter::Skinning, 2, L"Flair.fbx", L"Flair");
+	//AddRenderModel(MeshFilter::Skinning, 2, L"Flair.fbx", L"Flair");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
 	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
@@ -135,7 +135,7 @@ bool GraphicsEngine::Initialize()
 	Spot.range = 100;
 	Spot.spot = 8;
 
-	AddLight(999,L"Sun", Kind_of_Light::Direction, Dir);
+	AddLight(999, LightType::Direction, Dir);
 
 
 
@@ -191,7 +191,7 @@ void GraphicsEngine::Render()
 {
 	// 디퍼드 렌더링 기법을 사용한 파이프라인.
 	// 디퍼드 패스 + 포워드 패스.
-	m_DeferredShadingPipeline->Render();
+	//m_DeferredShadingPipeline->Render();
 
 	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
 	// 오로지 포워드 패스만 존재.
@@ -215,11 +215,10 @@ void GraphicsEngine::EndRender()
 	m_Device->EndRender();
 }
 
-bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx)
+bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx)
 {
 
 	std::shared_ptr<RenderData> newData = std::make_shared<RenderData>();
-	newData->Name = name;
 	newData->FBX = fbx;
 	newData->Filter = mesh;
 
@@ -323,17 +322,17 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> 
 	m_RenderList[EntityID] = data;
 }
 
-void GraphicsEngine::AddLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data)
+void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
 {
 	int index = static_cast<int>(kind);
-	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
 
-	if (curMap.find(name) == curMap.end())
+	if (curMap.find(EntityID) == curMap.end())
 	{
-		curMap.insert(std::pair<std::wstring, LightData>(name, data));
-		AddRenderModel(MeshFilter::Circle, EntityID, name,L"Circle");
+		curMap.insert(std::pair<uint32_t, LightData>(EntityID, data));
+		AddRenderModel(MeshFilter::Circle, EntityID,L"Circle");
 
-		curMap[name] = data;
+		curMap[EntityID] = data;
 
 		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
 
@@ -361,14 +360,14 @@ void GraphicsEngine::AddLight(uint32_t EntityID, std::wstring name, Kind_of_Ligh
 }
 
 
-void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Light kind)
+void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, LightType kind)
 {
 	int index = static_cast<int>(kind);
-	std::unordered_map <std::wstring, LightData>& curMap = m_LightList[index];
+	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
 
-	if (curMap.find(name) != curMap.end())
+	if (curMap.find(EntityID) != curMap.end())
 	{
-		curMap.erase(name);
+		curMap.erase(EntityID);
 		EraseObject(EntityID);
 	}
 	else
@@ -378,16 +377,16 @@ void GraphicsEngine::EraseLight(uint32_t EntityID, std::wstring name, Kind_of_Li
 	}
 }
 
-void GraphicsEngine::UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data)
+void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightData data)
 {
 	int index = static_cast<int>(kind);
-	std::unordered_map <std::wstring, LightData> curMap = m_LightList[index];
+	std::unordered_map <uint32_t, LightData> curMap = m_LightList[index];
 
-	if (curMap.find(name) != curMap.end())
+	if (curMap.find(EntityID) != curMap.end())
 	{
 		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
 
-		curMap[name] = data;
+		curMap[EntityID] = data;
 		curData->local._31 = data.pos.x;
 		curData->local._32 = data.pos.y;
 		curData->local._33 = data.pos.z;

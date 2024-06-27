@@ -24,7 +24,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
 		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Name, Path);
+		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 		return;
 	}
 

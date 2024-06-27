@@ -15,7 +15,7 @@ LightManager::~LightManager()
 
 
 
-void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>, static_cast<int>(Kind_of_Light::End)>& usinglight)
+void LightManager::Update(std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)>& usinglight)
 {
 
 	float& dirindex = m_BufferStruct.DirIndex;
@@ -24,16 +24,16 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 
 	for (int i = 0; i < usinglight.size(); i++)
 	{
-		std::unordered_map <std::wstring, LightData> curLightMap = usinglight[i];
-		std::unordered_map <std::wstring, LightData>::iterator curData = curLightMap.begin();
+		std::unordered_map <uint32_t, LightData> curLightMap = usinglight[i];
+		std::unordered_map <uint32_t, LightData>::iterator curData = curLightMap.begin();
 
-		Kind_of_Light kind = static_cast<Kind_of_Light>(i);
+		LightType kind = static_cast<LightType>(i);
 
 		int size = curLightMap.size();
 
 		switch (kind)
 		{
-			case Kind_of_Light::Direction:
+			case LightType::Direction:
 			{
 				m_BufferStruct.DirIndex = static_cast<float>(size);
 				for (int i = 0; i < size; i++)
@@ -43,7 +43,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 				}
 			}
 			break;
-			case Kind_of_Light::Spot:
+			case LightType::Spot:
 			{
 				m_BufferStruct.SpotIndex = static_cast<float>(size);
 				for (int i = 0; i < size; i++)
@@ -54,7 +54,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 				}
 			}
 			break;
-			case Kind_of_Light::Point:
+			case LightType::Point:
 			{
 				m_BufferStruct.PointIndex= static_cast<float>(size);
 				for (int i = 0; i < size; i++)
@@ -64,7 +64,7 @@ void LightManager::Update(std::array<std::unordered_map<std::wstring, LightData>
 				}
 			}
 			break;
-			case Kind_of_Light::End:
+			case LightType::End:
 				break;
 		}		
 	}
