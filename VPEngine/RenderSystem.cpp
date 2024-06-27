@@ -2,7 +2,6 @@
 #include "RenderSystem.h"
 #include "Components.h"
 #include "EventManager.h"
-#include "../VPGraphics/IGraphics.h"
 RenderSystem::RenderSystem(SceneManager* sceneManager)
 	: System(sceneManager)
 {
@@ -29,14 +28,6 @@ void RenderSystem::OnAddedComponent(std::any data)
 	}
 
 	//Skinned
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
-	{
-		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
-
-		return;
-	}
-
-	//
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
@@ -76,6 +67,11 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 }
 
+void RenderSystem::Update(float deltaTime)
+{
+
+
+}
 void RenderSystem::FixedUpdate(float deltaTime)
 {
 
@@ -119,4 +115,3 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	}
 
 }
-

@@ -188,8 +188,10 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 
 
 	auto metaType = memberMetaData.type();
-	if (metaType.id() == Reflection::GetTypeID<VPMath::Vector2>())
-		TypeImGui_Vector2(memberMetaData, component);
+	if (metaType.is_enum() )
+		TypeImGui_EnumClass(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
+		TypeImGui_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
 		TypeImGui_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector4>())
@@ -231,7 +233,7 @@ void Inspector::TypeImGui_Vector3(entt::meta_data memberMetaData, Component* com
 	float tempFloat[3]{ tempVector.x,tempVector.y,tempVector.z };
 	ImGui::PushID(memberName.c_str());
 
-	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
+	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, .01f, -FLT_MAX, FLT_MAX))
 	{
 		tempVector.x = tempFloat[0];
 		tempVector.y = tempFloat[1];
@@ -351,4 +353,50 @@ void Inspector::TypeImGui_float(entt::meta_data memberMetaData, Component* compo
 	if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat))
 		memberMetaData.set(component->GetHandle(), tempfloat);
 	ImGui::PopID();
+}
+
+
+void Inspector::TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* component)
+{
+	// Static cache for enum members to avoid recomputation
+	static std::map<int, entt::meta_data> enumCache;
+	// eunmMember string table 생성
+
+	if (enumCache.empty()) {
+		for (auto [id, metaData] : memberMetaData.type().data()) {
+			entt::meta_any any = metaData.get({});
+			if (any.allow_cast<int>()) {
+				int memberInt = any.cast<int>();
+				enumCache[memberInt] = metaData;
+			}
+		}
+		assert(!enumCache.empty());
+	}
+
+	// 현재 enum 값 int로 가져오기
+	auto currentEnum = memberMetaData.get(component->GetHandle());
+	int currentEnumInt = 0;
+
+	if (currentEnum.allow_cast<int>())
+		currentEnumInt = currentEnum.cast<int>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	auto iter = enumCache.find(currentEnumInt);
+	assert(iter != enumCache.end());
+	std::string currentEnumName = Reflection::GetName(iter->second);
+
+	// Combo 창
+	if (ImGui::BeginCombo(memberName.c_str(), currentEnumName.c_str()))
+	{
+		for (const auto& [val, metaData] : enumCache)
+		{
+			std::string memberName = Reflection::GetName(metaData);
+			const bool bIsSelected = val == currentEnumInt;
+			if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+			{
+				memberMetaData.set(component->GetHandle(), val);
+			}
+		}
+		ImGui::EndCombo();
+	}
 }

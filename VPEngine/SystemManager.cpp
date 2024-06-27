@@ -17,6 +17,7 @@
 	{
 		for (auto updateable : m_Updatables)
 			updateable->Update(deltatime);
+
 	}
 
 	void SystemManager::FixedUpdate(float deltatime)
