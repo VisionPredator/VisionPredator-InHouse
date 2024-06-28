@@ -30,7 +30,9 @@ public:
 	LightManager(std::weak_ptr<ResourceManager> manager);
 	~LightManager();
 
-	void Update(std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)>& usinglight);
+	//void AddData(uint32_t EntityID, LightType kind, LightData data);
+	void EraseData(uint32_t EntityID, LightType type);
+	void Update(std::unordered_map<uint32_t, LightData>& usinglight);
 
 
 private:
@@ -42,5 +44,8 @@ private:
 
 	std::queue<LightData> m_UsingLights;
 	LightArray m_BufferStruct;
+
+	std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)> m_LightList;
+
 };
 

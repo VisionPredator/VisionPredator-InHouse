@@ -37,7 +37,7 @@ enum class LightType
 
 struct LightData
 {
-	LightData() : direction(0,0,0), range(-1), attenuation(0,0,0), pad(-1), pos(0, 0, 0), spot(-1), color(1, 1, 1), intensity(1)
+	LightData() : direction(0,0,0), range(-1), attenuation(0,0,0), type(-1), pos(0, 0, 0), spot(-1), color(1, 1, 1), intensity(1)
 	{
 
 	}
@@ -46,7 +46,7 @@ struct LightData
 	float range;
 
 	DirectX::XMFLOAT3 attenuation;
-	float pad;
+	float type;
 
 	DirectX::XMFLOAT3 pos;
 	float spot;

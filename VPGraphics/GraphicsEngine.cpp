@@ -95,49 +95,9 @@ bool GraphicsEngine::Initialize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-	//AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
-	//AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
-	//AddRenderModel(MeshFilter::Skinning, 2, L"Flair.fbx", L"Flair");
-	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
-	Dir.direction = DirectX::XMFLOAT3(0.f, -1.f, 1.f);
-	Dir.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
-	Dir.intensity = 1;
-
-	LightData Dir2;
-	Dir2.direction = DirectX::XMFLOAT3(0.f, 0.f, -1.f);
-	Dir2.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
-	Dir2.intensity = 10;
-
-	LightData Dir3;
-	Dir2.direction = DirectX::XMFLOAT3(1.f, 0.f, 0.f);
-	Dir2.color = DirectX::XMFLOAT3(1.f, 1.f, 1.f);
-	Dir2.intensity = 10;
-
-
-	Point.attenuation = DirectX::XMFLOAT3(0, 0, 1);
-	Point.color = DirectX::XMFLOAT3(1, 0, 0);
-	Point.intensity = 1;
-	Point.pos = DirectX::XMFLOAT3(0, 3, -2);
-	Point.range = 10.f;
-
-	LightData Point2;
-	Point2.attenuation = DirectX::XMFLOAT3(0, 0, 1);
-	Point2.color = DirectX::XMFLOAT3(1, 1, 1);
-	Point2.intensity = 1;
-	Point2.pos = DirectX::XMFLOAT3(25, 3, -2);
-	Point2.range = 100;
-
-	Spot.attenuation = DirectX::XMFLOAT3(0, 0, 1);
-	Spot.color = DirectX::XMFLOAT3(1, 1, 1);
-	Spot.intensity = 100;
-	Spot.pos = DirectX::XMFLOAT3(0, 3, -2);
-	Spot.range = 100;
-	Spot.spot = 8;
-
-	AddLight(999, LightType::Direction, Dir);
-
-
+	AddRenderModel(MeshFilter::Grid, 0,L"Grid");
+	AddRenderModel(MeshFilter::Axis, 1,L"Axis");
 
 	InitializeImGui();
 	return true;
@@ -145,13 +105,13 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
-	// m_Animator->Update(dt, m_AnimationModel);
 	m_Animator->Update(dt, m_RenderList);
 
 	m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
-	m_LightManager->Update(m_LightList);
+	//m_LightManager->Update(m_LightList);
+	m_LightManager->Update(m_Lights);
 }
 
 bool GraphicsEngine::Finalize()
@@ -324,83 +284,105 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> 
 
 void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
 {
-	int index = static_cast<int>(kind);
-	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
+	//debug draw
+	AddRenderModel(MeshFilter::Circle, EntityID, L"Circle");
 
-	if (curMap.find(EntityID) == curMap.end())
+	if (m_Lights.find(EntityID) == m_Lights.end())
 	{
-		curMap.insert(std::pair<uint32_t, LightData>(EntityID, data));
-		AddRenderModel(MeshFilter::Circle, EntityID,L"Circle");
-
-		curMap[EntityID] = data;
-
-		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
-
-		//scale
-		if (data.range > 0)
-		{
-			curData->local._11 = data.range;
-			curData->local._22 = data.range;
-			curData->local._33 = data.range;
-		}
-
-		//상수버퍼로 넘겨야하니까 전치해서 보내버리자
-		//translate
-		curData->local._14 = data.pos.x;
-		curData->local._24 = data.pos.y;
-		curData->local._34 = data.pos.z;
-
-	}
-	else
-	{
-		MessageBox(0, L"This Light already Exist", 0, 0);
-		return;
+		m_Lights.insert(std::pair<uint32_t, LightData>(EntityID, data));
 	}
 
+
+	//int index = static_cast<int>(kind);
+	//std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
+
+	//if (curMap.find(EntityID) == curMap.end())
+	//{
+	//	curMap.insert(std::pair<uint32_t, LightData>(EntityID, data));
+
+	//	curMap[EntityID] = data;
+
+	//	std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
+
+	//	//scale
+	//	if (data.range > 0)
+	//	{
+	//		curData->world._11 = data.range;
+	//		curData->world._22 = data.range;
+	//		curData->world._33 = data.range;
+	//	}
+
+	//	//상수버퍼로 넘겨야하니까 전치해서 보내버리자
+	//	//translate
+	//	curData->world._14 = data.pos.x;
+	//	curData->world._24 = data.pos.y;
+	//	curData->world._34 = data.pos.z;
+
+	//}
 }
 
 
 void GraphicsEngine::EraseLight(uint32_t EntityID, LightType kind)
 {
-	int index = static_cast<int>(kind);
+	if (m_Lights.find(EntityID) != m_Lights.end())
+	{
+		m_Lights.erase(EntityID);
+		EraseObject(EntityID);
+		m_LightManager->EraseData(EntityID, kind);
+	}
+
+	/*int index = static_cast<int>(kind);
 	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
 
 	if (curMap.find(EntityID) != curMap.end())
 	{
 		curMap.erase(EntityID);
 		EraseObject(EntityID);
-	}
-	else
-	{
-		MessageBox(0, L"This Light Is Not Exist", 0, 0);
-		return;
-	}
+	}*/
 }
 
 void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightData data)
 {
-	int index = static_cast<int>(kind);
-	std::unordered_map <uint32_t, LightData> curMap = m_LightList[index];
-
-	if (curMap.find(EntityID) != curMap.end())
+	if (m_Lights.find(EntityID) != m_Lights.end())
 	{
-		std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
+		m_Lights[EntityID] = data;
 
-		curMap[EntityID] = data;
-		curData->local._31 = data.pos.x;
-		curData->local._32 = data.pos.y;
-		curData->local._33 = data.pos.z;
+		//debug draw
+		std::shared_ptr<RenderData> curRender = m_RenderList[EntityID];
+
+		curRender->world._14 = data.pos.x;
+		curRender->world._24 = data.pos.y;
+		curRender->world._34 = data.pos.z;
 
 		if (data.range > 0)
 		{
-			curData->local* data.range;
+			curRender->world._11 = data.range;
+			curRender->world._22 = data.range;
+			curRender->world._33 = data.range;
 		}
 	}
-	else
-	{
-		MessageBox(0, L"This Light Is Not Exist", 0, 0);
-		return;
-	}
+
+	//int index = static_cast<int>(kind);
+	//std::unordered_map <uint32_t, LightData> curMap = m_LightList[index];
+
+	//if (curMap.find(EntityID) != curMap.end())
+	//{
+	//	curMap[EntityID] = data;
+
+	//	//debug draw
+	//	std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
+
+	//	curData->world._14 = data.pos.x;
+	//	curData->world._24 = data.pos.y;
+	//	curData->world._34 = data.pos.z;
+
+	//	if (data.range > 0)
+	//	{
+	//		curData->world._11 = data.range;
+	//		curData->world._22 = data.range;
+	//		curData->world._33 = data.range;
+	//	}
+	//}
 }
 
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
