@@ -1,15 +1,17 @@
 #pragma once
 #include "IImGui.h"
+class SceneManager;
 class EditorCamera:public IImGui
 {
 public: 
-	EditorCamera();
+	EditorCamera(SceneManager* sceneManager);
 	~EditorCamera()=default;
 	void Initialize();
 	void Update(float deltatime);
 	void CameraMove(float deltatime);
 	void CameraRotation();
 	void CalculateCamera();
+	void DoubleClicked(float deltatime);
 	void CameraRotation2();
 	void CalculateCamera2();
 
@@ -42,8 +44,12 @@ private:
 	VPMath::Vector3 m_FrontVector = {};
 	VPMath::Vector3 m_UpVector = {};
 	VPMath::Vector3 m_RightVector = {};
+	VPMath::Vector3 m_LerpStartPos = {};
+	VPMath::Vector3 m_LerpEndPos = {};
+	float m_LerpEndTime = 0.2;
+	float m_LerpTime = 0;
 
 public:
-
+	SceneManager* m_SceneManager;
 };
 

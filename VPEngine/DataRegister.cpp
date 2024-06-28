@@ -20,9 +20,7 @@ void VPRegister::Register_EnumClass()
 		.data<MeshFilter::Skinning>("Skinning"_hs)
 		.prop(Reflection::Prop::Name, "Skinning")
 		.data<MeshFilter::Circle>("Circle"_hs)
-		.prop(Reflection::Prop::Name, "Circle")
-		.data<MeshFilter::None>("None"_hs)
-		.prop(Reflection::Prop::Name, "None");
+		.prop(Reflection::Prop::Name, "Circle");
 
 	entt::meta<LightType>()
 		.prop(Reflection::Prop::Name, "LightType")
@@ -32,9 +30,7 @@ void VPRegister::Register_EnumClass()
 		.data<LightType::Spot>("Spot"_hs)
 		.prop(Reflection::Prop::Name, "Spot")
 		.data<LightType::Point>("Point"_hs)
-		.prop(Reflection::Prop::Name, "Point")
-		.data<LightType::End>("End"_hs)
-		.prop(Reflection::Prop::Name, "End");
+		.prop(Reflection::Prop::Name, "Point");
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
