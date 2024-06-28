@@ -31,6 +31,7 @@ public:
 	~LightManager();
 
 	//void AddData(uint32_t EntityID, LightType kind, LightData data);
+	void EraseData(uint32_t EntityID, LightType type);
 	void Update(std::unordered_map<uint32_t, LightData>& usinglight);
 
 

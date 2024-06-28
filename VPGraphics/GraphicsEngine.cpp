@@ -328,6 +328,7 @@ void GraphicsEngine::EraseLight(uint32_t EntityID, LightType kind)
 	{
 		m_Lights.erase(EntityID);
 		EraseObject(EntityID);
+		m_LightManager->EraseData(EntityID, kind);
 	}
 
 	/*int index = static_cast<int>(kind);

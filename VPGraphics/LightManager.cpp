@@ -15,6 +15,17 @@ LightManager::~LightManager()
 
 
 
+void LightManager::EraseData(uint32_t EntityID, LightType type)
+{
+	int index = static_cast<int>(type);
+	std::unordered_map<uint32_t, LightData>& curMap = m_LightList[index];
+
+	if (curMap.find(EntityID) != curMap.end())
+	{
+		curMap.erase(EntityID);
+	}
+}
+
 void LightManager::Update(std::unordered_map<uint32_t, LightData>& usinglight)
 {
 
@@ -22,7 +33,7 @@ void LightManager::Update(std::unordered_map<uint32_t, LightData>& usinglight)
 	{
 		LightData curLight = curData.second;
 		int type = static_cast<int>(curLight.type);
-		if (type >= 0)
+		if (type < static_cast<int>(LightType::End))
 		{
 			std::unordered_map <uint32_t, LightData>& curLightMap = m_LightList[type];
 			curLightMap[curData.first] = curLight;

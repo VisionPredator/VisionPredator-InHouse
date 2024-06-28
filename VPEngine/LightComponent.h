@@ -8,7 +8,7 @@ struct LightComponent :
 	VP_JSONBODY(LightComponent, type, intensity, color, direction, attenuation, range, spot)
 		LightComponent();
 
-	LightType type = LightType::Direction;
+	LightType type = LightType::End;
 	float intensity{1};
 	VPMath::Color color{1,1,1};
 	VPMath::Vector3 direction{1,0,0};

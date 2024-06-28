@@ -219,7 +219,6 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F, 
     //광원과 표면의 거리
     float distance = length(L);
     
-    //이거 조금 이상함 확인해볼것
     if (distance > lightData.Range)
         return float3(0, 0, 0);
     
