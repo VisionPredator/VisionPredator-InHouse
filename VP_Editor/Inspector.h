@@ -34,5 +34,6 @@ public:
     std::string m_searchComponent{};
     bool IsClicked=false;
     entt::id_type m_ClickedCompID{};
+    float m_TypeBoxsize = 200.f; // 예를 들어 200 픽셀 너비
 };
 
