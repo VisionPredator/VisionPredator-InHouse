@@ -24,7 +24,7 @@ void LightManager::Update(std::unordered_map<uint32_t, LightData>& usinglight)
 		int type = static_cast<int>(curLight.type);
 		if (type >= 0)
 		{
-			std::unordered_map <uint32_t, LightData> curLightMap = m_LightList[type];
+			std::unordered_map <uint32_t, LightData>& curLightMap = m_LightList[type];
 			curLightMap[curData.first] = curLight;
 		}
 	}
