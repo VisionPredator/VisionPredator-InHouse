@@ -85,12 +85,12 @@ void EditorViewPort::EditingImGui()
 	ImGuizmoRender();
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	ImVec2 childWindowPos = ImVec2(maxpos.x - 110, pos.y);
+	ImVec2 childWindowPos = ImVec2(maxpos.x - 125, pos.y);
 	ImGui::SetNextWindowPos(childWindowPos);
 	/// RenderMode 버튼 설정.
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-		ImGui::BeginChild("Tools", ImVec2{ 110,0 }, child_flags2, window_flags2);
+		ImGui::BeginChild("Tools", ImVec2{ 125,0 }, child_flags2, window_flags2);
 	if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
 		m_CurrentRenderMode = RENDERMODE::Albedo;
 	if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
@@ -134,7 +134,7 @@ void EditorViewPort::ImGuizmoRender()
 	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
 	/// ImGuizmo 모드 선택
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-	ImGui::BeginChild("Setting", ImVec2{ 110,0 }, child_flags, window_flags);
+	ImGui::BeginChild("Setting", ImVec2{ 120,0 }, child_flags, window_flags);
 	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
@@ -210,7 +210,14 @@ void EditorViewPort::ImGuizmoRender()
 
 		///여기서 바뀐 Quaternion 을 활용하여, Local_Rotation을 다시 넣고싶어
 
+
+
+
+
 	}
+
+
+
 
 }
 

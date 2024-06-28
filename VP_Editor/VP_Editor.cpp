@@ -14,7 +14,7 @@
 #include "EditorViewPort.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 16.5f);
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();
@@ -37,7 +37,7 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	*/
-	m_editorcamera = new EditorCamera;
+    m_editorcamera = new EditorCamera{m_SceneManager};
 	m_HierarchySystem = new HierarchySystem{m_SceneManager};
 	m_ImGuis.push_back(new Toolbar{ m_SceneManager });
 	m_ImGuis.push_back(new FolderTool{ m_SceneManager });

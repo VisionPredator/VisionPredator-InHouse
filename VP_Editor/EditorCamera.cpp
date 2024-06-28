@@ -2,6 +2,8 @@
 #include "EditorCamera.h"
 #include "directxtk\SimpleMath.h"
 #include <InputManager.h>
+#include "HierarchySystem.h"
+#include "SceneManager.h"
 float WrapAngle(float angle)
 {
 	while (angle > 360.0f)
@@ -11,7 +13,8 @@ float WrapAngle(float angle)
 	return angle;
 }
 
-EditorCamera::EditorCamera()
+
+EditorCamera::EditorCamera(SceneManager* sceneManager) :m_SceneManager{ sceneManager }
 {
 	Initialize();
 }
@@ -35,6 +38,7 @@ void EditorCamera::Update(float deltatime)
 {
 	CameraMove(deltatime);
 	CameraRotation();
+	DoubleClicked(deltatime);
 	CalculateCamera();
 }
 
@@ -160,6 +164,34 @@ void EditorCamera::CalculateCamera()
     // Calculate projection matrix
     // Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
     m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
+}
+
+void EditorCamera::DoubleClicked(float deltatime)
+{
+	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+		return;
+	auto transform = m_SceneManager->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
+
+	if (!HierarchySystem::IsItemDoubleClicked)
+	{
+		m_LerpTime = 0;
+	m_LerpStartPos= m_Transform;
+	m_LerpEndPos.x = transform->World_Location.x - 30 * m_FrontVector.x;
+	m_LerpEndPos.y = transform->World_Location.y - 30 * m_FrontVector.y;
+	m_LerpEndPos.z = transform->World_Location.z - 30 * m_FrontVector.z;
+	}
+	else
+	{
+		m_LerpTime += deltatime;
+		if (m_LerpTime > m_LerpEndTime)
+		{
+			HierarchySystem::IsItemDoubleClicked = false;
+			m_LerpTime =m_LerpEndTime;
+		}
+		m_Transform = VPMath::Vector3::Lerp(m_LerpStartPos, m_LerpEndPos, (m_LerpTime / m_LerpEndTime));
+	
+	}
+
 }
 
 void EditorCamera::ImGuiRender()
