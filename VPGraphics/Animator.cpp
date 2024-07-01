@@ -34,7 +34,7 @@ void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>
 		std::shared_ptr<RenderData> curData = data.second;
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
-		if (curModel != nullptr)
+		if (curModel != nullptr && curData->Filter == MeshFilter::Skinning)
 		{
 			UpdateWorld(dt, curModel);
 			UpdateMatrixPallete(curModel);
@@ -71,10 +71,61 @@ void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
 		DirectX::SimpleMath::Matrix rotation{};
 		DirectX::SimpleMath::Matrix translate{};
 		DirectX::SimpleMath::Matrix scale{};
+		
 
-		translate = CalcMatrix(time, ani->positionkey);
-		rotation = CalcRotation(time, ani->rotationkey);
-		scale = CalcMatrix(time, ani->scalingkey);
+		std::shared_ptr<Key> cur;
+		std::shared_ptr<Key> next;
+
+		for (auto& pos : ani->positionkey)
+		{
+			if (pos->time > time)
+			{
+
+				next = pos;
+
+				float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+				DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((next)->value, (cur)->value, t);
+				translate = DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+
+				break;
+			}
+
+			cur = pos;
+		}
+
+		for (auto& scal : ani->scalingkey)
+		{
+			if (scal->time > time)
+			{
+				std::shared_ptr<Key> next = scal;
+
+				float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+				DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((next)->value, (cur)->value, t);
+				scale = DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+
+				break;
+			}
+
+			cur = scal;
+		}
+
+		for (auto& rot : ani->rotationkey)
+		{
+			if (rot->time > time)
+			{
+				std::shared_ptr<Key> next = rot;
+
+
+				float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+				DirectX::SimpleMath::Quaternion afterLerp = DirectX::SimpleMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
+				rotation = DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
+
+				break;
+			}
+
+			cur = rot;
+		}
+
 
 		// T R S * local 읽어올때 전치 시켜서 가져올때는 S R T가 아니다
 		//XMMATRIX total = translate * rotation * scale;
@@ -107,46 +158,47 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 
 DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
 {
-	auto next = std::lower_bound(channel.begin(), channel.end(), time,
-		[](const std::shared_ptr<Key> key, double t) { return key->time <= t; });
+	std::shared_ptr<Key> cur = channel[0];
+	std::shared_ptr<Key> next;
 
-	std::vector<std::shared_ptr<Key>>::iterator cur;
-
-	if (next == channel.end())
+	for (auto& key : channel)
 	{
-		cur = channel.begin();
-	}
-	else
-	{
-		cur = next - 1;
+		if (key->time > time)
+		{
+			next = key;
+			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+			DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((next)->value, (cur)->value, t);
+
+			return DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+		}
+
+		cur = key;
 	}
 
-	float t = static_cast<float>(abs(time - (*next)->time) / abs((*cur)->time - (*next)->time));
-	DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((*next)->value, (*cur)->value, t);
-	return DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+	
 }
 
 
 DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
 {
-	auto next = std::lower_bound(rotationKey.begin(), rotationKey.end(), time,
-		[](const std::shared_ptr<Key> key, double t) { return key->time < t; });
+	
+	std::shared_ptr<Key> cur = rotationKey[0];
+	std::shared_ptr<Key> next;
 
-	std::vector<std::shared_ptr<Key>>::iterator cur;
-
-
-	if (next == rotationKey.end())
+	for (auto& key : rotationKey)
 	{
-		cur = rotationKey.begin();
-	}
-	else
-	{
-		cur = next - 1;
+		if (key->time > time)
+		{
+			next = key;
+			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+			DirectX::SimpleMath::Quaternion afterLerp = DirectX::SimpleMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
+			return DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
+		}
+
+		cur = key;
 	}
 
-	float t = static_cast<float>(abs(time - (*next)->time) / abs((*cur)->time - (*next)->time));
-	DirectX::SimpleMath::Quaternion afterLerp = DirectX::SimpleMath::Quaternion::Slerp((*next)->rotation, (*cur)->rotation, t);
-	return DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
+	
 }
 
 void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
@@ -162,7 +214,7 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
 				DirectX::SimpleMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
 				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
 
-				skinned->Matrix_Pallete->pallete[i] = (nodeworld * offset);
+				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
 			}
 		}
 	}

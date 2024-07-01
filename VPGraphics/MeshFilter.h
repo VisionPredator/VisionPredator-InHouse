@@ -39,6 +39,8 @@ public:
 
 	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
 	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
+	
+
 };
 
 

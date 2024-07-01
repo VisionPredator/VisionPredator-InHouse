@@ -325,7 +325,7 @@ void DeferredPass::Geometry()
 
 		if (curModel != nullptr)
 		{
-			int materialindex = 0; //mesh의 숫자와 동일
+			int materialindex = 0;
 
 			for (const auto& mesh : curModel->m_Meshes)
 			{
@@ -371,14 +371,17 @@ void DeferredPass::Geometry()
 				if (!curModel->m_Materials.empty())
 				{
 					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-
 					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
-					MaterialData curMaterialData = curMaterial->m_Data;
-					curData->Update(curMaterialData);
 
-					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+					if (curMaterial != nullptr)
+					{
+						MaterialData curMaterialData = curMaterial->m_Data;
+						curData->Update(curMaterialData);
 
-					Device->BindMaterialSRV(curMaterial);
+						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+						Device->BindMaterialSRV(curMaterial);
+					}
 				}
 
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);

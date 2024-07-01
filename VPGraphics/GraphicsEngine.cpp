@@ -110,13 +110,11 @@ void GraphicsEngine::Update(double dt)
 	m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
-	//m_LightManager->Update(m_LightList);
 	m_LightManager->Update(m_Lights);
 }
 
 bool GraphicsEngine::Finalize()
 {
-	m_AnimationModel.clear();
 	m_CurViewPort.reset();
 
 	m_Device.reset();
@@ -185,45 +183,21 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 	switch (mesh)
 	{
 		case MeshFilter::Axis:
-		{
-			newData->Pass = PassState::Debug;
-
-		}
-			break;
-
 		case MeshFilter::Grid:
-		{
-			newData->Pass = PassState::Debug;
-		}
-			break;
-
 		case MeshFilter::Box:
+		case MeshFilter::Circle:
 		{
 			newData->Pass = PassState::Debug;
 
 		}
-			break;
+		break;
 
 		case MeshFilter::Static:
-		{
-			newData->FBX = fbx + L".fbx";
-		}
-			break;
-
 		case MeshFilter::Skinning:
 		{
 			newData->FBX = fbx + L".fbx";
-
-			m_AnimationModel.push_back(m_ResourceManager->Get<ModelData>(newData->FBX).lock());
-
 		}
-			break;
-
-		case MeshFilter::Circle:
-		{	
-			newData->Pass = PassState::Debug;
-		}
-			break;
+		break;
 
 		case MeshFilter::None:
 			break;

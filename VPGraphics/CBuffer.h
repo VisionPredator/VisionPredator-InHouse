@@ -22,7 +22,16 @@ struct CameraData
 
 struct MatrixPallete
 {
-	DirectX::SimpleMath::Matrix pallete[128];
+	DirectX::SimpleMath::Matrix offset[128];
+
+	///보간 계수
+	//float time 
+	///현재 키 애니
+	//pos key
+	//scale key
+	//rotation key
+
+	///다음 키 애니
 };
 
 
