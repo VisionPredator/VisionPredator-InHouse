@@ -30,7 +30,47 @@ void EditorViewPort::ImGuiRender()
 
 void EditorViewPort::PlayingImGui()
 {
+	float FrameHeight = ImGui::GetFrameHeight();
+	auto current = ImGui::GetCurrentContext();
+	auto pos = ImVec2{ current->CurrentWindow->Pos.x, current->CurrentWindow->Pos.y + FrameHeight };
+	auto size = ImVec2{ current->CurrentWindow->Size.x, current->CurrentWindow->Size.y - FrameHeight };
+	auto idealSize = ImVec2(size.x, size.y);
+	auto maxpos = ImVec2(pos.x + idealSize.x, pos.y + idealSize.y);
+	auto borderSize = current->CurrentWindow->WindowBorderSize;
 
+	//뷰포트 설정된 것 출력하기
+	switch (m_CurrentRenderMode)
+	{
+	case EditorViewPort::RENDERMODE::Albedo:
+		EditViewPortImGui(L"Albedo", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Normal:
+		EditViewPortImGui(L"Normal", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Position:
+		EditViewPortImGui(L"Position", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Depth:
+		EditViewPortImGui(L"Depth", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Metalic:
+		EditViewPortImGui(L"Metalic", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Roughness:
+		EditViewPortImGui(L"Roughness", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Emissive:
+		EditViewPortImGui(L"Emissive", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::GBuffer:
+		EditViewPortImGui(L"GBuffer", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::IMGUI:
+		EditViewPortImGui(L"IMGUI", pos, maxpos);
+		break;
+	default:
+		break;
+	}
 
 }
 
@@ -209,11 +249,6 @@ void EditorViewPort::ImGuizmoRender()
 		}
 
 		///여기서 바뀐 Quaternion 을 활용하여, Local_Rotation을 다시 넣고싶어
-
-
-
-
-
 	}
 
 

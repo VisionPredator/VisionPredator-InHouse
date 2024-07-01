@@ -22,12 +22,15 @@ public:
     void TypeImGui_Color(entt::meta_data memberMetaData, Component* component);
 
     void TypeImGui_string(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_wstring(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_bool(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_int(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_unsigned_int(entt::meta_data metadata, Component* component);
     void TypeImGui_double(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_float(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_vector_string(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_vector_wstring(entt::meta_data memberMetaData, Component* component);
 
     SceneManager* m_SceneManager;
     HierarchySystem* m_HierarchySystem;

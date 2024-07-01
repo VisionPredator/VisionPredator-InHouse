@@ -11,9 +11,9 @@ public:
 	void CameraMove(float deltatime);
 	void CameraRotation();
 	void CalculateCamera();
+	void CalculateCameraTransform();
 	void DoubleClicked(float deltatime);
-	void CameraRotation2();
-	void CalculateCamera2();
+
 
 	// IImGui을(를) 통해 상속됨
 	void ImGuiRender() override;
@@ -38,10 +38,12 @@ private:
 	uint32_t m_Height=1;
 	float m_ratio=1;
 	bool m_PressedShift=false;
-	VPMath::Vector3 m_Transform{};
+	VPMath::Vector3 m_Location{};
 	VPMath::Vector3 m_Rotation{};
+	VPMath::Vector3 m_Scale{1,1,1};
+	VPMath::Matrix m_Transform = VPMath::Matrix::Identity;
 	VPMath::Quaternion m_Quaternion=VPMath::Quaternion::Identity;
-	VPMath::Vector3 m_FrontVector = {};
+	VPMath::Vector3 m_FrontVector = {0,0,1};
 	VPMath::Vector3 m_UpVector = {};
 	VPMath::Vector3 m_RightVector = {};
 	VPMath::Vector3 m_LerpStartPos = {};

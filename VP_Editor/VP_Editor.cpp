@@ -12,6 +12,8 @@
 #include "EventManager.h"
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
+#include "TimeManager.h"
+#include <InputManager.h>
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
@@ -64,14 +66,22 @@ void VP_Editor::Update()
 	if (m_IsEditorMode)
 	{
 		m_editorcamera->Update(m_DeltaTime);
-		VPEngine::Update();
-
+        EventManager::GetInstance().Update(m_DeltaTime);
+        InputManager::GetInstance().Update();
+        m_TimeManager->Update();
+        m_DeltaTime = m_TimeManager->GetDeltaTime();
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
+        TransformSystem tempsystem{ m_SceneManager };
+        tempsystem.Update(m_DeltaTime);
+        m_SystemManager->RenderUpdate(m_DeltaTime);
+        std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
+        SetWindowTextW(m_hWnd, newname.c_str());
+        m_Graphics->Update(m_DeltaTime);
+
 	}
 	else
 	{
 		VPEngine::Update();
-		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
 
 	}
 

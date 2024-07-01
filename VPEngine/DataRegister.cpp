@@ -33,6 +33,14 @@ void VPRegister::Register_EnumClass()
 		.prop(Reflection::Prop::Name, "Point");
 }
 
+void VPRegister::Register_Value()
+{
+	entt::meta<std::vector<std::string>>()
+		.type("std::vector<std::string>"_hs);
+	entt::meta<std::vector<std::wstring>>()
+		.type("std::vector<std::wstring>"_hs);
+}
+
 NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
 {MeshFilter::Axis, "Axis"},
 {MeshFilter::Box, "Box"},
@@ -49,6 +57,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
 
 
 
+void VPRegister::Register_Metadata()
+{
+	VPRegister::Register_Components();
+	VPRegister::Register_EnumClass();
+	VPRegister::Register_Value();
+}
+
 void VPRegister::Register_Components()
 {
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
@@ -57,9 +72,9 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
+	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation,LightComponent::testVector,LightComponent::testwVector, LightComponent::range, LightComponent::spot);
 	META_ADD_MEMBER(Parent, Parent::ParentID);
 	META_ADD_MEMBER(Children, Children::ChildrenID);
-	META_ADD_MEMBER(CameraComponent, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
+	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
 }
 
