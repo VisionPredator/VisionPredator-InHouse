@@ -135,7 +135,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 		MessageBox(0, L"VS CreateInputLayout Fail", 0, 0);
 	}
 }
-
+/*
 VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const D3D_SHADER_MACRO* macro, const int& a)
 {
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -222,6 +222,7 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 		);
 	);
 }
+*/
 
 VertexShader::~VertexShader()
 {

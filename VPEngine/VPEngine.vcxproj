@@ -241,6 +241,9 @@
     <None Include="VisPredMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PhysxEngine\PhysxEngine.vcxproj">
+      <Project>{ef7fdf1c-674f-4932-a48c-cc28515898b0}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\VPGraphics\VPGraphics.vcxproj">
       <Project>{6af1262e-67c4-4738-97ac-a36899fe4316}</Project>
     </ProjectReference>
