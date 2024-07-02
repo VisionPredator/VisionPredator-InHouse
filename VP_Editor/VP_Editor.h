@@ -1,8 +1,8 @@
 #pragma once
 #include "VPEngine.h"
+#include "IImGui.h"
 #include "EventSubscriber.h"
 class EditorCamera;
-class IImGui;
 class HierarchySystem;
 class VP_Editor :public VPEngine,public EventSubscriber
 {

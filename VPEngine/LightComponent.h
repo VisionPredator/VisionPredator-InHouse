@@ -3,20 +3,18 @@
 #include "..\VPGraphics\CBuffer.h"
 
 struct LightComponent :
-	public Component
+    public Component
 {
-	VP_JSONBODY(LightComponent, type, intensity, color, direction, attenuation, testVector, testwVector,range, spot)
+	VP_JSONBODY(LightComponent, type, intensity, color, direction, attenuation, range, spot)
 		LightComponent();
 
-	LightType type = LightType::Direction;
-	float intensity{ 1 };
-	VPMath::Color color{ 1,1,1 };
-	VPMath::Vector3 direction{ 1,0,0 };
+	LightType type = LightType::End;
+	float intensity{1};
+	VPMath::Color color{1,1,1};
+	VPMath::Vector3 direction{1,0,0};
 	VPMath::Vector3 attenuation{};
-	std::vector<std::string> testVector;
-	std::vector<std::wstring> testwVector;
-	float range{ -1 };
-	float spot{ -1 };
+	float range{-1};
+	float spot{-1};
 
 };
 

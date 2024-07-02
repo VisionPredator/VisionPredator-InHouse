@@ -25,7 +25,8 @@
 			}
 			return false;
 		}
-		void OnAddTransformSystem(std::any);
+
+
 		template <typename T> requires std::is_base_of_v<System, T>
 		T* AddSystem()
 		{
@@ -49,6 +50,8 @@
 			{
 				m_Renderables.push_back(static_cast<T*>(m_Systems.back().get()));
 				static_cast<T*>(m_Systems.back().get())->SetGraphics(m_Graphics);
+
+
 			}
 
 			if constexpr (std::is_base_of_v<IStartable, T>)

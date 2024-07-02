@@ -2,6 +2,7 @@
 //
 
 #include "pch.h"
+#include "framework.h"
 #include "VP_Editor.h"
 #include "VPMain.h"
 

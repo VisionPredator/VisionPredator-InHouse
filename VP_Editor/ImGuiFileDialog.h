@@ -43,8 +43,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef IMGUI_FILE_DIALOG_H
-#define IMGUI_FILE_DIALOG_H
+#pragma once
 
 #define IGFD_VERSION "v0.6.8"
 #define IGFD_IMGUI_SUPPORTED_VERSION "1.90.5 WIP"
@@ -1231,4 +1230,3 @@ IGFD_C_API void ManageGPUThumbnails(  // must be call in gpu zone, possibly a th
                                       // / destroy the textures
     ImGuiFileDialog* vContextPtr);    // ImGuiFileDialog context
 #endif                                // USE_THUMBNAILS
-#endif //IMGUI_FILE_DIALOG_H

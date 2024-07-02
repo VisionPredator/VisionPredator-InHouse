@@ -139,9 +139,8 @@
 			transform->WorldTransform = tempWorldTrasnform;
 			transform->WorldTransform.Decompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
 			transform->FrontVector = transform->WorldTransform.Forward();
-
 			transform->FrontVector.Normalize();
-			transform->RightVector = transform->WorldTransform.Left();
+			transform->RightVector = transform->WorldTransform.Right();
 			transform->RightVector.Normalize();
 
 			transform->UpVector = transform->WorldTransform.Up();
@@ -149,4 +148,7 @@
 
 		}
 	}
+	void TransformSystem::FixedUpdate(float deltaTime)
+	{
 
+	}

@@ -1,4 +1,6 @@
 #pragma once
+#include "../include/imgui.h"
+#include "../include/ImGuizmo.h"
 
 class IImGui
 {

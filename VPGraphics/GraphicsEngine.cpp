@@ -47,6 +47,9 @@
 #include "DeferredShadingPipeline.h"
 #pragma endregion IMGUI
 
+#include "Animation.h"
+
+
 GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_CurViewPort(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
 {
 }
@@ -110,13 +113,11 @@ void GraphicsEngine::Update(double dt)
 	//m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
-	//m_LightManager->Update(m_LightList);
 	m_LightManager->Update(m_Lights);
 }
 
 bool GraphicsEngine::Finalize()
 {
-	m_AnimationModel.clear();
 	m_CurViewPort.reset();
 
 	m_Device.reset();
@@ -179,51 +180,34 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 {
 
 	std::shared_ptr<RenderData> newData = std::make_shared<RenderData>();
+	newData->EntityID = EntityID;
 	newData->FBX = fbx;
 	newData->Filter = mesh;
 
 	switch (mesh)
 	{
 		case MeshFilter::Axis:
-		{
-			newData->Pass = PassState::Debug;
-
-		}
-			break;
-
 		case MeshFilter::Grid:
-		{
-			newData->Pass = PassState::Debug;
-		}
-			break;
-
 		case MeshFilter::Box:
+		case MeshFilter::Circle:
 		{
 			newData->Pass = PassState::Debug;
 
 		}
-			break;
+		break;
 
 		case MeshFilter::Static:
 		{
-			newData->FBX = fbx + L".fbx";
 		}
-			break;
-
+		break;
 		case MeshFilter::Skinning:
 		{
-			newData->FBX = fbx + L".fbx";
-
-			m_AnimationModel.push_back(m_ResourceManager->Get<ModelData>(newData->FBX).lock());
-
+			//newData->FBX = fbx + L".fbx";
+			newData->curAnimation = fbx;
+			std::wstring id = std::to_wstring(EntityID);
+			m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
 		}
-			break;
-
-		case MeshFilter::Circle:
-		{	
-			newData->Pass = PassState::Debug;
-		}
-			break;
+		break;
 
 		case MeshFilter::None:
 			break;
@@ -280,6 +264,15 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)
 {
 	m_RenderList[EntityID] = data;
+
+	//comp 나누면 없어질거
+	std::wstring id = std::to_wstring(EntityID);
+	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+	{
+		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+	}
+
+
 }
 
 void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
@@ -291,34 +284,6 @@ void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
 	{
 		m_Lights.insert(std::pair<uint32_t, LightData>(EntityID, data));
 	}
-
-
-	//int index = static_cast<int>(kind);
-	//std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
-
-	//if (curMap.find(EntityID) == curMap.end())
-	//{
-	//	curMap.insert(std::pair<uint32_t, LightData>(EntityID, data));
-
-	//	curMap[EntityID] = data;
-
-	//	std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
-
-	//	//scale
-	//	if (data.range > 0)
-	//	{
-	//		curData->world._11 = data.range;
-	//		curData->world._22 = data.range;
-	//		curData->world._33 = data.range;
-	//	}
-
-	//	//상수버퍼로 넘겨야하니까 전치해서 보내버리자
-	//	//translate
-	//	curData->world._14 = data.pos.x;
-	//	curData->world._24 = data.pos.y;
-	//	curData->world._34 = data.pos.z;
-
-	//}
 }
 
 
@@ -330,15 +295,6 @@ void GraphicsEngine::EraseLight(uint32_t EntityID, LightType kind)
 		EraseObject(EntityID);
 		m_LightManager->EraseData(EntityID, kind);
 	}
-
-	/*int index = static_cast<int>(kind);
-	std::unordered_map <uint32_t, LightData>& curMap = m_LightList[index];
-
-	if (curMap.find(EntityID) != curMap.end())
-	{
-		curMap.erase(EntityID);
-		EraseObject(EntityID);
-	}*/
 }
 
 void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightData data)
@@ -361,28 +317,19 @@ void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightDat
 			curRender->world._33 = data.range;
 		}
 	}
+}
 
-	//int index = static_cast<int>(kind);
-	//std::unordered_map <uint32_t, LightData> curMap = m_LightList[index];
+const double GraphicsEngine::GetDuration(std::wstring name)
+{
 
-	//if (curMap.find(EntityID) != curMap.end())
-	//{
-	//	curMap[EntityID] = data;
+	std::weak_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name);
+	if (curAni.lock() != nullptr)
+	{
+		return curAni.lock()->m_Animations[0]->m_Duration / curAni.lock()->m_Animations[0]->m_TickFrame;
+	}
 
-	//	//debug draw
-	//	std::shared_ptr<RenderData> curData = m_RenderList[EntityID];
 
-	//	curData->world._14 = data.pos.x;
-	//	curData->world._24 = data.pos.y;
-	//	curData->world._34 = data.pos.z;
-
-	//	if (data.range > 0)
-	//	{
-	//		curData->world._11 = data.range;
-	//		curData->world._22 = data.range;
-	//		curData->world._33 = data.range;
-	//	}
-	//}
+	return 0;
 }
 
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)

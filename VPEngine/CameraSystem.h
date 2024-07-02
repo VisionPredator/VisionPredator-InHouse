@@ -2,9 +2,8 @@
 #include "EventSubscriber.h"
 #include "System.h"
 class CameraSystem :
-    public System, public IFixedUpdatable, public IRenderable,public EventSubscriber
+    public System, public IFixedUpdatable,public EventSubscriber
 {
-public:
     CameraSystem(SceneManager* sceneManager);
     ~CameraSystem() = default;
 
@@ -13,9 +12,5 @@ public:
     // IFixedUpdatable을(를) 통해 상속됨
     void FixedUpdate(float deltaTime) override;
     void CameraCalculation(CameraComponent& mainCamera);
-
-    // IRenderable을(를) 통해 상속됨
-    void RenderUpdate(float deltaTime) override;
-    uint32_t m_MainCameraID;
 };
 

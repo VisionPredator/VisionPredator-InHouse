@@ -1,6 +1,6 @@
 #pragma once
 #include "SimpleMath.h"
-
+#include <memory>
 
 class Mesh;
 class Bone;
