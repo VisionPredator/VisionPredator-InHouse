@@ -168,6 +168,12 @@
     <ClInclude Include="LightSystem.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -252,6 +258,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="LightSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -17,61 +17,62 @@ Animator::~Animator()
 
 }
 
-void Animator::Update(double dt, std::vector<std::shared_ptr<ModelData>>& models)
-{
-	for (auto& model : models)
-	{
-		UpdateWorld(dt, model);
-		UpdateMatrixPallete(model);
-	}
-}
-
 void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
 {
 
 	for (auto& data : renderlist)
 	{
 		std::shared_ptr<RenderData> curData = data.second;
-		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+		std::weak_ptr<ModelData> curModel;
 
-		if (curModel != nullptr && curData->Filter == MeshFilter::Skinning)
+		if (!curData->curAnimation.empty())
 		{
-			UpdateWorld(dt, curModel);
-			UpdateMatrixPallete(curModel);
+			curModel = m_ResourceManager.lock()->Get<ModelData>(curData->curAnimation);
+		}
+		else
+		{
+			curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX);
+		}
+
+		if (curModel.lock() != nullptr && curData->Filter == MeshFilter::Skinning)
+		{
+			UpdateWorld(curData->duration, curModel);
+			UpdateMatrixPallete(curData);
 		}
 	}
 }
 
-void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
+void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 {
 	//오브젝트마다 애니메이션의 길이 시간등등이 다른데 시간을 어떻게 처리할까???
 	//같은 데이터의 포인터를 사용하니까 같은 애니메이션 쓰는 애들은 시간이 두배가되서 속도가 2배 빨라져
 	//같은 데이터를 쓰지만 각자가 가지고 있는 고유의 데이터야하는 아이러니?
 	//이건 애니메이션 데이터는 그대로 두고 각자의 시간과 애니메이션 따로 놀면된다
 	//여기서 터지면 loader에 데이터를 안읽어왔을 확률 높음
-	if (ob->m_Animations.empty())
+
+	std::shared_ptr<ModelData> curOb = ob.lock();
+
+	if (curOb->m_Animations.empty())
 	{
 		return;
 	}
 
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
-	static double time = 0; //현재 애니메이션 플레이시간
-	double speed = ob->m_Animations[0]->m_TickFrame;
-	//double speed = 1;
-	time += dt * speed;
+	double time = dt; //현재 애니메이션 플레이시간
+	double speed = curOb->m_Animations[0]->m_TickFrame;
+	time = dt * speed;
 
-	if (time > ob->m_Animations[0]->m_Duration)
+	if (time > curOb->m_Animations[0]->m_Duration)
 	{
-		time -= ob->m_Animations[0]->m_Duration;
+		time -= curOb->m_Animations[0]->m_Duration;
 		//time = 0;
 	}
 
-	for (auto& ani : ob->m_Animations[0]->m_Channels)
+	for (auto& ani : curOb->m_Animations[0]->m_Channels)
 	{
 		DirectX::SimpleMath::Matrix rotation{};
 		DirectX::SimpleMath::Matrix translate{};
 		DirectX::SimpleMath::Matrix scale{};
-		
 
 		std::shared_ptr<Key> cur;
 		std::shared_ptr<Key> next;
@@ -130,11 +131,14 @@ void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
 		// T R S * local 읽어올때 전치 시켜서 가져올때는 S R T가 아니다
 		//XMMATRIX total = translate * rotation * scale;
 		DirectX::SimpleMath::Matrix total = scale * rotation * translate;
-		ani->node.lock()->m_Local = total.Transpose();
-		ani->node.lock()->m_LocalInverse = ani->node.lock()->m_Local.Invert();
+
+		std::weak_ptr<Node> curNode = std::weak_ptr<Node>{ ani->node.lock() };
+
+		curNode.lock()->m_Local = total.Transpose();
+		curNode.lock()->m_LocalInverse = curNode.lock()->m_Local.Invert();
 	}
 
-	CalcWorld(ob->m_RootNode);
+	CalcWorld(curOb->m_RootNode);
 }
 
 void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
@@ -153,6 +157,28 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 	for (auto& node : RootNode->m_Childs)
 	{
 		CalcWorld(node);
+	}
+}
+
+void Animator::CalcWorld2(std::vector<std::shared_ptr<Node>>& nodes)
+{
+	for (auto& node : nodes)
+	{
+		if (!node->HasParents)
+		{
+			node->m_World = node->m_Local;
+			node->m_WorldInverse = node->m_LocalInverse;
+		}
+		else
+		{
+			node->m_World = node->m_Parents.lock()->m_World * node->m_Local;
+			node->m_WorldInverse = node->m_World.Invert();
+		}
+
+		for (auto& node : node->m_Childs)
+		{
+			CalcWorld(node);
+		}
 	}
 }
 
@@ -175,13 +201,13 @@ DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::s
 		cur = key;
 	}
 
-	
+
 }
 
 
 DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
 {
-	
+
 	std::shared_ptr<Key> cur = rotationKey[0];
 	std::shared_ptr<Key> next;
 
@@ -198,11 +224,15 @@ DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std:
 		cur = key;
 	}
 
-	
+
 }
 
-void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
+//void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
+void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 {
+	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
+	std::shared_ptr<ModelData> ob = resourcemanager->Get<ModelData>(curData->FBX).lock();
+
 	for (auto& mesh : ob->m_Meshes)
 	{
 		if (mesh->IsSkinned())
@@ -215,6 +245,10 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
 				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
 
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
+
+
+				std::wstring id = std::to_wstring(curData->EntityID);
+				resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld * offset);
 			}
 		}
 	}

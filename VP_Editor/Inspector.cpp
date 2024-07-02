@@ -203,6 +203,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_Color(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::string>())
 		TypeImGui_string(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::wstring>())
+		TypeImGui_wstring(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<bool>())
 		TypeImGui_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<int>())
@@ -307,6 +309,26 @@ void Inspector::TypeImGui_string(entt::meta_data memberMetaData, Component* comp
 	ImGui::PushID(memberName.c_str());
 	if (ImGui::InputText(memberName.c_str(), &tempName))
 		memberMetaData.set(component->GetHandle(), tempName);
+	ImGui::PopID();
+}
+void Inspector::TypeImGui_wstring(entt::meta_data memberMetaData, Component* component)
+{
+	std::wstring tempWName = memberMetaData.get(component->GetHandle()).cast<std::wstring>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	// Convert wstring to string
+	std::string tempName(tempWName.begin(), tempWName.end());
+
+	ImGui::PushID(memberName.c_str());
+
+	// InputText handling for std::wstring
+	if (ImGui::InputText(memberName.c_str(), &tempName))
+	{
+		// Convert string back to wstring
+		std::wstring newWName(tempName.begin(), tempName.end());
+		memberMetaData.set(component->GetHandle(), newWName);
+	}
+
 	ImGui::PopID();
 }
 void Inspector::TypeImGui_bool(entt::meta_data memberMetaData, Component* component)

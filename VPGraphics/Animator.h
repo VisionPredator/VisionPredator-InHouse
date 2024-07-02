@@ -17,21 +17,26 @@ public:
 	~Animator();
 	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
 
-	void Update(double dt, std::vector<std::shared_ptr<ModelData>>& models);
 	void Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist);
 
 private:
 
-	void UpdateWorld(double dt, std::shared_ptr<ModelData> ob);
+	void UpdateWorld(double dt, std::weak_ptr<ModelData> ob);
 	void CalcWorld(std::shared_ptr<Node> RootNode);
+	void CalcWorld2(std::vector<std::shared_ptr<Node>>& nodes);
 
 
 	DirectX::SimpleMath::Matrix CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel);
 	DirectX::SimpleMath::Matrix CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey);
 
-	void UpdateMatrixPallete(std::shared_ptr<ModelData> ob);
+	//void UpdateMatrixPallete(std::shared_ptr<ModelData> ob);
+	void UpdateMatrixPallete(std::shared_ptr<RenderData> & curData);
 
 	std::weak_ptr<ResourceManager> m_ResourceManager;
+
+
+	std::vector<std::shared_ptr<Node>> m_Nodes;
+
 
 };
 

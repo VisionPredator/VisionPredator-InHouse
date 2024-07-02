@@ -26,12 +26,13 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() : Name(L"Need Name"), FBX(L"Need Path"), Pass(PassState::Deferred)
+	RenderData() :EntityID(0), Name(L"Need Name"), FBX(L"Need Path"), Pass(PassState::Deferred)
 		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
+		,duration(0.f), curAnimation(L"Need Name")
 	{
 
 	}
-
+	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;
 	PassState Pass;
@@ -39,8 +40,10 @@ public:
 
 	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
 	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
-	
 
+
+	float duration;
+	std::wstring curAnimation;
 };
 
 

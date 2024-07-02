@@ -10,6 +10,7 @@
 #include "SceneSerializer.h"
 #include "RenderSystem.h"
 #include "LightSystem.h"
+#include "AnimationSystem.h"
 #include "DataRegister.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
@@ -62,6 +63,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<TransformSystem>();
+	m_SystemManager->AddSystem<AnimationSystem>();
 
 }
 

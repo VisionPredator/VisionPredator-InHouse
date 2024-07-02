@@ -332,7 +332,8 @@ void DeferredPass::Geometry()
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				if (!mesh->IsSkinned())
+				//if (!mesh->IsSkinned())
+				if (curData->Filter == MeshFilter::Static)
 				{
 
 					Device->BindVS(m_StaticMeshVS.lock());
@@ -345,8 +346,9 @@ void DeferredPass::Geometry()
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
 					position->Update(renew);	// == Bind
 				}
+
 				// Skeletal Mesh Update & Bind
-				else
+				if (curData->Filter == MeshFilter::Skinning)
 				{
 					Device->BindVS(m_SkeletalMeshVS.lock());
 
@@ -361,9 +363,9 @@ void DeferredPass::Geometry()
 
 					position->Update(renew);
 
-					MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
-					pallete->Update(matrixPallete);
+					std::wstring id = std::to_wstring(curData->EntityID);
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+					pallete->Update();
 					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 				}
 

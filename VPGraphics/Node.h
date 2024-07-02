@@ -1,6 +1,6 @@
 #pragma once
 #include "SimpleMath.h"
-
+#include <memory>
 
 class Mesh;
 class Bone;
@@ -10,6 +10,10 @@ class Node
 public:
 	Node();
 	~Node();
+
+	Node(Node& other);
+	Node& operator= (Node& other);
+	
 
 	std::wstring name;
 

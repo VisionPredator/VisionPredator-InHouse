@@ -57,6 +57,8 @@ public:
 
 	virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) override;
 
+	virtual const double GetDuration(std::wstring name) override;
+
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
 	void DrawBox(const debug::AABBInfo& info) override;

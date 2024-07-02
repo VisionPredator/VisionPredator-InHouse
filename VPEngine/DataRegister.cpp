@@ -17,8 +17,6 @@ void VPRegister::Register_EnumClass()
 		.prop(Reflection::Prop::Name, "Grid")
 		.data<MeshFilter::Static>("Static"_hs)
 		.prop(Reflection::Prop::Name, "Static")
-		.data<MeshFilter::Skinning>("Skinning"_hs)
-		.prop(Reflection::Prop::Name, "Skinning")
 		.data<MeshFilter::Circle>("Circle"_hs)
 		.prop(Reflection::Prop::Name, "Circle")
 		.data<MeshFilter::None>("None"_hs)
@@ -65,5 +63,6 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(Parent, Parent::ParentID);
 	META_ADD_MEMBER(Children, Children::ChildrenID);
 	META_ADD_MEMBER(CameraComponent, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
+	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animeName1, AnimationComponent::animeName2, AnimationComponent::animeName3, AnimationComponent::animeName4, AnimationComponent::animeName5);
 }
 

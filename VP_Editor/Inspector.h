@@ -22,6 +22,7 @@ public:
     void TypeImGui_Color(entt::meta_data memberMetaData, Component* component);
 
     void TypeImGui_string(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_wstring(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_bool(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_int(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_unsigned_int(entt::meta_data metadata, Component* component);
