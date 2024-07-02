@@ -118,19 +118,6 @@ void Inspector::EntityImGui(uint32_t entityID)
 	}
 
 
-	//auto Components = m_SceneManager->GetOwnedComponent(entityID);
-	//for (Component* Comp : Components)
-	//{
-	//	entt::id_type CompID = Comp->GetHandle()->type().id();
-	//	if (CompID == Reflection::GetTypeID<IDComponent>()
-	//		|| CompID == Reflection::GetTypeID<TransformComponent>()
-	//		|| CompID == Reflection::GetTypeID<Parent>()
-	//		|| CompID == Reflection::GetTypeID<Children>())
-	//		continue;
-	//	ComponentImGui(Comp);
-	//}
-
-
 }
 
 void Inspector::ComponentImGui(Component* component)
@@ -211,6 +198,10 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_unsigned_int(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<float>())
 		TypeImGui_float(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::string>>())
+		TypeImGui_vector_string(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::wstring>>())
+		TypeImGui_vector_wstring(memberMetaData, component);
 }
 void Inspector::TypeImGui_Vector2(entt::meta_data memberMetaData, Component* component)
 {
@@ -309,6 +300,26 @@ void Inspector::TypeImGui_string(entt::meta_data memberMetaData, Component* comp
 		memberMetaData.set(component->GetHandle(), tempName);
 	ImGui::PopID();
 }
+void Inspector::TypeImGui_wstring(entt::meta_data memberMetaData, Component* component)
+{
+	std::wstring tempWName = memberMetaData.get(component->GetHandle()).cast<std::wstring>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	// Convert wstring to string
+	std::string tempName(tempWName.begin(), tempWName.end());
+
+	ImGui::PushID(memberName.c_str());
+
+	// InputText handling for std::wstring
+	if (ImGui::InputText(memberName.c_str(), &tempName))
+	{
+		// Convert string back to wstring
+		std::wstring newWName(tempName.begin(), tempName.end());
+		memberMetaData.set(component->GetHandle(), newWName);
+	}
+
+	ImGui::PopID();
+}
 void Inspector::TypeImGui_bool(entt::meta_data memberMetaData, Component* component)
 {
 	bool tempbool = memberMetaData.get(component->GetHandle()).cast<bool>();
@@ -400,4 +411,93 @@ void Inspector::TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* c
 		}
 		ImGui::EndCombo();
 	}
+}
+
+void Inspector::TypeImGui_vector_string(entt::meta_data memberMetaData, Component* component)
+{
+	// Retrieve the vector<std::string> from component's handle
+	auto stringVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::string>>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+	// Display each string in the vector
+	for (size_t i = 0; i < stringVector.size(); ++i) 
+	{
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+
+		ImGui::InputText(("Element " + std::to_string(i)).c_str(), &stringVector[i]);
+	}
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize/2);
+
+	// Option to add a new element
+	if (ImGui::Button("  Add  ")) 
+	{
+		stringVector.push_back(""); // Add an empty string by default
+	}
+
+	// Option to remove the last element
+	if (!stringVector.empty() ) 
+	{
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+
+		if (ImGui::Button("Remove"))
+		{
+		stringVector.pop_back();
+		}
+	}
+
+	// Apply changes if vector was modified
+	memberMetaData.set(component->GetHandle(), std::move(stringVector));
+
+	ImGui::PopID();
+}
+
+
+void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Component* component)
+{
+	// Retrieve the vector<std::wstring> from component's handle
+	auto wstringVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::wstring>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+	// Display each string in the vector
+	for (size_t i = 0; i < wstringVector.size(); ++i) 
+	{
+		std::wstring tempWMember = wstringVector[i];
+		std::string tempSMember(tempWMember.begin(), tempWMember.end());
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		// ImGui::InputText expects a wchar_t array for input
+		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember)) 
+		{
+			// Convert string back to wstring
+			std::wstring newWName(tempSMember.begin(), tempSMember.end());
+			wstringVector[i] = newWName; // Convert back to std::wstring
+		}
+	}
+	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+	// Option to add a new element
+	if (ImGui::Button("  Add  "))
+	{
+		wstringVector.push_back(L""); // Add an empty wstring by default
+	}
+
+	// Option to remove the last element
+	if (!wstringVector.empty() ) 
+	{
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("Remove"))
+		{
+		wstringVector.pop_back();
+		}
+	}
+
+	// Apply changes if vector was modified
+	memberMetaData.set(component->GetHandle(), std::move(wstringVector));
+
+	ImGui::PopID();
 }

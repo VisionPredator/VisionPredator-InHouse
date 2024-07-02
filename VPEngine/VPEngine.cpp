@@ -11,6 +11,7 @@
 #include "RenderSystem.h"
 #include "LightSystem.h"
 #include "DataRegister.h"
+#include "CameraSystem.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
 
@@ -45,8 +46,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 
 	m_Graphics = new GraphicsEngine(m_hWnd);
 	m_Graphics->Initialize();
-	VPRegister::Register_Components();
-	VPRegister::Register_EnumClass();
+	VPRegister::Register_Metadata();
 
 	m_TimeManager = new TimeManager;
 	m_SceneManager = new SceneManager;
@@ -61,8 +61,8 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
-	m_SystemManager->AddSystem<TransformSystem>();
-
+	m_SystemManager->AddSystem<CameraSystem>();
+	EventManager::GetInstance().ScheduleEvent("OnAddTransformSystem");
 }
 
 VPEngine::~VPEngine()
@@ -115,7 +115,6 @@ void VPEngine::Update()
 	//if (m_DeltaTime > 1)
 	//	m_DeltaTime = 1/165;
 	m_SystemManager->Update(m_DeltaTime);
-	m_SystemManager->RenderUpdate(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->RenderUpdate(m_DeltaTime);
 

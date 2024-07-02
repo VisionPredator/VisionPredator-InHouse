@@ -69,14 +69,14 @@
     <ClInclude Include="HierarchySystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiFileDialog.h">
-      <Filter>ImGuiDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiFileDialogConfig.h">
-      <Filter>ImGuiDialog</Filter>
-    </ClInclude>
     <ClInclude Include="EditorViewPort.h">
       <Filter>ImGuiBar</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -110,11 +110,11 @@
     <ClCompile Include="HierarchySystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiFileDialog.cpp">
-      <Filter>ImGuiDialog</Filter>
-    </ClCompile>
     <ClCompile Include="EditorViewPort.cpp">
       <Filter>ImGuiBar</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
