@@ -13,9 +13,9 @@ float4 main(VS_OUTPUT input) : SV_TARGET
      //// Calculate Directional Light 
  
     float4 albedo = gAlbedo.Sample(samLinear, input.tex);
-    float4 emissive = gEmissive.Sample(samLinear, input.tex);    
     
     float3 result = float3(0, 0, 0);
+    float4 emissive;    
     
     //View
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
@@ -70,6 +70,17 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         aoValue = 0;
     }
         
+    if(useNE.y > 0)
+    {
+     emissive = gEmissive.Sample(samLinear, input.tex);    
+        
+    }
+    else
+    {
+        emissive = 0;
+    }
+    
+    
     for (int i = 0; i < DirIndex; i++)
     {
         result += CalcDir(array[i], V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);

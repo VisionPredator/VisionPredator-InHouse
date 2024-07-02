@@ -362,9 +362,16 @@ void DeferredPass::Geometry()
 					renew.local = curMesh->m_node.lock()->m_World;
 
 					position->Update(renew);
-
-					std::wstring id = std::to_wstring(curData->EntityID);
-					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
+					if (!curData->curAnimation.empty())
+					{
+						std::wstring id = std::to_wstring(curData->EntityID);
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+					}
+					else
+					{
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+					}
 					pallete->Update();
 					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 				}

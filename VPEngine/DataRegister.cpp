@@ -18,9 +18,7 @@ void VPRegister::Register_EnumClass()
 		.data<MeshFilter::Static>("Static"_hs)
 		.prop(Reflection::Prop::Name, "Static")
 		.data<MeshFilter::Circle>("Circle"_hs)
-		.prop(Reflection::Prop::Name, "Circle")
-		.data<MeshFilter::None>("None"_hs)
-		.prop(Reflection::Prop::Name, "None");
+		.prop(Reflection::Prop::Name, "Circle");
 
 	entt::meta<LightType>()
 		.prop(Reflection::Prop::Name, "LightType")
@@ -33,6 +31,14 @@ void VPRegister::Register_EnumClass()
 		.prop(Reflection::Prop::Name, "Point")
 		.data<LightType::End>("End"_hs)
 		.prop(Reflection::Prop::Name, "End");
+}
+
+void VPRegister::Register_Value()
+{
+	entt::meta<std::vector<std::string>>()
+		.type("std::vector<std::string>"_hs);
+	entt::meta<std::vector<std::wstring>>()
+		.type("std::vector<std::wstring>"_hs);
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
@@ -51,6 +57,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
 
 
 
+void VPRegister::Register_Metadata()
+{
+	VPRegister::Register_Components();
+	VPRegister::Register_EnumClass();
+	VPRegister::Register_Value();
+}
+
 void VPRegister::Register_Components()
 {
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
@@ -60,9 +73,11 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
+	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation,LightComponent::testVector,LightComponent::testwVector, LightComponent::range, LightComponent::spot);
 	META_ADD_MEMBER(Parent, Parent::ParentID);
 	META_ADD_MEMBER(Children, Children::ChildrenID);
 	META_ADD_MEMBER(CameraComponent, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
+	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
 	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animeName1, AnimationComponent::animeName2, AnimationComponent::animeName3, AnimationComponent::animeName4, AnimationComponent::animeName5);
 }
 

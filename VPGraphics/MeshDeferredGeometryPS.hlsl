@@ -76,6 +76,10 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     {
         output.Emissive = gEmissive.Sample(samLinear, input.tex);
     }
+    else
+    {
+        output.Emissive = 0;
+    }
 	
 	
     output.Position = input.posWorld;

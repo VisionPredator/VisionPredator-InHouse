@@ -88,8 +88,8 @@ bool GraphicsEngine::Initialize()
 	OnResize();
 
 	// Pipeline
-	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
+	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();
@@ -110,7 +110,7 @@ void GraphicsEngine::Update(double dt)
 {
 	m_Animator->Update(dt, m_RenderList);
 
-	m_DeferredShadingPipeline->Update(m_RenderList);
+	//m_DeferredShadingPipeline->Update(m_RenderList);
 	m_ForwardPipeline->Update(m_RenderList);
 
 	m_LightManager->Update(m_Lights);
