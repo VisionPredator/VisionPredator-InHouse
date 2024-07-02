@@ -3,7 +3,6 @@
 #include "SceneManager.h"
 #include "HierarchySystem.h"
 #include <EventManager.h>
-#include "imgui_internal.h"
 #include <InputManager.h>
 
 Hierarchy::Hierarchy(SceneManager* scManager, HierarchySystem* hierarchySystem) : m_SceneManager{ scManager }, m_HierarchySystem{ hierarchySystem }

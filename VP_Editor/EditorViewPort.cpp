@@ -3,10 +3,6 @@
 #include "Toolbar.h"
 #include "HierarchySystem.h"
 #include <InputManager.h>
-#include "..\VPGraphics\GraphicsEngine.h"
-
-
-#include "..\include\imgui_internal.h"
 
 EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
 {

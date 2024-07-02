@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "VP_Editor.h"
 #include "SystemManager.h"
-#include "Toolbar.h"
+#include "TimeManager.h"
+#include <InputManager.h>
 #include <TransformSystem.h>
-#include "../include/imgui_impl_win32.h"
-#include "../include/imgui_impl_dx11.h"
+#include "VP_Editor.h"
+#include "Toolbar.h"
 #include "EditorCamera.h"
 #include "FolderTool.h"
 #include "Hierarchy.h"
@@ -12,8 +12,7 @@
 #include "EventManager.h"
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
-#include "TimeManager.h"
-#include <InputManager.h>
+
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
@@ -98,6 +97,8 @@ void VP_Editor::Render()
 	// Renderin
 	for (auto& ImGui : m_ImGuis)
 	{
+        //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))
+        //    continue;
 		ImGui->ImGuiRender();
 	}
 

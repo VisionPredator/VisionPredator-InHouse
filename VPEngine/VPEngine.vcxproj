@@ -132,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>VPGraphics.lib;imguid.lib;imguizmo.lib</AdditionalDependencies>
+      <AdditionalDependencies>VPGraphics.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
@@ -159,7 +159,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>VPGraphics.lib</AdditionalDependencies>
+      <AdditionalDependencies>VPGraphics.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

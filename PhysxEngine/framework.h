@@ -19,4 +19,3 @@
 #include "../include/directxtk/SimpleMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;
-#include <crtdbg.h>

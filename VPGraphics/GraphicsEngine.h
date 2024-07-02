@@ -104,7 +104,7 @@ private:
 
 	// Pipeline
 	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
-	std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
+	//std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
 
 
