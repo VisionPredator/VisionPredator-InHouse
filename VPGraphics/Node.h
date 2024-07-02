@@ -11,10 +11,6 @@ public:
 	Node();
 	~Node();
 
-	Node(Node& other);
-	Node& operator= (Node& other);
-	
-
 	std::wstring name;
 
 	DirectX::SimpleMath::Matrix m_Local;

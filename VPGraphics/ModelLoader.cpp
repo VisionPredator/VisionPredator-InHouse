@@ -241,7 +241,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			data.pSysMem = &(SkinningVertices[0]);
 			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(SkinningVertex));
 		}
-			break;
+		break;
 		case Filter::END:
 			break;
 		default:
@@ -418,50 +418,119 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 		ob_Channel->nodename = std::wstring(name, name + curChannel->mNodeName.length);
 		ob_Channel->node = FindNode(ob_Channel->nodename, Model->m_RootNode);
 
+		double prevTime = 0;
+
 		for (unsigned int j = 0; j < curChannel->mNumPositionKeys; j++)
 		{
-			ob_Channel->positionkey.push_back(std::make_shared<Key>());
-
-			std::shared_ptr<Key> curKey = ob_Channel->positionkey.back();
 			aiVectorKey curAnimation = curChannel->mPositionKeys[j];
+			//if (curAnimation.mTime - prevTime > 0.05)
+			{
+				ob_Channel->positionkey.push_back(std::make_shared<Key>());
 
-			curKey->time = curAnimation.mTime;
+				std::shared_ptr<Key> curKey = ob_Channel->positionkey.back();
 
-			curKey->value.x = curAnimation.mValue.x;
-			curKey->value.y = curAnimation.mValue.y;
-			curKey->value.z = curAnimation.mValue.z;
+				curKey->time = curAnimation.mTime;
+
+				curKey->value.x = curAnimation.mValue.x;
+				curKey->value.y = curAnimation.mValue.y;
+				curKey->value.z = curAnimation.mValue.z;
+
+			}
+			prevTime = curAnimation.mTime;
 		}
+
+		prevTime = 0;
 
 		for (unsigned int j = 0; j < curChannel->mNumScalingKeys; j++)
 		{
-			ob_Channel->scalingkey.push_back(std::make_shared<Key>());
-
-			std::shared_ptr<Key> curKey = ob_Channel->scalingkey.back();
 			aiVectorKey curAnimation = curChannel->mScalingKeys[j];
+			//if (curAnimation.mTime - prevTime > 0.05)
+			{
+				ob_Channel->scalingkey.push_back(std::make_shared<Key>());
 
-			curKey->time = curAnimation.mTime;
+				std::shared_ptr<Key> curKey = ob_Channel->scalingkey.back();
 
-			curKey->value.x = curAnimation.mValue.x;
-			curKey->value.y = curAnimation.mValue.y;
-			curKey->value.z = curAnimation.mValue.z;
+				curKey->time = curAnimation.mTime;
+
+				curKey->value.x = curAnimation.mValue.x;
+				curKey->value.y = curAnimation.mValue.y;
+				curKey->value.z = curAnimation.mValue.z;
+			}
+			prevTime = curAnimation.mTime;
+
 		}
 
+		prevTime = 0;
 		for (unsigned int j = 0; j < curChannel->mNumRotationKeys; j++)
 		{
-			ob_Channel->rotationkey.push_back(std::make_shared<Key>());
-
-
-			std::shared_ptr<Key> curKey = ob_Channel->rotationkey.back();
 			aiQuatKey curAnimation = curChannel->mRotationKeys[j];
+			//if (curAnimation.mTime - prevTime > 0.05)
+			{
+				ob_Channel->rotationkey.push_back(std::make_shared<Key>());
 
-			curKey->time = curAnimation.mTime;
+				std::shared_ptr<Key> curKey = ob_Channel->rotationkey.back();
 
-			curKey->rotation.x = curAnimation.mValue.x;
-			curKey->rotation.y = curAnimation.mValue.y;
-			curKey->rotation.z = curAnimation.mValue.z;
-			curKey->rotation.w = curAnimation.mValue.w;
+				curKey->time = curAnimation.mTime;
+
+				curKey->rotation.x = curAnimation.mValue.x;
+				curKey->rotation.y = curAnimation.mValue.y;
+				curKey->rotation.z = curAnimation.mValue.z;
+				curKey->rotation.w = curAnimation.mValue.w;
+			}
+			prevTime = curAnimation.mTime;
+
 		}
 	}
+
+	/*
+	for (int i = 0; i < _Animation->m_Duration; i++)
+	{
+
+
+		std::map<std::wstring, std::vector<std::shared_ptr<Key>>> newMap;
+		for (auto& channel : _Animation->m_Channels)
+		{
+			for (auto& key : channel->scalingkey)
+			{
+				std::vector <std::shared_ptr<Key>> newVector;
+
+				newMap.insert(std::pair<std::wstring, std::vector<std::shared_ptr<Key>>>(channel->nodename, newVector));
+
+				std::shared_ptr<Key> resultAnimation = std::make_shared<Key>();
+				resultAnimation->ScaleMatrix = DirectX::SimpleMath::Matrix::CreateScale(key->value);
+
+				newVector.push_back(resultAnimation);
+			}
+			for (auto& key : _Animation->m_Channels[0]->rotationkey)
+			{
+				if (newMap.find(channel->nodename) != newMap.end())
+				{
+
+				}
+			}
+			for (auto& key : _Animation->m_Channels[0]->positionkey)
+			{
+				if (newMap.find(channel->nodename) != newMap.end())
+				{
+					std::shared_ptr<Key> resultAnimation = std::make_shared<Key>();
+					resultAnimation->TranslateMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(key->value);
+
+					newMap[channel->nodename].push_back(resultAnimation);
+
+				}
+			}
+
+		}
+
+		_Animation->Animationkey.push_back(newMap);
+		int a = 4;
+
+
+	}
+	*/
+
+
+
 
 	Model->m_Animations.push_back(_Animation);
 }

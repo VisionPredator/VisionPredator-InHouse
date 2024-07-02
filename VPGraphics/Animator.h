@@ -29,12 +29,12 @@ private:
 	DirectX::SimpleMath::Matrix CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel);
 	DirectX::SimpleMath::Matrix CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey);
 
-	//void UpdateMatrixPallete(std::shared_ptr<ModelData> ob);
-	void UpdateMatrixPallete(std::shared_ptr<RenderData> & curData);
+	void UpdateMatrixPallete(std::shared_ptr<RenderData>& curData);
 
 	std::weak_ptr<ResourceManager> m_ResourceManager;
 
 
+	//calc nodes
 	std::vector<std::shared_ptr<Node>> m_Nodes;
 
 

@@ -68,6 +68,9 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 		//time = 0;
 	}
 
+	//계산을 위한 복사
+	std::shared_ptr<Node> curNode = std::make_shared<Node>();
+
 	for (auto& ani : curOb->m_Animations[0]->m_Channels)
 	{
 		DirectX::SimpleMath::Matrix rotation{};
@@ -81,6 +84,10 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 		{
 			if (pos->time > time)
 			{
+				if (time < 1)
+				{
+					cur = pos;
+				}
 
 				next = pos;
 
@@ -102,7 +109,7 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 
 				float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
 				DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((next)->value, (cur)->value, t);
-				scale = DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+				scale = DirectX::SimpleMath::Matrix::CreateScale(afterLerp);
 
 				break;
 			}
@@ -132,10 +139,14 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 		//XMMATRIX total = translate * rotation * scale;
 		DirectX::SimpleMath::Matrix total = scale * rotation * translate;
 
-		std::weak_ptr<Node> curNode = std::weak_ptr<Node>{ ani->node.lock() };
+		std::shared_ptr<Node> curAni = ani->node.lock();
+		curAni->m_Local = total.Transpose();
+		curNode->m_Local = total.Transpose();
+		curNode->m_LocalInverse = curNode->m_Local.Invert();
+		curNode->HasParents = curAni->HasParents;
+		curNode->m_Bones = curAni->m_Bones;
+		curNode->m_Childs = curAni->m_Childs;
 
-		curNode.lock()->m_Local = total.Transpose();
-		curNode.lock()->m_LocalInverse = curNode.lock()->m_Local.Invert();
 	}
 
 	CalcWorld(curOb->m_RootNode);
@@ -227,7 +238,6 @@ DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std:
 
 }
 
-//void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
 void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 {
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
@@ -245,7 +255,6 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
 
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
-
 
 				std::wstring id = std::to_wstring(curData->EntityID);
 				resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld * offset);

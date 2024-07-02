@@ -1,92 +1,18 @@
 {
     "Entitys": [
         {
-            "EntityID": 3084979267,
+            "EntityID": 1165315742,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx"
+                    "Name": "animation"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -12.467440605163574,
-                        "y": -4.625317524187267e-05,
-                        "z": -40.01079559326172
-                    },
-                    "Local_Quaternion": {
-                        "w": -0.2248321920633316,
-                        "x": -0.5483644604682922,
-                        "y": -0.30555182695388794,
-                        "z": 0.7452415227890015
-                    },
-                    "Local_Scale": {
-                        "x": 0.49999991059303284,
-                        "y": 0.4999998211860657,
-                        "z": 0.49999991059303284
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 2053399294
-                }
-            ]
-        },
-        {
-            "EntityID": 2053399294,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": -83.8165054321289,
+                        "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 0.22483226656913757,
-                        "x": -0.5483644604682922,
-                        "y": -0.30555182695388794,
-                        "z": 0.745241641998291
-                    },
-                    "Local_Scale": {
-                        "x": 2.0,
-                        "y": 2.0,
-                        "z": 2.0
-                    }
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx"
-                },
-                {
-                    "ChildrenID": [
-                        3084979267
-                    ],
-                    "ComponentID": 188567026
-                }
-            ]
-        },
-        {
-            "EntityID": 3131454540,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": -55.64836883544922,
-                        "y": 0.0,
-                        "z": 24.71491050720215
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
@@ -101,40 +27,2281 @@
                     }
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx"
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
                 }
             ]
         },
         {
-            "EntityID": 2200607342,
+            "EntityID": 4027028689,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "animation"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -7.62939453125e-06,
-                        "y": -8.762726793065667e-07,
-                        "z": 8.960341801866889e-08
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
-                        "x": -2.2351743567128324e-08,
-                        "y": 7.085497344405667e-08,
-                        "z": 1.072236166521634e-08
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "Local_Scale": {
-                        "x": 0.9999998807907104,
-                        "y": 0.9999998807907104,
-                        "z": 0.9999998807907104
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     }
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx"
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2044551467,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ChildrenID": [
+                        1016639819
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 140755400,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 729441636,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Sun"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 4257272042,
+                    "attenuation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "direction": {
+                        "x": 0.00028192452737130225,
+                        "y": 0.0,
+                        "z": 1.0
+                    },
+                    "intensity": 1.0,
+                    "range": -1.0,
+                    "spot": -1.0,
+                    "type": 0
+                }
+            ]
+        },
+        {
+            "EntityID": 3038736154,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1924689772,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -105.73468780517578,
+                        "y": -4.567690372467041,
+                        "z": 38.33559799194336
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3270768892,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2539820465,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1925562092,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3515903750,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3873030777,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1016639819,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2044551467
+                }
+            ]
+        },
+        {
+            "EntityID": 2320420551,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2376786928,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2748186711,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2022172367,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3278531208,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3268566257,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1707095178,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2073855804,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 568864216,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1135922868,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3894154379,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 4083186587,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 709060462,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1001421148,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1654743853,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 4040711022,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3068409595,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1552200522,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1505508426,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 81301834,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1531386173,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 650192017,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2237664742,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3428679525,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1291739007,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 355779374,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1634826619,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1967671431,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1362459005,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2683731607,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2797341126,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 748437738,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "animation"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animeName1": [],
+                    "animeName2": [],
+                    "animeName3": [],
+                    "animeName4": [],
+                    "animeName5": [],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
                 }
             ]
         }
