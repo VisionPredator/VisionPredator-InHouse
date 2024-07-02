@@ -21,7 +21,7 @@ class ForwardPipeline;
 class LightManager;
 
 class ModelData;
-class RenderData;
+struct RenderData;
 
 
 /// <summary>
@@ -57,6 +57,8 @@ public:
 
 	virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) override;
 
+	virtual const double GetDuration(std::wstring name) override;
+
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
 	void DrawBox(const debug::AABBInfo& info) override;
@@ -76,10 +78,6 @@ protected:
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
-
-	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
-	std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)> m_LightList;
-
 	std::unordered_map<uint32_t, LightData> m_Lights;
 
 private:

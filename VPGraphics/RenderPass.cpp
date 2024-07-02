@@ -325,14 +325,15 @@ void DeferredPass::Geometry()
 
 		if (curModel != nullptr)
 		{
-			int materialindex = 0; //mesh의 숫자와 동일
+			int materialindex = 0;
 
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				if (!mesh->IsSkinned())
+				//if (!mesh->IsSkinned())
+				if (curData->Filter == MeshFilter::Static)
 				{
 
 					Device->BindVS(m_StaticMeshVS.lock());
@@ -345,8 +346,9 @@ void DeferredPass::Geometry()
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
 					position->Update(renew);	// == Bind
 				}
+
 				// Skeletal Mesh Update & Bind
-				else
+				if (curData->Filter == MeshFilter::Skinning)
 				{
 					Device->BindVS(m_SkeletalMeshVS.lock());
 
@@ -360,10 +362,17 @@ void DeferredPass::Geometry()
 					renew.local = curMesh->m_node.lock()->m_World;
 
 					position->Update(renew);
-
-					MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
-					pallete->Update(matrixPallete);
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
+					if (!curData->curAnimation.empty())
+					{
+						std::wstring id = std::to_wstring(curData->EntityID);
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+					}
+					else
+					{
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+					}
+					pallete->Update();
 					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 				}
 
@@ -371,14 +380,17 @@ void DeferredPass::Geometry()
 				if (!curModel->m_Materials.empty())
 				{
 					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-
 					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
-					MaterialData curMaterialData = curMaterial->m_Data;
-					curData->Update(curMaterialData);
 
-					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+					if (curMaterial != nullptr)
+					{
+						MaterialData curMaterialData = curMaterial->m_Data;
+						curData->Update(curMaterialData);
 
-					Device->BindMaterialSRV(curMaterial);
+						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+						Device->BindMaterialSRV(curMaterial);
+					}
 				}
 
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);

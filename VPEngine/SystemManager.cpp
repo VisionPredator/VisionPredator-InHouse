@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "SystemManager.h"
 #include "EventManager.h"
-#include "TransformSystem.h"
 
 	SystemManager::SystemManager()
 	{
 		EventManager::GetInstance().Subscribe("OnInitialize", CreateSubscriber(&SystemManager::OnInitialize));
 		EventManager::GetInstance().Subscribe("OnFinalize",CreateSubscriber(&SystemManager::OnFinalize));
-		EventManager::GetInstance().Subscribe("OnAddTransformSystem",CreateSubscriber(&SystemManager::OnAddTransformSystem));
 	}
 	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* Interfaces)
 	{
@@ -50,18 +48,6 @@
 	{
 		for (auto renderable : m_Renderables)
 			renderable->RenderUpdate(deltatime);
-	}
-
-	void SystemManager::OnAddTransformSystem(std::any)
-	{
-		if (IsSystemAdded<TransformSystem>())
-			return;
-		m_Systems.push_back(std::make_unique<TransformSystem>(m_SceneManager));
-
-		if constexpr (std::is_base_of_v<IUpdatable, TransformSystem>)
-		{
-			m_Updatables.push_back(static_cast<TransformSystem*>(m_Systems.back().get()));
-		}
 	}
 
 
