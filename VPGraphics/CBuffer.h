@@ -22,7 +22,7 @@ struct CameraData
 
 struct MatrixPallete
 {
-	DirectX::SimpleMath::Matrix pallete[128];
+	DirectX::SimpleMath::Matrix offset[128];
 };
 
 

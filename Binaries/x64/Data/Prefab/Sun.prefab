@@ -1,10 +1,10 @@
 [
     {
-        "EntityID": 2731570974,
+        "EntityID": 2358053358,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "Entity0124"
+                "Name": "Sun"
             },
             {
                 "ComponentID": 3400599862,
@@ -46,18 +46,6 @@
                 "intensity": 1.0,
                 "range": -1.0,
                 "spot": -1.0,
-                "testVector": [
-                    "",
-                    "",
-                    "343245234234",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
                 "type": 0
             }
         ]
