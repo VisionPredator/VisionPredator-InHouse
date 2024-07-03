@@ -29,6 +29,8 @@ public:
     void TypeImGui_double(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_float(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_vector_string(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_vector_wstring(entt::meta_data memberMetaData, Component* component);
 
     SceneManager* m_SceneManager;
     HierarchySystem* m_HierarchySystem;

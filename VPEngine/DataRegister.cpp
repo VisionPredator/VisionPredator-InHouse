@@ -28,9 +28,7 @@ void VPRegister::Register_EnumClass()
 		.data<LightType::Spot>("Spot"_hs)
 		.prop(Reflection::Prop::Name, "Spot")
 		.data<LightType::Point>("Point"_hs)
-		.prop(Reflection::Prop::Name, "Point")
-		.data<LightType::End>("End"_hs)
-		.prop(Reflection::Prop::Name, "End");
+		.prop(Reflection::Prop::Name, "Point");
 }
 
 void VPRegister::Register_Value()
@@ -72,12 +70,11 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation,LightComponent::testVector,LightComponent::testwVector, LightComponent::range, LightComponent::spot);
 	META_ADD_MEMBER(Parent, Parent::ParentID);
 	META_ADD_MEMBER(Children, Children::ChildrenID);
-	META_ADD_MEMBER(CameraComponent, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
 	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
-	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animeName1, AnimationComponent::animeName2, AnimationComponent::animeName3, AnimationComponent::animeName4, AnimationComponent::animeName5);
+	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animeName1)
+	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX)
 }
 
