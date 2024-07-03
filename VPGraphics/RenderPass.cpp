@@ -188,7 +188,7 @@ FowardPass::~FowardPass()
 
 DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug) : RenderPass(device, manager), m_DebugDrawManager(debug)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
@@ -270,14 +270,36 @@ void DebugPass::Render()
 	*/
 
 
+	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+	std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+	std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Create<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+	std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Create<ConstantBuffer<LightArray>>(L"LightArray").lock();
+
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
+
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 	/*
 	*/
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = resourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	XMStoreFloat4x4(&m_View, XMMatrixTranspose(Camera.lock()->m_struct.view));
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(Camera.lock()->m_struct.proj));
 
+
+
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
-	//m_Device->Context()->OMSetRenderTargets(1, m_FullScreenRTV->GetAddress(), nullptr);
+	//Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), nullptr);
 
 
 	/*while (!m_RenderDataQueue.empty())
@@ -323,7 +345,9 @@ void DebugPass::Render()
 	frustumInfo.Color = SimpleMath::Color{ 1, 1, 0, 1 };
 	debugManager->AddTask(frustumInfo);
 
-	/*debug::GridInfo gridInfo;
+	/*
+	*/
+	debug::GridInfo gridInfo;
 	gridInfo.Origin = SimpleMath::Vector3{ 0, -5, 0 };
 	gridInfo.XAsix = SimpleMath::Vector3{ 1, 0, 0 };
 	gridInfo.YAsix = SimpleMath::Vector3{ 0, 0, 1 };
@@ -331,7 +355,7 @@ void DebugPass::Render()
 	gridInfo.YDivs = 100;
 	gridInfo.GridSize = 1000.f;
 	gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
-	debugManager->AddTask(gridInfo);*/
+	debugManager->AddTask(gridInfo);
 
 	debug::RingInfo ringInfo;
 	ringInfo.Origin = SimpleMath::Vector3{ 0.f, 7.5f, 0.f };
@@ -405,6 +429,10 @@ DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
+
+	//??
+	m_States = std::make_unique<CommonStates>(device->Get());
+
 }
 
 DeferredPass::~DeferredPass()
@@ -414,6 +442,10 @@ DeferredPass::~DeferredPass()
 
 void DeferredPass::Render()
 {
+	m_Device.lock()->Context()->OMSetBlendState(m_States->Opaque(), nullptr, 0xFFFFFFFF);
+	m_Device.lock()->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
+	//m_Device.lock() ->Context()->RSSetState(m_States->CullNone());
+
 	Geometry();
 	Light();
 }
@@ -447,11 +479,25 @@ void DeferredPass::Geometry()
 		std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 		std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 		std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+		std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Create<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+		std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Create<ConstantBuffer<LightArray>>(L"LightArray").lock();
 
-		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
-		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+
+
 
 	}
 
@@ -576,31 +622,6 @@ void DeferredPass::Light()
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
 		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
-		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-	}
-
-
-	//draw quad
-	{
-		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
-		std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
-
-		Device->UnBindSRV();
-		Device->BindVS(m_QuadVS.lock());
-		Device->Context()->PSSetShader(m_QuadPS.lock()->GetPS(), nullptr, 0);
-
-		Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
-
-		m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-		m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-
-		m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::GBuffer), 1, m_GBuffer.lock()->GetAddress());
-
-		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
-
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
 }

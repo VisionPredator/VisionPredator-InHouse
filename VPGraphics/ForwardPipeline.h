@@ -23,7 +23,8 @@ public:
 
 private:
 	void CheckPassState(std::shared_ptr<RenderData>& model, PassState pass);
-
+	void DrawGBuffer();
+	void DrawIMGUI();
 
 private:
 	std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;

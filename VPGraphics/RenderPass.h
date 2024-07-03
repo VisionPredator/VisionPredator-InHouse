@@ -1,4 +1,6 @@
 #pragma once
+#include <directxtk/CommonStates.h>
+
 #include <queue>
 #include <vector>
 
@@ -131,8 +133,8 @@ public:
 
 private:
 
-	void Geometry();
 	void Light();
+	void Geometry();
 
 private:
 	std::shared_ptr<DepthStencilView> m_DepthStencilView;
@@ -169,4 +171,9 @@ private:
 
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBuffer;
+
+	
+	std::unique_ptr<DirectX::DX11::CommonStates> m_States;
+
+
 };
