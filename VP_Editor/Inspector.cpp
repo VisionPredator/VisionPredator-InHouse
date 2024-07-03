@@ -190,6 +190,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_Color(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::string>())
 		TypeImGui_string(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::wstring>())
+		TypeImGui_wstring(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<bool>())
 		TypeImGui_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<int>())

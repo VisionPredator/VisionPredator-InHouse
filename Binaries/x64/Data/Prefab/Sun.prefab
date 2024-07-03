@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 2358053358,
+        "EntityID": 3302230507,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -46,6 +46,8 @@
                 "intensity": 1.0,
                 "range": -1.0,
                 "spot": -1.0,
+                "testVector": [],
+                "testwVector": [],
                 "type": 0
             }
         ]

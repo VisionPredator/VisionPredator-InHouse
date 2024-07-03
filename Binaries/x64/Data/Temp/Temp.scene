@@ -1,15 +1,11 @@
 {
     "Entitys": [
         {
-            "EntityID": 2903528533,
+            "EntityID": 2164938796,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": ""
+                    "Name": "Sun"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -29,18 +25,6 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "ComponentID": 1142749570,
-                    "FBX": ""
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 0.0,
-                    "IsMain": false,
-                    "NearZ": 0.0,
-                    "Ratio": 1.7777777910232544
                 },
                 {
                     "ComponentID": 4257272042,
@@ -66,32 +50,15 @@
                     "testVector": [],
                     "testwVector": [],
                     "type": 0
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": ""
-                },
-                {
-                    "ComponentID": 2778840952,
-                    "animeName1": [],
-                    "animeName2": [],
-                    "animeName3": [],
-                    "animeName4": [],
-                    "animeName5": [],
-                    "curAnimation": []
-                },
-                {
-                    "ComponentID": 4183631247,
-                    "HP": 3452816845
                 }
             ]
         },
         {
-            "EntityID": 1747312832,
+            "EntityID": 2540851386,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity1"
+                    "Name": "ani"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -113,12 +80,920 @@
                     }
                 },
                 {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 0.0,
-                    "IsMain": true,
-                    "NearZ": 0.0,
-                    "Ratio": 1.7777777910232544
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 714951776,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2448755652,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 23.225322723388672,
+                        "y": -0.6359871625900269,
+                        "z": 1.9529037475585938
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3940790417,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3584572760,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 679866079,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2804625920,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 512474355,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3959542751,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2466282109,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1901568920,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 2998332748,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 3432090584,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 117309614,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 801208901,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "EntityID": 1308866437,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
                 }
             ]
         }

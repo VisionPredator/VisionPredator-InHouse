@@ -26,9 +26,9 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L"Need Name"), FBX(L"Need Path"), Pass(PassState::Deferred)
+	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
 		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
-		,duration(0.f), curAnimation(L"Need Name")
+		,duration(0.f), curAnimation(L""), isPlay(false)
 	{
 
 	}
@@ -44,6 +44,7 @@ public:
 
 	float duration;
 	std::wstring curAnimation;
+	bool isPlay;
 };
 
 

@@ -7,12 +7,12 @@
 #include "StaticData.h"
 #include "Slot.h"
 
-ForwardPipeline::ForwardPipeline(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource) : m_Device(device), m_ResourceManager(resource)
+PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource) : m_Device(device), m_ResourceManager(resource)
 {
 
 }
 
-ForwardPipeline::~ForwardPipeline()
+PassManager::~PassManager()
 {
 	for (auto& pass : m_Passes)
 	{
@@ -22,7 +22,7 @@ ForwardPipeline::~ForwardPipeline()
 	m_Passes.clear();
 }
 
-void ForwardPipeline::Initialize()
+void PassManager::Initialize()
 {
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Foward, std::make_shared<FowardPass>(m_Device.lock(), m_ResourceManager.lock())));
@@ -30,7 +30,7 @@ void ForwardPipeline::Initialize()
 }
 
 
-void ForwardPipeline::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
+void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
 {
 	//비트 연산으로 해보자
 	for (auto& model : RenderList)
@@ -42,7 +42,7 @@ void ForwardPipeline::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Re
 	}
 }
 
-void ForwardPipeline::Render()
+void PassManager::Render()
 {
 
 	for (auto& pass : m_Passes)
@@ -84,7 +84,7 @@ void ForwardPipeline::Render()
 	}
 }
 
-void ForwardPipeline::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
+void PassManager::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
 {
 	PassState temp = model->Pass;
 	temp &= pass;

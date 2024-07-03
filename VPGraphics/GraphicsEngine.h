@@ -15,7 +15,7 @@ class ShaderResourceView;
 
 #pragma region Pipeline
 class DeferredShadingPipeline;
-class ForwardPipeline;
+class PassManager;
 #pragma endregion
 
 class LightManager;
@@ -101,7 +101,7 @@ private:
 	DirectX::SimpleMath::Matrix m_ViewProj;
 
 	// Pipeline
-	std::shared_ptr<ForwardPipeline> m_ForwardPipeline;
+	std::shared_ptr<PassManager> m_ForwardPipeline;
 	//std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
 
 
