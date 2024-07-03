@@ -2,6 +2,7 @@
 #include "PhysxEngine.h"
 #include "Physics.h"
 
+
 PhysxEngine::PhysxEngine()
 {
 }
@@ -9,6 +10,7 @@ PhysxEngine::PhysxEngine()
 PhysxEngine::~PhysxEngine()
 {
 	delete m_Physics;
+	 m_PxScene->release();
 }
 
 void PhysxEngine::Initialize()
