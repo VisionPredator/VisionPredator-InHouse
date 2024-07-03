@@ -50,10 +50,10 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	}
 
 	//Skinned
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
-		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
-		m_Graphics->EraseObject(meshComponent->GetEntityID());
+		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+
 		return;
 	}
 
@@ -87,46 +87,30 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
 		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
 		IDComponent* idComp = meshComp.GetComponent<IDComponent>();
-		temp->EntityID = idComp->GetEntityID();
 		std::wstring FbxName{};
 		std::wstring Name{};
 		FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
 		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+		temp->FBX = FbxName;
 		temp->Filter = meshComp.FBXFilter;
 		temp->world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
 		temp->Name = Name;
-		temp->FBX = FbxName;
-		temp->duration = 0;
-
 		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 	}
 
 	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
 	{
+		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
 		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
 		IDComponent* idComp = skinComp.GetComponent<IDComponent>();
-		temp->EntityID = idComp->GetEntityID();
 		std::wstring FbxName{};
 		std::wstring Name{};
 		FbxName = FbxName.assign(skinComp.FBX.begin(), skinComp.FBX.end());
 		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+		temp->FBX = FbxName;
 		temp->Filter = skinComp.FBXFilter;
 		temp->world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
 		temp->Name = Name;
-
-		temp->FBX = FbxName;
-		temp->duration = 0;
-
-		if (skinComp.HasComponent<AnimationComponent>())
-		{
-			temp->curAnimation = skinComp.GetComponent<AnimationComponent>()->curAnimation;
-			if (!temp->curAnimation.empty())
-			{
-				temp->FBX = temp->curAnimation;
-				temp->duration = skinComp.GetComponent<AnimationComponent>()->duration;
-			}
-		}
-
 		m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
 	}
 

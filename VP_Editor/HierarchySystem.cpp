@@ -93,6 +93,10 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 		ImGui::EndDragDropTarget();
 	}
 	ImGui::PopID();
+	if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered())
+	{
+		IsItemDoubleClicked = true;
+	}
 
 	if (ImGui::IsItemClicked())
 	{

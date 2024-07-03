@@ -6,8 +6,13 @@
 		public Component
 	{
 		SkinningMeshComponent();
+
 		VP_JSONBODY(SkinningMeshComponent, FBX)
+
 		std::string FBX;
+		
+
 		MeshFilter FBXFilter = MeshFilter::Skinning;
+
 	};
 
