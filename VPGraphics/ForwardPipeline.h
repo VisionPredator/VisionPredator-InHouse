@@ -8,11 +8,12 @@
 /// </summary>
 
 class ModelData;
+class DebugDrawManager;
 
 class PassManager
 {
 public:
-	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource);
+	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug);
 	~PassManager();
 
 	void Initialize();
@@ -29,5 +30,6 @@ private:
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;
+	std::weak_ptr<DebugDrawManager> m_DebugDrawManager;
 };
 

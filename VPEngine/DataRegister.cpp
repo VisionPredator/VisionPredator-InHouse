@@ -29,6 +29,7 @@ void VPRegister::Register_EnumClass()
 		.prop(Reflection::Prop::Name, "Spot")
 		.data<LightType::Point>("Point"_hs)
 		.prop(Reflection::Prop::Name, "Point");
+
 }
 
 void VPRegister::Register_Value()

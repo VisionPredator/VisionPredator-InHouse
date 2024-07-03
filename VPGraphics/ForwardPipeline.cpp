@@ -3,11 +3,12 @@
 
 #include "ModelData.h"
 #include "ResourceManager.h"
+#include "DebugDrawManager.h"
 
 #include "StaticData.h"
 #include "Slot.h"
 
-PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource) : m_Device(device), m_ResourceManager(resource)
+PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug) : m_Device(device), m_ResourceManager(resource),m_DebugDrawManager(debug)
 {
 
 }
@@ -26,7 +27,7 @@ void PassManager::Initialize()
 {
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Foward, std::make_shared<FowardPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(),m_DebugDrawManager.lock())));
 }
 
 
@@ -50,7 +51,7 @@ void PassManager::Render()
 		pass.second->Render();
 	}
 
-
+	//GUI¿¡ º¸
 	{
 		std::shared_ptr<Device> Device = m_Device.lock();
 		std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();

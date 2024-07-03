@@ -91,16 +91,8 @@ bool GraphicsEngine::Initialize()
 	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
 	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
 
-	m_ForwardPipeline = std::make_shared <PassManager>(m_Device, m_ResourceManager);
+	m_ForwardPipeline = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
 	m_ForwardPipeline->Initialize();
-
-	//output
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
-	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
-
-
-	AddRenderModel(MeshFilter::Grid, 0,L"Grid");
-	AddRenderModel(MeshFilter::Axis, 1,L"Axis");
 
 	InitializeImGui();
 	return true;
@@ -136,7 +128,19 @@ void GraphicsEngine::BeginRender()
 	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
 
-	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+	for (int i = 0; i < m_RTVs.size(); i++)
+	{
+		if (i == 0)
+		{
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+		}
+		else
+		{
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+		}
+	}
+
+	/*m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
 	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[1].lock()->Get(), white);
 	m_Device->BeginRender(m_RTVs[2].lock()->Get(), m_DSVs[1].lock()->Get(), red);
 	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[1].lock()->Get(), green);
@@ -145,7 +149,7 @@ void GraphicsEngine::BeginRender()
 	m_Device->BeginRender(m_RTVs[6].lock()->Get(), m_DSVs[1].lock()->Get(), green + red);
 	m_Device->BeginRender(m_RTVs[7].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
 	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
-	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), Black);*/
 }
 
 void GraphicsEngine::Render()

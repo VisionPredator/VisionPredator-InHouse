@@ -1,10 +1,10 @@
 [
     {
-        "EntityID": 656142688,
+        "EntityID": 714951776,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "animation"
+                "Name": "ani"
             },
             {
                 "ComponentID": 3400599862,
@@ -31,11 +31,19 @@
             },
             {
                 "ComponentID": 2778840952,
-                "animeName1": [],
-                "animeName2": [],
-                "animeName3": [],
-                "animeName4": [],
-                "animeName5": [],
+                "animationList": [
+                    [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                ],
                 "curAnimation": [
                     70,
                     108,

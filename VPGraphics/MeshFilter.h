@@ -26,7 +26,7 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Foward)
+	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
 		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
 		,duration(0.f), curAnimation(L""), isPlay(false)
 	{
@@ -41,7 +41,6 @@ public:
 
 	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
 	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
-
 
 	float duration;
 	std::wstring curAnimation;
