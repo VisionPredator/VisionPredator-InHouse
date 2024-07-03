@@ -26,12 +26,13 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
+	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Foward)
 		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
 		,duration(0.f), curAnimation(L""), isPlay(false)
 	{
 
 	}
+
 	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;

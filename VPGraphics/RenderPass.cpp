@@ -37,7 +37,6 @@ void RenderPass::Render()
 	std::shared_ptr<RenderTargetView> RTV = m_RTV.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
 
-
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
 
@@ -56,10 +55,34 @@ void RenderPass::Render()
 				Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
 				Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 				Device->Context()->IASetPrimitiveTopology(mesh->m_primitive);
+				Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
 				if (mesh->IsSkinned())
 				{
-					BindSkeletal(curData, mesh);
+					Device->BindVS(m_SkeletalMeshVS.lock());
+
+					std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+
+					// CB Update
+					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+
+					TransformData renew;
+					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					renew.local = curMesh->m_node.lock()->m_World;
+
+					position->Update(renew);
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
+					if (!curData->curAnimation.empty() && curData->isPlay)
+					{
+						std::wstring id = std::to_wstring(curData->EntityID);
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+					}
+					else
+					{
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+					}
+					pallete->Update();
+					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 				}
 				else
 				{
@@ -68,7 +91,6 @@ void RenderPass::Render()
 
 				if (!curModel->m_Materials.empty())
 				{
-
 					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
 					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 
