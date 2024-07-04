@@ -3,6 +3,12 @@
 #include "CollisionCallback.h"
 
 using namespace physx;
+CollisionCallback::CollisionCallback()
+{
+}
+CollisionCallback::~CollisionCallback()
+{
+}
 void CollisionCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
 {
 }
@@ -21,7 +27,7 @@ void CollisionCallback::onSleep(PxActor** actors, PxU32 count)
 
 void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
-	std::cout << "onContact" << std::endl;
+	//std::cout << "onContact" << std::endl;
 
 }
 

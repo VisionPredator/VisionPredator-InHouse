@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionCallback.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IPhysx.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="StaticRigidBody.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionCallback.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />
     <ClCompile Include="pch.cpp">

@@ -63,6 +63,9 @@
     <ClInclude Include="StaticRigidBody.h">
       <Filter>struct\RigidBody\Static</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionCallback.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="PhysxRigidManager.cpp">
       <Filter>struct\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionCallback.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
