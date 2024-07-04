@@ -10,18 +10,16 @@ PhysxEngine::PhysxEngine()
 PhysxEngine::~PhysxEngine()
 {
 	delete m_Physics;
-	 m_PxScene->release();
+	PX_RELEASE(m_PxScene);
 }
 
-void PhysxEngine::Initialize()
+bool PhysxEngine::Initialize()
 {
 	m_Physics = new Physics;
 
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	m_Physics->Initialize();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
-	m_PxScene = physics->createScene(sceneDesc);
-	m_Physics->SettingPVDClient(m_PxScene);
 
 
 	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
@@ -30,6 +28,17 @@ void PhysxEngine::Initialize()
 	sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
 	sceneDesc.solverType = physx::PxSolverType::eTGS;
 
+	m_PxScene = physics->createScene(sceneDesc);
+	m_Physics->SettingPVDClient(m_PxScene);
 
+	return true;
 }
+
+bool PhysxEngine::Finalize()
+{
+	return false;
+}
+
+
+
 

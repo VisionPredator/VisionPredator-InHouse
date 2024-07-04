@@ -8,3 +8,4 @@
 #include "PlayerComponent.h"
 #include "LightComponent.h"
 #include "AnimationComponent.h"
+#include "RigidBodyComponent.h"

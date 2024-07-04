@@ -3,12 +3,12 @@
 
 	 InputManager* InputManager::instance = nullptr;
 
+
 	void InputManager::Initialize()
 	{
 		for (int i = 0; i < (int)KEY::END; ++i) {
 			m_KeyInputInfos.push_back(KeyInputInfo{ KEY_STATE::NONE, false });
 		}
-
 	}
 
 	InputManager::InputManager()

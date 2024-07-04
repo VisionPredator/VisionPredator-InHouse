@@ -1,10 +1,11 @@
 #pragma once
 #include "VPEngine.h"
+#include "../VisionpredatorProcess/VPProcess.h"
 #include "EventSubscriber.h"
 class EditorCamera;
 class IImGui;
 class HierarchySystem;
-class VP_Editor :public VPEngine,public EventSubscriber
+class VP_Editor :public VPProcess,public EventSubscriber
 {
 public:
 	VP_Editor(HINSTANCE hInstance, std::string title, int width, int height);

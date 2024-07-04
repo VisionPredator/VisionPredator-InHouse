@@ -202,6 +202,9 @@
     <Image Include="VP_Editor.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VisionpredatorProcess\VisionpredatorProcess.vcxproj">
+      <Project>{c685a604-1265-412a-a168-1e3b3f691064}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\VPEngine\VPEngine.vcxproj">
       <Project>{2c00f534-01bf-4232-bd17-a5ac02072aac}</Project>
     </ProjectReference>

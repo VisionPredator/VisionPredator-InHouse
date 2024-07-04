@@ -38,4 +38,36 @@ namespace VPPhysics
 		ON_COLLISION,
 		END_COLLISION,
 	};
+	constexpr uint32_t noneID = 0;
+
+	struct ColliderInfo
+	{
+		uint32_t LayerNumber = 0;
+		uint32_t EntityID = noneID;
+		VPMath::Vector3	WorldLocation = {};
+		VPMath::Quaternion	WorldQuaternion = {};
+		float StaticFriction = 1.f;							// 정적 마찰 계수
+		float DynamicFriction = 1.f;						// 동적 마찰 계수
+		float Restitution = 1.f;							// 복원 계수
+		float Density = 1.f;								// 밀도
+	};
+
+	struct BoxColliderInfo
+	{
+		ColliderInfo colliderInfo;
+		DirectX::SimpleMath::Vector3 Extent = {};		// 길이
+	};
+
+	struct SphereColliderInfo
+	{
+		ColliderInfo colliderInfo;
+		float raidus = 1.f;									// 반지름
+	};
+
+	struct CapsuleColliderInfo
+	{
+		ColliderInfo colliderInfo;
+		float raidus = 1.f;									// 반지름
+		float halfHeight = 1.f;								// 높이
+	};
 }

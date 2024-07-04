@@ -17,6 +17,7 @@ public:
 	void Loop();
 
 protected:
+	void Addsystem();
 	virtual void Update();
 	virtual void Render();
 	virtual void EndRender();

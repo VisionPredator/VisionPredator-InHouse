@@ -76,5 +76,6 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
 	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animeName1)
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX)
+	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::Test)
 }
 

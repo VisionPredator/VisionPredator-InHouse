@@ -6,6 +6,10 @@
 
 EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
 {
+	auto& style = ImGuizmo::GetStyle();
+	style.ScaleLineThickness = 3.f;
+	style.TranslationLineThickness = 3.f;
+	style.RotationLineThickness = 5.f;
 }
 
 void EditorViewPort::ImGuiRender()
@@ -200,6 +204,14 @@ void EditorViewPort::ImGuizmoRender()
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
 	VPMath::Matrix ImGuizmoMatrix = transformComp->WorldTransform;
+	//float x = 10.0f; // 시작 x 위치
+	//float y = 10.0f; // 시작 y 위치
+	//float width = 800.0f; // 너비
+	//float height = 600.0f; // 높이
+
+	//// ImGuizmo의 위치와 크기를 설정합니다.
+	//ImGuizmo::SetRect(x, y, width, height);
+	auto& style = ImGuizmo::GetStyle();
 
 
 	ImGuizmo::Manipulate(
@@ -209,6 +221,7 @@ void EditorViewPort::ImGuizmoRender()
 		Mode,
 		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
+
 
 	if (ImGuizmo::IsUsing())
 	{

@@ -1,17 +1,13 @@
 {
     "Entitys": [
         {
-            "EntityID": 2903528533,
+            "EntityID": 888971694,
             "Component": [
                 {
                     "ComponentID": 1365953231,
                     "Name": "Entity0"
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": ""
-                },
-                {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
@@ -29,69 +25,15 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "ComponentID": 1142749570,
-                    "FBX": ""
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 0.0,
-                    "IsMain": false,
-                    "NearZ": 0.0,
-                    "Ratio": 1.7777777910232544
-                },
-                {
-                    "ComponentID": 4257272042,
-                    "attenuation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "direction": {
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "intensity": 1.0,
-                    "range": -1.0,
-                    "spot": -1.0,
-                    "testVector": [],
-                    "testwVector": [],
-                    "type": 0
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": ""
-                },
-                {
-                    "ComponentID": 2778840952,
-                    "animeName1": [],
-                    "animeName2": [],
-                    "animeName3": [],
-                    "animeName4": [],
-                    "animeName5": [],
-                    "curAnimation": []
-                },
-                {
-                    "ComponentID": 4183631247,
-                    "HP": 3452816845
                 }
             ]
         },
         {
-            "EntityID": 1747312832,
+            "EntityID": 3892669829,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity1"
+                    "Name": "TestCamera"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -113,11 +55,15 @@
                     }
                 },
                 {
+                    "ComponentID": 1080109110,
+                    "UUID": "TestCamera"
+                },
+                {
                     "ComponentID": 3575595261,
                     "FOV": 0.7850000262260437,
-                    "FarZ": 0.0,
+                    "FarZ": 1000.0,
                     "IsMain": true,
-                    "NearZ": 0.0,
+                    "NearZ": 1.0,
                     "Ratio": 1.7777777910232544
                 }
             ]

@@ -7,7 +7,7 @@ PhysxRigidManager::PhysxRigidManager()
 }
 PhysxRigidManager::~PhysxRigidManager()
 {
-	m_RigidBodiesMap.clear();
+	m_RigidBodies.clear();
 }
 
 
@@ -22,3 +22,4 @@ void PhysxRigidManager::Update()
 {
 
 }
+

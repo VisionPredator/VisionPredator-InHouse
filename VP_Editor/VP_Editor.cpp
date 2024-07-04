@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "SystemManager.h"
-#include "TimeManager.h"
-#include <InputManager.h>
+#include "Managers.h"
 #include <TransformSystem.h>
 #include "VP_Editor.h"
 #include "Toolbar.h"
@@ -9,11 +7,10 @@
 #include "FolderTool.h"
 #include "Hierarchy.h"
 #include "Inspector.h"
-#include "EventManager.h"
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
 
-VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
+VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
     // Setup Dear ImGui style
