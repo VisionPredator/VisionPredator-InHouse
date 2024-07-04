@@ -14,7 +14,6 @@ class ShaderResourceView;
 #pragma endregion DX
 
 #pragma region Pipeline
-class DeferredShadingPipeline;
 class PassManager;
 #pragma endregion
 
@@ -101,16 +100,7 @@ private:
 	DirectX::SimpleMath::Matrix m_ViewProj;
 
 	// Pipeline
-	std::shared_ptr<PassManager> m_ForwardPipeline;
-	//std::shared_ptr<DeferredShadingPipeline> m_DeferredShadingPipeline;
-
-
-
-
-	//test
-	LightData Dir;
-	LightData Spot;
-	LightData Point;
+	std::shared_ptr<PassManager> m_PassManager;
 	
 
 ///editor

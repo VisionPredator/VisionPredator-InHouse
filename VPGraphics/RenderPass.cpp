@@ -296,96 +296,66 @@ void DebugPass::Render()
 	XMStoreFloat4x4(&m_View, XMMatrixTranspose(Camera.lock()->m_struct.view));
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(Camera.lock()->m_struct.proj));
 
-
-
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
-	//Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), nullptr);
 
-
-	/*while (!m_RenderDataQueue.empty())
+	while (!m_RenderDataQueue.empty())
 	{
+
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 
 		switch (curData->Filter)
 		{
+			case MeshFilter::Grid:
+			{
+				debug::GridInfo gridInfo;
+				gridInfo.Origin = SimpleMath::Vector3{ 0, 0, 0 };
+				gridInfo.XAsix = SimpleMath::Vector3{ 1, 0, 0 };
+				gridInfo.YAsix = SimpleMath::Vector3{ 0, 0, 1 };
+				gridInfo.XDivs = 200;
+				gridInfo.YDivs = 200;
+				gridInfo.GridSize = 200.f;
+				gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
+				debugManager->AddTask(gridInfo);
+			}
+				break;
+
+			case MeshFilter::Axis:
+			{
+				float distance = 10;
+
+				//x
+				debug::RayInfo x;
+				x.Origin = SimpleMath::Vector3{ 0, 0, 0 };
+				x.Direction = SimpleMath::Vector3{ distance, 0, 0 };
+				x.Normalize = false;
+				x.Color = SimpleMath::Color{ 1, 0, 0, 1 };
+				debugManager->AddTask(x);
+
+				//y
+				debug::RayInfo y;
+				y.Origin = SimpleMath::Vector3{ 0, 0, 0 };
+				y.Direction = SimpleMath::Vector3{ 0, distance, 0 };
+				y.Normalize = false;
+				y.Color = SimpleMath::Color{ 0, 1, 0, 1 };
+				debugManager->AddTask(y);
+
+				//z
+				debug::RayInfo z;
+				z.Origin = SimpleMath::Vector3{ 0, 0, 0 };
+				z.Direction = SimpleMath::Vector3{ 0, 0, distance };
+				z.Normalize = false;
+				z.Color = SimpleMath::Color{ 0, 0, 1, 1 };
+				debugManager->AddTask(z);
+
+			}
+				break;
+
 			default:
 				break;
 		}
-	}*/
 
-#pragma region TEST
-	debug::SphereInfo sphereInfo;
-	sphereInfo.Sphere.Center = { 5, 5, 0 };
-	sphereInfo.Sphere.Radius = 1;
-	sphereInfo.Color = SimpleMath::Color{ 1, 0, 0, 1 };
-	debugManager->AddTask(sphereInfo);
-
-	debug::AABBInfo boxInfo;
-	boxInfo.AABB.Center = { 0, 10, 0 };
-	boxInfo.AABB.Extents = { 1.f, 1.f, 1.f };
-	boxInfo.Color = SimpleMath::Color{ 0, 0, 1, 1 };
-	debugManager->AddTask(boxInfo);
-
-	debug::OBBInfo obbInfo;
-	obbInfo.OBB.Center = { 0, 5, 0 };
-	obbInfo.OBB.Extents = { 1, 1, 1 };
-	obbInfo.yAxisAngle = 45.f;
-	obbInfo.Color = SimpleMath::Color{ 0, 1, 0, 1 };
-	debugManager->AddTask(obbInfo);
-
-	debug::FrustumInfo frustumInfo;
-	frustumInfo.Frustum.Origin = { 0, 5, 0 };
-	frustumInfo.Frustum.Orientation = { 0, 0, 0, 1 };
-	frustumInfo.Frustum.Near = 0.03f;
-	frustumInfo.Frustum.Far = 10.f;
-	frustumInfo.Frustum.LeftSlope = -0.736355f;
-	frustumInfo.Frustum.RightSlope = 0.736355f;
-	frustumInfo.Frustum.TopSlope = 0.4142f;
-	frustumInfo.Frustum.BottomSlope = -0.4142;
-	frustumInfo.Color = SimpleMath::Color{ 1, 1, 0, 1 };
-	debugManager->AddTask(frustumInfo);
-
-	/*
-	*/
-	debug::GridInfo gridInfo;
-	gridInfo.Origin = SimpleMath::Vector3{ 0, -5, 0 };
-	gridInfo.XAsix = SimpleMath::Vector3{ 1, 0, 0 };
-	gridInfo.YAsix = SimpleMath::Vector3{ 0, 0, 1 };
-	gridInfo.XDivs = 100;
-	gridInfo.YDivs = 100;
-	gridInfo.GridSize = 1000.f;
-	gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
-	debugManager->AddTask(gridInfo);
-
-	debug::RingInfo ringInfo;
-	ringInfo.Origin = SimpleMath::Vector3{ 0.f, 7.5f, 0.f };
-	ringInfo.MajorAxis = SimpleMath::Vector3{ 1, 0, 0 };
-	ringInfo.MinorAxis = SimpleMath::Vector3{ 1, 1, 0 };
-	ringInfo.Color = SimpleMath::Color{ 1, 0, 1, 1 };
-	debugManager->AddTask(ringInfo);
-
-	debug::RayInfo rayInfo;
-	rayInfo.Origin = SimpleMath::Vector3{ 0, 5, 0 };
-	rayInfo.Direction = SimpleMath::Vector3{ 0, 5, 50 };
-	rayInfo.Normalize = false;
-	rayInfo.Color = SimpleMath::Color{ 0.5, 0.5, 1.f, 1 };
-	debugManager->AddTask(rayInfo);
-
-	debug::QuadInfo quadInfo;
-	quadInfo.PointA = SimpleMath::Vector2{ 0.f, 0.f };
-	quadInfo.PointB = SimpleMath::Vector2{ 10.f, 0.f };
-	quadInfo.PointC = SimpleMath::Vector2{ 10.f, 10.f };
-	quadInfo.PointD = SimpleMath::Vector2{ 0.f, 10.f };
-	quadInfo.Color = SimpleMath::Color{ 1, 0.5, 0.5f, 1 };
-	debugManager->AddTask(quadInfo);
-
-	debug::TriangleInfo triangleInfo;
-	triangleInfo.PointA = SimpleMath::Vector2{ 2.f, 2.f };
-	triangleInfo.PointB = SimpleMath::Vector2{ 12.f, 2.f };
-	triangleInfo.PointC = SimpleMath::Vector2{ 7.f, 12.f };
-	triangleInfo.Color = SimpleMath::Color{ 0, 1, 1,1 };
-	debugManager->AddTask(triangleInfo);
-#pragma endregion TEST
+		m_RenderDataQueue.pop();
+	}
 
 	debugManager->Execute(Device, m_View, m_Proj);
 
@@ -442,8 +412,8 @@ DeferredPass::~DeferredPass()
 
 void DeferredPass::Render()
 {
-	m_Device.lock()->Context()->OMSetBlendState(m_States->Opaque(), nullptr, 0xFFFFFFFF);
-	m_Device.lock()->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
+	//m_Device.lock()->Context()->OMSetBlendState(m_States->Opaque(), nullptr, 0xFFFFFFFF);
+	//m_Device.lock()->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
 	//m_Device.lock() ->Context()->RSSetState(m_States->CullNone());
 
 	Geometry();

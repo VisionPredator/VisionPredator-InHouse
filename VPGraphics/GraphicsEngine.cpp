@@ -15,9 +15,7 @@
 #include "Texture2D.h"
 
 #include "RenderPass.h"
-
-//#include "DeferredShadingPipeline.h"
-#include "ForwardPipeline.h"
+#include "PassManager.h"
 #pragma endregion DX
 
 #pragma region Util
@@ -43,8 +41,6 @@
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
-
-#include "DeferredShadingPipeline.h"
 #pragma endregion IMGUI
 
 #include "Animation.h"
@@ -87,12 +83,8 @@ bool GraphicsEngine::Initialize()
 	m_DebugDrawManager->Initialize(m_Device);
 	OnResize();
 
-	// Pipeline
-	//m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	//m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
-
-	m_ForwardPipeline = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
-	m_ForwardPipeline->Initialize();
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
+	m_PassManager->Initialize();
 
 	InitializeImGui();
 	return true;
@@ -102,8 +94,7 @@ void GraphicsEngine::Update(double dt)
 {
 	m_Animator->Update(dt, m_RenderList);
 
-	//m_DeferredShadingPipeline->Update(m_RenderList);
-	m_ForwardPipeline->Update(m_RenderList);
+	m_PassManager->Update(m_RenderList);
 
 	m_LightManager->Update(m_Lights);
 }
@@ -139,46 +130,18 @@ void GraphicsEngine::BeginRender()
 			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
 		}
 	}
-
-	/*
-	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
-	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[1].lock()->Get(), white);
-	m_Device->BeginRender(m_RTVs[2].lock()->Get(), m_DSVs[1].lock()->Get(), red);
-	m_Device->BeginRender(m_RTVs[3].lock()->Get(), m_DSVs[1].lock()->Get(), green);
-	m_Device->BeginRender(m_RTVs[4].lock()->Get(), m_DSVs[1].lock()->Get(), blue);
-	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[1].lock()->Get(), blue + red);
-	m_Device->BeginRender(m_RTVs[6].lock()->Get(), m_DSVs[1].lock()->Get(), green + red);
-	m_Device->BeginRender(m_RTVs[7].lock()->Get(), m_DSVs[1].lock()->Get(), blue);
-	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), green);
-	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
-	*/
 }
 
 void GraphicsEngine::Render()
 {
-	// 디퍼드 렌더링 기법을 사용한 파이프라인.
-	// 디퍼드 패스 + 포워드 패스.
-	//m_DeferredShadingPipeline->Render();
-
-	// 디퍼드 렌더링 기법을 사용하지 않은 파이프라인
-	// 오로지 포워드 패스만 존재.
-	m_ForwardPipeline->Render();
-
-#pragma region TEST
-	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"RTV_Main").lock();
-	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
-#pragma endregion TEST
-
+	m_PassManager->Render();
 	BeginImGui();
-
 }
 
 void GraphicsEngine::EndRender()
 {
 	EndImGui();
 
-	//m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
-	//m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 	m_Device->EndRender();
 }
 
@@ -190,40 +153,13 @@ bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wst
 	newData->FBX = fbx;
 	newData->Filter = mesh;
 
-	switch (mesh)
+	std::wstring id = std::to_wstring(EntityID);
+	if (newData->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
 	{
-		case MeshFilter::Axis:
-		case MeshFilter::Grid:
-		case MeshFilter::Box:
-		case MeshFilter::Circle:
-		{
-			newData->Pass = PassState::Debug;
-
-		}
-		break;
-
-		case MeshFilter::Static:
-		{
-		}
-		break;
-		case MeshFilter::Skinning:
-		{
-			//newData->FBX = fbx + L".fbx";
-			newData->curAnimation = fbx;
-			std::wstring id = std::to_wstring(EntityID);
-			m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
-		}
-		break;
-
-		case MeshFilter::None:
-			break;
-
-		default:
-			break;
+		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
 	}
 
 	m_RenderList[EntityID] = newData;
-
 
 	return true;
 }
@@ -232,9 +168,6 @@ void GraphicsEngine::EraseObject(uint32_t EntityID)
 {
 	if (m_RenderList.find(EntityID) != m_RenderList.end())
 	{
-
-		//애니메이션 빼줘야할거같은데?
-
 		m_RenderList.erase(EntityID);
 	}
 }
@@ -271,21 +204,34 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> 
 {
 	m_RenderList[EntityID] = data;
 
-	//comp 나누면 없어질거
-	std::wstring id = std::to_wstring(EntityID);
-	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+	switch (data->Filter)
 	{
-		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+		case MeshFilter::Axis:
+		case MeshFilter::Grid:
+		{
+			m_RenderList[EntityID]->Pass = PassState::Debug;
+
+		}
+		break;
+
+		case MeshFilter::Box:
+		case MeshFilter::Static:
+		case MeshFilter::Skinning:
+		{
+			
+		}
+		break;
+
+		case MeshFilter::None:
+			break;
+
+		default:
+			break;
 	}
-
-
 }
 
 void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
 {
-	//debug draw
-	AddRenderModel(MeshFilter::Circle, EntityID, L"Circle");
-
 	if (m_Lights.find(EntityID) == m_Lights.end())
 	{
 		m_Lights.insert(std::pair<uint32_t, LightData>(EntityID, data));
@@ -308,20 +254,6 @@ void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightDat
 	if (m_Lights.find(EntityID) != m_Lights.end())
 	{
 		m_Lights[EntityID] = data;
-
-		//debug draw
-		std::shared_ptr<RenderData> curRender = m_RenderList[EntityID];
-
-		curRender->world._14 = data.pos.x;
-		curRender->world._24 = data.pos.y;
-		curRender->world._34 = data.pos.z;
-
-		if (data.range > 0)
-		{
-			curRender->world._11 = data.range;
-			curRender->world._22 = data.range;
-			curRender->world._33 = data.range;
-		}
 	}
 }
 
@@ -420,8 +352,7 @@ void GraphicsEngine::OnResize()
 	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 }
 
-
-
+/// Editor
 void GraphicsEngine::InitializeImGui()
 {
 	IMGUI_CHECKVERSION();
@@ -445,12 +376,14 @@ void GraphicsEngine::BeginImGui()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 }
+
 void GraphicsEngine::EndImGui()
 {
 	ImGui::EndFrame();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
+
 void GraphicsEngine::DestroyImGui()
 {
 	// Cleanup

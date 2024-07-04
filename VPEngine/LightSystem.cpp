@@ -62,11 +62,18 @@ void LightSystem::RenderUpdate(float deltaTime)
 		temp.direction = lightComp.direction;
 		temp.intensity = lightComp.intensity;
 		temp.pos = lightComp.GetComponent<TransformComponent>()->World_Location;
-		
 		temp.range = lightComp.range;
 
 		temp.spot = lightComp.spot;
 		temp.type = static_cast<float>(lightComp.type);
 		m_Graphics->UpdateLightData(lightComp.GetEntityID(), lightComp.type, temp);
+
+		debug::SphereInfo sphereInfo;
+		sphereInfo.Sphere.Center = temp.pos;
+		sphereInfo.Sphere.Radius = temp.range;
+		sphereInfo.Color = DirectX::SimpleMath::Color{ 1, 0, 0, 1 };
+
+		m_Graphics->DrawSphere(sphereInfo);
+
 	}
 }

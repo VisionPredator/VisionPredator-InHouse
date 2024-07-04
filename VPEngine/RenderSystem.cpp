@@ -28,9 +28,16 @@ void RenderSystem::OnAddedComponent(std::any data)
 	}
 
 	//Skinned
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
-		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
+		auto IDComp = meshComponent->GetComponent<IDComponent>();
+		std::wstring Name{};
+		std::wstring Path{};
+		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
+		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
+
+		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 
 		return;
 	}

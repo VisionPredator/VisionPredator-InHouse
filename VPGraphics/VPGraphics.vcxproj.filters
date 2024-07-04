@@ -141,14 +141,8 @@
     <ClInclude Include="DebugDrawManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="DeferredShadingPipeline.h">
-      <Filter>Pass\DeferredShadingPipeline</Filter>
-    </ClInclude>
     <ClInclude Include="OutlinePass.h">
       <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugDrawPass.h">
-      <Filter>Pass\Common</Filter>
     </ClInclude>
     <ClInclude Include="ShadowPass.h">
       <Filter>Pass\Common</Filter>
@@ -159,17 +153,11 @@
     <ClInclude Include="ParticlePass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardPipeline.h">
+    <ClInclude Include="PassManager.h">
       <Filter>Pass\ForwardShadingPipeline</Filter>
     </ClInclude>
     <ClInclude Include="MotionBlurPass.h">
       <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
-    </ClInclude>
-    <ClInclude Include="DeferredGeometryPass.h">
-      <Filter>Pass\DeferredShadingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="DeferredLightPass.h">
-      <Filter>Pass\DeferredShadingPipeline</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Resource\Object</Filter>
@@ -246,9 +234,11 @@
     <ClInclude Include="Texture2D.h">
       <Filter>Resource\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="ViewPort.h" />
     <ClInclude Include="FinalPass.h">
       <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Resource\ViewPort</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -276,7 +266,7 @@
     <ClCompile Include="RenderPass.cpp">
       <Filter>Pass</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPipeline.cpp">
+    <ClCompile Include="PassManager.cpp">
       <Filter>Pass\ForwardShadingPipeline</Filter>
     </ClCompile>
     <ClCompile Include="MotionBlurPass.cpp">
@@ -285,15 +275,6 @@
     <ClCompile Include="OutlinePass.cpp">
       <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
     </ClCompile>
-    <ClCompile Include="DeferredGeometryPass.cpp">
-      <Filter>Pass\DeferredShadingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="DeferredLightPass.cpp">
-      <Filter>Pass\DeferredShadingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="DeferredShadingPipeline.cpp">
-      <Filter>Pass\DeferredShadingPipeline</Filter>
-    </ClCompile>
     <ClCompile Include="ShadowPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
@@ -301,9 +282,6 @@
       <Filter>Pass\Common</Filter>
     </ClCompile>
     <ClCompile Include="TransparentPass.cpp">
-      <Filter>Pass\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugDrawPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
@@ -366,9 +344,11 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>Resource\Texture2D</Filter>
     </ClCompile>
-    <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="FinalPass.cpp">
       <Filter>Pass\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Resource\ViewPort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

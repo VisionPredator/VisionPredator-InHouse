@@ -89,12 +89,12 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     // Calculate Spot Light    
     for (int k = DirIndex; k < SpotIndex; k++)
     {
-        result += CalcSpot(array[i], input.posWorld, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        result += CalcSpot(array[k], input.posWorld, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
     }
     // Calculate Point Light
-    for (int j = SpotIndex; j < PointIndex; j++)
+    for (int j = DirIndex + SpotIndex; j < DirIndex + SpotIndex + PointIndex; j++)
     {
-        result += CalcPoint(array[i], input.posWorld, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        result += CalcPoint(array[j], input.posWorld, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
 
     }
     

@@ -5,7 +5,7 @@
         public Component
     {
         MeshComponent();
-        VP_JSONBODY(MeshComponent, FBX)
+        VP_JSONBODY(MeshComponent, FBX, FBXFilter)
         std::string FBX;
         MeshFilter FBXFilter = MeshFilter::Static;
 

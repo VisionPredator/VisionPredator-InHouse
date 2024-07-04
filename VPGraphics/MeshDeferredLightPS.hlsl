@@ -37,12 +37,12 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     // Calculate Spot Light    
     for (int k = DirIndex; k < SpotIndex; k++)
     {
-        result += CalcSpot(array[i], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        result += CalcSpot(array[k], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
     }
     // Calculate Point Light
-    for (int j = SpotIndex; j < PointIndex; j++)
+    for (int j = DirIndex + SpotIndex; j < DirIndex + SpotIndex + PointIndex; j++)
     {
-        result += CalcPoint(array[i], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        result += CalcPoint(array[j], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
 
     }
     
