@@ -12,4 +12,6 @@
 
 #include "../include/Macro/ReflectionMacro.h"
 #include "../include/Macro/VisPredMacro.h"
+using namespace physx;
+
 #endif //PCH_H

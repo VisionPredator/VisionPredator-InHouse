@@ -11,7 +11,8 @@
 #include "CameraSystem.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
-
+#include "../PhysxEngine/PhysxEngine.h"
+#include "../PhysxEngine/IPhysx.h"
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
@@ -43,6 +44,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 		NULL, NULL, hInstance, NULL);
 
 	m_Graphics = new GraphicsEngine(m_hWnd);
+	m_PhysicEngine = new PhysxEngine;
 	m_Graphics->Initialize();
 	VPRegister::Register_Metadata();
 
@@ -51,7 +53,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SystemManager = new SystemManager;
 	m_SceneManager->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics);
-
+	m_PhysicEngine->Initialize();
 	InputManager::GetInstance().Initialize();
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);

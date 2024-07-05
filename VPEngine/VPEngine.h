@@ -1,8 +1,10 @@
 #pragma once
 #include "resource.h"
 #include "../VPGraphics/IGraphics.h"
-
-
+namespace Physic
+{
+class IPhysx;
+}
 
 class TimeManager;
 class SystemManager;
@@ -24,9 +26,10 @@ protected:
 	TimeManager* m_TimeManager;
 	SystemManager* m_SystemManager;
 	SceneManager* m_SceneManager;
+	
 	float m_DeltaTime;
 
-
+	Physic::IPhysx* m_PhysicEngine;
 	Graphics::Interface* m_Graphics;
 
 };
