@@ -73,8 +73,10 @@ void ForwardPass::Render()
 					TransformData renew;
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
 					renew.local = curMesh->m_node.lock()->m_World;
-
+					XMStoreFloat4x4(&renew.localInverse, XMMatrixTranspose(renew.local.Invert()));
+					XMStoreFloat4x4(&renew.worldInverse, XMMatrixTranspose(renew.world.Invert()));
 					position->Update(renew);
+
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
 					if (!curData->curAnimation.empty() && curData->isPlay)
 					{

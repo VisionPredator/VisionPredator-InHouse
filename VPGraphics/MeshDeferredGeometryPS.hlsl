@@ -61,11 +61,11 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     float4 N = normalize(input.normal);
     if (useNE.x > 0)
     {
-        float4x4 meshWorld = gWorld; //메쉬의 월드 공간
+        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
         
-        float4 vTangent   = mul(input.tangent,meshWorld);
-        float4 vBitangent = mul(input.bitangent, meshWorld);
-        float4 vNormal = mul(input.normal, meshWorld);
+        float3 vTangent   = normalize(mul(float4(input.tangent.xyz,1),meshWorld));
+        float3 vBitangent = normalize(mul(float4(input.bitangent.xyz, 1), meshWorld));
+        float3 vNormal = normalize(mul(float4(input.normal.xyz, 1), meshWorld));
                 
         float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
         NormalTangentSpace = normalize(NormalTangentSpace);
