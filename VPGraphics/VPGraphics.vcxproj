@@ -179,11 +179,14 @@
     <ClInclude Include="CommonInclude.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DebugDrawManager.h" />
+    <ClInclude Include="DebugPass.h" />
+    <ClInclude Include="DeferredPass.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthStencilView.h" />
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="FinalPass.h" />
+    <ClInclude Include="ForwardPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
     <ClInclude Include="IndexBuffer.h" />
@@ -227,9 +230,12 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />
+    <ClCompile Include="DebugPass.cpp" />
+    <ClCompile Include="DeferredPass.cpp" />
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="FinalPass.cpp" />
+    <ClCompile Include="ForwardPass.cpp" />
     <ClCompile Include="GraphicsEngine.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

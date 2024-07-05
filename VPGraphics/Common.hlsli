@@ -130,6 +130,7 @@ float Calc_D(float3 N, float3 H, float roughness)
     //DistributionGGX
     float a = roughness * roughness;
     float a2 = a * a;
+    
     float NdotH = max(dot(N, H), 0.0);
     float NdotH2 = NdotH * NdotH;
 
@@ -154,10 +155,12 @@ float Calc_G(float3 N, float3 V, float3 L, float roughness)
     float r = (roughness + 1.0);
     float k = (r * r) / 8.0;
 
+    float3 H = normalize(L + V);
     
     //GeometrySmith
     float NdotV = saturate(dot(N, V));
     float NdotL = saturate(dot(N, L));
+    float NdotH = saturate(dot(N, H));
         
     float ggx1 = GeometrySchlickGGX(NdotL, k); 
     float ggx2 = GeometrySchlickGGX(NdotV, k);
@@ -182,9 +185,7 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, 
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
     float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
-    kD *= 1.0 - metalicValue;
-    
-    
+    kD *= (1.0 - metalicValue);
     diffuse = kD * albedo / Pi;
     
     //Specular BRDF

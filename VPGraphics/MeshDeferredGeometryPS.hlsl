@@ -57,19 +57,27 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         output.AO = 0.f;
     }
     
-	
 	 //tangentspace를 계산해 normal을 만든다
     float4 N = normalize(input.normal);
     if (useNE.x > 0)
     {
-        float4 vTangent = normalize(input.tangent);
-        float4 vBitangent = normalize(input.bitangent);
+        float4x4 meshWorld = gWorld; //메쉬의 월드 공간
         
+        float4 vTangent   = mul(input.tangent,meshWorld);
+        float4 vBitangent = mul(input.bitangent, meshWorld);
+        float4 vNormal = mul(input.normal, meshWorld);
+                
         float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
-        float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, N.xyz); //면의 공간으로 옮기기위한 행렬
+        NormalTangentSpace = normalize(NormalTangentSpace);
+        
+        float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
+        
+        
         N.xyz = mul(NormalTangentSpace, WorldTransform);
         N = float4(normalize(N.xyz), 1);
+        
     }
+    
     output.Normal = N;
 	
     if (useNE.y > 0)

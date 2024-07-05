@@ -55,12 +55,6 @@
     <Filter Include="Pass\DeferredShadingPipeline\PostProcessing">
       <UniqueIdentifier>{f24fb4c7-af03-4dea-94f5-b3db89dc1390}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pass\ForwardShadingPipeline">
-      <UniqueIdentifier>{90c6f659-8a01-4190-add5-d7e3e4327f7e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pass\ForwardShadingPipeline\PostProcessing">
-      <UniqueIdentifier>{8f253672-a887-456c-95fe-10d6208c4532}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GraphicsEngine\Common">
       <UniqueIdentifier>{50d90ac0-98ae-4fa5-8425-f9e4847a21e5}</UniqueIdentifier>
     </Filter>
@@ -100,6 +94,27 @@
     <Filter Include="Resource\ViewPort">
       <UniqueIdentifier>{f9625000-8622-4dce-8590-3017be116282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pass\Forward">
+      <UniqueIdentifier>{d8c8d760-b0e3-40bd-979f-4568e2c9989d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Debug">
+      <UniqueIdentifier>{4fd51da6-aab1-4bcd-9103-2d15680f6f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Deferred">
+      <UniqueIdentifier>{0fbcd319-41e0-40a5-b224-f118e303742f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\DebugDraw">
+      <UniqueIdentifier>{78807f42-b819-4884-8fee-18d05646b00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Light">
+      <UniqueIdentifier>{f0a6a22e-110d-4071-aecd-2224289de75b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Pass">
+      <UniqueIdentifier>{018d6c00-5c6b-4264-bed7-c0e2ec446e7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Resource">
+      <UniqueIdentifier>{6de19895-4cd4-4fa7-93d8-0ba6be6f4d6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsEngine.h">
@@ -129,17 +144,8 @@
     <ClInclude Include="IGraphics.h">
       <Filter>GraphicsEngine\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Device.h">
       <Filter>GraphicsEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugDrawManager.h">
-      <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="OutlinePass.h">
       <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
@@ -152,9 +158,6 @@
     </ClInclude>
     <ClInclude Include="ParticlePass.h">
       <Filter>Pass\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="PassManager.h">
-      <Filter>Pass\ForwardShadingPipeline</Filter>
     </ClInclude>
     <ClInclude Include="MotionBlurPass.h">
       <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
@@ -240,6 +243,27 @@
     <ClInclude Include="ViewPort.h">
       <Filter>Resource\ViewPort</Filter>
     </ClInclude>
+    <ClInclude Include="ForwardPass.h">
+      <Filter>Pass\Forward</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugPass.h">
+      <Filter>Pass\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPass.h">
+      <Filter>Pass\Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDrawManager.h">
+      <Filter>Manager\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Manager\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="PassManager.h">
+      <Filter>Manager\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Manager\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -251,23 +275,11 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>GraphicsEngine\ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="LightManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
     <ClCompile Include="Device.cpp">
       <Filter>GraphicsEngine</Filter>
     </ClCompile>
-    <ClCompile Include="DebugDrawManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
     <ClCompile Include="RenderPass.cpp">
       <Filter>Pass</Filter>
-    </ClCompile>
-    <ClCompile Include="PassManager.cpp">
-      <Filter>Pass\ForwardShadingPipeline</Filter>
     </ClCompile>
     <ClCompile Include="MotionBlurPass.cpp">
       <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
@@ -349,6 +361,27 @@
     </ClCompile>
     <ClCompile Include="ViewPort.cpp">
       <Filter>Resource\ViewPort</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardPass.cpp">
+      <Filter>Pass\Forward</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugPass.cpp">
+      <Filter>Pass\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPass.cpp">
+      <Filter>Pass\Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDrawManager.cpp">
+      <Filter>Manager\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Manager\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="PassManager.cpp">
+      <Filter>Manager\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Manager\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

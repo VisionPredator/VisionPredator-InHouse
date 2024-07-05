@@ -10,7 +10,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.color = input.color;
     output.normal = input.normal;
     output.tangent = input.tangent;
-    output.bitangent = input.bitangent, output.pos;
+    output.bitangent = input.bitangent;
     output.tex = input.tex;
        
 #ifdef SKINNING
@@ -38,10 +38,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.posWorld = mul(mul(input.pos, skinning), gWorld);
     
     output.pos = mul(output.posWorld, gWorldViewProj);
-#endif    
-    
-    
-    
-    
+#endif     
+
     return output;
 }

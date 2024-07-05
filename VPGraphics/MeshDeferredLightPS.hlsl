@@ -63,7 +63,10 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     result = result / (result + float3(1.0, 1.0, 1.0));
     
     // gamma correct
-    result = pow(result, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)) + EmissiveValue;
+    float gamma = 2.2;
+    //float gamma = 1.f;
+    
+    result = pow(result, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma)) + EmissiveValue;
         
     output.Gbuffer = float4(result, 1);
     //output.Gbuffer = float4(albedoColor, 1);

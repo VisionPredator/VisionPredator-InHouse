@@ -21,12 +21,14 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
    
     //tangentspace를 계산해 normal을 만든다
-    float4 N = normalize(input.normal);
-    float4 vTangent = normalize(input.tangent);
-    float4 vBitangent = normalize(input.bitangent);
+    float4x4 meshWorld = gWorld;
+    float4 vTangent = mul(input.tangent, meshWorld);
+    float4 vBitangent = mul(input.bitangent, meshWorld);
+    float4 N = mul(input.normal, meshWorld);
         
     float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
     float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, N.xyz); //면의 공간으로 옮기기위한 행렬
+        
     N.xyz = mul(NormalTangentSpace, WorldTransform);
     N = float4(normalize(N.xyz), 1);
     /*
@@ -113,6 +115,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)) + emissive;
     
     
+    //return N;
     return float4(color, 1);
 
 }

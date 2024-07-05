@@ -1,6 +1,9 @@
 #pragma once
 #include "MeshFilter.h"
-#include "RenderPass.h"
+
+#include "ForwardPass.h"
+#include "DebugPass.h"
+#include "DeferredPass.h"
 
 /// <summary>
 /// 전통적인 렌더링 기법을 사용하는 파이프라인

@@ -15,7 +15,7 @@ enum class MeshFilter
 enum class PassState : unsigned int
 {
 	None = 0,
-	Foward = 1 << 1,
+	Forward = 1 << 1,
 	Debug = 1 << 2,
 	Deferred = 1 << 3,
 
