@@ -94,8 +94,8 @@ bool GraphicsEngine::Initialize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"RTV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 
-	AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
-	AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
+	//AddRenderModel(MeshFilter::Axis, 0, L"Axis", L"Axis");
+	//AddRenderModel(MeshFilter::Grid, 1, L"Grid", L"Grid");
 	AddRenderModel(MeshFilter::Static, 2, L"cerberus", L"cerberus");
 	//AddRenderModel(MeshFilter::Static, 3,L"engine_sizedown_1", L"engine_sizedown_1");
 
@@ -178,6 +178,7 @@ void GraphicsEngine::BeginRender()
 	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+	const DirectX::SimpleMath::Color gray = { 0.25f, 0.25f, 0.25f, 1.0f };
 
 	m_Device->BeginRender(m_RTVs[0].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
 	m_Device->BeginRender(m_RTVs[1].lock()->Get(), m_DSVs[1].lock()->Get(), white);
@@ -187,7 +188,7 @@ void GraphicsEngine::BeginRender()
 	m_Device->BeginRender(m_RTVs[5].lock()->Get(), m_DSVs[1].lock()->Get(), blue + red);
 	m_Device->BeginRender(m_RTVs[6].lock()->Get(), m_DSVs[1].lock()->Get(), green + red);
 	m_Device->BeginRender(m_RTVs[7].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
-	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+	m_Device->BeginRender(m_RTVs[8].lock()->Get(), m_DSVs[1].lock()->Get(), gray);
 	m_Device->BeginRender(m_RTVs[9].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
 }
 

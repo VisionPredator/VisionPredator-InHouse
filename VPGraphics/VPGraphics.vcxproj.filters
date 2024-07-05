@@ -100,6 +100,15 @@
     <Filter Include="Resource\ViewPort">
       <UniqueIdentifier>{f9625000-8622-4dce-8590-3017be116282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\GS">
+      <UniqueIdentifier>{97d743dc-a32d-4f85-9f7b-a8d1dfbda007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{ae0ccb03-7af8-4c0a-86a0-57af8217d746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\CS">
+      <UniqueIdentifier>{9438a78e-f698-4aa4-9138-4ea8a9ad32fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsEngine.h">
@@ -246,9 +255,20 @@
     <ClInclude Include="Texture2D.h">
       <Filter>Resource\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="ViewPort.h" />
     <ClInclude Include="FinalPass.h">
       <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DUtill.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleObject.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Resource\ViewPort</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -366,9 +386,20 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>Resource\Texture2D</Filter>
     </ClCompile>
-    <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="FinalPass.cpp">
       <Filter>Pass\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DUtill.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleObject.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Resource\ViewPort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +423,15 @@
     </FxCompile>
     <FxCompile Include="QuadPS.hlsl">
       <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleGS.hlsl">
+      <Filter>HLSL\GS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticlePS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVS.hlsl">
+      <Filter>HLSL\VS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

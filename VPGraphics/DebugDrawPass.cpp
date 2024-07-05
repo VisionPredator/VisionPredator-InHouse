@@ -35,26 +35,26 @@ void DebugDrawPass::Render()
 
 #pragma region TEST
 	debug::SphereInfo sphereInfo;
-	sphereInfo.Sphere.Center = { 5, 5, 0 };
+	sphereInfo.Sphere.Center = { 5, 2, 0 };
 	sphereInfo.Sphere.Radius = 1;
 	sphereInfo.Color = SimpleMath::Color{ 1, 0, 0, 1 };
 	m_DebugDrawManager->AddTask(sphereInfo);
 
 	debug::AABBInfo boxInfo;
-	boxInfo.AABB.Center = { 0, 10, 0 };
+	boxInfo.AABB.Center = { 0, 7, 0 };
 	boxInfo.AABB.Extents = { 1.f, 1.f, 1.f };
 	boxInfo.Color = SimpleMath::Color{ 0, 0, 1, 1 };
 	m_DebugDrawManager->AddTask(boxInfo);
 
 	debug::OBBInfo obbInfo;
-	obbInfo.OBB.Center = { 0, 5, 0 };
+	obbInfo.OBB.Center = { 0, 2, 0 };
 	obbInfo.OBB.Extents = { 1, 1, 1 };
 	obbInfo.yAxisAngle = 45.f;
 	obbInfo.Color = SimpleMath::Color{ 0, 1, 0, 1 };
 	m_DebugDrawManager->AddTask(obbInfo);
 
 	debug::FrustumInfo frustumInfo;
-	frustumInfo.Frustum.Origin = { 0, 5, 0 };
+	frustumInfo.Frustum.Origin = { 0, 2, 0 };
 	frustumInfo.Frustum.Orientation = { 0, 0, 0, 1 };
 	frustumInfo.Frustum.Near = 0.03f;
 	frustumInfo.Frustum.Far = 10.f;
@@ -66,28 +66,46 @@ void DebugDrawPass::Render()
 	m_DebugDrawManager->AddTask(frustumInfo);
 
 	debug::GridInfo gridInfo;
-	gridInfo.Origin = SimpleMath::Vector3{ 0, -5, 0 };
+	gridInfo.Origin = SimpleMath::Vector3{ 0, 0, 0 };
 	gridInfo.XAsix = SimpleMath::Vector3{ 1, 0, 0 };
 	gridInfo.YAsix = SimpleMath::Vector3{ 0, 0, 1 };
-	gridInfo.XDivs = 100;
-	gridInfo.YDivs = 100;
+	gridInfo.XDivs = 1000;
+	gridInfo.YDivs = 1000;
 	gridInfo.GridSize = 1000.f;
-	gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
+	gridInfo.Color = SimpleMath::Color{ 0.4, 0.4, 0.4, 1 };
 	m_DebugDrawManager->AddTask(gridInfo);
 
 	debug::RingInfo ringInfo;
-	ringInfo.Origin = SimpleMath::Vector3{ 0.f, 7.5f, 0.f };
+	ringInfo.Origin = SimpleMath::Vector3{ 0.f, 4.5f, 0.f };
 	ringInfo.MajorAxis = SimpleMath::Vector3{ 1, 0, 0 };
 	ringInfo.MinorAxis = SimpleMath::Vector3{ 1, 1, 0 };
 	ringInfo.Color = SimpleMath::Color{ 1, 0, 1, 1 };
 	m_DebugDrawManager->AddTask(ringInfo);
 
 	debug::RayInfo rayInfo;
-	rayInfo.Origin = SimpleMath::Vector3{ 0, 5, 0 };
+	rayInfo.Origin = SimpleMath::Vector3{ 0, 2, 0 };
 	rayInfo.Direction = SimpleMath::Vector3{ 0, 5, 50 };
 	rayInfo.Normalize = false;
 	rayInfo.Color = SimpleMath::Color{ 0.5, 0.5, 1.f, 1 };
 	m_DebugDrawManager->AddTask(rayInfo);
+
+	debug::RayInfo xAxisRay;
+	xAxisRay.Origin = SimpleMath::Vector3{ 0, 0, 0 };
+	xAxisRay.Direction = SimpleMath::Vector3{ 500, 0, 0 };
+	xAxisRay.Normalize = false;
+	xAxisRay.Color = SimpleMath::Color{ 0.5, 0, 0, 1 };
+	m_DebugDrawManager->AddTask(xAxisRay);
+	xAxisRay.Direction = SimpleMath::Vector3{ -500, 0, 0 };
+	m_DebugDrawManager->AddTask(xAxisRay);
+
+	debug::RayInfo yAxisRay;
+	yAxisRay.Origin = SimpleMath::Vector3{ 0, 0, 0 };
+	yAxisRay.Direction = SimpleMath::Vector3{ 0, 0, 500 };
+	yAxisRay.Normalize = false;
+	yAxisRay.Color = SimpleMath::Color{ 0, 0.5, 0, 1 };
+	m_DebugDrawManager->AddTask(yAxisRay);
+	yAxisRay.Direction = SimpleMath::Vector3{ 0, 0, -500 };
+	m_DebugDrawManager->AddTask(yAxisRay);
 
 	debug::QuadInfo quadInfo;
 	quadInfo.PointA = SimpleMath::Vector2{ 0.f, 0.f };
@@ -95,7 +113,7 @@ void DebugDrawPass::Render()
 	quadInfo.PointC = SimpleMath::Vector2{ 10.f, 10.f };
 	quadInfo.PointD = SimpleMath::Vector2{ 0.f, 10.f };
 	quadInfo.Color = SimpleMath::Color{ 1, 0.5, 0.5f, 1 };
-	m_DebugDrawManager->AddTask(quadInfo);
+	//m_DebugDrawManager->AddTask(quadInfo);
 
 	debug::TriangleInfo triangleInfo;
 	triangleInfo.PointA = SimpleMath::Vector2{ 2.f, 2.f };
