@@ -25,82 +25,54 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     PS_OUTPUT output;
 
     output.Albedo = input.color;
-    if(AMRO.x > 0)
+    if (AMRO.x > 0)
     {
         output.Albedo = gAlbedo.Sample(samLinear, input.tex);
     }
 	
+    output.Metalic = 0.04;
     if (AMRO.y > 0)
     {
         output.Metalic = gMetalic.Sample(samLinear, input.tex);
     }
-    else
-    {
-        output.Metalic = 0.04;
-    }
+    
+    output.Roughness = 0.f;
     
     if (AMRO.z > 0)
     {
         output.Roughness = gRoughness.Sample(samLinear, input.tex);
     }
-    else
-    {
-        output.Roughness = 0.f;
-    }
+    
+    output.AO = 0.f;
     
     if (AMRO.w > 0)
     {
         output.AO = gAO.Sample(samLinear, input.tex);
     }
-    else
-    {
-        output.AO = 0.f;
-    }
     
-	 //tangentspace를 계산해 normal을 만든다
-    float4 N = normalize(input.normal);
+    output.Normal = input.normal;
     if (useNE.x > 0)
     {
-        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
         
-        float3 vTangent   = normalize(mul(float4(input.tangent.xyz,1),meshWorld));
-        float3 vBitangent = normalize(mul(float4(input.bitangent.xyz, 1), meshWorld));
-        float3 vNormal = normalize(mul(float4(input.normal.xyz, 1), meshWorld));
-                
-        float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
+        float3 NormalTangentSpace = gNormal.SampleLevel(samLinear, input.tex, 0).rgb;
+        NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
         NormalTangentSpace = normalize(NormalTangentSpace);
         
-        float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
-        
-        
-        N.xyz = mul(NormalTangentSpace, WorldTransform);
-        N = float4(normalize(N.xyz), 1);
-        
+        float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
+        output.Normal.xyz = normalize(mul(NormalTangentSpace, WorldTransform));
     }
-    
-    output.Normal = N;
 	
+    output.Emissive = 0;
     if (useNE.y > 0)
     {
         output.Emissive = gEmissive.Sample(samLinear, input.tex);
     }
-    else
-    {
-        output.Emissive = 0;
-    }
-	
 	
     output.Position = input.posWorld;
-    //output.Metalic = gMetalic.Sample(samLinear, input.tex);
-    //output.Roughness = gRoughness.Sample(samLinear, input.tex);
-    //output.AO = gAO.Sample(samLinear, input.tex);
 
     float d = input.pos.z / input.pos.w;
     d *= 10;
     output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
-    
-    
-    
-    
+        
     return output;
 }

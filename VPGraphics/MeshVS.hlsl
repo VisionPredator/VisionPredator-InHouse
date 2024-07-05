@@ -12,7 +12,24 @@ VS_OUTPUT main(VS_INPUT input)
     output.tangent = input.tangent;
     output.bitangent = input.bitangent;
     output.tex = input.tex;
-       
+           
+    if (useNE.x > 0)
+    {
+        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
+        
+        float3 vTangent = normalize(mul(float4(input.tangent.xyz, 1), meshWorld));
+        float3 vBitangent = normalize(mul(float4(input.bitangent.xyz, 1), meshWorld));
+        float3 vNormal = normalize(mul(float4(input.normal.xyz, 1), meshWorld));
+                        
+        output.normal = float4(vNormal.xyz, 1);        
+        output.tangent = float4(vTangent, 1);
+        output.bitangent = float4(vBitangent,1);
+    }
+    
+   
+    
+    
+    
 #ifdef SKINNING
     int index[4];
     index[0] = input.boneindex.x;
