@@ -12,7 +12,25 @@ namespace VPPhysics
 		TRIGGER,
 		COLLISION
 	};
+	enum class EPhysicsLayer
+	{
+		GROUND,
+		WALL,
+		TOP,
+		PLAYER,
+		OBJECT,
+		ENEMY,
+		DOOR,
+		ACTIVEDOOR,
+		TRIGGER,
+		END
+	};
 
+	struct PhysicsInfo
+	{
+		PxVec3 Gravity{};
+		int CollisionMatrix[(int)EPhysicsLayer::END];
+	};
 	/// <summary>
 	/// 콜리전 : 충돌 데이터
 	/// </summary>
@@ -70,4 +88,5 @@ namespace VPPhysics
 		float raidus = 1.f;									// 반지름
 		float halfHeight = 1.f;								// 높이
 	};
+
 }

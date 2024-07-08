@@ -61,34 +61,41 @@ PhysxEngine::~PhysxEngine()
 bool PhysxEngine::Initialize()
 {
 	m_Physics = new Physics;
-	m_Collisioncallback = new CollisionCallback;
-	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	m_Physics->Initialize();
+	m_Collisioncallback = new CollisionCallback;
+
+	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
-
-
+	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
+	sceneDesc.filterShader = CustomSimulationFilterShader;
+	sceneDesc.simulationEventCallback = m_Collisioncallback;
 	sceneDesc.gravity=PxVec3(0.f,9.81f,0.f);
 	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
 	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
-	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
-	sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
+	//sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
+	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
 	sceneDesc.solverType = physx::PxSolverType::ePGS;
-	sceneDesc.filterShader = CustomSimulationFilterShader;
-	sceneDesc.simulationEventCallback = m_Collisioncallback;
-
 	m_PxScene = physics->createScene(sceneDesc);
 #ifdef _DEBUG
 	m_Physics->SettingPVDClient(m_PxScene);
 #endif
-
 	return true;
 }
+
 
 bool PhysxEngine::Finalize()
 {
 	return false;
 }
 
+void PhysxEngine::Update(float deltatime)
+{
+	m_ElapsedTime += deltatime;
+	while (m_ElapsedTime> m_UpdateTime)
+	{
+		m_ElapsedTime -= m_UpdateTime;
+		m_PxScene->simulate(m_UpdateTime);
+		m_PxScene->fetchResults(true);
+	}
 
-
-
+}

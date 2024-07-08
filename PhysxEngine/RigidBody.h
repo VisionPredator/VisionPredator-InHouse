@@ -6,7 +6,6 @@ public:
 	RigidBody(VPPhysics::EColliderType colltype,uint32_t entityId, uint32_t layerNumber );
 	~RigidBody();
 
-
 	inline const uint32_t GetID() const;
 	uint32_t m_EntityID{};
 	VPPhysics::EColliderType m_ColliderType{};
@@ -17,6 +16,8 @@ public:
 	float m_HalfHeight = 1.f;
 	physx::PxVec3 m_Extent{1,1,1};
 };
+
+
 
 const unsigned int RigidBody::GetID() const
 {

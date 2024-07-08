@@ -45,7 +45,7 @@
     <ClInclude Include="IPhysx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PhysxRigidManager.h">
+    <ClInclude Include="RigidBodyManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PhysxColliManager.h">
@@ -95,7 +95,7 @@
     <ClCompile Include="StaticRigidBody.cpp">
       <Filter>struct\RigidBody\Static</Filter>
     </ClCompile>
-    <ClCompile Include="PhysxRigidManager.cpp">
+    <ClCompile Include="RigidBodyManager.cpp">
       <Filter>struct\RigidBody</Filter>
     </ClCompile>
     <ClCompile Include="CollisionCallback.cpp">

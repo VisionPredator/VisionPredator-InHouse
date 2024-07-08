@@ -7,3 +7,7 @@ StaticRigidBody::StaticRigidBody(VPPhysics::EColliderType colltype, uint32_t ent
 {
 }
 
+void StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, CollisionData* data)
+{
+}
+

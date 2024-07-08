@@ -21,6 +21,8 @@ public:
 
 	// PVD
 	physx::PxPvd* m_Pvd;
+	physx::PxPvdTransport* m_pTransport = NULL;
+
 	physx::PxPvdSceneClient* m_PvdClient;
 };
 

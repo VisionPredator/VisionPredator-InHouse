@@ -169,7 +169,7 @@
     <ClInclude Include="PhysxColliManager.h" />
     <ClInclude Include="PhysxEngine.h" />
     <ClInclude Include="RigidBody.h" />
-    <ClInclude Include="PhysxRigidManager.h" />
+    <ClInclude Include="RigidBodyManager.h" />
     <ClInclude Include="VPPhysicsStructs.h" />
     <ClInclude Include="StaticRigidBody.h" />
   </ItemGroup>
@@ -187,7 +187,7 @@
     <ClCompile Include="PhysxColliManager.cpp" />
     <ClCompile Include="PhysxEngine.cpp" />
     <ClCompile Include="RigidBody.cpp" />
-    <ClCompile Include="PhysxRigidManager.cpp" />
+    <ClCompile Include="RigidBodyManager.cpp" />
     <ClCompile Include="VPPhysicsStructs.cpp" />
     <ClCompile Include="StaticRigidBody.cpp" />
   </ItemGroup>
