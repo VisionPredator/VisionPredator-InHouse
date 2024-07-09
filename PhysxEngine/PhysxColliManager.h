@@ -1,10 +1,10 @@
 #pragma once
 #include "VPPhysicsStructs.h"
-class PhysxColliManager
+class CollisionManager
 {
 public: 
-	PhysxColliManager();
-	~PhysxColliManager();
+	CollisionManager();
+	~CollisionManager();
 
 
 	std::vector<VPPhysics::CollisionData> m_CollisionData;

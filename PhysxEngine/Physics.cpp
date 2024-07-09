@@ -13,6 +13,22 @@ Physics::Physics()
 
 Physics::~Physics()
 {
+	// Release Dispatcher
+	PX_RELEASE(m_Dispatcher);
+	// Release Physics
+	PX_RELEASE(m_Physics);
+	// Release PVD
+	if (m_Pvd)
+	{
+		// Release PVD Transport
+		m_Pvd->release();
+		m_Pvd = nullptr;
+	}
+	// Release Foundation
+	PX_RELEASE(m_Foundation);
+
+
+
 }
 
 void Physics::Initialize()

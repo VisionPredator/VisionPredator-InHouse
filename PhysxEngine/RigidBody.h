@@ -4,7 +4,7 @@ class RigidBody
 {
 public:
 	RigidBody(VPPhysics::EColliderType colltype,uint32_t entityId, uint32_t layerNumber );
-	~RigidBody();
+	virtual ~RigidBody(); // Make the destructor virtual
 
 	inline const uint32_t GetID() const;
 	uint32_t m_EntityID{};

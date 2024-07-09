@@ -17,24 +17,7 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();
 	///Imgui Setting
-	/*
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	// Setup Platform/Renderer bindings
-	ImGui_ImplWin32_Init(hInstance);
-	ImGui_ImplDX11_Init(mpDevice.Get(), mpContext.Get());
-
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	*/
     m_editorcamera = new EditorCamera{m_SceneManager};
 	m_HierarchySystem = new HierarchySystem{m_SceneManager};
 	m_ImGuis.push_back(new Toolbar{ m_SceneManager });

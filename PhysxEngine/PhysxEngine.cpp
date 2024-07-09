@@ -2,6 +2,8 @@
 #include "PhysxEngine.h"
 #include "Physics.h"
 #include "CollisionCallback.h"
+#include "RigidBodyManager.h"
+#include "../VPEngine/EventManager.h"
 /// <summary>
 /// 충돌 콜백 함수
 /// <summary>
@@ -54,8 +56,8 @@ PhysxEngine::PhysxEngine()
 
 PhysxEngine::~PhysxEngine()
 {
-	delete m_Physics;
 	PX_RELEASE(m_PxScene);
+	delete m_Physics;
 }
 
 bool PhysxEngine::Initialize()
@@ -63,7 +65,8 @@ bool PhysxEngine::Initialize()
 	m_Physics = new Physics;
 	m_Physics->Initialize();
 	m_Collisioncallback = new CollisionCallback;
-
+	m_RigidManager = new RigidBodyManager;
+	m_RigidManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
 	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
@@ -79,6 +82,7 @@ bool PhysxEngine::Initialize()
 #ifdef _DEBUG
 	m_Physics->SettingPVDClient(m_PxScene);
 #endif
+
 	return true;
 }
 

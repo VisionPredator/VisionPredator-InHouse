@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "PhysicSystem.h"
-
+#include "../PhysxEngine/IPhysx.h"
 
 PhysicSystem::PhysicSystem(SceneManager* sceneManager)
 	:System(sceneManager)
@@ -14,7 +14,7 @@ void PhysicSystem::Update(float deltaTime)
 	{
 		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 	}
-
+		m_PhysxEngine->Update(deltaTime);
 
 }
 
@@ -38,6 +38,8 @@ void PhysicSystem::Initialize()
 void PhysicSystem::Start(uint32_t gameObjectId)
 {
 	Entity* entity = m_SceneManager->GetEntity(gameObjectId);
+	RigidBodyComponent* rigidComp = entity->GetComponent<RigidBodyComponent>();
+	rigidComp->Test;
 }
 
 void PhysicSystem::Finish(uint32_t gameObjectId)

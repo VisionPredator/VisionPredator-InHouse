@@ -28,7 +28,7 @@ namespace VPPhysics
 
 	struct PhysicsInfo
 	{
-		PxVec3 Gravity{};
+		physx::PxVec3 Gravity{};
 		int CollisionMatrix[(int)EPhysicsLayer::END];
 	};
 	/// <summary>
@@ -56,6 +56,13 @@ namespace VPPhysics
 		ON_COLLISION,
 		END_COLLISION,
 	};
+	enum class EColliderShape
+	{
+		BOX,
+		SPHERE,
+		CAPSULE,
+		END
+	};
 	constexpr uint32_t noneID = 0;
 
 	struct ColliderInfo
@@ -73,7 +80,7 @@ namespace VPPhysics
 	struct BoxColliderInfo
 	{
 		ColliderInfo colliderInfo;
-		DirectX::SimpleMath::Vector3 Extent = {};		// 길이
+		VPMath::Vector3 Extent = {};		// 길이
 	};
 
 	struct SphereColliderInfo

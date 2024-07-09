@@ -38,7 +38,6 @@ void SceneManager::Initialize()
 {
 	///¾À »ý¼º
 	m_CurrentScene = new Scene;
-	EventManager::GetInstance().ScheduleEvent("OnStartScene");
 }
 void SceneManager::Finalize()
 {

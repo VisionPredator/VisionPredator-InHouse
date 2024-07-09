@@ -68,10 +68,12 @@ VPEngine::~VPEngine()
 	delete m_TimeManager;
 	delete m_SceneManager;
 	delete m_SystemManager;
-	InputManager::GetInstance().Release();
-	EventManager::GetInstance().Release();
+
 	m_Graphics->Finalize();
 	delete m_Graphics;
+	delete m_PhysicEngine;
+	InputManager::GetInstance().Release();
+	EventManager::GetInstance().Release();
 }
 void VPEngine::Addsystem()
 {
@@ -79,7 +81,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
-	m_SystemManager->AddSystem<PhysicSystem>();
+	m_SystemManager->AddSystem<PhysicSystem>()->SetPhysics(m_PhysicEngine);
 }
 void VPEngine::Loop()
 {

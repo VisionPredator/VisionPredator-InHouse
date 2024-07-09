@@ -1,27 +1,37 @@
 #pragma once
 #include "VPPhysicsStructs.h"
-class PhysxColliManager;
+#include "../VPEngine/EventSubscriber.h"
+class CollisionManager;
 class RigidBody;
 using namespace VPPhysics;
 class StaticRigidBody;
-class RigidBodyManager
+class RigidBodyManager:public EventSubscriber
 {
 public: 
 	RigidBodyManager();
 	~RigidBodyManager();
-	bool Initialize(physx::PxPhysics* physics,	PhysxColliManager* CollManager);
+	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene,	CollisionManager* CollManager);
 	void Update();
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype,const VPPhysics::PhysicsInfo engininfo );
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
-	void CreateDynamicBody();
+	void CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
+	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
+	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
 	StaticRigidBody* SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
 
 
 private:
-	physx::PxPhysics* m_Physics{};
-	PhysxColliManager* m_PhysxCollisionManager{};
-	std::unordered_map<uint32_t, RigidBody*> m_RigidBodies{};
+	void OnAddBodyScene(std::any data);
+	void OnReleaseBodyScene(std::any data);
+	void ReleaseBodyScene(uint32_t EntityID);
+	void AddBodyScene(RigidBody* body);
+
+
+	physx::PxPhysics* m_Physics = nullptr;
+	physx::PxScene* m_Scene=nullptr;
+	CollisionManager* m_PhysxCollisionManager = nullptr;
+	std::unordered_map<uint32_t, RigidBody*> m_RigidBodyMap{};
 
 };
 

@@ -8,9 +8,10 @@ public:
 	StaticRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, uint32_t layerNumber);
 	void Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, CollisionData* data);
 	~StaticRigidBody()=default;
-	physx::PxRigidStatic* GetPxStaticRigid();
+	inline physx::PxRigidStatic* GetPxStaticRigid();
 private:
 	physx::PxRigidStatic* m_StaticRigid{};
+	
 
 };
 
