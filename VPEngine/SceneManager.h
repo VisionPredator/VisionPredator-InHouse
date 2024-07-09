@@ -106,6 +106,7 @@ private:
 
 	// 씬 끝나는 이벤트를 호출한다.
 	void OnEndScene(std::any data);
+	void OnFinalizeSystem(std::any data);
 	// 해당 씬을 연다.
 	void OnOpenScene(std::any data);
 	//현재씬에 Temp씬 데이터 덮어씌우기.

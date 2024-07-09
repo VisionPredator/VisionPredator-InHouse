@@ -5,8 +5,8 @@
 
 	SystemManager::SystemManager()
 	{
-		EventManager::GetInstance().Subscribe("OnInitialize", CreateSubscriber(&SystemManager::OnInitialize));
-		EventManager::GetInstance().Subscribe("OnFinalize",CreateSubscriber(&SystemManager::OnFinalize));
+		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
+		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnAddTransformSystem",CreateSubscriber(&SystemManager::OnAddTransformSystem));
 	}
 	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* Interfaces)
@@ -33,13 +33,13 @@
 			m_ProgressedTime -= 1.f / 60.f;
 		}
 	}
-	void SystemManager::Initialize()
+	void SystemManager::InitializeSystems()
 	{
 		for (auto startable:m_Startables)
 			startable->Initialize();
 	}
 
-	void SystemManager::Finalize()
+	void SystemManager::FinalizeSystems()
 	{
 		for (auto startable : m_Startables)
 			startable->Finalize();

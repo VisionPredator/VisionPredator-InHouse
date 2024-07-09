@@ -176,11 +176,13 @@ void VP_Editor::SetUnityDarkThemeColors()
 void VP_Editor::OnPlayButton(std::any)
 {
 	m_IsEditorMode = false;
+    EventManager::GetInstance().ImmediateEvent("OnStartScene");
 }
 
 void VP_Editor::OnStopButton(std::any)
 {
 	m_IsEditorMode = true;
+    EventManager::GetInstance().ImmediateEvent("OnEndScene");
 
 }
 

@@ -52,6 +52,6 @@ void PhysicSystem::Finalize()
 {
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
-		Start(rigidBodyComponent.GetEntityID());
+		Finish(rigidBodyComponent.GetEntityID());
 	}
 }
