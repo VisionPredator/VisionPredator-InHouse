@@ -3,14 +3,14 @@
 class RigidBody
 {
 public:
-	RigidBody(VPPhysics::EColliderType colltype,uint32_t entityId, uint32_t layerNumber );
+	RigidBody(VPPhysics::EColliderType colltype,uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber );
 	virtual ~RigidBody(); // Make the destructor virtual
 
 	inline const uint32_t GetID() const;
 	uint32_t m_EntityID{};
 	VPPhysics::EColliderType m_ColliderType{};
 	VPMath::Vector3 mScale{1,1,1};
-	uint32_t m_LayerNum{};
+	VPPhysics::EPhysicsLayer m_LayerNum{};
 
 	float m_Radius = 1.f;
 	float m_HalfHeight = 1.f;

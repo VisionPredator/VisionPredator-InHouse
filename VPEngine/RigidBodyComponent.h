@@ -4,13 +4,14 @@
 struct RigidBodyComponent :
     public Component
 {
-    VP_JSONBODY(RigidBodyComponent, Test)
+    VP_JSONBODY(RigidBodyComponent, ColliderType, ColliderShape, BoxInfo, SphereInfo, CapsuleInfo, ColliderInfo)
         RigidBodyComponent();
-    VPMath::Vector3 Test;
-    VPPhysics::EColliderType ShapeType;
-    VPPhysics::BoxColliderInfo BoxInfo;
-    VPPhysics::SphereColliderInfo SphereInfo;
-    VPPhysics::CapsuleColliderInfo CapsuleBoxInfo;
+    VPPhysics::EColliderType ColliderType{};
+    VPPhysics::EColliderShape ColliderShape{};
+    VPPhysics::BoxColliderInfo BoxInfo{};
+    VPPhysics::SphereColliderInfo SphereInfo{};
+    VPPhysics::CapsuleColliderInfo CapsuleInfo{};
+    VPPhysics::ColliderInfo ColliderInfo{};
 
 };
 

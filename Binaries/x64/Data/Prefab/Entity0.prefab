@@ -1,7 +1,33 @@
 [
     {
-        "EntityID": 2373799312,
+        "EntityID": 2509064205,
         "Component": [
+            {
+                "BoxInfo": {
+                    "Extent": {
+                        "x": 12.0,
+                        "y": 1.0,
+                        "z": 12.0
+                    }
+                },
+                "CapsuleInfo": {
+                    "HalfHeight": 1.0,
+                    "Radius": 1.0
+                },
+                "ColliderInfo": {
+                    "Density": 1.0,
+                    "DynamicFriction": 1.0,
+                    "PhysicsLayer": 0,
+                    "Restitution": 1.0,
+                    "StaticFriction": 1.0
+                },
+                "ColliderShape": 0,
+                "ColliderType": 0,
+                "ComponentID": 4217231799,
+                "SphereInfo": {
+                    "Radius": 1.0
+                }
+            },
             {
                 "ComponentID": 1365953231,
                 "Name": "Entity0"
@@ -24,53 +50,6 @@
                     "y": 1.0,
                     "z": 1.0
                 }
-            },
-            {
-                "ComponentID": 4257272042,
-                "attenuation": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "color": {
-                    "w": 1.0,
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "direction": {
-                    "x": 1.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "intensity": 1.0,
-                "range": -1.0,
-                "spot": -1.0,
-                "testVector": [
-                    "asdf5rgg"
-                ],
-                "testwVector": [
-                    [
-                        49,
-                        50,
-                        51,
-                        49,
-                        50,
-                        51
-                    ],
-                    [
-                        49,
-                        50,
-                        52,
-                        102,
-                        103,
-                        103,
-                        115,
-                        102,
-                        100
-                    ]
-                ],
-                "type": 0
             }
         ]
     }

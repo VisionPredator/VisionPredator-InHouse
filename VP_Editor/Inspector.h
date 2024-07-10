@@ -31,6 +31,10 @@ public:
     void TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_vector_string(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_vector_wstring(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_ColliderInfo(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_BoxColliderInfo(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_CapsuleColliderInfo(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_SphereColliderInfo(entt::meta_data memberMetaData, Component* component);
 
     SceneManager* m_SceneManager;
     HierarchySystem* m_HierarchySystem;

@@ -65,8 +65,7 @@ bool PhysxEngine::Initialize()
 	m_Physics = new Physics;
 	m_Physics->Initialize();
 	m_Collisioncallback = new CollisionCallback;
-	m_RigidManager = new RigidBodyManager;
-	m_RigidManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
+
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
 	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
@@ -79,6 +78,8 @@ bool PhysxEngine::Initialize()
 	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
 	sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
+	m_RigidManager = new RigidBodyManager;
+	m_RigidManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
 #ifdef _DEBUG
 	m_Physics->SettingPVDClient(m_PxScene);
 #endif
@@ -102,4 +103,24 @@ void PhysxEngine::Update(float deltatime)
 		m_PxScene->fetchResults(true);
 	}
 
+}
+
+void PhysxEngine::CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype)
+{
+	m_RigidManager->CreateStaticBody(boxinfo, collidertype, m_EngineInfo);
+}
+
+void PhysxEngine::CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype)
+{
+	m_RigidManager->CreateStaticBody(sphereinfo, collidertype, m_EngineInfo);
+}
+
+void PhysxEngine::CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
+{
+	m_RigidManager->CreateStaticBody(capsuleinfo, collidertype, m_EngineInfo);
+}
+
+void PhysxEngine::ReleaseActor(uint32_t entityID)
+{
+	m_RigidManager->ReleaseBodyScene(entityID);
 }

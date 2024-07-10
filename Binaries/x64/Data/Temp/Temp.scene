@@ -1,1 +1,86 @@
-null
+{
+    "Entitys": [
+        {
+            "EntityID": 3011433339,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 100.0,
+                            "y": 1.0,
+                            "z": 100.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 50.0,
+                        "Radius": 50.0
+                    },
+                    "ColliderInfo": {
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0
+                    },
+                    "ColliderShape": 2,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "SphereInfo": {
+                        "Radius": 50.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -0.5133914947509766,
+                        "y": 4.710836887359619,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.9879463315010071,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.15479660034179688
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 722212013,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity1"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        }
+    ]
+}

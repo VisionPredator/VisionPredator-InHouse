@@ -9,12 +9,12 @@ namespace VPPhysics
 	/// </summary>
 	enum class EColliderType
 	{
-		TRIGGER,
+		TRIGGER=0,
 		COLLISION
 	};
 	enum class EPhysicsLayer
 	{
-		GROUND,
+		GROUND=0,
 		WALL,
 		TOP,
 		PLAYER,
@@ -25,28 +25,9 @@ namespace VPPhysics
 		TRIGGER,
 		END
 	};
-
-	struct PhysicsInfo
-	{
-		physx::PxVec3 Gravity{};
-		int CollisionMatrix[(int)EPhysicsLayer::END];
-	};
 	/// <summary>
-	/// 콜리전 : 충돌 데이터
-	/// </summary>
-	struct CollisionData
-	{
-		uint32_t myId;
-		uint32_t otherId;
-		uint32_t myLayerNumber;
-		unsigned int otherLayerNumber;
-		std::vector<VPMath::Vector3> ContectPoints;
-		bool isDead = false;
-	};
-
-	/// <summary>
-	/// 콜백 함수에 전달되는 콜리전 이벤트 형태
-	/// </summary>
+/// 콜백 함수에 전달되는 콜리전 이벤트 형태
+/// </summary>
 	enum class ECollisionEventType
 	{
 		ENTER_OVERLAP = 0,
@@ -58,16 +39,39 @@ namespace VPPhysics
 	};
 	enum class EColliderShape
 	{
-		BOX,
+		BOX=0,
 		SPHERE,
 		CAPSULE,
 		END
 	};
+	struct PhysicsInfo
+	{
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(PhysicsInfo, Gravity, CollisionMatrix)
+
+		VPMath::Vector3 Gravity{};
+		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix;
+	};
+	/// <summary>
+	/// 콜리전 : 충돌 데이터
+	/// </summary>
+	struct CollisionData
+	{
+		uint32_t myId;
+		uint32_t otherId;
+		EPhysicsLayer myLayerNumber;
+		unsigned int otherLayerNumber;
+		std::vector<VPMath::Vector3> ContectPoints;
+		bool isDead = false;
+	};
+
+
 	constexpr uint32_t noneID = 0;
 
 	struct ColliderInfo
 	{
-		uint32_t LayerNumber = 0;
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColliderInfo, PhysicsLayer, StaticFriction, DynamicFriction, Restitution, Density)
+
+		EPhysicsLayer PhysicsLayer{};
 		uint32_t EntityID = noneID;
 		VPMath::Vector3	WorldLocation = {};
 		VPMath::Quaternion	WorldQuaternion = {};
@@ -79,21 +83,27 @@ namespace VPPhysics
 
 	struct BoxColliderInfo
 	{
-		ColliderInfo colliderInfo;
-		VPMath::Vector3 Extent = {};		// 길이
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo,  Extent)
+
+		ColliderInfo colliderInfo{};
+		VPMath::Vector3 Extent = {1,1,1};		// 길이
 	};
 
 	struct SphereColliderInfo
 	{
-		ColliderInfo colliderInfo;
-		float raidus = 1.f;									// 반지름
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(SphereColliderInfo,  Radius)
+
+		ColliderInfo colliderInfo{};
+		float Radius = 1.f;									// 반지름
 	};
 
 	struct CapsuleColliderInfo
 	{
-		ColliderInfo colliderInfo;
-		float raidus = 1.f;									// 반지름
-		float halfHeight = 1.f;								// 높이
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CapsuleColliderInfo,  Radius, HalfHeight)
+
+		ColliderInfo colliderInfo{};
+		float Radius = 1.f;									// 반지름
+		float HalfHeight = 1.f;								// 높이
 	};
 
 }

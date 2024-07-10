@@ -4,7 +4,7 @@ class DynamicRigidBody :
 	public RigidBody
 {
 public:
-	DynamicRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, uint32_t layerNumber);
+	DynamicRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber);
 	~DynamicRigidBody() = default;
 	physx::PxRigidDynamic* GetPxDynamicRigid();
 private:

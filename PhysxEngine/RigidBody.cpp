@@ -2,7 +2,7 @@
 #include "RigidBody.h"
 
 
-RigidBody::RigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, uint32_t layerNumber)
+RigidBody::RigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber)
 	: m_ColliderType{ colltype }
 	, m_EntityID{ entityId }
 	, m_LayerNum{ layerNumber }

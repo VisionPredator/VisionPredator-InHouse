@@ -6,7 +6,8 @@
 
 RigidBodyManager::RigidBodyManager()
 {
-
+	EventManager::GetInstance().Subscribe("OnAddBodyScene",CreateSubscriber(&RigidBodyManager::OnAddBodyScene));
+	EventManager::GetInstance().Subscribe("OnReleaseBodyScene",CreateSubscriber(&RigidBodyManager::OnReleaseBodyScene));
 }
 RigidBodyManager::~RigidBodyManager()
 {
@@ -44,7 +45,7 @@ void RigidBodyManager::CreateStaticBody(const SphereColliderInfo sphereinfo, ECo
 {
 	// Create the material for the collider
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
-	physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(sphereinfo.raidus), *pxMaterial);
+	physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(sphereinfo.Radius), *pxMaterial);
 	StaticRigidBody* rigidBody = SettingStaticBody(shape, sphereinfo.colliderInfo, collidertype, engininfo);
 	CollisionData* collisiondata = new CollisionData;
 	rigidBody->Initialize(sphereinfo.colliderInfo, shape, m_Physics, collisiondata);
@@ -58,7 +59,7 @@ void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo capsuleinfo, E
 	// Create the material for the collider
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
 	// Create the shape for the capsule collider
-	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(capsuleinfo.raidus, capsuleinfo.halfHeight), *pxMaterial);
+	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(capsuleinfo.Radius, capsuleinfo.HalfHeight), *pxMaterial);
 	// Set up the static body
 	StaticRigidBody* rigidBody = SettingStaticBody(shape, capsuleinfo.colliderInfo, collidertype, engininfo);
 	// Create collision data
@@ -79,11 +80,11 @@ void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo capsuleinfo, E
 StaticRigidBody* RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo engininfo)
 {
 	physx::PxFilterData filterdata;
-	filterdata.word0 = info.LayerNumber;
-	filterdata.word1 = engininfo.CollisionMatrix[info.LayerNumber];
+	filterdata.word0 = (int)info.PhysicsLayer;
+	filterdata.word1 = engininfo.CollisionMatrix[(int)info.PhysicsLayer];
 	shape->setSimulationFilterData(filterdata);
 
-	StaticRigidBody* staticBody = new StaticRigidBody(colliderType, info.EntityID, info.LayerNumber);
+	StaticRigidBody* staticBody = new StaticRigidBody(colliderType, info.EntityID, info.PhysicsLayer);
 
 	m_RigidBodyMap.insert(std::make_pair(staticBody->GetID(), staticBody));
 	return staticBody;

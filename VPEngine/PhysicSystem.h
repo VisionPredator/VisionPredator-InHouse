@@ -7,7 +7,7 @@ namespace Physic
 }
 
 class PhysicSystem :
-    public System, public IUpdatable, public IFixedUpdatable,public IStartable, public EventSubscriber
+    public System, public IUpdatable, public IFixedUpdatable,public IStartable, public EventSubscriber,public IRenderable
 {
 public:
     PhysicSystem(SceneManager* sceneManager);
@@ -26,5 +26,8 @@ public:
 	void SetPhysics(Physic::IPhysx* interfaces) { m_PhysxEngine = interfaces; }
 private: 
     Physic::IPhysx* m_PhysxEngine;
+
+    // IRenderable을(를) 통해 상속됨
+    void RenderUpdate(float deltaTime) override;
 };
 

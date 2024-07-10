@@ -19,12 +19,12 @@ public:
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
 	StaticRigidBody* SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
+	void ReleaseBodyScene(uint32_t EntityID);
 
 
 private:
 	void OnAddBodyScene(std::any data);
 	void OnReleaseBodyScene(std::any data);
-	void ReleaseBodyScene(uint32_t EntityID);
 	void AddBodyScene(RigidBody* body);
 
 
