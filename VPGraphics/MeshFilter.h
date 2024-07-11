@@ -15,7 +15,7 @@ enum class MeshFilter
 enum class PassState : unsigned int
 {
 	None = 0,
-	Foward = 1 << 1,
+	Forward = 1 << 1,
 	Debug = 1 << 2,
 	Deferred = 1 << 3,
 
@@ -26,12 +26,13 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L"Need Name"), FBX(L"Need Path"), Pass(PassState::Deferred)
+	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
 		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
-		,duration(0.f), curAnimation(L"Need Name")
+		,duration(0.f), curAnimation(L""), isPlay(false)
 	{
 
 	}
+
 	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;
@@ -41,9 +42,9 @@ public:
 	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
 	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
 
-
 	float duration;
 	std::wstring curAnimation;
+	bool isPlay;
 };
 
 

@@ -4,12 +4,16 @@
 
 struct TransformData
 {
-	TransformData() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity)
+	TransformData() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity),
+		localInverse(DirectX::SimpleMath::Matrix::Identity), worldInverse(DirectX::SimpleMath::Matrix::Identity)
 	{
 	}
 
 	DirectX::SimpleMath::Matrix world;
 	DirectX::SimpleMath::Matrix local;
+
+	DirectX::SimpleMath::Matrix localInverse;
+	DirectX::SimpleMath::Matrix worldInverse;
 };
 
 struct CameraData
@@ -18,6 +22,7 @@ struct CameraData
 	DirectX::SimpleMath::Matrix view;
 	DirectX::SimpleMath::Matrix proj;
 	DirectX::SimpleMath::Matrix viewInverse;
+	DirectX::SimpleMath::Matrix projInverse;
 };
 
 struct MatrixPallete

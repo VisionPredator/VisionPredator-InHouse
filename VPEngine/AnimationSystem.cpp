@@ -32,6 +32,8 @@ void AnimationSystem::Update(float deltaTime)
 {
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
+		aniComp.isPlay = true;
+
 		if (aniComp.preAnimation != aniComp.curAnimation
 			|| aniComp.duration > m_Graphics->GetDuration(aniComp.curAnimation))
 		{

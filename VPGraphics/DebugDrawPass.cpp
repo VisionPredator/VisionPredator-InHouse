@@ -65,7 +65,7 @@ void DebugDrawPass::Render()
 	frustumInfo.Color = SimpleMath::Color{ 1, 1, 0, 1 };
 	m_DebugDrawManager->AddTask(frustumInfo);
 
-	debug::GridInfo gridInfo;
+	/*debug::GridInfo gridInfo;
 	gridInfo.Origin = SimpleMath::Vector3{ 0, -5, 0 };
 	gridInfo.XAsix = SimpleMath::Vector3{ 1, 0, 0 };
 	gridInfo.YAsix = SimpleMath::Vector3{ 0, 0, 1 };
@@ -73,7 +73,7 @@ void DebugDrawPass::Render()
 	gridInfo.YDivs = 100;
 	gridInfo.GridSize = 1000.f;
 	gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
-	m_DebugDrawManager->AddTask(gridInfo);
+	m_DebugDrawManager->AddTask(gridInfo);*/
 
 	debug::RingInfo ringInfo;
 	ringInfo.Origin = SimpleMath::Vector3{ 0.f, 7.5f, 0.f };

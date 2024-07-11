@@ -9,6 +9,7 @@
 #include "Inspector.h"
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
+#include "LightSystem.h"
 
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
@@ -53,6 +54,10 @@ void VP_Editor::Update()
         TransformSystem tempsystem{ m_SceneManager };
         tempsystem.Update(m_DeltaTime);
         m_SystemManager->RenderUpdate(m_DeltaTime);
+        LightSystem tempLight{ m_SceneManager };
+        tempLight.SetGraphics(m_Graphics);
+        tempLight.Update(m_DeltaTime);
+
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());
         m_Graphics->Update(m_DeltaTime);
@@ -61,7 +66,6 @@ void VP_Editor::Update()
 	else
 	{
 		VPEngine::Update();
-
 	}
 
 }

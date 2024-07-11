@@ -9,6 +9,7 @@
 #include "LightSystem.h"
 #include "DataRegister.h"
 #include "CameraSystem.h"
+#include "AnimationSystem.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
 #include "../PhysxEngine/PhysxEngine.h"
@@ -60,6 +61,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	UpdateWindow(m_hWnd);
 	this->Addsystem();
 
+	m_SystemManager->AddSystem<AnimationSystem>();
 	EventManager::GetInstance().ScheduleEvent("OnAddTransformSystem");
 }
 

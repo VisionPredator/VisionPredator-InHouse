@@ -150,31 +150,37 @@ void Device::BindMaterialSRV(std::shared_ptr<Material> curMaterial)
 	if (curMaterialData.useAMRO.x > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
+		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, (curMaterial->m_AlbedoSRV.lock()->GetAddress()));
 	}
 
 	if (curMaterialData.useAMRO.y > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
+		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, curMaterial->m_MetalicSRV.lock()->GetAddress());
 	}
 
 	if (curMaterialData.useAMRO.z > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
+		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, curMaterial->m_RoughnessSRV.lock()->GetAddress());
 	}
 
 	if (curMaterialData.useAMRO.w > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
+		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
 	}
 
 	if (curMaterialData.useNE.x > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 	}
 
 	if (curMaterialData.useNE.y > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
+		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
 	}
 }
 

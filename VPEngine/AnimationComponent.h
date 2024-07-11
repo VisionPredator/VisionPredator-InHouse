@@ -4,7 +4,7 @@
 
 struct AnimationComponent : public Component
 {
-	VP_JSONBODY(AnimationComponent, curAnimation, animeName1, animeName2, animeName3, animeName4, animeName5)
+	VP_JSONBODY(AnimationComponent, curAnimation, animationList)
 		AnimationComponent();
 
 	std::wstring curAnimation = L"";
@@ -12,11 +12,8 @@ struct AnimationComponent : public Component
 
 	float duration = 0.f;	//애니메이션 재생시간
 
-	 std::wstring animeName1;
-	 std::wstring animeName2;
-	 std::wstring animeName3;
-	 std::wstring animeName4;
-	 std::wstring animeName5;
+	std::vector<std::wstring> animationList;
 
+	bool isPlay = false;
 };
 

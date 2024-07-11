@@ -33,6 +33,7 @@ void ModelLoader::Initialize()
 	LoadModel("Flair.fbx", Filter::SKINNING);
 	//LoadModel("Jogging.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
+	LoadModel("main.fbx", Filter::STATIC);
 	//LoadModel("engine_sizedown_1.fbx", Filter::STATIC);
 }
 

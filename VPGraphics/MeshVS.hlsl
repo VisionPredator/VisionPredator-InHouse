@@ -10,9 +10,30 @@ VS_OUTPUT main(VS_INPUT input)
     output.color = input.color;
     output.normal = input.normal;
     output.tangent = input.tangent;
-    output.bitangent = input.bitangent, output.pos;
+    output.bitangent = input.bitangent;
     output.tex = input.tex;
-       
+           
+    /*
+    */
+    if (useNE.x > 0)
+    {
+        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
+        
+        //방향 vector
+        float3 vTangent = normalize(mul(float4(input.tangent.xyz, 0), meshWorld));
+        float3 vBitangent = normalize(mul(float4(input.bitangent.xyz, 0), meshWorld));
+        float3 vNormal = normalize(mul(float4(input.normal.xyz, 0), meshWorld));
+                        
+        //색상 표현을 위해 점으로 저장 w == 1
+        output.normal = float4(vNormal.xyz, 1);        
+        output.tangent = float4(vTangent.xyz, 0);
+        output.bitangent = float4(vBitangent.xyz, 0);        
+    }
+    
+   
+    
+    
+    
 #ifdef SKINNING
     int index[4];
     index[0] = input.boneindex.x;
@@ -38,10 +59,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.posWorld = mul(mul(input.pos, skinning), gWorld);
     
     output.pos = mul(output.posWorld, gWorldViewProj);
-#endif    
-    
-    
-    
-    
+#endif     
+
     return output;
 }
