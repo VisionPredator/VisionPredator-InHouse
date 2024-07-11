@@ -48,12 +48,11 @@ void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)
 
 	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 
-
 	TransformData renew;
 	XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curModel->world));
 	XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curModel->world));
-	XMStoreFloat4x4(&renew.localInverse, XMMatrixTranspose(renew.local.Invert()));
-	XMStoreFloat4x4(&renew.worldInverse, XMMatrixTranspose(renew.world.Invert()));
+	XMStoreFloat4x4(&renew.localInverse, (curModel->world.Invert().Transpose()));
+	XMStoreFloat4x4(&renew.worldInverse, (curModel->world.Invert().Transpose()));
 	position->Update(renew);
 }
 

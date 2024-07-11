@@ -101,10 +101,10 @@ void DeferredPass::Geometry()
 
 
 		std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
-		std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
-		std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
-		std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Create<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-		std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Create<ConstantBuffer<LightArray>>(L"LightArray").lock();
+		std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+		std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+		std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+		std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Get<ConstantBuffer<LightArray>>(L"LightArray").lock();
 
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
@@ -151,8 +151,8 @@ void DeferredPass::Geometry()
 					TransformData renew;
 					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
-					XMStoreFloat4x4(&renew.localInverse, XMMatrixTranspose(renew.local.Invert()));
-					XMStoreFloat4x4(&renew.worldInverse, XMMatrixTranspose(renew.world.Invert()));
+					XMStoreFloat4x4(&renew.localInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
+					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
 					position->Update(renew);	// == Bind
 				}
 
@@ -169,8 +169,8 @@ void DeferredPass::Geometry()
 					TransformData renew;
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
 					renew.local = curMesh->m_node.lock()->m_World;
-					XMStoreFloat4x4(&renew.localInverse, XMMatrixTranspose(renew.local.Invert()));
-					XMStoreFloat4x4(&renew.worldInverse, XMMatrixTranspose(renew.world.Invert()));
+					XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));
+					XMStoreFloat4x4(&renew.worldInverse, (renew.world.Invert()));
 
 					position->Update(renew);
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
@@ -252,5 +252,7 @@ void DeferredPass::Light()
 		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
+
+	
 }
 

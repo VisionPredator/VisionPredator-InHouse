@@ -45,6 +45,7 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 
 void PassManager::Render()
 {
+	DrawIMGUI();
 
 	//deferred
 	m_Passes[PassState::Debug]->Render();
@@ -53,15 +54,6 @@ void PassManager::Render()
 
 
 	m_Passes[PassState::Forward]->Render();
-	DrawIMGUI();
-
-	/*for (auto& pass : m_Passes)
-	{
-		pass.second->Render();
-	}
-	DrawGBuffer();
-	DrawIMGUI();*/
-
 }
 
 void PassManager::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)

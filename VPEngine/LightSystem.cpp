@@ -73,9 +73,14 @@ void LightSystem::RenderUpdate(float deltaTime)
 		sphereInfo.Sphere.Radius = temp.range;
 		sphereInfo.Color = DirectX::SimpleMath::Color(temp.color);
 
+		debug::SphereInfo sphereInfo2;
+		sphereInfo2.Sphere.Center = temp.pos;
+		sphereInfo2.Sphere.Radius = 1;
+		sphereInfo2.Color = DirectX::SimpleMath::Color(DirectX::XMFLOAT3(0, 0.5, 0.5));
+
 
 		debug::RayInfo ray;
-		ray.Color = DirectX::SimpleMath::Color(temp.color);
+		ray.Color = DirectX::SimpleMath::Color(DirectX::XMFLOAT3(0, 0.5, 0.5));
 		ray.Direction = { temp.direction.x * temp.range, temp.direction.y * temp.range,temp.direction.z * temp.range };
 		ray.Origin = temp.pos;
 		ray.Normalize = false;
@@ -83,6 +88,7 @@ void LightSystem::RenderUpdate(float deltaTime)
 
 
 		m_Graphics->DrawSphere(sphereInfo);
+		m_Graphics->DrawSphere(sphereInfo2);
 		m_Graphics->DrawRay(ray);
 
 	}

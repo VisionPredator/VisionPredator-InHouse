@@ -16,7 +16,8 @@
 
 ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
+	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
@@ -73,8 +74,8 @@ void ForwardPass::Render()
 					TransformData renew;
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
 					renew.local = curMesh->m_node.lock()->m_World;
-					XMStoreFloat4x4(&renew.localInverse, XMMatrixTranspose(renew.local.Invert()));
-					XMStoreFloat4x4(&renew.worldInverse, XMMatrixTranspose(renew.world.Invert()));
+					XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));
+					XMStoreFloat4x4(&renew.worldInverse, (renew.world.Invert()));
 					position->Update(renew);
 
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
@@ -93,6 +94,9 @@ void ForwardPass::Render()
 				else
 				{
 					BindStatic(curData);
+
+
+					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 				}
 
 				if (!curModel->m_Materials.empty())

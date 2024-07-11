@@ -22,6 +22,7 @@ struct CameraData
 	DirectX::SimpleMath::Matrix view;
 	DirectX::SimpleMath::Matrix proj;
 	DirectX::SimpleMath::Matrix viewInverse;
+	DirectX::SimpleMath::Matrix projInverse;
 };
 
 struct MatrixPallete

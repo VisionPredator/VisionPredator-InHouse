@@ -12,7 +12,8 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
      //// Calculate Directional Light 
  
-    float4 albedo = gAlbedo.Sample(samLinear, input.tex);
+    float4 albedo = pow(gAlbedo.Sample(samLinear, input.tex),gamma);
+    float3 Depth = gDepth.Sample(samLinear, input.tex);
     
     float3 result = float3(0, 0, 0);
     float4 emissive;    
@@ -21,16 +22,19 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
    
     //tangentspace를 계산해 normal을 만든다
-    float4x4 meshWorld = gWorld;
-    float4 vTangent = mul(input.tangent, meshWorld);
-    float4 vBitangent = mul(input.bitangent, meshWorld);
-    float4 N = mul(input.normal, meshWorld);
+    float4x4 meshWorld = gWorldInverse;
+    float4 vTangent = (input.tangent);
+    float4 vBitangent = (input.bitangent);
+    float4 vNormal = (input.normal);
         
-    float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb * 2.0f - 1.0f; //-1~1
-    float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, N.xyz); //면의 공간으로 옮기기위한 행렬
+    float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb; //-1~1
+    NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
+    
+    //float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
+    float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
         
-    N.xyz = mul(NormalTangentSpace, WorldTransform);
-    N = float4(normalize(N.xyz), 1);
+    float4 N;
+    N.xyz = normalize(mul(NormalTangentSpace, WorldTransform));
     /*
     */
   
@@ -96,7 +100,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     // Calculate Point Light
     for (int j = DirIndex + SpotIndex; j < DirIndex + SpotIndex + PointIndex; j++)
     {
-        result += CalcPoint(array[j], input.posWorld, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        result += CalcPoint(array[j], input.posWorld, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue, Depth);
 
     }
     
@@ -112,10 +116,8 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     color = color / (color + float3(1.0, 1.0, 1.0));
     
     // gamma correct
-    color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)) + emissive;
-    
-    
-    //return N;
+    color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2));
+       
     return float4(color, 1);
 
 }

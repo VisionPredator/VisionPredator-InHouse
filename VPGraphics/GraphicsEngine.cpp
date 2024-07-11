@@ -87,6 +87,7 @@ bool GraphicsEngine::Initialize()
 	m_PassManager->Initialize();
 
 	InitializeImGui();
+
 	return true;
 }
 
@@ -182,6 +183,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	DirectX::XMFLOAT4X4 cb_view;
 	DirectX::XMFLOAT4X4 cb_proj;
 	DirectX::XMFLOAT4X4 cb_viewInverse;
+	DirectX::XMFLOAT4X4 cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
 	//상수 버퍼는 계산 순서때문에 전치한다
@@ -192,10 +194,14 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
 	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
 
+	DirectX::XMMATRIX projInverse = XMMatrixInverse(nullptr, proj);
+	XMStoreFloat4x4(&cb_projInverse, XMMatrixTranspose(projInverse));
+
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
 	Camera.lock()->m_struct.proj = cb_proj;
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
+	Camera.lock()->m_struct.projInverse = cb_projInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	Camera.lock()->Update();
 }
@@ -218,7 +224,8 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> 
 		case MeshFilter::Static:
 		case MeshFilter::Skinning:
 		{
-			
+			//test
+			//m_RenderList[EntityID]->Pass = PassState::Forward;
 		}
 		break;
 
