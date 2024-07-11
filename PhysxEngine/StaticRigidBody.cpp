@@ -7,7 +7,7 @@ StaticRigidBody::StaticRigidBody(VPPhysics::EColliderType colltype, uint32_t ent
 {
 }
 
-void StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, CollisionData* data)
+bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, CollisionData* data)
 {
 	if (m_ColliderType == EColliderType::COLLISION)
 	{
@@ -37,12 +37,13 @@ void StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shap
 	m_StaticRigid = physics->createRigidStatic(transform);
 	m_StaticRigid->userData = data;
 	if (m_StaticRigid == nullptr)
-		return;
+		return false;
 	if (!m_StaticRigid->attachShape(*shape))
 	{
 		assert(shape->getReferenceCount() == 1);
-		return ;
+		return false;
 	}
+	return true;
 
 }
 

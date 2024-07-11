@@ -15,6 +15,15 @@ public:
 	float m_Radius = 1.f;
 	float m_HalfHeight = 1.f;
 	physx::PxVec3 m_Extent{1,1,1};
+	void SetRadius(float radius) { m_Radius= radius; }
+	void SetHalfHeight(float halfheight) { m_HalfHeight= halfheight; }
+	void SetExtent(physx::PxVec3 extent) { m_Extent= extent; }
+	void SetExtent(VPMath::Vector3 extent) { m_Extent = { extent.x,extent.y,extent.z }; }
+
+
+	float GetRadius() { return m_Radius; }
+	float GetHalfHeight() { return m_HalfHeight; }
+	physx::PxVec3 GetExtent() { return m_Extent; }
 };
 
 

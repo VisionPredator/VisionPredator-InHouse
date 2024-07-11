@@ -1,23 +1,23 @@
 {
     "Entitys": [
         {
-            "EntityID": 3011433339,
+            "EntityID": 2103346957,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "Ball"
                 },
                 {
                     "BoxInfo": {
                         "Extent": {
-                            "x": 100.0,
+                            "x": 1.0,
                             "y": 1.0,
-                            "z": 100.0
+                            "z": 1.0
                         }
                     },
                     "CapsuleInfo": {
-                        "HalfHeight": 50.0,
-                        "Radius": 50.0
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
                     },
                     "ColliderInfo": {
                         "Density": 1.0,
@@ -26,25 +26,26 @@
                         "Restitution": 1.0,
                         "StaticFriction": 1.0
                     },
-                    "ColliderShape": 2,
-                    "ColliderType": 0,
+                    "ColliderShape": 1,
+                    "ColliderType": 1,
                     "ComponentID": 4217231799,
+                    "IsDynamic": true,
                     "SphereInfo": {
-                        "Radius": 50.0
+                        "Radius": 100.0
                     }
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -0.5133914947509766,
-                        "y": 4.710836887359619,
+                        "x": 0.0,
+                        "y": 150.0,
                         "z": 0.0
                     },
                     "Local_Quaternion": {
-                        "w": 0.9879463315010071,
+                        "w": 1.0,
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.15479660034179688
+                        "z": 0.0
                     },
                     "Local_Scale": {
                         "x": 1.0,
@@ -55,11 +56,38 @@
             ]
         },
         {
-            "EntityID": 722212013,
+            "EntityID": 1329176644,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity1"
+                    "Name": "Ground"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1000.0,
+                            "y": 1.0,
+                            "z": 1000.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
                 },
                 {
                     "ComponentID": 3400599862,

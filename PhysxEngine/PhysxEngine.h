@@ -43,5 +43,13 @@ private:
 	// IPhysx을(를) 통해 상속됨
 	void ReleaseActor(uint32_t entityID) override;
 
+
+	// IPhysx을(를) 통해 상속됨
+	void CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
+
+	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
+
+	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
+
 };
 

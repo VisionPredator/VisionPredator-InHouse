@@ -70,7 +70,7 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
 	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animeName1);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape,  RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::ColliderInfo);
+	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape,  RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::ColliderInfo);
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {

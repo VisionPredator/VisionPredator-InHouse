@@ -27,9 +27,27 @@ void CollisionCallback::onSleep(PxActor** actors, PxU32 count)
 
 void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
-	//std::cout << "onContact" << std::endl;
+	for (int i = 0; i < nbPairs; i++)
+	{
+		if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
+		{
+			std::cout << "EnterContact" << std::endl;
+		}
 
-}
+		/// END_COLLISION 충돌 이벤트 실행
+		else if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_LOST | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
+		{
+			std::cout << "ExitContact" << std::endl;
+		}
+
+		/// ON_COLLSION 충돌 이벤트 실행
+		else if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
+		{
+			std::cout << "OnContact" << std::endl;
+		}
+	}
+
+} 
 
 void CollisionCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 {

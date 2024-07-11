@@ -50,29 +50,55 @@ void PhysicSystem::Start(uint32_t gameObjectId)
 	rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
 	rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
 	rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
-
-	switch (rigidComp->ColliderShape)
+	if (!rigidComp->IsDynamic)
 	{
-	case VPPhysics::EColliderShape::BOX:
-	{
-		m_PhysxEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
-	}
+		switch (rigidComp->ColliderShape)
+		{
+		case VPPhysics::EColliderShape::BOX:
+		{
+			m_PhysxEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
+		}
 		break;
-	case VPPhysics::EColliderShape::CAPSULE:
-	{
-		m_PhysxEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
+		case VPPhysics::EColliderShape::CAPSULE:
+		{
+			m_PhysxEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
 
 		}
 		break;
-	case VPPhysics::EColliderShape::SPHERE:
-	{
-		m_PhysxEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
+		case VPPhysics::EColliderShape::SPHERE:
+		{
+			m_PhysxEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 
 		}
 		break;
-	default:
-		break;
+		default:
+			break;
+		}
 	}
+	else
+	{
+		switch (rigidComp->ColliderShape)
+		{
+		case VPPhysics::EColliderShape::BOX:
+		{
+			m_PhysxEngine->CreateDynamicBody(rigidComp->BoxInfo, rigidComp->ColliderType);
+		}
+		break;
+		case VPPhysics::EColliderShape::CAPSULE:
+		{
+			m_PhysxEngine->CreateDynamicBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
+		}
+		break;
+		case VPPhysics::EColliderShape::SPHERE:
+		{
+			m_PhysxEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
+		}
+		break;
+		default:
+			break;
+		}
+	}
+
 
 
 }

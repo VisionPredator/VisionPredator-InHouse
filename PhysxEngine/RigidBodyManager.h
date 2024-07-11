@@ -5,6 +5,7 @@ class CollisionManager;
 class RigidBody;
 using namespace VPPhysics;
 class StaticRigidBody;
+class DynamicRigidBody;
 class RigidBodyManager:public EventSubscriber
 {
 public: 
@@ -19,6 +20,7 @@ public:
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
 	StaticRigidBody* SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
+	DynamicRigidBody* SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 
 

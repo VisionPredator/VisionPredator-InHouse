@@ -48,7 +48,7 @@ void TestCameraSystem::Update(float deltaTime)
 
 			// Update rotation angles
 			cameraTransform->Local_Rotation.y += yaw; // Yaw affects the y-axis
-			cameraTransform->Local_Rotation.x -= pitch; // Pitch affects the x-axis
+			cameraTransform->Local_Rotation.x += pitch; // Pitch affects the x-axis
 
 			// Clamp pitch to avoid gimbal lock
 			if (cameraTransform->Local_Rotation.x > 89.9f)

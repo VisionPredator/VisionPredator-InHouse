@@ -6,7 +6,7 @@ class StaticRigidBody :
 {
 public:
 	StaticRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber);
-	void Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, CollisionData* data);
+	bool Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, CollisionData* data);
 	~StaticRigidBody()=default;
 	inline physx::PxRigidStatic* GetPxStaticRigid();
 private:

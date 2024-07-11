@@ -4,6 +4,7 @@
 #include "CollisionCallback.h"
 #include "RigidBodyManager.h"
 #include "../VPEngine/EventManager.h"
+#include <iostream>
 /// <summary>
 /// 충돌 콜백 함수
 /// <summary>
@@ -31,8 +32,10 @@ physx::PxFilterFlags CustomSimulationFilterShader(
 	}
 
 	// 필터 데이터 충돌 체크 ( 시뮬레이션 )
-	if ((((1 << filterData0.word0) & filterData1.word1) > 0) && (((1 << filterData1.word0) & filterData0.word1) > 0))
+ 	if ((((1 << filterData0.word0) & filterData1.word1) > 0) && (((1 << filterData1.word0) & filterData0.word1) > 0))
 	{
+		std::cout << "onContact" << std::endl;
+
 		pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT
 			| physx::PxPairFlag::eDETECT_CCD_CONTACT
 			| physx::PxPairFlag::eNOTIFY_TOUCH_CCD
@@ -71,12 +74,13 @@ bool PhysxEngine::Initialize()
 	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
 	sceneDesc.filterShader = CustomSimulationFilterShader;
 	sceneDesc.simulationEventCallback = m_Collisioncallback;
-	sceneDesc.gravity=PxVec3(0.f,9.81f,0.f);
+	sceneDesc.gravity=PxVec3(0.f,-9.81f,0.f);
 	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
-	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
+	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;
+	sceneDesc.flags |= physx::PxSceneFlag::eDISABLE_CCD_RESWEEP;
 	//sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
 	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
-	sceneDesc.solverType = physx::PxSolverType::ePGS;
+	//sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
 	m_RigidManager = new RigidBodyManager;
 	m_RigidManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
@@ -98,9 +102,9 @@ void PhysxEngine::Update(float deltatime)
 	m_ElapsedTime += deltatime;
 	while (m_ElapsedTime> m_UpdateTime)
 	{
-		m_ElapsedTime -= m_UpdateTime;
 		m_PxScene->simulate(m_UpdateTime);
 		m_PxScene->fetchResults(true);
+		m_ElapsedTime -= m_UpdateTime;
 	}
 
 }
@@ -123,4 +127,19 @@ void PhysxEngine::CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsulei
 void PhysxEngine::ReleaseActor(uint32_t entityID)
 {
 	m_RigidManager->ReleaseBodyScene(entityID);
+}
+
+void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype)
+{
+	m_RigidManager->CreateDynamicBody(boxinfo, collidertype, m_EngineInfo);
+}
+
+void PhysxEngine::CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype)
+{
+	m_RigidManager->CreateDynamicBody(sphereinfo, collidertype, m_EngineInfo);
+}
+
+void PhysxEngine::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
+{
+	m_RigidManager->CreateDynamicBody(capsuleinfo, collidertype, m_EngineInfo);
 }

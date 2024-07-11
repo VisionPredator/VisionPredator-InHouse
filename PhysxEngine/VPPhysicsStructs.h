@@ -49,7 +49,7 @@ namespace VPPhysics
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(PhysicsInfo, Gravity, CollisionMatrix)
 
 		VPMath::Vector3 Gravity{};
-		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix;
+		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ INT_MAX ,INT_MAX ,INT_MAX ,INT_MAX ,INT_MAX ,INT_MAX };
 	};
 	/// <summary>
 	/// 콜리전 : 충돌 데이터
