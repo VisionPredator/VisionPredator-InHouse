@@ -113,17 +113,17 @@
 		}
 
 	private:
-		void Initialize();
-		void Finalize();
+		void InitializeSystems();
+		void FinalizeSystems();
 
-		void OnInitialize(std::any data)
+		void OnInitializeSystems(std::any data)
 		{
-			Initialize();
+			InitializeSystems();
 		}
 
-		void OnFinalize(std::any data)
+		void OnFinalizeSystems(std::any data)
 		{
-			Finalize();
+			FinalizeSystems();
 		}
 
 

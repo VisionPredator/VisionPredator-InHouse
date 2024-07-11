@@ -38,7 +38,6 @@ void SceneManager::Initialize()
 {
 	///æ¿ ª˝º∫
 	m_CurrentScene = new Scene;
-	EventManager::GetInstance().ScheduleEvent("OnStartScene");
 }
 void SceneManager::Finalize()
 {
@@ -328,7 +327,7 @@ void SceneManager::OnStartScene(std::any data)
 	///TODO: æ¿ Ω√¿€Ω√ º≥¡§«“ Initialize
 	EventManager::GetInstance().ImmediateEvent("OnInitialize");
 	///TODO: æ¿ Ω√¿€Ω√ º≥¡§«“ Initializesystem.
-	EventManager::GetInstance().ImmediateEvent("OnInitializeSystem");
+	EventManager::GetInstance().ImmediateEvent("OnInitializeSystems");
 }
 
 void SceneManager::OnEndScene(std::any data)
@@ -336,9 +335,10 @@ void SceneManager::OnEndScene(std::any data)
 	///TODO:æ¿ ≥°≥µ¿ª ∂ß √≥∏Æ«“ Finalize?
 	EventManager::GetInstance().ImmediateEvent("OnFinalize");
 	///TODO: æ¿ ≥°≥µ¿ª ∂ß º≥¡§«“ Initializesystem.
-	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystem");
+	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystems");
 
 }
+
 
 
 void SceneManager::SerializePrefab(uint32_t entityID)

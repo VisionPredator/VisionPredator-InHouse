@@ -3,41 +3,40 @@
 #include "Components.h"
 #include "../VPGraphics/MeshFilter.h"
 #include "../VPGraphics/CBuffer.h"
+#include "../PhysxEngine/VPPhysicsStructs.h"
+using namespace VPPhysics;
+
+void VPRegister::Register_Metadata()
+{
+	VPRegister::Register_Components();
+	VPRegister::Register_EnumClass();
+	VPRegister::Register_Value();
+	VPRegister::Register_Components();
+
+}
 
 void VPRegister::Register_EnumClass()
 {
-	entt::meta<MeshFilter>()
-		.prop(Reflection::Prop::Name, "MeshFilter")
-		.conv<std::underlying_type_t<MeshFilter>>()
-		.data<MeshFilter::Axis>("Axis"_hs)
-		.prop(Reflection::Prop::Name, "Axis")
-		.data<MeshFilter::Box>("Box"_hs)
-		.prop(Reflection::Prop::Name, "Box")
-		.data<MeshFilter::Grid>("Grid"_hs)
-		.prop(Reflection::Prop::Name, "Grid")
-		.data<MeshFilter::Static>("Static"_hs)
-		.prop(Reflection::Prop::Name, "Static")
-		.data<MeshFilter::Circle>("Circle"_hs)
-		.prop(Reflection::Prop::Name, "Circle");
+	META_ADD_ENUMCLASS(MeshFilter, MeshFilter::Axis, MeshFilter::Box, MeshFilter::Grid, MeshFilter::Static, MeshFilter::Circle);
+	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
+	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
+	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER, EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
+	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE);
 
-	entt::meta<LightType>()
-		.prop(Reflection::Prop::Name, "LightType")
-		.conv<std::underlying_type_t<LightType>>()
-		.data<LightType::Direction>("Direction"_hs)
-		.prop(Reflection::Prop::Name, "Direction")
-		.data<LightType::Spot>("Spot"_hs)
-		.prop(Reflection::Prop::Name, "Spot")
-		.data<LightType::Point>("Point"_hs)
-		.prop(Reflection::Prop::Name, "Point");
+}
 
+void VPRegister::Register_Structs()
+{
+
+	entt::meta<std::array<int, (int)EPhysicsLayer::END>>().type("std::array<int,(int)EPhysicsLayer::END>"_hs);
 }
 
 void VPRegister::Register_Value()
 {
-	entt::meta<std::vector<std::string>>()
-		.type("std::vector<std::string>"_hs);
-	entt::meta<std::vector<std::wstring>>()
-		.type("std::vector<std::wstring>"_hs);
+	META_ADD_VALUE(std::vector<std::string>);
+	META_ADD_VALUE(std::vector<std::wstring>);
+	entt::meta<std::array<int, (int)EPhysicsLayer::END>>().type("std::array<int,(int)EPhysicsLayer::END>"_hs);
+
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
@@ -53,15 +52,25 @@ NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
 {LightType::Spot, "Spot"},
 {LightType::Point, "Point"},
 {LightType::End, "End"}	});
+NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
+{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
+{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
+NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
+{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
+{VPPhysics::EPhysicsLayer::WALL,"WALL" },
+{VPPhysics::EPhysicsLayer::TOP, "TOP" },
+{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
+{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
+{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
+{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
+{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
+{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
+NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
+{VPPhysics::EColliderShape::BOX,"BOX" },
+{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
+{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" } });
 
 
-
-void VPRegister::Register_Metadata()
-{
-	VPRegister::Register_Components();
-	VPRegister::Register_EnumClass();
-	VPRegister::Register_Value();
-}
 
 void VPRegister::Register_Components()
 {
@@ -77,5 +86,6 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
 	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::animationList);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::ColliderInfo);
 }
 

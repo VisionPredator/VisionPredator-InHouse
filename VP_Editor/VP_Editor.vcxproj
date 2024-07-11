@@ -122,13 +122,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)include\physx</AdditionalLibraryDirectories>
       <AdditionalDependencies>imguid.lib;imguizmo.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -142,7 +142,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -202,11 +202,8 @@
     <Image Include="VP_Editor.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VPEngine\VPEngine.vcxproj">
-      <Project>{2c00f534-01bf-4232-bd17-a5ac02072aac}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\VPGraphics\VPGraphics.vcxproj">
-      <Project>{6af1262e-67c4-4738-97ac-a36899fe4316}</Project>
+    <ProjectReference Include="..\VisionpredatorProcess\VisionpredatorProcess.vcxproj">
+      <Project>{c685a604-1265-412a-a168-1e3b3f691064}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

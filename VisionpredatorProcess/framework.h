@@ -14,6 +14,8 @@
 #include <tchar.h>
 #include <string_view>
 #include <d3d11.h>
+#include <PxPhysicsAPI.h>
+
 #include "../include/entt/entt.hpp"
 #include "../VPEngine/VisPredMath.h"
 #include "../include/directxtk/SimpleMath.h"

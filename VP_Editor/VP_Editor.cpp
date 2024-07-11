@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "SystemManager.h"
-#include "TimeManager.h"
-#include <InputManager.h>
+#include "Managers.h"
 #include <TransformSystem.h>
 #include "VP_Editor.h"
 #include "Toolbar.h"
@@ -9,36 +7,18 @@
 #include "FolderTool.h"
 #include "Hierarchy.h"
 #include "Inspector.h"
-#include "EventManager.h"
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
 #include "LightSystem.h"
 
-VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
+VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();
 	///Imgui Setting
-	/*
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	// Setup Platform/Renderer bindings
-	ImGui_ImplWin32_Init(hInstance);
-	ImGui_ImplDX11_Init(mpDevice.Get(), mpContext.Get());
-
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	*/
     m_editorcamera = new EditorCamera{m_SceneManager};
 	m_HierarchySystem = new HierarchySystem{m_SceneManager};
 	m_ImGuis.push_back(new Toolbar{ m_SceneManager });
@@ -200,11 +180,13 @@ void VP_Editor::SetUnityDarkThemeColors()
 void VP_Editor::OnPlayButton(std::any)
 {
 	m_IsEditorMode = false;
+    EventManager::GetInstance().ImmediateEvent("OnStartScene");
 }
 
 void VP_Editor::OnStopButton(std::any)
 {
 	m_IsEditorMode = true;
+    EventManager::GetInstance().ImmediateEvent("OnEndScene");
 
 }
 

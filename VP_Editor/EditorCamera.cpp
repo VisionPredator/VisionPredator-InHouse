@@ -91,7 +91,7 @@ void EditorCamera::CameraRotation()
 
 		// Update rotation angles
 		m_Rotation.y += yaw; // Yaw affects the y-axis
-		m_Rotation.x -= pitch; // Pitch affects the x-axis
+		m_Rotation.x += pitch; // Pitch affects the x-axis
 
 		// Clamp pitch to avoid gimbal lock
 		if (m_Rotation.x > m_maxPitch)
@@ -168,10 +168,9 @@ void EditorCamera::CalculateCameraTransform()
 		VPMath::Matrix::CreateFromQuaternion(m_Quaternion) *
 		VPMath::Matrix::CreateTranslation(m_Location);
 
-	m_FrontVector = m_Transform.Forward();
-	m_RightVector = m_Transform.Left();
+	m_FrontVector = -m_Transform.Forward();
+	m_RightVector = m_Transform.Right();
 	m_UpVector = m_Transform.Up();
-
 
 }
 

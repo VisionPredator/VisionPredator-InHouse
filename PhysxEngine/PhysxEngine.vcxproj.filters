@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="struct">
+      <UniqueIdentifier>{deb1d896-80ae-4bdc-ac41-e756886a8229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Struct">
+      <UniqueIdentifier>{5a4b698c-e9be-42dd-b641-452835e84897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\RigidBody">
+      <UniqueIdentifier>{c742ed13-7d01-4957-aad8-ce7a340a566e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\RigidBody\Dynamic">
+      <UniqueIdentifier>{58f4f41f-e07b-40de-8e4f-08dda7f9eeb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\RigidBody\Static">
+      <UniqueIdentifier>{ed0d3259-b3dd-4863-9a46-f1cd6367cb1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -30,6 +45,27 @@
     <ClInclude Include="IPhysx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="RigidBodyManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysxColliManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VPPhysicsStructs.h">
+      <Filter>struct\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>struct\RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicRigidBody.h">
+      <Filter>struct\RigidBody\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticRigidBody.h">
+      <Filter>struct\RigidBody\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionCallback.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -42,6 +78,27 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="IPhysx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysxColliManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VPPhysicsStructs.cpp">
+      <Filter>struct\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>struct\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicRigidBody.cpp">
+      <Filter>struct\RigidBody\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticRigidBody.cpp">
+      <Filter>struct\RigidBody\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyManager.cpp">
+      <Filter>struct\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionCallback.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

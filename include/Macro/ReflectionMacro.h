@@ -11,13 +11,10 @@ static void AutoRegisterMetaTypeFunction();
 
 #pragma region Meta Member 등록
 
-
+///Class 기반
 #define MEMBER(NAME)\
  .data<& NAME >(#NAME##_hs)\
 		.prop(Reflection::Prop::Name,#NAME)
-
-
-
 #define MEMBER_EXPAND( x ) x
 #define MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, NAME,...) NAME
 #define MEMBER_PASTE(...) MEMBER_EXPAND(MEMBER_GET_MACRO(__VA_ARGS__, \
@@ -40,7 +37,6 @@ static void AutoRegisterMetaTypeFunction();
 #define MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) MEMBER_PASTE2(func, v1) MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
 #define MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) MEMBER_PASTE2(func, v1) MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
 #define MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
-
 #define  MEMBERS(...)  MEMBER_EXPAND( MEMBER_PASTE( MEMBER, __VA_ARGS__))
 
 #define META_ADD_MEMBER(CLASS,...)\
@@ -51,6 +47,64 @@ MEMBERS(__VA_ARGS__)\
 .func<&CLASS::SerializeComponent>("SerializeComponent"_hs)\
 .func<&CLASS::DeserializeComponent>("DeserializeComponent"_hs)\
 .func<&CLASS::AddComponent>("AddComponent"_hs);
+
+
+
+
+#define META_ADD_VALUE(CLASS)\
+entt::meta<CLASS>()\
+.type(#CLASS##_hs)\
+
+
+
+
+#define META_ADD_STRUCT(CLASS,...)\
+entt::meta<CLASS>()\
+.type(#CLASS##_hs)\
+MEMBERS(__VA_ARGS__)\
+
+
+
+
+
+
+
+#define E_MEMBER(NAME)\
+ .data<NAME >(#NAME##_hs)\
+		.prop(Reflection::Prop::Name,#NAME)
+#define E_MEMBER_EXPAND( x ) x
+#define E_MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, NAME,...) NAME
+#define E_MEMBER_PASTE(...) E_MEMBER_EXPAND(E_MEMBER_GET_MACRO(__VA_ARGS__, \
+        E_MEMBER_PASTE10, \
+        E_MEMBER_PASTE9, \
+        E_MEMBER_PASTE8, \
+        E_MEMBER_PASTE7, \
+        E_MEMBER_PASTE6, \
+        E_MEMBER_PASTE5, \
+        E_MEMBER_PASTE4, \
+        E_MEMBER_PASTE3, \
+        E_MEMBER_PASTE2, \
+        E_MEMBER_PASTE1)(__VA_ARGS__))
+#define E_MEMBER_PASTE2(func, v1) func(v1)
+#define E_MEMBER_PASTE3(func, v1, v2) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE2(func, v2)
+#define E_MEMBER_PASTE4(func, v1, v2, v3) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE3(func, v2, v3)
+#define E_MEMBER_PASTE5(func, v1, v2, v3, v4) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE4(func, v2, v3, v4)
+#define E_MEMBER_PASTE6(func, v1, v2, v3, v4, v5) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE5(func, v2, v3, v4, v5)
+#define E_MEMBER_PASTE7(func, v1, v2, v3, v4, v5, v6) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE6(func, v2, v3, v4, v5, v6)
+#define E_MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
+#define E_MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
+#define E_MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
+#define  E_MEMBERS(...)  E_MEMBER_EXPAND( E_MEMBER_PASTE( E_MEMBER, __VA_ARGS__))
+
+#define META_ADD_ENUMCLASS(CLASS,...)\
+entt::meta<CLASS>()\
+.prop(Reflection::Prop::Name,#CLASS)\
+.conv<std::underlying_type_t<CLASS>>()\
+E_MEMBERS(__VA_ARGS__)\
+
+
+
+
 
 
 

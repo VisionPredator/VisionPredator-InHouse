@@ -2,6 +2,10 @@
 #include"EventSubscriber.h" 
 
 
+#define INPUTKEYDOWN(KEYENUM) InputManager::GetInstance().GetKeyDown(KEYENUM)
+#define INPUTKEY(KEYENUM) InputManager::GetInstance().GetKey(KEYENUM)
+#define INPUTKEYUP(KEYENUM) InputManager::GetInstance().GetKeyUp(KEYENUM)
+
 enum class KEY_STATE
 {
 	NONE,
