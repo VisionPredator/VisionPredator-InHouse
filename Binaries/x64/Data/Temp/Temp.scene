@@ -1,15 +1,128 @@
 {
     "Entitys": [
         {
-            "EntityID": 2903528533,
+            "EntityID": 2440071271,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "Sun"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -122.25040435791016,
+                        "y": 8.575728416442871,
+                        "z": 6.274474620819092
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 4257272042,
+                    "attenuation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "direction": {
+                        "x": 0.16163098812103271,
+                        "y": 0.30494728684425354,
+                        "z": 0.9385534524917603
+                    },
+                    "intensity": 1.0,
+                    "range": -1.0,
+                    "spot": -1.0,
+                    "testVector": [],
+                    "testwVector": [],
+                    "type": 0
+                }
+            ]
+        },
+        {
+            "EntityID": 277426761,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "static"
                 },
                 {
                     "ComponentID": 3774279003,
-                    "FBX": ""
+                    "FBX": "Flair.fbx"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 61.809226989746094,
+                        "y": -4.256102561950684,
+                        "z": -4.344735145568848
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 3581149888,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "gun"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 29.364622116088867,
+                        "y": -3.2297518253326416,
+                        "z": -1.2986310720443726
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "cerberus.fbx"
+                }
+            ]
+        },
+        {
+            "EntityID": 3543576851,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "ani"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -32,93 +145,34 @@
                 },
                 {
                     "ComponentID": 1142749570,
-                    "FBX": ""
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 0.0,
-                    "IsMain": false,
-                    "NearZ": 0.0,
-                    "Ratio": 1.7777777910232544
-                },
-                {
-                    "ComponentID": 4257272042,
-                    "attenuation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "direction": {
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "intensity": 1.0,
-                    "range": -1.0,
-                    "spot": -1.0,
-                    "testVector": [],
-                    "testwVector": [],
-                    "type": 0
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": ""
+                    "FBX": "Flair.fbx"
                 },
                 {
                     "ComponentID": 2778840952,
-                    "animeName1": [],
-                    "animeName2": [],
-                    "animeName3": [],
-                    "animeName4": [],
-                    "animeName5": [],
-                    "curAnimation": []
-                },
-                {
-                    "ComponentID": 4183631247,
-                    "HP": 3452816845
-                }
-            ]
-        },
-        {
-            "EntityID": 1747312832,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity1"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 0.0,
-                    "IsMain": true,
-                    "NearZ": 0.0,
-                    "Ratio": 1.7777777910232544
+                    "animationList": [
+                        [
+                            70,
+                            108,
+                            97,
+                            105,
+                            114,
+                            46,
+                            102,
+                            98,
+                            120
+                        ]
+                    ],
+                    "curAnimation": [
+                        70,
+                        108,
+                        97,
+                        105,
+                        114,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
                 }
             ]
         }
