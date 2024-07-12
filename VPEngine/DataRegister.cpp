@@ -8,7 +8,7 @@ using namespace VPPhysics;
 
 void VPRegister::Register_Metadata()
 {
-	VPRegister::Register_Components();
+	VPRegister::Register_Structs();
 	VPRegister::Register_EnumClass();
 	VPRegister::Register_Value();
 	VPRegister::Register_Components();
@@ -27,8 +27,11 @@ void VPRegister::Register_EnumClass()
 
 void VPRegister::Register_Structs()
 {
-
-	entt::meta<std::array<int, (int)EPhysicsLayer::END>>().type("std::array<int,(int)EPhysicsLayer::END>"_hs);
+	META_ADD_STRUCT(PhysicsInfo, PhysicsInfo::Gravity, PhysicsInfo::CollisionMatrix);
+	META_ADD_STRUCT(ColliderInfo, ColliderInfo::PhysicsLayer, ColliderInfo::StaticFriction, ColliderInfo::DynamicFriction, ColliderInfo::Restitution, ColliderInfo::Density);
+	META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::UseAABB, BoxColliderInfo::Extent);
+	META_ADD_STRUCT(SphereColliderInfo, SphereColliderInfo::colliderInfo, SphereColliderInfo::Radius);
+	META_ADD_STRUCT(CapsuleColliderInfo, CapsuleColliderInfo::colliderInfo, CapsuleColliderInfo::Radius, CapsuleColliderInfo::HalfHeight);
 }
 
 void VPRegister::Register_Value()

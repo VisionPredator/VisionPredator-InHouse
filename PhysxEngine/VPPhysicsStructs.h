@@ -69,12 +69,13 @@ namespace VPPhysics
 
 	struct ColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColliderInfo, PhysicsLayer, StaticFriction, DynamicFriction, Restitution, Density)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColliderInfo, PhysicsLayer, OffSet,StaticFriction, DynamicFriction, Restitution, Density)
 
 		EPhysicsLayer PhysicsLayer{};
 		uint32_t EntityID = noneID;
 		VPMath::Vector3	WorldLocation = {};
 		VPMath::Quaternion	WorldQuaternion = {};
+		VPMath::Vector3 OffSet = {};
 		float StaticFriction = 1.f;							// 정적 마찰 계수
 		float DynamicFriction = 1.f;						// 동적 마찰 계수
 		float Restitution = 1.f;							// 복원 계수
@@ -83,9 +84,10 @@ namespace VPPhysics
 
 	struct BoxColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo,  Extent)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo, UseAABB, Extent)
 
 		ColliderInfo colliderInfo{};
+		bool UseAABB=false;
 		VPMath::Vector3 Extent = {1,1,1};		// 길이
 	};
 
