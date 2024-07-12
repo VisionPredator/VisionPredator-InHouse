@@ -584,6 +584,8 @@ void Inspector::TypeImGui_BoxColliderInfo(entt::meta_data memberMetaData, Compon
 	ImGui::PushID(memberName.c_str());
 	ImGui::Text("Box Info");
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::Checkbox("UseAABB?", &tempBoxColliderInfo.UseAABB);
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat3("Extent", &tempBoxColliderInfo.Extent.x, 0.1f,0.1f);
 	if (tempBoxColliderInfo.Extent.x <= 0)
 		tempBoxColliderInfo.Extent.x = 0.1f;
