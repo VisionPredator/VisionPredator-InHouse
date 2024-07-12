@@ -3,6 +3,8 @@
 #include "ResourceManager.h"
 
 //자주 쓰는 구조체 정리를 해보자
+#include "BlendState.h"
+#include "DepthStencilState.h"
 #include "StaticData.h"
 #include "Desc.h"
 #include "Slot.h"
@@ -44,6 +46,18 @@ ResourceManager::~ResourceManager()
 void ResourceManager::Initialize()
 {
 	///Built in
+
+	// Depth Stencil State
+	{
+		Create<DepthStencilState>(L"DefaultDSS", DepthStencilStateType::Default);
+		Create<DepthStencilState>(L"DisableDepth", DepthStencilStateType::DisableDepth);
+		Create<DepthStencilState>(L"NoDepthWrites", DepthStencilStateType::NoDepthWrites);
+	}
+
+	// Blend State
+	{
+		Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
+	}
 
 	//Sampler
 	{

@@ -18,9 +18,8 @@ public:
 	///<summary>A complex resource graphic effect for particle system</summary>
 	static void CreateRandomTexture2DSRV(ID3D11Device* device, ID3D11ShaderResourceView** ppSRV);
 
-	///<summary>For particle animation</summary>
 	static void CreateTexture2DArraySRV(
-		const ID3D11Device* device, const ID3D11DeviceContext* context,
-		ID3D11ShaderResourceView** ppSRV);
+		ID3D11Device* device, ID3D11DeviceContext* context,
+		ID3D11ShaderResourceView** ppSRV, const std::vector<std::wstring>& filename);
 };
 

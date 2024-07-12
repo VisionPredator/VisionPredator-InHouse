@@ -15,6 +15,8 @@ public:
 	ID3D11InputLayout* InputLayout() const = delete;
 	virtual void Release() override;
 
+	ID3D11PixelShader* GetShader() { return m_PS.Get(); }
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> GetComPtr() { return m_PS; }
 
 private:
 };

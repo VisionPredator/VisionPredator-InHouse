@@ -4,5 +4,10 @@
 
 class ParticlePass
 {
+public:
+	ParticlePass()
+
+private:
+	
 };
 

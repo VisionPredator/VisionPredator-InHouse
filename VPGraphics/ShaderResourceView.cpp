@@ -113,5 +113,6 @@ void ShaderResourceView::Release()
 	if (m_view != nullptr)
 	{
 		m_view->Release();
+		m_view = nullptr;
 	}
 }

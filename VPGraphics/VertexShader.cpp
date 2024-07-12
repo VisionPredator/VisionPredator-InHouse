@@ -39,7 +39,7 @@ VertexShader::VertexShader(std::shared_ptr<Device> device, std::wstring filename
 
 	//TODO:: 여기서 desc를 매번 셋팅해 각각의 inputlayout이 존재해야할듯
 	//hr = m_device->Get()->CreateInputLayout(BaseInputDesc, BaseDescCount/*desc 원소 갯수*/, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
-	hr = m_Device.lock()->Get()->CreateInputLayout(TextureVertexInputDesc, TextureDescCount/*desc 원소 갯수*/, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
+	hr = m_Device.lock()->Get()->CreateInputLayout(TextureVertexInputDesc, TextureDescCount/*desc 원소 갯수*/, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_InputLayout);
 
 	if (FAILED(hr))
 	{
@@ -92,7 +92,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 			{
 				MessageBox(0, L"CreateVS Fail", 0, 0);
 			}
-			hr = m_Device.lock()->Get()->CreateInputLayout(TextureVertexInputDesc, TextureDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
+			hr = m_Device.lock()->Get()->CreateInputLayout(TextureVertexInputDesc, TextureDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_InputLayout);
 		}
 			break;
 
@@ -107,7 +107,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 			hr = D3DCompileFromFile(m_filename.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0",dwShaderFlags, 0, &VSBlob, &pErrorBlob);
 			hr = m_Device.lock()->Get()->CreateVertexShader(VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), nullptr, &m_VS);
 
-			hr = m_Device.lock()->Get()->CreateInputLayout(SkinningVertexInputDesc, SkinningDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
+			hr = m_Device.lock()->Get()->CreateInputLayout(SkinningVertexInputDesc, SkinningDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_InputLayout);
 		}
 		break;
 
@@ -115,7 +115,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 		{
 			hr = D3DCompileFromFile(m_filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", dwShaderFlags, 0, &VSBlob, &pErrorBlob);
 			hr = m_Device.lock()->Get()->CreateVertexShader(VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), nullptr, &m_VS);
-			hr = m_Device.lock()->Get()->CreateInputLayout(QuadVertexInputDesc, QuadDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_inputLayout);
+			hr = m_Device.lock()->Get()->CreateInputLayout(QuadVertexInputDesc, QuadDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_InputLayout);
 		}
 		break;
 
@@ -136,15 +136,15 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 	}
 }
 
-VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const D3D_SHADER_MACRO* macro, const int& a)
+VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const std::string& entryPoint, const D3D_SHADER_MACRO* macro)
 {
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
+
 #ifdef _DEBUG
 	shaderFlag |= D3DCOMPILE_DEBUG;
 	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	const std::string& entryPoint = "main";
 	const std::string& shaderModel = "vs_5_0";
 
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
@@ -154,25 +154,24 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 	HR_CHECK(device->Get()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_VS));
 
 
-	/// 이제 인풋 레이아웃 만들기
+	/// Input Layout Reflection
 	ID3D11ShaderReflection* pReflector = nullptr;
 
-	// Create Reflector..
+	// Create Reflector
 	D3DReflect(blob->GetBufferPointer(), blob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pReflector);
 
 	// Shader Refection
 	D3D11_SHADER_DESC shaderDesc;
 	pReflector->GetDesc(&shaderDesc);
 
-	/// Input Layout Reflection
-	// Shader Input Layout..
+	// Shader Input Layout
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 	for (unsigned inputIndex = 0; inputIndex < shaderDesc.InputParameters; inputIndex++)
 	{
 		D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
 		pReflector->GetInputParameterDesc(inputIndex, &paramDesc);
 
-		// Shader Input Data를 기반으로 생성..
+		// Shader Input Data를 기반으로 생성
 		D3D11_INPUT_ELEMENT_DESC elementDesc;
 		elementDesc.SemanticName = paramDesc.SemanticName;
 		elementDesc.SemanticIndex = paramDesc.SemanticIndex;
@@ -181,7 +180,7 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 		elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		elementDesc.InstanceDataStepRate = 0;
 
-		// Shader Data 기반으로 DXGI format 설정..
+		// Shader Data 기반으로 DXGI format 설정
 		if (paramDesc.Mask == 1)
 		{
 			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32_UINT;
@@ -207,31 +206,26 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		}
 
-		// 현 InputLayout 데이터 삽입..
+		// 현 InputLayout 데이터 삽입
 		inputLayoutDesc.push_back(elementDesc);
 	}
 
-	// Shader InputLayout 생성..
+	// Shader InputLayout 생성
 	HR_CHECK(
 		device->Get()->CreateInputLayout(
 			&inputLayoutDesc[0], 
 			(UINT)inputLayoutDesc.size(),
 			blob->GetBufferPointer(), 
 			blob->GetBufferSize(),
-			&m_inputLayout
+			&m_InputLayout
 		);
 	);
 }
 
-VertexShader::~VertexShader()
-{
-
-}
-
-
 
 void VertexShader::Release()
 {
-	m_inputLayout->Release();
+	m_InputLayout->Release();
 	m_VS->Release();
+	m_VS = nullptr;
 }

@@ -2,6 +2,8 @@
 #include "Resource.h"
 
 #include <d3d11.h>
+#include <wrl/client.h>
+
 #include "Device.h"
 
 
@@ -22,13 +24,16 @@ public:
 
 	ID3D11Buffer* Get() const;
 	ID3D11Buffer** GetAddress();
+	Microsoft::WRL::ComPtr<ID3D11Buffer> GetComPtr() { return m_buffer; }
 	UINT Count() const;
 
 	virtual void Update() abstract;
 	virtual void Release() override;
 
 protected:
-	ID3D11Buffer* m_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
+	//ID3D11Buffer* m_buffer;
+
 	UINT m_count;
 	D3D11_BUFFER_DESC m_Desc;
 	D3D11_SUBRESOURCE_DATA m_Data;
