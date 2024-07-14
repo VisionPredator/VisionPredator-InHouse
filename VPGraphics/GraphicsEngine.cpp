@@ -108,7 +108,7 @@ bool GraphicsEngine::Finalize()
 	m_ResourceManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
-
+	DestroyImGui();
 	return true;
 }
 

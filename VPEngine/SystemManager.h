@@ -2,6 +2,7 @@
 #include "SystemInterface.h"
 #include "System.h"
 #include "EventSubscriber.h"
+#include <thread>
 
 	class SystemManager:public EventSubscriber
 	{
@@ -9,7 +10,7 @@
 
 	public:
 		SystemManager();
-		~SystemManager() = default;
+		~SystemManager();
 		void Update(float deltatime);
 		void Initialize(SceneManager* entitymanager,Graphics::Interface* Interfaces);
 
@@ -35,28 +36,32 @@
 			}
 			m_Systems.push_back(std::make_unique<T>(m_SceneManager));
 
+
+			auto* system = static_cast<T*>(m_Systems.back().get());
+			system->SetThread1(&m_JThread1);
+			system->SetThread2(&m_JThread2);
 			if constexpr (std::is_base_of_v<IUpdatable, T>)
 			{
-				m_Updatables.push_back(static_cast<T*>(m_Systems.back().get()));
+				m_Updatables.push_back(system);
 			}
 
 			if constexpr (std::is_base_of_v<IFixedUpdatable, T>)
 			{
-				m_FixedUpdatables.push_back(static_cast<T*>(m_Systems.back().get()));
+				m_FixedUpdatables.push_back(system);
 			}
 
 			if constexpr (std::is_base_of_v<IRenderable, T>)
 			{
-				m_Renderables.push_back(static_cast<T*>(m_Systems.back().get()));
-				static_cast<T*>(m_Systems.back().get())->SetGraphics(m_Graphics);
+				m_Renderables.push_back(system);
+				system->SetGraphics(m_Graphics);
 			}
 
 			if constexpr (std::is_base_of_v<IStartable, T>)
 			{
-				m_Startables.push_back(static_cast<T*>(m_Systems.back().get()));
+				m_Startables.push_back(system);
 			}
 
-			return static_cast<T*>(m_Systems.back().get());
+			return static_cast<T*>(system);
 		}
 		template <typename T>
 		void ReleaseSystem()
@@ -126,8 +131,8 @@
 			FinalizeSystems();
 		}
 
-
-
+		std::jthread m_JThread1;
+		std::jthread m_JThread2;
 		SceneManager* m_SceneManager = nullptr;
 		Graphics::Interface* m_Graphics = nullptr;
 

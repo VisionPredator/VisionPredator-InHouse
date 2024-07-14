@@ -9,10 +9,16 @@
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnAddTransformSystem",CreateSubscriber(&SystemManager::OnAddTransformSystem));
 	}
+	SystemManager::~SystemManager()
+	{
+
+	}
 	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* Interfaces)
 	{
 		m_SceneManager = entitymanager;
 		m_Graphics = Interfaces;
+
+
 	}
 
 	void SystemManager::Update(float deltatime)

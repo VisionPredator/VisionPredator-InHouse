@@ -1,0 +1,4209 @@
+[
+    {
+        "EntityID": 2575725873,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun100"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1108916719,
+                    3144489454
+                ],
+                "ComponentID": 188567026
+            }
+        ]
+    },
+    {
+        "EntityID": 1108916719,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    523016855
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2575725873
+            }
+        ]
+    },
+    {
+        "EntityID": 3144489454,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3615088986,
+                    116609880
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2575725873
+            }
+        ]
+    },
+    {
+        "EntityID": 523016855,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3829881213
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1108916719
+            }
+        ]
+    },
+    {
+        "EntityID": 3615088986,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3116498541
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3144489454
+            }
+        ]
+    },
+    {
+        "EntityID": 116609880,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1772031831,
+                    3129123790
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3144489454
+            }
+        ]
+    },
+    {
+        "EntityID": 3829881213,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1244180908
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 523016855
+            }
+        ]
+    },
+    {
+        "EntityID": 3116498541,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    357862521
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3615088986
+            }
+        ]
+    },
+    {
+        "EntityID": 1772031831,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    4199663614
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 116609880
+            }
+        ]
+    },
+    {
+        "EntityID": 3129123790,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3806111608,
+                    1710339127
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 116609880
+            }
+        ]
+    },
+    {
+        "EntityID": 1244180908,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1478656812
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3829881213
+            }
+        ]
+    },
+    {
+        "EntityID": 357862521,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1106214075
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3116498541
+            }
+        ]
+    },
+    {
+        "EntityID": 4199663614,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    110478023
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1772031831
+            }
+        ]
+    },
+    {
+        "EntityID": 3806111608,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    578991827
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3129123790
+            }
+        ]
+    },
+    {
+        "EntityID": 1710339127,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    666241367,
+                    2695122040
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3129123790
+            }
+        ]
+    },
+    {
+        "EntityID": 1478656812,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2142238410
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1244180908
+            }
+        ]
+    },
+    {
+        "EntityID": 1106214075,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3258129957
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 357862521
+            }
+        ]
+    },
+    {
+        "EntityID": 110478023,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2833445859
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 4199663614
+            }
+        ]
+    },
+    {
+        "EntityID": 578991827,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2100271848
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3806111608
+            }
+        ]
+    },
+    {
+        "EntityID": 666241367,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1100868219
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1710339127
+            }
+        ]
+    },
+    {
+        "EntityID": 2695122040,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1855872177,
+                    724405544
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1710339127
+            }
+        ]
+    },
+    {
+        "EntityID": 2142238410,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    966698094
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1478656812
+            }
+        ]
+    },
+    {
+        "EntityID": 3258129957,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1807640456
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1106214075
+            }
+        ]
+    },
+    {
+        "EntityID": 2833445859,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1374243056
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 110478023
+            }
+        ]
+    },
+    {
+        "EntityID": 2100271848,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    144242050
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 578991827
+            }
+        ]
+    },
+    {
+        "EntityID": 1100868219,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1619734094
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 666241367
+            }
+        ]
+    },
+    {
+        "EntityID": 1855872177,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    591874297
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2695122040
+            }
+        ]
+    },
+    {
+        "EntityID": 724405544,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2659433150,
+                    780476226
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2695122040
+            }
+        ]
+    },
+    {
+        "EntityID": 966698094,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3567037930
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2142238410
+            }
+        ]
+    },
+    {
+        "EntityID": 1807640456,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1448169057
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3258129957
+            }
+        ]
+    },
+    {
+        "EntityID": 1374243056,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1498776360
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2833445859
+            }
+        ]
+    },
+    {
+        "EntityID": 144242050,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2787848181
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2100271848
+            }
+        ]
+    },
+    {
+        "EntityID": 1619734094,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    4266721930
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1100868219
+            }
+        ]
+    },
+    {
+        "EntityID": 591874297,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2519632356
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1855872177
+            }
+        ]
+    },
+    {
+        "EntityID": 2659433150,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2149517517
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 724405544
+            }
+        ]
+    },
+    {
+        "EntityID": 780476226,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3765231052,
+                    1446330803
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 724405544
+            }
+        ]
+    },
+    {
+        "EntityID": 3567037930,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3279250792
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 966698094
+            }
+        ]
+    },
+    {
+        "EntityID": 1448169057,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    4116138901
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1807640456
+            }
+        ]
+    },
+    {
+        "EntityID": 1498776360,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2686964552
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1374243056
+            }
+        ]
+    },
+    {
+        "EntityID": 2787848181,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    4002735158
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 144242050
+            }
+        ]
+    },
+    {
+        "EntityID": 4266721930,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3845937308
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1619734094
+            }
+        ]
+    },
+    {
+        "EntityID": 2519632356,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    947675243
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 591874297
+            }
+        ]
+    },
+    {
+        "EntityID": 2149517517,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2945715444
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2659433150
+            }
+        ]
+    },
+    {
+        "EntityID": 3765231052,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1802605879
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 780476226
+            }
+        ]
+    },
+    {
+        "EntityID": 1446330803,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun10"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    969913334
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 780476226
+            }
+        ]
+    },
+    {
+        "EntityID": 3279250792,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2689712729
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3567037930
+            }
+        ]
+    },
+    {
+        "EntityID": 4116138901,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2071697358
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1448169057
+            }
+        ]
+    },
+    {
+        "EntityID": 2686964552,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3166535387
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1498776360
+            }
+        ]
+    },
+    {
+        "EntityID": 4002735158,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2980214364
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2787848181
+            }
+        ]
+    },
+    {
+        "EntityID": 3845937308,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1169993476
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 4266721930
+            }
+        ]
+    },
+    {
+        "EntityID": 947675243,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    723186690
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2519632356
+            }
+        ]
+    },
+    {
+        "EntityID": 2945715444,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1468974736
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2149517517
+            }
+        ]
+    },
+    {
+        "EntityID": 1802605879,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3655188726
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3765231052
+            }
+        ]
+    },
+    {
+        "EntityID": 969913334,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3994183985
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1446330803
+            }
+        ]
+    },
+    {
+        "EntityID": 2689712729,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3279250792
+            }
+        ]
+    },
+    {
+        "EntityID": 2071697358,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1772826576
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 4116138901
+            }
+        ]
+    },
+    {
+        "EntityID": 3166535387,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    512811597
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2686964552
+            }
+        ]
+    },
+    {
+        "EntityID": 2980214364,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    473405369
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 4002735158
+            }
+        ]
+    },
+    {
+        "EntityID": 1169993476,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    4122327795
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3845937308
+            }
+        ]
+    },
+    {
+        "EntityID": 723186690,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2783973858
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 947675243
+            }
+        ]
+    },
+    {
+        "EntityID": 1468974736,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3809057711
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2945715444
+            }
+        ]
+    },
+    {
+        "EntityID": 3655188726,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2708179588
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1802605879
+            }
+        ]
+    },
+    {
+        "EntityID": 3994183985,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    701806792
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 969913334
+            }
+        ]
+    },
+    {
+        "EntityID": 1772826576,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2071697358
+            }
+        ]
+    },
+    {
+        "EntityID": 512811597,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3565590804
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3166535387
+            }
+        ]
+    },
+    {
+        "EntityID": 473405369,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1034504364
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2980214364
+            }
+        ]
+    },
+    {
+        "EntityID": 4122327795,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2941970803
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1169993476
+            }
+        ]
+    },
+    {
+        "EntityID": 2783973858,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3265555835
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 723186690
+            }
+        ]
+    },
+    {
+        "EntityID": 3809057711,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2902692003
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1468974736
+            }
+        ]
+    },
+    {
+        "EntityID": 2708179588,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3410405732
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3655188726
+            }
+        ]
+    },
+    {
+        "EntityID": 701806792,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2243278416
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3994183985
+            }
+        ]
+    },
+    {
+        "EntityID": 3565590804,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 512811597
+            }
+        ]
+    },
+    {
+        "EntityID": 1034504364,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3144205029
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 473405369
+            }
+        ]
+    },
+    {
+        "EntityID": 2941970803,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    4288501166
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 4122327795
+            }
+        ]
+    },
+    {
+        "EntityID": 3265555835,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3981687165
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2783973858
+            }
+        ]
+    },
+    {
+        "EntityID": 2902692003,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3426483837
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3809057711
+            }
+        ]
+    },
+    {
+        "EntityID": 3410405732,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1893825160
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2708179588
+            }
+        ]
+    },
+    {
+        "EntityID": 2243278416,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1798279051
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 701806792
+            }
+        ]
+    },
+    {
+        "EntityID": 3144205029,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1034504364
+            }
+        ]
+    },
+    {
+        "EntityID": 4288501166,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    683420195
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2941970803
+            }
+        ]
+    },
+    {
+        "EntityID": 3981687165,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1252632455
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3265555835
+            }
+        ]
+    },
+    {
+        "EntityID": 3426483837,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2467870779
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2902692003
+            }
+        ]
+    },
+    {
+        "EntityID": 1893825160,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1025303566
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3410405732
+            }
+        ]
+    },
+    {
+        "EntityID": 1798279051,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1443919282
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2243278416
+            }
+        ]
+    },
+    {
+        "EntityID": 683420195,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 4288501166
+            }
+        ]
+    },
+    {
+        "EntityID": 1252632455,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3165008795
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3981687165
+            }
+        ]
+    },
+    {
+        "EntityID": 2467870779,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1024674019
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3426483837
+            }
+        ]
+    },
+    {
+        "EntityID": 1025303566,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1007343486
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1893825160
+            }
+        ]
+    },
+    {
+        "EntityID": 1443919282,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1813422519
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1798279051
+            }
+        ]
+    },
+    {
+        "EntityID": 3165008795,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1252632455
+            }
+        ]
+    },
+    {
+        "EntityID": 1024674019,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3694785042
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2467870779
+            }
+        ]
+    },
+    {
+        "EntityID": 1007343486,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    1945145805
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1025303566
+            }
+        ]
+    },
+    {
+        "EntityID": 1813422519,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3834088034
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1443919282
+            }
+        ]
+    },
+    {
+        "EntityID": 3694785042,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1024674019
+            }
+        ]
+    },
+    {
+        "EntityID": 1945145805,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    2281518058
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1007343486
+            }
+        ]
+    },
+    {
+        "EntityID": 3834088034,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    3632648628
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1813422519
+            }
+        ]
+    },
+    {
+        "EntityID": 2281518058,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 1945145805
+            }
+        ]
+    },
+    {
+        "EntityID": 3632648628,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ChildrenID": [
+                    347125183
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3834088034
+            }
+        ]
+    },
+    {
+        "EntityID": 347125183,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": "cerberus.fbx",
+                "FBXFilter": 3
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3632648628
+            }
+        ]
+    }
+]

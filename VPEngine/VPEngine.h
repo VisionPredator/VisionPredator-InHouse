@@ -29,7 +29,7 @@ protected:
 	
 	float m_DeltaTime;
 
-	Physic::IPhysx* m_PhysicEngine;
+	//Physic::IPhysx* m_PhysicEngine;
 	Graphics::Interface* m_Graphics;
 
 };
