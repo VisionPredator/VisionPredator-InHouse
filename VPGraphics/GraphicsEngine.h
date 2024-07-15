@@ -42,7 +42,7 @@ public:
 	virtual void Render() override;
 	virtual void EndRender() override;
 
-	virtual void OnResize() override;
+	virtual void OnResize(HWND hwnd) override;
 
 	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
 	virtual void EraseObject(uint32_t EntityID) override;

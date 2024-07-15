@@ -56,6 +56,14 @@ void PassManager::Render()
 	m_Passes[PassState::Forward]->Render();
 }
 
+void PassManager::OnResize()
+{
+	for (auto& pass : m_Passes)
+	{
+		pass.second->OnResize();
+	}
+}
+
 void PassManager::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
 {
 	PassState temp = model->Pass;

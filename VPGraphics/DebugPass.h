@@ -8,6 +8,8 @@ public:
 	~DebugPass();
 
 	virtual void Render() override;
+	void OnResize() override;
+
 private:
 	std::weak_ptr<DebugDrawManager> m_DebugDrawManager;
 	DirectX::SimpleMath::Matrix m_View;

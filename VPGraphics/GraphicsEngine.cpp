@@ -81,8 +81,7 @@ bool GraphicsEngine::Initialize()
 	m_Animator = std::make_shared <Animator>(m_ResourceManager);
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
-	OnResize();
-
+	
 	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
 	m_PassManager->Initialize();
 
@@ -108,6 +107,8 @@ bool GraphicsEngine::Finalize()
 	m_ResourceManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
+
+	DestroyImGui();
 
 	return true;
 }
@@ -327,8 +328,9 @@ ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 	return m_ResourceManager->Get<ShaderResourceView>(name).lock()->Get();
 }
 
-void GraphicsEngine::OnResize()
+void GraphicsEngine::OnResize(HWND hwnd)
 {
+	m_hWnd = hwnd;
 	GetClientRect(m_hWnd, &m_wndSize);
 
 	m_RTVs.clear();
@@ -353,6 +355,8 @@ void GraphicsEngine::OnResize()
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));
 
+
+	m_PassManager->OnResize();
 
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());

@@ -18,6 +18,9 @@
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
 #include "PhysicSystem.h"
+
+bool VPEngine::isResize = false;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
@@ -93,6 +96,13 @@ void VPEngine::Loop()
 	while (true)
 	{
 
+		if (VPEngine::isResize)
+		{
+			m_Graphics->OnResize(m_hWnd);
+			VPEngine::isResize = false;
+		}
+
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -158,6 +168,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 	{
 		int wmId = LOWORD(wParam);
+
+		VPEngine::isResize = true;
+
 		// 메뉴 선택을 구문 분석합니다:
 		switch (wmId)
 		{
@@ -207,6 +220,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
 		break;
 	}
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

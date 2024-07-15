@@ -74,6 +74,7 @@ public:
 
 	virtual void Render() abstract;
 	void AddModelData(std::shared_ptr<RenderData> model);
+	virtual void OnResize() abstract;
 
 protected:
 	void BindStatic(std::shared_ptr<RenderData> curModel);
