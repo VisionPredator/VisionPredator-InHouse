@@ -44,8 +44,14 @@ public:
 	VPMath::Quaternion Previous_Quaternion = {};
 	VPMath::Vector3 Previous_Scale = { 1.f,1.f,1.f };
 
+	VPMath::Vector3 Previous_WorldLocation = {};
+	VPMath::Vector3 Previous_WorldRotation = {};
+	VPMath::Quaternion Previous_WorldQuaternion = {};
+	VPMath::Vector3 Previous_WorldScale = { 1.f,1.f,1.f };
+
+
 	VPMath::Vector3 World_Location = {};
-	VPMath::Quaternion World_Rotation = {};
+	VPMath::Vector3 World_Rotation = {};
 	VPMath::Quaternion World_Quaternion = {};
 	VPMath::Vector3 World_Scale = { 1.f,1.f,1.f };
 	VPMath::Vector3 FrontVector = {};

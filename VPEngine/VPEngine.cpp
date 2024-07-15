@@ -45,7 +45,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 		NULL, NULL, hInstance, NULL);
 
 	m_Graphics = new GraphicsEngine(m_hWnd);
-	//m_PhysicEngine = new PhysxEngine;
+	m_PhysicEngine = new PhysxEngine;
 	m_Graphics->Initialize();
 	VPRegister::Register_Metadata();
 
@@ -54,7 +54,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SystemManager = new SystemManager;
 	m_SceneManager->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics);
-	//m_PhysicEngine->Initialize();
+	m_PhysicEngine->Initialize();
 	InputManager::GetInstance().Initialize();
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
@@ -73,7 +73,7 @@ VPEngine::~VPEngine()
 
 	m_Graphics->Finalize();
 	delete m_Graphics;
-	//delete m_PhysicEngine;
+	delete m_PhysicEngine;
 	InputManager::GetInstance().Release();
 	EventManager::GetInstance().Release();
 }
@@ -83,7 +83,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
-	//m_SystemManager->AddSystem<PhysicSystem>()->SetPhysics(m_PhysicEngine);
+	m_SystemManager->AddSystem<PhysicSystem>()->SetPhysics(m_PhysicEngine);
 }
 void VPEngine::Loop()
 {

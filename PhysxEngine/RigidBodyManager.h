@@ -22,6 +22,13 @@ public:
 	StaticRigidBody* SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
 	DynamicRigidBody* SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
+	RigidBody* GetRigidBody(uint32_t EntityID);
+	bool HasRigidBody(uint32_t EntityID);
+
+	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q);
+	VPMath::Vector3 GetGobalLocation(uint32_t entityID);
+	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID);
+
 
 
 private:

@@ -36,6 +36,16 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 
 
 	m_DynamicRigid = physics->createRigidDynamic(transform);
+
+	// LOCK ¼³Á¤	
+	m_DynamicRigid->setRigidDynamicLockFlags(
+		(PxRigidDynamicLockFlag::Enum)(colliderInfo.LinearLock[0] << 0) |
+		(PxRigidDynamicLockFlag::Enum)(colliderInfo.LinearLock[1] << 1) |
+		(PxRigidDynamicLockFlag::Enum)(colliderInfo.LinearLock[2] << 2) |
+		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[0] << 3) |
+		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[1] << 4) |
+		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[2] << 5));
+
 	m_DynamicRigid->userData = data;
 	if (m_DynamicRigid == nullptr)
 		return false;

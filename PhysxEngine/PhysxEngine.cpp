@@ -4,6 +4,8 @@
 #include "CollisionCallback.h"
 #include "RigidBodyManager.h"
 #include "../VPEngine/EventManager.h"
+#include "DynamicRigidBody.h"
+#include "StaticRigidBody.h"
 #include <iostream>
 /// <summary>
 /// 충돌 콜백 함수
@@ -99,8 +101,9 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
+	m_UpdateTime = (float)1 / GetPhysicEngineInfo().FrameRate;
 	m_ElapsedTime += deltatime;
-	while (m_ElapsedTime> m_UpdateTime)
+	while (m_ElapsedTime > m_UpdateTime)
 	{
 		m_PxScene->simulate(m_UpdateTime);
 		m_PxScene->fetchResults(true);
@@ -142,4 +145,20 @@ void PhysxEngine::CreateDynamicBody(const VPPhysics::SphereColliderInfo spherein
 void PhysxEngine::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
 {
 	m_RigidManager->CreateDynamicBody(capsuleinfo, collidertype, m_EngineInfo);
+}
+
+void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
+{
+	m_RigidManager->SetGobalPose(entityID, P, Q);
+}
+
+VPMath::Vector3 PhysxEngine::GetGobalLocation(uint32_t entityID)
+{
+	return m_RigidManager->GetGobalLocation(entityID);
+}
+
+VPMath::Quaternion PhysxEngine::GetGobalQuaternion(uint32_t entityID)
+{
+	return m_RigidManager->GetGobalQuaternion(entityID);
+
 }

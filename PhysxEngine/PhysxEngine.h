@@ -17,7 +17,8 @@ public:
 	bool Finalize() override;
 	void Update(float deltatime) override;
 
-
+	const VPPhysics::PhysicsInfo GetPhysicEngineInfo() { return m_EngineInfo; }
+	void  SetPhysicEngineInfo(VPPhysics::PhysicsInfo engineinfo) { m_EngineInfo= engineinfo; }
 
 
 private:
@@ -26,9 +27,10 @@ private:
 	RigidBodyManager* m_RigidManager{};
 	CollisionManager* m_CollisionManager{};
 	CollisionCallback* m_Collisioncallback{};
-	float m_UpdateTime = 1.f/ 60.f;
+	VPPhysics::PhysicsInfo m_EngineInfo{};
+	int m_Frame = 60;
+	float m_UpdateTime = 1.f/ 120.f;
 	float m_ElapsedTime = 0.f;
-	VPPhysics::PhysicsInfo m_EngineInfo;
 	// IPhysx을(를) 통해 상속됨
 
 
@@ -50,6 +52,14 @@ private:
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
 
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
+
+	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
+
+	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
 
 };
 

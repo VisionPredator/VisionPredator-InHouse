@@ -249,6 +249,80 @@ void RigidBodyManager::ReleaseBodyScene(uint32_t entityID)
 	EventManager::GetInstance().ScheduleEvent("OnReleaseBodyScene", data);
 }
 
+RigidBody* RigidBodyManager::GetRigidBody(uint32_t EntityID)
+{
+	if (!HasRigidBody(EntityID))
+	return nullptr;
+	return m_RigidBodyMap[EntityID];
+}
+
+bool RigidBodyManager::HasRigidBody(uint32_t EntityID)
+{
+	return m_RigidBodyMap.count(EntityID) > 0;
+}
+
+void RigidBodyManager::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
+		PxVec3 tempPos = { P.x, P.y, P.z };
+		physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
+		dynamicbody->GetPxDynamicRigid()->setGlobalPose({ tempPos ,tempQuat });
+		return;
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
+		PxVec3 tempPos = { P.x, P.y, P.z };
+		physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
+		dynamicbody->GetPxStaticRigid()->setGlobalPose({ tempPos ,tempQuat });
+		return;
+	}
+}
+
+VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
+		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
+		VPMath::Vector3 templocation = { pose.p.x ,pose.p.y ,pose.p.z };
+		return templocation;
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
+		auto pose = dynamicbody->GetPxStaticRigid()->getGlobalPose();
+		VPMath::Vector3 templocation = { pose.p.x ,pose.p.y ,pose.p.z };
+		return templocation;
+	}
+}
+
+VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
+		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
+		VPMath::Quaternion templocation = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
+		return templocation;
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
+		auto pose = dynamicbody->GetPxStaticRigid()->getGlobalPose();
+		VPMath::Quaternion templocation = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
+		return templocation;
+	}
+}
+
 void RigidBodyManager::AddBodyScene(RigidBody* body)
 {
 	

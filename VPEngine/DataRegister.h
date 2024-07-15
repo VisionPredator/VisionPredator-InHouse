@@ -7,5 +7,6 @@ namespace VPRegister
 	void Register_EnumClass();
 	void Register_Structs();
 	void Register_Value();
+	void Register_VPMath();
 }
 

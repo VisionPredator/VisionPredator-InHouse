@@ -20,15 +20,21 @@ void PhysicSystem::Update(float deltaTime)
 void PhysicSystem::FixedUpdate(float deltaTime)
 {
 
-	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	{
-		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-	}
+	//for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	//{
+	//	TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+	//	m_PhysxEngine->SetGobalPose(rigidBodyComponent.GetEntityID(), rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
+	//}
 	m_PhysxEngine->Update(deltaTime);
-	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	{
-		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-	}
+
+	//for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	//{
+	//	TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+	//	rigidBodyTransform->World_Location =m_PhysxEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
+	//	rigidBodyTransform->World_Quaternion = m_PhysxEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
+	//	rigidBodyTransform->World_Scale;
+	//	rigidBodyTransform->WorldTransform;
+	//}
 
 }
 void PhysicSystem::Initialize()
@@ -132,7 +138,11 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 			debug::OBBInfo temp{};
 			temp.OBB.Center= rigidTransform->World_Location;
 			temp.OBB.Extents= rigidBodyComponent.BoxInfo.Extent;
-			temp.OBB.Orientation= rigidTransform->World_Quaternion;
+
+			temp.xAxisAngle = rigidTransform->World_Rotation.x;
+			temp.yAxisAngle = rigidTransform->World_Rotation.y;
+			temp.zAxisAngle = rigidTransform->World_Rotation.z;
+			//temp.OBB.Orientation= rigidTransform->World_Quaternion;
 			m_Graphics->DrawOBB(temp);
 
 

@@ -20,6 +20,12 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) abstract;
 
 	virtual void ReleaseActor(uint32_t entityID) abstract;
+	virtual const VPPhysics::PhysicsInfo GetPhysicEngineInfo()abstract;
+	virtual void  SetPhysicEngineInfo(VPPhysics::PhysicsInfo engineinfo) abstract;
+	virtual void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) abstract;
+	virtual VPMath::Vector3 GetGobalLocation(uint32_t entityID) abstract;
+	virtual VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) abstract;
+
 };
 
 }

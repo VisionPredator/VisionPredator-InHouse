@@ -169,6 +169,31 @@ namespace Reflection
 		return typeID;
 	}
 
+
+	// Static cache for enum members to avoid recomputation
+	template<typename T>
+	static std::map<int, entt::meta_data>  GetEnumMap()
+	{
+		static std::map<int, entt::meta_data> enumMap{};
+		// eunmMember string table »ý¼º
+
+		if (enumMap.empty()) {
+			auto metaType2 = entt::resolve(Reflection::GetTypeID<T>());
+			for (auto [id, metaData] : metaType2.data()) {
+				entt::meta_any any = metaData.get({});
+				if (any.allow_cast<int>()) {
+					int memberInt = any.cast<int>();
+					enumMap[memberInt] = metaData;
+				}
+			}
+			assert(!enumMap.empty());
+		}
+
+		return enumMap;
+	}
+
+
+
 	inline std::string GetName_Class(const entt::meta_type& type)
 	{
 		std::string_view name = type.info().name();
