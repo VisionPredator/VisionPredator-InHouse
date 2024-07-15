@@ -176,8 +176,6 @@ void DeferredPass::Geometry()
 
 		if (curModel != nullptr)
 		{
-			int materialindex = 0;
-
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);
@@ -244,7 +242,7 @@ void DeferredPass::Geometry()
 				if (!curModel->m_Materials.empty())
 				{
 					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
 
 					if (curMaterial != nullptr)
 					{
@@ -258,9 +256,6 @@ void DeferredPass::Geometry()
 				}
 
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
-
-				materialindex++;
-
 			}
 		}
 		m_RenderDataQueue.pop();

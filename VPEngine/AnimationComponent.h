@@ -4,7 +4,7 @@
 
 struct AnimationComponent : public Component
 {
-	VP_JSONBODY(AnimationComponent, curAnimation, animationList)
+	VP_JSONBODY(AnimationComponent, curAnimation, animationList, speed)
 		AnimationComponent();
 
 	std::wstring curAnimation = L"";
@@ -15,5 +15,6 @@ struct AnimationComponent : public Component
 	std::vector<std::wstring> animationList;
 
 	bool isPlay = false;
+	float speed = 1.0f;
 };
 

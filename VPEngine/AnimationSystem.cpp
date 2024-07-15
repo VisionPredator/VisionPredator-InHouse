@@ -42,7 +42,7 @@ void AnimationSystem::Update(float deltaTime)
 		
 		if(!aniComp.curAnimation.empty())
 		{
-			aniComp.duration += deltaTime;
+			aniComp.duration += deltaTime * aniComp.speed;
 		}
 
 		aniComp.preAnimation = aniComp.curAnimation;

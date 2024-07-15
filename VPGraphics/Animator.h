@@ -23,8 +23,6 @@ private:
 
 	void UpdateWorld(double dt, std::weak_ptr<ModelData> ob);
 	void CalcWorld(std::shared_ptr<Node> RootNode);
-	void CalcWorld2(std::vector<std::shared_ptr<Node>>& nodes);
-
 
 	DirectX::SimpleMath::Matrix CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel);
 	DirectX::SimpleMath::Matrix CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey);

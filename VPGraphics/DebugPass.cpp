@@ -39,8 +39,6 @@ void DebugPass::Render()
 	std::shared_ptr<ResourceManager> resourceManager = m_ResourceManager.lock();
 	std::shared_ptr<DebugDrawManager> debugManager = m_DebugDrawManager.lock();
 
-
-
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 	std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
@@ -83,7 +81,7 @@ void DebugPass::Render()
 				gridInfo.XDivs = 200;
 				gridInfo.YDivs = 200;
 				gridInfo.GridSize = 200.f;
-				gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
+				gridInfo.Color = SimpleMath::Color{ 1,1,1, 1 };
 				debugManager->AddTask(gridInfo);
 			}
 				break;

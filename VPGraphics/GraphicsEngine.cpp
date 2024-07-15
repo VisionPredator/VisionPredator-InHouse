@@ -120,16 +120,17 @@ void GraphicsEngine::BeginRender()
 	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
 		if (i == 0)
 		{
-			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), gray);
 		}
 		else
 		{
-			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[1].lock()->Get(), gray);
 		}
 	}
 }
