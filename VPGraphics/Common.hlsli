@@ -88,7 +88,6 @@ Texture2D gIMGUI : register(t9);
 SamplerState samLinear : register(s0);
 
 //STRUCT
-
 struct VS_INPUT
 {
     float4 pos : POSITION;
@@ -98,8 +97,8 @@ struct VS_INPUT
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
  #ifdef SKINNING
-    float4 boneindex : BONEINDEX;
-    float4 boneweight : BONEWEIGHT;
+    float4 boneindex[2] : BONEINDEX;
+    float4 boneweight[2] : BONEWEIGHT;
  #endif
 };
 
@@ -273,7 +272,7 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0,
     diffuse *= att;
     specular *= att;
     
-    result += (specular + diffuse) * lightData.Color/*radiance º¹»ç-(ºû³¯)ÈÖµµ*/ * max(dot(N, L), 0.0);
+    result += (specular + diffuse) * lightData.Color/*radiance º¹»ç-(ºû³¯)ÈÖµµ*/ * max(dot(N, L), 0.0) * lightData.Intensity;
    
    return result;    
 }
@@ -328,6 +327,6 @@ float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F0, 
     diffuse *= att;
     specular *= att;
     
-    result += (specular + diffuse) * lightData.Color/*radiance º¹»ç-(ºû³¯)ÈÖµµ*/ * max(dot(N, L), 0.0);
+    result += (specular + diffuse) * lightData.Color/*radiance º¹»ç-(ºû³¯)ÈÖµµ*/ * max(dot(N, L), 0.0) * lightData.Intensity;
     return result;
 }

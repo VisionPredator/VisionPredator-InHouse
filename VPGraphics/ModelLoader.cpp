@@ -30,10 +30,21 @@ ModelLoader::~ModelLoader()
 void ModelLoader::Initialize()
 {
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
-	LoadModel("Flair.fbx", Filter::SKINNING);
+	//LoadModel("Flair.fbx", Filter::SKINNING);
+	//LoadModel("M_Walking.fbx", Filter::SKINNING);
+	LoadModel("Shooting.fbx", Filter::SKINNING);
+	LoadModel("Shooting2.fbx", Filter::SKINNING);
+	LoadModel("Shooting3.fbx", Filter::SKINNING);
+	LoadModel("Shooting4.fbx", Filter::SKINNING);
+	LoadModel("Shooting5.fbx", Filter::SKINNING);
+	LoadModel("Shooting6.fbx", Filter::SKINNING);
 	//LoadModel("Jogging.fbx", Filter::SKINNING);
-	LoadModel("cerberus.fbx", Filter::STATIC);
-	LoadModel("main.fbx", Filter::STATIC);
+	//LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("main.fbx", Filter::STATIC);
+	//LoadModel("gun.fbx", Filter::STATIC);
+	//LoadModel("For testing_02.fbx", Filter::SKINNING);
+	//LoadModel("untitled_02.fbx", Filter::SKINNING);
+	//LoadModel("walking_.fbx", Filter::SKINNING);
 	//LoadModel("engine_sizedown_1.fbx", Filter::STATIC);
 }
 
@@ -67,7 +78,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				aiProcess_GenUVCoords |		// UV 생성
 				aiProcess_CalcTangentSpace |  // 탄젠트 생성			
 				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
-				aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한
+				//aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
 				/*aiProcess_FlipUVs|
 				aiProcess_FlipWindingOrder|*/
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
@@ -148,6 +159,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 	}
 
 	newMesh->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	newMesh->m_material = mesh->mMaterialIndex;
 
 	///메쉬에따라 읽는방식과 세부 설정을 따로 둬야할듯
 	std::vector<BaseVertex> TextureVertices;
@@ -251,6 +263,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 
 	Model->m_Meshes.push_back(newMesh);
 }
+//머테리얼 저장
 void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial* material)
 {
 	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
@@ -289,13 +302,15 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->AlbeoPath = finalPath;
-		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+
+		//newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 		newMaterial->m_Data.useAMRO.x += 1;
 
 	}
 	else
 	{
-		finalPath = basePath + path.filename().wstring();
+		finalPath = basePath + L"base.png";
 		newMaterial->AlbeoPath = finalPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 	}
@@ -483,56 +498,6 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 		}
 	}
 
-	/*
-	for (int i = 0; i < _Animation->m_Duration; i++)
-	{
-
-
-		std::map<std::wstring, std::vector<std::shared_ptr<Key>>> newMap;
-		for (auto& channel : _Animation->m_Channels)
-		{
-			for (auto& key : channel->scalingkey)
-			{
-				std::vector <std::shared_ptr<Key>> newVector;
-
-				newMap.insert(std::pair<std::wstring, std::vector<std::shared_ptr<Key>>>(channel->nodename, newVector));
-
-				std::shared_ptr<Key> resultAnimation = std::make_shared<Key>();
-				resultAnimation->ScaleMatrix = DirectX::SimpleMath::Matrix::CreateScale(key->value);
-
-				newVector.push_back(resultAnimation);
-			}
-			for (auto& key : _Animation->m_Channels[0]->rotationkey)
-			{
-				if (newMap.find(channel->nodename) != newMap.end())
-				{
-
-				}
-			}
-			for (auto& key : _Animation->m_Channels[0]->positionkey)
-			{
-				if (newMap.find(channel->nodename) != newMap.end())
-				{
-					std::shared_ptr<Key> resultAnimation = std::make_shared<Key>();
-					resultAnimation->TranslateMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(key->value);
-
-					newMap[channel->nodename].push_back(resultAnimation);
-
-				}
-			}
-
-		}
-
-		_Animation->Animationkey.push_back(newMap);
-		int a = 4;
-
-
-	}
-	*/
-
-
-
-
 	Model->m_Animations.push_back(_Animation);
 }
 
@@ -563,10 +528,12 @@ void ModelLoader::ProcessVertexBuffer(std::vector<SkinningVertex>& buffer, aiMes
 
 	vertex.TexCord.x = curMesh->mTextureCoords[0][index].x;
 	vertex.TexCord.y = curMesh->mTextureCoords[0][index].y;
-	for (int i = 0; i < 4; i++)
+
+	//bone data size
+	for (int i = 0; i < 8; i++)
 	{
-		vertex.BoneIndices[i] = 0.f;
-		vertex.BoneWeights[i] = 0.f;
+		vertex.BoneIndices[i] = -01.f;
+		vertex.BoneWeights[i] = -01.f;
 	}
 	buffer.push_back(vertex);
 }
@@ -608,7 +575,6 @@ void ModelLoader::ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace)
 	}
 }
 
-//머테리얼 저장
 void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes)
 {
 	std::string Name = node->mName.C_Str();
@@ -704,17 +670,22 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 			float curWeight = curBone->weights[j];
 
 			//i가 현재 본의 인덱스 
+			int size = 8;
 
-			//
-			if (buffer[curVertexId].BoneIndices[0] == 0.0f ||
-				buffer[curVertexId].BoneIndices[1] == 0.0f ||
-				buffer[curVertexId].BoneIndices[2] == 0.0f ||
-				buffer[curVertexId].BoneIndices[3] == 0.0f)
+			if (buffer[curVertexId].BoneIndices[0] == -1.0f ||
+				buffer[curVertexId].BoneIndices[1] == -1.0f ||
+				buffer[curVertexId].BoneIndices[2] == -1.0f ||
+				buffer[curVertexId].BoneIndices[3] == -1.0f ||
+				buffer[curVertexId].BoneIndices[4] == -1.0f ||
+				buffer[curVertexId].BoneIndices[5] == -1.0f ||
+				buffer[curVertexId].BoneIndices[6] == -1.0f ||
+				buffer[curVertexId].BoneIndices[7] == -1.0f
+				)
 			{
 
-				for (int j = 0; j < 4; j++)
+				for (int j = 0; j < size; j++)
 				{
-					if (buffer[curVertexId].BoneIndices[j] == 0.0f)
+					if (buffer[curVertexId].BoneIndices[j] == -1.0f)
 					{
 						buffer[curVertexId].BoneIndices[j] = static_cast<float>(i);
 						break;
@@ -723,14 +694,19 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 			}
 
 
-			if (buffer[curVertexId].BoneWeights[0] == 0.0f ||
-				buffer[curVertexId].BoneWeights[1] == 0.0f ||
-				buffer[curVertexId].BoneWeights[2] == 0.0f ||
-				buffer[curVertexId].BoneWeights[3] == 0.0f)
+			if (buffer[curVertexId].BoneWeights[0] == -1.0f ||
+				buffer[curVertexId].BoneWeights[1] == -1.0f ||
+				buffer[curVertexId].BoneWeights[2] == -1.0f ||
+				buffer[curVertexId].BoneWeights[3] == -1.0f ||
+				buffer[curVertexId].BoneWeights[4] == -1.0f ||
+				buffer[curVertexId].BoneWeights[5] == -1.0f ||
+				buffer[curVertexId].BoneWeights[6] == -1.0f ||
+				buffer[curVertexId].BoneWeights[7] == -1.0f
+				)
 			{
-				for (int j = 0; j < 4; j++)
+				for (int j = 0; j < size; j++)
 				{
-					if (buffer[curVertexId].BoneWeights[j] == 0.0f)
+					if (buffer[curVertexId].BoneWeights[j] == -1.0f)
 					{
 						buffer[curVertexId].BoneWeights[j] = curWeight;
 						break;
@@ -739,8 +715,8 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 			}
 		}
 
-
 	}
+		int a = 3;
 }
 
 std::shared_ptr<Node> ModelLoader::FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode)

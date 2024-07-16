@@ -218,7 +218,6 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 				DirectX::SimpleMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
 				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
 
-
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
 				{
 					std::wstring id = std::to_wstring(curData->EntityID);
