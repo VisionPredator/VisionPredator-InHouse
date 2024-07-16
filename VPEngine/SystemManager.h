@@ -12,7 +12,7 @@
 		SystemManager();
 		~SystemManager();
 		void Update(float deltatime);
-		void Initialize(SceneManager* entitymanager,Graphics::Interface* Interfaces);
+		void Initialize(SceneManager* entitymanager,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
 
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
@@ -27,6 +27,9 @@
 			return false;
 		}
 		void OnAddTransformSystem(std::any);
+		void OnAddPhysicsSystem(std::any);
+		void OnAddCameraSystem(std::any);
+
 		template <typename T> requires std::is_base_of_v<System, T>
 		T* AddSystem()
 		{
@@ -59,6 +62,10 @@
 			if constexpr (std::is_base_of_v<IStartable, T>)
 			{
 				m_Startables.push_back(system);
+			}
+			if constexpr (std::is_base_of_v<IPhysicable, T>)
+			{
+				system->SetPhysicEngine(m_PhysicEngine);
 			}
 
 			return static_cast<T*>(system);
@@ -94,6 +101,7 @@
 				if (it != m_Startables.end())
 					m_Startables.erase(it);
 			}
+
 
 			// Optional: Delete system object
 			auto it = std::find_if(m_Systems.begin(), m_Systems.end(), [](const auto& ptr) { return dynamic_cast<T*>(ptr.get()) != nullptr; });
@@ -134,6 +142,7 @@
 		std::jthread m_JThread1;
 		std::jthread m_JThread2;
 		SceneManager* m_SceneManager = nullptr;
+		Physic::IPhysx* m_PhysicEngine=nullptr;
 		Graphics::Interface* m_Graphics = nullptr;
 
 		std::vector<std::unique_ptr<System>> m_Systems;

@@ -56,7 +56,7 @@
 class System
 {
 public:
-	System(SceneManager* entityManager) :m_SceneManager(entityManager) {}
+	System(SceneManager* sceneManager) :m_SceneManager(sceneManager) {}
 	virtual ~System() { m_Jthread1 = nullptr; m_Jthread2 = nullptr; }
 
 		template<typename T>

@@ -162,3 +162,32 @@ VPMath::Quaternion PhysxEngine::GetGobalQuaternion(uint32_t entityID)
 	return m_RigidManager->GetGobalQuaternion(entityID);
 
 }
+
+void PhysxEngine::UpdatePhysicEngineInfo()
+{
+	m_EngineInfo;
+	if (!m_PxScene)
+		return;
+	m_PxScene->setGravity({ m_EngineInfo.Gravity.x,m_EngineInfo.Gravity.y,m_EngineInfo.Gravity.z });
+}
+
+void PhysxEngine::ApplyPhysicEngineInfo()
+{
+	UpdatePhysicEngineInfo();
+}
+
+void PhysxEngine::AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity)
+{
+	m_RigidManager->AddVelocity(entityID, Dir, velocity);
+}
+
+void PhysxEngine::AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power)
+{
+}
+
+VPMath::Vector3 PhysxEngine::GetVelocity(uint32_t entityID)
+{
+
+	return m_RigidManager->GetVelocity(entityID);
+
+}

@@ -88,6 +88,10 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	{
 		MeshCompRender(comp);
 	}
+	for (SkinningMeshComponent& comp : COMPITER(SkinningMeshComponent))
+	{
+		SkincompRender(comp);
+	}
 }
 
 void RenderSystem::MeshCompRender(MeshComponent& comp)

@@ -48,7 +48,7 @@ public:
 	VPMath::Vector3 Previous_WorldRotation = {};
 	VPMath::Quaternion Previous_WorldQuaternion = {};
 	VPMath::Vector3 Previous_WorldScale = { 1.f,1.f,1.f };
-
+	VPMath::Matrix Previous_WorldTransform = {};
 
 	VPMath::Vector3 World_Location = {};
 	VPMath::Vector3 World_Rotation = {};

@@ -26,6 +26,8 @@ public:
 	bool HasRigidBody(uint32_t EntityID);
 
 	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q);
+	VPMath::Vector3 GetVelocity(uint32_t entityID);
+	void AddVelocity(uint32_t entityID, VPMath::Vector3 dir, float V);
 	VPMath::Vector3 GetGobalLocation(uint32_t entityID);
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID);
 

@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "Managers.h"
 #include "TestCameraSystem.h"
+#include "PlayerSystem.h"
 VPProcess::VPProcess(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
 	Initialize();
@@ -17,6 +18,8 @@ void VPProcess::Initialize()
 void VPProcess::AddSystems()
 {
 	m_SystemManager->AddSystem<TestCameraSystem>();
+	m_SystemManager->AddSystem<PlayerSystem>();
+
 }
 
 VPProcess::~VPProcess()

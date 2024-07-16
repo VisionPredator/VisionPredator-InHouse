@@ -44,28 +44,7 @@ void CameraSystem::OnSetMainCamera(std::any data)
 
 void CameraSystem::FixedUpdate(float deltaTime)
 {
-	bool IsMainCameraExist = false;
-	///CameraComponent를 순회하면서 Main카메라에 해당하는 컴포넌틑를 찾아 찾을시 순회를 그만둔다.
-	for (CameraComponent& cameracomp : COMPITER(CameraComponent))
-	{
-		if (cameracomp.IsMain != true)
-			continue;
-		IsMainCameraExist = true;
-		
-		CameraCalculation(cameracomp);
-		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj);
 
-		///그런다음 for문 종료하기!
-		break;
-	}
-
-	if (!IsMainCameraExist)
-	{
-		///존재하지 않는다면, 0,0,0에 해당하는 카메라 정보값을 건네주기!
-		//기본 카메라 같은거 만들어 두면 좋을 듯?
-		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
-
-	}
 }
 
 void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
@@ -94,5 +73,31 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 
 void CameraSystem::RenderUpdate(float deltaTime)
 {
+}
+
+void CameraSystem::Update(float deltaTime)
+{
+	bool IsMainCameraExist = false;
+	///CameraComponent를 순회하면서 Main카메라에 해당하는 컴포넌틑를 찾아 찾을시 순회를 그만둔다.
+	for (CameraComponent& cameracomp : COMPITER(CameraComponent))
+	{
+		if (cameracomp.IsMain != true)
+			continue;
+		IsMainCameraExist = true;
+
+		CameraCalculation(cameracomp);
+		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj);
+
+		///그런다음 for문 종료하기!
+		break;
+	}
+
+	if (!IsMainCameraExist)
+	{
+		///존재하지 않는다면, 0,0,0에 해당하는 카메라 정보값을 건네주기!
+		//기본 카메라 같은거 만들어 두면 좋을 듯?
+		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
+
+	}
 }
 

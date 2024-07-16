@@ -20,25 +20,43 @@ void PhysicSystem::Update(float deltaTime)
 void PhysicSystem::FixedUpdate(float deltaTime)
 {
 
-	//for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	//{
-	//	TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-	//	m_PhysxEngine->SetGobalPose(rigidBodyComponent.GetEntityID(), rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
-	//}
-	m_PhysxEngine->Update(deltaTime);
+	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	{
+		uint32_t entityID = rigidBodyComponent.GetEntityID();
+		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
-	//for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	//{
-	//	TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-	//	rigidBodyTransform->World_Location =m_PhysxEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
-	//	rigidBodyTransform->World_Quaternion = m_PhysxEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
-	//	rigidBodyTransform->World_Scale;
-	//	rigidBodyTransform->WorldTransform;
-	//}
+		auto templocation = m_PhysicsEngine->GetGobalLocation(entityID);
+		auto offect_T = (rigidBodyTransform->World_Location - templocation).Length();
+
+		auto tempqute = m_PhysicsEngine->GetGobalQuaternion(entityID);
+		auto rotation = (tempqute.ToEuler() * 180 / VPMath::XM_PI);
+		auto offect_R = (rigidBodyTransform->World_Rotation - rotation).Length();
+
+		if (offect_R > m_rotation_threshold_degrees || offect_T > m_location_threshold)
+		{
+			rigidBodyTransform->World_Quaternion = VPMath::Quaternion::CreateFromYawPitchRoll(
+				VPMath::XMConvertToRadians(rigidBodyTransform->World_Rotation.y),
+				VPMath::XMConvertToRadians(rigidBodyTransform->World_Rotation.x),
+				VPMath::XMConvertToRadians(rigidBodyTransform->World_Rotation.z));
+
+			m_PhysicsEngine->SetGobalPose(entityID, rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
+		}
+
+
+	}
+	m_PhysicsEngine->Update(deltaTime);
+
+	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	{
+		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
+		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
+	}
 
 }
 void PhysicSystem::Initialize()
 {
+		m_PhysicsEngine->ApplyPhysicEngineInfo();
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		Start(rigidBodyComponent.GetEntityID());
@@ -62,18 +80,18 @@ void PhysicSystem::Start(uint32_t gameObjectId)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
-			m_PhysxEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::CAPSULE:
 		{
-			m_PhysxEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
 
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
-			m_PhysxEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 
 		}
 		break;
@@ -87,17 +105,17 @@ void PhysicSystem::Start(uint32_t gameObjectId)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
-			m_PhysxEngine->CreateDynamicBody(rigidComp->BoxInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->CreateDynamicBody(rigidComp->BoxInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::CAPSULE:
 		{
-			m_PhysxEngine->CreateDynamicBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->CreateDynamicBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
-			m_PhysxEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 		}
 		break;
 		default:
@@ -114,7 +132,7 @@ void PhysicSystem::Finish(uint32_t gameObjectId)
 	Entity* entity = m_SceneManager->GetEntity(gameObjectId);
 	if (!entity->HasComponent<RigidBodyComponent>())
 		return;
-	m_PhysxEngine->ReleaseActor(gameObjectId);
+	m_PhysicsEngine->ReleaseActor(gameObjectId);
 }
 
 void PhysicSystem::Finalize()
@@ -148,6 +166,15 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 
 		}
 			break;
+		case VPPhysics::EColliderShape::SPHERE:
+		{
+			debug::SphereInfo temp{};
+			temp.Sphere.Center= rigidTransform->World_Location;
+			temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius;
+			m_Graphics->DrawSphere(temp);
+
+		}
+		break;
 		default:
 			break;
 		}

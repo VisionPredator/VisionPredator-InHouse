@@ -34,8 +34,8 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 	transform.q.w = colliderInfo.WorldQuaternion.w;
 
 
-
 	m_DynamicRigid = physics->createRigidDynamic(transform);
+	m_DynamicRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !colliderInfo.UseGravity);
 
 	// LOCK ¼³Á¤	
 	m_DynamicRigid->setRigidDynamicLockFlags(

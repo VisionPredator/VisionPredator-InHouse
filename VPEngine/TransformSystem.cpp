@@ -166,29 +166,30 @@ void TransformSystem::CalulateTransform(TransformComponent* transform)
 		transform->Previous_Scale = transform->Local_Scale;
 	}
 
-	VPMath::Matrix tempWorldTrasnform;	//trasnform이 바뀌었는지 확인하는 용도!
 	if (transform->HasComponent<Parent>())
 	{
 		const uint32_t parentID = transform->GetComponent<Parent>()->ParentID;
 		const TransformComponent parentTransform = *m_SceneManager->GetComponent<TransformComponent>(parentID);
-		tempWorldTrasnform = transform->LocalTransform * parentTransform.WorldTransform;
+		transform->WorldTransform = transform->LocalTransform * parentTransform.WorldTransform;
 	}
 	else
-		tempWorldTrasnform = transform->LocalTransform;
+		transform->WorldTransform = transform->LocalTransform;
 
-	if (transform->WorldTransform != tempWorldTrasnform)
+	if (transform->WorldTransform != transform->Previous_WorldTransform)
 	{
-		transform->WorldTransform = tempWorldTrasnform;
+		transform->Previous_WorldTransform = transform->WorldTransform;
+
 		transform->WorldTransform.Decompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
 		transform->World_Rotation = (transform->World_Quaternion.ToEuler() * 180 / VPMath::XM_PI);
 		transform->FrontVector = -transform->WorldTransform.Forward();
 		transform->RightVector = transform->WorldTransform.Right();
 		transform->UpVector = transform->WorldTransform.Up();
 
-		transform->Previous_WorldLocation = transform->World_Location;
+
+		transform->Previous_WorldScale = transform->World_Scale;
 		transform->Previous_WorldRotation = transform->World_Rotation;
 		transform->Previous_WorldQuaternion = transform->World_Quaternion;
-		transform->Previous_WorldScale = transform->World_Scale;
+		transform->Previous_WorldLocation = transform->World_Location;
 
 
 	}

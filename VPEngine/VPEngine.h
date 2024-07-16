@@ -23,6 +23,7 @@ protected:
 	virtual void Update();
 	virtual void Render();
 	virtual void EndRender();
+	void AddSystemLater();
 	TimeManager* m_TimeManager;
 	SystemManager* m_SystemManager;
 	SceneManager* m_SceneManager;

@@ -283,6 +283,49 @@ void RigidBodyManager::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath
 	}
 }
 
+VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+	if (temp == nullptr)
+		assert(false);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicBody = static_cast<DynamicRigidBody*>(temp);
+		PxVec3 velocity = dynamicBody->GetPxDynamicRigid()->getLinearVelocity();
+
+		return { velocity.x,velocity.y,velocity.z };
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* staticBody = static_cast<StaticRigidBody*>(temp);
+
+		return { 0,0,0};
+	}
+}
+
+void RigidBodyManager::AddVelocity(uint32_t entityID, VPMath::Vector3 dir, float V)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+	if (temp == nullptr)
+	{
+		assert(false);
+		return;
+	}
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicBody = static_cast<DynamicRigidBody*>(temp);
+		dir.Normalize();
+		PxVec3 force =  { dir.x,dir.y,dir.z };
+		force *= V;
+		dynamicBody->GetPxDynamicRigid()->addForce(force,PxForceMode::eACCELERATION);
+
+	}
+		return;
+
+}
+
 VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 {
 	RigidBody* temp = GetRigidBody(entityID);

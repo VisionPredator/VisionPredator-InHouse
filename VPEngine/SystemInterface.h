@@ -1,9 +1,15 @@
 #pragma once
+#include "../PhysxEngine/IPhysx.h"
+
 namespace Graphics
 {
 	class Interface;
 }
 
+namespace Physic
+{
+	class IPhysx;
+}
 class IUpdatable
 {
 public:
@@ -21,7 +27,13 @@ class IRenderable
 public:
 	virtual void RenderUpdate(float deltaTime) = 0;
 	virtual void SetGraphics(Graphics::Interface* Graphics) { m_Graphics= Graphics; }
-	Graphics::Interface* m_Graphics;
+	Graphics::Interface* m_Graphics = nullptr;
+};
+class IPhysicable
+{
+public:
+	virtual void SetPhysicEngine(Physic::IPhysx* PhysicEngine) { m_PhysicsEngine = PhysicEngine; }
+	Physic::IPhysx* m_PhysicsEngine=nullptr;
 };
 
 class IStartable

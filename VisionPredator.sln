@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPEngine", "VPEngine\VPEngine.vcxproj", "{2C00F534-01BF-4232-BD17-A5AC02072AAC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPTestProcess", "VPTestProcess\VPTestProcess.vcxproj", "{8516B82A-67CC-4121-A308-C19B0DEDA90D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPGraphics", "VPGraphics\VPGraphics.vcxproj", "{6AF1262E-67C4-4738-97AC-A36899FE4316}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VP_Editor", "VP_Editor\VP_Editor.vcxproj", "{E90E05F5-F35A-4376-ACB8-DE5D257126BC}"
@@ -35,14 +33,6 @@ Global
 		{2C00F534-01BF-4232-BD17-A5AC02072AAC}.Release|x64.Build.0 = Release|x64
 		{2C00F534-01BF-4232-BD17-A5AC02072AAC}.Release|x86.ActiveCfg = Release|Win32
 		{2C00F534-01BF-4232-BD17-A5AC02072AAC}.Release|x86.Build.0 = Release|Win32
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Debug|x64.ActiveCfg = Debug|x64
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Debug|x64.Build.0 = Debug|x64
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Debug|x86.ActiveCfg = Debug|Win32
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Debug|x86.Build.0 = Debug|Win32
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Release|x64.ActiveCfg = Release|x64
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Release|x64.Build.0 = Release|x64
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Release|x86.ActiveCfg = Release|Win32
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D}.Release|x86.Build.0 = Release|Win32
 		{6AF1262E-67C4-4738-97AC-A36899FE4316}.Debug|x64.ActiveCfg = Debug|x64
 		{6AF1262E-67C4-4738-97AC-A36899FE4316}.Debug|x64.Build.0 = Debug|x64
 		{6AF1262E-67C4-4738-97AC-A36899FE4316}.Debug|x86.ActiveCfg = Debug|Win32
@@ -88,7 +78,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{8516B82A-67CC-4121-A308-C19B0DEDA90D} = {2F00B69A-45E0-4776-A6F8-47E4E473AD95}
 		{83A2C131-DBC1-4C99-B040-8357D8EDB567} = {2F00B69A-45E0-4776-A6F8-47E4E473AD95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

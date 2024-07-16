@@ -7,7 +7,13 @@ namespace Physic
 }
 
 class PhysicSystem :
-    public System, public IUpdatable, public IFixedUpdatable,public IStartable, public EventSubscriber,public IRenderable
+    public System, 
+    public IUpdatable, 
+    public IFixedUpdatable,
+    public IStartable,
+    public IPhysicable, 
+    public IRenderable,
+    public EventSubscriber
 {
 public:
     PhysicSystem(SceneManager* sceneManager);
@@ -23,10 +29,9 @@ public:
     void Start(uint32_t gameObjectId) override;
     void Finish(uint32_t gameObjectId) override;
     void Finalize() override;
-	void SetPhysics(Physic::IPhysx* interfaces) { m_PhysxEngine = interfaces; }
 private: 
-    Physic::IPhysx* m_PhysxEngine;
-
+    const float m_location_threshold = 0.001f;
+    const float m_rotation_threshold_degrees= 0.001f;
     // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
 };

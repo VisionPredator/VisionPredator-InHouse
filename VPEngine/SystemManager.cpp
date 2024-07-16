@@ -2,30 +2,35 @@
 #include "SystemManager.h"
 #include "EventManager.h"
 #include "TransformSystem.h"
+#include "PhysicSystem.h"
+#include "CameraSystem.h"
 
 	SystemManager::SystemManager()
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnAddTransformSystem",CreateSubscriber(&SystemManager::OnAddTransformSystem));
+		EventManager::GetInstance().Subscribe("OnAddPhysicsSystem",CreateSubscriber(&SystemManager::OnAddPhysicsSystem));
+		EventManager::GetInstance().Subscribe("OnAddCameraSystem",CreateSubscriber(&SystemManager::OnAddCameraSystem));
 	}
 	SystemManager::~SystemManager()
 	{
 
 	}
-	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* Interfaces)
-	{
-		m_SceneManager = entitymanager;
-		m_Graphics = Interfaces;
 
-
-	}
 
 	void SystemManager::Update(float deltatime)
 	{
 		for (auto updateable : m_Updatables)
 			updateable->Update(deltatime);
 
+	}
+
+	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
+	{
+		m_SceneManager = entitymanager;
+		m_Graphics = GraphicsInterface;
+		m_PhysicEngine = physicInterface;
 	}
 
 	void SystemManager::FixedUpdate(float deltatime)
@@ -60,14 +65,16 @@
 
 	void SystemManager::OnAddTransformSystem(std::any)
 	{
-		if (IsSystemAdded<TransformSystem>())
-			return;
-		m_Systems.push_back(std::make_unique<TransformSystem>(m_SceneManager));
+		AddSystem<TransformSystem>();
+	}
 
-		if constexpr (std::is_base_of_v<IUpdatable, TransformSystem>)
-		{
-			m_Updatables.push_back(static_cast<TransformSystem*>(m_Systems.back().get()));
-		}
+	void SystemManager::OnAddPhysicsSystem(std::any)
+	{
+		AddSystem<PhysicSystem>();
+	}
+		void SystemManager::OnAddCameraSystem(std::any)
+	{
+		AddSystem<CameraSystem>();
 	}
 
 

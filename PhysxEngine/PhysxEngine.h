@@ -36,30 +36,24 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
-
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
-
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void ReleaseActor(uint32_t entityID) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
-
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
-
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
-
+	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
+	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
+	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
+	void UpdatePhysicEngineInfo();
+	void ApplyPhysicEngineInfo() override;
 
 	// IPhysx을(를) 통해 상속됨
-	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
+	void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) override;
 
-	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
+	void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) override;
 
-	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
-
+	// IPhysx을(를) 통해 상속됨
+	VPMath::Vector3 GetVelocity(uint32_t entityID) override;
 };
 

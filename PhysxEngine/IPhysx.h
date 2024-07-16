@@ -22,9 +22,16 @@ public:
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicEngineInfo()abstract;
 	virtual void  SetPhysicEngineInfo(VPPhysics::PhysicsInfo engineinfo) abstract;
+	virtual void  ApplyPhysicEngineInfo() abstract;
 	virtual void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) abstract;
 	virtual VPMath::Vector3 GetGobalLocation(uint32_t entityID) abstract;
 	virtual VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) abstract;
+
+
+
+	virtual void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) abstract;
+	virtual VPMath::Vector3 GetVelocity(uint32_t entityID)abstract;
+	virtual void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) abstract;
 
 };
 
