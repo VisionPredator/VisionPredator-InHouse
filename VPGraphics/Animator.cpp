@@ -139,6 +139,125 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 	CalcWorld(curOb->m_RootNode);
 }
 
+//test
+void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
+{
+	std::shared_ptr<RenderData> curOb = ob.lock();
+	if (curOb->isChange)
+	{
+		std::weak_ptr<ModelData> curModel;
+		std::weak_ptr<ModelData> preModel;
+
+		curModel = m_ResourceManager.lock()->Get<ModelData>(curOb->curAnimation);
+		preModel = m_ResourceManager.lock()->Get<ModelData>(curOb->preAnimation);
+
+		//이전 애니메이션이랑 지금 애니메이션이 유효한가
+		if (preModel.lock() != nullptr && curModel.lock() != nullptr)
+		{
+			DirectX::SimpleMath::Matrix rotation{};
+			DirectX::SimpleMath::Matrix translate{};
+			DirectX::SimpleMath::Matrix scale{};
+
+			std::shared_ptr<Key> curT;
+			std::shared_ptr<Key> curS;
+			std::shared_ptr<Key> curR;
+
+			std::shared_ptr<Key> preT;
+			std::shared_ptr<Key> preS;
+			std::shared_ptr<Key> preR;
+
+			for (auto& ani : curModel.lock()->m_Animations[0]->m_Channels)
+			{
+
+				for (auto& pos : ani->positionkey)
+				{
+					if (pos->time > curOb->duration)
+					{
+						break;
+					}
+
+					curT = pos;
+				}
+
+				for (auto& scal : ani->scalingkey)
+				{
+					if (scal->time > curOb->duration)
+					{
+						break;
+					}
+
+					curS = scal;
+				}
+
+				for (auto& rot : ani->rotationkey)
+				{
+					if (rot->time > curOb->duration)
+					{
+						break;
+					}
+
+					curR = rot;
+				}
+			}
+
+			for (auto& ani : preModel.lock()->m_Animations[0]->m_Channels)
+			{
+
+				for (auto& pos : ani->positionkey)
+				{
+					if (pos->time > curOb->preDuration)
+					{
+						break;
+					}
+
+					preT = pos;
+				}
+
+				for (auto& scal : ani->scalingkey)
+				{
+					if (scal->time > curOb->preDuration)
+					{
+						break;
+					}
+
+					preS = scal;
+				}
+
+				for (auto& rot : ani->rotationkey)
+				{
+					if (rot->time > curOb->preDuration)
+					{
+						break;
+					}
+
+					preR = rot;
+				}
+			}
+
+
+			DirectX::SimpleMath::Vector3 afterLerpT = DirectX::SimpleMath::Vector3::Lerp(curT->value, preT->value, 0.5);
+			translate = DirectX::SimpleMath::Matrix::CreateTranslation(afterLerpT);
+
+			DirectX::SimpleMath::Vector3 afterLerpS = DirectX::SimpleMath::Vector3::Lerp(curS->value, preS->value, 0.5);
+			scale = DirectX::SimpleMath::Matrix::CreateScale(afterLerpS);
+
+			DirectX::SimpleMath::Quaternion afterLerpR = DirectX::SimpleMath::Quaternion::Lerp(curR->rotation, preR->rotation, 0.5);
+			rotation = DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerpR);
+
+			// T R S * local 읽어올때 전치 시켜서 가져올때는 S R T가 아니다
+			//XMMATRIX total = translate * rotation * scale;
+			DirectX::SimpleMath::Matrix total = scale * rotation * translate;
+
+			//std::shared_ptr<Node> curAni = ani->node.lock();
+			//curAni->m_Local = total.Transpose();
+		}
+	}
+	else
+	{
+		//기존에 하던대로
+	}
+}
+
 void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 {
 	if (!RootNode->HasParents)

@@ -169,14 +169,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		int wmId = LOWORD(wParam);
 
+
 		// 메뉴 선택을 구문 분석합니다:
 		switch (wmId)
 		{
+
 		case SIZE_RESTORED:
 		case SIZE_MAXIMIZED:
-		case SIZE_MINIMIZED:
-				VPEngine::isResize = true;
+			VPEngine::isResize = true;
 				break;
+
 		case IDM_ABOUT:
 
 			break;
@@ -187,7 +189,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 
-		VPEngine::isResize = true;
 	}
 	break;
 	case WM_KEYDOWN:

@@ -48,7 +48,7 @@ public:
 	virtual void EraseObject(uint32_t EntityID) override;
 
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-	virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)override;
+	virtual void UpdateModel(uint32_t EntityID, RenderData& data)override;
 
 
 	virtual void AddLight(uint32_t EntityID, LightType kind, LightData data) override;

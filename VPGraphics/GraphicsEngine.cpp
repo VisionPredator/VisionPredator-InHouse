@@ -126,7 +126,7 @@ void GraphicsEngine::BeginRender()
 	{
 		if (i == 0)
 		{
-			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), gray);
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
 		}
 		else
 		{
@@ -208,11 +208,23 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Camera.lock()->Update();
 }
 
-void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)
+void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 {
-	m_RenderList[EntityID] = data;
+	m_RenderList[EntityID]->EntityID = data.EntityID;
+	m_RenderList[EntityID]->Filter = data.Filter;
+	m_RenderList[EntityID]->Name = std::move(data.Name);
+	m_RenderList[EntityID]->FBX = std::move(data.FBX);
+	m_RenderList[EntityID]->world = data.world;
+	m_RenderList[EntityID]->local = data.local;
+	m_RenderList[EntityID]->duration = data.duration;
+	m_RenderList[EntityID]->preDuration = data.preDuration;
+	m_RenderList[EntityID]->isChange = data.isChange;
+	m_RenderList[EntityID]->isPlay = data.isPlay;
+	m_RenderList[EntityID]->curAnimation = std::move(data.curAnimation);
+	m_RenderList[EntityID]->preAnimation = std::move(data.preAnimation);
 
-	switch (data->Filter)
+
+	switch (data.Filter)
 	{
 		case MeshFilter::Axis:
 		case MeshFilter::Grid:

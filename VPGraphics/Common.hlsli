@@ -127,6 +127,8 @@ float3 FresnelSchlick(float3 F0, float cosTheta)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+// GGX/Towbridge-Reitz normal distribution function.
+// Uses Disney's reparametrization of alpha = roughness^2.
 float Calc_D(float3 N, float3 H, float roughness)
 {
     //DistributionGGX
@@ -153,6 +155,7 @@ float GeometrySchlickGGX(float NdotV, float k)
     return num / denom;
 }
 
+// Schlick-GGX approximation of geometric attenuation function using Smith's method.
 float Calc_G(float3 N, float3 V, float3 L, float roughness)
 {
     float r = (roughness + 1.0);
@@ -193,7 +196,7 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F0,float3 albedo,
     float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
     kD *= (1.0 - metalicValue);
-    diffuse = kD * albedo / Pi;
+    diffuse = kD * albedo * Pi;
    
     
     //Specular BRDF
@@ -254,8 +257,7 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0,
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
     kD *= 1.0 - metalicValue;
     
-    diffuse = kD * albedo / Pi;
-    
+    diffuse = kD * albedo * Pi;
     
    //Specular BRDF
     

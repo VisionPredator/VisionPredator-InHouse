@@ -16,6 +16,7 @@
 #include "Desc.h"
 #include "CBuffer.h"
 
+#include "pbrmaterial.h"
 
 
 ModelLoader::ModelLoader(std::shared_ptr<ResourceManager> manager, std::shared_ptr<Device> device) : m_Device(device), m_ResourceManager(manager)
@@ -30,22 +31,8 @@ ModelLoader::~ModelLoader()
 void ModelLoader::Initialize()
 {
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
-	//LoadModel("Flair.fbx", Filter::SKINNING);
-	//LoadModel("M_Walking.fbx", Filter::SKINNING);
-	LoadModel("Shooting.fbx", Filter::SKINNING);
-	LoadModel("Shooting2.fbx", Filter::SKINNING);
-	LoadModel("Shooting3.fbx", Filter::SKINNING);
-	LoadModel("Shooting4.fbx", Filter::SKINNING);
-	LoadModel("Shooting5.fbx", Filter::SKINNING);
-	LoadModel("Shooting6.fbx", Filter::SKINNING);
-	//LoadModel("Jogging.fbx", Filter::SKINNING);
-	//LoadModel("cerberus.fbx", Filter::STATIC);
-	//LoadModel("main.fbx", Filter::STATIC);
-	//LoadModel("gun.fbx", Filter::STATIC);
-	//LoadModel("For testing_02.fbx", Filter::SKINNING);
-	//LoadModel("untitled_02.fbx", Filter::SKINNING);
-	//LoadModel("walking_.fbx", Filter::SKINNING);
-	//LoadModel("engine_sizedown_1.fbx", Filter::STATIC);
+	LoadModel("Flair.fbx", Filter::SKINNING);
+	LoadModel("cerberus.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -302,9 +289,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->AlbeoPath = finalPath;
-		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
 
-		//newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 		newMaterial->m_Data.useAMRO.x += 1;
 
 	}
@@ -393,8 +379,6 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
 		newMaterial->m_Data.useAMRO.w += 1;
 	}
-
-
 
 	Model->m_Materials.push_back(newMaterial);
 }
@@ -532,8 +516,8 @@ void ModelLoader::ProcessVertexBuffer(std::vector<SkinningVertex>& buffer, aiMes
 	//bone data size
 	for (int i = 0; i < 8; i++)
 	{
-		vertex.BoneIndices[i] = -01.f;
-		vertex.BoneWeights[i] = -01.f;
+		vertex.BoneIndices[i] = 0.f;
+		vertex.BoneWeights[i] = 0.f;
 	}
 	buffer.push_back(vertex);
 }
@@ -672,20 +656,20 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 			//i가 현재 본의 인덱스 
 			int size = 8;
 
-			if (buffer[curVertexId].BoneIndices[0] == -1.0f ||
-				buffer[curVertexId].BoneIndices[1] == -1.0f ||
-				buffer[curVertexId].BoneIndices[2] == -1.0f ||
-				buffer[curVertexId].BoneIndices[3] == -1.0f ||
-				buffer[curVertexId].BoneIndices[4] == -1.0f ||
-				buffer[curVertexId].BoneIndices[5] == -1.0f ||
-				buffer[curVertexId].BoneIndices[6] == -1.0f ||
-				buffer[curVertexId].BoneIndices[7] == -1.0f
+			if (buffer[curVertexId].BoneIndices[0] == 0.f ||
+				buffer[curVertexId].BoneIndices[1] == 0.f ||
+				buffer[curVertexId].BoneIndices[2] == 0.f ||
+				buffer[curVertexId].BoneIndices[3] == 0.f ||
+				buffer[curVertexId].BoneIndices[4] == 0.f ||
+				buffer[curVertexId].BoneIndices[5] == 0.f ||
+				buffer[curVertexId].BoneIndices[6] == 0.f ||
+				buffer[curVertexId].BoneIndices[7] == 0.f
 				)
 			{
 
 				for (int j = 0; j < size; j++)
 				{
-					if (buffer[curVertexId].BoneIndices[j] == -1.0f)
+					if (buffer[curVertexId].BoneIndices[j] == 0.0f)
 					{
 						buffer[curVertexId].BoneIndices[j] = static_cast<float>(i);
 						break;
@@ -694,19 +678,19 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 			}
 
 
-			if (buffer[curVertexId].BoneWeights[0] == -1.0f ||
-				buffer[curVertexId].BoneWeights[1] == -1.0f ||
-				buffer[curVertexId].BoneWeights[2] == -1.0f ||
-				buffer[curVertexId].BoneWeights[3] == -1.0f ||
-				buffer[curVertexId].BoneWeights[4] == -1.0f ||
-				buffer[curVertexId].BoneWeights[5] == -1.0f ||
-				buffer[curVertexId].BoneWeights[6] == -1.0f ||
-				buffer[curVertexId].BoneWeights[7] == -1.0f
+			if (buffer[curVertexId].BoneWeights[0] == 0.0f ||
+				buffer[curVertexId].BoneWeights[1] == 0.0f ||
+				buffer[curVertexId].BoneWeights[2] == 0.0f ||
+				buffer[curVertexId].BoneWeights[3] == 0.0f ||
+				buffer[curVertexId].BoneWeights[4] == 0.0f ||
+				buffer[curVertexId].BoneWeights[5] == 0.0f ||
+				buffer[curVertexId].BoneWeights[6] == 0.0f ||
+				buffer[curVertexId].BoneWeights[7] == 0.0f
 				)
 			{
 				for (int j = 0; j < size; j++)
 				{
-					if (buffer[curVertexId].BoneWeights[j] == -1.0f)
+					if (buffer[curVertexId].BoneWeights[j] == 0.0f)
 					{
 						buffer[curVertexId].BoneWeights[j] = curWeight;
 						break;
