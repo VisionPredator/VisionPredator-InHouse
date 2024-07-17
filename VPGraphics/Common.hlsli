@@ -193,7 +193,7 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F0,float3 albedo,
     
     //Diffuse BRDF
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
-    float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
+    float3 kD = float3(1.0, 1.0, 1.0) - F;//    +float3(0.4, 0.4, 0.4); // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
     kD *= (1.0 - metalicValue);
     diffuse = kD * albedo * Pi;

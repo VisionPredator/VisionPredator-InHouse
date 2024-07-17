@@ -38,7 +38,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     if (AMRO.y >= 1)
     {
         output.Metalic = gMetalic.Sample(samLinear, input.tex);        
-    }\
+    }
     
     output.Roughness = 1.f;
     

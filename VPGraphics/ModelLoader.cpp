@@ -33,6 +33,9 @@ void ModelLoader::Initialize()
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
 	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
+	LoadModel("floor1_low.fbx", Filter::STATIC);
+	LoadModel("Idle.fbx", Filter::SKINNING);
+	LoadModel("GunPlay.fbx", Filter::SKINNING);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -478,8 +481,25 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 				curKey->rotation.w = curAnimation.mValue.w;
 			}
 			prevTime = curAnimation.mTime;
-
 		}
+
+		for (unsigned int j = 0; j < curChannel->mNumRotationKeys; j++)
+		{
+			DirectX::SimpleMath::Matrix rotation{};
+			DirectX::SimpleMath::Matrix translate{};
+			DirectX::SimpleMath::Matrix scale{};
+
+			translate = DirectX::SimpleMath::Matrix::CreateTranslation(ob_Channel->positionkey[j]->value);
+
+			scale = DirectX::SimpleMath::Matrix::CreateScale(ob_Channel->scalingkey[j]->value);
+
+			scale = DirectX::SimpleMath::Matrix::CreateFromQuaternion(ob_Channel->rotationkey[j]->rotation);
+
+			DirectX::SimpleMath::Matrix total = scale * rotation * translate;
+
+			ob_Channel->totals.push_back(total);
+		}
+		
 	}
 
 	Model->m_Animations.push_back(_Animation);
