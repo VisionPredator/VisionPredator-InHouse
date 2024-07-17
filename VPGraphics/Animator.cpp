@@ -74,18 +74,26 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 	{
 		for (auto& ani : curOb->m_Animations[0]->m_Channels)
 		{
-			int index = 0;
+			int cur = 0;
 			for (int i = 0; i < ani->totals.size(); i++)
 			{
 				if (i >= time)
 				{
 					break;
 				}
-				index = i;
+				cur = i;
 			}
 
+			int next = cur + 1;
+			if (next >= ani->totals.size())
+			{
+				next = 0;
+			}
+
+			float t = time - cur;
+
 			std::shared_ptr<Node> curAni = ani->node.lock();
-			curAni->m_Local = ani->totals[index].Transpose();
+			curAni->m_Local = DirectX::SimpleMath::Matrix::Lerp(ani->totals[cur], ani->totals[next], t).Transpose();
 		}
 	}
 
