@@ -264,23 +264,29 @@ bool RigidBodyManager::HasRigidBody(uint32_t EntityID)
 void RigidBodyManager::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
 {
 	RigidBody* temp = GetRigidBody(entityID);
-
+	if (!temp) {
+		// RigidBody가 존재하지 않는 경우 처리
+		return;
+	}
+	PxVec3 tempPos = { P.x, P.y, P.z };
+	Q.Normalize(); // Normalize quaternion before setting
+	physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
 	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
 	{
 		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
-		PxVec3 tempPos = { P.x, P.y, P.z };
-		physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
+
 		dynamicbody->GetPxDynamicRigid()->setGlobalPose({ tempPos ,tempQuat });
 		return;
 	}
 	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
 	{
 		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
-		PxVec3 tempPos = { P.x, P.y, P.z };
-		physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
+
 		dynamicbody->GetPxStaticRigid()->setGlobalPose({ tempPos ,tempQuat });
 		return;
 	}
+	
+	assert(false);
 }
 
 VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
@@ -326,7 +332,7 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, VPMath::Vector3 dir, float
 
 }
 
-VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
+VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID) 
 {
 	RigidBody* temp = GetRigidBody(entityID);
 
@@ -339,33 +345,37 @@ VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 	}
 	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
 	{
-		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
-		auto pose = dynamicbody->GetPxStaticRigid()->getGlobalPose();
+		StaticRigidBody* staticbody = static_cast<StaticRigidBody*>(temp);
+		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
 		VPMath::Vector3 templocation = { pose.p.x ,pose.p.y ,pose.p.z };
 		return templocation;
 	}
+	assert(false); // Add an assert to handle the unexpected case
+	return {};
 }
 
-VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
-{
+VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID) {
 	RigidBody* temp = GetRigidBody(entityID);
 
 	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
 	{
 		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
 		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
-		VPMath::Quaternion templocation = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
-		return templocation;
+		VPMath::Quaternion tempQuat = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
+		tempQuat.Normalize(); // Normalize quaternion after getting it
+		return tempQuat;
 	}
 	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
 	{
-		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
-		auto pose = dynamicbody->GetPxStaticRigid()->getGlobalPose();
-		VPMath::Quaternion templocation = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
-		return templocation;
+		StaticRigidBody* staticbody = static_cast<StaticRigidBody*>(temp);
+		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
+		VPMath::Quaternion tempQuat = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
+		tempQuat.Normalize(); // Normalize quaternion after getting it
+		return tempQuat;
 	}
+	assert(false); // Add an assert to handle the unexpected case
+	return {};
 }
-
 void RigidBodyManager::AddBodyScene(RigidBody* body)
 {
 	

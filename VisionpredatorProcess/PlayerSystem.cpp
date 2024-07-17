@@ -40,6 +40,8 @@ void PlayerSystem::Update(float deltaTime)
 
 }
 
-void PlayerSystem::FixedUpdate(float deltaTime)
+
+
+void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
 }

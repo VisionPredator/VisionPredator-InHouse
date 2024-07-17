@@ -36,7 +36,6 @@ physx::PxFilterFlags CustomSimulationFilterShader(
 	// 필터 데이터 충돌 체크 ( 시뮬레이션 )
  	if ((((1 << filterData0.word0) & filterData1.word1) > 0) && (((1 << filterData1.word0) & filterData0.word1) > 0))
 	{
-		std::cout << "onContact" << std::endl;
 
 		pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT
 			| physx::PxPairFlag::eDETECT_CCD_CONTACT
@@ -57,6 +56,7 @@ physx::PxFilterFlags CustomSimulationFilterShader(
 
 PhysxEngine::PhysxEngine()
 {
+	EventManager::GetInstance().Subscribe("OnSetPhysicInfo", CreateSubscriber(&PhysxEngine::OnSetPhysicInfo));
 }
 
 PhysxEngine::~PhysxEngine()
@@ -101,30 +101,48 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
-	m_UpdateTime = (float)1 / GetPhysicEngineInfo().FrameRate;
 	m_ElapsedTime += deltatime;
+	m_UpdateTime = (float)1 / GetPhysicsInfo().FrameRate;
+	bool IsUpdated = false;
 	while (m_ElapsedTime > m_UpdateTime)
 	{
 		m_PxScene->simulate(m_UpdateTime);
 		m_PxScene->fetchResults(true);
 		m_ElapsedTime -= m_UpdateTime;
+		IsUpdated = true;
 	}
+
+	if (m_ElapsedTime > 0&& IsUpdated)
+	{
+		m_PxScene->simulate(m_ElapsedTime);
+		m_PxScene->fetchResults(true);
+
+		m_ElapsedTime = 0;
+	}
+
+
+}
+
+void PhysxEngine::OnSetPhysicInfo(std::any data)
+{
+	VPPhysics::PhysicsInfo tempPhysicsInfo = std::any_cast<VPPhysics::PhysicsInfo>(data);
+	SetPhysicsInfo(tempPhysicsInfo);
 
 }
 
 void PhysxEngine::CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype)
 {
-	m_RigidManager->CreateStaticBody(boxinfo, collidertype, m_EngineInfo);
+	m_RigidManager->CreateStaticBody(boxinfo, collidertype, m_PhyiscsInfo);
 }
 
 void PhysxEngine::CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype)
 {
-	m_RigidManager->CreateStaticBody(sphereinfo, collidertype, m_EngineInfo);
+	m_RigidManager->CreateStaticBody(sphereinfo, collidertype, m_PhyiscsInfo);
 }
 
 void PhysxEngine::CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
 {
-	m_RigidManager->CreateStaticBody(capsuleinfo, collidertype, m_EngineInfo);
+	m_RigidManager->CreateStaticBody(capsuleinfo, collidertype, m_PhyiscsInfo);
 }
 
 void PhysxEngine::ReleaseActor(uint32_t entityID)
@@ -134,17 +152,17 @@ void PhysxEngine::ReleaseActor(uint32_t entityID)
 
 void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype)
 {
-	m_RigidManager->CreateDynamicBody(boxinfo, collidertype, m_EngineInfo);
+	m_RigidManager->CreateDynamicBody(boxinfo, collidertype, m_PhyiscsInfo);
 }
 
 void PhysxEngine::CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype)
 {
-	m_RigidManager->CreateDynamicBody(sphereinfo, collidertype, m_EngineInfo);
+	m_RigidManager->CreateDynamicBody(sphereinfo, collidertype, m_PhyiscsInfo);
 }
 
 void PhysxEngine::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
 {
-	m_RigidManager->CreateDynamicBody(capsuleinfo, collidertype, m_EngineInfo);
+	m_RigidManager->CreateDynamicBody(capsuleinfo, collidertype, m_PhyiscsInfo);
 }
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
@@ -165,10 +183,10 @@ VPMath::Quaternion PhysxEngine::GetGobalQuaternion(uint32_t entityID)
 
 void PhysxEngine::UpdatePhysicEngineInfo()
 {
-	m_EngineInfo;
+	//m_EngineInfo;
 	if (!m_PxScene)
 		return;
-	m_PxScene->setGravity({ m_EngineInfo.Gravity.x,m_EngineInfo.Gravity.y,m_EngineInfo.Gravity.z });
+	m_PxScene->setGravity({ m_PhyiscsInfo.Gravity.x,m_PhyiscsInfo.Gravity.y,m_PhyiscsInfo.Gravity.z });
 }
 
 void PhysxEngine::ApplyPhysicEngineInfo()

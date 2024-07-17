@@ -9,9 +9,7 @@
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
-		EventManager::GetInstance().Subscribe("OnAddTransformSystem",CreateSubscriber(&SystemManager::OnAddTransformSystem));
-		EventManager::GetInstance().Subscribe("OnAddPhysicsSystem",CreateSubscriber(&SystemManager::OnAddPhysicsSystem));
-		EventManager::GetInstance().Subscribe("OnAddCameraSystem",CreateSubscriber(&SystemManager::OnAddCameraSystem));
+
 	}
 	SystemManager::~SystemManager()
 	{
@@ -62,21 +60,17 @@
 		for (auto renderable : m_Renderables)
 			renderable->RenderUpdate(deltatime);
 	}
-
-	void SystemManager::OnAddTransformSystem(std::any)
+	void SystemManager::LateUpdatable(float deltatime)
 	{
-		AddSystem<TransformSystem>();
+		for (auto lateUpdatable : m_LateUpdatable)
+			lateUpdatable->LateUpdate(deltatime);
 	}
 
-	void SystemManager::OnAddPhysicsSystem(std::any)
+	void SystemManager::PhysicUpdatable(float deltatime)
 	{
-		AddSystem<PhysicSystem>();
+		for (auto physicsUpdatable : m_PhysicUpdatable)
+			physicsUpdatable->PhysicsUpdate(deltatime);
 	}
-		void SystemManager::OnAddCameraSystem(std::any)
-	{
-		AddSystem<CameraSystem>();
-	}
-
 
 
 

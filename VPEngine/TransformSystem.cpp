@@ -56,11 +56,6 @@ void TransformSystem::OnSetParentAndChild(std::any Parent_Child)
 		return;
 	TransformComponent* childTransform = m_SceneManager->GetComponent<TransformComponent>(ChildID);
 
-	//if (!childTransform->HasComponent<Parent>())
-	//	return;
-	//if (childTransform->GetComponent<Parent>()->ParentID != ParentID)
-	//	return;
-
 	TransformComponent* parentTransform = m_SceneManager->GetComponent<TransformComponent>(ParentID);
 
 	VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
@@ -94,7 +89,7 @@ void TransformSystem::CalulateTransform(TransformComponent* transform)
 				VPMath::XMConvertToRadians(transform->World_Rotation.x),
 				VPMath::XMConvertToRadians(transform->World_Rotation.z));
 		}
-		if (transform->World_Quaternion != transform->Previous_WorldQuaternion)
+		else if (transform->World_Quaternion != transform->Previous_WorldQuaternion)
 		{
 			transform->World_Rotation = (transform->World_Quaternion.ToEuler() * 180 / VPMath::XM_PI);
 		}
@@ -107,7 +102,8 @@ void TransformSystem::CalulateTransform(TransformComponent* transform)
 		transform->Previous_WorldLocation = transform->World_Location;
 		transform->Previous_WorldQuaternion = transform->World_Quaternion;
 		// Check if there is a parent and recalculate local transform
-		if (transform->HasComponent<Parent>()) {
+		if (transform->HasComponent<Parent>())
+		{
 			const TransformComponent parentTransform = *m_SceneManager->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
 			VPMath::Matrix inverseParentWorldTransform = parentTransform.WorldTransform.Invert();
 			transform->LocalTransform = transform->WorldTransform * inverseParentWorldTransform;
@@ -151,9 +147,7 @@ void TransformSystem::CalulateTransform(TransformComponent* transform)
 		}
 		else
 		{
-			VPMath::Quaternion temp = transform->Local_Quaternion;
-			VPMath::Vector3 temp2 = (temp.ToEuler() * 180 / VPMath::XM_PI);
-			transform->Local_Rotation = temp2;
+			transform->Local_Rotation = transform->Local_Quaternion.ToEuler() * 180.0f / VPMath::XM_PI;
 		}
 
 		transform->LocalTransform = VPMath::Matrix::CreateScale(transform->Local_Scale) *

@@ -1,6 +1,7 @@
 #pragma once
 #include "resource.h"
 #include "../VPGraphics/IGraphics.h"
+#include "EventSubscriber.h"
 namespace Physic
 {
 class IPhysx;
@@ -9,8 +10,9 @@ class IPhysx;
 class TimeManager;
 class SystemManager;
 class SceneManager;
+class EventSubscriber;
 
-class VPEngine
+class VPEngine:public EventSubscriber
 {
 public:
 	HWND m_hWnd = nullptr;
@@ -23,7 +25,7 @@ protected:
 	virtual void Update();
 	virtual void Render();
 	virtual void EndRender();
-	void AddSystemLater();
+	void OnAddSystemLater(std::any);
 	TimeManager* m_TimeManager;
 	SystemManager* m_SystemManager;
 	SceneManager* m_SceneManager;

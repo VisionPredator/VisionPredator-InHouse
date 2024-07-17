@@ -170,7 +170,7 @@ void Toolbar::PhysicEngineImGui()
 {
 	if (!m_ShowPhysicSettings) // Show the settings window if the flag is true
 	{
-		m_phsicsinfo = m_PhysicEngine->GetPhysicEngineInfo();
+		m_phsicsinfo = m_SceneManager->GetScenePhysic();
 		return;
 	}
 	// Static cache for enum members to avoid recomputation
@@ -257,7 +257,8 @@ void Toolbar::PhysicEngineImGui()
 		if (ImGui::Button("Apply"))
 		{
 			// 수정된 정보를 물리 엔진에 설정합니다.
-			m_PhysicEngine->SetPhysicEngineInfo(m_phsicsinfo);
+			m_SceneManager->SetScenePhysic(m_phsicsinfo);
+			m_PhysicEngine->SetPhysicsInfo(m_SceneManager->GetScenePhysic());
 			m_ShowPhysicSettings = false;
 		}
 	}

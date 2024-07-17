@@ -18,6 +18,7 @@
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
 #include "PhysicSystem.h"
+#include "..\VisionpredatorProcess\TestCameraSystem.h"
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
@@ -48,6 +49,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_PhysicEngine = new PhysxEngine;
 	m_Graphics->Initialize();
 	VPRegister::Register_Metadata();
+	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
 
 	m_TimeManager = new TimeManager;
 	m_SceneManager = new SceneManager;
@@ -60,7 +62,6 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 	this->Addsystem();
-	AddSystemLater();
 
 }
 
@@ -74,7 +75,6 @@ VPEngine::~VPEngine()
 	delete m_Graphics;
 	delete m_PhysicEngine;
 	InputManager::GetInstance().Release();
-	EventManager::GetInstance().Release();
 }
 void VPEngine::Addsystem()
 {
@@ -82,6 +82,10 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<AnimationSystem>();
+	m_SystemManager->AddSystem<PhysicSystem>();
+	m_SystemManager->AddSystem<CameraSystem>();
+	m_SystemManager->AddSystem<TestCameraSystem>();
+	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 
 }
 void VPEngine::Loop()
@@ -104,13 +108,9 @@ void VPEngine::Loop()
 		{
 			Update();
 			Render();
-			EndRender();
-
+        	EndRender();
 		}
 	}
-
-
-
 }
 
 
@@ -118,15 +118,18 @@ void VPEngine::Loop()
 
 void VPEngine::Update()
 {
-	EventManager::GetInstance().Update(m_DeltaTime);
-	InputManager::GetInstance().Update();
 	m_TimeManager->Update();
 	m_DeltaTime = m_TimeManager->GetDeltaTime();
-	//if (m_DeltaTime > 1)
-	//	m_DeltaTime = 1/165;
+	EventManager::GetInstance().Update(m_DeltaTime);
+	InputManager::GetInstance().Update();
+
+	///Phyisc
+	m_SystemManager->PhysicUpdatable(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
+	m_SystemManager->LateUpdatable(m_DeltaTime);
 	m_SystemManager->RenderUpdate(m_DeltaTime);
+
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 	SetWindowTextW(m_hWnd, newname.c_str());
@@ -145,11 +148,11 @@ void VPEngine::EndRender()
 {
 	m_Graphics->EndRender();
 }
-void VPEngine::AddSystemLater()
+void VPEngine::OnAddSystemLater(std::any)
 {
-	EventManager::GetInstance().ScheduleEvent("OnAddPhysicsSystem");
-	EventManager::GetInstance().ScheduleEvent("OnAddTransformSystem");
-	EventManager::GetInstance().ScheduleEvent("OnAddCameraSystem");
+	m_SystemManager->AddSystem<TransformSystem>();
+
+
 }
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

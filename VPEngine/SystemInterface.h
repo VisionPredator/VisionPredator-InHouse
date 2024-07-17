@@ -15,7 +15,11 @@ class IUpdatable
 public:
 	virtual void Update(float deltaTime) = 0;
 };
-
+class ILateUpdatable
+{
+public:
+	virtual void LateUpdate(float deltaTime) = 0;
+};
 class IFixedUpdatable
 {
 public:
@@ -33,6 +37,8 @@ class IPhysicable
 {
 public:
 	virtual void SetPhysicEngine(Physic::IPhysx* PhysicEngine) { m_PhysicsEngine = PhysicEngine; }
+	virtual void PhysicsUpdate(float deltaTime) = 0;
+
 	Physic::IPhysx* m_PhysicsEngine=nullptr;
 };
 

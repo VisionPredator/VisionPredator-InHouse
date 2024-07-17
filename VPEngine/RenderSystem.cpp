@@ -67,22 +67,9 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	return;
 
 }
-void RenderSystem::Update(float deltaTime)
-{
-
-
-}
-void RenderSystem::FixedUpdate(float deltaTime)
-{
-
-
-}
 
 void RenderSystem::RenderUpdate(float deltaTime)
 {
-	//THREAD_COMPONENTS(RenderSystem,MeshComponent, &RenderSystem::MeshCompRender);
-	//THREAD_COMPONENTS(RenderSystem,SkinningMeshComponent, &RenderSystem::SkincompRender);
-
 
 	for (MeshComponent& comp : COMPITER(MeshComponent))
 	{

@@ -4,7 +4,7 @@ struct PlayerComponent :
     public Component
 {
     PlayerComponent();
-    VP_JSONBODY(PlayerComponent, HP, Maxspeed, JumpFoce, MaxJumpCount, AirControl)
+    VP_JSONBODY(PlayerComponent, HP, Maxspeed, Accel, JumpFoce, MaxJumpCount, AirControl)
 		uint32_t HP{};
     float Speed{};
     float Accel{};

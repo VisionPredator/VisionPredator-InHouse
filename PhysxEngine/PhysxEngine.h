@@ -17,17 +17,17 @@ public:
 	bool Finalize() override;
 	void Update(float deltatime) override;
 
-	const VPPhysics::PhysicsInfo GetPhysicEngineInfo() { return m_EngineInfo; }
-	void  SetPhysicEngineInfo(VPPhysics::PhysicsInfo engineinfo) { m_EngineInfo= engineinfo; }
+	const VPPhysics::PhysicsInfo GetPhysicsInfo() { return m_PhyiscsInfo; }
+	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }
 
-
+	void OnSetPhysicInfo(std::any PhysicInfo);
 private:
 	Physics* m_Physics{};
 	physx::PxScene* m_PxScene{};
 	RigidBodyManager* m_RigidManager{};
 	CollisionManager* m_CollisionManager{};
 	CollisionCallback* m_Collisioncallback{};
-	VPPhysics::PhysicsInfo m_EngineInfo{};
+	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
 	int m_Frame = 60;
 	float m_UpdateTime = 1.f/ 120.f;
 	float m_ElapsedTime = 0.f;

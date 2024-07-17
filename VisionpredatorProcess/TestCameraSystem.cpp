@@ -38,23 +38,23 @@ void TestCameraSystem::Update(float deltaTime)
 
 
 		moveDirection.Normalize();
-		cameraTransform->Local_Location+=  moveSpeed* moveDirection* deltaTime;
+		cameraTransform->World_Location+=  moveSpeed* moveDirection* deltaTime;
 
-		if (InputManager::GetInstance().GetKey(KEY::RBUTTON))
+		if (INPUTKEY(KEY::RBUTTON))
 		{
 			VPMath::Vector2 DeltaCurpos = InputManager::GetInstance().GetDeltaCurPos();
 			float yaw = DeltaCurpos.x * 0.1f;
 			float pitch = DeltaCurpos.y * 0.1f;
 
 			// Update rotation angles
-			cameraTransform->Local_Rotation.y += yaw; // Yaw affects the y-axis
-			cameraTransform->Local_Rotation.x += pitch; // Pitch affects the x-axis
+			cameraTransform->World_Rotation.y += yaw; // Yaw affects the y-axis
+			cameraTransform->World_Rotation.x += pitch; // Pitch affects the x-axis
 
 			// Clamp pitch to avoid gimbal lock
-			if (cameraTransform->Local_Rotation.x > 89.9f)
-				cameraTransform->Local_Rotation.x = 89.9f;
-			if (cameraTransform->Local_Rotation.x < -89.9f)
-				cameraTransform->Local_Rotation.x = -89.9f;
+			if (cameraTransform->World_Rotation.x > 89.9f)
+				cameraTransform->World_Rotation.x = 89.9f;
+			if (cameraTransform->World_Rotation.x < -89.9f)
+				cameraTransform->World_Rotation.x = -89.9f;
 		}
 		break;
 	}
@@ -62,6 +62,3 @@ void TestCameraSystem::Update(float deltaTime)
 
 }
 
-void TestCameraSystem::FixedUpdate(float deltaTime)
-{
-}

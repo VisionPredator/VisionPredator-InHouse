@@ -48,9 +48,13 @@ namespace VPPhysics
 	struct PhysicsInfo
 	{
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(PhysicsInfo, Gravity, FrameRate, CollisionMatrix)
+			void SerializePhysicsInfo(nlohmann::json& json)
+		{
+			to_json(json, *this);
+		}
 
 		VPMath::Vector3 Gravity{};
-		int FrameRate=60;
+		int FrameRate = 60;
 		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
 	};
 

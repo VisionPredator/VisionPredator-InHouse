@@ -17,9 +17,8 @@ void VPProcess::Initialize()
 
 void VPProcess::AddSystems()
 {
-	m_SystemManager->AddSystem<TestCameraSystem>();
 	m_SystemManager->AddSystem<PlayerSystem>();
-
+	m_SystemManager->AddSystem<TestCameraSystem>();
 }
 
 VPProcess::~VPProcess()

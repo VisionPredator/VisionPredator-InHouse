@@ -56,6 +56,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Process = new VP_Editor(hInstance, "VisionPredator", 1920, 1080);
 	Process->Loop();
 	delete Process;
+	EventManager::GetInstance().Release();
+
 	entt::meta_reset();
 	_CrtDumpMemoryLeaks();
 }

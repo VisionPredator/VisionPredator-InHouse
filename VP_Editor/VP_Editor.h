@@ -5,7 +5,7 @@
 class EditorCamera;
 class IImGui;
 class HierarchySystem;
-class VP_Editor :public VPProcess,public EventSubscriber
+class VP_Editor :public VPProcess
 {
 public:
 	VP_Editor(HINSTANCE hInstance, std::string title, int width, int height);
