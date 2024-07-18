@@ -16,7 +16,7 @@ struct Key
 	DirectX::SimpleMath::Matrix RotationMatrix;
 	DirectX::SimpleMath::Matrix TranslateMatrix;
 	DirectX::SimpleMath::Matrix ScaleMatrix;
-
+	DirectX::SimpleMath::Matrix total;
 };
 
 
@@ -29,6 +29,7 @@ struct Channel
 	std::vector<std::shared_ptr<Key>> positionkey;
 	std::vector<std::shared_ptr<Key>> rotationkey;
 	std::vector<std::shared_ptr<Key>> scalingkey;
+	std::vector<DirectX::SimpleMath::Matrix> totals;
 };
 
 
@@ -42,5 +43,7 @@ public:
 	double m_TickFrame;
 
 	std::vector<std::shared_ptr<Channel>> m_Channels;
+	std::vector<std::map<std::wstring, std::vector<std::shared_ptr<Key>>>> Animationkey;
+
 };
 

@@ -1,33 +1,112 @@
 {
     "Entitys": [
         {
-            "EntityID": 1904538668,
+            "EntityID": 4123247366,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "cerberus.fbx"
+                    "Name": "Ball"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0
+                    },
+                    "ColliderShape": 1,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": true,
+                    "SphereInfo": {
+                        "Radius": 100.0
+                    }
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -10.0,
-                        "y": 0.0,
+                        "x": 0.0,
+                        "y": 150.0,
                         "z": 0.0
                     },
-                    "Local_Rotation": {
-                        "x": -7.0573906898498535,
-                        "y": 16.375572204589844,
-                        "z": -63.30607604980469
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "Local_Scale": {
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
                     }
+                }
+            ]
+        },
+        {
+            "EntityID": 1296947878,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Ground"
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx"
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1000.0,
+                            "y": 1.0,
+                            "z": 1000.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
                 }
             ]
         }

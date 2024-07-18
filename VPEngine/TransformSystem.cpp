@@ -8,6 +8,8 @@
 	TransformSystem::TransformSystem(SceneManager* sceneManager)
 		:System(sceneManager)
 	{
+		EventManager::GetInstance().Subscribe("OnSetParentAndChild", CreateSubscriber(&TransformSystem::OnSetParentAndChild));
+		EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
 
 	}
 	void TransformSystem::Update(float deltaTime)	///transform update 값을 수정하는 느낌
@@ -46,23 +48,35 @@
 	/// 이벤
 	/// </summary>
 	/// <param name="Parent_Child"></param>
-	void SetParentAndChild(std::any Parent_Child)
+	void TransformSystem::OnSetParentAndChild(std::any Parent_Child)
 	{
+		auto [ParentID, ChildID] = std::any_cast<std::pair<uint32_t, uint32_t>>(Parent_Child);
+		
+		if (!m_SceneManager->HasEntity(ChildID) || !m_SceneManager->HasEntity(ParentID))
+			return;
+		TransformComponent* childTransform=	m_SceneManager->GetComponent<TransformComponent>(ChildID);
 
+		//if (!childTransform->HasComponent<Parent>())
+		//	return;
+		//if (childTransform->GetComponent<Parent>()->ParentID != ParentID)
+		//	return;
 
+		TransformComponent* parentTransform = m_SceneManager->GetComponent<TransformComponent>(ParentID);
 
-
+		VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
+		newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
 
 	}
 
-	void RelaseParentAndChild(std::any Parent_Child)
+	void TransformSystem::OnRelaseParentAndChild(std::any Child)
 	{
+		auto ChildID = std::any_cast<uint32_t>(Child);
 
-
-
-
-
+		TransformComponent* childTransform = m_SceneManager->GetComponent<TransformComponent>(ChildID);
+		childTransform->WorldTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
 	}
+
+
 
 	void TransformSystem::CalulateTransform(TransformComponent* transform)
 	{
@@ -124,9 +138,10 @@
 		{
 			transform->WorldTransform = tempWorldTrasnform;
 			transform->WorldTransform.Decompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
-			transform->FrontVector = transform->WorldTransform.Forward();
+			transform->FrontVector = -transform->WorldTransform.Forward();
+
 			transform->FrontVector.Normalize();
-			transform->RightVector = transform->WorldTransform.Right();
+			transform->RightVector = transform->WorldTransform.Right(); 
 			transform->RightVector.Normalize();
 
 			transform->UpVector = transform->WorldTransform.Up();
@@ -134,7 +149,4 @@
 
 		}
 	}
-	void TransformSystem::FixedUpdate(float deltaTime)
-	{
 
-	}

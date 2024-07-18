@@ -13,7 +13,7 @@
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
-#include "vpGraphics.h"
+#include "DebugGeometry.h"
 
 
 ///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
@@ -42,7 +42,7 @@ namespace Graphics
 		virtual void BeginRender() abstract;
 		virtual void Render() abstract;
 		virtual void EndRender() abstract;
-		virtual void OnResize() abstract;
+		virtual void OnResize(HWND hwnd) abstract;
 
 
 		//엔티티가 사라지면 그래픽스 안에 있는 해당 오브젝트도 지워주는 함수
@@ -50,22 +50,20 @@ namespace Graphics
 
 		///추가해야할거
 		//엔티티의 데이터가 업데이트 되면 그값을 renderlist의 값에 갱신 시켜줘야하는 함수 근데 이게 맞아? 매번 엔티티마다 이함수를 부를거야? 그건 좀..
-		virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)abstract;
-
-		//애니메이션 변경
-		//virtual void ChangeAnimation(std::wstring name, animationfilter filter) abstract;
+		virtual void UpdateModel(uint32_t EntityID, RenderData& data)abstract;
 		
 		//카메라의 상태 업데이트
 		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
 
 		//렌더링
-		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring name, std::wstring fbx = L"") abstract;
+		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") abstract;
 
+		virtual const double GetDuration(std::wstring name) abstract;
 
 		/// Light
-		virtual void AddLight(uint32_t EntityID, std::wstring name ,Kind_of_Light kind, LightData data) abstract;
-		virtual void EraseLight(uint32_t EntityID, std::wstring name ,Kind_of_Light kind) abstract;
-		virtual void UpdateLightData(uint32_t EntityID, std::wstring name, Kind_of_Light kind, LightData data) abstract;
+		virtual void AddLight(uint32_t EntityID,LightType kind, LightData data) abstract;
+		virtual void EraseLight(uint32_t EntityID, LightType kind) abstract;
+		virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) abstract;
 
 		/// Debug Draw
 		virtual void DrawSphere(const debug::SphereInfo& info) abstract;

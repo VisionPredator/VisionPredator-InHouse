@@ -98,64 +98,70 @@ void DeferredGeometryPass::Render(const std::shared_ptr<RenderData>& model)
 		std::shared_ptr<RenderData> curData = model;
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
-		int materialindex = 0; //mesh의 숫자와 동일
-
-		for (const auto& mesh : curModel->m_Meshes)
+		if (curModel != nullptr)
 		{
-			Device->BindMeshBuffer(mesh);
 
-			// Static Mesh Data Update & Bind
-			if (!mesh->IsSkinned())
+			int materialindex = 0; //mesh의 숫자와 동일
+
+			for (const auto& mesh : curModel->m_Meshes)
 			{
+				Device->BindMeshBuffer(mesh);
 
-				Device->BindVS(m_StaticMeshVS);
-				
-				// CB Update
-				m_TransformCB->m_struct.world = curData->world;
-				m_TransformCB->m_struct.local = curData->local;
-				m_TransformCB->Update();	// == Bind
+				// Static Mesh Data Update & Bind
+				if (!mesh->IsSkinned())
+				{
+
+					Device->BindVS(m_StaticMeshVS);
+
+					// CB Update
+					TransformData renew;
+					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
+					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					m_TransformCB->Update(renew);	// == Bind
+				}
+				// Skeletal Mesh Update & Bind
+				else
+				{
+					Device->BindVS(m_SkeletalMeshVS);
+
+					std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+
+					// CB Update
+					TransformData renew;
+					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					renew.local = curMesh->m_node.lock()->m_World;
+					m_TransformCB->Update(renew);	// == Bind
+
+					MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
+					m_SkeletalCB->Update(matrixPallete);
+
+					//m_Camera = Create<ConstantBuffer<CameraData>>(L"Camera", BufferDESC::Constant::DefaultCamera);
+					//m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
+
+				}
+
+				// 텍스처와 샘플러를 셰이더에 바인딩
+				if (!curModel->m_Materials.empty())
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+					MaterialData curMaterialData = curMaterial->m_Data;
+					curData->Update(curMaterialData);
+
+					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+					Device->BindMaterialSRV(curMaterial);
+				}
+
+				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+
+				materialindex++;
+
 			}
-			// Skeletal Mesh Update & Bind
-			else
-			{
-				Device->BindVS(m_SkeletalMeshVS);
 
-				std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
-
-				// CB Update
-				m_TransformCB->m_struct.world = curData->world;
-				m_TransformCB->m_struct.local = curMesh->m_node.lock()->m_World;
-				m_TransformCB->Update();	// == Bind
-
-				MatrixPallete matrixPallete = *(curMesh->Matrix_Pallete);
-				m_SkeletalCB->Update(matrixPallete);
-
-				//m_Camera = Create<ConstantBuffer<CameraData>>(L"Camera", BufferDESC::Constant::DefaultCamera);
-				//m_Device.lock()->Context()->VSSetConstantBuffers(0, 1, (m_Camera.lock()->GetAddress()));
-
-			}
-
-			// 텍스처와 샘플러를 셰이더에 바인딩
-			if (!curModel->m_Materials.empty())
-			{
-				std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-
-				std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
-				MaterialData curMaterialData = curMaterial->m_Data;
-				curData->Update(curMaterialData);
-
-				Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
-
-				Device->BindMaterialSRV(curMaterial);
-			}
-
-			Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
-
-			materialindex++;
-
+			//렌더타겟 해제해줘야지 srv도 해제
+			Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 		}
-
-		//렌더타겟 해제해줘야지 srv도 해제
-		Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 }

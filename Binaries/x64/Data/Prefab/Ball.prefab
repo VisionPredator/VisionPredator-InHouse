@@ -1,0 +1,57 @@
+[
+    {
+        "EntityID": 3720524358,
+        "Component": [
+            {
+                "BoxInfo": {
+                    "Extent": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "CapsuleInfo": {
+                    "HalfHeight": 1.0,
+                    "Radius": 1.0
+                },
+                "ColliderInfo": {
+                    "Density": 1.0,
+                    "DynamicFriction": 1.0,
+                    "PhysicsLayer": 0,
+                    "Restitution": 1.0,
+                    "StaticFriction": 1.0
+                },
+                "ColliderShape": 1,
+                "ColliderType": 1,
+                "ComponentID": 4217231799,
+                "IsDynamic": true,
+                "SphereInfo": {
+                    "Radius": 100.0
+                }
+            },
+            {
+                "ComponentID": 1365953231,
+                "Name": "Ball"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 150.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    }
+]

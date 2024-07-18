@@ -2,6 +2,8 @@
 #include "EditorCamera.h"
 #include "directxtk\SimpleMath.h"
 #include <InputManager.h>
+#include "HierarchySystem.h"
+#include "SceneManager.h"
 float WrapAngle(float angle)
 {
 	while (angle > 360.0f)
@@ -11,7 +13,8 @@ float WrapAngle(float angle)
 	return angle;
 }
 
-EditorCamera::EditorCamera()
+
+EditorCamera::EditorCamera(SceneManager* sceneManager) :m_SceneManager{ sceneManager }
 {
 	Initialize();
 }
@@ -35,6 +38,7 @@ void EditorCamera::Update(float deltatime)
 {
 	CameraMove(deltatime);
 	CameraRotation();
+	DoubleClicked(deltatime);
 	CalculateCamera();
 }
 
@@ -73,7 +77,7 @@ void EditorCamera::CameraMove(float deltatime)
 	else
 		moveWay = m_DeflaultSpeed * deltatime * MoveDirection;
 
-	m_Transform += moveWay;
+	m_Location += moveWay;
 }
 
 
@@ -94,11 +98,6 @@ void EditorCamera::CameraRotation()
 			m_Rotation.x = m_maxPitch;
 		if (m_Rotation.x < -m_maxPitch)
 			m_Rotation.x = -m_maxPitch;
-
-		// Wrap yaw and roll to stay within [-360, 360] degrees
-		m_Rotation.y = WrapAngle(m_Rotation.y);
-		m_Rotation.x = WrapAngle(m_Rotation.x);
-		m_Rotation.z = WrapAngle(m_Rotation.z);
 	}
 }
 
@@ -123,43 +122,84 @@ void EditorCamera::CalculateCamera()
 	{
 		m_Height = 1;
 	}
+	CalculateCameraTransform();
+
+	m_ratio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
+	if (m_ratio < 0.00001f)
+	{
+		m_ratio = 0.00002f;
+	}
 
 
-	  m_ratio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
-	  if (m_ratio < 0.00001f)
-	  {
-		  m_ratio = 0.00002f;
-	  }
 
 
+	// Update view matrix
+	// To get view matrix, we need to invert the world matrix
+	VPMath::Vector3 eye = m_Location;
+	VPMath::Vector3 target = eye + m_FrontVector; // Assuming the camera looks along the FrontVector
+	VPMath::Vector3 up = m_UpVector;
+	m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 
+	// Calculate projection matrix
+	// Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
+	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
+}
 
-	  VPMath::Vector3 rotationInRadians = VPMath::Vector3(
-		  VPMath::XMConvertToRadians(m_Rotation.x),
-		  VPMath::XMConvertToRadians(m_Rotation.y),
-		  VPMath::XMConvertToRadians(m_Rotation.z));
-    // Convert Euler angles (m_Rotation) to a rotation matrix
-    VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateFromYawPitchRoll(rotationInRadians.y, rotationInRadians.x, rotationInRadians.z);
-    m_Quaternion = VPMath::Quaternion::CreateFromYawPitchRoll(rotationInRadians.y, rotationInRadians.x, rotationInRadians.z);
+void EditorCamera::CalculateCameraTransform()
+{
 
-    // Extract front and up vectors from rotation matrix
-    m_FrontVector = VPMath::Vector3(rotationMatrix._31, rotationMatrix._32, rotationMatrix._33);
-    m_UpVector = VPMath::Vector3(rotationMatrix._21, rotationMatrix._22, rotationMatrix._23);
-    m_RightVector = m_UpVector.Cross(m_FrontVector);
-    m_FrontVector.Normalize();
-    m_UpVector.Normalize();
-    m_RightVector.Normalize();
+	// Lambda function to wrap the angle
+	auto wrapAngle = [](float angle) -> float {
+		while (angle <= -360.0f) angle += 720.0f;
+		while (angle > 360.0f) angle -= 720.0f;
+		return angle;
+		};
 
-    // Update view matrix
-    // To get view matrix, we need to invert the world matrix
-    VPMath::Vector3 eye = m_Transform;
-    VPMath::Vector3 target = eye + m_FrontVector; // Assuming the camera looks along the FrontVector
-    VPMath::Vector3 up = m_UpVector;
-    m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
+	m_Rotation.x = wrapAngle(m_Rotation.x);
+	m_Rotation.y = wrapAngle(m_Rotation.y);
+	m_Rotation.z = wrapAngle(m_Rotation.z);
 
-    // Calculate projection matrix
-    // Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
-    m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
+	m_Quaternion = VPMath::Quaternion::CreateFromYawPitchRoll(
+		VPMath::XMConvertToRadians(m_Rotation.y),
+		VPMath::XMConvertToRadians(m_Rotation.x),
+		VPMath::XMConvertToRadians(m_Rotation.z));
+
+	m_Transform = VPMath::Matrix::CreateScale(m_Scale) *
+		VPMath::Matrix::CreateFromQuaternion(m_Quaternion) *
+		VPMath::Matrix::CreateTranslation(m_Location);
+
+	m_FrontVector = -m_Transform.Forward();
+	m_RightVector = m_Transform.Right();
+	m_UpVector = m_Transform.Up();
+
+}
+
+void EditorCamera::DoubleClicked(float deltatime)
+{
+	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+		return;
+	auto transform = m_SceneManager->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
+
+	if (!HierarchySystem::IsItemDoubleClicked)
+	{
+		m_LerpTime = 0;
+	m_LerpStartPos= m_Location;
+	m_LerpEndPos.x = transform->World_Location.x - 30 * m_FrontVector.x;
+	m_LerpEndPos.y = transform->World_Location.y - 30 * m_FrontVector.y;
+	m_LerpEndPos.z = transform->World_Location.z - 30 * m_FrontVector.z;
+	}
+	else
+	{
+		m_LerpTime += deltatime;
+		if (m_LerpTime > m_LerpEndTime)
+		{
+			HierarchySystem::IsItemDoubleClicked = false;
+			m_LerpTime =m_LerpEndTime;
+		}
+		m_Location = VPMath::Vector3::Lerp(m_LerpStartPos, m_LerpEndPos, (m_LerpTime / m_LerpEndTime));
+	
+	}
+
 }
 
 void EditorCamera::ImGuiRender()
@@ -171,7 +211,7 @@ void EditorCamera::ImGuiRender()
 
 		// 다음 아이템의 너비 설정
 		ImGui::SetNextItemWidth(dragBoxWidth);
-		ImGui::DragFloat3("Transform", &m_Transform.x, 1.f, -FLT_MAX, FLT_MAX);
+		ImGui::DragFloat3("Transform", &m_Location.x, 1.f, -FLT_MAX, FLT_MAX);
 
 		ImGui::SetNextItemWidth(dragBoxWidth);
 		ImGui::DragFloat3("Rotation", &m_Rotation.x, 1.f, -FLT_MAX, FLT_MAX);
@@ -213,52 +253,4 @@ void EditorCamera::ImGuiRender()
 	}
 
 	ImGui::End();
-}
-
-
-
-void EditorCamera::CameraRotation2()
-{
-	if (InputManager::GetInstance().GetKey(KEY::RBUTTON))
-	{
-
-		VPMath::Vector2 DeltaCurpos = InputManager::GetInstance().GetDeltaCurPos();
-		VPMath::Quaternion quater = {};
-		float yaw = DeltaCurpos.x * m_sensitivity;
-		float pitch = DeltaCurpos.y * m_sensitivity;
-
-		// Create quaternions for yaw and pitch rotations
-		VPMath::Quaternion yawQuat = VPMath::Quaternion::CreateFromAxisAngle(VPMath::Vector3(0.0f, 1.0f, 0.0f), yaw);
-		VPMath::Quaternion pitchQuat = VPMath::Quaternion::CreateFromAxisAngle(VPMath::Vector3(1.0f, 0.0f, 0.0f), pitch);
-
-		// Update camera orientation
-		m_Quaternion = pitchQuat * m_Quaternion; // Apply yaw rotation
-		m_Quaternion = m_Quaternion * yawQuat; // Apply pitch rotation
-		m_Quaternion.Normalize();
-	}
-}
-void EditorCamera::CalculateCamera2()
-{
-	// Create rotation matrix from quaternion
-	VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateFromQuaternion(m_Quaternion);
-
-
-
-	// Extract front and up vectors from rotation matrix
-	m_FrontVector = VPMath::Vector3(rotationMatrix._31, rotationMatrix._32, rotationMatrix._33);
-	m_UpVector = VPMath::Vector3(rotationMatrix._21, rotationMatrix._22, rotationMatrix._23);
-	m_RightVector = m_UpVector.Cross(m_FrontVector);
-	m_FrontVector.Normalize();
-	m_UpVector.Normalize();
-	m_RightVector.Normalize();
-	// Update view matrix
-	// To get view matrix, we need to invert the world matrix
-	VPMath::Vector3 eye = m_Transform;
-	VPMath::Vector3 target = eye + m_FrontVector; // Assuming the camera looks along the FrontVector
-	VPMath::Vector3 up = m_UpVector;
-	m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
-	// Calculate projection matrix
-	// Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
-	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
-
 }

@@ -135,7 +135,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTex.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTK.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /y /r /d "$(SolutionDir)Library\$(Platform)\$(Configuration)\*.dll" "$(TargetDir)"</Command>
@@ -181,21 +181,8 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="D3DUtill.h" />
     <ClInclude Include="DebugDrawManager.h" />
-    <ClInclude Include="DebugDrawPass.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="DeferredGeometryPass.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="DeferredLightPass.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="DeferredShadingPipeline.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="DebugPass.h" />
+    <ClInclude Include="DeferredPass.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="DepthStencilView.h" />
@@ -203,6 +190,7 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="FinalPass.h" />
     <ClInclude Include="GeometryShader.h" />
+    <ClInclude Include="ForwardPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
     <ClInclude Include="IndexBuffer.h" />
@@ -213,7 +201,7 @@
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="MotionBlurPass.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="ForwardPipeline.h" />
+    <ClInclude Include="PassManager.h" />
     <ClInclude Include="OutlinePass.h" />
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="ParticleObject.h" />
@@ -241,7 +229,7 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="ViewPort.h" />
-    <ClInclude Include="vpGraphics.h" />
+    <ClInclude Include="DebugGeometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
@@ -250,25 +238,13 @@
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="D3DUtill.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />
-    <ClCompile Include="DebugDrawPass.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="DeferredGeometryPass.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="DeferredLightPass.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="DeferredShadingPipeline.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="DebugPass.cpp" />
+    <ClCompile Include="DeferredPass.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="FinalPass.cpp" />
+    <ClCompile Include="ForwardPass.cpp" />
     <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
@@ -278,7 +254,7 @@
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="MotionBlurPass.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="ForwardPipeline.cpp" />
+    <ClCompile Include="PassManager.cpp" />
     <ClCompile Include="OutlinePass.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="ParticleObject.cpp" />

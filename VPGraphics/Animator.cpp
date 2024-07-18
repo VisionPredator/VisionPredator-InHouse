@@ -5,8 +5,9 @@
 #include "Animation.h"
 #include "Node.h"
 #include "Mesh.h"
+#include "ResourceManager.h"
 
-Animator::Animator()
+Animator::Animator(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager)
 {
 
 }
@@ -16,57 +17,155 @@ Animator::~Animator()
 
 }
 
-void Animator::Update(double dt, std::vector<std::shared_ptr<ModelData>>& models)
+void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
 {
-	for (auto& model : models)
+
+	for (auto& data : renderlist)
 	{
-		UpdateWorld(dt, model);
-		UpdateMatrixPallete(model);
+		std::shared_ptr<RenderData> curData = data.second;
+		std::weak_ptr<ModelData> curModel;
+
+		if (data.second->isPlay)
+		{
+
+			if (!curData->curAnimation.empty())
+			{
+				curModel = m_ResourceManager.lock()->Get<ModelData>(curData->curAnimation);
+			}
+			else
+			{
+				curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX);
+			}
+
+			if (curModel.lock() != nullptr && curData->Filter == MeshFilter::Skinning)
+			{
+				//UpdateWorld(curData->duration, curModel);
+				UpdateWorld(curData);
+				UpdateMatrixPallete(curData);
+			}
+		}
 	}
 }
 
-void Animator::UpdateWorld(double dt, std::shared_ptr<ModelData> ob)
+void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 {
 	//오브젝트마다 애니메이션의 길이 시간등등이 다른데 시간을 어떻게 처리할까???
 	//같은 데이터의 포인터를 사용하니까 같은 애니메이션 쓰는 애들은 시간이 두배가되서 속도가 2배 빨라져
 	//같은 데이터를 쓰지만 각자가 가지고 있는 고유의 데이터야하는 아이러니?
 	//이건 애니메이션 데이터는 그대로 두고 각자의 시간과 애니메이션 따로 놀면된다
 	//여기서 터지면 loader에 데이터를 안읽어왔을 확률 높음
-	if (ob->m_Animations.empty())
+
+	std::shared_ptr<ModelData> curOb = ob.lock();
+
+	if (curOb->m_Animations.empty())
 	{
 		return;
 	}
 
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
-	static double time = 0; //현재 애니메이션 플레이시간
-	double speed = ob->m_Animations[0]->m_TickFrame;
-	//double speed = 1;
-	time += dt * speed;
+	double time = dt; //현재 애니메이션 플레이시간
+	double speed = curOb->m_Animations[0]->m_TickFrame;
+	time = dt * speed;
 
-	if (time > ob->m_Animations[0]->m_Duration)
+	if (time > curOb->m_Animations[0]->m_Duration)
 	{
-		time -= ob->m_Animations[0]->m_Duration;
-		//time = 0;
+		time -= curOb->m_Animations[0]->m_Duration;
+	}
+	else
+	{
+		for (auto& ani : curOb->m_Animations[0]->m_Channels)
+		{
+			int cur = 0;
+			for (int i = 0; i < ani->totals.size(); i++)
+			{
+				if (i >= time)
+				{
+					break;
+				}
+				cur = i;
+			}
+
+			int next = cur + 1;
+			if (next >= ani->totals.size())
+			{
+				next = 0;
+			}
+
+			float t = time - cur;
+
+			std::shared_ptr<Node> curAni = ani->node.lock();
+			curAni->m_Local = DirectX::SimpleMath::Matrix::Lerp(ani->totals[cur], ani->totals[next], t).Transpose();
+		}
 	}
 
-	for (auto& ani : ob->m_Animations[0]->m_Channels)
+	CalcWorld(curOb->m_RootNode);
+}
+
+//test
+void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
+{
+	std::shared_ptr<RenderData> curOb = ob.lock();
+	std::weak_ptr<ModelData> curModel;
+	std::weak_ptr<ModelData> preModel;
+	curModel = m_ResourceManager.lock()->Get<ModelData>(curOb->curAnimation);
+	preModel = m_ResourceManager.lock()->Get<ModelData>(curOb->preAnimation);
+
+	if (preModel.lock() != nullptr && curModel.lock() != nullptr)
 	{
-		DirectX::SimpleMath::Matrix rotation{};
-		DirectX::SimpleMath::Matrix translate{};
-		DirectX::SimpleMath::Matrix scale{};
+		//이전 애니메이션이랑 지금 애니메이션이 유효한가
+		if (curOb->isChange)
+		{
 
-		translate = CalcMatrix(time, ani->positionkey);
-		rotation = CalcRotation(time, ani->rotationkey);
-		scale = CalcMatrix(time, ani->scalingkey);
+			std::map<std::wstring, DirectX::SimpleMath::Matrix> preAni;
 
-		// T R S * local 읽어올때 전치 시켜서 가져올때는 S R T가 아니다
-		//XMMATRIX total = translate * rotation * scale;
-		DirectX::SimpleMath::Matrix total = scale * rotation * translate;
-		ani->node.lock()->m_Local = total.Transpose();
-		ani->node.lock()->m_LocalInverse = ani->node.lock()->m_Local.Invert();
+			for (auto& ani : preModel.lock()->m_Animations[0]->m_Channels)
+			{
+				int cur = 0;
+				for (int i = 0; i < ani->totals.size(); i++)
+				{
+					if (i >= curOb->preDuration)
+					{
+						break;
+					}
+					cur = i;
+				}
+
+				preAni.insert(std::pair<std::wstring, DirectX::SimpleMath::Matrix >(ani->nodename, ani->totals[cur]));
+			}
+
+
+
+			for (auto& ani : curModel.lock()->m_Animations[0]->m_Channels)
+			{
+				int cur = 0;
+				for (int i = 0; i < ani->totals.size(); i++)
+				{
+					if (i >= curOb->duration)
+					{
+						break;
+					}
+					cur = i;
+				}
+
+				int next = cur + 1;
+				if (next >= ani->totals.size())
+				{
+					next = 0;
+				}
+
+				float t = curOb->duration - cur;
+
+				std::shared_ptr<Node> curAni = ani->node.lock();
+				curAni->m_Local = DirectX::SimpleMath::Matrix::Lerp(ani->totals[cur], preAni[ani->nodename], t).Transpose();
+			}
+
+		}
+		else
+		{
+			UpdateWorld(curOb->duration, curModel);
+
+		}
 	}
-
-	CalcWorld(ob->m_RootNode);
 }
 
 void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
@@ -90,50 +189,53 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 
 DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
 {
-	auto next = std::lower_bound(channel.begin(), channel.end(), time,
-		[](const std::shared_ptr<Key> key, double t) { return key->time <= t; });
+	std::shared_ptr<Key> cur = channel[0];
+	std::shared_ptr<Key> next;
 
-	std::vector<std::shared_ptr<Key>>::iterator cur;
-
-	if (next == channel.end())
+	for (auto& key : channel)
 	{
-		cur = channel.begin();
-	}
-	else
-	{
-		cur = next - 1;
+		if (key->time > time)
+		{
+			next = key;
+			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+			DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((next)->value, (cur)->value, t);
+
+			return DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+		}
+
+		cur = key;
 	}
 
-	float t = static_cast<float>(abs(time - (*next)->time) / abs((*cur)->time - (*next)->time));
-	DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((*next)->value, (*cur)->value, t);
-	return DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+
 }
-
 
 DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
 {
-	auto next = std::lower_bound(rotationKey.begin(), rotationKey.end(), time,
-		[](const std::shared_ptr<Key> key, double t) { return key->time < t; });
 
-	std::vector<std::shared_ptr<Key>>::iterator cur;
+	std::shared_ptr<Key> cur = rotationKey[0];
+	std::shared_ptr<Key> next;
 
-
-	if (next == rotationKey.end())
+	for (auto& key : rotationKey)
 	{
-		cur = rotationKey.begin();
-	}
-	else
-	{
-		cur = next - 1;
+		if (key->time > time)
+		{
+			next = key;
+			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
+			DirectX::SimpleMath::Quaternion afterLerp = DirectX::SimpleMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
+			return DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
+		}
+
+		cur = key;
 	}
 
-	float t = static_cast<float>(abs(time - (*next)->time) / abs((*cur)->time - (*next)->time));
-	DirectX::SimpleMath::Quaternion afterLerp = DirectX::SimpleMath::Quaternion::Slerp((*next)->rotation, (*cur)->rotation, t);
-	return DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
+
 }
 
-void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
+void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 {
+	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
+	std::shared_ptr<ModelData> ob = resourcemanager->Get<ModelData>(curData->FBX).lock();
+
 	for (auto& mesh : ob->m_Meshes)
 	{
 		if (mesh->IsSkinned())
@@ -145,7 +247,11 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<ModelData> ob)
 				DirectX::SimpleMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
 				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
 
-				skinned->Matrix_Pallete->pallete[i] = (nodeworld * offset);
+				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
+				{
+					std::wstring id = std::to_wstring(curData->EntityID);
+					resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld * offset);
+				}
 			}
 		}
 	}

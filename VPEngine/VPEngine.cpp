@@ -1,22 +1,26 @@
 ﻿#include "pch.h"
 #include "VPEngine.h"
-#include "TimeManager.h"
-#include "SystemManager.h"
-#include "InputManager.h"
-#include "EventManager.h"
+#include "Managers.h"
 #include "TransformSystem.h"
 #include <fcntl.h>
 #include <io.h>
 #include "SceneSerializer.h"
 #include "RenderSystem.h"
-
+#include "LightSystem.h"
+#include "DataRegister.h"
+#include "CameraSystem.h"
+#include "AnimationSystem.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
-
-
+#include "../PhysxEngine/PhysxEngine.h"
+#include "../PhysxEngine/IPhysx.h"
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
+#include "PhysicSystem.h"
+
+bool VPEngine::isResize = false;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
@@ -33,7 +37,6 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = wTitle.c_str();
-
 	RegisterClass(&wndclass);
 	RECT rcClient = { 0, 0, (LONG)width, (LONG)height };
 	AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
@@ -44,24 +47,27 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
 
+	VPRegister::Register_Metadata();
 
 	m_TimeManager = new TimeManager;
+	m_PhysicEngine = new PhysxEngine;
 	m_SceneManager = new SceneManager;
 	m_SystemManager = new SystemManager;
+	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+
 	m_SceneManager->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics);
-
-	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+	m_PhysicEngine->Initialize();
 	m_Graphics->Initialize();
 
 	InputManager::GetInstance().Initialize();
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
-	m_SystemManager->AddSystem<SceneSerializer>();
-	m_SystemManager->AddSystem<RenderSystem>();
-	m_SystemManager->AddSystem<TransformSystem>();
+	this->Addsystem();
 
+	m_SystemManager->AddSystem<AnimationSystem>();
+	EventManager::GetInstance().ScheduleEvent("OnAddTransformSystem");
 }
 
 VPEngine::~VPEngine()
@@ -69,12 +75,21 @@ VPEngine::~VPEngine()
 	delete m_TimeManager;
 	delete m_SceneManager;
 	delete m_SystemManager;
-	InputManager::GetInstance().Release();
-	EventManager::GetInstance().Release();
+
 	m_Graphics->Finalize();
 	delete m_Graphics;
+	delete m_PhysicEngine;
+	InputManager::GetInstance().Release();
+	EventManager::GetInstance().Release();
 }
-
+void VPEngine::Addsystem()
+{
+	m_SystemManager->AddSystem<SceneSerializer>();
+	m_SystemManager->AddSystem<RenderSystem>();
+	m_SystemManager->AddSystem<LightSystem>();
+	m_SystemManager->AddSystem<CameraSystem>();
+	m_SystemManager->AddSystem<PhysicSystem>()->SetPhysics(m_PhysicEngine);
+}
 void VPEngine::Loop()
 {
 	MSG msg;
@@ -82,6 +97,13 @@ void VPEngine::Loop()
 	// 기본 메시지 루프입니다:
 	while (true)
 	{
+
+		if (VPEngine::isResize)
+		{
+			m_Graphics->OnResize(m_hWnd);
+			VPEngine::isResize = false;
+		}
+
 
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -105,6 +127,8 @@ void VPEngine::Loop()
 }
 
 
+
+
 void VPEngine::Update()
 {
 	EventManager::GetInstance().Update(m_DeltaTime);
@@ -115,6 +139,7 @@ void VPEngine::Update()
 	//	m_DeltaTime = 1/165;
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
+	m_SystemManager->RenderUpdate(m_DeltaTime);
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 	SetWindowTextW(m_hWnd, newname.c_str());
@@ -145,10 +170,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 	{
 		int wmId = LOWORD(wParam);
+
+
 		// 메뉴 선택을 구문 분석합니다:
 		switch (wmId)
 		{
+
+		case SIZE_RESTORED:
+		case SIZE_MAXIMIZED:
+			VPEngine::isResize = true;
+				break;
+
 		case IDM_ABOUT:
+
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
@@ -156,6 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
+
 	}
 	break;
 	case WM_KEYDOWN:
@@ -194,6 +229,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
 		break;
 	}
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

@@ -76,8 +76,6 @@ ConstantBuffer<T>::~ConstantBuffer()
 template<typename T>
 void ConstantBuffer<T>::Update()
 {
-	//몇번째 상수버퍼일지 카운트가 필요한데?
-
 	m_Device.lock()->Context()->UpdateSubresource(m_buffer, 0, nullptr, &m_struct, 0, 0);
 
 }

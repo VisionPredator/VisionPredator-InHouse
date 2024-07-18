@@ -37,8 +37,8 @@ public:
 
 
 private:
-
 	std::vector<const aiScene*> m_SceneList;
+
 	void ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, unsigned int index, Filter filter);
 	void ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial* material);
 	void ProcessBoneNodeMapping(std::shared_ptr<ModelData> Model);
@@ -52,6 +52,7 @@ private:
 
 	void ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, std::shared_ptr<Mesh> curMesh);
 	std::shared_ptr<Node>FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode);
+
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;

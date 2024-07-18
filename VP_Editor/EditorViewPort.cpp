@@ -3,13 +3,13 @@
 #include "Toolbar.h"
 #include "HierarchySystem.h"
 #include <InputManager.h>
-#include "..\VPGraphics\GraphicsEngine.h"
-
-
-#include "..\include\imgui_internal.h"
 
 EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
 {
+	auto& style = ImGuizmo::GetStyle();
+	style.ScaleLineThickness = 3.f;
+	style.TranslationLineThickness = 3.f;
+	style.RotationLineThickness = 5.f;
 }
 
 void EditorViewPort::ImGuiRender()
@@ -30,7 +30,47 @@ void EditorViewPort::ImGuiRender()
 
 void EditorViewPort::PlayingImGui()
 {
+	float FrameHeight = ImGui::GetFrameHeight();
+	auto current = ImGui::GetCurrentContext();
+	auto pos = ImVec2{ current->CurrentWindow->Pos.x, current->CurrentWindow->Pos.y + FrameHeight };
+	auto size = ImVec2{ current->CurrentWindow->Size.x, current->CurrentWindow->Size.y - FrameHeight };
+	auto idealSize = ImVec2(size.x, size.y);
+	auto maxpos = ImVec2(pos.x + idealSize.x, pos.y + idealSize.y);
+	auto borderSize = current->CurrentWindow->WindowBorderSize;
 
+	//뷰포트 설정된 것 출력하기
+	switch (m_CurrentRenderMode)
+	{
+	case EditorViewPort::RENDERMODE::Albedo:
+		EditViewPortImGui(L"Albedo", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Normal:
+		EditViewPortImGui(L"Normal", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Position:
+		EditViewPortImGui(L"Position", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Depth:
+		EditViewPortImGui(L"Depth", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Metalic:
+		EditViewPortImGui(L"Metalic", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Roughness:
+		EditViewPortImGui(L"Roughness", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::Emissive:
+		EditViewPortImGui(L"Emissive", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::GBuffer:
+		EditViewPortImGui(L"GBuffer", pos, maxpos);
+		break;
+	case EditorViewPort::RENDERMODE::IMGUI:
+		EditViewPortImGui(L"IMGUI", pos, maxpos);
+		break;
+	default:
+		break;
+	}
 
 }
 
@@ -85,12 +125,12 @@ void EditorViewPort::EditingImGui()
 	ImGuizmoRender();
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	ImVec2 childWindowPos = ImVec2(maxpos.x - 110, pos.y);
+	ImVec2 childWindowPos = ImVec2(maxpos.x - 125, pos.y);
 	ImGui::SetNextWindowPos(childWindowPos);
 	/// RenderMode 버튼 설정.
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-		ImGui::BeginChild("Tools", ImVec2{ 110,0 }, child_flags2, window_flags2);
+		ImGui::BeginChild("Tools", ImVec2{ 125,0 }, child_flags2, window_flags2);
 	if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
 		m_CurrentRenderMode = RENDERMODE::Albedo;
 	if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
@@ -134,7 +174,7 @@ void EditorViewPort::ImGuizmoRender()
 	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
 	/// ImGuizmo 모드 선택
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-	ImGui::BeginChild("Setting", ImVec2{ 110,0 }, child_flags, window_flags);
+	ImGui::BeginChild("Setting", ImVec2{ 120,0 }, child_flags, window_flags);
 	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
@@ -164,6 +204,14 @@ void EditorViewPort::ImGuizmoRender()
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
 	VPMath::Matrix ImGuizmoMatrix = transformComp->WorldTransform;
+	//float x = 10.0f; // 시작 x 위치
+	//float y = 10.0f; // 시작 y 위치
+	//float width = 800.0f; // 너비
+	//float height = 600.0f; // 높이
+
+	//// ImGuizmo의 위치와 크기를 설정합니다.
+	//ImGuizmo::SetRect(x, y, width, height);
+	auto& style = ImGuizmo::GetStyle();
 
 
 	ImGuizmo::Manipulate(
@@ -173,6 +221,7 @@ void EditorViewPort::ImGuizmoRender()
 		Mode,
 		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
+
 
 	if (ImGuizmo::IsUsing())
 	{
@@ -209,8 +258,10 @@ void EditorViewPort::ImGuizmoRender()
 		}
 
 		///여기서 바뀐 Quaternion 을 활용하여, Local_Rotation을 다시 넣고싶어
-
 	}
+
+
+
 
 }
 

@@ -4,12 +4,16 @@
 
 struct TransformData
 {
-	TransformData() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity)
+	TransformData() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity),
+		localInverse(DirectX::SimpleMath::Matrix::Identity), worldInverse(DirectX::SimpleMath::Matrix::Identity)
 	{
 	}
 
 	DirectX::SimpleMath::Matrix world;
 	DirectX::SimpleMath::Matrix local;
+
+	DirectX::SimpleMath::Matrix localInverse;
+	DirectX::SimpleMath::Matrix worldInverse;
 };
 
 struct CameraData
@@ -18,15 +22,16 @@ struct CameraData
 	DirectX::SimpleMath::Matrix view;
 	DirectX::SimpleMath::Matrix proj;
 	DirectX::SimpleMath::Matrix viewInverse;
+	DirectX::SimpleMath::Matrix projInverse;
 };
 
 struct MatrixPallete
 {
-	DirectX::SimpleMath::Matrix pallete[128];
+	DirectX::SimpleMath::Matrix offset[128];
 };
 
 
-enum class Kind_of_Light
+enum class LightType
 {
 	Direction = 0,
 	Spot,
@@ -37,7 +42,7 @@ enum class Kind_of_Light
 
 struct LightData
 {
-	LightData() : direction(0,0,0), range(-1), attenuation(0,0,0), pad(-1), pos(0, 0, 0), spot(-1), color(1, 1, 1), intensity(1)
+	LightData() : direction(0,0,0), range(-1), attenuation(0,0,0), type(-1), pos(0, 0, 0), spot(-1), color(1, 1, 1), intensity(1)
 	{
 
 	}
@@ -46,7 +51,7 @@ struct LightData
 	float range;
 
 	DirectX::XMFLOAT3 attenuation;
-	float pad;
+	float type;
 
 	DirectX::XMFLOAT3 pos;
 	float spot;

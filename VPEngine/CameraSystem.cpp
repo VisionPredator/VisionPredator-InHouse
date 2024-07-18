@@ -53,7 +53,8 @@ void CameraSystem::FixedUpdate(float deltaTime)
 		IsMainCameraExist = true;
 		
 		CameraCalculation(cameracomp);
-		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
+		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj);
+
 		///그런다음 for문 종료하기!
 		break;
 	}
@@ -69,6 +70,17 @@ void CameraSystem::FixedUpdate(float deltaTime)
 
 void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 {
+
+	if (mainCamera.NearZ < 1)
+	{
+		mainCamera.NearZ = 1;
+	}
+	if (mainCamera.FarZ <= mainCamera.NearZ)
+	{
+		mainCamera.FarZ = mainCamera.NearZ + 1;
+	}
+
+
 	TransformComponent* cameraTransform = mainCamera.GetComponent<TransformComponent>();
 	// To get view matrix, we need to invert the world matrix
 	VPMath::Vector3 eye = cameraTransform->World_Location;
@@ -76,7 +88,11 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 	VPMath::Vector3 up = cameraTransform->UpVector;
 	mainCamera.View = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 	// Calculate projection matrix
-	// Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
+	// Assuming m_ratio, m_FOV, NearZ, and mainCamera.FarZ are properly set
 	mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, mainCamera.Ratio, mainCamera.NearZ, mainCamera.FarZ);
+}
+
+void CameraSystem::RenderUpdate(float deltaTime)
+{
 }
 

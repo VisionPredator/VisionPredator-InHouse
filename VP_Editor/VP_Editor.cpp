@@ -1,43 +1,25 @@
 #include "pch.h"
-#include "VP_Editor.h"
-#include "SystemManager.h"
-#include "Toolbar.h"
+#include "Managers.h"
 #include <TransformSystem.h>
-#include "../include/imgui_impl_win32.h"
-#include "../include/imgui_impl_dx11.h"
+#include "VP_Editor.h"
+#include "Toolbar.h"
 #include "EditorCamera.h"
 #include "FolderTool.h"
 #include "Hierarchy.h"
 #include "Inspector.h"
-#include "EventManager.h"
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
-VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
+#include "LightSystem.h"
+
+VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 16.5f);
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();
 	///Imgui Setting
-	/*
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	// Setup Platform/Renderer bindings
-	ImGui_ImplWin32_Init(hInstance);
-	ImGui_ImplDX11_Init(mpDevice.Get(), mpContext.Get());
-
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	*/
-	m_editorcamera = new EditorCamera;
+    m_editorcamera = new EditorCamera{m_SceneManager};
 	m_HierarchySystem = new HierarchySystem{m_SceneManager};
 	m_ImGuis.push_back(new Toolbar{ m_SceneManager });
 	m_ImGuis.push_back(new FolderTool{ m_SceneManager });
@@ -56,6 +38,7 @@ VP_Editor::~VP_Editor()
 		delete ImGui;
 	}
 	m_ImGuis.clear();
+	delete    m_HierarchySystem;
 }
 
 void VP_Editor::Update()
@@ -63,15 +46,26 @@ void VP_Editor::Update()
 	if (m_IsEditorMode)
 	{
 		m_editorcamera->Update(m_DeltaTime);
-		VPEngine::Update();
-
+        EventManager::GetInstance().Update(m_DeltaTime);
+        InputManager::GetInstance().Update();
+        m_TimeManager->Update();
+        m_DeltaTime = m_TimeManager->GetDeltaTime();
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
+        TransformSystem tempsystem{ m_SceneManager };
+        tempsystem.Update(m_DeltaTime);
+        m_SystemManager->RenderUpdate(m_DeltaTime);
+        LightSystem tempLight{ m_SceneManager };
+        tempLight.SetGraphics(m_Graphics);
+        tempLight.Update(m_DeltaTime);
+
+        std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
+        SetWindowTextW(m_hWnd, newname.c_str());
+        m_Graphics->Update(m_DeltaTime);
+
 	}
 	else
 	{
 		VPEngine::Update();
-		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
-
 	}
 
 }
@@ -87,6 +81,8 @@ void VP_Editor::Render()
 	// Render
 	for (auto& ImGui : m_ImGuis)
 	{
+        //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))
+        //    continue;
 		ImGui->ImGuiRender();
 	}
 
@@ -184,11 +180,13 @@ void VP_Editor::SetUnityDarkThemeColors()
 void VP_Editor::OnPlayButton(std::any)
 {
 	m_IsEditorMode = false;
+    EventManager::GetInstance().ImmediateEvent("OnStartScene");
 }
 
 void VP_Editor::OnStopButton(std::any)
 {
 	m_IsEditorMode = true;
+    EventManager::GetInstance().ImmediateEvent("OnEndScene");
 
 }
 

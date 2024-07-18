@@ -109,8 +109,6 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, const std
 
 ShaderResourceView::~ShaderResourceView()
 {
-	//m_samplerState->Release();
-	//m_view->Release();
 }
 
 ID3D11ShaderResourceView* ShaderResourceView::Get() const

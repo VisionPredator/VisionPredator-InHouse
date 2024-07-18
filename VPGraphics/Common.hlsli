@@ -5,7 +5,7 @@ static const float Epsilon = 0.00001;
 
 //모든 유전체에 대한 일정한 수직 입사 프레넬 계수
 static const float3 Fdielectric = { 0.04, 0.04, 0.04 };
-
+static const float gamma = 2.2;
 //***********************************************
 // Constant Buffers                             *
 //***********************************************
@@ -16,6 +16,7 @@ cbuffer Camera : register(b0)
     float4x4 gView;
     float4x4 gProj;
     float4x4 gViewInverse;
+    float4x4 gProjInverse;
 };
 
 //Transform
@@ -23,6 +24,8 @@ cbuffer Transform : register(b1)
 {
     float4x4 gWorld;
     float4x4 gLocal;
+    float4x4 gWorldInverse;
+    float4x4 gLocalInverse;
 };
 
 
@@ -88,7 +91,6 @@ Texture2D gIMGUI : register(t9);
 //***********************************************
 SamplerState samLinear : register(s0);
 
-
 //***********************************************
 // Structures                                   *
 //***********************************************
@@ -102,8 +104,8 @@ struct VS_INPUT
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
  #ifdef SKINNING
-    float4 boneindex : BONEINDEX;
-    float4 boneweight : BONEWEIGHT;
+    float4 boneindex[2] : BONEINDEX;
+    float4 boneweight[2] : BONEWEIGHT;
  #endif
 };
 
@@ -143,19 +145,23 @@ float3 FresnelSchlick(float3 F0, float cosTheta)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+// GGX/Towbridge-Reitz normal distribution function.
+// Uses Disney's reparametrization of alpha = roughness^2.
 float Calc_D(float3 N, float3 H, float roughness)
 {
     //DistributionGGX
     float a = roughness * roughness;
     float a2 = a * a;
+    
     float NdotH = max(dot(N, H), 0.0);
     float NdotH2 = NdotH * NdotH;
 
     float num = a2;
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = Pi * denom * denom;
+    
+    float den = Pi * denom * denom;
 
-    return num / denom;
+    return num / den;
 }
 
 float GeometrySchlickGGX(float NdotV, float k)
@@ -167,15 +173,18 @@ float GeometrySchlickGGX(float NdotV, float k)
     return num / denom;
 }
 
+// Schlick-GGX approximation of geometric attenuation function using Smith's method.
 float Calc_G(float3 N, float3 V, float3 L, float roughness)
 {
     float r = (roughness + 1.0);
     float k = (r * r) / 8.0;
 
+    float3 H = normalize(L + V);
     
-    //GeometrySmith
+    //GeometrySmith[
     float NdotV = saturate(dot(N, V));
     float NdotL = saturate(dot(N, L));
+    float NdotH = saturate(dot(N, H));
         
     float ggx1 = GeometrySchlickGGX(NdotL, k); 
     float ggx2 = GeometrySchlickGGX(NdotV, k);
@@ -183,9 +192,7 @@ float Calc_G(float3 N, float3 V, float3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-
-//빛 들어갈때 단순 대입이 아닌 연산필요
-float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, float roughness, float metalicValue)
+float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F0,float3 albedo, float roughness, float metalicValue)
 {
     float3 result  = float3(0,0,0);
     
@@ -195,36 +202,38 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F,float3 albedo, 
     
     //표면점에서 광원으로의 벡터 
     float3 L = -normalize(lightData.Direction); //directionlight는 모든 표면점에서 일정한 방향으로 들어오는 빛이므로 빛의 방향을 역으로 쓰자
+    float3 H = normalize(L + V);
+    float NdotL = max(dot(N, L), 0.0);
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotH = max(dot(N, H), 0.0);
+    
+    float3 F = FresnelSchlick(F0, max(0.0, dot(H,V))); //최소값 F0 , 최대값은 1.0,1.0,1.0
     
     //Diffuse BRDF
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
-    float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
+    float3 kD = float3(1.0, 1.0, 1.0) - F;//    +float3(0.4, 0.4, 0.4); // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
-    kD *= 1.0 - metalicValue;
-    
-    
-    diffuse = kD * albedo / Pi;
+    kD *= (1.0 - metalicValue);
+    diffuse = kD * albedo * Pi;
+   
     
     //Specular BRDF
-    float3 H = normalize(L + V);
     
-    float D = Calc_D(N, H, roughness);
-    float G = Calc_G(N, V, L, roughness);
+    float D = Calc_D(N, H, max(0.01, roughness));
+    float G = Calc_G(N, V, L, max(0.01, roughness));
     
     float3 n = (F * D * G); //분자
-    float3 d = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.01; //분모 0으로 나누기 피하려고 + 0.01
+    float3 d = 4.0 * NdotV * NdotL + 0.01; //분모 0으로 나누기 피하려고 + 0.01
     
     specular = n / d;
     
-    float NdotL = max(dot(N, L), 0.0);
     
-    result += (specular + diffuse) * lightData.Intensity * lightData.Color/*radiance 복사-(빛날)휘도*/ * NdotL;
+    result = (specular + diffuse) * lightData.Intensity * lightData.Color * NdotL;
     
     return result;
-    //return specular;
 }
 
-float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F, float3 albedo, float roughness, float metalicValue)
+float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0, float3 albedo, float roughness, float metalicValue, float3 Depth)
 {
     float3 result  = float3(0,0,0);
         
@@ -232,7 +241,17 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F, 
     float3 diffuse = float3(0, 0, 0);
     float3 specular = float3(0, 0, 0);
     
-    float3 L = lightData.pos - pos.xyz;
+    /*
+    //나중에 깊이 값에 따라 적용안되게 할 수도 있음
+    float DepthFactor = 0;
+    float curDepth = pos.z / pos.w;
+    if (Depth.r < curDepth)
+    {
+        DepthFactor = 1;
+    }
+    */
+    
+    float3 L = (lightData.pos - pos.xyz); //표면에서 광원까지
     
     //광원과 표면의 거리
     float distance = length(L);
@@ -242,24 +261,29 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F, 
     
     //빛 벡터 정규화
     L /= distance;
-        
+    
+    float3 H = normalize(L + V);
+    float NdotL = dot(N, L); //max(dot(N, L), 0.0); //이거 문제
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotH = max(dot(N, H), 0.0);
+            
+    float3 F = FresnelSchlick(F0, max(0.0, dot(H,V))); //최소값 F0 , 최대값은 1.0,1.0,1.0
+    
     //Diffuse BRDF
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
     float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
     kD *= 1.0 - metalicValue;
     
-    diffuse = kD * albedo / Pi;
-    
+    diffuse = kD * albedo * Pi;
     
    //Specular BRDF
-    float3 H = normalize(L + V);
     
-    float D = Calc_D(N, H, roughness);
-    float G = Calc_G(N, V, L, roughness);
+    float D = Calc_D(N, H, max(0.01, roughness));
+    float G = Calc_G(N, V, L, max(0.01, roughness));
     
     float3 n = (F * D * G); //분자
-    float3 d = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.01; //분모 0으로 나누기 피하려고 + 0.01
+    float3 d = 4.0 * NdotV * NdotL + 0.01; //분모 0으로 나누기 피하려고 + 0.01
     
     specular = n / d;
         
@@ -268,13 +292,12 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F, 
     diffuse *= att;
     specular *= att;
     
-    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0);
-    
-    return result;
-    
+    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0) * lightData.Intensity;
+   
+   return result;    
 }
 
-float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F, float3 albedo, float roughness, float metalicValue)
+float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F0, float3 albedo, float roughness, float metalicValue)
 {
     float3 result  = float3(0,0,0);
     
@@ -294,6 +317,9 @@ float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F, f
     
     //빛 벡터 정규화
     L /= distance;
+    float3 H = normalize(L + V);
+    
+    float3 F = FresnelSchlick(F0, max(0.0, dot(H,V))); //최소값 F0 , 최대값은 1.0,1.0,1.0
     
    //Diffuse BRDF
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
@@ -305,7 +331,6 @@ float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F, f
     
  
    //Specular BRDF
-    float3 H = normalize(L + V);
     
     float D = Calc_D(N, H, roughness);
     float G = Calc_G(N, V, L, roughness);
@@ -322,7 +347,7 @@ float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F, f
     diffuse *= att;
     specular *= att;
     
-    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0);
+    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0) * lightData.Intensity;
     return result;
 }
 

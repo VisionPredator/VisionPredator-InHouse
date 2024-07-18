@@ -4,7 +4,7 @@
 #include "HierarchySystem.h"
 #include "imgui_stdlib.h"
 #include "Components.h"
-
+#include "../PhysxEngine/VPPhysicsStructs.h"
 Inspector::Inspector(SceneManager* sceneManager, HierarchySystem* hierarchySystem) :m_SceneManager{ sceneManager }, m_HierarchySystem{ hierarchySystem }
 {
 }
@@ -118,19 +118,6 @@ void Inspector::EntityImGui(uint32_t entityID)
 	}
 
 
-	//auto Components = m_SceneManager->GetOwnedComponent(entityID);
-	//for (Component* Comp : Components)
-	//{
-	//	entt::id_type CompID = Comp->GetHandle()->type().id();
-	//	if (CompID == Reflection::GetTypeID<IDComponent>()
-	//		|| CompID == Reflection::GetTypeID<TransformComponent>()
-	//		|| CompID == Reflection::GetTypeID<Parent>()
-	//		|| CompID == Reflection::GetTypeID<Children>())
-	//		continue;
-	//	ComponentImGui(Comp);
-	//}
-
-
 }
 
 void Inspector::ComponentImGui(Component* component)
@@ -188,8 +175,11 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 
 
 	auto metaType = memberMetaData.type();
-	if (metaType.id() == Reflection::GetTypeID<VPMath::Vector2>())
-		TypeImGui_Vector2(memberMetaData, component);
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	if (metaType.is_enum() )
+		TypeImGui_EnumClass(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
+		TypeImGui_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
 		TypeImGui_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector4>())
@@ -200,6 +190,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_Color(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::string>())
 		TypeImGui_string(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::wstring>())
+		TypeImGui_wstring(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<bool>())
 		TypeImGui_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<int>())
@@ -208,6 +200,18 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_unsigned_int(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<float>())
 		TypeImGui_float(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::string>>())
+		TypeImGui_vector_string(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::wstring>>())
+		TypeImGui_vector_wstring(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
+		TypeImGui_ColliderInfo(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
+		TypeImGui_BoxColliderInfo(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics ::CapsuleColliderInfo>())
+		TypeImGui_CapsuleColliderInfo(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics ::SphereColliderInfo>())
+		TypeImGui_SphereColliderInfo(memberMetaData, component);
 }
 void Inspector::TypeImGui_Vector2(entt::meta_data memberMetaData, Component* component)
 {
@@ -231,7 +235,7 @@ void Inspector::TypeImGui_Vector3(entt::meta_data memberMetaData, Component* com
 	float tempFloat[3]{ tempVector.x,tempVector.y,tempVector.z };
 	ImGui::PushID(memberName.c_str());
 
-	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
+	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, .01f, -FLT_MAX, FLT_MAX))
 	{
 		tempVector.x = tempFloat[0];
 		tempVector.y = tempFloat[1];
@@ -306,6 +310,26 @@ void Inspector::TypeImGui_string(entt::meta_data memberMetaData, Component* comp
 		memberMetaData.set(component->GetHandle(), tempName);
 	ImGui::PopID();
 }
+void Inspector::TypeImGui_wstring(entt::meta_data memberMetaData, Component* component)
+{
+	std::wstring tempWName = memberMetaData.get(component->GetHandle()).cast<std::wstring>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	// Convert wstring to string
+	std::string tempName(tempWName.begin(), tempWName.end());
+
+	ImGui::PushID(memberName.c_str());
+
+	// InputText handling for std::wstring
+	if (ImGui::InputText(memberName.c_str(), &tempName))
+	{
+		// Convert string back to wstring
+		std::wstring newWName(tempName.begin(), tempName.end());
+		memberMetaData.set(component->GetHandle(), newWName);
+	}
+
+	ImGui::PopID();
+}
 void Inspector::TypeImGui_bool(entt::meta_data memberMetaData, Component* component)
 {
 	bool tempbool = memberMetaData.get(component->GetHandle()).cast<bool>();
@@ -350,5 +374,269 @@ void Inspector::TypeImGui_float(entt::meta_data memberMetaData, Component* compo
 	ImGui::PushID(memberName.c_str());
 	if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat))
 		memberMetaData.set(component->GetHandle(), tempfloat);
+	ImGui::PopID();
+}
+
+
+void Inspector::TypeImGui_EnumClass(entt::meta_data memberMetaData, Component* component)
+{
+	// Static cache for enum members to avoid recomputation
+	std::map<int, entt::meta_data> enumMap;
+	// eunmMember string table 생성
+
+	if (enumMap.empty()) {
+		for (auto [id, metaData] : memberMetaData.type().data()) {
+			entt::meta_any any = metaData.get({});
+			if (any.allow_cast<int>()) {
+				int memberInt = any.cast<int>();
+				enumMap[memberInt] = metaData;
+			}
+		}
+		assert(!enumMap.empty());
+	}
+
+	// 현재 enum 값 int로 가져오기
+	auto currentEnum = memberMetaData.get(component->GetHandle());
+	int currentEnumInt = 0;
+
+	if (currentEnum.allow_cast<int>())
+		currentEnumInt = currentEnum.cast<int>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	auto iter = enumMap.find(currentEnumInt);
+	assert(iter != enumMap.end());
+	std::string currentEnumName = Reflection::GetName(iter->second);
+
+	// Combo 창
+	if (ImGui::BeginCombo(memberName.c_str(), currentEnumName.c_str()))
+	{
+		for (const auto& [val, metaData] : enumMap)
+		{
+			std::string memberName = Reflection::GetName(metaData);
+			const bool bIsSelected = val == currentEnumInt;
+			if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+			{
+				memberMetaData.set(component->GetHandle(), val);
+			}
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void Inspector::TypeImGui_vector_string(entt::meta_data memberMetaData, Component* component)
+{
+	// Retrieve the vector<std::string> from component's handle
+	auto stringVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::string>>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+	// Display each string in the vector
+	for (size_t i = 0; i < stringVector.size(); ++i) 
+	{
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+
+		ImGui::InputText(("Element " + std::to_string(i)).c_str(), &stringVector[i]);
+	}
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize/2);
+
+	// Option to add a new element
+	if (ImGui::Button("  Add  ")) 
+	{
+		stringVector.push_back(""); // Add an empty string by default
+	}
+
+	// Option to remove the last element
+	if (!stringVector.empty() ) 
+	{
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+
+		if (ImGui::Button("Remove"))
+		{
+		stringVector.pop_back();
+		}
+	}
+
+	// Apply changes if vector was modified
+	memberMetaData.set(component->GetHandle(), std::move(stringVector));
+
+	ImGui::PopID();
+}
+
+
+void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Component* component)
+{
+	// Retrieve the vector<std::wstring> from component's handle
+	auto wstringVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::wstring>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+	// Display each string in the vector
+	for (size_t i = 0; i < wstringVector.size(); ++i) 
+	{
+		std::wstring tempWMember = wstringVector[i];
+		std::string tempSMember(tempWMember.begin(), tempWMember.end());
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		// ImGui::InputText expects a wchar_t array for input
+		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember)) 
+		{
+			// Convert string back to wstring
+			std::wstring newWName(tempSMember.begin(), tempSMember.end());
+			wstringVector[i] = newWName; // Convert back to std::wstring
+		}
+	}
+	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+	// Option to add a new element
+	if (ImGui::Button("  Add  "))
+	{
+		wstringVector.push_back(L""); // Add an empty wstring by default
+	}
+
+	// Option to remove the last element
+	if (!wstringVector.empty() ) 
+	{
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("Remove"))
+		{
+		wstringVector.pop_back();
+		}
+	}
+
+	// Apply changes if vector was modified
+	memberMetaData.set(component->GetHandle(), std::move(wstringVector));
+
+	ImGui::PopID();
+}
+using namespace VPPhysics;
+
+void Inspector::TypeImGui_ColliderInfo(entt::meta_data memberMetaData, Component* component)
+{
+	ColliderInfo tempColliderInfo = memberMetaData.get(component->GetHandle()).cast<ColliderInfo>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+
+	// Static cache for enum members to avoid recomputation
+	static std::map<int, entt::meta_data> enumMap{};
+	// eunmMember string table 생성
+
+	if (enumMap.empty()) {
+		auto metaType2 = entt::resolve(Reflection::GetTypeID<EPhysicsLayer>());
+		for (auto [id, metaData] : metaType2.data()) {
+			entt::meta_any any = metaData.get({});
+			if (any.allow_cast<int>()) {
+				int memberInt = any.cast<int>();
+				enumMap[memberInt] = metaData;
+			}
+		}
+		assert(!enumMap.empty());
+	}
+
+	// 현재 enum 값 int로 가져오기
+	int currentEnumInt = (int)tempColliderInfo.PhysicsLayer;
+
+	std::string valuename = "EPhysicsLayer";
+	auto iter = enumMap.find(currentEnumInt);
+	assert(iter != enumMap.end());
+	std::string currentEnumName = Reflection::GetName(iter->second);
+
+	ImGui::PushID(memberName.c_str());
+	// Combo 창
+	ImGui::Text("ColliderInfo");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	if (ImGui::BeginCombo(valuename.c_str(), currentEnumName.c_str()))
+	{
+		for (const auto& [val, metaData] : enumMap)
+		{
+			std::string memberName = Reflection::GetName(metaData);
+			const bool bIsSelected = val == currentEnumInt;
+			if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+			{
+				tempColliderInfo.PhysicsLayer = (EPhysicsLayer)val;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	float tempfriction[2]{ tempColliderInfo.StaticFriction ,tempColliderInfo.DynamicFriction };
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat2("Static/Dynamic Friction", tempfriction, 0.1f);
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Restitution", &tempColliderInfo.Restitution, 0.1f);
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Density", &tempColliderInfo.Density, 0.1f);
+	tempColliderInfo.StaticFriction = tempfriction[0];
+	tempColliderInfo.DynamicFriction = tempfriction[1];
+		memberMetaData.set(component->GetHandle(), tempColliderInfo);
+	ImGui::PopID();
+}
+void Inspector::TypeImGui_BoxColliderInfo(entt::meta_data memberMetaData, Component* component)
+{
+	RigidBodyComponent* tempComp = static_cast<RigidBodyComponent*>(component);
+	if (tempComp->ColliderShape != EColliderShape::BOX)
+		return;
+	BoxColliderInfo tempBoxColliderInfo = memberMetaData.get(component->GetHandle()).cast<BoxColliderInfo>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("Box Info");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::Checkbox("UseAABB?", &tempBoxColliderInfo.UseAABB);
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat3("Extent", &tempBoxColliderInfo.Extent.x, 0.1f,0.1f);
+	if (tempBoxColliderInfo.Extent.x <= 0)
+		tempBoxColliderInfo.Extent.x = 0.1f;
+	if (tempBoxColliderInfo.Extent.y <= 0)
+		tempBoxColliderInfo.Extent.y = 0.1f;
+	if (tempBoxColliderInfo.Extent.z <= 0)
+		tempBoxColliderInfo.Extent.z = 0.1f;
+
+	memberMetaData.set(component->GetHandle(), tempBoxColliderInfo);
+	ImGui::PopID();
+}
+
+void Inspector::TypeImGui_CapsuleColliderInfo(entt::meta_data memberMetaData, Component* component)
+{
+	RigidBodyComponent* tempComp = static_cast<RigidBodyComponent*>(component);
+	if (tempComp->ColliderShape != EColliderShape::CAPSULE)
+		return;
+	CapsuleColliderInfo tempCapsuleColliderInfo = memberMetaData.get(component->GetHandle()).cast<CapsuleColliderInfo>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("Capsule Info");
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Radius", &tempCapsuleColliderInfo.Radius, 0.1f, 0.1f);
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Half Height", &tempCapsuleColliderInfo.HalfHeight, 0.1f, 0.1f);
+	if (tempCapsuleColliderInfo.Radius <= 0.f)
+		tempCapsuleColliderInfo.Radius = 0.1f;
+	if (tempCapsuleColliderInfo.HalfHeight <= 0.f)
+		tempCapsuleColliderInfo.HalfHeight = 0.1f;
+
+	memberMetaData.set(component->GetHandle(), tempCapsuleColliderInfo);
+
+	ImGui::PopID();
+}
+
+void Inspector::TypeImGui_SphereColliderInfo(entt::meta_data memberMetaData, Component* component)
+{
+	RigidBodyComponent* tempComp = static_cast<RigidBodyComponent*>(component);
+	if (tempComp->ColliderShape != EColliderShape::SPHERE)
+		return;
+	SphereColliderInfo tempSphereColliderInfo = memberMetaData.get(component->GetHandle()).cast<SphereColliderInfo>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("Sphere Info");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Radius", &tempSphereColliderInfo.Radius,0.1f,0.1f);
+	if (tempSphereColliderInfo.Radius <= 0.f)
+		tempSphereColliderInfo.Radius = 0.1f;
+	memberMetaData.set(component->GetHandle(), tempSphereColliderInfo);
 	ImGui::PopID();
 }

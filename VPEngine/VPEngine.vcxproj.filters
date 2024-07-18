@@ -159,6 +159,30 @@
     <ClInclude Include="VisPredMath.h">
       <Filter>VisPredMath</Filter>
     </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DataRegister.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers.h">
+      <Filter>자체 엔진\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicSystem.h">
+      <Filter>자체 엔진\System\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -235,6 +259,27 @@
     </ClCompile>
     <ClCompile Include="VisPredMath.cpp">
       <Filter>VisPredMath</Filter>
+    </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicSystem.cpp">
+      <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
