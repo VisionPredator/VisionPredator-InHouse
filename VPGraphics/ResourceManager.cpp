@@ -24,6 +24,7 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
 	m_OffScreenName[9] = L"IMGUI";
+	//m_OffScreenName[9] = L"RTV_Main";
 }
 
 ResourceManager::~ResourceManager()
@@ -121,6 +122,7 @@ void ResourceManager::Initialize()
 			std::weak_ptr<Texture2D> offscreenTex = Create<Texture2D>(m_OffScreenName[i], texDesc);
 			Create<RenderTargetView>(m_OffScreenName[i], offscreenTex);
 		}
+
 	}
 
 	//DSV
@@ -217,6 +219,17 @@ void ResourceManager::OnResize(RECT& wndsize)
 
 		//기존에 있으면 지우고
 		Erase<ShaderResourceView>(m_OffScreenName[i]);
+
+		/*
+#pragma region SUMIN
+		if (m_OffScreenName[i] == L"IMGUI")
+		{
+			Create<ShaderResourceView>(m_OffScreenName[i], Get<RenderTargetView>(L"RTV_Main").lock());
+			continue;
+		}
+#pragma endregion SUMIN
+		 */
+
 		// 셰이더 리소스 뷰를 만듭니다.
 		Create<ShaderResourceView>(m_OffScreenName[i], newRTV, shaderResourceViewDesc);
 	}

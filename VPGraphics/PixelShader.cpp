@@ -3,6 +3,8 @@
 #include "PixelShader.h"
 #include <d3d11.h>
 #include <d3dcompiler.h>
+
+#include "Defines.h"
 #include "Device.h"
 #include "Vertex.h"
 #pragma comment (lib, "D3DCompiler.lib")
@@ -39,13 +41,58 @@ PixelShader::PixelShader(std::shared_ptr<Device> device, std::wstring filename) 
 	}
 }
 
-
-PixelShader::~PixelShader()
+// 일단 기존 생성자 안없애고 진행하기 위해 새로만들었다.
+// TODO: 나중에는 이 생성자만 하나만 이용하도록 바꾸어야 한다.
+PixelShader::PixelShader(const std::shared_ptr<Device>& device, const std::wstring& filename,
+	const std::string& entryPoint, const D3D_SHADER_MACRO* macro)
 {
+	// TODO: Binary 파일을 읽는 것과 hlsl 파일을 읽는 것으로 함수를 분리하는게 좋을 듯 하다.
+	// -> 기껏 매크로 작성해서 인자로 넣었는데 hlsl 파일 안읽어질시에 바이너리 파일 읽히면 매크로가 적용이 안되어서 어리둥절할 수가 있다.
+	// -> + 진입점 설정해 두어도 hlsl 컴파일 실패하면 바이너리 파일을 읽어버려서 적용이 안됨.. 등등..
+
+	HRESULT hr = S_OK;
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
+	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
+
+#ifdef _DEBUG
+	shaderFlag |= D3DCOMPILE_DEBUG;
+	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+	const std::string& shaderModel = "ps_5_0";
+
+	const std::wstring hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
+	const std::wstring hlslFileExtension = L".hlsl";
+	const std::wstring binaryFileExtension = L".cso";
+
+	std::wstring filePath = hlslFileBasePath + filename + hlslFileExtension;
+
+	// 컴파일 된 것이 있다면 그걸 쓴다.
+	if (FAILED(D3DCompileFromFile(
+			filePath.c_str(),
+			macro,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryPoint.c_str(),
+			shaderModel.c_str(),
+			shaderFlag,
+			0,
+			&blob,
+			&blob)))
+	{
+		filePath = filename + binaryFileExtension;
+		hr = D3DReadFileToBlob(filePath.c_str(), &blob);
+	}
+
+	if (FAILED(hr))
+	{
+		MessageBox(nullptr, L"PS Load Fail", nullptr, 0);
+		return;
+	}
+
+	HR_CHECK(device->Get()->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PS));
 }
 
 
 void PixelShader::Release()
 {
-	m_PS->Release();
+	//m_PS->Release();
 }

@@ -25,7 +25,7 @@ public:
 		float Unused;
 	};
 
-	struct Vertex
+	struct ParticleVertex
 	{
 		DirectX::SimpleMath::Vector3 InitialPos;
 		DirectX::SimpleMath::Vector3 InitialVel;
@@ -46,12 +46,12 @@ private:
 
 	PerFrame m_PerFrame = {};
 
-	std::shared_ptr<VertexBuffer> m_InitVB;
-	//Microsoft::WRL::ComPtr<ID3D11Buffer> m_InitVB;		// emit	// 초기화용 방출기 입자
-	std::shared_ptr<VertexBuffer> m_StreamOutVB;
-	//Microsoft::WRL::ComPtr<ID3D11Buffer> m_StreamOutVB;	// simulate
-	std::shared_ptr<VertexBuffer> m_DrawVB;
-	//Microsoft::WRL::ComPtr<ID3D11Buffer> m_DrawVB;		// draw
+	//std::shared_ptr<VertexBuffer> m_InitVB;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_InitVB;		// emit	// 초기화용 방출기 입자
+	//std::shared_ptr<VertexBuffer> m_StreamOutVB;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_StreamOutVB;	// simulate
+	//std::shared_ptr<VertexBuffer> m_DrawVB;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_DrawVB;		// draw
 
 	std::shared_ptr<ConstantBuffer<PerFrame>> m_FrameCB;
 
@@ -75,8 +75,8 @@ private:
 	float m_TimeStep = 0.f;
 	float m_Age = 0.f;
 
-	DirectX::SimpleMath::Vector3 m_EyePosW;
-	DirectX::SimpleMath::Vector3 m_EmitPosW;
-	DirectX::SimpleMath::Vector3 m_EmitDirW;
+	DirectX::SimpleMath::Vector3 m_EyePosW = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	DirectX::SimpleMath::Vector3 m_EmitPosW = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	DirectX::SimpleMath::Vector3 m_EmitDirW = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
 };
 

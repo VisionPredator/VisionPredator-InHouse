@@ -27,7 +27,7 @@ public:
 		const std::string& entryPoint,
 		const D3D_SHADER_MACRO* macro = nullptr);
 
-	virtual ~VertexShader() override = default;
+	~VertexShader() override = default;
 
 	ID3D11PixelShader* GetPS() = delete;
 
@@ -35,7 +35,7 @@ public:
 	ID3D11VertexShader* GetShader() { return m_VS.Get(); }
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> GetComPtr() { return m_VS; }
 
-	virtual void Release() override;
+	void Release() override;
 
 private:
 	VERTEXFILTER m_Kind_of_Vertex = {};

@@ -12,6 +12,8 @@ public:
 		const std::string& shaderModel,
 		const D3D_SHADER_MACRO* macro = nullptr);
 
+	void Release() override {}
+
 	ID3D11GeometryShader* GetShader() { return m_Shader.Get(); }
 
 private:

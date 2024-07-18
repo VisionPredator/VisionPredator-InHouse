@@ -19,6 +19,7 @@ class ForwardPipeline;
 #pragma endregion
 
 class LightManager;
+class TimeManager;
 
 class ModelData;
 class RenderData;
@@ -33,7 +34,7 @@ class RenderData;
 class GraphicsEngine : public Graphics::Interface
 {
 public:
-	GraphicsEngine(HWND hWnd);
+	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
 	~GraphicsEngine();
 
 	virtual bool Initialize() override;
@@ -89,7 +90,9 @@ private:
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<LightManager> m_LightManager;
-	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;
+	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
+	std::shared_ptr<class ParticleManager> m_ParticleManager;
+	TimeManager* m_TimeManager;
 
 private:
 	HWND m_hWnd;

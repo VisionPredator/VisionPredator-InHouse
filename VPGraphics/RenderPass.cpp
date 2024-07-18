@@ -143,7 +143,8 @@ void RenderPass::BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_
 
 FowardPass::FowardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
+	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
@@ -164,7 +165,8 @@ FowardPass::~FowardPass()
 
 DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
+	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
@@ -425,7 +427,8 @@ void DeferredPass::Light()
 
 	//draw quad
 	{
-		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
+		//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
+		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 		std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 		Device->UnBindSRV();

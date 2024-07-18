@@ -19,9 +19,6 @@ Shader::Shader(std::shared_ptr < Device>device, D3D11_INPUT_ELEMENT_DESC desc, s
 
 }
 
-Shader::~Shader()
-{
-}
 
 
 

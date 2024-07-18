@@ -14,6 +14,8 @@ class BlendState : public Resource
 public:
 	BlendState(const std::shared_ptr<Device>& device, const BlendStateType& type);
 
+	void Release() override {}
+
 	Microsoft::WRL::ComPtr<ID3D11BlendState> GetState() { return m_State; }
 
 private:

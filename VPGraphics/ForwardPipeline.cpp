@@ -60,7 +60,8 @@ void ForwardPipeline::Render()
 		std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 		std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
 		std::shared_ptr<VertexShader> vs = resourcemanager->Get<VertexShader>(L"Quad").lock();
-		std::shared_ptr<ShaderResourceView> gui = m_ResourceManager.lock()->Get<ShaderResourceView>(L"IMGUI").lock();
+		//std::shared_ptr<ShaderResourceView> gui = m_ResourceManager.lock()->Get<ShaderResourceView>(L"IMGUI").lock();
+		std::shared_ptr<ShaderResourceView> gui = m_ResourceManager.lock()->Get<ShaderResourceView>(L"RTV_Main").lock();
 
 		Device->UnBindSRV();
 

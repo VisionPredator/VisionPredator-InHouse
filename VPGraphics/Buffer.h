@@ -20,23 +20,26 @@ public:
 	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc);
 	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data);
 	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, int count);
-	~Buffer();
+
+	Buffer(const std::shared_ptr<Device>& device, const D3D11_BUFFER_DESC* desc, const D3D11_SUBRESOURCE_DATA* data, const int& count);
+
+	~Buffer() override = default;
 
 	ID3D11Buffer* Get() const;
 	ID3D11Buffer** GetAddress();
-	Microsoft::WRL::ComPtr<ID3D11Buffer> GetComPtr() { return m_buffer; }
+	//Microsoft::WRL::ComPtr<ID3D11Buffer> GetComPtr() { return m_buffer; }
 	UINT Count() const;
 
 	virtual void Update() abstract;
 	virtual void Release() override;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
-	//ID3D11Buffer* m_buffer;
+	//Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
+	ID3D11Buffer* m_buffer = nullptr;
 
-	UINT m_count;
-	D3D11_BUFFER_DESC m_Desc;
-	D3D11_SUBRESOURCE_DATA m_Data;
+	UINT m_count = 0;
+	D3D11_BUFFER_DESC m_Desc = {};
+	D3D11_SUBRESOURCE_DATA m_Data = {};
 };
 
 

@@ -37,6 +37,8 @@
 #include "Animator.h"
 #include "LightManager.h"
 #include "DebugDrawManager.h"
+#include "ParticleManager.h"
+#include "TimeManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -47,7 +49,8 @@
 #include "DeferredShadingPipeline.h"
 #pragma endregion IMGUI
 
-GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_CurViewPort(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
+GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
+	: m_TimeManager(timeManager), m_hWnd(hWnd), m_wndSize()
 {
 }
 
@@ -81,11 +84,13 @@ bool GraphicsEngine::Initialize()
 	m_Animator = std::make_shared <Animator>();
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
+	m_ParticleManager = std::make_shared<ParticleManager>();
+	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 	OnResize();
 
 	// Pipeline
 	m_DeferredShadingPipeline = std::make_shared<DeferredShadingPipeline>();
-	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_View, m_Proj);
+	m_DeferredShadingPipeline->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_TimeManager);
 
 	m_ForwardPipeline = std::make_shared <ForwardPipeline>(m_Device, m_ResourceManager);
 	m_ForwardPipeline->Initialize();

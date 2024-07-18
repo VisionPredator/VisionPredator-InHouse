@@ -31,14 +31,9 @@ Buffer::Buffer(std::shared_ptr<Device>device, D3D11_BUFFER_DESC desc) : Resource
 
 }
 
-Buffer::~Buffer()
-{
-}
-
-
 ID3D11Buffer* Buffer::Get() const
 {
-	return m_buffer.Get();
+	return m_buffer;
 }
 
 ID3D11Buffer** Buffer::GetAddress()

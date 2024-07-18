@@ -79,7 +79,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 	{
 		case VERTEXFILTER::STATIC:
 		{
-			hr = D3DCompileFromFile(m_filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0",dwShaderFlags, 0, &VSBlob, &pErrorBlob);
+			hr = D3DCompileFromFile(m_filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", dwShaderFlags, 0, &VSBlob, &pErrorBlob);
 
 			if (FAILED(hr))
 			{
@@ -94,7 +94,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 			}
 			hr = m_Device.lock()->Get()->CreateInputLayout(TextureVertexInputDesc, TextureDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_InputLayout);
 		}
-			break;
+		break;
 
 		case VERTEXFILTER::SKINNING:
 		{
@@ -103,8 +103,8 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 				{"SKINNING",""}, // 매크로 이름과 값을 설정
 				{nullptr, nullptr}    // 배열의 끝을 나타내기 위해 nullptr로 끝낸다.
 			};
-			
-			hr = D3DCompileFromFile(m_filename.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0",dwShaderFlags, 0, &VSBlob, &pErrorBlob);
+
+			hr = D3DCompileFromFile(m_filename.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", dwShaderFlags, 0, &VSBlob, &pErrorBlob);
 			hr = m_Device.lock()->Get()->CreateVertexShader(VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), nullptr, &m_VS);
 
 			hr = m_Device.lock()->Get()->CreateInputLayout(SkinningVertexInputDesc, SkinningDescCount, VSBlob->GetBufferPointer(), VSBlob->GetBufferSize(), &m_InputLayout);
@@ -138,21 +138,39 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 
 VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const std::string& entryPoint, const D3D_SHADER_MACRO* macro)
 {
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
 #ifdef _DEBUG
 	shaderFlag |= D3DCOMPILE_DEBUG;
 	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-
 	const std::string& shaderModel = "vs_5_0";
 
-	Microsoft::WRL::ComPtr<ID3DBlob> blob;
-	HR_CHECK(D3DCompileFromFile(filename.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint.c_str(), shaderModel.c_str(),
-		shaderFlag, 0, &blob, &blob));
+	const std::wstring hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
+	const std::wstring hlslFileExtension = L".hlsl";
+	const std::wstring binaryFileExtension = L".cso";
+
+	std::wstring filePath = hlslFileBasePath + filename + hlslFileExtension;
+
+	// 컴파일 된 것이 있다면 그걸 쓴다.
+	if (FAILED(
+		D3DCompileFromFile(
+			filePath.c_str(), 
+			macro, 
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, 
+			entryPoint.c_str(), 
+			shaderModel.c_str(),
+			shaderFlag, 
+			0, 
+			&blob, 
+			&blob)))
+	{
+		filePath = filename + binaryFileExtension;
+		HR_CHECK(D3DReadFileToBlob(filePath.c_str(), &blob));
+	}
 
 	HR_CHECK(device->Get()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_VS));
-
 
 	/// Input Layout Reflection
 	ID3D11ShaderReflection* pReflector = nullptr;
@@ -213,9 +231,9 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 	// Shader InputLayout 생성
 	HR_CHECK(
 		device->Get()->CreateInputLayout(
-			&inputLayoutDesc[0], 
+			&inputLayoutDesc[0],
 			(UINT)inputLayoutDesc.size(),
-			blob->GetBufferPointer(), 
+			blob->GetBufferPointer(),
 			blob->GetBufferSize(),
 			&m_InputLayout
 		);
@@ -225,7 +243,7 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 
 void VertexShader::Release()
 {
-	m_InputLayout->Release();
-	m_VS->Release();
-	m_VS = nullptr;
+	//m_InputLayout->Release();
+	//m_VS->Release();
+	//m_VS = nullptr;
 }

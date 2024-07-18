@@ -8,16 +8,37 @@
 GeometryShader::GeometryShader(const std::shared_ptr<Device>& device, const std::wstring& filename,
                                const std::string& entryPoint, const std::string& shaderModel, const D3D_SHADER_MACRO* macro)
 {
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
+
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
 	shaderFlag |= D3DCOMPILE_DEBUG;
 	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	Microsoft::WRL::ComPtr<ID3DBlob> blob;
-	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
-	HR_CHECK(D3DCompileFromFile(filename.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint.c_str(), shaderModel.c_str(),
-		shaderFlag, 0, &blob, &errorBlob));
+	const std::wstring hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
+	const std::wstring hlslFileExtension = L".hlsl";
+	const std::wstring binaryFileExtension = L".cso";
+
+	std::wstring filePath = hlslFileBasePath + filename + hlslFileExtension;
+
+	// 컴파일 된 것이 있다면 그걸 쓴다.
+	if (FAILED(
+		D3DCompileFromFile(
+			filePath.c_str(),
+			macro,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryPoint.c_str(),
+			shaderModel.c_str(),
+			shaderFlag,
+			0,
+			&blob,
+			&errorBlob)))
+	{
+		filePath = filename + binaryFileExtension;
+		HR_CHECK(D3DReadFileToBlob(filePath.c_str(), &blob));
+	}
 
 	if (errorBlob)
 	{
