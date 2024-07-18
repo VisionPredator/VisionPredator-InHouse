@@ -597,6 +597,72 @@
                     "type": "Direction"
                 }
             ]
+        },
+        {
+            "EntityID": 2701820837,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity7"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -9.838810920715332,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ChildrenID": [
+                        3964569070
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 3964569070,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity8"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -9.669818878173828,
+                        "y": 0.0,
+                        "z": 4.254031181335449
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2701820837
+                }
+            ]
         }
     ],
     "PhysicsInfo": {

@@ -51,9 +51,9 @@ void VP_Editor::Update()
         EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
-        m_SystemManager->RenderUpdate(m_DeltaTime);
 
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
+        m_SystemManager->RenderUpdate(m_DeltaTime);
         LightSystem tempLight{ m_SceneManager };
         tempLight.Update(m_DeltaTime);
         tempLight.SetGraphics(m_Graphics);

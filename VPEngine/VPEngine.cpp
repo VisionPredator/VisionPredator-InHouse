@@ -118,8 +118,15 @@ void VPEngine::Loop()
 		else
 		{
 			Update();
-			Render();
-			EndRender();
+			static float tempTime = 0;
+			tempTime += m_DeltaTime;
+			while (tempTime > (1/90.f))
+			{
+				Render();
+				EndRender();
+				tempTime -= (1/90.f);
+			}
+
 
 		}
 	}
