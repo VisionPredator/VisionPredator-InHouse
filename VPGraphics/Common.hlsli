@@ -6,8 +6,10 @@ static const float Epsilon = 0.00001;
 //모든 유전체에 대한 일정한 수직 입사 프레넬 계수
 static const float3 Fdielectric = { 0.04, 0.04, 0.04 };
 static const float gamma = 2.2;
-//CONSTANT
-///Camera
+//***********************************************
+// Constant Buffers                             *
+//***********************************************
+//Camera
 cbuffer Camera : register(b0)
 {
     float4x4 gWorldViewProj;
@@ -17,7 +19,7 @@ cbuffer Camera : register(b0)
     float4x4 gProjInverse;
 };
 
-///Transform
+//Transform
 cbuffer Transform : register(b1)
 {
     float4x4 gWorld;
@@ -40,7 +42,7 @@ cbuffer Material : register(b2)
 };
 
 
-///Light
+//Light
 struct LightData
 {
     float3 Direction;
@@ -84,10 +86,14 @@ Texture2D gEmissive : register(t7);
 Texture2D gGBuffer : register(t8);
 Texture2D gIMGUI : register(t9);
 
-//sampler
+//***********************************************
+// Sampler States                               *
+//***********************************************
 SamplerState samLinear : register(s0);
 
-//STRUCT
+//***********************************************
+// Structures                                   *
+//***********************************************
 
 struct VS_INPUT
 {
@@ -98,8 +104,8 @@ struct VS_INPUT
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
  #ifdef SKINNING
-    float4 boneindex : BONEINDEX;
-    float4 boneweight : BONEWEIGHT;
+    float4 boneindex[2] : BONEINDEX;
+    float4 boneweight[2] : BONEWEIGHT;
  #endif
 };
 
@@ -120,7 +126,18 @@ struct Quad
     float2 tex : TEXCOORD;
 };
 
-//Light Function
+struct Particle
+{
+	float3 InitialPosW : POSITION;
+    float3 InitialVelW : VELOCITY;
+    float2 SizeW : SIZE;
+    float Age : AGE;
+    uint Type : TYPE;
+};
+
+//***********************************************
+// LIGHT HELPER FUNCTIONS                    *
+//***********************************************
 
 
 float3 FresnelSchlick(float3 F0, float cosTheta)
@@ -128,6 +145,8 @@ float3 FresnelSchlick(float3 F0, float cosTheta)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+// GGX/Towbridge-Reitz normal distribution function.
+// Uses Disney's reparametrization of alpha = roughness^2.
 float Calc_D(float3 N, float3 H, float roughness)
 {
     //DistributionGGX
@@ -154,6 +173,7 @@ float GeometrySchlickGGX(float NdotV, float k)
     return num / denom;
 }
 
+// Schlick-GGX approximation of geometric attenuation function using Smith's method.
 float Calc_G(float3 N, float3 V, float3 L, float roughness)
 {
     float r = (roughness + 1.0);
@@ -191,10 +211,10 @@ float3 CalcDir(LightData lightData, float3 V, float3 N, float3 F0,float3 albedo,
     
     //Diffuse BRDF
     //kD - diffuse 반사율, kS - fresnel 반사율 -> 에너지 보존 법칙에 의해 프레넬로 반사되는 빛의 양과 물체에 흡수되 표면 밑에서 산란해 반사되는 빛의 양은 1
-    float3 kD = float3(1.0, 1.0, 1.0) - F; // kS is equal to Fresnel
+    float3 kD = float3(1.0, 1.0, 1.0) - F;//    +float3(0.4, 0.4, 0.4); // kS is equal to Fresnel
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
     kD *= (1.0 - metalicValue);
-    diffuse = kD * albedo / Pi;
+    diffuse = kD * albedo * Pi;
    
     
     //Specular BRDF
@@ -255,8 +275,7 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0,
     // multiply kD by the inverse metalness such that only non-metals have diffuse lighting, or a linear blend if partly metal (pure metals have no diffuse light)
     kD *= 1.0 - metalicValue;
     
-    diffuse = kD * albedo / Pi;
-    
+    diffuse = kD * albedo * Pi;
     
    //Specular BRDF
     
@@ -273,7 +292,7 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0,
     diffuse *= att;
     specular *= att;
     
-    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0);
+    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0) * lightData.Intensity;
    
    return result;    
 }
@@ -328,6 +347,11 @@ float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F0, 
     diffuse *= att;
     specular *= att;
     
-    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0);
+    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0) * lightData.Intensity;
     return result;
 }
+
+//***********************************************
+// PARTICLE HELPER FUNCTIONS                    *
+//***********************************************
+

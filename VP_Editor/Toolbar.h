@@ -1,5 +1,7 @@
 #pragma once
 #include "IImGui.h"
+#include "../PhysxEngine/VPPhysicsStructs.h"
+
 class SceneManager;
 namespace Physic
 {

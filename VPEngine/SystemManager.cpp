@@ -60,7 +60,7 @@
 		for (auto renderable : m_Renderables)
 			renderable->RenderUpdate(deltatime);
 	}
-	void SystemManager::LateUpdatable(float deltatime)
+	void SystemManager::LateUpdate(float deltatime)
 	{
 		for (auto lateUpdatable : m_LateUpdatable)
 			lateUpdatable->LateUpdate(deltatime);

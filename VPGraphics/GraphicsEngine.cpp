@@ -35,6 +35,8 @@
 #include "Animator.h"
 #include "LightManager.h"
 #include "DebugDrawManager.h"
+//#include "ParticleManager.h"
+#include "TimeManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -44,10 +46,8 @@
 #pragma endregion IMGUI
 
 #include "Animation.h"
-
-
-GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_CurViewPort(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
-{
+GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
+	: m_TimeManager(timeManager), m_hWnd(hWnd), m_wndSize(){
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -81,10 +81,12 @@ bool GraphicsEngine::Initialize()
 	m_Animator = std::make_shared <Animator>(m_ResourceManager);
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
-	OnResize();
-
+	
 	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
 	m_PassManager->Initialize();
+	//m_ParticleManager = std::make_shared<ParticleManager>();
+	//m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
+	OnResize(m_hWnd);
 
 	InitializeImGui();
 
@@ -109,6 +111,8 @@ bool GraphicsEngine::Finalize()
 	m_Loader.reset();
 	m_Animator.reset();
 	DestroyImGui();
+
+
 	return true;
 }
 
@@ -119,6 +123,7 @@ void GraphicsEngine::BeginRender()
 	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
 	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
@@ -206,11 +211,23 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Camera.lock()->Update();
 }
 
-void GraphicsEngine::UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)
+void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 {
-	m_RenderList[EntityID] = data;
+	m_RenderList[EntityID]->EntityID = data.EntityID;
+	m_RenderList[EntityID]->Filter = data.Filter;
+	m_RenderList[EntityID]->Name = std::move(data.Name);
+	m_RenderList[EntityID]->FBX = std::move(data.FBX);
+	m_RenderList[EntityID]->world = data.world;
+	m_RenderList[EntityID]->local = data.local;
+	m_RenderList[EntityID]->duration = data.duration;
+	m_RenderList[EntityID]->preDuration = data.preDuration;
+	m_RenderList[EntityID]->isChange = data.isChange;
+	m_RenderList[EntityID]->isPlay = data.isPlay;
+	m_RenderList[EntityID]->curAnimation = std::move(data.curAnimation);
+	m_RenderList[EntityID]->preAnimation = std::move(data.preAnimation);
 
-	switch (data->Filter)
+
+	switch (data.Filter)
 	{
 		case MeshFilter::Axis:
 		case MeshFilter::Grid:
@@ -327,8 +344,9 @@ ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 	return m_ResourceManager->Get<ShaderResourceView>(name).lock()->Get();
 }
 
-void GraphicsEngine::OnResize()
+void GraphicsEngine::OnResize(HWND hwnd)
 {
+	m_hWnd = hwnd;
 	GetClientRect(m_hWnd, &m_wndSize);
 
 	m_RTVs.clear();
@@ -349,10 +367,13 @@ void GraphicsEngine::OnResize()
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"AO"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Emissive"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"GBuffer"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"IMGUI"));
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));
 
+
+	m_PassManager->OnResize();
 
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());

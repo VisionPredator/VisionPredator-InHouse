@@ -16,7 +16,7 @@
 
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
-		void LateUpdatable(float deltatime);
+		void LateUpdate(float deltatime);
 		void PhysicUpdatable(float deltatime);
 		template <typename T>
 		bool IsSystemAdded() const

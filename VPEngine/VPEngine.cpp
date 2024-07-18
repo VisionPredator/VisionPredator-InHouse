@@ -18,7 +18,9 @@
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
 #include "PhysicSystem.h"
-#include "..\VisionpredatorProcess\TestCameraSystem.h"
+
+bool VPEngine::isResize = false;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
@@ -45,24 +47,24 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
 
-	m_Graphics = new GraphicsEngine(m_hWnd);
-	m_PhysicEngine = new PhysxEngine;
-	m_Graphics->Initialize();
 	VPRegister::Register_Metadata();
-	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
 
 	m_TimeManager = new TimeManager;
+	m_PhysicEngine = new PhysxEngine;
 	m_SceneManager = new SceneManager;
 	m_SystemManager = new SystemManager;
+	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics,m_PhysicEngine);
 	InputManager::GetInstance().Initialize();
+
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 	this->Addsystem();
-
+	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 }
 
 VPEngine::~VPEngine()
@@ -81,12 +83,14 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
-	m_SystemManager->AddSystem<AnimationSystem>();
-	m_SystemManager->AddSystem<PhysicSystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
-	m_SystemManager->AddSystem<TestCameraSystem>();
-	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
+	m_SystemManager->AddSystem<PhysicSystem>();
+	m_SystemManager->AddSystem<AnimationSystem>();
 
+}
+void VPEngine::OnAddSystemLater(std::any)
+{
+	m_SystemManager->AddSystem<TransformSystem>();
 }
 void VPEngine::Loop()
 {
@@ -95,6 +99,13 @@ void VPEngine::Loop()
 	// 기본 메시지 루프입니다:
 	while (true)
 	{
+
+		if (VPEngine::isResize)
+		{
+			m_Graphics->OnResize(m_hWnd);
+			VPEngine::isResize = false;
+		}
+
 
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -108,9 +119,13 @@ void VPEngine::Loop()
 		{
 			Update();
 			Render();
-        	EndRender();
+			EndRender();
+
 		}
 	}
+
+
+
 }
 
 
@@ -118,18 +133,17 @@ void VPEngine::Loop()
 
 void VPEngine::Update()
 {
-	m_TimeManager->Update();
-	m_DeltaTime = m_TimeManager->GetDeltaTime();
 	EventManager::GetInstance().Update(m_DeltaTime);
 	InputManager::GetInstance().Update();
-
-	///Phyisc
+	m_TimeManager->Update();
+	m_DeltaTime = m_TimeManager->GetDeltaTime();
+	if (m_DeltaTime > 1)
+		m_DeltaTime = 1/165;
 	m_SystemManager->PhysicUpdatable(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
-	m_SystemManager->LateUpdatable(m_DeltaTime);
+	m_SystemManager->LateUpdate(m_DeltaTime);
 	m_SystemManager->RenderUpdate(m_DeltaTime);
-
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 	SetWindowTextW(m_hWnd, newname.c_str());
@@ -148,12 +162,7 @@ void VPEngine::EndRender()
 {
 	m_Graphics->EndRender();
 }
-void VPEngine::OnAddSystemLater(std::any)
-{
-	m_SystemManager->AddSystem<TransformSystem>();
 
-
-}
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
@@ -166,10 +175,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 	{
 		int wmId = LOWORD(wParam);
+
+
 		// 메뉴 선택을 구문 분석합니다:
 		switch (wmId)
 		{
+
+		case SIZE_RESTORED:
+		case SIZE_MAXIMIZED:
+			VPEngine::isResize = true;
+				break;
+
 		case IDM_ABOUT:
+
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
@@ -177,6 +195,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
+
 	}
 	break;
 	case WM_KEYDOWN:
@@ -215,6 +234,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
 		break;
 	}
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

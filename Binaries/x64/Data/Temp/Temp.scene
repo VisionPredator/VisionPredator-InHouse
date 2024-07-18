@@ -1,12 +1,8 @@
 {
     "Entitys": [
         {
-            "EntityID": 2322582051,
+            "EntityID": 2434443891,
             "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Player"
-                },
                 {
                     "BoxInfo": {
                         "Extent": {
@@ -22,9 +18,9 @@
                     },
                     "ColliderInfo": {
                         "AngleLock": [
-                            true,
-                            true,
-                            true
+                            false,
+                            false,
+                            false
                         ],
                         "Density": 1.0,
                         "DynamicFriction": 1.0,
@@ -38,10 +34,10 @@
                             "y": 0.0,
                             "z": 0.0
                         },
-                        "PhysicsLayer": 3,
+                        "PhysicsLayer": 0,
                         "Restitution": 0.0,
                         "StaticFriction": 1.0,
-                        "UseGravity": true
+                        "UseGravity": false
                     },
                     "ColliderShape": 0,
                     "ColliderType": 1,
@@ -52,11 +48,15 @@
                     }
                 },
                 {
+                    "ComponentID": 1365953231,
+                    "Name": "Player"
+                },
+                {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
-                        "y": 5.0,
-                        "z": 9.0
+                        "y": 0.0,
+                        "z": 0.11881214380264282
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
@@ -71,8 +71,11 @@
                     }
                 },
                 {
-                    "ComponentID": 1080109110,
-                    "UUID": ""
+                    "ChildrenID": [
+                        115352830,
+                        1957241516
+                    ],
+                    "ComponentID": 188567026
                 },
                 {
                     "Accel": 3.0,
@@ -86,232 +89,58 @@
             ]
         },
         {
-            "EntityID": 2503908513,
+            "EntityID": 1819751868,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity1"
+                    "Name": "Direction"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
+                        "z": -16.09731101989746
                     },
                     "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                }
-            ]
-        },
-        {
-            "EntityID": 3474675140,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Ground"
-                },
-                {
-                    "BoxInfo": {
-                        "Extent": {
-                            "x": 50.0,
-                            "y": 1.0,
-                            "z": 50.0
-                        },
-                        "UseAABB": false
-                    },
-                    "CapsuleInfo": {
-                        "HalfHeight": 1.0,
-                        "Radius": 1.0
-                    },
-                    "ColliderInfo": {
-                        "AngleLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "Density": 1.0,
-                        "DynamicFriction": 1.0,
-                        "LinearLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "OffSet": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "PhysicsLayer": 0,
-                        "Restitution": 0.0,
-                        "StaticFriction": 1.0,
-                        "UseGravity": false
-                    },
-                    "ColliderShape": 0,
-                    "ColliderType": 1,
-                    "ComponentID": 4217231799,
-                    "IsDynamic": false,
-                    "SphereInfo": {
-                        "Radius": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 0.9953312277793884,
+                        "w": 0.966313898563385,
                         "x": -0.0,
-                        "y": 0.0965176597237587,
-                        "z": -0.0
+                        "y": 0.0,
+                        "z": -0.2573663294315338
                     },
                     "Local_Scale": {
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
                     }
-                }
-            ]
-        },
-        {
-            "EntityID": 2677229028,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
                 },
                 {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.3688013553619385,
-                        "y": -0.13172006607055664,
-                        "z": 1.99249267578125
+                    "ComponentID": 4257272042,
+                    "attenuation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
-                    "Local_Quaternion": {
+                    "color": {
                         "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
-                    "Local_Scale": {
-                        "x": 0.009999999776482582,
-                        "y": 0.009999999776482582,
-                        "z": 0.009999999776482582
-                    }
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx",
-                    "FBXFilter": "Static"
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 373273391
-                },
-                {
-                    "ChildrenID": [
-                        857530966
-                    ],
-                    "ComponentID": 188567026
+                    "direction": {
+                        "x": 0.6154584288597107,
+                        "y": -0.585999608039856,
+                        "z": -0.527082085609436
+                    },
+                    "intensity": 1.0,
+                    "range": 8.0,
+                    "spot": -1.0,
+                    "type": "Direction"
                 }
             ]
         },
         {
-            "EntityID": 857530966,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity2"
-                },
-                {
-                    "BoxInfo": {
-                        "Extent": {
-                            "x": 0.20000000298023224,
-                            "y": 0.20000000298023224,
-                            "z": 0.20000000298023224
-                        },
-                        "UseAABB": false
-                    },
-                    "CapsuleInfo": {
-                        "HalfHeight": 1.0,
-                        "Radius": 1.0
-                    },
-                    "ColliderInfo": {
-                        "AngleLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "Density": 1.0,
-                        "DynamicFriction": 1.0,
-                        "LinearLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "OffSet": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "PhysicsLayer": 0,
-                        "Restitution": 1.0,
-                        "StaticFriction": 1.0,
-                        "UseGravity": false
-                    },
-                    "ColliderShape": 0,
-                    "ColliderType": 0,
-                    "ComponentID": 4217231799,
-                    "IsDynamic": false,
-                    "SphereInfo": {
-                        "Radius": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 100.0,
-                        "y": 100.0,
-                        "z": 100.0
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 2677229028
-                },
-                {
-                    "ChildrenID": [
-                        1568406118
-                    ],
-                    "ComponentID": 188567026
-                }
-            ]
-        },
-        {
-            "EntityID": 373273391,
+            "EntityID": 115352830,
             "Component": [
                 {
                     "BoxInfo": {
@@ -359,14 +188,51 @@
                 },
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Camera"
+                    "Name": "Gun"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "cerberus.fbx",
+                    "FBXFilter": "Static"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 1.9403092861175537,
+                        "y": 0.0,
+                        "z": 5.284643173217773
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.009999999776482582,
+                        "y": 0.009999999776482582,
+                        "z": 0.009999999776482582
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2434443891
+                }
+            ]
+        },
+        {
+            "EntityID": 1957241516,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "CharCamera"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
-                        "y": 6.0,
-                        "z": 9.0
+                        "y": 0.9971948862075806,
+                        "z": 0.9105283617973328
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
@@ -389,29 +255,67 @@
                     "Ratio": 1.7777777910232544
                 },
                 {
-                    "ChildrenID": [
-                        2677229028
-                    ],
-                    "ComponentID": 188567026
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": "TestCamera"
+                    "ComponentID": 3243699741,
+                    "ParentID": 2434443891
                 }
             ]
         },
         {
-            "EntityID": 1568406118,
+            "EntityID": 4086609478,
             "Component": [
                 {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 100.0,
+                            "y": 1.0,
+                            "z": 100.0
+                        },
+                        "UseAABB": false
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
                     "ComponentID": 1365953231,
-                    "Name": "Sun"
+                    "Name": "Ground"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -0.4520822763442993,
-                        "y": 0.0,
+                        "x": 0.0,
+                        "y": -6.0,
                         "z": 0.0
                     },
                     "Local_Quaternion": {
@@ -425,12 +329,256 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                }
+            ]
+        },
+        {
+            "EntityID": 754173603,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "front"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "UseAABB": false
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -2.0,
+                        "y": 14.848917961120605,
+                        "z": 2.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 240344392,
+            "Component": [
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 5.0
+                        },
+                        "UseAABB": false
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "front"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 14.848917961120605,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2208180454,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "front"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "UseAABB": false
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 1.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 2.0,
+                        "y": 14.848917961120605,
+                        "z": 2.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 396667851,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Direction"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.966313898563385,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.2573663592338562
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999999403953552,
+                        "y": 0.9999999403953552,
+                        "z": 1.0
+                    }
                 },
                 {
                     "ComponentID": 4257272042,
                     "attenuation": {
                         "x": 0.0,
-                        "y": 1.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "color": {
@@ -440,37 +588,28 @@
                         "z": 1.0
                     },
                     "direction": {
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "x": 0.6154584288597107,
+                        "y": -0.585999608039856,
+                        "z": -0.527082085609436
                     },
                     "intensity": 1.0,
-                    "range": 2.0,
-                    "spot": 1.0,
-                    "type": "Point"
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 857530966
+                    "range": 8.0,
+                    "spot": -1.0,
+                    "type": "Direction"
                 }
             ]
         },
         {
-            "EntityID": 3580771704,
+            "EntityID": 2701820837,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Grid"
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "",
-                    "FBXFilter": "Grid"
+                    "Name": "Entity7"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": 0.0,
+                        "x": -9.838810920715332,
                         "y": 0.0,
                         "z": 0.0
                     },
@@ -485,26 +624,64 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                },
+                {
+                    "ChildrenID": [
+                        3964569070
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 3964569070,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity8"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -9.669818878173828,
+                        "y": 0.0,
+                        "z": 4.254031181335449
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2701820837
                 }
             ]
         }
     ],
     "PhysicsInfo": {
         "CollisionMatrix": [
-            9,
             0,
             0,
-            1,
+            0,
+            0,
             0,
             0,
             0,
             0,
             0
         ],
-        "FrameRate": 120,
+        "FrameRate": 60,
         "Gravity": {
             "x": 0.0,
-            "y": -9.8100004196167,
+            "y": 0.0,
             "z": 0.0
         }
     }

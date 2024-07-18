@@ -3,6 +3,7 @@
 
 #include "Device.h"
 #include "CBuffer.h"
+#include "Desc.h"
 
 template<typename T>
 class ConstantBuffer :
@@ -15,9 +16,7 @@ public:
 	ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data);
 	~ConstantBuffer();
 
-
 	virtual void Release() override;
-
 
 	void Update();
 
@@ -85,6 +84,7 @@ template<typename T>
 void ConstantBuffer<T>::Update(T cbstruct)
 {
 	m_struct = cbstruct;
+
 
 	m_Device.lock()->Context()->UpdateSubresource(m_buffer, 0, nullptr, &m_struct, 0, 0);
 }

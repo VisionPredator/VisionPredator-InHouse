@@ -16,32 +16,38 @@
 class ShaderResourceView;
 class RenderTargetView;
 class ResourceManager;
+class TimeManager;
 
 class DeferredShadingPipeline
 {
 public:
 	DeferredShadingPipeline();
-	DeferredShadingPipeline(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager);
+	DeferredShadingPipeline(const std::shared_ptr<Device>& device, 
+		const std::shared_ptr<ResourceManager>& resourceManager, TimeManager* timeManager);
 	~DeferredShadingPipeline() = default;
 
 	void Initialize(const std::shared_ptr<Device>& device,
 		const std::shared_ptr<ResourceManager>& resourceManager,
 		const std::shared_ptr<DebugDrawManager>& debugDrawManager,
-		const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj);
+		const std::shared_ptr<class ParticleManager>& particleManager,
+		TimeManager* timeManager);
 
 	void Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList);
-
 
 	void Render();
 
 private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<ResourceManager> m_ResourceManager;
+	TimeManager* m_TimeManager;
+	std::shared_ptr<DebugDrawManager> m_DebugDrawManager;
+	std::shared_ptr<ParticleManager> m_ParticleManager;
 
 	// Passes
 	std::shared_ptr<class DeferredGeometryPass> m_DeferredGeometryPass;
 	std::shared_ptr<class DeferredLightPass> m_DeferredLightPass;
 	std::shared_ptr<class DebugDrawPass> m_DebugDrawPass;
+	std::shared_ptr<class ParticlePass> m_ParticlePass;
 
 	// Multi Render Target
 	enum { GBufferSize = 4 };	// 상수. 일단 만들어는 뒀는데 언제 쓸까.
@@ -55,6 +61,5 @@ private:
 	std::shared_ptr<ShaderResourceView> m_NormalSRV;
 	std::shared_ptr<ShaderResourceView> m_PositionSRV;
 	std::shared_ptr<ShaderResourceView> m_DepthSRV;
-
 	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
 };

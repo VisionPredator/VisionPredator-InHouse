@@ -78,3 +78,10 @@ namespace debug
 
 }
 
+namespace effect
+{
+	struct ParticleInfo
+	{
+		
+	};
+}

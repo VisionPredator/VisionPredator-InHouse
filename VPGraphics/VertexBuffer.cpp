@@ -6,11 +6,6 @@ VertexBuffer::VertexBuffer(std::shared_ptr<Device> device, UINT count) : Buffer(
 
 }
 
-VertexBuffer::VertexBuffer()
-{
-
-}
-
 VertexBuffer::VertexBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, UINT sizeT) : Buffer(device, desc, data), m_stride(sizeT)
 {
 	HRESULT hr;
@@ -19,10 +14,6 @@ VertexBuffer::VertexBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC des
 	{
 		MessageBox(0, L"VertexBuffer Create Failed", 0, 0);
 	}
-}
-
-VertexBuffer::~VertexBuffer()
-{
 }
 
 UINT* VertexBuffer::Size()

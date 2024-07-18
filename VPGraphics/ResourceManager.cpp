@@ -3,6 +3,8 @@
 #include "ResourceManager.h"
 
 //자주 쓰는 구조체 정리를 해보자
+#include "BlendState.h"
+#include "DepthStencilState.h"
 #include "StaticData.h"
 #include "Desc.h"
 #include "Slot.h"
@@ -22,6 +24,7 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
 	m_OffScreenName[9] = L"IMGUI";
+	//m_OffScreenName[9] = L"RTV_Main";
 }
 
 ResourceManager::~ResourceManager()
@@ -32,7 +35,6 @@ ResourceManager::~ResourceManager()
 		for (auto& resource : m_ResourceArray[i])
 		{
 			resource.second->Release();
-			//delete resource.second;
 		}
 
 		m_ResourceArray[i].clear();
@@ -44,6 +46,18 @@ ResourceManager::~ResourceManager()
 void ResourceManager::Initialize()
 {
 	///Built in
+
+	// Depth Stencil State
+	{
+		Create<DepthStencilState>(L"DefaultDSS", DepthStencilStateType::Default);
+		Create<DepthStencilState>(L"DisableDepth", DepthStencilStateType::DisableDepth);
+		Create<DepthStencilState>(L"NoDepthWrites", DepthStencilStateType::NoDepthWrites);
+	}
+
+	// Blend State
+	{
+		Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
+	}
 
 	//Sampler
 	{
@@ -107,6 +121,7 @@ void ResourceManager::Initialize()
 			std::weak_ptr<Texture2D> offscreenTex = Create<Texture2D>(m_OffScreenName[i], texDesc);
 			Create<RenderTargetView>(m_OffScreenName[i], offscreenTex);
 		}
+
 	}
 
 	//DSV
@@ -203,6 +218,17 @@ void ResourceManager::OnResize(RECT& wndsize)
 
 		//기존에 있으면 지우고
 		Erase<ShaderResourceView>(m_OffScreenName[i]);
+
+		/*
+#pragma region SUMIN
+		if (m_OffScreenName[i] == L"IMGUI")
+		{
+			Create<ShaderResourceView>(m_OffScreenName[i], Get<RenderTargetView>(L"RTV_Main").lock());
+			continue;
+		}
+#pragma endregion SUMIN
+		 */
+
 		// 셰이더 리소스 뷰를 만듭니다.
 		Create<ShaderResourceView>(m_OffScreenName[i], newRTV, shaderResourceViewDesc);
 	}

@@ -74,6 +74,50 @@ void DeferredPass::Render()
 	Light();
 }
 
+void DeferredPass::OnResize()
+{
+
+	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
+
+
+	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+
+	m_AlbedoRTV = manager->Get<RenderTargetView>(L"Albedo").lock();
+	m_NormalRTV = manager->Get<RenderTargetView>(L"Normal").lock();
+	m_PositionRTV = manager->Get<RenderTargetView>(L"Position").lock();
+	m_DepthRTV = manager->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRTV = manager->Get<RenderTargetView>(L"Metalic").lock();
+	m_RoughnessRTV = manager->Get<RenderTargetView>(L"Roughness").lock();
+	m_AORTV = manager->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = manager->Get<RenderTargetView>(L"Emissive").lock();
+
+	m_StaticMeshVS = manager->Get<VertexShader>(L"Base").lock();
+	m_StaticMeshVS = manager->Get<VertexShader>(L"Skinning").lock();
+	m_GeometryPS = manager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
+
+	m_QuadVB = manager->Get<VertexBuffer>(L"Quad_VB");
+	m_QuadIB = manager->Get<IndexBuffer>(L"Quad_IB");
+	m_QuadVS = manager->Get<VertexShader>(L"Quad");
+	m_QuadPS = manager->Get<PixelShader>(L"Quad");
+
+	m_Deferred = manager->Get<PixelShader>(L"MeshDeferredLight");
+
+	m_Albedo = manager->Get<ShaderResourceView>(L"Albedo").lock();
+	m_Normal = manager->Get<ShaderResourceView>(L"Normal").lock();
+	m_Position = manager->Get<ShaderResourceView>(L"Position").lock();
+	m_Depth = manager->Get<ShaderResourceView>(L"Depth").lock();
+	m_Metalic = manager->Get<ShaderResourceView>(L"Metalic").lock();
+	m_Roughness = manager->Get<ShaderResourceView>(L"Roughness").lock();
+	m_AO = manager->Get<ShaderResourceView>(L"AO").lock();
+	m_Emissive = manager->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+
+
+	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
+	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
+	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
+}
+
 void DeferredPass::Geometry()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
@@ -132,8 +176,6 @@ void DeferredPass::Geometry()
 
 		if (curModel != nullptr)
 		{
-			int materialindex = 0;
-
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);
@@ -168,7 +210,16 @@ void DeferredPass::Geometry()
 
 					TransformData renew;
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
-					renew.local = curMesh->m_node.lock()->m_World;
+
+					if (curMesh->m_node.lock() != nullptr)
+					{
+						renew.local = curMesh->m_node.lock()->m_World;
+					}
+					else
+					{
+						renew.local = DirectX::SimpleMath::Matrix::Identity;
+					}
+
 					XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));
 					XMStoreFloat4x4(&renew.worldInverse, (renew.world.Invert()));
 
@@ -191,7 +242,7 @@ void DeferredPass::Geometry()
 				if (!curModel->m_Materials.empty())
 				{
 					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
 
 					if (curMaterial != nullptr)
 					{
@@ -205,9 +256,6 @@ void DeferredPass::Geometry()
 				}
 
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
-
-				materialindex++;
-
 			}
 		}
 		m_RenderDataQueue.pop();

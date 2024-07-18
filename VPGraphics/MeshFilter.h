@@ -28,9 +28,35 @@ struct RenderData
 public:
 	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
 		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
-		,duration(0.f), curAnimation(L""), isPlay(false)
+		,duration(0.f),preDuration(0.f), curAnimation(L""), preAnimation(L""), isPlay(false) , isChange(false)
 	{
 
+	}
+
+	RenderData(RenderData& other)
+	{
+
+	}
+
+	RenderData& operator=(RenderData& other)
+	{
+		this->EntityID = other.EntityID;
+		this->Filter = other.Filter;
+
+		this->Name = std::move(other.Name);
+		this->FBX = std::move(other.FBX);
+
+		this->world = other.world;
+		this->local = other.local;
+
+		this->duration = other.duration;
+		this->preDuration = other.preDuration;
+
+		this->isChange = other.isChange;
+		this->isPlay = other.isPlay;
+
+		this->curAnimation = std::move(other.curAnimation);
+		this->preAnimation = std::move(other.preAnimation);
 	}
 
 	uint32_t EntityID;
@@ -43,8 +69,11 @@ public:
 	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
 
 	float duration;
+	float preDuration;
 	std::wstring curAnimation;
+	std::wstring preAnimation;
 	bool isPlay;
+	bool isChange;
 };
 
 

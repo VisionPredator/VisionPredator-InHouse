@@ -18,6 +18,7 @@ class PassManager;
 #pragma endregion
 
 class LightManager;
+class TimeManager;
 
 class ModelData;
 struct RenderData;
@@ -32,7 +33,7 @@ struct RenderData;
 class GraphicsEngine : public Graphics::Interface
 {
 public:
-	GraphicsEngine(HWND hWnd);
+	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
 	~GraphicsEngine();
 
 	virtual bool Initialize() override;
@@ -42,13 +43,13 @@ public:
 	virtual void Render() override;
 	virtual void EndRender() override;
 
-	virtual void OnResize() override;
+	virtual void OnResize(HWND hwnd) override;
 
 	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
 	virtual void EraseObject(uint32_t EntityID) override;
 
 	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-	virtual void UpdateModel(uint32_t EntityID, std::shared_ptr<RenderData> data)override;
+	virtual void UpdateModel(uint32_t EntityID, RenderData& data)override;
 
 
 	virtual void AddLight(uint32_t EntityID, LightType kind, LightData data) override;
@@ -88,7 +89,9 @@ private:
 	std::shared_ptr<ModelLoader> m_Loader;
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<LightManager> m_LightManager;
-	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;
+	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
+	//std::shared_ptr<class ParticleManager> m_ParticleManager;
+	TimeManager* m_TimeManager;
 
 private:
 	HWND m_hWnd;

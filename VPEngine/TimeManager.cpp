@@ -14,6 +14,7 @@
 		QueryPerformanceCounter(&m_CurCount);
 		m_DeltaTime = static_cast<double>(m_CurCount.QuadPart - m_PrevCount.QuadPart) / static_cast<double>(m_Frequency.QuadPart);
 		m_ElapsedTime += m_DeltaTime;
+		m_TotalTime += m_DeltaTime;
 		m_PrevCount = m_CurCount;
 		m_FPS++;
 		if (m_ElapsedTime > 1.0)

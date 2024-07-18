@@ -78,7 +78,7 @@ void VP_Editor::Render()
 
 	ImGui::DockSpaceOverViewport();
 
-	// Renderin
+	// Render
 	for (auto& ImGui : m_ImGuis)
 	{
         //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))

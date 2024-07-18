@@ -20,6 +20,7 @@ public:
 	~VPEngine();
 	void Loop();
 
+	static bool isResize;
 protected:
 	void Addsystem();
 	virtual void Update();
@@ -34,6 +35,7 @@ protected:
 
 	Physic::IPhysx* m_PhysicEngine;
 	Graphics::Interface* m_Graphics;
+
 
 };
 
