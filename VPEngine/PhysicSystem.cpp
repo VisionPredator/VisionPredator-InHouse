@@ -155,9 +155,7 @@ float QuaternionAngleDifference(const VPMath::Quaternion& q1, const VPMath::Quat
 
 void PhysicSystem::PhysicsUpdate(float deltaTime)
 {
-	TransformSystem transformSystem(m_SceneManager);
-	transformSystem.Update(deltaTime);
-
+	EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		uint32_t entityID = rigidBodyComponent.GetEntityID();
@@ -181,7 +179,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
 		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
 	}
+	EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 
-	transformSystem.Update(deltaTime);
 
 }

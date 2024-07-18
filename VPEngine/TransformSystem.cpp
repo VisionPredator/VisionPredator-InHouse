@@ -10,6 +10,7 @@ TransformSystem::TransformSystem(SceneManager* sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSetParentAndChild", CreateSubscriber(&TransformSystem::OnSetParentAndChild));
 	EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
+	EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData));
 
 }
 void TransformSystem::Update(float deltaTime)	///transform update 값을 수정하는 느낌
@@ -60,7 +61,13 @@ void TransformSystem::OnSetParentAndChild(std::any Parent_Child)
 
 	VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
 	newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
+	Update(0);
 
+}
+
+void TransformSystem::OnUpdateTransfomData(std::any data)
+{
+	Update(0);
 }
 
 void TransformSystem::OnRelaseParentAndChild(std::any Child)
@@ -69,6 +76,7 @@ void TransformSystem::OnRelaseParentAndChild(std::any Child)
 
 	TransformComponent* childTransform = m_SceneManager->GetComponent<TransformComponent>(ChildID);
 	childTransform->WorldTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
+	Update(0);
 }
 
 

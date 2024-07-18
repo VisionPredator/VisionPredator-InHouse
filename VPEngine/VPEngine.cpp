@@ -59,11 +59,11 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_PhysicEngine->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics,m_PhysicEngine);
 	InputManager::GetInstance().Initialize();
-
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 	this->Addsystem();
+	EventManager::GetInstance().Subscribe("OnAddSystemLater",CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 }
 
