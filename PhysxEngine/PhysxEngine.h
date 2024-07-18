@@ -17,39 +17,43 @@ public:
 	bool Finalize() override;
 	void Update(float deltatime) override;
 
+	const VPPhysics::PhysicsInfo GetPhysicsInfo() { return m_PhyiscsInfo; }
+	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }
 
-
-
+	void OnSetPhysicInfo(std::any PhysicInfo);
 private:
 	Physics* m_Physics{};
 	physx::PxScene* m_PxScene{};
 	RigidBodyManager* m_RigidManager{};
 	CollisionManager* m_CollisionManager{};
 	CollisionCallback* m_Collisioncallback{};
-	float m_UpdateTime = 1.f/ 60.f;
+	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
+	int m_Frame = 60;
+	float m_UpdateTime = 1.f/ 120.f;
 	float m_ElapsedTime = 0.f;
-	VPPhysics::PhysicsInfo m_EngineInfo;
 	// IPhysx을(를) 통해 상속됨
 
 
 	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
-
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
-
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void ReleaseActor(uint32_t entityID) override;
-
+	void CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
+	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
+	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
+	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
+	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
+	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
+	void UpdatePhysicEngineInfo();
+	void ApplyPhysicEngineInfo() override;
 
 	// IPhysx을(를) 통해 상속됨
-	void CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
+	void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) override;
 
-	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
+	void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) override;
 
-	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
-
+	// IPhysx을(를) 통해 상속됨
+	VPMath::Vector3 GetVelocity(uint32_t entityID) override;
 };
 

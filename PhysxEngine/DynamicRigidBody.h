@@ -8,8 +8,12 @@ public:
 	~DynamicRigidBody() = default;
 	bool Initialize(VPPhysics::ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, VPPhysics::CollisionData* data);
 	inline physx::PxRigidDynamic* GetPxDynamicRigid();
+	entt::id_type GetTypeID() const override {
+		return Reflection::GetTypeID<DynamicRigidBody>();
+	}
 private:
 	physx::PxRigidDynamic* m_DynamicRigid{};
+
 };
 
 

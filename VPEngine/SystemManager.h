@@ -2,6 +2,7 @@
 #include "SystemInterface.h"
 #include "System.h"
 #include "EventSubscriber.h"
+#include <thread>
 
 	class SystemManager:public EventSubscriber
 	{
@@ -9,12 +10,14 @@
 
 	public:
 		SystemManager();
-		~SystemManager() = default;
+		~SystemManager();
 		void Update(float deltatime);
-		void Initialize(SceneManager* entitymanager,Graphics::Interface* Interfaces);
+		void Initialize(SceneManager* entitymanager,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
 
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
+		void LateUpdate(float deltatime);
+		void PhysicUpdatable(float deltatime);
 		template <typename T>
 		bool IsSystemAdded() const
 		{
@@ -25,7 +28,8 @@
 			}
 			return false;
 		}
-		void OnAddTransformSystem(std::any);
+
+
 		template <typename T> requires std::is_base_of_v<System, T>
 		T* AddSystem()
 		{
@@ -35,28 +39,43 @@
 			}
 			m_Systems.push_back(std::make_unique<T>(m_SceneManager));
 
+
+			auto* system = static_cast<T*>(m_Systems.back().get());
+			system->SetThread1(&m_JThread1);
+			system->SetThread2(&m_JThread2);
 			if constexpr (std::is_base_of_v<IUpdatable, T>)
 			{
-				m_Updatables.push_back(static_cast<T*>(m_Systems.back().get()));
+				m_Updatables.push_back(system);
 			}
 
 			if constexpr (std::is_base_of_v<IFixedUpdatable, T>)
 			{
-				m_FixedUpdatables.push_back(static_cast<T*>(m_Systems.back().get()));
+				m_FixedUpdatables.push_back(system);
 			}
 
 			if constexpr (std::is_base_of_v<IRenderable, T>)
 			{
-				m_Renderables.push_back(static_cast<T*>(m_Systems.back().get()));
-				static_cast<T*>(m_Systems.back().get())->SetGraphics(m_Graphics);
+				m_Renderables.push_back(system);
+				system->SetGraphics(m_Graphics);
+			}
+			if constexpr (std::is_base_of_v<IPhysicable, T>)
+			{
+				m_PhysicUpdatable.push_back(system);
+				system->SetPhysicEngine(m_PhysicEngine);
+			}
+
+			if constexpr (std::is_base_of_v<ILateUpdatable, T>)
+			{
+				m_LateUpdatable.push_back(system);
 			}
 
 			if constexpr (std::is_base_of_v<IStartable, T>)
 			{
-				m_Startables.push_back(static_cast<T*>(m_Systems.back().get()));
+				m_Startables.push_back(system);
 			}
 
-			return static_cast<T*>(m_Systems.back().get());
+
+			return static_cast<T*>(system);
 		}
 		template <typename T>
 		void ReleaseSystem()
@@ -82,6 +101,12 @@
 				if (it != m_Renderables.end())
 					m_Renderables.erase(it);
 			}
+			if constexpr (std::is_base_of_v<ILateUpdatable, T>)
+			{
+				auto it = std::find_if(m_LateUpdatable.begin(), m_LateUpdatable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_LateUpdatable.end())
+					m_LateUpdatable.erase(it);
+			}
 
 			if constexpr (std::is_base_of_v<IStartable, T>)
 			{
@@ -89,6 +114,13 @@
 				if (it != m_Startables.end())
 					m_Startables.erase(it);
 			}
+			if constexpr (std::is_base_of_v<IPhysicable, T>)
+			{
+				auto it = std::find_if(m_PhysicUpdatable.begin(), m_PhysicUpdatable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_PhysicUpdatable.end())
+					m_PhysicUpdatable.erase(it);
+			}
+
 
 			// Optional: Delete system object
 			auto it = std::find_if(m_Systems.begin(), m_Systems.end(), [](const auto& ptr) { return dynamic_cast<T*>(ptr.get()) != nullptr; });
@@ -126,15 +158,18 @@
 			FinalizeSystems();
 		}
 
-
-
+		std::jthread m_JThread1;
+		std::jthread m_JThread2;
 		SceneManager* m_SceneManager = nullptr;
+		Physic::IPhysx* m_PhysicEngine=nullptr;
 		Graphics::Interface* m_Graphics = nullptr;
 
 		std::vector<std::unique_ptr<System>> m_Systems;
+		std::vector<IPhysicable*> m_PhysicUpdatable;
 		std::vector<IFixedUpdatable*> m_FixedUpdatables;
-		std::vector<IUpdatable*>m_Updatables;
-		std::vector<IRenderable*>m_Renderables;
-		std::vector<IStartable*>m_Startables;
+		std::vector<IUpdatable*> m_Updatables;
+		std::vector<IRenderable*> m_Renderables;
+		std::vector<IStartable*> m_Startables;
+		std::vector<ILateUpdatable*> m_LateUpdatable;
 	};
 

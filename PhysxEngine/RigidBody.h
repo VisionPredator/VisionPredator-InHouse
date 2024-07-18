@@ -24,6 +24,7 @@ public:
 	float GetRadius() { return m_Radius; }
 	float GetHalfHeight() { return m_HalfHeight; }
 	physx::PxVec3 GetExtent() { return m_Extent; }
+	virtual entt::id_type GetTypeID() const = 0;
 };
 
 

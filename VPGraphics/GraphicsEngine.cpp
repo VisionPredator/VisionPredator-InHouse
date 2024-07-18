@@ -35,7 +35,7 @@
 #include "Animator.h"
 #include "LightManager.h"
 #include "DebugDrawManager.h"
-#include "ParticleManager.h"
+//#include "ParticleManager.h"
 #include "TimeManager.h"
 #pragma endregion Manager
 
@@ -84,8 +84,8 @@ bool GraphicsEngine::Initialize()
 	
 	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
 	m_PassManager->Initialize();
-	m_ParticleManager = std::make_shared<ParticleManager>();
-	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
+	//m_ParticleManager = std::make_shared<ParticleManager>();
+	//m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 	OnResize(m_hWnd);
 
 	InitializeImGui();
@@ -110,8 +110,8 @@ bool GraphicsEngine::Finalize()
 	m_ResourceManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
-
 	DestroyImGui();
+
 
 	return true;
 }

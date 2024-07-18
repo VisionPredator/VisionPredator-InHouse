@@ -135,7 +135,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 		MessageBox(0, L"VS CreateInputLayout Fail", 0, 0);
 	}
 }
-
+/*
 VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const std::string& entryPoint, const D3D_SHADER_MACRO* macro)
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
@@ -239,7 +239,7 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 		);
 	);
 }
-
+*/
 
 void VertexShader::Release()
 {

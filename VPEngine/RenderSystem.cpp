@@ -75,16 +75,6 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 }
 
-void RenderSystem::Update(float deltaTime)
-{
-
-
-}
-void RenderSystem::FixedUpdate(float deltaTime)
-{
-
-
-}
 
 
 void RenderSystem::RenderUpdate(float deltaTime)
@@ -92,56 +82,66 @@ void RenderSystem::RenderUpdate(float deltaTime)
 
 	for (MeshComponent& meshComp : COMPITER(MeshComponent))
 	{
-		//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-		RenderData temp;
-		IDComponent* idComp = meshComp.GetComponent<IDComponent>();
-		temp.EntityID = idComp->GetEntityID();
-		std::wstring FbxName{};
-		std::wstring Name{};
-		FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-		temp.Filter = meshComp.FBXFilter;
-		temp.world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp.Name = Name;
-		temp.FBX = FbxName;
-		temp.duration = 0;
-
-		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
+		MeshCompRender(meshComp);
 	}
 
 	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
 	{
-		IDComponent* idComp = skinComp.GetComponent<IDComponent>();
-		RenderData temp;
-		temp.EntityID = idComp->GetEntityID();
-		std::wstring FbxName{};
-		std::wstring Name{};
-		FbxName = FbxName.assign(skinComp.FBX.begin(), skinComp.FBX.end());
-		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-		temp.Filter = skinComp.FBXFilter;
-		temp.world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp.Name = Name;
-
-		temp.FBX = FbxName;
-		temp.duration = 0;
-		
-		if (skinComp.HasComponent<AnimationComponent>())
-		{
-			auto anicomp = skinComp.GetComponent<AnimationComponent>();
-
-			temp.curAnimation = anicomp->curAnimation;
-			if (!temp.curAnimation.empty())
-			{
-				temp.FBX = temp.curAnimation;
-				temp.duration = anicomp->duration;
-				temp.isPlay = anicomp->isPlay;
-				temp.isChange = anicomp->isChange;
-				temp.preDuration = anicomp->preDuration;
-				temp.preAnimation = anicomp->preAnimation;
-			}
-		}
-
-		m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
+		SkincompRender(skinComp);
 	}
 
+}
+
+void RenderSystem::MeshCompRender(MeshComponent& meshComp)
+{
+	//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
+	RenderData temp;
+	IDComponent* idComp = meshComp.GetComponent<IDComponent>();
+	temp.EntityID = idComp->GetEntityID();
+	std::wstring FbxName{};
+	std::wstring Name{};
+	FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
+	Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+	temp.Filter = meshComp.FBXFilter;
+	temp.world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
+	temp.Name = Name;
+	temp.FBX = FbxName;
+	temp.duration = 0;
+
+	m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
+}
+
+void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
+{
+	IDComponent* idComp = skinComp.GetComponent<IDComponent>();
+	RenderData temp;
+	temp.EntityID = idComp->GetEntityID();
+	std::wstring FbxName{};
+	std::wstring Name{};
+	FbxName = FbxName.assign(skinComp.FBX.begin(), skinComp.FBX.end());
+	Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+	temp.Filter = skinComp.FBXFilter;
+	temp.world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
+	temp.Name = Name;
+
+	temp.FBX = FbxName;
+	temp.duration = 0;
+
+	if (skinComp.HasComponent<AnimationComponent>())
+	{
+		auto anicomp = skinComp.GetComponent<AnimationComponent>();
+
+		temp.curAnimation = anicomp->curAnimation;
+		if (!temp.curAnimation.empty())
+		{
+			temp.FBX = temp.curAnimation;
+			temp.duration = anicomp->duration;
+			temp.isPlay = anicomp->isPlay;
+			temp.isChange = anicomp->isChange;
+			temp.preDuration = anicomp->preDuration;
+			temp.preAnimation = anicomp->preAnimation;
+		}
+	}
+
+	m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
 }

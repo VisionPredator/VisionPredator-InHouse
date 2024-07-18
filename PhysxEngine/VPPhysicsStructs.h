@@ -1,4 +1,5 @@
 #pragma once
+#include <bitset>
 
 namespace VPPhysics
 {
@@ -46,11 +47,17 @@ namespace VPPhysics
 	};
 	struct PhysicsInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(PhysicsInfo, Gravity, CollisionMatrix)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(PhysicsInfo, Gravity, FrameRate, CollisionMatrix)
+			void SerializePhysicsInfo(nlohmann::json& json)
+		{
+			to_json(json, *this);
+		}
 
 		VPMath::Vector3 Gravity{};
-		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ INT_MAX ,INT_MAX ,INT_MAX ,INT_MAX ,INT_MAX ,INT_MAX };
+		int FrameRate = 60;
+		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
 	};
+
 	/// <summary>
 	/// 콜리전 : 충돌 데이터
 	/// </summary>
@@ -69,12 +76,15 @@ namespace VPPhysics
 
 	struct ColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColliderInfo, PhysicsLayer, OffSet,StaticFriction, DynamicFriction, Restitution, Density)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColliderInfo, PhysicsLayer, UseGravity, LinearLock, AngleLock, OffSet, StaticFriction, DynamicFriction, Restitution, Density)
 
 		EPhysicsLayer PhysicsLayer{};
 		uint32_t EntityID = noneID;
 		VPMath::Vector3	WorldLocation = {};
 		VPMath::Quaternion	WorldQuaternion = {};
+		bool UseGravity{};
+		std::array<bool, 3> LinearLock{};
+		std::array<bool, 3> AngleLock{};
 		VPMath::Vector3 OffSet = {};
 		float StaticFriction = 1.f;							// 정적 마찰 계수
 		float DynamicFriction = 1.f;						// 동적 마찰 계수

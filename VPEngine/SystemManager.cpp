@@ -2,24 +2,33 @@
 #include "SystemManager.h"
 #include "EventManager.h"
 #include "TransformSystem.h"
+#include "PhysicSystem.h"
+#include "CameraSystem.h"
 
 	SystemManager::SystemManager()
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
-		EventManager::GetInstance().Subscribe("OnAddTransformSystem",CreateSubscriber(&SystemManager::OnAddTransformSystem));
+
 	}
-	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* Interfaces)
+	SystemManager::~SystemManager()
 	{
-		m_SceneManager = entitymanager;
-		m_Graphics = Interfaces;
+
 	}
+
 
 	void SystemManager::Update(float deltatime)
 	{
 		for (auto updateable : m_Updatables)
 			updateable->Update(deltatime);
 
+	}
+
+	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
+	{
+		m_SceneManager = entitymanager;
+		m_Graphics = GraphicsInterface;
+		m_PhysicEngine = physicInterface;
 	}
 
 	void SystemManager::FixedUpdate(float deltatime)
@@ -51,19 +60,17 @@
 		for (auto renderable : m_Renderables)
 			renderable->RenderUpdate(deltatime);
 	}
-
-	void SystemManager::OnAddTransformSystem(std::any)
+	void SystemManager::LateUpdate(float deltatime)
 	{
-		if (IsSystemAdded<TransformSystem>())
-			return;
-		m_Systems.push_back(std::make_unique<TransformSystem>(m_SceneManager));
-
-		if constexpr (std::is_base_of_v<IUpdatable, TransformSystem>)
-		{
-			m_Updatables.push_back(static_cast<TransformSystem*>(m_Systems.back().get()));
-		}
+		for (auto lateUpdatable : m_LateUpdatable)
+			lateUpdatable->LateUpdate(deltatime);
 	}
 
+	void SystemManager::PhysicUpdatable(float deltatime)
+	{
+		for (auto physicsUpdatable : m_PhysicUpdatable)
+			physicsUpdatable->PhysicsUpdate(deltatime);
+	}
 
 
 

@@ -20,7 +20,6 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddChild", CreateSubscriber(&SceneManager::OnAddChild), EventType::ADD_DELETE);
 
-	//EventManager::GetInstance().Subscribe("OnAddEntity", CreateSubscriber(&SceneManager::OnAddEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveChild", CreateSubscriber(&SceneManager::OnRemoveChild), EventType::ADD_DELETE);
 
@@ -31,6 +30,7 @@ SceneManager::SceneManager()
 }
 SceneManager::~SceneManager()
 {
+
 	delete m_CurrentScene;
 	m_CurrentScene = nullptr;
 }
@@ -254,26 +254,68 @@ void SceneManager::OnDestroyEntity(std::any data)
 	}
 }
 
-void SceneManager::OnClearAllEntity(std::any data)
+void SceneManager::RemoveEntity(Entity* entity)
 {
-	// Clear EntityMap and manage memory for Entity*
-	for (auto& pair : m_CurrentScene->EntityMap) {
-		delete pair.second;  // Assuming that you are responsible for deleting the Entity*
-	}
-	m_CurrentScene->EntityMap.clear();
+	if (!entity)
+		return;
 
-	// Clear m_ComponentPool and manage memory for Component* objects
-	for (auto& pair : m_CurrentScene->m_ComponentPool) {
-		for (Component* comp : pair.second) {
-			delete comp;  // Assuming that you are responsible for deleting the Component*
+	// Get the entity ID
+	uint32_t entityID = entity->GetEntityID();
+
+	auto& entityMap = GetEntityMap();
+	auto entityIter = entityMap.find(entityID);
+	if (entityIter != entityMap.end())
+	{
+		// Entity found, proceed to remove components associated with the entity
+		for (auto& compPair : m_CurrentScene->m_ComponentPool)
+		{
+			auto& components = compPair.second;
+			std::vector<Component*> toDelete;
+
+			// Find and mark components for deletion
+			components.erase(std::remove_if(components.begin(), components.end(),
+				[entityID, &toDelete](Component* comp)
+				{
+					if (comp->GetEntityID() == entityID)
+					{
+						toDelete.push_back(comp);
+						return true;
+					}
+					return false;
+				}), components.end());
+
+			// Delete the marked components
+			for (auto* comp : toDelete)
+			{
+				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
+				delete comp;
+			}
 		}
-		pair.second.clear();
+
+		// Remove the entity from the map and delete it
+		delete entityIter->second;
+		entityMap.erase(entityIter);
 	}
-	m_CurrentScene->m_ComponentPool.clear();
 }
 
+void SceneManager::OnClearAllEntity(std::any data)
+{
+	auto& entityMap = GetEntityMap();
+	std::vector<Entity*> entitiesToRemove;
+
+	// Collect all entities to remove
+	for (auto& pair : entityMap) {
+		entitiesToRemove.push_back(pair.second);
+	}
+
+	// Remove each entity using RemoveEntity
+	for (Entity* entity : entitiesToRemove) {
+		RemoveEntity(entity);
+	}
+}
 void SceneManager::OnNewScene(std::any data)
 {
+	EventManager::GetInstance().ImmediateEvent("OnClearAllEntity");
 	delete m_CurrentScene;
 	m_CurrentScene = nullptr;
 	m_CurrentScene = new Scene;
@@ -281,7 +323,10 @@ void SceneManager::OnNewScene(std::any data)
 void SceneManager::OnOpenNewScene(std::any null)
 {
 	//씬 삭제 후 새로운 씬 생성
+
 	EventManager::GetInstance().ImmediateEvent("OnNewScene");
+	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
+
 }
 
 //씬 체인지 이벤트 인게임 도중 씬 체인지 작동용도!
@@ -324,6 +369,8 @@ void SceneManager::OnSaveCurrentToTemp(std::any Null)
 
 void SceneManager::OnStartScene(std::any data)
 {
+	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
+
 	///TODO: 씬 시작시 설정할 Initialize
 	EventManager::GetInstance().ImmediateEvent("OnInitialize");
 	///TODO: 씬 시작시 설정할 Initializesystem.
@@ -423,7 +470,6 @@ void SceneManager::DeSerializePrefab(std::string filePath)
 void SceneManager::OnDeSerializePrefab(std::any data)
 {
 	std::string filePath = std::any_cast<std::string>(data);
-
 
 	std::ifstream inputFile(filePath);
 	std::vector<std::pair<uint32_t, uint32_t> > entityResettingPair{};
@@ -591,10 +637,18 @@ uint32_t SceneManager::CreateRandomEntityID()
 	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_Max 까지의 난수 범위
 	uint32_t id = dis(gen);
 	while (HasEntity(id))
-	{
 		id = dis(gen);
-	}
 	return id;
+}
+
+void SceneManager::SetScenePhysic(VPPhysics::PhysicsInfo physicInfo)
+{
+	m_CurrentScene->ScenePhysicInfo = physicInfo;
+}
+
+VPPhysics::PhysicsInfo SceneManager::GetScenePhysic()
+{
+	return m_CurrentScene->ScenePhysicInfo;
 }
 
 void SceneManager::OnAddCompToScene(std::any data)

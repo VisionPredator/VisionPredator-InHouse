@@ -2,7 +2,6 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Components.h"
-
 #include "EventSubscriber.h"
 class SceneManager :public EventSubscriber
 {
@@ -23,7 +22,8 @@ public:
 	Entity* CreateEntity(uint32_t id);
 	uint32_t CreateRandomEntityID();
 
-
+	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
+	VPPhysics::PhysicsInfo GetScenePhysic();
 
 	std::vector<Component*> GetOwnedComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponent(); }
 
@@ -106,7 +106,6 @@ private:
 
 	// 씬 끝나는 이벤트를 호출한다.
 	void OnEndScene(std::any data);
-	void OnFinalizeSystem(std::any data);
 	// 해당 씬을 연다.
 	void OnOpenScene(std::any data);
 	//현재씬에 Temp씬 데이터 덮어씌우기.
@@ -116,6 +115,8 @@ private:
 	void OnAddCompToScene(std::any data);
 	// Entity를 삭제한다.
 	void OnDestroyEntity(std::any entityID);
+
+	void RemoveEntity(Entity* entity);
 	// 모든 Entity를 지운다.
 	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
@@ -133,10 +134,11 @@ private:
 	inline void ReleaseCompFromPool(entt::id_type compID, Component* comp);
 
 	friend class SceneSerializer;
+
 	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
 	Scene* m_CurrentScene = nullptr;
-
+	
 	friend class Toolbar;
 };
 

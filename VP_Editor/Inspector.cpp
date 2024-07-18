@@ -35,8 +35,9 @@ void Inspector::EntityImGui(uint32_t entityID)
 	{
 		m_SceneManager->SerializePrefab(entityID);
 	}
-		ImGui::Text(" ");
 
+	ImGui::Separator();
+	TransformComponentImGui(m_SceneManager->GetComponent(entityID, Reflection::GetTypeID<TransformComponent>()));
 	ImGui::Separator();
 
 	if (ImGui::Button("  AddComponent  "))
@@ -96,8 +97,8 @@ void Inspector::EntityImGui(uint32_t entityID)
 
 		ImGui::EndPopup();
 	}
+	ImGui::Separator();
 
-	ComponentImGui(m_SceneManager->GetComponent(entityID, Reflection::GetTypeID<TransformComponent>()));
 	for (auto [id1, MetaType] : entt::resolve())
 	{
 		const entt::id_type metaTypeID = MetaType.id();
@@ -117,6 +118,19 @@ void Inspector::EntityImGui(uint32_t entityID)
 		}
 	}
 
+
+}
+
+void Inspector::TransformComponentImGui(Component* component)
+{
+	entt::id_type compID = component->GetHandle()->type().id();
+	entt::meta_handle compMetaHandle = component->GetHandle();
+	std::string componentName = Reflection::GetName_Class(component->GetHandle()->type());
+	ImGui::PushID(componentName.c_str());
+	ImGui::Text("TransformComponent");
+		for (auto [MemberID, memberMetaData] : compMetaHandle->type().data())
+			MemberImGui(memberMetaData, component);
+	ImGui::PopID();
 
 }
 
@@ -518,22 +532,8 @@ void Inspector::TypeImGui_ColliderInfo(entt::meta_data memberMetaData, Component
 	ColliderInfo tempColliderInfo = memberMetaData.get(component->GetHandle()).cast<ColliderInfo>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 
+	auto enumMap = Reflection::GetEnumMap<EPhysicsLayer>();
 
-	// Static cache for enum members to avoid recomputation
-	static std::map<int, entt::meta_data> enumMap{};
-	// eunmMember string table 생성
-
-	if (enumMap.empty()) {
-		auto metaType2 = entt::resolve(Reflection::GetTypeID<EPhysicsLayer>());
-		for (auto [id, metaData] : metaType2.data()) {
-			entt::meta_any any = metaData.get({});
-			if (any.allow_cast<int>()) {
-				int memberInt = any.cast<int>();
-				enumMap[memberInt] = metaData;
-			}
-		}
-		assert(!enumMap.empty());
-	}
 
 	// 현재 enum 값 int로 가져오기
 	int currentEnumInt = (int)tempColliderInfo.PhysicsLayer;
@@ -560,6 +560,21 @@ void Inspector::TypeImGui_ColliderInfo(entt::meta_data memberMetaData, Component
 		}
 		ImGui::EndCombo();
 	}
+	
+
+	ImGui::Checkbox("Use Gravity?", &tempColliderInfo.UseGravity);
+	ImGui::Text("Linear / Angle Lock");
+	ImGui::Checkbox("X##LinearLock", &tempColliderInfo.LinearLock[0]);
+	ImGui::SameLine();
+	ImGui::Checkbox("Y##LinearLock", &tempColliderInfo.LinearLock[1]);
+	ImGui::SameLine();
+	ImGui::Checkbox("Z##LinearLock", &tempColliderInfo.LinearLock[2]);
+
+	ImGui::Checkbox("X##AngleLock", &tempColliderInfo.AngleLock[0]);
+	ImGui::SameLine();
+	ImGui::Checkbox("Y##AngleLock", &tempColliderInfo.AngleLock[1]);
+	ImGui::SameLine();
+	ImGui::Checkbox("Z##AngleLock", &tempColliderInfo.AngleLock[2]);
 
 	float tempfriction[2]{ tempColliderInfo.StaticFriction ,tempColliderInfo.DynamicFriction };
 	ImGui::SetNextItemWidth(m_TypeBoxsize);

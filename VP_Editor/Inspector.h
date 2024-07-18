@@ -13,6 +13,7 @@ public:
 
     Inspector() = default;
     void EntityImGui(uint32_t entitiyID);
+    void TransformComponentImGui(Component* component);
     void ComponentImGui(Component* component);
 	void MemberImGui(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_Vector2(entt::meta_data memberMetaData, Component* component);

@@ -54,12 +54,20 @@ void SceneSerializer::OnSerializeScene(std::any data)
 			}
 			SceneJson["Entitys"].push_back(entityJson);
 		}
-		ofsmapFilePath << SceneJson.dump(4);
+		        // Serialize scene physics data
+        VPPhysics::PhysicsInfo ScenePhysicInfo = m_SceneManager->GetScenePhysic();
+
+		nlohmann::json physicsJson = ScenePhysicInfo;
+        SceneJson["PhysicsInfo"] = physicsJson;
+
+        // Write the serialized JSON data to the file
+        ofsmapFilePath << SceneJson.dump(4);
 	}
 	catch (const std::exception&)
 	{
 		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
 	}
+
 	ofsmapFilePath.close();
 }
 
@@ -75,13 +83,6 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 		VP_ASSERT(false, "data에 std::string이 아닌  다른 자료형이 들어갔습니다.");
 		return;
 	}
-
-	///Set FilePath
-	//std::string floderName = "../Data/Scene";
-	//std::string sceneName = std::any_cast<std::string>(data);
-	//std::string fileExtension = ".json";
-	//std::string filePath = floderName + sceneName + fileExtension;
-
 	std::string FilePath = std::any_cast<std::string>(data);
 
 	std::string path = FilePath;
@@ -111,6 +112,13 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 			}
 		}
 		m_SceneManager->SetSceneName(SceneName);
+		// Deserialize and set physics information
+		if (sceneJson.contains("PhysicsInfo"))
+		{
+			VPPhysics::PhysicsInfo ScenePhysicInfo;
+			sceneJson.at("PhysicsInfo").get_to(ScenePhysicInfo);
+			m_SceneManager->SetScenePhysic(ScenePhysicInfo);
+		}
 	}
 	catch (const std::exception&)
 	{

@@ -54,20 +54,17 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SceneManager = new SceneManager;
 	m_SystemManager = new SystemManager;
 	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
-
-	m_SceneManager->Initialize();
-	m_SystemManager->Initialize(m_SceneManager,m_Graphics);
-	m_PhysicEngine->Initialize();
 	m_Graphics->Initialize();
-
+	m_SceneManager->Initialize();
+	m_PhysicEngine->Initialize();
+	m_SystemManager->Initialize(m_SceneManager,m_Graphics,m_PhysicEngine);
 	InputManager::GetInstance().Initialize();
+
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 	this->Addsystem();
-
-	m_SystemManager->AddSystem<AnimationSystem>();
-	EventManager::GetInstance().ScheduleEvent("OnAddTransformSystem");
+	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 }
 
 VPEngine::~VPEngine()
@@ -80,7 +77,6 @@ VPEngine::~VPEngine()
 	delete m_Graphics;
 	delete m_PhysicEngine;
 	InputManager::GetInstance().Release();
-	EventManager::GetInstance().Release();
 }
 void VPEngine::Addsystem()
 {
@@ -88,7 +84,13 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
-	m_SystemManager->AddSystem<PhysicSystem>()->SetPhysics(m_PhysicEngine);
+	m_SystemManager->AddSystem<PhysicSystem>();
+	m_SystemManager->AddSystem<AnimationSystem>();
+
+}
+void VPEngine::OnAddSystemLater(std::any)
+{
+	m_SystemManager->AddSystem<TransformSystem>();
 }
 void VPEngine::Loop()
 {
@@ -135,10 +137,12 @@ void VPEngine::Update()
 	InputManager::GetInstance().Update();
 	m_TimeManager->Update();
 	m_DeltaTime = m_TimeManager->GetDeltaTime();
-	//if (m_DeltaTime > 1)
-	//	m_DeltaTime = 1/165;
-	m_SystemManager->Update(m_DeltaTime);
+	if (m_DeltaTime > 1)
+		m_DeltaTime = 1/165;
+	m_SystemManager->PhysicUpdatable(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
+	m_SystemManager->Update(m_DeltaTime);
+	m_SystemManager->LateUpdate(m_DeltaTime);
 	m_SystemManager->RenderUpdate(m_DeltaTime);
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
@@ -158,6 +162,7 @@ void VPEngine::EndRender()
 {
 	m_Graphics->EndRender();
 }
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 

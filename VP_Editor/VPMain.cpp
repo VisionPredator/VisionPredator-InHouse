@@ -10,14 +10,15 @@
 //memory leak
 #include <stdlib.h>
 #include <crtdbg.h>
+#include <DataRegister.h>
 
 /// <summary>
 /// 누수 메모!!!
-/// 215 216 217 218 357 은 못잡겠음..... 일단 new로 인한 누수가 아닌 stl 또는 static에 의한 누수같음...
+/// 445까지는 못잡겠음..... 일단 new로 인한 누수가 아닌 stl 또는 static에 의한 누수같음...
 /// <returns></returns>
 int initProject()
 {
-	//_CrtSetBreakAlloc();
+	//_CrtSetBreakAlloc(441);
 	return 0;  // It's good practice to have a return value
 }
 
@@ -38,11 +39,9 @@ void ConfigureCRTDebug()
 	dbgFlags |= _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF;
 	_CrtSetDbgFlag(dbgFlags);
 
-	// Set the report mode to debug output window
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
-
 	// Optionally set a specific allocation number to break on
 	// _CrtSetBreakAlloc(475);  // Uncomment and set the number if needed
 }
@@ -52,10 +51,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ int       nCmdShow)
 {
 	ConfigureCRTDebug();
+	VPRegister::Register_Metadata();
 	VP_Editor* Process;
 	Process = new VP_Editor(hInstance, "VisionPredator", 1920, 1080);
 	Process->Loop();
 	delete Process;
+	EventManager::GetInstance().Release();
 
 	entt::meta_reset();
 	_CrtDumpMemoryLeaks();

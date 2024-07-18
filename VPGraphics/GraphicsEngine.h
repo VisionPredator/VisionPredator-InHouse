@@ -90,7 +90,7 @@ private:
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<LightManager> m_LightManager;
 	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
-	std::shared_ptr<class ParticleManager> m_ParticleManager;
+	//std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
 
 private:

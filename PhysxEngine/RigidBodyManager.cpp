@@ -249,6 +249,133 @@ void RigidBodyManager::ReleaseBodyScene(uint32_t entityID)
 	EventManager::GetInstance().ScheduleEvent("OnReleaseBodyScene", data);
 }
 
+RigidBody* RigidBodyManager::GetRigidBody(uint32_t EntityID)
+{
+	if (!HasRigidBody(EntityID))
+	return nullptr;
+	return m_RigidBodyMap[EntityID];
+}
+
+bool RigidBodyManager::HasRigidBody(uint32_t EntityID)
+{
+	return m_RigidBodyMap.count(EntityID) > 0;
+}
+
+void RigidBodyManager::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+	if (!temp) {
+		// RigidBody가 존재하지 않는 경우 처리
+		return;
+	}
+	PxVec3 tempPos = { P.x, P.y, P.z };
+	Q.Normalize(); // Normalize quaternion before setting
+	physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
+
+		dynamicbody->GetPxDynamicRigid()->setGlobalPose({ tempPos ,tempQuat });
+		return;
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* dynamicbody = static_cast<StaticRigidBody*>(temp);
+
+		dynamicbody->GetPxStaticRigid()->setGlobalPose({ tempPos ,tempQuat });
+		return;
+	}
+	
+	assert(false);
+}
+
+VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+	if (temp == nullptr)
+		assert(false);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicBody = static_cast<DynamicRigidBody*>(temp);
+		PxVec3 velocity = dynamicBody->GetPxDynamicRigid()->getLinearVelocity();
+
+		return { velocity.x,velocity.y,velocity.z };
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* staticBody = static_cast<StaticRigidBody*>(temp);
+
+		return { 0,0,0};
+	}
+}
+
+void RigidBodyManager::AddVelocity(uint32_t entityID, VPMath::Vector3 dir, float V)
+{
+	RigidBody* temp = GetRigidBody(entityID);
+	if (temp == nullptr)
+	{
+		assert(false);
+		return;
+	}
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicBody = static_cast<DynamicRigidBody*>(temp);
+		dir.Normalize();
+		PxVec3 force =  { dir.x,dir.y,dir.z };
+		force *= V;
+		dynamicBody->GetPxDynamicRigid()->addForce(force,PxForceMode::eACCELERATION);
+
+	}
+		return;
+
+}
+
+VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID) 
+{
+	RigidBody* temp = GetRigidBody(entityID);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
+		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
+		VPMath::Vector3 templocation = { pose.p.x ,pose.p.y ,pose.p.z };
+		return templocation;
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* staticbody = static_cast<StaticRigidBody*>(temp);
+		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
+		VPMath::Vector3 templocation = { pose.p.x ,pose.p.y ,pose.p.z };
+		return templocation;
+	}
+	assert(false); // Add an assert to handle the unexpected case
+	return {};
+}
+
+VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID) {
+	RigidBody* temp = GetRigidBody(entityID);
+
+	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	{
+		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp);
+		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
+		VPMath::Quaternion tempQuat = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
+		tempQuat.Normalize(); // Normalize quaternion after getting it
+		return tempQuat;
+	}
+	if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	{
+		StaticRigidBody* staticbody = static_cast<StaticRigidBody*>(temp);
+		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
+		VPMath::Quaternion tempQuat = { pose.q.x ,pose.q.y ,pose.q.z,pose.q.w };
+		tempQuat.Normalize(); // Normalize quaternion after getting it
+		return tempQuat;
+	}
+	assert(false); // Add an assert to handle the unexpected case
+	return {};
+}
 void RigidBodyManager::AddBodyScene(RigidBody* body)
 {
 	
