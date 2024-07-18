@@ -112,14 +112,6 @@ void PhysxEngine::Update(float deltatime)
 		IsUpdated = true;
 	}
 
-	if (m_ElapsedTime > 0&& IsUpdated)
-	{
-		m_PxScene->simulate(m_ElapsedTime);
-		m_PxScene->fetchResults(true);
-
-		m_ElapsedTime = 0;
-	}
-
 
 }
 

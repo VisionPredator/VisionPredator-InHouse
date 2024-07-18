@@ -10,20 +10,30 @@ namespace Physic
 {
 	class IPhysx;
 }
-class IUpdatable
+class IPhysicable
 {
 public:
-	virtual void Update(float deltaTime) = 0;
-};
-class ILateUpdatable
-{
-public:
-	virtual void LateUpdate(float deltaTime) = 0;
+	virtual void SetPhysicEngine(Physic::IPhysx* PhysicEngine) { m_PhysicsEngine = PhysicEngine; }
+	virtual void PhysicsUpdate(float deltaTime) = 0;
+
+	Physic::IPhysx* m_PhysicsEngine = nullptr;
 };
 class IFixedUpdatable
 {
 public:
 	virtual void FixedUpdate(float deltaTime) = 0;
+};
+
+class IUpdatable
+{
+public:
+	virtual void Update(float deltaTime) = 0;
+};
+
+class ILateUpdatable
+{
+public:
+	virtual void LateUpdate(float deltaTime) = 0;
 };
 
 class IRenderable
@@ -33,14 +43,7 @@ public:
 	virtual void SetGraphics(Graphics::Interface* Graphics) { m_Graphics= Graphics; }
 	Graphics::Interface* m_Graphics = nullptr;
 };
-class IPhysicable
-{
-public:
-	virtual void SetPhysicEngine(Physic::IPhysx* PhysicEngine) { m_PhysicsEngine = PhysicEngine; }
-	virtual void PhysicsUpdate(float deltaTime) = 0;
 
-	Physic::IPhysx* m_PhysicsEngine=nullptr;
-};
 
 class IStartable
 {

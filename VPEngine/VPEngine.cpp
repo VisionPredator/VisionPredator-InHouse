@@ -59,11 +59,11 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_PhysicEngine->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics,m_PhysicEngine);
 	InputManager::GetInstance().Initialize();
-
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 	this->Addsystem();
+	EventManager::GetInstance().Subscribe("OnAddSystemLater",CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 }
 
@@ -118,8 +118,15 @@ void VPEngine::Loop()
 		else
 		{
 			Update();
-			Render();
-			EndRender();
+			static float tempTime = 0;
+			tempTime += m_DeltaTime;
+			while (tempTime > (1/90.f))
+			{
+				Render();
+				EndRender();
+				tempTime -= (1/90.f);
+			}
+
 
 		}
 	}
@@ -133,12 +140,13 @@ void VPEngine::Loop()
 
 void VPEngine::Update()
 {
-	EventManager::GetInstance().Update(m_DeltaTime);
-	InputManager::GetInstance().Update();
 	m_TimeManager->Update();
 	m_DeltaTime = m_TimeManager->GetDeltaTime();
 	if (m_DeltaTime > 1)
-		m_DeltaTime = 1/165;
+		m_DeltaTime = 1 / 165;
+	EventManager::GetInstance().Update(m_DeltaTime);
+	InputManager::GetInstance().Update();
+
 	m_SystemManager->PhysicUpdatable(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);

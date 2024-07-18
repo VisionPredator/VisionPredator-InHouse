@@ -45,19 +45,18 @@ void VP_Editor::Update()
 {
 	if (m_IsEditorMode)
 	{
-		m_editorcamera->Update(m_DeltaTime);
-        EventManager::GetInstance().Update(m_DeltaTime);
-        InputManager::GetInstance().Update();
         m_TimeManager->Update();
         m_DeltaTime = m_TimeManager->GetDeltaTime();
+        EventManager::GetInstance().Update(m_DeltaTime);
+        EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
+        InputManager::GetInstance().Update();
+		m_editorcamera->Update(m_DeltaTime);
+
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
-        TransformSystem tempsystem{ m_SceneManager };
-        tempsystem.Update(m_DeltaTime);
         m_SystemManager->RenderUpdate(m_DeltaTime);
         LightSystem tempLight{ m_SceneManager };
         tempLight.SetGraphics(m_Graphics);
-        tempLight.Update(m_DeltaTime);
-
+        tempLight.RenderUpdate(m_DeltaTime);
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());
         m_Graphics->Update(m_DeltaTime);
