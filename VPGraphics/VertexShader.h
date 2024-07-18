@@ -22,12 +22,12 @@ public:
 	VertexShader(std::shared_ptr<Device>device, std::wstring filename = L"need name");
 
 	VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_vertex = VERTEXFILTER::STATIC, std::wstring filename = L"need name");
-	/*
+	
 	VertexShader(const std::shared_ptr<Device>& device,
 		const std::wstring& filename,
 		const std::string& entryPoint,
 		const D3D_SHADER_MACRO* macro = nullptr);
-		*/
+		
 	~VertexShader() override = default;
 
 	ID3D11PixelShader* GetPS() = delete;
