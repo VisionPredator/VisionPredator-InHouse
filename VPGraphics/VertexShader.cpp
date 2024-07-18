@@ -1,10 +1,10 @@
 #include "pch.h"
+#include "VertexShader.h"
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#pragma comment (lib, "D3DCompiler.lib")
 
 #include "Device.h"
-#include "VertexShader.h"
 
 #include <wrl/client.h>
 
@@ -135,7 +135,7 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 		MessageBox(0, L"VS CreateInputLayout Fail", 0, 0);
 	}
 }
-/*
+
 VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const std::string& entryPoint, const D3D_SHADER_MACRO* macro)
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
@@ -170,13 +170,14 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 		HR_CHECK(D3DReadFileToBlob(filePath.c_str(), &blob));
 	}
 
-	HR_CHECK(device->Get()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_VS));
-
 	/// Input Layout Reflection
 	ID3D11ShaderReflection* pReflector = nullptr;
 
 	// Create Reflector
-	D3DReflect(blob->GetBufferPointer(), blob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pReflector);
+	D3DReflect(blob->GetBufferPointer(), 
+		blob->GetBufferSize(), 
+		IID_ID3D11ShaderReflection, 
+		(void**)&pReflector);
 
 	// Shader Refection
 	D3D11_SHADER_DESC shaderDesc;
@@ -238,8 +239,10 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wst
 			&m_InputLayout
 		);
 	);
+
+	HR_CHECK(device->Get()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_VS));
 }
-*/
+
 
 void VertexShader::Release()
 {
