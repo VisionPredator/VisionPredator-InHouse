@@ -57,7 +57,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	}
 
 	//Skinned
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
 		m_Graphics->EraseObject(meshComponent->GetEntityID());
