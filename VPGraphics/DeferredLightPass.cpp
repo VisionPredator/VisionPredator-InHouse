@@ -89,10 +89,11 @@ void DeferredLightPass::Render()
 
 	//Save GBuffer texture
 	{
+		//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
 		//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
 		std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Deferred").lock();
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 		m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		Device->Context()->IASetInputLayout(m_VS.lock()->InputLayout());

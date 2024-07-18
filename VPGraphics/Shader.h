@@ -2,6 +2,7 @@
 #include "Resource.h"
 #include <string>
 #include <d3d11shader.h>
+#include <wrl/client.h>
 
 #include "Device.h"
 
@@ -16,7 +17,7 @@ public:
 	Shader(std::wstring filename = L"need name");
 	Shader(std::shared_ptr<Device> device, std::wstring filename = L"need name");
 	Shader(std::shared_ptr<Device> device, D3D11_INPUT_ELEMENT_DESC desc, std::wstring filename = L"need name");
-	virtual ~Shader();
+	virtual ~Shader() = default;
 
 	virtual void Release() abstract;
 
@@ -30,10 +31,13 @@ public:
 protected:
 	std::wstring m_filename;
 
-	ID3D11PixelShader* m_PS;
-	ID3D11VertexShader* m_VS;
-	ID3D11InputLayout* m_inputLayout;
-	D3D11_INPUT_ELEMENT_DESC m_Desc;//???
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PS;
+	//ID3D11PixelShader* m_PS;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VS;
+	//ID3D11VertexShader* m_VS;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
+	//ID3D11InputLayout* m_InputLayout;
+	D3D11_INPUT_ELEMENT_DESC m_Desc = {};//???
 
 
 

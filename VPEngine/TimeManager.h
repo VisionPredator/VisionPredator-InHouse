@@ -14,6 +14,8 @@
 		uint32_t m_LastFPS = 0;
 		uint32_t m_FPS = 0;
 
+		double m_TotalTime = 0;
+
 	public:
 		TimeManager();
 		void Update();
@@ -21,5 +23,7 @@
 
 		const float GetDeltaTime() { return static_cast<float>(m_DeltaTime); }
 		uint32_t GetFPS() { return m_LastFPS; }
+
+		const float GetTotalGameTime() { return static_cast<float>(m_TotalTime); }
 	};
 

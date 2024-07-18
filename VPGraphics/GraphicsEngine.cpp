@@ -35,6 +35,8 @@
 #include "Animator.h"
 #include "LightManager.h"
 #include "DebugDrawManager.h"
+#include "ParticleManager.h"
+#include "TimeManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -44,10 +46,8 @@
 #pragma endregion IMGUI
 
 #include "Animation.h"
-
-
-GraphicsEngine::GraphicsEngine(HWND hWnd) : m_Device(nullptr), m_CurViewPort(nullptr), m_ResourceManager(nullptr), m_Loader(nullptr), m_Animator(nullptr), m_hWnd(hWnd), m_wndSize()
-{
+GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
+	: m_TimeManager(timeManager), m_hWnd(hWnd), m_wndSize(){
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -84,6 +84,9 @@ bool GraphicsEngine::Initialize()
 	
 	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
 	m_PassManager->Initialize();
+	m_ParticleManager = std::make_shared<ParticleManager>();
+	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
+	OnResize(m_hWnd);
 
 	InitializeImGui();
 

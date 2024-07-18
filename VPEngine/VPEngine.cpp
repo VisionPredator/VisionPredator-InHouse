@@ -47,17 +47,19 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
 
-	m_Graphics = new GraphicsEngine(m_hWnd);
-	m_PhysicEngine = new PhysxEngine;
-	m_Graphics->Initialize();
 	VPRegister::Register_Metadata();
 
 	m_TimeManager = new TimeManager;
+	m_PhysicEngine = new PhysxEngine;
 	m_SceneManager = new SceneManager;
 	m_SystemManager = new SystemManager;
+	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+
 	m_SceneManager->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics);
 	m_PhysicEngine->Initialize();
+	m_Graphics->Initialize();
+
 	InputManager::GetInstance().Initialize();
 	/// 다 초기화 되고 윈도우 만들기
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);

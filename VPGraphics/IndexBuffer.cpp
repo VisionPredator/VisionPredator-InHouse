@@ -23,10 +23,6 @@ IndexBuffer::IndexBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc,
 	}
 }
 
-IndexBuffer::~IndexBuffer()
-{
-}
-
 void IndexBuffer::Update()
 {
 

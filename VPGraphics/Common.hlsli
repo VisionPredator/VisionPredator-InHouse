@@ -6,8 +6,10 @@ static const float Epsilon = 0.00001;
 //모든 유전체에 대한 일정한 수직 입사 프레넬 계수
 static const float3 Fdielectric = { 0.04, 0.04, 0.04 };
 static const float gamma = 2.2;
-//CONSTANT
-///Camera
+//***********************************************
+// Constant Buffers                             *
+//***********************************************
+//Camera
 cbuffer Camera : register(b0)
 {
     float4x4 gWorldViewProj;
@@ -17,7 +19,7 @@ cbuffer Camera : register(b0)
     float4x4 gProjInverse;
 };
 
-///Transform
+//Transform
 cbuffer Transform : register(b1)
 {
     float4x4 gWorld;
@@ -40,7 +42,7 @@ cbuffer Material : register(b2)
 };
 
 
-///Light
+//Light
 struct LightData
 {
     float3 Direction;
@@ -84,10 +86,15 @@ Texture2D gEmissive : register(t7);
 Texture2D gGBuffer : register(t8);
 Texture2D gIMGUI : register(t9);
 
-//sampler
+//***********************************************
+// Sampler States                               *
+//***********************************************
 SamplerState samLinear : register(s0);
 
-//STRUCT
+//***********************************************
+// Structures                                   *
+//***********************************************
+
 struct VS_INPUT
 {
     float4 pos : POSITION;
@@ -119,7 +126,18 @@ struct Quad
     float2 tex : TEXCOORD;
 };
 
-//Light Function
+struct Particle
+{
+	float3 InitialPosW : POSITION;
+    float3 InitialVelW : VELOCITY;
+    float2 SizeW : SIZE;
+    float Age : AGE;
+    uint Type : TYPE;
+};
+
+//***********************************************
+// LIGHT HELPER FUNCTIONS                    *
+//***********************************************
 
 
 float3 FresnelSchlick(float3 F0, float cosTheta)
@@ -332,3 +350,8 @@ float3 CalcSpot(LightData lightData, float4 pos, float3 V, float3 N, float3 F0, 
     result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0) * lightData.Intensity;
     return result;
 }
+
+//***********************************************
+// PARTICLE HELPER FUNCTIONS                    *
+//***********************************************
+

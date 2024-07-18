@@ -8,7 +8,6 @@ class Texture2D;
 enum class DepthStencilViewType
 {
 	Default,
-	
 
 	// 이후 HDR 용 RTV도 필요할 것이다.
 };

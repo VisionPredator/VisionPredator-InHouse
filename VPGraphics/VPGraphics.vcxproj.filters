@@ -94,6 +94,15 @@
     <Filter Include="Resource\ViewPort">
       <UniqueIdentifier>{f9625000-8622-4dce-8590-3017be116282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\GS">
+      <UniqueIdentifier>{97d743dc-a32d-4f85-9f7b-a8d1dfbda007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{ae0ccb03-7af8-4c0a-86a0-57af8217d746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\CS">
+      <UniqueIdentifier>{9438a78e-f698-4aa4-9138-4ea8a9ad32fc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Pass\Forward">
       <UniqueIdentifier>{d8c8d760-b0e3-40bd-979f-4568e2c9989d}</UniqueIdentifier>
     </Filter>
@@ -103,17 +112,8 @@
     <Filter Include="Pass\Deferred">
       <UniqueIdentifier>{0fbcd319-41e0-40a5-b224-f118e303742f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager\DebugDraw">
-      <UniqueIdentifier>{78807f42-b819-4884-8fee-18d05646b00c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager\Light">
-      <UniqueIdentifier>{f0a6a22e-110d-4071-aecd-2224289de75b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager\Pass">
-      <UniqueIdentifier>{018d6c00-5c6b-4264-bed7-c0e2ec446e7b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager\Resource">
-      <UniqueIdentifier>{6de19895-4cd4-4fa7-93d8-0ba6be6f4d6e}</UniqueIdentifier>
+    <Filter Include="Manager\Source">
+      <UniqueIdentifier>{39426c84-4b4b-476d-a79e-57da6561f1a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +240,27 @@
     <ClInclude Include="FinalPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DUtill.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleObject.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Resource\ViewPort</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
     <ClInclude Include="ViewPort.h">
       <Filter>Resource\ViewPort</Filter>
     </ClInclude>
@@ -253,16 +274,16 @@
       <Filter>Pass\Deferred</Filter>
     </ClInclude>
     <ClInclude Include="DebugDrawManager.h">
-      <Filter>Manager\DebugDraw</Filter>
-    </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>Manager\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="PassManager.h">
-      <Filter>Manager\Pass</Filter>
+      <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
-      <Filter>Manager\Resource</Filter>
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="PassManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -359,11 +380,26 @@
     <ClCompile Include="FinalPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
+    <ClCompile Include="D3DUtill.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleObject.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
     <ClCompile Include="ViewPort.cpp">
       <Filter>Resource\ViewPort</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPass.cpp">
-      <Filter>Pass\Forward</Filter>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Resource\ViewPort</Filter>
     </ClCompile>
     <ClCompile Include="DebugPass.cpp">
       <Filter>Pass\Debug</Filter>
@@ -372,16 +408,22 @@
       <Filter>Pass\Deferred</Filter>
     </ClCompile>
     <ClCompile Include="DebugDrawManager.cpp">
-      <Filter>Manager\DebugDraw</Filter>
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
-      <Filter>Manager\Light</Filter>
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="PassManager.cpp">
-      <Filter>Manager\Pass</Filter>
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
-      <Filter>Manager\Resource</Filter>
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardPass.cpp">
+      <Filter>Pass\Forward</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +447,15 @@
     </FxCompile>
     <FxCompile Include="QuadPS.hlsl">
       <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleGS.hlsl">
+      <Filter>HLSL\GS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticlePS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVS.hlsl">
+      <Filter>HLSL\VS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

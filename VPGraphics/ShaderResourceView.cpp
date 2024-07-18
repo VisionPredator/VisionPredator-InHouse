@@ -89,6 +89,23 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, RenderTar
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(rtvTexture.Get(), &srvDesc, &m_view));
 }
 
+ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, const std::shared_ptr<RenderTargetView>& rtv) : Resource(device)
+{
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> rtvTexture;
+	rtv->Get()->GetResource(reinterpret_cast<ID3D11Resource**>(rtvTexture.GetAddressOf()));
+
+	D3D11_TEXTURE2D_DESC textureDesc = {};
+	rtvTexture->GetDesc(&textureDesc);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = textureDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+
+	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(rtvTexture.Get(), &srvDesc, &m_view));
+}
+
 
 ShaderResourceView::~ShaderResourceView()
 {
@@ -111,5 +128,6 @@ void ShaderResourceView::Release()
 	if (m_view != nullptr)
 	{
 		m_view->Release();
+		m_view = nullptr;
 	}
 }
