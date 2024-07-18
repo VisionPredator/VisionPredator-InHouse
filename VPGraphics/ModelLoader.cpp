@@ -483,6 +483,7 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 			prevTime = curAnimation.mTime;
 		}
 
+		//
 		for (unsigned int j = 0; j < curChannel->mNumRotationKeys; j++)
 		{
 			DirectX::SimpleMath::Matrix rotation{};

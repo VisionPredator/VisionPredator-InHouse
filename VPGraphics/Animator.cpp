@@ -39,7 +39,8 @@ void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>
 
 			if (curModel.lock() != nullptr && curData->Filter == MeshFilter::Skinning)
 			{
-				UpdateWorld(curData->duration, curModel);
+				//UpdateWorld(curData->duration, curModel);
+				UpdateWorld(curData);
 				UpdateMatrixPallete(curData);
 			}
 		}

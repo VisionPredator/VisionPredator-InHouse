@@ -32,7 +32,6 @@ ResourceManager::~ResourceManager()
 		for (auto& resource : m_ResourceArray[i])
 		{
 			resource.second->Release();
-			//delete resource.second;
 		}
 
 		m_ResourceArray[i].clear();
