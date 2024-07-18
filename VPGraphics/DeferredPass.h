@@ -7,6 +7,7 @@ public:
 	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
 	~DeferredPass();
 	virtual void Render() override;
+	void OnResize() override;
 
 private:
 

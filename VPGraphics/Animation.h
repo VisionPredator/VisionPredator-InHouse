@@ -29,7 +29,7 @@ struct Channel
 	std::vector<std::shared_ptr<Key>> positionkey;
 	std::vector<std::shared_ptr<Key>> rotationkey;
 	std::vector<std::shared_ptr<Key>> scalingkey;
-
+	std::vector<DirectX::SimpleMath::Matrix> totals;
 };
 
 

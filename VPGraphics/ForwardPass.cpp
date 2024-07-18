@@ -53,8 +53,6 @@ void ForwardPass::Render()
 		{
 			Device->Context()->RSSetState(curModel->RS.lock()->Get());
 
-			int materialindex = 0; //mesh의 수와 같음
-
 			for (auto& mesh : curModel->m_Meshes)
 			{
 				Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
@@ -101,7 +99,7 @@ void ForwardPass::Render()
 
 				if (!curModel->m_Materials.empty())
 				{
-					std::shared_ptr<Material> curMaterial = curModel->m_Materials[materialindex];
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
 					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 
 					MaterialData curMaterialData = curMaterial->m_Data;
@@ -113,8 +111,6 @@ void ForwardPass::Render()
 					}
 				}
 
-				materialindex++;
-
 				///Draw
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
@@ -122,4 +118,16 @@ void ForwardPass::Render()
 		}
 		m_RenderDataQueue.pop();
 	}
+}
+
+void ForwardPass::OnResize()
+{
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
+
+	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
+	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
+
+	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 }

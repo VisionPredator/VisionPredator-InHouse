@@ -23,6 +23,7 @@ public:
 	void Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList);
 
 	void Render();
+	void OnResize();
 
 private:
 	void CheckPassState(std::shared_ptr<RenderData>& model, PassState pass);

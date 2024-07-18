@@ -93,48 +93,51 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	for (MeshComponent& meshComp : COMPITER(MeshComponent))
 	{
 		//IGraphics::Getinstance().Render(uint32_t, transform, ~~Á¤º¸);
-		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
+		RenderData temp;
 		IDComponent* idComp = meshComp.GetComponent<IDComponent>();
-		temp->EntityID = idComp->GetEntityID();
+		temp.EntityID = idComp->GetEntityID();
 		std::wstring FbxName{};
 		std::wstring Name{};
 		FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
 		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-		temp->Filter = meshComp.FBXFilter;
-		temp->world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp->Name = Name;
-		temp->FBX = FbxName;
-		temp->duration = 0;
+		temp.Filter = meshComp.FBXFilter;
+		temp.world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
+		temp.Name = Name;
+		temp.FBX = FbxName;
+		temp.duration = 0;
 
 		m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 	}
 
 	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
 	{
-		std::shared_ptr<RenderData> temp = std::make_shared<RenderData>();
 		IDComponent* idComp = skinComp.GetComponent<IDComponent>();
-		temp->EntityID = idComp->GetEntityID();
+		RenderData temp;
+		temp.EntityID = idComp->GetEntityID();
 		std::wstring FbxName{};
 		std::wstring Name{};
 		FbxName = FbxName.assign(skinComp.FBX.begin(), skinComp.FBX.end());
 		Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-		temp->Filter = skinComp.FBXFilter;
-		temp->world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp->Name = Name;
+		temp.Filter = skinComp.FBXFilter;
+		temp.world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
+		temp.Name = Name;
 
-		temp->FBX = FbxName;
-		temp->duration = 0;
+		temp.FBX = FbxName;
+		temp.duration = 0;
 		
 		if (skinComp.HasComponent<AnimationComponent>())
 		{
 			auto anicomp = skinComp.GetComponent<AnimationComponent>();
 
-			temp->curAnimation = anicomp->curAnimation;
-			if (!temp->curAnimation.empty())
+			temp.curAnimation = anicomp->curAnimation;
+			if (!temp.curAnimation.empty())
 			{
-				temp->FBX = temp->curAnimation;
-				temp->duration = anicomp->duration;
-				temp->isPlay = anicomp->isPlay;
+				temp.FBX = temp.curAnimation;
+				temp.duration = anicomp->duration;
+				temp.isPlay = anicomp->isPlay;
+				temp.isChange = anicomp->isChange;
+				temp.preDuration = anicomp->preDuration;
+				temp.preAnimation = anicomp->preAnimation;
 			}
 		}
 

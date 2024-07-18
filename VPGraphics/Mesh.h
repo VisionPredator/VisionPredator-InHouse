@@ -45,7 +45,7 @@ public:
 	std::weak_ptr<VertexBuffer> m_VB;
 	std::weak_ptr<IndexBuffer> m_IB;
 	D3D11_PRIMITIVE_TOPOLOGY m_primitive;
-
+	int m_material;
 
 	virtual bool IsSkinned() abstract;
 

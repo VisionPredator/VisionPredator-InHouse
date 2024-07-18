@@ -9,6 +9,7 @@ public:
 	~ForwardPass();
 
 	virtual void Render() override;
+	virtual void OnResize() override;
 
 private:
 };

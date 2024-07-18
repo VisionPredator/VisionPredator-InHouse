@@ -39,8 +39,6 @@ void DebugPass::Render()
 	std::shared_ptr<ResourceManager> resourceManager = m_ResourceManager.lock();
 	std::shared_ptr<DebugDrawManager> debugManager = m_DebugDrawManager.lock();
 
-
-
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 	std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
@@ -65,8 +63,7 @@ void DebugPass::Render()
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = resourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	XMStoreFloat4x4(&m_View, XMMatrixTranspose(Camera.lock()->m_struct.view));
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(Camera.lock()->m_struct.proj));
-
-	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
+	Device->Context()->OMSetRenderTargets(1, m_RTV.lock()->GetAddress(), DSV->Get());
 
 	while (!m_RenderDataQueue.empty())
 	{
@@ -84,7 +81,7 @@ void DebugPass::Render()
 				gridInfo.XDivs = 200;
 				gridInfo.YDivs = 200;
 				gridInfo.GridSize = 200.f;
-				gridInfo.Color = SimpleMath::Color{ 0.5, 0.5, 0.5, 1 };
+				gridInfo.Color = SimpleMath::Color{ 1,1,1, 1 };
 				debugManager->AddTask(gridInfo);
 			}
 				break;
@@ -129,4 +126,12 @@ void DebugPass::Render()
 
 	debugManager->Execute(Device, m_View, m_Proj);
 
+}
+
+void DebugPass::OnResize()
+{
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
+	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 }
