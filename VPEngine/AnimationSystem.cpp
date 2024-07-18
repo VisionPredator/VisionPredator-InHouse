@@ -28,7 +28,7 @@ void AnimationSystem::OnReleasedComponent(std::any data)
 	}
 }
 
-void AnimationSystem::Update(float deltaTime)
+void AnimationSystem::RenderUpdate(float deltaTime)
 {
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
@@ -47,20 +47,10 @@ void AnimationSystem::Update(float deltaTime)
 			}
 			aniComp.isChange = true;
 		}
-		
-		if(!aniComp.curAnimation.empty())
+
+		if (!aniComp.curAnimation.empty())
 		{
 			aniComp.duration += deltaTime * aniComp.speed;
-		}		
+		}
 	}
-}
-
-void AnimationSystem::FixedUpdate(float deltaTime)
-{
-
-}
-
-void AnimationSystem::RenderUpdate(float deltaTime)
-{
-
 }

@@ -8,7 +8,7 @@ TestCameraSystem::TestCameraSystem(SceneManager* sceneManager) :System(sceneMana
 }
 void TestCameraSystem::Update(float deltaTime)
 {
-	for (CameraComponent& Camera :COMPITER(CameraComponent))
+	for (CameraComponent& Camera : COMPITER(CameraComponent))
 	{
 
 		if (!Camera.IsMain)
@@ -24,7 +24,7 @@ void TestCameraSystem::Update(float deltaTime)
 		VPMath::Vector3 MoveWay{};
 
 		if (INPUTKEY(KEY::W))
-			moveDirection+=cameraTransform->FrontVector;
+			moveDirection += cameraTransform->FrontVector;
 		if (INPUTKEY(KEY::S))
 			moveDirection -= cameraTransform->FrontVector;
 		if (INPUTKEY(KEY::A))
@@ -32,13 +32,12 @@ void TestCameraSystem::Update(float deltaTime)
 		if (INPUTKEY(KEY::D))
 			moveDirection += cameraTransform->RightVector;
 		if (INPUTKEY(KEY::Q))
-			moveDirection.y-=1;
+			moveDirection.y -= 1;
 		if (INPUTKEY(KEY::E))
 			moveDirection.y += 1;
 
-
 		moveDirection.Normalize();
-		cameraTransform->World_Location+=  moveSpeed* moveDirection* deltaTime;
+		cameraTransform->World_Location += moveSpeed * moveDirection * deltaTime;
 
 		if (INPUTKEY(KEY::RBUTTON))
 		{
@@ -58,7 +57,6 @@ void TestCameraSystem::Update(float deltaTime)
 		}
 		break;
 	}
-
 
 }
 

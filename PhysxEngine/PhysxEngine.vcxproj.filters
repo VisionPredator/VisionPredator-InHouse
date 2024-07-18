@@ -66,6 +66,9 @@
     <ClInclude Include="CollisionCallback.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CharactorController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -99,6 +102,9 @@
       <Filter>struct\RigidBody</Filter>
     </ClCompile>
     <ClCompile Include="CollisionCallback.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CharactorController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

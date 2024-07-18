@@ -140,12 +140,13 @@ void VPEngine::Loop()
 
 void VPEngine::Update()
 {
-	EventManager::GetInstance().Update(m_DeltaTime);
-	InputManager::GetInstance().Update();
 	m_TimeManager->Update();
 	m_DeltaTime = m_TimeManager->GetDeltaTime();
 	if (m_DeltaTime > 1)
-		m_DeltaTime = 1/165;
+		m_DeltaTime = 1 / 165;
+	EventManager::GetInstance().Update(m_DeltaTime);
+	InputManager::GetInstance().Update();
+
 	m_SystemManager->PhysicUpdatable(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);

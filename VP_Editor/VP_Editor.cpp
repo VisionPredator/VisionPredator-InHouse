@@ -55,8 +55,8 @@ void VP_Editor::Update()
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
         m_SystemManager->RenderUpdate(m_DeltaTime);
         LightSystem tempLight{ m_SceneManager };
-        tempLight.Update(m_DeltaTime);
         tempLight.SetGraphics(m_Graphics);
+        tempLight.RenderUpdate(m_DeltaTime);
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());
         m_Graphics->Update(m_DeltaTime);
