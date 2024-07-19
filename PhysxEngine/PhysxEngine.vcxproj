@@ -160,7 +160,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CharactorController.h" />
+    <ClInclude Include="CapsuleController.h" />
+    <ClInclude Include="ControllerManager.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="CollisionCallback.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
@@ -175,7 +177,9 @@
     <ClInclude Include="StaticRigidBody.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CharactorController.cpp" />
+    <ClCompile Include="CapsuleController.cpp" />
+    <ClCompile Include="ControllerManager.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CollisionCallback.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />

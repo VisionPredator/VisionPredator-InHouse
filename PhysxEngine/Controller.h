@@ -1,12 +1,15 @@
 #pragma once
 #include "VPPhysicsStructs.h"
-class CharactorController
+using namespace VPPhysics;
+class Controller
 {
 public:
 
 
-	CharactorController();
-	~CharactorController();
+	Controller();
+	~Controller();
+
+	bool InfoInit(VPPhysics::ControllerInfo info);
 	uint32_t m_EntityID;
 
 	physx::PxController* m_Controller;

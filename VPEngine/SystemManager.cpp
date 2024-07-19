@@ -9,6 +9,8 @@
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
+		m_FixedDeltatime = 1.f / m_FixedFrame;
+		m_PhysicDeltatime= 1.f / m_PhysicsFrame;
 
 	}
 	SystemManager::~SystemManager()
@@ -17,22 +19,28 @@
 	}
 	void SystemManager::PhysicUpdatable(float deltatime)
 	{
-		for (auto physicsUpdatable : m_PhysicUpdatable)
+		m_PhysicProgressedTime += deltatime;
+		while (m_PhysicProgressedTime > m_PhysicDeltatime)
 		{
-			physicsUpdatable->PhysicsUpdate(deltatime);
-			EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
+			for (auto physicsUpdatable : m_PhysicUpdatable)
+			{
+				physicsUpdatable->PhysicsUpdate(m_PhysicDeltatime);
+				EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
+			}
+			m_PhysicProgressedTime -= m_PhysicDeltatime;
+		}
 
-		}	
 	}
 	void SystemManager::FixedUpdate(float deltatime)
 	{
 		m_ProgressedTime += deltatime;
+
 		///FixedUpdate 발동 조건 : 1/60 넘을 때
-		while (m_ProgressedTime > 1.f / 60.f)
+		while (m_ProgressedTime > m_FixedDeltatime)
 		{
 			for (auto fixedUpdateable : m_FixedUpdatables)
-				fixedUpdateable->FixedUpdate(1.f / 60.f);
-			m_ProgressedTime -= 1.f / 60.f;
+				fixedUpdateable->FixedUpdate(m_FixedDeltatime);
+			m_ProgressedTime -= m_FixedDeltatime;
 
 		}
 	}

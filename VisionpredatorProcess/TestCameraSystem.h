@@ -11,6 +11,6 @@ public:
 
 
     
-    float moveSpeed = 10;
+    float moveSpeed = 100;
 };
 

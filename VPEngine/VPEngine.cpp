@@ -80,12 +80,12 @@ VPEngine::~VPEngine()
 }
 void VPEngine::Addsystem()
 {
-	m_SystemManager->AddSystem<SceneSerializer>();
-	m_SystemManager->AddSystem<RenderSystem>();
-	m_SystemManager->AddSystem<LightSystem>();
-	m_SystemManager->AddSystem<CameraSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
+	m_SystemManager->AddSystem<SceneSerializer>();
+	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<AnimationSystem>();
+	m_SystemManager->AddSystem<RenderSystem>();
+	m_SystemManager->AddSystem<CameraSystem>();
 
 }
 void VPEngine::OnAddSystemLater(std::any)
@@ -122,6 +122,8 @@ void VPEngine::Loop()
 			tempTime += m_DeltaTime;
 			while (tempTime > (1/90.f))
 			{
+				m_SystemManager->RenderUpdate(1 / 90.f);
+				m_Graphics->Update(1 / 90.f);
 				Render();
 				EndRender();
 				tempTime -= (1/90.f);
@@ -143,7 +145,7 @@ void VPEngine::Update()
 	m_TimeManager->Update();
 	m_DeltaTime = m_TimeManager->GetDeltaTime();
 	if (m_DeltaTime > 1)
-		m_DeltaTime = 1 / 165;
+		m_DeltaTime = 1 / 165.f;
 	EventManager::GetInstance().Update(m_DeltaTime);
 	InputManager::GetInstance().Update();
 
@@ -151,11 +153,9 @@ void VPEngine::Update()
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
-	m_SystemManager->RenderUpdate(m_DeltaTime);
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 	SetWindowTextW(m_hWnd, newname.c_str());
-	m_Graphics->Update(m_DeltaTime);
 }
 
 

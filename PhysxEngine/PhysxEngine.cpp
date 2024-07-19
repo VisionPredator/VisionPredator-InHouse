@@ -101,15 +101,23 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
+
 	m_ElapsedTime += deltatime;
-	m_UpdateTime = (float)1 / GetPhysicsInfo().FrameRate;
+	m_UpdateTime = (1.f / GetPhysicsInfo().FrameRate);
+
 	bool IsUpdated = false;
-	while (m_ElapsedTime > m_UpdateTime)
+	while (m_ElapsedTime >= m_UpdateTime)
 	{
 		m_PxScene->simulate(m_UpdateTime);
 		m_PxScene->fetchResults(true);
 		m_ElapsedTime -= m_UpdateTime;
 		IsUpdated = true;
+	}
+	if (IsUpdated&& m_ElapsedTime>0)
+	{
+		m_PxScene->simulate(m_ElapsedTime);
+		m_PxScene->fetchResults(true);
+		m_ElapsedTime = 0;
 	}
 
 
