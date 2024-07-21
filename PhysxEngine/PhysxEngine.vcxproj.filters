@@ -81,7 +81,7 @@
     <ClInclude Include="ControllerManager.h">
       <Filter>Manager\CCT</Filter>
     </ClInclude>
-    <ClInclude Include="PhysxColliManager.h">
+    <ClInclude Include="CollisionManager.h">
       <Filter>Manager\Coll</Filter>
     </ClInclude>
     <ClInclude Include="RigidBodyManager.h">
@@ -125,7 +125,7 @@
     <ClCompile Include="ControllerManager.cpp">
       <Filter>Manager\CCT</Filter>
     </ClCompile>
-    <ClCompile Include="PhysxColliManager.cpp">
+    <ClCompile Include="CollisionManager.cpp">
       <Filter>Manager\Coll</Filter>
     </ClCompile>
     <ClCompile Include="RigidBodyManager.cpp">

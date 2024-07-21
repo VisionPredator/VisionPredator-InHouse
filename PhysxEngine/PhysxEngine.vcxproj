@@ -169,7 +169,7 @@
     <ClInclude Include="IPhysx.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PhysxColliManager.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="PhysxEngine.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RigidBodyManager.h" />
@@ -190,7 +190,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PhysxColliManager.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="PhysxEngine.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RigidBodyManager.cpp" />
