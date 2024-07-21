@@ -9,9 +9,9 @@ public:
 	Controller();
 	~Controller();
 
-	bool InfoInit(VPPhysics::ControllerInfo info);
+	bool ControllerInit(VPPhysics::ControllerInfo info,VPPhysics::PhysicsInfo physicsinfo);
 	uint32_t m_EntityID;
-
+	physx::PxFilterData* m_FilterData;
 	physx::PxController* m_Controller;
 	VPPhysics::EPhysicsLayer m_LayerNum{};
 	physx::PxMaterial* m_Material;

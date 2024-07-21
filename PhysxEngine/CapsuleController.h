@@ -5,7 +5,7 @@ class CapsuleController :
 {
 public:
     CapsuleController();
-	void Initialize(CapsuleControllerInfo info, physx::PxControllerManager* CCTManager/*, CollisionData* collisionData*/,int CollisionMatrix );
+	void Initialize(CapsuleControllerInfo info, physx::PxControllerManager* CCTManager/*, CollisionData* collisionData*/, PhysicsInfo physicinfo );
 
     ~CapsuleController();
 };
