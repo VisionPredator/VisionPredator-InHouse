@@ -183,6 +183,9 @@
     <ClInclude Include="PhysicSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
+    <ClInclude Include="ControllerCompoent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -280,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="PhysicSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerCompoent.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

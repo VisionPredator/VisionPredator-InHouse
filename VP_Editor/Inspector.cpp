@@ -190,7 +190,7 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 
 	auto metaType = memberMetaData.type();
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (metaType.is_enum() )
+	if (metaType.is_enum())
 		TypeImGui_EnumClass(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
 		TypeImGui_Vector3(memberMetaData, component);
@@ -222,10 +222,14 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_ColliderInfo(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
 		TypeImGui_BoxColliderInfo(memberMetaData, component);
-	else if (metaType.id() == Reflection::GetTypeID<VPPhysics ::CapsuleColliderInfo>())
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::CapsuleColliderInfo>())
 		TypeImGui_CapsuleColliderInfo(memberMetaData, component);
-	else if (metaType.id() == Reflection::GetTypeID<VPPhysics ::SphereColliderInfo>())
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::SphereColliderInfo>())
 		TypeImGui_SphereColliderInfo(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ControllerInfo>())
+		TypeImGui_ControllerInfo(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::CapsuleControllerInfo>())
+		TypeImGui_CapsuleControllerInfo(memberMetaData, component);
 }
 void Inspector::TypeImGui_Vector2(entt::meta_data memberMetaData, Component* component)
 {
@@ -653,5 +657,71 @@ void Inspector::TypeImGui_SphereColliderInfo(entt::meta_data memberMetaData, Com
 	if (tempSphereColliderInfo.Radius <= 0.f)
 		tempSphereColliderInfo.Radius = 0.1f;
 	memberMetaData.set(component->GetHandle(), tempSphereColliderInfo);
+	ImGui::PopID();
+}
+
+void Inspector::TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Component* component)
+{
+	ControllerInfo tempControllerInfo = memberMetaData.get(component->GetHandle()).cast<ControllerInfo>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("Controller Info");
+
+
+	auto enumMap = Reflection::GetEnumMap<EPhysicsLayer>();
+
+	int currentEnumInt = (int)tempControllerInfo.LayerNumber;
+	std::string valuename = "EPhysicsLayer";
+	auto iter = enumMap.find(currentEnumInt);
+	assert(iter != enumMap.end());
+	std::string currentEnumName = Reflection::GetName(iter->second);
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	if (ImGui::BeginCombo(valuename.c_str(), currentEnumName.c_str()))
+	{
+		for (const auto& [val, metaData] : enumMap)
+		{
+			std::string memberName = Reflection::GetName(metaData);
+			const bool bIsSelected = val == currentEnumInt;
+			if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+			{
+				tempControllerInfo.LayerNumber = (EPhysicsLayer)val;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	memberMetaData.set(component->GetHandle(), tempControllerInfo);
+	ImGui::PopID();
+}
+void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component)
+{
+	CapsuleControllerInfo tempCapsuleControllerInfo = memberMetaData.get(component->GetHandle()).cast<CapsuleControllerInfo>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("Capsule Controller Info");
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Height", &tempCapsuleControllerInfo.height, 0.1f, 0.1f);
+	if (tempCapsuleControllerInfo.height <= 0.f)
+		tempCapsuleControllerInfo.height = 0.1f;
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Radius", &tempCapsuleControllerInfo.radius, 0.01f, 0.01f);
+	if (tempCapsuleControllerInfo.radius <= 0.f)
+		tempCapsuleControllerInfo.radius = 0.01f;
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Step Offset", &tempCapsuleControllerInfo.stepOffset, 0.01f);
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Slope Limit", &tempCapsuleControllerInfo.slopeLimit, 0.01f);
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
+	ImGui::DragFloat("Contact Offset", &tempCapsuleControllerInfo.contactOffset, 0.001f);
+
+	memberMetaData.set(component->GetHandle(), tempCapsuleControllerInfo);
 	ImGui::PopID();
 }

@@ -108,6 +108,12 @@
     <ClInclude Include="CapsuleController.h">
       <Filter>struct\Controller\Capsule</Filter>
     </ClInclude>
+    <ClInclude Include="ControllerQueryFilterCallback.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerHitCallback.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VPPhysicsStructs.cpp">
@@ -151,6 +157,12 @@
     </ClCompile>
     <ClCompile Include="CapsuleController.cpp">
       <Filter>struct\Controller\Capsule</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerQueryFilterCallback.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerHitCallback.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

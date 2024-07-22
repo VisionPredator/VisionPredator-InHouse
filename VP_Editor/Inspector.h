@@ -37,6 +37,9 @@ public:
     void TypeImGui_CapsuleColliderInfo(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_SphereColliderInfo(entt::meta_data memberMetaData, Component* component);
 
+    void TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component);
+
     SceneManager* m_SceneManager;
     HierarchySystem* m_HierarchySystem;
     std::string m_searchComponent{};

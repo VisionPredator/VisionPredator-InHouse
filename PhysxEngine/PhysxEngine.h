@@ -3,6 +3,7 @@
 #include "../VPEngine/EventSubscriber.h"
 class RigidBodyManager;
 class CollisionManager;
+class ControllerManager;
 class Physics;
 class CollisionCallback;
 using namespace std;
@@ -21,16 +22,7 @@ public:
 	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }
 
 	void OnSetPhysicInfo(std::any PhysicInfo);
-private:
-	Physics* m_Physics{};
-	physx::PxScene* m_PxScene{};
-	RigidBodyManager* m_RigidManager{};
-	CollisionManager* m_CollisionManager{};
-	CollisionCallback* m_Collisioncallback{};
-	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
-	int m_Frame = 60;
-	float m_UpdateTime = 1.f/ 120.f;
-	float m_ElapsedTime = 0.f;
+
 	// IPhysx을(를) 통해 상속됨
 
 
@@ -55,5 +47,26 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	VPMath::Vector3 GetVelocity(uint32_t entityID) override;
+
+private:
+	Physics* m_Physics{};
+	physx::PxScene* m_PxScene{};
+	RigidBodyManager* m_RigidBodyManager{};
+	ControllerManager* m_ControllerManager{};
+	CollisionManager* m_CollisionManager{};
+	CollisionCallback* m_Collisioncallback{};
+	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
+	int m_Frame = 60;
+	float m_UpdateTime = 1.f / 120.f;
+	float m_ElapsedTime = 0.f;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void RemoveController(uint32_t entityID) override;
+
 };
 

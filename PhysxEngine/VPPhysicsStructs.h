@@ -74,12 +74,17 @@ namespace VPPhysics
 	};
 	struct ControllerInfo
 	{
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ControllerInfo,  LayerNumber);
+
 		uint32_t EntityId = noneID;								// 캐릭터 컨트롤러 아이디
 		EPhysicsLayer LayerNumber{};								// 충돌 매트릭스 레이어 넘버
 
 	};
 	struct CapsuleControllerInfo
 	{
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CapsuleControllerInfo, Info, position, height, radius, stepOffset, slopeLimit, contactOffset);
+
 		ControllerInfo Info{};
 		VPMath::Vector3 position{ 0.f, 0.f, 0.f };					// 캐릭터 컨트롤러가 위치하는 처음 생성 위치
 		float height = 0.1f;										// 캐릭터 컨트롤러(캡슐)의 높이

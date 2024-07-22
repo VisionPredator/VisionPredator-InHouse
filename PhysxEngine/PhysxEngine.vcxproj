@@ -161,9 +161,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CapsuleController.h" />
+    <ClInclude Include="ControllerHitCallback.h" />
     <ClInclude Include="ControllerManager.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CollisionCallback.h" />
+    <ClInclude Include="ControllerQueryFilterCallback.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IPhysx.h" />
@@ -178,9 +180,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CapsuleController.cpp" />
+    <ClCompile Include="ControllerHitCallback.cpp" />
     <ClCompile Include="ControllerManager.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CollisionCallback.cpp" />
+    <ClCompile Include="ControllerQueryFilterCallback.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />
     <ClCompile Include="pch.cpp">

@@ -1,6 +1,7 @@
 #pragma once
-class CharacterController;
+#include "VPPhysicsStructs.h"
 class CollisionManager;
+class Controller;
 class ControllerManager
 {
 public: 
@@ -21,7 +22,7 @@ public:
 /// <param name="movementInfo"> 캐릭터 무브먼트 생성 데이터 </param>
 /// <returns></returns>
 	bool CreatController();
-	bool CreatCapsuleController();
+	bool CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo);
 
 	/// <summary>
 /// 캐릭터 컨트롤러 삭제 함수
@@ -31,8 +32,10 @@ public:
 	bool RemoveController(const unsigned int& id);
 
 	bool HasController(uint32_t entityID);
-	CharacterController* GetController(uint32_t entityID);
-	std::unordered_map<uint32_t, CharacterController*> m_CharectorMap;
+	Controller* GetController(uint32_t entityID);
+	std::unordered_map<uint32_t, Controller*> m_CharectorMap{};
+	physx::PxMaterial* m_Material{};
+
 
 	physx::PxPhysics* m_PxPhysics{};
 	CollisionManager* m_CollisionManager{};

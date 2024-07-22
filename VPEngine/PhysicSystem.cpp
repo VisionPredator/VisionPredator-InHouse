@@ -18,36 +18,60 @@ void PhysicSystem::Initialize()
 	}
 }
 
-void PhysicSystem::Start(uint32_t gameObjectId)
+void PhysicSystem::Start(uint32_t EntityID)
 {
-	Entity* entity = m_SceneManager->GetEntity(gameObjectId);
+
+	CreateRigidBody(EntityID);
+
+}
+
+void PhysicSystem::Finish(uint32_t EntityID)
+{
+	Entity* entity = m_SceneManager->GetEntity(EntityID);
+	if (!entity->HasComponent<RigidBodyComponent>())
+		return;
+	m_PhysicsEngine->ReleaseActor(EntityID);
+}
+
+void PhysicSystem::Finalize()
+{
+	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	{
+		Finish(rigidBodyComponent.GetEntityID());
+	}
+}
+
+void PhysicSystem::CreateRigidBody(uint32_t EntityID)
+{
+
+	Entity* entity = m_SceneManager->GetEntity(EntityID);
 	RigidBodyComponent* rigidComp = entity->GetComponent<RigidBodyComponent>();
-	rigidComp->ColliderInfo;
-	rigidComp->ColliderInfo.EntityID = gameObjectId;
-	rigidComp->ColliderInfo.WorldLocation = rigidComp->GetComponent<TransformComponent>()->World_Location;
-	rigidComp->ColliderInfo.WorldQuaternion = rigidComp->GetComponent<TransformComponent>()->World_Quaternion;
-	rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
-	rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
-	rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
+	if (!rigidComp)
+		return;
+	TransformComponent rigidtransform = *rigidComp->GetComponent<TransformComponent>();
+	rigidComp->ColliderInfo.EntityID = EntityID;
+	rigidComp->ColliderInfo.WorldLocation = rigidtransform.World_Location;
+	rigidComp->ColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
 	if (!rigidComp->IsDynamic)
 	{
 		switch (rigidComp->ColliderShape)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
+			rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::CAPSULE:
 		{
+			rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
-
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
+			rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
-
 		}
 		break;
 		default:
@@ -60,16 +84,19 @@ void PhysicSystem::Start(uint32_t gameObjectId)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
+			rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->BoxInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::CAPSULE:
 		{
+			rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
+			rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 		}
 		break;
@@ -77,25 +104,15 @@ void PhysicSystem::Start(uint32_t gameObjectId)
 			break;
 		}
 	}
-
-
-
 }
 
-void PhysicSystem::Finish(uint32_t gameObjectId)
+void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 {
-	Entity* entity = m_SceneManager->GetEntity(gameObjectId);
-	if (!entity->HasComponent<RigidBodyComponent>())
+	Entity* entity = m_SceneManager->GetEntity(EntityID);
+	RigidBodyComponent* rigidComp = entity->GetComponent<RigidBodyComponent>();
+	if (!rigidComp)
 		return;
-	m_PhysicsEngine->ReleaseActor(gameObjectId);
-}
 
-void PhysicSystem::Finalize()
-{
-	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	{
-		Finish(rigidBodyComponent.GetEntityID());
-	}
 }
 
 void PhysicSystem::RenderUpdate(float deltaTime)
