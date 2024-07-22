@@ -186,7 +186,7 @@
     <ClInclude Include="Shader.h">
       <Filter>Resource\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="DebugGeometry.h">
+    <ClInclude Include="vpGraphics.h">
       <Filter>GraphicsEngine\Common</Filter>
     </ClInclude>
     <ClInclude Include="Defines.h">

@@ -241,7 +241,7 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="ViewPort.h" />
-    <ClInclude Include="DebugGeometry.h" />
+    <ClInclude Include="vpGraphics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />

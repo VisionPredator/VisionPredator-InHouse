@@ -13,7 +13,7 @@
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
-#include "DebugGeometry.h"
+#include "vpGraphics.h"
 
 
 ///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
