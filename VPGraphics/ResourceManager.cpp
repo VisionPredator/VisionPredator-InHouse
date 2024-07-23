@@ -102,8 +102,14 @@ void ResourceManager::Initialize()
 
 	//SRV
 	{
+
+#ifdef _DEBUG
+		std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\base.png";
+#else
+		const std::wstring filePath = L"..\\Data\\Texture\\base.png";
+#endif
 		//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
-		Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+		Create<ShaderResourceView>(filePath, L"base.png");
 	}
 
 	//RTV
@@ -157,9 +163,6 @@ void ResourceManager::Initialize()
 
 		m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, m_Pallete.lock()->GetAddress());
 	}
-
-	//Axis Grid Box
-	CreateAxisGridBox();
 
 }
 
@@ -244,220 +247,4 @@ void ResourceManager::OnResize(RECT& wndsize)
 
 	Create<DepthStencilView>(L"DSV_Main", texDesc);
 	Create<DepthStencilView>(L"DSV_Deferred", texDesc);
-}
-
-void ResourceManager::CreateAxisGridBox()
-{
-	//Axis
-	{
-		std::shared_ptr<ModelData> AxisModel = std::make_shared<ModelData>();
-		AxisModel->m_name = L"Axis";
-		AxisModel->RS = Get<RenderState>(L"Wire");
-
-		AxisModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-		AxisModel->m_Meshes[0]->m_primitive = Axis::PRIMITIVE_TOPOLOGY;
-
-		UINT size = static_cast<UINT>(sizeof(BaseVertex));
-		AxisModel->m_Meshes[0]->m_VB = Create<VertexBuffer>(AxisModel->m_name + L"_VB", Axis::Vertex::Desc, Axis::Vertex::Data, size);
-		AxisModel->m_Meshes[0]->m_IB = Create<IndexBuffer>(AxisModel->m_name + L"_IB", Axis::Index::Desc, Axis::Index::Data, Axis::Index::count);
-
-		Add<ModelData>(L"Axis", AxisModel);
-	}
-
-	//Grid
-	{
-		std::shared_ptr<ModelData> GridModel = std::make_shared<ModelData>();
-		GridModel->m_name = L"Grid";
-		GridModel->RS = Get<RenderState>(L"Wire");
-
-		//범위 -100~100
-		int row = 200;
-		int col = 200;
-
-		std::vector<BaseVertex> vertexBuffer;
-
-		//울타리 말뚝 오류 == +1
-		for (int i = 0; i < row + 1; i++)
-		{
-			BaseVertex gridstart{};
-			gridstart.pos = DirectX::XMFLOAT4(-100.f, 0, -100.f + i, 1.0f);
-			gridstart.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexBuffer.push_back(gridstart);
-
-			BaseVertex gridend{};
-			gridend.pos = DirectX::XMFLOAT4(100.f, 0, -100.f + i, 1.0f);
-			gridend.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexBuffer.push_back(gridend);
-		}
-
-		for (int j = 0; j < col + 1; j++)
-		{
-
-			BaseVertex gridstart{};
-			gridstart.pos = DirectX::XMFLOAT4(-100.f + j, 0, -100, 1.0f);
-			gridstart.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexBuffer.push_back(gridstart);
-
-			BaseVertex gridend{};
-			gridend.pos = DirectX::XMFLOAT4(-100.f + j, 0, 100, 1.0f);
-			gridend.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexBuffer.push_back(gridend);
-		}
-
-		std::vector<UINT> indexList;
-
-		int GridSize = (col + 1 + row + 1) * 2;
-
-		for (int index = 0; index < GridSize; ++index)
-		{
-			indexList.push_back(index);
-		}
-
-		D3D11_BUFFER_DESC vbd;
-		vbd.Usage = D3D11_USAGE_IMMUTABLE;
-		vbd.ByteWidth = sizeof(BaseVertex) * static_cast<int>(vertexBuffer.size());
-		vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vbd.CPUAccessFlags = 0;
-		vbd.MiscFlags = 0;
-		vbd.StructureByteStride = 0;
-
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = &(vertexBuffer[0]);
-
-		GridModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-		UINT size = static_cast<UINT>(sizeof(BaseVertex));
-		GridModel->m_Meshes[0]->m_VB = Create<VertexBuffer>(GridModel->m_name + L"_VB", vbd, data, size);
-
-
-		D3D11_BUFFER_DESC ibd;
-		ibd.Usage = D3D11_USAGE_IMMUTABLE;
-		ibd.ByteWidth = sizeof(UINT) * static_cast<int>(indexList.size());
-		ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibd.CPUAccessFlags = 0;
-		ibd.MiscFlags = 0;
-		ibd.StructureByteStride = 0;
-
-		D3D11_SUBRESOURCE_DATA iinitData;
-		iinitData.pSysMem = &(indexList[0]);
-
-		GridModel->m_Meshes[0]->m_IB = Create<IndexBuffer>(GridModel->m_name + L"_IB", ibd, iinitData, static_cast<int>(indexList.size()));
-		GridModel->m_Meshes[0]->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-
-		Add<ModelData>(L"Grid", GridModel);
-	}
-
-	//Box
-	{
-		std::shared_ptr<ModelData> BoxModel = std::make_shared<ModelData>();
-
-		BoxModel->m_name = L"Box";
-		BoxModel->RS = Get<RenderState>(L"Solid");
-
-		BoxModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-		UINT size = static_cast<UINT>(sizeof(BaseVertex));
-
-		BoxModel->m_Meshes[0]->m_VB = Create<VertexBuffer>(L"Box_VB", Box::Vertex::Desc, Box::Vertex::Data, size);
-		BoxModel->m_Meshes[0]->m_IB = Create<IndexBuffer>(L"Box_IB", Box::Index::Desc, Box::Index::Data, Box::Index::count);
-
-		BoxModel->m_Meshes[0]->m_primitive = Box::PRIMITIVE_TOPOLOGY;
-
-		Add<ModelData>(L"AABB", BoxModel);
-		Add<ModelData>(L"Box", BoxModel);
-	}
-
-	//Circle
-	{
-		std::shared_ptr<ModelData> CircleModel = std::make_shared<ModelData>();
-
-		CircleModel->m_name = L"Circle";
-		CircleModel->RS = Get<RenderState>(L"Solid");
-
-		CircleModel->m_Meshes.push_back(std::make_shared<StaticMesh>());
-
-		UINT size = static_cast<UINT>(sizeof(BaseVertex));
-
-		int segmentCount = 60;
-		int radius = 1;
-		const float angleStep = DirectX::XM_2PI / segmentCount; //2pi = 360
-
-		std::vector<BaseVertex> vertices;
-
-		//xy
-		for (int i = 0; i <= segmentCount; ++i)
-		{
-			float angle = i * angleStep;
-			float x = radius * cosf(angle);
-			float y = radius * sinf(angle);
-
-			BaseVertex temp1;
-			temp1.pos = DirectX::XMFLOAT4(x, y, 0, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴
-			temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
-			vertices.push_back(temp1);
-
-		}
-
-		//xz
-		for (int i = 0; i <= segmentCount; ++i)
-		{
-			float angle = i * angleStep;
-			float x = radius * cosf(angle);
-			float y = radius * sinf(angle);
-
-			BaseVertex temp1;
-			temp1.pos = DirectX::XMFLOAT4(x, 0, y, 1.f);	//점은 w가 1이다 이거 잘 안지키면 안나옴 0은 벡터
-			temp1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
-			vertices.push_back(temp1);
-
-		}
-
-
-		D3D11_BUFFER_DESC vbd;
-		vbd.Usage = D3D11_USAGE_IMMUTABLE;
-		vbd.ByteWidth = sizeof(BaseVertex) * static_cast<int>(vertices.size());
-		vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vbd.CPUAccessFlags = 0;
-		vbd.MiscFlags = 0;
-		vbd.StructureByteStride = 0;
-
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = &(vertices[0]);
-
-		size = static_cast<UINT>(sizeof(BaseVertex));
-		CircleModel->m_Meshes[0]->m_VB = Create<VertexBuffer>(L"Circle_VB", vbd, data, size);
-
-		std::vector<UINT> indexList;
-
-		for (int i = 0; i < vertices.size() / 2; i++)
-		{
-			indexList.push_back(i);
-		}
-
-		indexList.back() = 0;
-
-		int verticesize = static_cast<int>(vertices.size());
-
-		for (int i = verticesize / 2; i < verticesize; i++)
-		{
-			indexList.push_back(i);
-		}
-		indexList.back() = verticesize / 2;
-
-		D3D11_BUFFER_DESC ibd;
-		ibd.Usage = D3D11_USAGE_IMMUTABLE;
-		ibd.ByteWidth = sizeof(UINT) * static_cast<int>(indexList.size());
-		ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibd.CPUAccessFlags = 0;
-		ibd.MiscFlags = 0;
-		ibd.StructureByteStride = 0;
-
-		D3D11_SUBRESOURCE_DATA iinitData;
-		iinitData.pSysMem = &(indexList[0]);
-
-		CircleModel->m_Meshes[0]->m_IB = Create<IndexBuffer>(L"Circle_IB", ibd, iinitData, static_cast<int>(indexList.size()));
-		CircleModel->m_Meshes[0]->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-
-		Add<ModelData>(CircleModel->m_name, CircleModel);
-	}
 }
