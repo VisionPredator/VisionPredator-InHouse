@@ -38,9 +38,12 @@ void ModelLoader::Initialize()
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
-
+	
+#ifdef _DEBUG
 	const std::string filePath = "..\\..\\..\\Resource\\FBX\\" + filename;
-
+#else
+	const std::string filePath = "..\\Data\\FBX\\" + filename;
+#endif
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
@@ -81,7 +84,12 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 	const aiScene* scene = importer.ReadFile(filePath, importFlags);
 	if (!scene)
 	{
-		MessageBox(0, L"Error loading files", 0, 0);
+		std::wstring wfilename;
+		wfilename.assign(filename.begin(),filename.end());
+
+		wfilename = L"Error loading files : " + wfilename;
+		LPCWSTR name = wfilename.c_str();
+		MessageBox(0, name, 0, 0);
 		return false;
 	}
 

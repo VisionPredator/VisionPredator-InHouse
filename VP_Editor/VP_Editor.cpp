@@ -59,8 +59,6 @@ void VP_Editor::Update()
         tempLight.RenderUpdate(m_DeltaTime);
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());
-        m_Graphics->Update(m_DeltaTime);
-
 	}
 	else
 	{
