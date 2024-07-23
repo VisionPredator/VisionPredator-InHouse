@@ -31,9 +31,9 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const Dire
 	device->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
 	device->Context()->RSSetState(m_States->CullNone());
     
-    m_BatchEffect->Apply(device->Context());
     m_BatchEffect->SetView(view);
     m_BatchEffect->SetProjection(proj);
+    m_BatchEffect->Apply(device->Context());    //최종 멤버들을 적용한다 먼저 해버리면 이전 프레임의 값이 적용된다
 
     device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
 
