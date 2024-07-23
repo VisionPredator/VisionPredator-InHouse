@@ -122,18 +122,14 @@ void VPEngine::Loop()
 			tempTime += m_DeltaTime;
 			while (tempTime > (1/90.f))
 			{
-				m_SystemManager->RenderUpdate(m_DeltaTime);
+				m_Graphics->Update(m_DeltaTime);
+
 				Render();
 				EndRender();
 				tempTime -= (1/90.f);
 			}
-
-
 		}
 	}
-
-
-
 }
 
 
@@ -152,10 +148,10 @@ void VPEngine::Update()
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
+	m_SystemManager->RenderUpdate(m_DeltaTime);
 
 	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 	SetWindowTextW(m_hWnd, newname.c_str());
-	m_Graphics->Update(m_DeltaTime);
 }
 
 

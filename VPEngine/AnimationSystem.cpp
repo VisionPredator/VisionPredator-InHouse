@@ -30,6 +30,11 @@ void AnimationSystem::OnReleasedComponent(std::any data)
 
 void AnimationSystem::RenderUpdate(float deltaTime)
 {
+
+}
+
+void AnimationSystem::Update(float deltaTime)
+{
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
 		aniComp.isPlay = true;
