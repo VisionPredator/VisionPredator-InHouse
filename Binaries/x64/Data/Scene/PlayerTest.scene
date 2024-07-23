@@ -4,6 +4,50 @@
             "EntityID": 386711435,
             "Component": [
                 {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 0.5,
+                            "y": 1.0,
+                            "z": 0.5
+                        },
+                        "UseAABB": false
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderInfo": {
+                        "AngleLock": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 0.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 0.0,
+                        "UseGravity": true
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "IsDynamic": true,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
                     "ComponentID": 1365953231,
                     "Name": "Entity0"
                 },
@@ -32,33 +76,13 @@
                     }
                 },
                 {
-                    "Acceleration": 1.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 0
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
-                        "position": {
-                            "x": 2.183091640472412,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "radius": 0.5,
-                        "slopeLimit": 0.30000001192092896,
-                        "stepOffset": 0.0
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 0
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 0.20000000298023224,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 10.0,
-                    "JumpXZDeceleration": 0.10000000149011612,
-                    "MaxSpeed": 0.02500000037252903,
-                    "StaticFriction": 0.4000000059604645
+                    "Accel": 0.04500000178813934,
+                    "AirControl": 0.0,
+                    "ComponentID": 4183631247,
+                    "HP": 0,
+                    "JumpFoce": 0.0,
+                    "MaxJumpCount": 0,
+                    "Maxspeed": 0.0
                 }
             ]
         },
@@ -85,7 +109,7 @@
                             false
                         ],
                         "Density": 1.0,
-                        "DynamicFriction": 1.0,
+                        "DynamicFriction": 0.0,
                         "LinearLock": [
                             false,
                             false,
@@ -97,8 +121,8 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 1.0,
-                        "StaticFriction": 1.0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 0.0,
                         "UseGravity": false
                     },
                     "ColliderShape": 0,
@@ -166,7 +190,7 @@
                             false
                         ],
                         "Density": 1.0,
-                        "DynamicFriction": 1.0,
+                        "DynamicFriction": 0.0,
                         "LinearLock": [
                             false,
                             false,
@@ -178,8 +202,8 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 1.0,
-                        "StaticFriction": 1.0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 0.0,
                         "UseGravity": false
                     },
                     "ColliderShape": 0,

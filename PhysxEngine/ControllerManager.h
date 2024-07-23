@@ -23,7 +23,7 @@ public:
 /// <returns></returns>
 	bool CreatController();
 	bool CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo);
-
+	bool Update(float deltatime);
 	/// <summary>
 /// 캐릭터 컨트롤러 삭제 함수
 /// </summary>

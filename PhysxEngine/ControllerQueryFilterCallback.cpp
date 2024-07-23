@@ -20,6 +20,7 @@ PxQueryHitType::Enum ControllerQueryFilterCallback::preFilter(const PxFilterData
 		return PxQueryHitType::eNONE;
 	}
 
+	
 	PxShape* curShape;
 	actor->getShapes(&curShape, 1);
 

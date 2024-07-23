@@ -34,6 +34,7 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const Dire
     m_BatchEffect->Apply(device->Context());
     m_BatchEffect->SetView(view);
     m_BatchEffect->SetProjection(proj);
+    m_BatchEffect->SetWorld(DirectX::SimpleMath::Matrix::Identity);
 
     device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
 

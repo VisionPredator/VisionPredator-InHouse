@@ -715,12 +715,13 @@ void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, 
 
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Step Offset", &tempCapsuleControllerInfo.stepOffset, 0.01f);
-
+	
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Slope Limit", &tempCapsuleControllerInfo.slopeLimit, 0.01f);
 
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Contact Offset", &tempCapsuleControllerInfo.contactOffset, 0.001f);
+	ImGui::Text("Controller Info");
 
 	memberMetaData.set(component->GetHandle(), tempCapsuleControllerInfo);
 	ImGui::PopID();

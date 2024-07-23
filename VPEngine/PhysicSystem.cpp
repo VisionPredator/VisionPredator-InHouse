@@ -12,17 +12,18 @@ PhysicSystem::PhysicSystem(SceneManager* sceneManager)
 void PhysicSystem::Initialize()
 {
 	m_PhysicsEngine->ApplyPhysicEngineInfo();
-	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	for (TransformComponent& Transform : COMPITER(TransformComponent))
 	{
-		Start(rigidBodyComponent.GetEntityID());
+		Start(Transform.GetEntityID());
 	}
+
 }
 
 void PhysicSystem::Start(uint32_t EntityID)
 {
 
 	CreateRigidBody(EntityID);
-
+	CreateCapsuleController(EntityID);
 }
 
 void PhysicSystem::Finish(uint32_t EntityID)
@@ -109,9 +110,14 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 {
 	Entity* entity = m_SceneManager->GetEntity(EntityID);
-	RigidBodyComponent* rigidComp = entity->GetComponent<RigidBodyComponent>();
-	if (!rigidComp)
+	ControllerComponent* controllercomp = entity->GetComponent<ControllerComponent>();
+	if (!controllercomp)
 		return;
+	controllercomp->Contollerinfo.EntityId = entity->GetEntityID();
+	controllercomp->CapsuleControllerinfo.position = entity->GetComponent<TransformComponent>()->World_Location;
+	controllercomp->CapsuleControllerinfo.Info = controllercomp->Contollerinfo;
+	m_PhysicsEngine->CreatCapsuleController(controllercomp->CapsuleControllerinfo);
+
 
 }
 
@@ -151,7 +157,21 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 		}
 
 	}
+	for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
+	{
+		TransformComponent* ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
 
+		debug::OBBInfo temp{};
+		temp.OBB.Center = ControllerTransform->World_Location;
+		temp.OBB.Extents = { ControllerComp.CapsuleControllerinfo.radius,ControllerComp.CapsuleControllerinfo.height/2 + ControllerComp.CapsuleControllerinfo.radius,ControllerComp.CapsuleControllerinfo.radius };
+
+		temp.xAxisAngle = 0;
+		temp.yAxisAngle = 0;
+		temp.zAxisAngle = 0;
+		m_Graphics->DrawOBB(temp);
+
+
+	}
 }
 // Function to compute the conjugate of a quaternion
 VPMath::Quaternion QuaternionConjugate(const VPMath::Quaternion& q)
@@ -188,13 +208,32 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 			m_PhysicsEngine->SetGobalPose(entityID, rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
 		}
 	}
+
+	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
+	{
+		uint32_t entityID = controllerCompoent.GetEntityID();
+		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
+
+		auto templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
+		auto offset_T = (controllerTransform->World_Location - templocation).Length();
+
+		if (offset_T > m_location_threshold)
+		{
+			m_PhysicsEngine->SetControllerGobalPose(entityID, controllerTransform->World_Location);
+		}
+	}
 	m_PhysicsEngine->Update(deltaTime);
-	
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
 		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
+	}
+
+	for (ControllerComponent& rigidBodyComponent : COMPITER(ControllerComponent))
+	{
+		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		rigidBodyTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(rigidBodyComponent.GetEntityID());
 	}
 	
 	

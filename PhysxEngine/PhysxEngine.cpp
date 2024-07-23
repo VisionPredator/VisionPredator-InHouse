@@ -6,6 +6,7 @@
 #include "RigidBodyManager.h"
 #include "ControllerManager.h"
 #include "CollisionCallback.h"
+#include "Controller.h"
 #include "../VPEngine/EventManager.h"
 #include <iostream>
 /// <summary>
@@ -85,10 +86,11 @@ bool PhysxEngine::Initialize()
 	sceneDesc.flags |= physx::PxSceneFlag::eDISABLE_CCD_RESWEEP;
 	//sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
 	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
-	//sceneDesc.solverType = physx::PxSolverType::ePGS;
+	sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
 
 	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
+	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager);
 #ifdef _DEBUG
 	m_Physics->SettingPVDClient(m_PxScene);
 #endif
@@ -104,7 +106,13 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
+	m_ControllerManager->Update(deltatime);
+	SimulateUpdate(deltatime);
+	/// 충돌 체크 관런
+}
 
+void PhysxEngine::SimulateUpdate(float deltatime)
+{
 	m_ElapsedTime += deltatime;
 	m_UpdateTime = (1.f / GetPhysicsInfo().FrameRate);
 
@@ -112,15 +120,17 @@ void PhysxEngine::Update(float deltatime)
 	while (m_ElapsedTime >= m_UpdateTime)
 	{
 		m_PxScene->simulate(m_UpdateTime);
-		m_PxScene->fetchResults(true);
 		m_ElapsedTime -= m_UpdateTime;
 		IsUpdated = true;
+		m_PxScene->fetchResults(true);
+
 	}
-	if (IsUpdated&& m_ElapsedTime>0)
+	if (IsUpdated && m_ElapsedTime > 0)
 	{
 		m_PxScene->simulate(m_ElapsedTime);
-		m_PxScene->fetchResults(true);
 		m_ElapsedTime = 0;
+		m_PxScene->fetchResults(true);
+
 	}
 
 
@@ -213,14 +223,30 @@ VPMath::Vector3 PhysxEngine::GetVelocity(uint32_t entityID)
 
 }
 
-void PhysxEngine::CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo)
+void PhysxEngine::CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo)
 {
 
-	m_ControllerManager->CreatCapsuleController(capsuleinfo, physicsinfo);
+	m_ControllerManager->CreatCapsuleController(capsuleinfo,m_PhyiscsInfo);
 }
 
 void PhysxEngine::RemoveController(uint32_t entityID)
 {
 	m_ControllerManager->RemoveController(entityID);
 
+}
+
+void PhysxEngine::SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P)
+{
+	auto Controller = m_ControllerManager->GetController(entityID);
+	if (!Controller)
+		return;
+	Controller->SetPosition(P);
+}
+
+VPMath::Vector3 PhysxEngine::GetControllerGobalPose(uint32_t entityID)
+{
+	auto Controller = m_ControllerManager->GetController(entityID);
+	if (!Controller)
+		return {};
+	return Controller->GetPosition();
 }

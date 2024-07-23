@@ -9,4 +9,4 @@
 #include "LightComponent.h"
 #include "AnimationComponent.h"
 #include "RigidBodyComponent.h"
-#include "ControllerCompoent.h"
+#include "ControllerComponent.h"

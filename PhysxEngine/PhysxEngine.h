@@ -17,6 +17,7 @@ public:
 	bool Initialize() override;
 	bool Finalize() override;
 	void Update(float deltatime) override;
+	void SimulateUpdate(float deltatime);
 
 	const VPPhysics::PhysicsInfo GetPhysicsInfo() { return m_PhyiscsInfo; }
 	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }
@@ -62,11 +63,19 @@ private:
 
 
 	// IPhysx을(를) 통해 상속됨
-	void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo) override;
+	void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo) override;
 
 
 	// IPhysx을(를) 통해 상속됨
 	void RemoveController(uint32_t entityID) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	VPMath::Vector3 GetControllerGobalPose(uint32_t entityID) override;
 
 };
 

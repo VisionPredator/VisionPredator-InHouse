@@ -8,11 +8,6 @@
                     "Name": "Entity0"
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": "Cube.fbx",
-                    "FBXFilter": "Static"
-                },
-                {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 2.183091640472412,
@@ -30,6 +25,11 @@
                         "y": 0.009999999776482582,
                         "z": 0.004999999888241291
                     }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "Cube.fbx",
+                    "FBXFilter": "Static"
                 },
                 {
                     "Acceleration": 1.0,
@@ -65,6 +65,10 @@
         {
             "EntityID": 431552877,
             "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity1G"
+                },
                 {
                     "BoxInfo": {
                         "Extent": {
@@ -110,8 +114,9 @@
                     }
                 },
                 {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity1G"
+                    "ComponentID": 3774279003,
+                    "FBX": "Cube.fbx",
+                    "FBXFilter": "Static"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -131,21 +136,12 @@
                         "y": 0.10000000894069672,
                         "z": 0.029999999329447746
                     }
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "Cube.fbx",
-                    "FBXFilter": "Static"
                 }
             ]
         },
         {
             "EntityID": 2787800666,
             "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity1G"
-                },
                 {
                     "BoxInfo": {
                         "Extent": {
@@ -191,9 +187,8 @@
                     }
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": "Cube.fbx",
-                    "FBXFilter": "Static"
+                    "ComponentID": 1365953231,
+                    "Name": "Entity1G"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -213,6 +208,11 @@
                         "y": 0.009999999776482582,
                         "z": 0.029999999329447746
                     }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "Cube.fbx",
+                    "FBXFilter": "Static"
                 }
             ]
         }

@@ -8,7 +8,6 @@ CapsuleController::CapsuleController():Controller{}
 
 bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControllerManager * controllerManager, physx::PxMaterial* material, PhysicsInfo physicinfo)
 {
-
 	ControllerInit(info.Info, material, physicinfo);
 	physx::PxCapsuleControllerDesc desc;
 	desc.height = info.height;
@@ -17,11 +16,12 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
 	desc.stepOffset = info.stepOffset;
 	desc.nonWalkableMode = physx::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
 	desc.slopeLimit = info.slopeLimit;
-	desc.maxJumpHeight = 100.f;
+	desc.maxJumpHeight = 10.f;
 	desc.position.x = info.position.x;
 	desc.position.y = info.position.y;
-	desc.position.z = -info.position.z;
+	desc.position.z = info.position.z;
 	desc.material = m_Material;
+	m_ControllerHitCallback = new ControllerHitCallback;
 	desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback);
 	m_Controller= controllerManager->createController(desc);
 

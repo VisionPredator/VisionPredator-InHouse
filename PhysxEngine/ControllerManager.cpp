@@ -2,6 +2,7 @@
 #include "ControllerManager.h"
 #include "VPPhysicsStructs.h"
 #include "CapsuleController.h"
+#include "..\VPEngine\InputManager.h"
 ControllerManager::ControllerManager()
 {
 }
@@ -33,6 +34,23 @@ bool ControllerManager::CreatCapsuleController(VPPhysics::CapsuleControllerInfo 
     //CollisionData* collisionData = new CollisionData;
     capsuleController->Initialize(capsuleinfo,m_PxControllerManager, m_Material, physicsinfo);
     m_CharectorMap.insert(std::make_pair(capsuleController->GetEntityID(), capsuleController));
+    return true;
+
+}
+
+bool ControllerManager::Update(float deltatime)
+{
+    if (m_CharectorMap.empty())
+        return true;
+    for (auto [entityID, controller] : m_CharectorMap)
+    {
+        if(INPUTKEY(KEY::D))
+        if (controller ->GetTypeID() == Reflection::GetTypeID<CapsuleController>())
+        {
+            CapsuleController* capsuleController = static_cast<CapsuleController*>(controller);
+            capsuleController->m_Controller->move({0.1f,0,0},0.001f,deltatime, *capsuleController->GetFilters());
+        }
+    }
     return true;
 
 }

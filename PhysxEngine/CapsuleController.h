@@ -9,7 +9,9 @@ public:
 	bool Initialize(CapsuleControllerInfo info, physx::PxControllerManager* CCTManager, physx::PxMaterial* material/*, CollisionData* collisionData*/, PhysicsInfo physicinfo );
 
     ~CapsuleController();
-
+    entt::id_type GetTypeID() const override {
+        return Reflection::GetTypeID<CapsuleController>();
+    }
 private:
     ControllerHitCallback* m_ControllerHitCallback{};
 
