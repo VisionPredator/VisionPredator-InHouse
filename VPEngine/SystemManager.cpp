@@ -15,6 +15,14 @@
 	}
 	SystemManager::~SystemManager()
 	{
+		m_SceneManager = nullptr;
+		m_PhysicEngine = nullptr;
+		m_Graphics = nullptr;
+		m_FixedUpdatables.clear();
+		m_Updatables.clear();
+		m_Renderables.clear();
+		m_Startables.clear();
+		m_LateUpdatable.clear();
 
 	}
 	void SystemManager::PhysicUpdatable(float deltatime)

@@ -10,6 +10,9 @@
 
 #define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager)
 
+#define COMPLOOP(ClassName)\
+for(ClassName& comp : COMPITER(ClassName))
+
 // Define a macro to handle component splitting and threading
 #define THREAD_COMPONENTS(System_Name, ComponentType, Function)                                                                   \
 {                                                                                                                                 \
@@ -34,23 +37,6 @@
         if (this->m_Jthread2 && this->m_Jthread2->joinable())                                                                     \
             this->m_Jthread2->join();                                                                                             \
     }                                                                                                                             \
-}
-
-#define THREAD_COMPONENTS2(System_Name, ComponentType, Function)                                                                 \
-{                                                                                                                               \
-    auto ComponentType##Pool = COMPITER(ComponentType);                                                                         \
-    std::vector<std::reference_wrapper<ComponentType>> components(ComponentType##Pool.begin(), ComponentType##Pool.end());      \
-    if (!components.empty()) {                                                                                                  \
-        size_t midPoint = components.size() / 2;                                                                                \
-        auto task = [this, &components](size_t start, size_t end) {                                                             \
-            for (size_t i = start; i < end; ++i)                                                                                \
-                (this->*Function)(components[i]);                                                                               \
-        };                                                                                                                      \
-        auto future1 = m_ThreadPool.enqueue(task, 0, midPoint);                                                                 \
-        auto future2 = m_ThreadPool.enqueue(task, midPoint, components.size());                                                 \
-        future1.get();                                                                                                          \
-        future2.get();                                                                                                          \
-    }                                                                                                                           \
 }
 
 class System
