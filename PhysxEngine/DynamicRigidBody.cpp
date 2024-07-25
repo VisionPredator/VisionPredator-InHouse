@@ -18,8 +18,8 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 		shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
 	data->myId = m_EntityID;
-	data->myLayerNumber = m_LayerNum;
-	shape->userData = data;
+	//data->myLayerNumber = m_LayerNum;
+	shape->userData = &m_EntityID;
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);
 	physx::PxTransform transform;

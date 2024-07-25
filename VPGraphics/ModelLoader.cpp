@@ -33,12 +33,13 @@ void ModelLoader::Initialize()
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
 	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
+	//LoadModel("U_Beretta_92_character.fbx", Filter::SKINNING);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
-	
+
 #ifdef _DEBUG
 	const std::string filePath = "..\\..\\..\\Resource\\FBX\\" + filename;
 #else
@@ -72,6 +73,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				/*aiProcess_FlipUVs|
 				aiProcess_FlipWindingOrder|*/
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
+
 			break;
 		case Filter::END:
 			break;
@@ -85,7 +87,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 	if (!scene)
 	{
 		std::wstring wfilename;
-		wfilename.assign(filename.begin(),filename.end());
+		wfilename.assign(filename.begin(), filename.end());
 
 		wfilename = L"Error loading files : " + wfilename;
 		LPCWSTR name = wfilename.c_str();
@@ -505,7 +507,7 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 
 			ob_Channel->totals.push_back(total);
 		}
-		
+
 	}
 
 	Model->m_Animations.push_back(_Animation);
@@ -723,10 +725,22 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 					}
 				}
 			}
+
+			//test 가중치 합이 1인가 확인
+			float total = 0.f;
+			for (int i = 0; i < size; i++)
+			{
+				total += buffer[curVertexId].BoneWeights[i];
+
+				if (total >= 1.1)
+				{
+
+					int a = 43;
+				}
+			}
 		}
 
 	}
-		int a = 3;
 }
 
 std::shared_ptr<Node> ModelLoader::FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode)

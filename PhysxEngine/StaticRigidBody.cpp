@@ -19,7 +19,7 @@ bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shap
 		shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
 	data->myId = m_EntityID;
-	data->myLayerNumber = m_LayerNum;
+	//data->myLayerNumber = m_LayerNum;
 	shape->userData = data;
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);

@@ -16,6 +16,7 @@ public:
 	bool Initialize() override;
 	bool Finalize() override;
 	void Update(float deltatime) override;
+	bool CollisionUpdate(float deltatime);
 
 	const VPPhysics::PhysicsInfo GetPhysicsInfo() { return m_PhyiscsInfo; }
 	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }

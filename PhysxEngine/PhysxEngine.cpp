@@ -6,6 +6,7 @@
 #include "../VPEngine/EventManager.h"
 #include "DynamicRigidBody.h"
 #include "StaticRigidBody.h"
+#include "PhysxColliManager.h"
 #include <iostream>
 /// <summary>
 /// 충돌 콜백 함수
@@ -83,6 +84,7 @@ bool PhysxEngine::Initialize()
 	//sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
 	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
 	//sceneDesc.solverType = physx::PxSolverType::ePGS;
+	m_CollisionManager = new CollisionManager();
 	m_PxScene = physics->createScene(sceneDesc);
 	m_RigidManager = new RigidBodyManager;
 	m_RigidManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
@@ -101,6 +103,9 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
+
+	CollisionUpdate(deltatime);
+
 	m_ElapsedTime += deltatime;
 	m_UpdateTime = (float)1 / GetPhysicsInfo().FrameRate;
 	bool IsUpdated = false;
@@ -112,7 +117,14 @@ void PhysxEngine::Update(float deltatime)
 		IsUpdated = true;
 	}
 
+	m_CollisionManager->Update();
 
+}
+
+bool PhysxEngine::CollisionUpdate(float deltatime)
+{
+
+	return true;
 }
 
 void PhysxEngine::OnSetPhysicInfo(std::any data)

@@ -64,11 +64,8 @@ namespace VPPhysics
 	struct CollisionData
 	{
 		uint32_t myId;
-		uint32_t otherId;
-		EPhysicsLayer myLayerNumber;
-		unsigned int otherLayerNumber;
-		std::vector<VPMath::Vector3> ContectPoints;
-		bool isDead = false;
+		
+		//나중에 추가될 무언가
 	};
 
 	struct CharacterMovementInfo
