@@ -28,15 +28,14 @@ void PhysicSystem::Start(uint32_t EntityID)
 
 void PhysicSystem::Finish(uint32_t EntityID)
 {
-	Entity* entity = m_SceneManager->GetEntity(EntityID);
-	if (!entity->HasComponent<RigidBodyComponent>())
-		return;
-	m_PhysicsEngine->ReleaseActor(EntityID);
+	ReleaseRigidBody(EntityID);
+	ReleaseCapsuleController(EntityID);
+
 }
 
 void PhysicSystem::Finalize()
 {
-	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	for (TransformComponent& rigidBodyComponent : COMPITER(TransformComponent))
 	{
 		Finish(rigidBodyComponent.GetEntityID());
 	}
@@ -119,6 +118,23 @@ void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 	m_PhysicsEngine->CreatCapsuleController(controllercomp->CapsuleControllerinfo);
 
 
+}
+
+void PhysicSystem::ReleaseRigidBody(uint32_t EntityID)
+{
+	Entity* entity = m_SceneManager->GetEntity(EntityID);
+	if (!entity->HasComponent<RigidBodyComponent>())
+		return;
+	m_PhysicsEngine->ReleaseActor(EntityID);
+
+}
+
+void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
+{
+	Entity* entity = m_SceneManager->GetEntity(EntityID);
+	if (!entity->HasComponent<ControllerComponent>())
+		return;
+	m_PhysicsEngine->RemoveController(EntityID);
 }
 
 void PhysicSystem::RenderUpdate(float deltaTime)

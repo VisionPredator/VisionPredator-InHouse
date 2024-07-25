@@ -161,6 +161,9 @@ void TransformSystem::CalulateTransform_World(TransformComponent* transform)
 	transform->FrontVector = -transform->WorldTransform.Forward();
 	transform->RightVector = transform->WorldTransform.Right();
 	transform->UpVector = transform->WorldTransform.Up();
+	transform->FrontVector.Normalize();
+	transform->FrontVector.Normalize();
+	transform->UpVector.Normalize();
 	// Check if there is a parent and recalculate local transform
 	if (transform->HasComponent<Parent>())
 	{
@@ -239,7 +242,11 @@ void TransformSystem::CalulateTransform_Local(TransformComponent* transform)
 	transform->Previous_WorldLocation = transform->World_Location;
 	transform->FrontVector = -transform->WorldTransform.Forward();
 	transform->RightVector = transform->WorldTransform.Right();
+
 	transform->UpVector = transform->WorldTransform.Up();
+	transform->FrontVector.Normalize();
+	transform->FrontVector.Normalize();
+	transform->UpVector.Normalize();
 
 }
 

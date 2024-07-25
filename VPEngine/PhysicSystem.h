@@ -24,6 +24,8 @@ public:
     void Finalize() override;
     void CreateRigidBody(uint32_t EntityID);
     void CreateCapsuleController(uint32_t EntityID);
+    void ReleaseRigidBody(uint32_t EntityID);
+    void ReleaseCapsuleController(uint32_t EntityID);
 private: 
     const float m_location_threshold = 0.000001f;
     const float m_rotation_threshold_degrees= 0.000001f;

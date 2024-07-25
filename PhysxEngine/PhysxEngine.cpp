@@ -106,33 +106,32 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
-	m_ControllerManager->Update(deltatime);
-	SimulateUpdate(deltatime);
+	m_ElapsedTime += deltatime;
+	m_UpdateTime = (1.f / GetPhysicsInfo().FrameRate);
+	bool IsUpdated = false;
+	while (m_ElapsedTime >= m_UpdateTime)
+	{
+		IsUpdated = true;
+		m_ControllerManager->Update(m_UpdateTime);
+		SimulateUpdate(m_UpdateTime);
+		m_ElapsedTime -= m_UpdateTime;
+	}
+	if (IsUpdated && m_ElapsedTime > 0)
+	{
+		m_ControllerManager->Update(m_ElapsedTime);
+		SimulateUpdate(m_ElapsedTime);
+
+	}
+
+
 	/// 충돌 체크 관런
 }
 
 void PhysxEngine::SimulateUpdate(float deltatime)
 {
-	m_ElapsedTime += deltatime;
-	m_UpdateTime = (1.f / GetPhysicsInfo().FrameRate);
 
-	bool IsUpdated = false;
-	while (m_ElapsedTime >= m_UpdateTime)
-	{
-		m_PxScene->simulate(m_UpdateTime);
-		m_ElapsedTime -= m_UpdateTime;
-		IsUpdated = true;
-		m_PxScene->fetchResults(true);
-
-	}
-	if (IsUpdated && m_ElapsedTime > 0)
-	{
-		m_PxScene->simulate(m_ElapsedTime);
-		m_ElapsedTime = 0;
-		m_PxScene->fetchResults(true);
-
-	}
-
+	m_PxScene->simulate(deltatime);
+	m_PxScene->fetchResults(true);
 
 }
 
@@ -243,10 +242,21 @@ void PhysxEngine::SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P)
 	Controller->SetPosition(P);
 }
 
+
 VPMath::Vector3 PhysxEngine::GetControllerGobalPose(uint32_t entityID)
 {
 	auto Controller = m_ControllerManager->GetController(entityID);
 	if (!Controller)
 		return {};
 	return Controller->GetPosition();
+}
+
+void PhysxEngine::SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity)
+{
+	m_ControllerManager->GetController(entityID)->SetVelocity(velocity);
+}
+
+bool PhysxEngine::GetControllerIsFall(uint32_t entityID)
+{
+	return m_ControllerManager->GetController(entityID)->GetIsFall();
 }

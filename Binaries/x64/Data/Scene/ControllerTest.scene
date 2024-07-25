@@ -11,7 +11,7 @@
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 2.183091640472412,
-                        "y": 0.0,
+                        "y": 6.848180770874023,
                         "z": 0.0
                     },
                     "Local_Quaternion": {
@@ -32,7 +32,7 @@
                     "FBXFilter": "Static"
                 },
                 {
-                    "Acceleration": 1.0,
+                    "Acceleration": 0.5,
                     "CapsuleControllerinfo": {
                         "Info": {
                             "LayerNumber": 0
@@ -41,7 +41,7 @@
                         "height": 1.0,
                         "position": {
                             "x": 2.183091640472412,
-                            "y": 0.0,
+                            "y": 6.848180770874023,
                             "z": 0.0
                         },
                         "radius": 0.5,
@@ -52,13 +52,22 @@
                     "Contollerinfo": {
                         "LayerNumber": 0
                     },
-                    "DynamicFriction": 0.10000000149011612,
+                    "DynamicFriction": 4.0,
                     "GravityWeight": 0.20000000298023224,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 10.0,
-                    "JumpXZDeceleration": 0.10000000149011612,
-                    "MaxSpeed": 0.02500000037252903,
-                    "StaticFriction": 0.4000000059604645
+                    "JumpSpeed": 9.050000190734863,
+                    "JumpXZAcceleration": 0.05000000074505806,
+                    "JumpXZDeceleration": 0.05000000074505806,
+                    "MaxSpeed": 1.0,
+                    "StaticFriction": 5.0
+                },
+                {
+                    "Accel": 0.0,
+                    "AirControl": 0.0,
+                    "ComponentID": 4183631247,
+                    "HP": 4,
+                    "JumpFoce": 0.0,
+                    "MaxJumpCount": 0,
+                    "Maxspeed": 0.0
                 }
             ]
         },
@@ -89,7 +98,7 @@
                             false
                         ],
                         "Density": 1.0,
-                        "DynamicFriction": 1.0,
+                        "DynamicFriction": 0.0,
                         "LinearLock": [
                             false,
                             false,
@@ -101,8 +110,8 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 1.0,
-                        "StaticFriction": 1.0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 0.0,
                         "UseGravity": false
                     },
                     "ColliderShape": 0,
@@ -162,7 +171,7 @@
                             false
                         ],
                         "Density": 1.0,
-                        "DynamicFriction": 1.0,
+                        "DynamicFriction": 0.0,
                         "LinearLock": [
                             false,
                             false,
@@ -174,8 +183,8 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 1.0,
-                        "StaticFriction": 1.0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 0.0,
                         "UseGravity": false
                     },
                     "ColliderShape": 0,
@@ -229,7 +238,7 @@
             1,
             1
         ],
-        "FrameRate": 60,
+        "FrameRate": 120,
         "Gravity": {
             "x": 0.0,
             "y": -9.8100004196167,

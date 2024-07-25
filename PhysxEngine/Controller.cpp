@@ -9,6 +9,7 @@ Controller::Controller()
 
 Controller::~Controller()
 {
+	PX_RELEASE(m_Controller);
 	delete m_FilterData;
 }
 
@@ -43,6 +44,7 @@ void Controller::SetPosition(const VPMath::Vector3& position)
 	m_Controller->setPosition(vector);
 }
 
+
 const VPMath::Vector3 Controller::GetPosition()
 {
 	VPMath::Vector3 Pos;
@@ -51,3 +53,4 @@ const VPMath::Vector3 Controller::GetPosition()
 	Pos.z= (float)m_Controller->getPosition().z;
 	return Pos;
 }
+

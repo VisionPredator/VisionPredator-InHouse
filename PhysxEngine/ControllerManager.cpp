@@ -2,6 +2,7 @@
 #include "ControllerManager.h"
 #include "VPPhysicsStructs.h"
 #include "CapsuleController.h"
+#include "Controller.h"
 #include "..\VPEngine\InputManager.h"
 ControllerManager::ControllerManager()
 {
@@ -44,11 +45,16 @@ bool ControllerManager::Update(float deltatime)
         return true;
     for (auto [entityID, controller] : m_CharectorMap)
     {
-        if(INPUTKEY(KEY::D))
         if (controller ->GetTypeID() == Reflection::GetTypeID<CapsuleController>())
         {
             CapsuleController* capsuleController = static_cast<CapsuleController*>(controller);
-            capsuleController->m_Controller->move({0.1f,0,0},0.001f,deltatime, *capsuleController->GetFilters());
+
+            physx::PxControllerCollisionFlags collisionFlags = capsuleController->m_Controller->move(capsuleController->m_Velocity, 0.001f, deltatime, *capsuleController->GetFilters());
+
+            if (collisionFlags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
+                capsuleController->SetIsFall(false);
+            else
+                capsuleController->SetIsFall(true);
         }
     }
     return true;
@@ -57,7 +63,13 @@ bool ControllerManager::Update(float deltatime)
 
 bool ControllerManager::RemoveController(const unsigned int& id)
 {
-
+    auto controller = m_CharectorMap.find(id);
+    if (controller != m_CharectorMap.end())
+    {
+        delete controller->second;
+        m_CharectorMap.erase(controller);
+        return true;
+    }
 
     return false;
 }

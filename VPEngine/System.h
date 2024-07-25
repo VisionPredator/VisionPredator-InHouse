@@ -13,7 +13,8 @@
 #define COMPLOOP(ClassName)\
 for(ClassName& comp : COMPITER(ClassName))
 
-// Define a macro to handle component splitting and threading
+
+///쓰레드를 위한 매크로
 #define THREAD_COMPONENTS(System_Name, ComponentType, Function)                                                                   \
 {                                                                                                                                 \
     auto task = [](std::vector<std::reference_wrapper<ComponentType>>& components, size_t start, size_t end, System_Name* sys)    \

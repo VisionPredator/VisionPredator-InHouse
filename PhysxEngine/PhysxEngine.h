@@ -77,5 +77,12 @@ private:
 	// IPhysx을(를) 통해 상속됨
 	VPMath::Vector3 GetControllerGobalPose(uint32_t entityID) override;
 
+
+	// IPhysx을(를) 통해 상속됨
+	void SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity) override;
+
+
+	bool GetControllerIsFall(uint32_t entityID) override;
+
 };
 

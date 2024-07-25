@@ -10,6 +10,7 @@
 #include "DataRegister.h"
 #include "CameraSystem.h"
 #include "AnimationSystem.h"
+#include "ControllerMovementSystem.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
 #include "../PhysxEngine/PhysxEngine.h"
@@ -80,6 +81,7 @@ VPEngine::~VPEngine()
 }
 void VPEngine::Addsystem()
 {
+	m_SystemManager->AddSystem<ControllerMovementSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<LightSystem>();

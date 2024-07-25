@@ -27,6 +27,7 @@
 	}
 	void SystemManager::PhysicUpdatable(float deltatime)
 	{
+
 		m_PhysicProgressedTime += deltatime;
 		while (m_PhysicProgressedTime > m_PhysicDeltatime)
 		{
