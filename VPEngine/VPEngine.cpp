@@ -124,19 +124,14 @@ void VPEngine::Loop()
 			tempTime += m_DeltaTime;
 			while (tempTime > (1/90.f))
 			{
-				m_SystemManager->RenderUpdate(1 / 90.f);
-				m_Graphics->Update(1 / 90.f);
+				m_Graphics->Update(m_DeltaTime);
+
 				Render();
 				EndRender();
 				tempTime -= (1/90.f);
 			}
-
-
 		}
 	}
-
-
-
 }
 
 

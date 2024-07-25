@@ -57,7 +57,6 @@ public:
 	void OnResize(RECT& wndsize);
 
 private:
-	void CreateAxisGridBox();
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ConstantBuffer<CameraData>> m_Camera;
