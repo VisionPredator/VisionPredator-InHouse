@@ -76,8 +76,6 @@ void RigidBodyManager::CreateStaticBody(const SphereColliderInfo sphereinfo, ECo
 	}
 	else
 		assert(false);
-
-
 }
 void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const PhysicsInfo engininfo)
 {

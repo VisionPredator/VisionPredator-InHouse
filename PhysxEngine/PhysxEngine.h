@@ -3,6 +3,7 @@
 #include "../VPEngine/EventSubscriber.h"
 class RigidBodyManager;
 class CollisionManager;
+class ControllerManager;
 class Physics;
 class CollisionCallback;
 using namespace std;
@@ -16,21 +17,13 @@ public:
 	bool Initialize() override;
 	bool Finalize() override;
 	void Update(float deltatime) override;
+	void SimulateUpdate(float deltatime);
 
 	const VPPhysics::PhysicsInfo GetPhysicsInfo() { return m_PhyiscsInfo; }
 	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }
 
 	void OnSetPhysicInfo(std::any PhysicInfo);
-private:
-	Physics* m_Physics{};
-	physx::PxScene* m_PxScene{};
-	RigidBodyManager* m_RigidManager{};
-	CollisionManager* m_CollisionManager{};
-	CollisionCallback* m_Collisioncallback{};
-	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
-	int m_Frame = 60;
-	float m_UpdateTime = 1.f/ 120.f;
-	float m_ElapsedTime = 0.f;
+
 	// IPhysx을(를) 통해 상속됨
 
 
@@ -55,5 +48,41 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	VPMath::Vector3 GetVelocity(uint32_t entityID) override;
+
+private:
+	Physics* m_Physics{};
+	physx::PxScene* m_PxScene{};
+	RigidBodyManager* m_RigidBodyManager{};
+	ControllerManager* m_ControllerManager{};
+	CollisionManager* m_CollisionManager{};
+	CollisionCallback* m_Collisioncallback{};
+	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
+	int m_Frame = 60;
+	float m_UpdateTime = 1.f / 120.f;
+	float m_ElapsedTime = 0.f;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void RemoveController(uint32_t entityID) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	VPMath::Vector3 GetControllerGobalPose(uint32_t entityID) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity) override;
+
+
+	bool GetControllerIsFall(uint32_t entityID) override;
+
 };
 

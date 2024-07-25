@@ -3,6 +3,8 @@
 
 namespace VPPhysics
 {
+	constexpr uint32_t noneID = 0;
+
 
 	/// <summary>
 	/// TRIGGER: 충돌되지 않고 겹치면 오버랩 이벤트만 호출.
@@ -70,6 +72,27 @@ namespace VPPhysics
 		std::vector<VPMath::Vector3> ContectPoints;
 		bool isDead = false;
 	};
+	struct ControllerInfo
+	{
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ControllerInfo,  LayerNumber);
+
+		uint32_t EntityId = noneID;								// 캐릭터 컨트롤러 아이디
+		EPhysicsLayer LayerNumber{};								// 충돌 매트릭스 레이어 넘버
+
+	};
+	struct CapsuleControllerInfo
+	{
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CapsuleControllerInfo, Info, position, height, radius, stepOffset, slopeLimit, contactOffset);
+
+		ControllerInfo Info{};
+		VPMath::Vector3 position{ 0.f, 0.f, 0.f };					// 캐릭터 컨트롤러가 위치하는 처음 생성 위치
+		float height = 0.1f;										// 캐릭터 컨트롤러(캡슐)의 높이
+		float radius = 0.05f;										// 캐릭터 컨트롤러(캡슐)의 반지름
+		float stepOffset = 0.0f;									// 캐릭터 컨트롤러가 지나갈 수 있는 
+		float slopeLimit = 0.3f;									// 캐릭터가 걸어 올라갈 수 있는 최대 기울기
+		float contactOffset = 0.001f;								// 컨트롤러의 접촉 오프셋 : 수치 정밀도 문제를 방지하기 위해 사용합니다.
+	};
 
 	struct CharacterMovementInfo
 	{
@@ -81,10 +104,10 @@ namespace VPPhysics
 		float jumpXZAcceleration = 10.f;					// 점프 중에 이동(XZ축) 가속도 값
 		float jumpXZDeceleration = 0.1f;					// 점프 중에 이동(XZ축) 감속 값 ( 0.0 ~ 1.0 )
 		float gravityWeight = 0.2f;							// 기본 중력 값을 줄 수 있지만 가중치를 더 주고 싶을 때 값을 다르게 세팅할 수 있습니다.
+
 	};
 
 
-	constexpr uint32_t noneID = 0;
 
 	struct ColliderInfo
 	{

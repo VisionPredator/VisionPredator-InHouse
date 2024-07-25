@@ -70,8 +70,8 @@ void Physics::Initialize()
 
 #else
 	// 물리 시뮬레이션의 허용 오차 스케일을 설정합니다.
-	m_ToleranceScale.length = 100; // 길이 허용 오차 스케일을 설정합니다.
-	m_ToleranceScale.speed = 981; // 속도 허용 오차 스케일을 설정합니다.
+	m_ToleranceScale.length = 1.00; // 길이 허용 오차 스케일을 설정합니다.
+	m_ToleranceScale.speed = 9.81; // 속도 허용 오차 스케일을 설정합니다.
 	// PhysX Physics를 생성하고 초기화합니다.
 	m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, m_ToleranceScale, true, nullptr); // Physics를 생성합니다.
 	// CPU 디스패처를 생성하고 설정합니다.

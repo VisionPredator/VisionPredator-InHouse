@@ -5,7 +5,7 @@ class DynamicRigidBody :
 {
 public:
 	DynamicRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber);
-	~DynamicRigidBody() = default;
+	~DynamicRigidBody();
 	bool Initialize(VPPhysics::ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, VPPhysics::CollisionData* data);
 	inline physx::PxRigidDynamic* GetPxDynamicRigid();
 	entt::id_type GetTypeID() const override {

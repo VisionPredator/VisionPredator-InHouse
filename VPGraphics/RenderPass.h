@@ -9,7 +9,7 @@ class Device;
 class DebugDrawManager;
 
 class ModelData;
-class RenderData;
+struct RenderData;
 class Mesh;
 
 class VertexShader;

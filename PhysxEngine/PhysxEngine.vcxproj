@@ -160,14 +160,18 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CharactorController.h" />
+    <ClInclude Include="CapsuleController.h" />
+    <ClInclude Include="ControllerHitCallback.h" />
+    <ClInclude Include="ControllerManager.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="CollisionCallback.h" />
+    <ClInclude Include="ControllerQueryFilterCallback.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IPhysx.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PhysxColliManager.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="PhysxEngine.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RigidBodyManager.h" />
@@ -175,8 +179,12 @@
     <ClInclude Include="StaticRigidBody.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CharactorController.cpp" />
+    <ClCompile Include="CapsuleController.cpp" />
+    <ClCompile Include="ControllerHitCallback.cpp" />
+    <ClCompile Include="ControllerManager.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CollisionCallback.cpp" />
+    <ClCompile Include="ControllerQueryFilterCallback.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />
     <ClCompile Include="pch.cpp">
@@ -186,7 +194,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PhysxColliManager.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="PhysxEngine.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RigidBodyManager.cpp" />

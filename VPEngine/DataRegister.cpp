@@ -159,6 +159,6 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP, PlayerComponent::Maxspeed, PlayerComponent::Speed, PlayerComponent::Accel,PlayerComponent::Maxspeed, PlayerComponent::JumpFoce, PlayerComponent::MaxJumpCount, PlayerComponent::Jumpcount, PlayerComponent::Isground);
 
 	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::ColliderInfo);
-	RigidBodyComponent tet;
+	META_ADD_MEMBER(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 }
 
