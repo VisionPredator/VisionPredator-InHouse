@@ -60,6 +60,10 @@ namespace Graphics
 
 		virtual const double GetDuration(std::wstring name) abstract;
 
+		/// Effect
+		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
+		virtual void DeleteParticleObjectByID(const uint32_t& id) abstract;
+
 		/// Light
 		virtual void AddLight(uint32_t EntityID,LightType kind, LightData data) abstract;
 		virtual void EraseLight(uint32_t EntityID, LightType kind) abstract;

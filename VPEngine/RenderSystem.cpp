@@ -13,6 +13,7 @@ RenderSystem::RenderSystem(SceneManager* sceneManager)
 
 void RenderSystem::OnAddedComponent(std::any data)
 {
+	// Static Mesh
 	auto comp = std::any_cast<Component*>(data);
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
@@ -27,7 +28,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		return;
 	}
 
-	//Skinned
+	// Skinned Mesh
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
@@ -42,6 +43,18 @@ void RenderSystem::OnAddedComponent(std::any data)
 		return;
 	}
 
+	// Particle Object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
+	{
+		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
+		std::string Path;
+		Path.assign(component->TexturePath.begin(), component->TexturePath.end());
+
+		effect::ParticleInfo info;
+		info.TexturePath = Path;
+		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
+		return;
+	}
 
 }
 

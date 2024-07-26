@@ -1,6 +1,7 @@
 #pragma once
 
 // enum 및 struct 들 모아놓는 곳.
+// debug, particle, decal, trail, etc..
 
 namespace debug
 {
@@ -82,6 +83,10 @@ namespace effect
 {
 	struct ParticleInfo
 	{
-		
+		std::string TexturePath;
+		UINT MaxParticles = 0;
+		DirectX::SimpleMath::Vector2 Size = { 1.0f, 1.0f };
+		DirectX::SimpleMath::Vector3 Direction = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
 	};
+
 }

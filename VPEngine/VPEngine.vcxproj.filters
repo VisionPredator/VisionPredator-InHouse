@@ -183,6 +183,9 @@
     <ClInclude Include="PhysicSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleComponent.h">
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">

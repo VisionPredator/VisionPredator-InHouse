@@ -1,4 +1,5 @@
 #pragma once
+#include "vpGraphics.h"
 
 class TimeManager;
 class ParticleObject;
@@ -6,22 +7,24 @@ class ParticleObject;
 class ParticleManager
 {
 public:
+	ParticleManager() = default;
+
 	void Initialize(const std::shared_ptr<class Device>& device, 
 		const std::shared_ptr<class ResourceManager>& resourceManager, TimeManager* timeManager);
 
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+
+	void CreateParticleObject(const uint32_t& id, const effect::ParticleInfo& info);
+	void DeleteParticleObjectByID(const uint32_t& id);
+
+	void UpdateParticleInfoByID(const uint32_t& id, const effect::ParticleInfo& info);
 
 private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 	TimeManager* m_TimeManager = nullptr;
 
-	DirectX::SimpleMath::Matrix m_View;
-	DirectX::SimpleMath::Matrix m_Proj;
-	 
-	//std::vector<ParticleObject> m_ParticleObjects;
+	int a = 1;
 
-#pragma region TEST
-	std::shared_ptr<ParticleObject> m_TestParticle;
-#pragma endregion
+	std::map<uint32_t, std::shared_ptr<ParticleObject>> m_ParticleObjects;
 };
