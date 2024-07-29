@@ -115,6 +115,9 @@
     <Filter Include="Manager\Source">
       <UniqueIdentifier>{39426c84-4b4b-476d-a79e-57da6561f1a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pass\Geometry">
+      <UniqueIdentifier>{48f817f3-1536-469d-bbf3-86d893abb472}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsEngine.h">
@@ -285,7 +288,9 @@
     <ClInclude Include="PassManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="GeoMetryPass.h" />
+    <ClInclude Include="GeoMetryPass.h">
+      <Filter>Pass\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -426,7 +431,9 @@
     <ClCompile Include="ForwardPass.cpp">
       <Filter>Pass\Forward</Filter>
     </ClCompile>
-    <ClCompile Include="GeoMetryPass.cpp" />
+    <ClCompile Include="GeoMetryPass.cpp">
+      <Filter>Pass\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">

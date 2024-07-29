@@ -103,7 +103,13 @@ namespace BufferDESC
 			0
 		};
 
-
+		static D3D11_BUFFER_DESC DefaultFloat4 = {
+		sizeof(DirectX::XMFLOAT4),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_CONSTANT_BUFFER,
+		0,
+		0
+		};
 
 	}
 

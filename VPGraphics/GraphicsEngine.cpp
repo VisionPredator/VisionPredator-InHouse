@@ -238,7 +238,12 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 		break;
 
 		case MeshFilter::Box:
-			m_RenderList[EntityID]->Pass = PassState::GeoMetry;
+		{
+			m_RenderList[EntityID]->color = data.color;
+			m_RenderList[EntityID]->useTexture = data.useTexture;
+			m_RenderList[EntityID]->textureName = std::move(data.textureName);
+			m_RenderList[EntityID]->Pass = PassState::GeoMetry; 
+		}
 			break;
 		case MeshFilter::Static:
 		case MeshFilter::Skinning:

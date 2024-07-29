@@ -33,8 +33,7 @@ void ModelLoader::Initialize()
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
 	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
-	LoadModel("U_guard.fbx", Filter::STATIC);
-	LoadModel("floor2_low.fbx", Filter::STATIC);
+	LoadModel("Cube.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -268,7 +267,11 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
 
 	// Diffuse
-	std::wstring basePath = L"../../../Resource/Texture/";
+#ifdef _DEBUG
+	const std::wstring basePath = L"..\\..\\..\\Resource\\FBX\\";
+#else
+	const std::wstring basePath = L"..\\Data\\FBX\\";
+#endif
 	std::filesystem::path path;
 	std::wstring finalPath;
 	std::string name = material->GetName().C_Str();
@@ -302,7 +305,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->AlbeoPath = finalPath;
 
-		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.x += 1;
 
 	}
@@ -310,7 +313,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + L"base.png";
 		newMaterial->AlbeoPath = finalPath;
-		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/Texture/base.png", L"base.png");
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png", L"base.png");
 	}
 
 	///Normal
@@ -319,7 +322,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useNE.x += true;
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
@@ -329,7 +332,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
-		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"../Resource/base.png", L"../Resource/base.png");
+		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png", L"base.png");
 
 	}
 
@@ -348,7 +351,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->EmissivePath = finalPath;
-		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useNE.y += true;
 	}
 
@@ -366,7 +369,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->MetalicPath = finalPath;
-		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.y += 1;
 
 	}
@@ -377,7 +380,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->RoughnessPath = finalPath;
-		newMaterial->m_RoughnessSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_RoughnessSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.z += 1;
 
 	}
@@ -388,7 +391,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	{
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->AlbeoPath = finalPath;
-		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(finalPath, path);
+		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.w += 1;
 	}
 

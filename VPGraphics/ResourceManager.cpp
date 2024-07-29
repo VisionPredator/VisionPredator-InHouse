@@ -166,6 +166,10 @@ void ResourceManager::Initialize()
 		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
 
 		m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, m_Pallete.lock()->GetAddress());
+
+		Create<ConstantBuffer<DirectX::XMFLOAT4>>(L"Color", BufferDESC::Constant::DefaultFloat4);
+
+
 	}
 
 }

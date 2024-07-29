@@ -4,7 +4,7 @@
 #include "StaticData.h"
 #include "Slot.h"
 
-GeoMetryPass::GeoMetryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger) : RenderPass(device,manger)
+GeoMetryPass::GeoMetryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger) : RenderPass(device, manger)
 {
 
 }
@@ -34,13 +34,18 @@ void GeoMetryPass::Render()
 			std::shared_ptr<VertexBuffer> vb = m_ResourceManager.lock()->Get<VertexBuffer>(L"TextureBox_VB").lock();
 			std::shared_ptr<IndexBuffer> ib = m_ResourceManager.lock()->Get<IndexBuffer>(L"TextureBox_IB").lock();
 
-#ifdef _DEBUG
-			std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\base.png";
-#else
-			const std::wstring filePath = L"..\\Data\\Texture\\base.png";
-#endif
+			if (curOb->useTexture)
+			{
 
-			std::shared_ptr<ShaderResourceView> srv = m_ResourceManager.lock()->Get<ShaderResourceView>(filePath).lock();
+				std::shared_ptr<ShaderResourceView> srv = m_ResourceManager.lock()->Get<ShaderResourceView>(curOb->textureName).lock();
+				if (srv == nullptr)
+				{
+					srv = m_ResourceManager.lock()->Get<ShaderResourceView>(L"base.png").lock();
+				}
+
+				Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, srv->GetAddress());
+			}
+
 
 			std::shared_ptr<ConstantBuffer<CameraData>> camera = m_ResourceManager.lock()->Create<ConstantBuffer<CameraData>>(L"Camera").lock();
 
@@ -67,7 +72,10 @@ void GeoMetryPass::Render()
 			Device->Context()->IASetPrimitiveTopology(TextureBox::PRIMITIVE_TOPOLOGY);
 			Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
-			Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo),1,srv->GetAddress());
+
+			std::shared_ptr<ConstantBuffer<DirectX::XMFLOAT4>> color = m_ResourceManager.lock()->Create<ConstantBuffer<DirectX::XMFLOAT4>>(L"Color").lock();
+			Device->Context()->PSSetConstantBuffers(2, 1, color->GetAddress());
+			color->Update(curOb->color);
 
 			Device->Context()->DrawIndexed(TextureBox::Index::count, 0, 0);
 

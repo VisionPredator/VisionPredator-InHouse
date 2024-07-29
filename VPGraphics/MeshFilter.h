@@ -28,8 +28,9 @@ struct RenderData
 {
 public:
 	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
-		,local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
-		,duration(0.f),preDuration(0.f), curAnimation(L""), preAnimation(L""), isPlay(false) , isChange(false)
+		, local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
+		, duration(0.f), preDuration(0.f), curAnimation(L""), preAnimation(L""), isPlay(false), isChange(false)
+		, color(), useTexture(false), textureName(L"")
 	{
 
 	}
@@ -75,6 +76,10 @@ public:
 	std::wstring preAnimation;
 	bool isPlay;
 	bool isChange;
+
+	DirectX::XMFLOAT4 color;
+	bool useTexture;
+	std::wstring textureName;
 };
 
 
