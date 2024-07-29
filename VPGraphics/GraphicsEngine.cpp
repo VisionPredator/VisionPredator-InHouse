@@ -238,11 +238,11 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 		break;
 
 		case MeshFilter::Box:
+			m_RenderList[EntityID]->Pass = PassState::GeoMetry;
+			break;
 		case MeshFilter::Static:
 		case MeshFilter::Skinning:
 		{
-			//test
-			//m_RenderList[EntityID]->Pass = PassState::Forward;
 		}
 		break;
 

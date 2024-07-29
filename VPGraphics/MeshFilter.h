@@ -18,6 +18,7 @@ enum class PassState : unsigned int
 	Forward = 1 << 1,
 	Debug = 1 << 2,
 	Deferred = 1 << 3,
+	GeoMetry = 1 << 4,
 
 	End = 99999
 };

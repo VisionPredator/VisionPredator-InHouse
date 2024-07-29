@@ -93,11 +93,15 @@ void ResourceManager::Initialize()
 		UINT size = sizeof(QuadVertex);
 		Create<VertexBuffer>(L"Quad_VB", Quad::Vertex::Desc, Quad::Vertex::Data, size);
 
+		size = sizeof(BaseVertex);
+		Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
+
 	}
 
 	//IB
 	{
 		Create<IndexBuffer>(L"Quad_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
+		Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
 	}
 
 	//SRV
