@@ -33,7 +33,8 @@ void ModelLoader::Initialize()
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
 	LoadModel("Flair.fbx", Filter::SKINNING);
 	LoadModel("cerberus.fbx", Filter::STATIC);
-	LoadModel("Cube.fbx", Filter::STATIC);
+	LoadModel("U_guard.fbx", Filter::STATIC);
+	LoadModel("floor2_low.fbx", Filter::STATIC);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -61,6 +62,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				aiProcess_CalcTangentSpace |  // 탄젠트 생성			
 				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
 				aiProcess_PreTransformVertices | // 노드의 변환행렬을 적용한 버텍스 생성 /주의 이 단계에서는 애니메이션이 제거됩니다.
+				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
 			break;
 		case Filter::SKINNING:
@@ -72,6 +74,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				//aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
 				/*aiProcess_FlipUVs|
 				aiProcess_FlipWindingOrder|*/
+				aiProcess_GlobalScale|	//단위를 미터로 설정할 수 있습니다.
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
 			break;
 		case Filter::END:
