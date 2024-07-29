@@ -14,7 +14,7 @@ public:
         return Reflection::GetTypeID<CapsuleController>();
     }
 private:
-    ControllerHitCallback* m_ControllerHitCallback{};
+    std::shared_ptr<ControllerHitCallback> m_ControllerHitCallback;
 
 
 };

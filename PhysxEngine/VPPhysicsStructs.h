@@ -59,7 +59,11 @@ namespace VPPhysics
 		int FrameRate = 60;
 		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
 	};
+	struct ConvexMeshInfo
+	{
+		std::string FBXName{};
 
+	};
 	/// <summary>
 	/// 콜리전 : 충돌 데이터
 	/// </summary>

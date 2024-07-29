@@ -63,23 +63,24 @@ PhysxEngine::PhysxEngine()
 
 PhysxEngine::~PhysxEngine()
 {
+	m_ControllerManager = nullptr;
+	m_RigidBodyManager = nullptr;
 	PX_RELEASE(m_PxScene);
-	delete m_Physics;
 }
 
 bool PhysxEngine::Initialize()
 {
-	m_Physics = new Physics;
-	m_Collisioncallback = new CollisionCallback;
-	m_RigidBodyManager = new RigidBodyManager;
-	m_ControllerManager = new ControllerManager;
+	m_Physics =std::make_shared<Physics>();
+	m_Collisioncallback =std::make_shared<CollisionCallback>();
+	m_RigidBodyManager = std::make_shared<RigidBodyManager>();
+	m_ControllerManager =std::make_shared<ControllerManager>();
 
 	m_Physics->Initialize();
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
 	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
 	sceneDesc.filterShader = CustomSimulationFilterShader;
-	sceneDesc.simulationEventCallback = m_Collisioncallback;
+	sceneDesc.simulationEventCallback = m_Collisioncallback.get();
 	sceneDesc.gravity=PxVec3(0.f,-9.81f,0.f);
 	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
 	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;
@@ -89,8 +90,8 @@ bool PhysxEngine::Initialize()
 	sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
 
-	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_CollisionManager);
-	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager);
+	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene);
+	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager.get());
 #ifdef _DEBUG
 	m_Physics->SettingPVDClient(m_PxScene);
 #endif

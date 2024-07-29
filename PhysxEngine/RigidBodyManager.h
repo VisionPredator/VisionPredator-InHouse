@@ -11,7 +11,7 @@ class RigidBodyManager:public EventSubscriber
 public: 
 	RigidBodyManager();
 	~RigidBodyManager();
-	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene,	CollisionManager* CollManager);
+	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene);
 	void Update();
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype,const VPPhysics::PhysicsInfo engininfo );
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo);
@@ -22,7 +22,7 @@ public:
 	StaticRigidBody* SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
 	DynamicRigidBody* SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
-	RigidBody* GetRigidBody(uint32_t EntityID);
+	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
 	bool HasRigidBody(uint32_t EntityID);
 
 	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q);
@@ -38,11 +38,11 @@ private:
 	void OnReleaseBodyScene(std::any data);
 	void AddBodyScene(RigidBody* body);
 
+	std::weak_ptr<CollisionManager> m_Collsion;
 
 	physx::PxPhysics* m_Physics = nullptr;
 	physx::PxScene* m_Scene=nullptr;
-	CollisionManager* m_PhysxCollisionManager = nullptr;
-	std::unordered_map<uint32_t, RigidBody*> m_RigidBodyMap{};
+	std::unordered_map<uint32_t, std::shared_ptr<RigidBody>> m_RigidBodyMap{};
 
 };
 

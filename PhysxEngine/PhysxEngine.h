@@ -50,12 +50,18 @@ public:
 	VPMath::Vector3 GetVelocity(uint32_t entityID) override;
 
 private:
-	Physics* m_Physics{};
-	physx::PxScene* m_PxScene{};
-	RigidBodyManager* m_RigidBodyManager{};
-	ControllerManager* m_ControllerManager{};
-	CollisionManager* m_CollisionManager{};
-	CollisionCallback* m_Collisioncallback{};
+	//Physics* m_Physics{};
+	//physx::PxScene* m_PxScene{};
+	physx::PxScene* m_PxScene;
+	std::shared_ptr<Physics> m_Physics;
+	//RigidBodyManager* m_RigidBodyManager{};
+	std::shared_ptr<RigidBodyManager> m_RigidBodyManager;
+	std::shared_ptr<ControllerManager> m_ControllerManager;
+	std::shared_ptr<CollisionManager> m_CollisionManager;
+	std::shared_ptr<CollisionCallback> m_Collisioncallback;
+	//ControllerManager* m_ControllerManager{};
+	//CollisionManager* m_CollisionManager{};
+	//CollisionCallback* m_Collisioncallback{};
 	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
 	int m_Frame = 60;
 	float m_UpdateTime = 1.f / 120.f;
