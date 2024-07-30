@@ -27,7 +27,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 {
 	bool isNodeOpened = false;
 	Children* entityChildren=nullptr;
-	Entity* entity = m_SceneManager->GetEntity(entityID);
+	auto entity = m_SceneManager->GetEntity(entityID);
 
 
 	ImGui::PushID(entityID);

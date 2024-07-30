@@ -18,8 +18,8 @@ public:
 	void DeSerializePrefab(std::string filePath);
 	/// 해당 json를 Deserialize 한다.
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
-	Entity* CreateEntity();
-	Entity* CreateEntity(uint32_t id);
+	std::shared_ptr<Entity> CreateEntity();
+	std::shared_ptr<Entity> CreateEntity(uint32_t id);
 	uint32_t CreateRandomEntityID();
 
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
@@ -56,13 +56,13 @@ public:
 			return nullptr;
 		return GetEntity(EntityID)->GetComponent(compId);
 	}
-	Entity* GetEntity(uint32_t entityID)
+	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
 	{
 		if (!HasEntity(entityID))
 			return nullptr;
 		return m_CurrentScene->EntityMap[entityID];
 	}
-	std::unordered_map<uint32_t, Entity*>& GetEntityMap()
+	std::unordered_map<uint32_t, std::shared_ptr<Entity>>& GetEntityMap()
 	{
 		return m_CurrentScene->EntityMap;
 	}
@@ -90,7 +90,7 @@ private:
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
 
-	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
+	void SetEntityMap(uint32_t entityID, std::shared_ptr<Entity> entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
 	void AddCompToPool(Component* comp);
 	// 새로운 씬을 연다.
@@ -116,7 +116,7 @@ private:
 	// Entity를 삭제한다.
 	void OnDestroyEntity(std::any entityID);
 
-	void RemoveEntity(Entity* entity);
+	void RemoveEntity(std::shared_ptr<Entity> entity);
 	// 모든 Entity를 지운다.
 	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
@@ -126,7 +126,7 @@ private:
 	// 해당 Prefab을 Deserialize한다.
 	void OnDeSerializePrefab(std::any data);
 	//Entity를 Deserialize한다 : Map 전용.
-	Entity* DeSerializeEntity(const nlohmann::json entityjson);
+	std::shared_ptr<Entity> DeSerializeEntity(const nlohmann::json entityjson);
 	void OnDeSerializeEntity(std::any data);
 
 	template<typename T>

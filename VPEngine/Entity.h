@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "EventManager.h"
 	struct Component;
-	class Entity
+	class Entity : public std::enable_shared_from_this<Entity>
 	{
 	public:
 		Entity();
@@ -38,13 +38,13 @@
 			if (HasComponent<T>())
 			{
 				VP_ASSERT(false, "이미 있는 Component 입니다.");
-					return nullptr;
+				return nullptr;
 			}
 			T* newcomp = new T;
 			AddComponentToMap(newcomp);
-			newcomp->SetEntity(this);
+			newcomp->SetEntity(shared_from_this()); // Use shared_from_this to set the entity
 			if (!Immediately)
-			EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
+				EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
 			else
 				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", static_cast<Component*>(newcomp));
 			return newcomp;
