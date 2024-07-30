@@ -87,8 +87,8 @@ void GeoMetryPass::Render()
 
 void GeoMetryPass::OnResize()
 {
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
-	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
 
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
