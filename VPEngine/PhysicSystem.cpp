@@ -155,17 +155,15 @@ float QuaternionAngleDifference(const VPMath::Quaternion& q1, const VPMath::Quat
 
 void PhysicSystem::PhysicsUpdate(float deltaTime)
 {
-	TransformSystem transformSystem(m_SceneManager);
-	transformSystem.Update(deltaTime);
-
+	
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		uint32_t entityID = rigidBodyComponent.GetEntityID();
 		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-
+	
 		auto templocation = m_PhysicsEngine->GetGobalLocation(entityID);
 		auto offset_T = (rigidBodyTransform->World_Location - templocation).Length();
-
+	
 		VPMath::Quaternion tempQuat = m_PhysicsEngine->GetGobalQuaternion(entityID);
 		float offset_R = (rigidBodyTransform->World_Quaternion - tempQuat).Length();
 		if (offset_R > m_rotation_threshold_degrees || offset_T > m_location_threshold)
@@ -174,14 +172,14 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		}
 	}
 	m_PhysicsEngine->Update(deltaTime);
-
+	
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
 		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
 	}
-
-	transformSystem.Update(deltaTime);
-
+	
+	
+	
 }

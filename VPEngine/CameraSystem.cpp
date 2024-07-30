@@ -35,7 +35,6 @@ void CameraSystem::LateUpdate(float deltaTime)
 	}
 }
 
-
 void CameraSystem::OnSetMainCamera(std::any data)
 {
 

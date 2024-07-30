@@ -8,3 +8,7 @@ CollisionManager::CollisionManager()
 CollisionManager::~CollisionManager()
 {
 }
+
+void CollisionManager::Update()
+{
+}

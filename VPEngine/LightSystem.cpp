@@ -39,23 +39,13 @@ void LightSystem::OnReleasedComponent(std::any data)
 	}
 }
 
-void LightSystem::Update(float deltaTime)
-{
-	for (LightComponent& lightComp : COMPITER(LightComponent))
-	{
-		lightComp.direction.Normalize();
-	}
-}
-
-void LightSystem::FixedUpdate(float deltaTime)
-{
-
-}
 
 void LightSystem::RenderUpdate(float deltaTime)
 {
 	for (LightComponent& lightComp : COMPITER(LightComponent))
 	{
+		lightComp.direction.Normalize();
+
 		LightData temp;
 		temp.attenuation = lightComp.attenuation;
 		temp.color = { lightComp.color.x,lightComp.color.y,lightComp.color.z };
