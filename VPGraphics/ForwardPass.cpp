@@ -93,7 +93,6 @@ void ForwardPass::Render()
 				{
 					BindStatic(curData);
 
-
 					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
 				}
 
