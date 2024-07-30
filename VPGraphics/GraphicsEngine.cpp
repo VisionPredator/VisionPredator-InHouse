@@ -349,6 +349,18 @@ ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 	return m_ResourceManager->Get<ShaderResourceView>(name).lock()->Get();
 }
 
+std::vector<DirectX::SimpleMath::Vector3> GraphicsEngine::GetVertices(std::wstring fbx)
+{
+	std::weak_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx);
+
+	if (curFBX.lock() != nullptr)
+	{
+		return curFBX.lock()->vertices;
+	}
+
+	return;
+}
+
 void GraphicsEngine::OnResize(HWND hwnd)
 {
 	m_hWnd = hwnd;

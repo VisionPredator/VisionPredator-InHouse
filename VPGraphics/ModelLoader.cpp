@@ -187,6 +187,13 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
 			{
 				ProcessVertexBuffer(TextureVertices, curMesh, i);
+
+				DirectX::SimpleMath::Vector3 curPos;
+				curPos.x = TextureVertices.back().pos.x;
+				curPos.y = TextureVertices.back().pos.y;
+				curPos.z = TextureVertices.back().pos.z;
+
+				Model->vertices.push_back(curPos);
 			}
 			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
 			data.pSysMem = &(TextureVertices[0]);
