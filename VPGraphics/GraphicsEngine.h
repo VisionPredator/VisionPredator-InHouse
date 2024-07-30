@@ -73,6 +73,10 @@ public:
 	///Editor
 	virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
 
+	///¹°¸®
+	virtual std::vector<DirectX::SimpleMath::Vector3> GetVertices(std::wstring fbx) override;
+
+
 protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
