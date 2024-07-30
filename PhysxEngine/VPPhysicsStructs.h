@@ -62,7 +62,7 @@ namespace VPPhysics
 	struct ConvexMeshInfo
 	{
 		std::string FBXName{};
-
+		std::vector<VPMath::Vector3> Vertexs{};
 	};
 	/// <summary>
 	/// 콜리전 : 충돌 데이터

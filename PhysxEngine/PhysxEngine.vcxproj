@@ -166,12 +166,13 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CollisionCallback.h" />
     <ClInclude Include="ControllerQueryFilterCallback.h" />
-    <ClInclude Include="ConvexMesh.h" />
+    <ClInclude Include="ConvexMeshResource.h" />
     <ClInclude Include="ConvexMeshResourceManager.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IPhysx.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PhysicModelLoader.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="PhysxEngine.h" />
@@ -187,7 +188,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CollisionCallback.cpp" />
     <ClCompile Include="ControllerQueryFilterCallback.cpp" />
-    <ClCompile Include="ConvexMesh.cpp" />
+    <ClCompile Include="ConvexMeshResource.cpp" />
     <ClCompile Include="ConvexMeshResourceManager.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />
@@ -197,6 +198,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PhysicModelLoader.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="PhysxEngine.cpp" />

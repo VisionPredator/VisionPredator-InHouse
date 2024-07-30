@@ -43,7 +43,7 @@ void PhysicSystem::Finalize()
 
 void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 {
-
+	
 	Entity* entity = m_SceneManager->GetEntity(EntityID);
 	RigidBodyComponent* rigidComp = entity->GetComponent<RigidBodyComponent>();
 	if (!rigidComp)

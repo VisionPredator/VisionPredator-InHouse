@@ -37,6 +37,12 @@ public:
 	virtual void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) abstract;
 	virtual VPMath::Vector3 GetVelocity(uint32_t entityID)abstract;
 	virtual void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) abstract;
+	virtual void LoadConvexMeshResource(const VPPhysics::ConvexMeshInfo& info) abstract;
+
+
+	virtual bool HasConvexMeshResource(const std::string& key) abstract;
+
+
 
 };
 

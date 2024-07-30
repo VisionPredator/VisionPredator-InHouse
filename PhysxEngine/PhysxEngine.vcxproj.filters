@@ -113,7 +113,10 @@
     <ClInclude Include="ConvexMeshResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ConvexMesh.h">
+    <ClInclude Include="ConvexMeshResource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicModelLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -169,7 +172,10 @@
     <ClCompile Include="ConvexMeshResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ConvexMesh.cpp">
+    <ClCompile Include="ConvexMeshResource.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicModelLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

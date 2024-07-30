@@ -6,6 +6,7 @@ class CollisionManager;
 class ControllerManager;
 class Physics;
 class CollisionCallback;
+class ConvexMeshResourceManager;
 using namespace std;
 class PhysxEngine :public Physic::IPhysx, public EventSubscriber
 {
@@ -59,6 +60,7 @@ private:
 	std::shared_ptr<ControllerManager> m_ControllerManager;
 	std::shared_ptr<CollisionManager> m_CollisionManager;
 	std::shared_ptr<CollisionCallback> m_Collisioncallback;
+	std::shared_ptr<ConvexMeshResourceManager> m_RecourceManager;
 	//ControllerManager* m_ControllerManager{};
 	//CollisionManager* m_CollisionManager{};
 	//CollisionCallback* m_Collisioncallback{};
@@ -89,6 +91,12 @@ private:
 
 
 	bool GetControllerIsFall(uint32_t entityID) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void LoadConvexMeshResource(const VPPhysics::ConvexMeshInfo& info) override;
+
+	bool HasConvexMeshResource(const std::string& key) override;
 
 };
 

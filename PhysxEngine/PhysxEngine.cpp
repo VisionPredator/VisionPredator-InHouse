@@ -6,6 +6,7 @@
 #include "RigidBodyManager.h"
 #include "ControllerManager.h"
 #include "CollisionCallback.h"
+#include "ConvexMeshResourceManager.h"
 #include "Controller.h"
 #include "../VPEngine/EventManager.h"
 #include <iostream>
@@ -74,7 +75,7 @@ bool PhysxEngine::Initialize()
 	m_Collisioncallback =std::make_shared<CollisionCallback>();
 	m_RigidBodyManager = std::make_shared<RigidBodyManager>();
 	m_ControllerManager =std::make_shared<ControllerManager>();
-
+	m_RecourceManager= std::make_shared<ConvexMeshResourceManager>();
 	m_Physics->Initialize();
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
@@ -89,6 +90,7 @@ bool PhysxEngine::Initialize()
 	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
 	sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
+	m_RecourceManager->Initialize(m_Physics->GetPxPhysics());
 
 	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene);
 	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager.get());
@@ -260,4 +262,14 @@ void PhysxEngine::SetControllerVelocity(uint32_t entityID, VPMath::Vector3 veloc
 bool PhysxEngine::GetControllerIsFall(uint32_t entityID)
 {
 	return m_ControllerManager->GetController(entityID)->GetIsFall();
+}
+
+void PhysxEngine::LoadConvexMeshResource(const VPPhysics::ConvexMeshInfo& info)
+{
+	m_RecourceManager->LoadConvexMeshResource(info);
+}
+
+bool PhysxEngine::HasConvexMeshResource(const std::string& key)
+{
+	return 	m_RecourceManager->HasConvexMeshResource(key);
 }
