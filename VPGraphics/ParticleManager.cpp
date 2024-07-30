@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "ParticleManager.h"
+
+#include <memory>
+
 #include "ParticleObject.h"
 #include "Device.h"
 #include "ResourceManager.h"
 #include "TimeManager.h"
+
 
 
 void ParticleManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, TimeManager* timeManager)
@@ -11,18 +15,34 @@ void ParticleManager::Initialize(const std::shared_ptr<Device>& device, const st
 	m_Device = device;
 	m_ResourceManager = resourceManager;
 	m_TimeManager = timeManager;
-
-#pragma region TEST
-	// 하나만 생성하고 되는지 한번 보자.
-	m_TestParticle = std::make_shared<ParticleObject>(m_Device, m_ResourceManager);
-#pragma endregion
 }
 
-void ParticleManager::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void ParticleManager::Render()
 {
-	m_View = view;
-	m_Proj = proj;
+	for (const auto& object : m_ParticleObjects)
+	{
+		object.second->Update(m_TimeManager->GetDeltaTime(), m_TimeManager->GetTotalGameTime());
+		object.second->Draw();
+	}
+}
 
-	m_TestParticle->Update(m_TimeManager->GetDeltaTime(), m_TimeManager->GetTotalGameTime());
-	m_TestParticle->Draw(m_Device, m_View, m_Proj);
+void ParticleManager::CreateParticleObject(const uint32_t& id, const effect::ParticleInfo& info)
+{
+	m_ParticleObjects[id] = std::make_shared<ParticleObject>(m_Device, m_ResourceManager, info);
+	m_ParticleObjects[id]->SetParticleInfo(info);
+}
+
+void ParticleManager::DeleteParticleObjectByID(const uint32_t& id)
+{
+	if (m_ParticleObjects.find(id) != m_ParticleObjects.end())
+	{
+		m_ParticleObjects.erase(id);
+	}
+
+	m_ParticleObjects.erase(id);
+}
+
+void ParticleManager::UpdateParticleInfoByID(const uint32_t& id, const effect::ParticleInfo& info)
+{
+	m_ParticleObjects[id]->SetParticleInfo(info);
 }

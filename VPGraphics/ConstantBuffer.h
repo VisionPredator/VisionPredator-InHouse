@@ -71,20 +71,16 @@ ConstantBuffer<T>::~ConstantBuffer()
 	//Release();
 }
 
-
-
 template<typename T>
 void ConstantBuffer<T>::Update()
 {
 	m_Device.lock()->Context()->UpdateSubresource(m_buffer, 0, nullptr, &m_struct, 0, 0);
-
 }
 
 template<typename T>
 void ConstantBuffer<T>::Update(T cbstruct)
 {
 	m_struct = cbstruct;
-
 
 	m_Device.lock()->Context()->UpdateSubresource(m_buffer, 0, nullptr, &m_struct, 0, 0);
 }

@@ -35,7 +35,7 @@
 #include "Animator.h"
 #include "LightManager.h"
 #include "DebugDrawManager.h"
-//#include "ParticleManager.h"
+#include "ParticleManager.h"
 #include "TimeManager.h"
 #pragma endregion Manager
 
@@ -82,10 +82,12 @@ bool GraphicsEngine::Initialize()
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
 	
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager);
+	m_ParticleManager = std::make_shared<ParticleManager>();
+	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
+
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager);
 	m_PassManager->Initialize();
-	//m_ParticleManager = std::make_shared<ParticleManager>();
-	//m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
+
 	OnResize(m_hWnd);
 
 	InitializeImGui();
@@ -299,6 +301,21 @@ const double GraphicsEngine::GetDuration(std::wstring name)
 	return 0;
 }
 
+void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
+{
+	m_ParticleManager->CreateParticleObject(entityID, info);
+}
+
+void GraphicsEngine::UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
+{
+	m_ParticleManager->UpdateParticleInfoByID(entityID, info);
+}
+
+void GraphicsEngine::DeleteParticleObjectByID(const uint32_t& id)
+{
+	m_ParticleManager->DeleteParticleObjectByID(id);
+}
+
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
 {
 	m_DebugDrawManager->AddTask(info);
@@ -358,7 +375,9 @@ std::vector<DirectX::SimpleMath::Vector3> GraphicsEngine::GetVertices(std::wstri
 		return curFBX.lock()->vertices;
 	}
 
-	return;
+	/// 빌드 때문에 임시로 반환. 수정 요함.
+	std::vector<SimpleMath::Vector3> temp;
+	return temp;
 }
 
 void GraphicsEngine::OnResize(HWND hwnd)

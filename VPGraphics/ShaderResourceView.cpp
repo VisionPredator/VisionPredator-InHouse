@@ -37,6 +37,11 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 	HRESULT hr = S_OK;
 	if (strExtension == L".dds")
 	{
+		//HR_CHECK(DirectX::CreateDDSTextureFromFile(m_Device.lock()->Get(),
+		//	m_Device.lock()->Context(),
+		//	filePath.c_str(),
+		//	nullptr, &m_view));
+
 		(hr = DirectX::LoadFromDDSFile(filePath.c_str(), DirectX::DDS_FLAGS_NONE, &metadata1, scratchImage));
 	}
 	else if (strExtension == L".tga")
@@ -111,11 +116,6 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, const std
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(rtvTexture.Get(), &srvDesc, &m_view));
 }
 
-
-ShaderResourceView::~ShaderResourceView()
-{
-}
-
 ID3D11ShaderResourceView* ShaderResourceView::Get() const
 {
 	return m_view;
@@ -125,8 +125,6 @@ ID3D11ShaderResourceView** ShaderResourceView::GetAddress()
 {
 	return &m_view;
 }
-
-
 
 void ShaderResourceView::Release()
 {

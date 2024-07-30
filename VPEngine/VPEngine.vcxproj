@@ -182,6 +182,7 @@
     <ClInclude Include="GeometryComponent.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
+    <ClInclude Include="ParticleComponent.h" />
     <ClInclude Include="PhysicSystem.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="PlayerComponent.h" />

@@ -13,7 +13,7 @@
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
-#include "DebugGeometry.h"
+#include "vpGraphics.h"
 
 
 ///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
@@ -59,6 +59,11 @@ namespace Graphics
 		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") abstract;
 
 		virtual const double GetDuration(std::wstring name) abstract;
+
+		/// Effect
+		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
+		virtual void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
+		virtual void DeleteParticleObjectByID(const uint32_t& id) abstract;
 
 		/// Light
 		virtual void AddLight(uint32_t EntityID,LightType kind, LightData data) abstract;

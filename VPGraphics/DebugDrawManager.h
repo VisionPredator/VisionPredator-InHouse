@@ -8,7 +8,7 @@
 #include <directxtk/VertexTypes.h>
 #include <wrl/client.h>
 
-#include "DebugGeometry.h"
+#include "vpGraphics.h"
 
 using namespace DirectX;
 

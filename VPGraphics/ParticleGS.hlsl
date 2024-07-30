@@ -31,11 +31,11 @@ float3 RandUnitVec3(float offset)
 
 struct Particle
 {
-	float3 InitialPosW : POSITION;
-	float3 InitialVelW : VELOCITY;
-	float2 SizeW       : SIZE;
-	float Age : AGE;
-	uint Type          : TYPE;
+	float3	InitialPosW		: POSITION;
+	float3	InitialVelW		: VELOCITY;
+	float2	SizeW			: SIZE;
+	float	Age				: AGE;
+	uint	Type			: TYPE;
 };
 
 // The stream-out GS is just responsible for emitting 
@@ -47,36 +47,40 @@ struct Particle
 void StreamOutGS(point Particle gin[1],
 	inout PointStream<Particle> ptStream)
 {
+	// 현재 파티클의 나이 업데이트
 	gin[0].Age += gTimeStep;
 
+	// emitter 파티클인 경우
 	if (gin[0].Type == PT_EMITTER)
 	{
-		// time to emit a new particle?
+		// 새로운 파티클을 생성해야 하는 경우
 		if (gin[0].Age > 0.005f)
 		{
+			// 3D 공간에서 무작위 방향 벡터 생성
 			float3 vRandom = RandUnitVec3(0.0f);
+			// x및 y성분을 축소하여 범위를 제한
 			vRandom.x *= 0.5f;
 			vRandom.z *= 0.5f;
 
+			// 새로운 파티클을 생성하여 스트림에 추가
 			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
 			p.InitialVelW = 4.0f * vRandom;
-			p.SizeW = float2(3.0f, 3.0f);
-			p.Age = 0.0f;
-			p.Type = PT_FLARE;
-
+			p.SizeW = float2(3.0f, 3.0f);	// 크기 설정
+			p.Age = 0.0f;					// 나이 초기화
+			p.Type = PT_FLARE;				// 파티클 유형 설정
 			ptStream.Append(p);
 
-			// reset the time to emit
+			// emitter 파티클 나이 초기화
 			gin[0].Age = 0.0f;
 		}
 
-		// always keep emitters
+		// 방출기 입자 하나는 항상 유지한다.
 		ptStream.Append(gin[0]);
 	}
 	else
 	{
-		// Specify conditions to keep particle; this may vary from system to system.
+		// emitter 가 아닌 경우, 파티클의 나이가 1.0보다 작거나 같은 경우에만 현재 스트림에 추가한다.
 		if (gin[0].Age <= 1.0f)
 			ptStream.Append(gin[0]);
 	}

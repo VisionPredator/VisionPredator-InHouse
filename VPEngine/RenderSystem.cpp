@@ -13,6 +13,7 @@ RenderSystem::RenderSystem(SceneManager* sceneManager)
 
 void RenderSystem::OnAddedComponent(std::any data)
 {
+	// Static Mesh
 	auto comp = std::any_cast<Component*>(data);
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
@@ -27,7 +28,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		return;
 	}
 
-	//Skinned
+	// Skinned Mesh
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
@@ -45,13 +46,22 @@ void RenderSystem::OnAddedComponent(std::any data)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
 	{
 		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
-
 		auto IDComp = meshComponent->GetComponent<IDComponent>();
 
 		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
 		return;
-	}
-}
+	}	// Particle Object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
+	{
+		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
+		std::string Path;
+		Path.assign(component->TexturePath.begin(), component->TexturePath.end());
+
+		effect::ParticleInfo info;
+		info.TexturePath = Path;
+		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
+		return;
+	}}
 
 void RenderSystem::OnReleasedComponent(std::any data)
 {
@@ -115,6 +125,14 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		temp.useTexture = GeoComp.UseTexture;
 		temp.textureName = temp.textureName.assign(GeoComp.TextureName.begin(),GeoComp.TextureName.end());
 		m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
+	}
+	for (ParticleComponent& component : COMPITER(ParticleComponent))
+	{
+		effect::ParticleInfo info;
+		info.TexturePath = component.TexturePath;
+		info.MaxParticles = component.MaxParticle;
+
+		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 }
 
