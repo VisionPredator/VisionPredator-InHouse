@@ -85,7 +85,7 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
 
 		if (m_Info.TexturePath.empty())
-			m_Info.TexturePath = "../../../Resource/Texture/flare0.dds";
+			m_Info.TexturePath = "flare0.dds";
 		m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 		
 		// 랜덤 텍스처 생성
@@ -102,7 +102,7 @@ void ParticleObject::Update(const float& deltaTime, const float& totalGameTime)
 	m_Age += deltaTime;
 
 	if (m_Info.TexturePath.empty())
-		m_Info.TexturePath = "../../../Resource/Texture/flare0.dds";
+		m_Info.TexturePath = "flare0.dds";
 	m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 }
 
@@ -115,13 +115,10 @@ void ParticleObject::Draw()
 	UINT offset = 0;
 
 	Matrix viewInvert = CameraCB->m_struct.view.Invert().Transpose();
-	Matrix VP = CameraCB->m_struct.view * CameraCB->m_struct.proj;
-
-	Matrix VPTTT = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
-	VPTTT = VPTTT.Transpose();
+	Matrix VP = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
 
 	// CB data 갱신
-	m_PerFrame.ViewProj = VPTTT;
+	m_PerFrame.ViewProj = VP.Transpose();
 	m_PerFrame.GameTime = m_TotalGameTime;
 	m_PerFrame.TimeStep = m_TimeStep;
 	m_PerFrame.EyePosW = viewInvert.Translation();
@@ -142,17 +139,17 @@ void ParticleObject::Draw()
 	// Bind Shader's resources
 	context->VSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->VSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
-	context->VSSetShaderResources(0, 1, m_TexArraySRV.GetAddressOf());
+	context->VSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->VSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->GSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->GSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
-	context->GSSetShaderResources(0, 1, m_TexArraySRV.GetAddressOf());
+	context->GSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->GSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->PSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->PSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
-	context->PSSetShaderResources(0, 1, m_TexArraySRV.GetAddressOf());
+	context->PSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->PSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->VSSetShader(m_StreamOutVS->GetVS(), nullptr, 0);

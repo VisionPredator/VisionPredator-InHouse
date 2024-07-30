@@ -301,6 +301,11 @@ void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect
 	m_ParticleManager->CreateParticleObject(entityID, info);
 }
 
+void GraphicsEngine::UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
+{
+	m_ParticleManager->UpdateParticleInfoByID(entityID, info);
+}
+
 void GraphicsEngine::DeleteParticleObjectByID(const uint32_t& id)
 {
 	m_ParticleManager->DeleteParticleObjectByID(id);

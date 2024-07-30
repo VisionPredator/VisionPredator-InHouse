@@ -55,6 +55,7 @@ public:
 
 	/// Particle
 	void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
+	void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
 	void DeleteParticleObjectByID(const uint32_t& id) override;
 
 	/// Light

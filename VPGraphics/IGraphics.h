@@ -62,6 +62,7 @@ namespace Graphics
 
 		/// Effect
 		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
+		virtual void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
 		virtual void DeleteParticleObjectByID(const uint32_t& id) abstract;
 
 		/// Light

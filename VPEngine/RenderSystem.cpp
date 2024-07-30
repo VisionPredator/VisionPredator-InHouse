@@ -103,6 +103,13 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		SkincompRender(skinComp);
 	}
 
+	for (ParticleComponent& component : COMPITER(ParticleComponent))
+	{
+		effect::ParticleInfo info;
+		info.TexturePath = component.TexturePath;
+
+		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+	}
 }
 
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
