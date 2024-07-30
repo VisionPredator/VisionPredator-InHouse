@@ -6,6 +6,26 @@ DynamicRigidBody::DynamicRigidBody(VPPhysics::EColliderType colltype, uint32_t e
 {
 }
 
+DynamicRigidBody::~DynamicRigidBody()
+{
+	physx::PxShape* shape;
+	m_DynamicRigid->getShapes(&shape, 1);
+	physx::PxMaterial* material = nullptr;
+	if (shape)
+	{
+		PxU32 materialCount = shape->getNbMaterials();
+		PxMaterial** materials = new PxMaterial * [materialCount];
+		shape->getMaterials(materials, materialCount);
+		m_DynamicRigid->detachShape(*shape);
+		for (PxU32 i = 0; i < materialCount; ++i)
+		{
+			materials[i]->release();
+		}
+		delete[] materials;
+	}
+	m_DynamicRigid->release();
+}
+
 bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, VPPhysics::CollisionData* data)
 {
 	if (m_ColliderType == EColliderType::COLLISION)

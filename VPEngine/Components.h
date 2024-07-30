@@ -10,3 +10,5 @@
 #include "AnimationComponent.h"
 #include "RigidBodyComponent.h"
 #include "ParticleComponent.h"
+#include "ControllerComponent.h"
+#include "GeometryComponent.h"

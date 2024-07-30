@@ -20,7 +20,12 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resourc
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename) : Resource(device), m_tex(nullptr)
 {
+#ifdef _DEBUG
 	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
+#else
+	const std::wstring filePath = L"..\\Data\\Texture\\" + filename;
+#endif
+
 
 	std::filesystem::path _path(filename);
 	std::wstring strExtension = _path.extension();

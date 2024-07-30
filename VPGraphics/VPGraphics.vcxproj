@@ -192,6 +192,7 @@
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="FinalPass.h" />
+    <ClInclude Include="GeoMetryPass.h" />
     <ClInclude Include="GeometryShader.h" />
     <ClInclude Include="ForwardPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
@@ -258,6 +259,7 @@
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="FinalPass.cpp" />
     <ClCompile Include="ForwardPass.cpp" />
+    <ClCompile Include="GeoMetryPass.cpp" />
     <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />

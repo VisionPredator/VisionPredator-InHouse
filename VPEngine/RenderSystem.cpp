@@ -43,7 +43,14 @@ void RenderSystem::OnAddedComponent(std::any data)
 		return;
 	}
 
-	// Particle Object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
+	{
+		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
+		auto IDComp = meshComponent->GetComponent<IDComponent>();
+
+		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
+		return;
+	}	// Particle Object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
 	{
 		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
@@ -54,9 +61,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.TexturePath = Path;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
-	}
-
-}
+	}}
 
 void RenderSystem::OnReleasedComponent(std::any data)
 {
@@ -79,9 +84,10 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	}
 
 	//
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
 	{
-		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
+		m_Graphics->EraseObject(meshComponent->GetEntityID());
 
 		return;
 	}
@@ -103,6 +109,23 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		SkincompRender(skinComp);
 	}
 
+	for (GeometryComponent& GeoComp : COMPITER(GeometryComponent))
+	{
+		RenderData temp;
+		temp.color.x = GeoComp.color.x;
+		temp.color.y = GeoComp.color.y;
+		temp.color.z = GeoComp.color.z;
+		temp.color.w = GeoComp.UseTexture;
+
+		IDComponent* idComp = GeoComp.GetComponent<IDComponent>();
+		temp.EntityID = idComp->GetEntityID();
+		temp.Pass = GeoComp.pass;
+		temp.Filter = GeoComp.FBXFilter;
+		temp.world = GeoComp.GetComponent<TransformComponent>()->WorldTransform;
+		temp.useTexture = GeoComp.UseTexture;
+		temp.textureName = temp.textureName.assign(GeoComp.TextureName.begin(),GeoComp.TextureName.end());
+		m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
+	}
 	for (ParticleComponent& component : COMPITER(ParticleComponent))
 	{
 		effect::ParticleInfo info;

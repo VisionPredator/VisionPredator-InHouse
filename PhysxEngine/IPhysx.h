@@ -27,7 +27,12 @@ public:
 	virtual VPMath::Vector3 GetGobalLocation(uint32_t entityID) abstract;
 	virtual VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) abstract;
 
-
+	virtual void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo) abstract;
+	virtual void RemoveController(uint32_t entityID) abstract;
+	virtual void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) abstract;
+	virtual void SetControllerVelocity(uint32_t entityID,VPMath::Vector3 velocity) abstract;
+	virtual VPMath::Vector3 GetControllerGobalPose(uint32_t entityID) abstract;
+	virtual bool GetControllerIsFall(uint32_t entityID) abstract;
 
 	virtual void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) abstract;
 	virtual VPMath::Vector3 GetVelocity(uint32_t entityID)abstract;

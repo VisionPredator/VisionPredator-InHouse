@@ -85,6 +85,10 @@ namespace Graphics
 		
 		///Editor 전용
 		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
+
+
+		///물리 전용
+		virtual std::vector<DirectX::SimpleMath::Vector3> GetVertices(std::wstring fbx) abstract;
 	};
 
 }

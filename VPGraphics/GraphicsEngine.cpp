@@ -240,11 +240,16 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 		break;
 
 		case MeshFilter::Box:
+		{
+			m_RenderList[EntityID]->color = data.color;
+			m_RenderList[EntityID]->useTexture = data.useTexture;
+			m_RenderList[EntityID]->textureName = std::move(data.textureName);
+			m_RenderList[EntityID]->Pass = PassState::GeoMetry; 
+		}
+			break;
 		case MeshFilter::Static:
 		case MeshFilter::Skinning:
 		{
-			//test
-			//m_RenderList[EntityID]->Pass = PassState::Forward;
 		}
 		break;
 
@@ -359,6 +364,20 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 {
 	return m_ResourceManager->Get<ShaderResourceView>(name).lock()->Get();
+}
+
+std::vector<DirectX::SimpleMath::Vector3> GraphicsEngine::GetVertices(std::wstring fbx)
+{
+	std::weak_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx);
+
+	if (curFBX.lock() != nullptr)
+	{
+		return curFBX.lock()->vertices;
+	}
+
+	/// 빌드 때문에 임시로 반환. 수정 요함.
+	std::vector<SimpleMath::Vector3> temp;
+	return temp;
 }
 
 void GraphicsEngine::OnResize(HWND hwnd)

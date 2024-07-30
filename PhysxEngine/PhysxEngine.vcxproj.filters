@@ -28,27 +28,42 @@
     <Filter Include="struct\RigidBody\Static">
       <UniqueIdentifier>{ed0d3259-b3dd-4863-9a46-f1cd6367cb1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{324c4a4b-88ba-4a2f-8ba1-9c9d35df9fd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\CCT">
+      <UniqueIdentifier>{b40d58f1-8b10-42cd-baae-4e487b4ef929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Coll">
+      <UniqueIdentifier>{8fae600b-81c8-459c-97b5-90b61ff7d69b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Rigid">
+      <UniqueIdentifier>{81737889-0531-4cdf-85dc-717aa0a51b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{ca3fcbf7-7e58-4294-a845-670db89160a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Basic">
+      <UniqueIdentifier>{c27636a7-9844-4a97-bd5b-10303e986760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Engine">
+      <UniqueIdentifier>{bc19eddc-5ba7-4b86-b706-3ef1edcc50ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Callback">
+      <UniqueIdentifier>{7ac34f1d-97e0-4846-b8a7-b6f9751b505a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{bb88fb99-45b0-4b69-a5b2-a0c6b898afe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Controller">
+      <UniqueIdentifier>{b2173a4e-ed1c-46fc-b702-d797ef469356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Controller\Capsule">
+      <UniqueIdentifier>{2af42363-2950-4bbe-b5ee-3419ae5049ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysxEngine.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="IPhysx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBodyManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysxColliManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="VPPhysicsStructs.h">
@@ -63,29 +78,44 @@
     <ClInclude Include="StaticRigidBody.h">
       <Filter>struct\RigidBody\Static</Filter>
     </ClInclude>
+    <ClInclude Include="ControllerManager.h">
+      <Filter>Manager\CCT</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Manager\Coll</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyManager.h">
+      <Filter>Manager\Rigid</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>struct\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Main\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="IPhysx.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysxEngine.h">
+      <Filter>Main\Engine</Filter>
+    </ClInclude>
     <ClInclude Include="CollisionCallback.h">
+      <Filter>struct\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleController.h">
+      <Filter>struct\Controller\Capsule</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerQueryFilterCallback.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CharactorController.h">
+    <ClInclude Include="ControllerHitCallback.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysxEngine.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="IPhysx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysxColliManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="VPPhysicsStructs.cpp">
       <Filter>struct\Struct</Filter>
     </ClCompile>
@@ -98,13 +128,40 @@
     <ClCompile Include="StaticRigidBody.cpp">
       <Filter>struct\RigidBody\Static</Filter>
     </ClCompile>
+    <ClCompile Include="ControllerManager.cpp">
+      <Filter>Manager\CCT</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Manager\Coll</Filter>
+    </ClCompile>
     <ClCompile Include="RigidBodyManager.cpp">
-      <Filter>struct\RigidBody</Filter>
+      <Filter>Manager\Rigid</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>struct\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Main\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysxEngine.cpp">
+      <Filter>Main\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="IPhysx.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="CollisionCallback.cpp">
+      <Filter>struct\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleController.cpp">
+      <Filter>struct\Controller\Capsule</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerQueryFilterCallback.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CharactorController.cpp">
+    <ClCompile Include="ControllerHitCallback.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
