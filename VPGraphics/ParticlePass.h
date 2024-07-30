@@ -11,7 +11,7 @@ public:
 		const std::shared_ptr<class ParticleManager>& particleManager,
 		TimeManager* timeManager);
 
-	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Render();
 
 private:
 	std::shared_ptr<Device> m_Device;

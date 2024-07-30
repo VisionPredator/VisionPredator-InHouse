@@ -20,7 +20,7 @@ class PassManager
 {
 public:
 	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-		const std::shared_ptr<ParticleManager>& particleManager, TimeManager* timeManager, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+		const std::shared_ptr<ParticleManager>& particleManager);
 	~PassManager();
 
 	void Initialize();

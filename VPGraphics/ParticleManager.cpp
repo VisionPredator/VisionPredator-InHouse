@@ -17,12 +17,12 @@ void ParticleManager::Initialize(const std::shared_ptr<Device>& device, const st
 	m_TimeManager = timeManager;
 }
 
-void ParticleManager::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void ParticleManager::Render()
 {
 	for (const auto& object : m_ParticleObjects)
 	{
 		object.second->Update(m_TimeManager->GetDeltaTime(), m_TimeManager->GetTotalGameTime());
-		object.second->Draw(view, proj);
+		object.second->Draw();
 	}
 }
 

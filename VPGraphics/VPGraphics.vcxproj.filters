@@ -262,9 +262,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ViewPort.h" />
-    <ClInclude Include="CameraManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -406,9 +403,6 @@
       <Filter>Utils\Source</Filter>
     </ClCompile>
     <ClCompile Include="ViewPort.cpp" />
-    <ClCompile Include="CameraManager.cpp">
-      <Filter>Manager\Source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">

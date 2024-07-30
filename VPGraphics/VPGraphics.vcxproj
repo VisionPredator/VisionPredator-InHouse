@@ -179,7 +179,6 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="BlendState.h" />
-    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="CBuffer.h" />
     <ClInclude Include="CommonInclude.h" />
     <ClInclude Include="ConstantBuffer.h" />
@@ -249,7 +248,6 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BlendState.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="D3DUtill.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />

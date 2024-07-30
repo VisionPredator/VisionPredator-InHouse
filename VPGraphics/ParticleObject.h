@@ -42,7 +42,7 @@ public:
 	~ParticleObject() = default;
 
 	void Update(const float& deltaTime, const float& totalGameTime);
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw();
 	
 	void SetParticleInfo(const effect::ParticleInfo& info) { m_Info = info; }
 

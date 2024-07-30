@@ -85,7 +85,7 @@ bool GraphicsEngine::Initialize()
 	m_ParticleManager = std::make_shared<ParticleManager>();
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager, m_TimeManager, m_View, m_Proj);
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager);
 	m_PassManager->Initialize();
 
 	OnResize(m_hWnd);

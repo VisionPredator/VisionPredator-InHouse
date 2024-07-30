@@ -15,8 +15,8 @@
 #include "Slot.h"
 
 PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-	const std::shared_ptr<ParticleManager>& particleManager, TimeManager* timeManager, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
-	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager), m_View(view), m_Proj(proj)
+	const std::shared_ptr<ParticleManager>& particleManager)
+	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager)
 {
 	m_ParticlePass = std::make_shared<ParticlePass>();
 }
@@ -65,7 +65,7 @@ void PassManager::Render()
 
 	m_Passes[PassState::Forward]->Render();
 
-	m_ParticlePass->Render(m_View, m_Proj);
+	m_ParticlePass->Render();
 }
 
 void PassManager::OnResize()

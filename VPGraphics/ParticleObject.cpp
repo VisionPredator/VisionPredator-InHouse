@@ -106,7 +106,7 @@ void ParticleObject::Update(const float& deltaTime, const float& totalGameTime)
 	m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 }
 
-void ParticleObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void ParticleObject::Draw()
 {
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context = m_Device->Context();
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
@@ -114,20 +114,14 @@ void ParticleObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	UINT stride = sizeof(ParticleVertex);
 	UINT offset = 0;
 
-	Matrix viewview = CameraCB->m_struct.view;
-	Matrix projproj = CameraCB->m_struct.proj;
-
-	Matrix projTranspose = projproj.Transpose();
-	Matrix viewTranspose = viewview.Transpose();
-
-	Matrix projInvert = projproj.Invert();
-	Matrix viewInvert = viewview.Invert().Transpose();
+	Matrix viewInvert = CameraCB->m_struct.view.Invert().Transpose();
 	Matrix VP = CameraCB->m_struct.view * CameraCB->m_struct.proj;
 
-	VP = viewTranspose * projTranspose;
+	Matrix VPTTT = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
+	VPTTT = VPTTT.Transpose();
 
 	// CB data °»½Å
-	m_PerFrame.ViewProj = VP.Transpose();
+	m_PerFrame.ViewProj = VPTTT;
 	m_PerFrame.GameTime = m_TotalGameTime;
 	m_PerFrame.TimeStep = m_TimeStep;
 	m_PerFrame.EyePosW = viewInvert.Translation();

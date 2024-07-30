@@ -12,7 +12,7 @@ public:
 	void Initialize(const std::shared_ptr<class Device>& device, 
 		const std::shared_ptr<class ResourceManager>& resourceManager, TimeManager* timeManager);
 
-	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Render();
 
 	void CreateParticleObject(const uint32_t& id, const effect::ParticleInfo& info);
 	void DeleteParticleObjectByID(const uint32_t& id);
