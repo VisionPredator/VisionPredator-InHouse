@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ControllerQueryFilterCallback.h"
 
-ControllerQueryFilterCallback::ControllerQueryFilterCallback(physx::PxFilterData* filterData) : m_FilterData(filterData)
+ControllerQueryFilterCallback::ControllerQueryFilterCallback(std::shared_ptr<physx::PxFilterData> filterData) : m_FilterData(filterData)
 {
 }
 

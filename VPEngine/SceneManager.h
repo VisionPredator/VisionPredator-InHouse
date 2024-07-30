@@ -29,7 +29,7 @@ public:
 
 
 	template<typename T>
-	bool HasComponent(uint32_t EntityID) 
+	bool HasComponent(uint32_t EntityID)
 	{
 		if (!HasEntity(EntityID))
 			return false;
@@ -76,7 +76,7 @@ public:
 	inline std::vector<T*> GetComponentPool();
 
 	void AddChild(uint32_t Parent, uint32_t Child);
-	void RemoveParent(uint32_t child,bool Immediate = false);
+	void RemoveParent(uint32_t child, bool Immediate = false);
 protected:
 	friend class CompIter;
 private:
@@ -90,9 +90,9 @@ private:
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
 
-	void SetEntityMap(uint32_t entityID, Entity* entity)			{ m_CurrentScene->EntityMap[entityID] = entity; }
+	void SetEntityMap(uint32_t entityID, Entity* entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
-	void AddCompToPool(Component* comp); 
+	void AddCompToPool(Component* comp);
 	// 새로운 씬을 연다.
 	void OnNewScene(std::any data);
 
@@ -138,7 +138,7 @@ private:
 	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
 	Scene* m_CurrentScene = nullptr;
-	
+
 	friend class Toolbar;
 };
 

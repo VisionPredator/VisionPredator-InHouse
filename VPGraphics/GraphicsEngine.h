@@ -78,7 +78,7 @@ public:
 	ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
 
 	///¹°¸®
-	virtual std::vector<DirectX::SimpleMath::Vector3> GetVertices(std::wstring fbx) override;
+	virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) override;
 
 
 protected:

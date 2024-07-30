@@ -25,7 +25,7 @@ void VPRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
 	entt::meta<EPhysicsLayer>().prop(Reflection::Prop::Name, "EPhysicsLayer").conv<std::underlying_type_t<EPhysicsLayer>>().data<EPhysicsLayer::GROUND >("EPhysicsLayer::GROUND"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::GROUND").data<EPhysicsLayer::WALL >("EPhysicsLayer::WALL"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::WALL").data<EPhysicsLayer::TOP >("EPhysicsLayer::TOP"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TOP").data<EPhysicsLayer::PLAYER >("EPhysicsLayer::PLAYER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::PLAYER").data<EPhysicsLayer::OBJECT >("EPhysicsLayer::OBJECT"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::OBJECT").data<EPhysicsLayer::ENEMY >("EPhysicsLayer::ENEMY"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ENEMY").data<EPhysicsLayer::DOOR >("EPhysicsLayer::DOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::DOOR").data<EPhysicsLayer::ACTIVEDOOR >("EPhysicsLayer::ACTIVEDOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ACTIVEDOOR").data<EPhysicsLayer::TRIGGER >("EPhysicsLayer::TRIGGER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TRIGGER");
-	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE);
+	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
 	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::GeoMetry);
 
 }
@@ -140,7 +140,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
 NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
 {VPPhysics::EColliderShape::BOX,"BOX" },
 {VPPhysics::EColliderShape::SPHERE,"SPHERE" },
-{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" } });
+{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
+{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
+	
+	});
 
 
 

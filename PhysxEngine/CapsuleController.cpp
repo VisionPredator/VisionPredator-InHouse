@@ -21,8 +21,8 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
 	desc.position.y = info.position.y;
 	desc.position.z = info.position.z;
 	desc.material = m_Material;
-	m_ControllerHitCallback = new ControllerHitCallback;
-	desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback);
+	m_ControllerHitCallback = std::make_shared<ControllerHitCallback>();
+	desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback.get());
 	m_Controller= controllerManager->createController(desc);
 
 	physx::PxRigidDynamic* body = m_Controller->getActor();

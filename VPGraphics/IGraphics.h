@@ -88,7 +88,7 @@ namespace Graphics
 
 
 		///물리 전용
-		virtual std::vector<DirectX::SimpleMath::Vector3> GetVertices(std::wstring fbx) abstract;
+		virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) abstract;
 	};
 
 }

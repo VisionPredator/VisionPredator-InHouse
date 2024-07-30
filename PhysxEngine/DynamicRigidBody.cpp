@@ -26,7 +26,7 @@ DynamicRigidBody::~DynamicRigidBody()
 	m_DynamicRigid->release();
 }
 
-bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics, VPPhysics::CollisionData* data)
+bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics)
 {
 	if (m_ColliderType == EColliderType::COLLISION)
 	{
@@ -37,9 +37,9 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 		shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
 		shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
-	data->myId = m_EntityID;
-	data->myLayerNumber = m_LayerNum;
-	shape->userData = data;
+	//data->myId = m_EntityID;
+	//data->myLayerNumber = m_LayerNum;
+	//shape->userData = data;
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);
 	physx::PxTransform transform;
@@ -66,7 +66,7 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[1] << 4) |
 		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[2] << 5));
 
-	m_DynamicRigid->userData = data;
+	//m_DynamicRigid->userData = data;
 	if (m_DynamicRigid == nullptr)
 		return false;
 

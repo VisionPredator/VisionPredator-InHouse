@@ -19,6 +19,8 @@
 #include <filesystem>
 #include <iostream>
 #include <algorithm>
+#include "../VPEngine/VisPredMath.h"
+namespace VPMath = VisPred::SimpleMath;
 
 #include "SimpleMath.h"
 
