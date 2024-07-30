@@ -107,6 +107,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	{
 		effect::ParticleInfo info;
 		info.TexturePath = component.TexturePath;
+		info.MaxParticles = component.MaxParticle;
 
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
