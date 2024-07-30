@@ -4,10 +4,6 @@
             "EntityID": 3942762984,
             "Component": [
                 {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
-                },
-                {
                     "BoxInfo": {
                         "Extent": {
                             "x": 1.0,
@@ -52,6 +48,15 @@
                     }
                 },
                 {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "cerberus.fbx",
+                    "FBXFilter": "Static"
+                },
+                {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
@@ -69,17 +74,16 @@
                         "y": 5.0,
                         "z": 5.0
                     }
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx",
-                    "FBXFilter": "Static"
                 }
             ]
         },
         {
             "EntityID": 2900020491,
             "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
                 {
                     "BoxInfo": {
                         "Extent": {
@@ -123,10 +127,6 @@
                     "SphereInfo": {
                         "Radius": 1.0
                     }
-                },
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
                 },
                 {
                     "ComponentID": 3400599862,

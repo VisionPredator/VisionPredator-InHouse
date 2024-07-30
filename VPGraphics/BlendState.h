@@ -12,7 +12,7 @@ enum class BlendStateType
 class BlendState : public Resource
 {
 public:
-	BlendState(const std::shared_ptr<Device>& device, const BlendStateType& type);
+	BlendState(const std::shared_ptr<Device>& device, const BlendStateType& type = BlendStateType::Default);
 
 	void Release() override {}
 

@@ -1,18 +1,25 @@
 #include "pch.h"
 #include "PassManager.h"
 
+#include <memory>
+
 #include "ModelData.h"
 #include "ResourceManager.h"
 #include "DebugDrawManager.h"
+#include "ParticleManager.h"
+#include "TimeManager.h"
+
+#include "ParticlePass.h"
+#include "GeoMetryPass.h"
 
 #include "StaticData.h"
 #include "Slot.h"
 
-#include "GeoMetryPass.h"
-
-PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug) : m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug)
+PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
+	const std::shared_ptr<ParticleManager>& particleManager)
+	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager)
 {
-
+	m_ParticlePass = std::make_shared<ParticlePass>();
 }
 
 PassManager::~PassManager()
@@ -31,8 +38,10 @@ void PassManager::Initialize()
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Forward, std::make_shared<ForwardPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::GeoMetry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
-}
 
+	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
+
+}
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
 {
@@ -59,6 +68,8 @@ void PassManager::Render()
 
 
 	m_Passes[PassState::Forward]->Render();
+
+	m_ParticlePass->Render();
 }
 
 void PassManager::OnResize()

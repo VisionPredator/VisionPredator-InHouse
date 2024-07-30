@@ -192,6 +192,9 @@
     <ClInclude Include="GeometryComponent.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleComponent.h">
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">

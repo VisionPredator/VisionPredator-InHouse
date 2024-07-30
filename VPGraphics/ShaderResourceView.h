@@ -11,7 +11,7 @@ public:
 	ShaderResourceView(std::shared_ptr<Device>device, std::weak_ptr<RenderTargetView> rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
 	ShaderResourceView(std::shared_ptr<Device> device, RenderTargetView* rtv);
 	ShaderResourceView(std::shared_ptr<Device> device, const std::shared_ptr<RenderTargetView>& rtv);
-	~ShaderResourceView();
+	~ShaderResourceView() = default;
 
 	ID3D11ShaderResourceView* Get() const;
 	ID3D11ShaderResourceView** GetAddress();

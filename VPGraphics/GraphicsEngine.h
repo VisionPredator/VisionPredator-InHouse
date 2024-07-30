@@ -36,28 +36,32 @@ public:
 	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
 	~GraphicsEngine();
 
-	virtual bool Initialize() override;
-	virtual void Update(double dt) override;
-	virtual bool Finalize() override;
-	virtual void BeginRender() override;
-	virtual void Render() override;
-	virtual void EndRender() override;
+	bool Initialize() override;
+	void Update(double dt) override;
+	bool Finalize() override;
+	void BeginRender() override;
+	void Render() override;
+	void EndRender() override;
 
-	virtual void OnResize(HWND hwnd) override;
+	void OnResize(HWND hwnd) override;
 
-	virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
-	virtual void EraseObject(uint32_t EntityID) override;
+	void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 
-	virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-	virtual void UpdateModel(uint32_t EntityID, RenderData& data)override;
+	/// Model
+	bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
+	void EraseObject(uint32_t EntityID) override;
+	void UpdateModel(uint32_t EntityID, RenderData& data)override;
+	const double GetDuration(std::wstring name) override;
 
+	/// Particle
+	void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
+	void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
+	void DeleteParticleObjectByID(const uint32_t& id) override;
 
-	virtual void AddLight(uint32_t EntityID, LightType kind, LightData data) override;
-	virtual void EraseLight(uint32_t EntityID, LightType kind) override;
-
-	virtual void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) override;
-
-	virtual const double GetDuration(std::wstring name) override;
+	/// Light
+	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;
+	void EraseLight(uint32_t EntityID, LightType kind) override;
+	void UpdateLightData(uint32_t EntityID, LightType kind, LightData data) override;
 
 	/// Debug Draw
 	void DrawSphere(const debug::SphereInfo& info) override;
@@ -71,7 +75,7 @@ public:
 	void DrawRay(const debug::RayInfo& info) override;
 
 	///Editor
-	virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
+	ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
 
 	///¹°¸®
 	virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) override;
@@ -94,7 +98,7 @@ private:
 	std::shared_ptr<Animator> m_Animator;
 	std::shared_ptr<LightManager> m_LightManager;
 	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
-	//std::shared_ptr<class ParticleManager> m_ParticleManager;
+	std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
 
 private:
@@ -116,6 +120,4 @@ private:
 	void BeginImGui();
 	void EndImGui();
 	void DestroyImGui();
-
-
 };

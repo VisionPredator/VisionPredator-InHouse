@@ -60,9 +60,8 @@ void DebugPass::Render()
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 
-	std::weak_ptr<ConstantBuffer<CameraData>> Camera = resourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
-	XMStoreFloat4x4(&m_View, XMMatrixTranspose(Camera.lock()->m_struct.view));
-	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(Camera.lock()->m_struct.proj));
+	XMStoreFloat4x4(&m_View, XMMatrixTranspose(CameraCB->m_struct.view));
+	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(CameraCB->m_struct.proj));
 	Device->Context()->OMSetRenderTargets(1, m_RTV.lock()->GetAddress(), DSV->Get());
 
 	while (!m_RenderDataQueue.empty())

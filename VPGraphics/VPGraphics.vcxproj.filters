@@ -58,42 +58,6 @@
     <Filter Include="GraphicsEngine\Common">
       <UniqueIdentifier>{50d90ac0-98ae-4fa5-8425-f9e4847a21e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\CB">
-      <UniqueIdentifier>{cdacdb04-eaee-4f5f-8730-6b6c3e4297bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\DSV">
-      <UniqueIdentifier>{7d03ec09-b781-4d86-b514-e33f2d2843b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\PS">
-      <UniqueIdentifier>{a00940c9-7d77-4f31-9720-8e00f2c7378b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\IB">
-      <UniqueIdentifier>{e80f7d1d-4605-4e6e-8356-e08ba878a688}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\RS">
-      <UniqueIdentifier>{fbcdfc8b-300b-4b5e-b4e9-20a20232b57b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\VB">
-      <UniqueIdentifier>{7c04d2b4-9519-43cd-8959-345de0b7f67c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\VS">
-      <UniqueIdentifier>{650dc9c8-1391-404d-aaf5-361aac633a71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\Sampler">
-      <UniqueIdentifier>{053341f8-6099-4484-a15e-b4e526cf4c39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\RTV">
-      <UniqueIdentifier>{84812f59-c6e6-4d54-9f54-f3295763c85f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\SRV">
-      <UniqueIdentifier>{19a30a7c-685b-4fec-a742-bd9fe6c2f9f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\Texture2D">
-      <UniqueIdentifier>{9af15107-859a-44eb-a26c-6c1dbfd4247b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\ViewPort">
-      <UniqueIdentifier>{f9625000-8622-4dce-8590-3017be116282}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HLSL\GS">
       <UniqueIdentifier>{97d743dc-a32d-4f85-9f7b-a8d1dfbda007}</UniqueIdentifier>
     </Filter>
@@ -117,6 +81,18 @@
     </Filter>
     <Filter Include="Pass\Geometry">
       <UniqueIdentifier>{48f817f3-1536-469d-bbf3-86d893abb472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Source">
+      <UniqueIdentifier>{a9f68f90-3555-47d5-8714-f3a05f033ed9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Interface\Source">
+      <UniqueIdentifier>{b02ee04b-1427-49b2-b54b-9400bd789c16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Source">
+      <UniqueIdentifier>{d4dd875c-e90b-4c4e-b74d-77649d590103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Source">
+      <UniqueIdentifier>{389af529-35c7-44c0-853a-5f833afa4644}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -189,7 +165,7 @@
     <ClInclude Include="Shader.h">
       <Filter>Resource\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="DebugGeometry.h">
+    <ClInclude Include="vpGraphics.h">
       <Filter>GraphicsEngine\Common</Filter>
     </ClInclude>
     <ClInclude Include="Defines.h">
@@ -201,44 +177,11 @@
     <ClInclude Include="CommonInclude.h">
       <Filter>GraphicsEngine\Common</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>Resource\CB</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilView.h">
-      <Filter>Resource\DSV</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShader.h">
-      <Filter>Resource\PS</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>Resource\IB</Filter>
-    </ClInclude>
     <ClInclude Include="Slot.h">
       <Filter>StaticData</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Resource\VB</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Resource\VS</Filter>
-    </ClInclude>
-    <ClInclude Include="Sampler.h">
-      <Filter>Resource\Sampler</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTargetView.h">
-      <Filter>Resource\RTV</Filter>
-    </ClInclude>
     <ClInclude Include="RenderPass.h">
       <Filter>Pass</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderState.h">
-      <Filter>Resource\RS</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderResourceView.h">
-      <Filter>Resource\SRV</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Resource\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="FinalPass.h">
       <Filter>Pass\Common</Filter>
@@ -252,9 +195,6 @@
     <ClInclude Include="ParticleObject.h">
       <Filter>GraphicsEngine</Filter>
     </ClInclude>
-    <ClInclude Include="ViewPort.h">
-      <Filter>Resource\ViewPort</Filter>
-    </ClInclude>
     <ClInclude Include="GeometryShader.h">
       <Filter>Resource</Filter>
     </ClInclude>
@@ -263,9 +203,6 @@
     </ClInclude>
     <ClInclude Include="BlendState.h">
       <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewPort.h">
-      <Filter>Resource\ViewPort</Filter>
     </ClInclude>
     <ClInclude Include="ForwardPass.h">
       <Filter>Pass\Forward</Filter>
@@ -291,6 +228,46 @@
     <ClInclude Include="GeoMetryPass.h">
       <Filter>Pass\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderResourceView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderState.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -323,89 +300,14 @@
     <ClCompile Include="TransparentPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Resource\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource.cpp">
-      <Filter>Resource\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Resource\Interface</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>GraphicsEngine\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelData.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Resource\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>Resource\CB</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilView.cpp">
-      <Filter>Resource\DSV</Filter>
-    </ClCompile>
-    <ClCompile Include="PixelShader.cpp">
-      <Filter>Resource\PS</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>Resource\IB</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderState.cpp">
-      <Filter>Resource\RS</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Resource\VB</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Resource\VS</Filter>
-    </ClCompile>
-    <ClCompile Include="Sampler.cpp">
-      <Filter>Resource\Sampler</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTargetView.cpp">
-      <Filter>Resource\RTV</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderResourceView.cpp">
-      <Filter>Resource\SRV</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture2D.cpp">
-      <Filter>Resource\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="FinalPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
-    <ClCompile Include="D3DUtill.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleObject.cpp">
       <Filter>GraphicsEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewPort.cpp">
-      <Filter>Resource\ViewPort</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryShader.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilState.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="BlendState.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewPort.cpp">
-      <Filter>Resource\ViewPort</Filter>
     </ClCompile>
     <ClCompile Include="DebugPass.cpp">
       <Filter>Pass\Debug</Filter>
@@ -431,6 +333,82 @@
     <ClCompile Include="ForwardPass.cpp">
       <Filter>Pass\Forward</Filter>
     </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResourceView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Resource\Interface\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resource\Interface\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Resource\Interface\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelData.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderState.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DUtill.cpp">
+      <Filter>Utils\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Utils\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="GeoMetryPass.cpp">
       <Filter>Pass\Geometry</Filter>
     </ClCompile>
