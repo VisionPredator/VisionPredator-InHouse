@@ -74,6 +74,27 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 			m_PhysicsEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 		}
 		break;
+		case VPPhysics::EColliderShape::CONVEX:
+		{
+			if (!rigidComp->HasComponent<MeshComponent>())
+				return;
+			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
+			convexMeshResourceInfo.FBXName = rigidComp->GetComponent<MeshComponent>()->FBX;
+
+			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
+			{
+				//ConvexInfo.Vertexs = comp->GetComponent<MeshComponent>()->FBX;
+				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
+			}
+			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
+			VPPhysics::ConvexColliderInfo convexColliderInfo{};
+			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
+			convexColliderInfo.WorldScale = rigidtransform.World_Scale;
+			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
+			m_PhysicsEngine->CreateStaticBody(convexColliderInfo, rigidComp->ColliderType);
+		}
+		break;
+
 		default:
 			break;
 		}
@@ -100,6 +121,30 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 		}
 		break;
+		case VPPhysics::EColliderShape::CONVEX:
+		{
+			if (!rigidComp->HasComponent<MeshComponent>())
+				return;
+
+			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
+			convexMeshResourceInfo.FBXName = rigidComp->GetComponent<MeshComponent>()->FBX;
+
+			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
+			{
+				//ConvexInfo.Vertexs = m_Graphics.GetVertexs(convexMeshResourceInfo.FBXName);
+
+				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
+			}
+			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
+			VPPhysics::ConvexColliderInfo convexColliderInfo{};
+			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
+			convexColliderInfo.WorldScale = rigidtransform.World_Scale;
+
+			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
+			m_PhysicsEngine->CreateDynamicBody(convexColliderInfo, rigidComp->ColliderType);
+		}
+		break;
+
 		default:
 			break;
 		}
@@ -251,7 +296,4 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(rigidBodyComponent.GetEntityID());
 	}
-	
-	
-	
 }

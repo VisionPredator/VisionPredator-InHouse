@@ -110,7 +110,7 @@
     <ClInclude Include="ControllerHitCallback.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ConvexMeshResourceManager.h">
+    <ClInclude Include="PhysichResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ConvexMeshResource.h">
@@ -169,7 +169,7 @@
     <ClCompile Include="ControllerHitCallback.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ConvexMeshResourceManager.cpp">
+    <ClCompile Include="PhysichResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ConvexMeshResource.cpp">

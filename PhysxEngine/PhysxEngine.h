@@ -6,7 +6,7 @@ class CollisionManager;
 class ControllerManager;
 class Physics;
 class CollisionCallback;
-class ConvexMeshResourceManager;
+class PhysichResourceManager;
 using namespace std;
 class PhysxEngine :public Physic::IPhysx, public EventSubscriber
 {
@@ -29,13 +29,13 @@ public:
 
 
 	// IPhysx을(를) 통해 상속됨
-	void CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
-	void CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
-	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
+	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
+	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
+	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
 	void ReleaseActor(uint32_t entityID) override;
-	void CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype) override;
-	void CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype) override;
-	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype) override;
+	void CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
+	void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
+	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
 	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
 	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
@@ -60,7 +60,7 @@ private:
 	std::shared_ptr<ControllerManager> m_ControllerManager;
 	std::shared_ptr<CollisionManager> m_CollisionManager;
 	std::shared_ptr<CollisionCallback> m_Collisioncallback;
-	std::shared_ptr<ConvexMeshResourceManager> m_RecourceManager;
+	std::shared_ptr<PhysichResourceManager> m_RecourceManager;
 	//ControllerManager* m_ControllerManager{};
 	//CollisionManager* m_CollisionManager{};
 	//CollisionCallback* m_Collisioncallback{};
@@ -94,9 +94,15 @@ private:
 
 
 	// IPhysx을(를) 통해 상속됨
-	void LoadConvexMeshResource(const VPPhysics::ConvexMeshInfo& info) override;
+	void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) override;
 
 	bool HasConvexMeshResource(const std::string& key) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
+
+	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 
 };
 

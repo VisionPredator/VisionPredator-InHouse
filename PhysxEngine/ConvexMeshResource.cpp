@@ -3,7 +3,7 @@
 #include "PhysicModelLoader.h"
 
 
-ConvexMeshResource::ConvexMeshResource(physx::PxPhysics* physics, const VPPhysics::ConvexMeshInfo& info)
+ConvexMeshResource::ConvexMeshResource(physx::PxPhysics* physics, const VPPhysics::ConvexMeshResourceInfo& info)
 {
 
 	m_ConvexMesh = PhysicModelLoader::CookConvexMesh(physics, info);

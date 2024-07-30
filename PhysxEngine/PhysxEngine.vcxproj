@@ -167,7 +167,7 @@
     <ClInclude Include="CollisionCallback.h" />
     <ClInclude Include="ControllerQueryFilterCallback.h" />
     <ClInclude Include="ConvexMeshResource.h" />
-    <ClInclude Include="ConvexMeshResourceManager.h" />
+    <ClInclude Include="PhysichResourceManager.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IPhysx.h" />
@@ -189,7 +189,7 @@
     <ClCompile Include="CollisionCallback.cpp" />
     <ClCompile Include="ControllerQueryFilterCallback.cpp" />
     <ClCompile Include="ConvexMeshResource.cpp" />
-    <ClCompile Include="ConvexMeshResourceManager.cpp" />
+    <ClCompile Include="PhysichResourceManager.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />
     <ClCompile Include="pch.cpp">

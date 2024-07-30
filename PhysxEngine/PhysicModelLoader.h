@@ -3,7 +3,7 @@
 class PhysicModelLoader
 {
 public: 
-	static physx::PxConvexMesh* CookConvexMesh(physx::PxPhysics* physics, const VPPhysics::ConvexMeshInfo& info );
+	static physx::PxConvexMesh* CookConvexMesh(physx::PxPhysics* physics, const VPPhysics::ConvexMeshResourceInfo& info );
 
 };
 

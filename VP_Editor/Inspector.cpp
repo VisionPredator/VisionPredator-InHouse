@@ -601,7 +601,7 @@ void Inspector::TypeImGui_BoxColliderInfo(entt::meta_data memberMetaData, Compon
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Box Info");
+	ImGui::Text("Box colliderInfo");
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::Checkbox("UseAABB?", &tempBoxColliderInfo.UseAABB);
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
@@ -626,7 +626,7 @@ void Inspector::TypeImGui_CapsuleColliderInfo(entt::meta_data memberMetaData, Co
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Capsule Info");
+	ImGui::Text("Capsule colliderInfo");
 
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Radius", &tempCapsuleColliderInfo.Radius, 0.1f, 0.1f);
@@ -651,7 +651,7 @@ void Inspector::TypeImGui_SphereColliderInfo(entt::meta_data memberMetaData, Com
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Sphere Info");
+	ImGui::Text("Sphere colliderInfo");
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Radius", &tempSphereColliderInfo.Radius,0.1f,0.1f);
 	if (tempSphereColliderInfo.Radius <= 0.f)
@@ -666,7 +666,7 @@ void Inspector::TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Compone
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Controller Info");
+	ImGui::Text("Controller colliderInfo");
 
 
 	auto enumMap = Reflection::GetEnumMap<EPhysicsLayer>();
@@ -701,7 +701,7 @@ void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, 
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Capsule Controller Info");
+	ImGui::Text("Capsule Controller colliderInfo");
 
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Height", &tempCapsuleControllerInfo.height, 0.1f, 0.1f);
@@ -721,7 +721,7 @@ void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, 
 
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat("Contact Offset", &tempCapsuleControllerInfo.contactOffset, 0.001f);
-	ImGui::Text("Controller Info");
+	ImGui::Text("Controller colliderInfo");
 
 	memberMetaData.set(component->GetHandle(), tempCapsuleControllerInfo);
 	ImGui::PopID();

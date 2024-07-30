@@ -45,6 +45,7 @@ namespace VPPhysics
 		BOX=0,
 		SPHERE,
 		CAPSULE,
+		CONVEX,
 		END
 	};
 	struct PhysicsInfo
@@ -59,7 +60,7 @@ namespace VPPhysics
 		int FrameRate = 60;
 		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
 	};
-	struct ConvexMeshInfo
+	struct ConvexMeshResourceInfo
 	{
 		std::string FBXName{};
 		std::vector<VPMath::Vector3> Vertexs{};
@@ -147,7 +148,13 @@ namespace VPPhysics
 		ColliderInfo colliderInfo{};
 		float Radius = 1.f;									// ¹ÝÁö¸§
 	};
-
+	struct ConvexColliderInfo
+	{
+		ColliderInfo colliderInfo{};
+		std::string FBXName{};
+		std::vector<VPMath::Vector3> Vertexs{};
+		VPMath::Vector3 WorldScale{};
+	};
 	struct CapsuleColliderInfo
 	{
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CapsuleColliderInfo,  Radius, HalfHeight)

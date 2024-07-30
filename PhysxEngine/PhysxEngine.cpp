@@ -6,7 +6,7 @@
 #include "RigidBodyManager.h"
 #include "ControllerManager.h"
 #include "CollisionCallback.h"
-#include "ConvexMeshResourceManager.h"
+#include "PhysichResourceManager.h"
 #include "Controller.h"
 #include "../VPEngine/EventManager.h"
 #include <iostream>
@@ -75,7 +75,7 @@ bool PhysxEngine::Initialize()
 	m_Collisioncallback =std::make_shared<CollisionCallback>();
 	m_RigidBodyManager = std::make_shared<RigidBodyManager>();
 	m_ControllerManager =std::make_shared<ControllerManager>();
-	m_RecourceManager= std::make_shared<ConvexMeshResourceManager>();
+	m_RecourceManager= std::make_shared<PhysichResourceManager>();
 	m_Physics->Initialize();
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
@@ -92,7 +92,7 @@ bool PhysxEngine::Initialize()
 	m_PxScene = physics->createScene(sceneDesc);
 	m_RecourceManager->Initialize(m_Physics->GetPxPhysics());
 
-	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene);
+	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_RecourceManager);
 	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager.get());
 #ifdef _DEBUG
 	m_Physics->SettingPVDClient(m_PxScene);
@@ -145,39 +145,51 @@ void PhysxEngine::OnSetPhysicInfo(std::any data)
 
 }
 
-void PhysxEngine::CreateStaticBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype)
+void PhysxEngine::CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateStaticBody(boxinfo, collidertype, m_PhyiscsInfo);
-}
+}	
 
-void PhysxEngine::CreateStaticBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype)
+void PhysxEngine::CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateStaticBody(sphereinfo, collidertype, m_PhyiscsInfo);
 }
 
-void PhysxEngine::CreateStaticBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
+void PhysxEngine::CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateStaticBody(capsuleinfo, collidertype, m_PhyiscsInfo);
 }
 
+void PhysxEngine::CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype)
+{
+	m_RigidBodyManager->CreateStaticBody(convexinfo, collidertype, m_PhyiscsInfo);
+
+}
 void PhysxEngine::ReleaseActor(uint32_t entityID)
 {
 	m_RigidBodyManager->ReleaseBodyScene(entityID);
 }
 
-void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype)
+void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateDynamicBody(boxinfo, collidertype, m_PhyiscsInfo);
 }
 
-void PhysxEngine::CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype)
+void PhysxEngine::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateDynamicBody(sphereinfo, collidertype, m_PhyiscsInfo);
 }
 
-void PhysxEngine::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype)
+void PhysxEngine::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateDynamicBody(capsuleinfo, collidertype, m_PhyiscsInfo);
+}
+
+
+void PhysxEngine::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype)
+{
+	m_RigidBodyManager->CreateDynamicBody(convexinfo, collidertype, m_PhyiscsInfo);
+
 }
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
@@ -264,7 +276,7 @@ bool PhysxEngine::GetControllerIsFall(uint32_t entityID)
 	return m_ControllerManager->GetController(entityID)->GetIsFall();
 }
 
-void PhysxEngine::LoadConvexMeshResource(const VPPhysics::ConvexMeshInfo& info)
+void PhysxEngine::LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info)
 {
 	m_RecourceManager->LoadConvexMeshResource(info);
 }
@@ -273,3 +285,4 @@ bool PhysxEngine::HasConvexMeshResource(const std::string& key)
 {
 	return 	m_RecourceManager->HasConvexMeshResource(key);
 }
+

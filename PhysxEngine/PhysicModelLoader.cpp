@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PhysicModelLoader.h"
 
-physx::PxConvexMesh* PhysicModelLoader::CookConvexMesh(physx::PxPhysics* physics, const VPPhysics::ConvexMeshInfo& info)
+physx::PxConvexMesh* PhysicModelLoader::CookConvexMesh(physx::PxPhysics* physics, const VPPhysics::ConvexMeshResourceInfo& info)
 {
     const std::vector<VPMath::Vector3>& vertices = info.Vertexs;
 

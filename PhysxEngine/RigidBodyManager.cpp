@@ -3,7 +3,8 @@
 #include "StaticRigidBody.h"
 #include "../VPEngine/EventManager.h"
 #include "DynamicRigidBody.h"
-
+#include "ConvexMeshResource.h"
+#include "PhysichResourceManager.h"
 RigidBodyManager::RigidBodyManager()
 {
 	EventManager::GetInstance().Subscribe("OnAddBodyScene",CreateSubscriber(&RigidBodyManager::OnAddBodyScene));
@@ -14,20 +15,23 @@ RigidBodyManager::~RigidBodyManager()
 	m_RigidBodyMap.clear();	//확인해보기
 }
 
-
-bool RigidBodyManager::Initialize(physx::PxPhysics* physics,physx::PxScene* Scene)
+bool RigidBodyManager::Initialize(physx::PxPhysics* physics, physx::PxScene* Scene, std::shared_ptr<PhysichResourceManager> resourceManager)
 {
 	m_Physics = physics;
 	m_Scene = Scene;
+	m_ResourceManager = resourceManager;
 	return true;
 }
+
+
+
 
 void RigidBodyManager::Update()
 {
 
 }
 
-void RigidBodyManager::CreateStaticBody(const BoxColliderInfo boxinfo, EColliderType collidertype, const PhysicsInfo engininfo)
+void RigidBodyManager::CreateStaticBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the box
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
@@ -53,7 +57,7 @@ void RigidBodyManager::CreateStaticBody(const BoxColliderInfo boxinfo, ECollider
 
 }
 
-void RigidBodyManager::CreateStaticBody(const SphereColliderInfo sphereinfo, EColliderType collidertype, const PhysicsInfo engininfo)
+void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the Sphere
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
@@ -76,7 +80,7 @@ void RigidBodyManager::CreateStaticBody(const SphereColliderInfo sphereinfo, ECo
 	else
 		assert(false);
 }
-void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const PhysicsInfo engininfo)
+void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the collider
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
@@ -101,7 +105,31 @@ void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo capsuleinfo, E
 
 }
 
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo)
+void RigidBodyManager::CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+{
+	// Create the material for the collider
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(convexMeshinfo.colliderInfo.StaticFriction, convexMeshinfo.colliderInfo.DynamicFriction, convexMeshinfo.colliderInfo.Restitution);
+	// Create the shape for the Convex collider
+	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(convexMeshinfo.FBXName);
+	physx::PxConvexMesh* pxConvexMesh = convexMesh.lock()->GetConvexMesh();
+	auto mesh = physx::PxConvexMeshGeometry(pxConvexMesh);
+	mesh.scale.scale = { convexMeshinfo.WorldScale.x ,convexMeshinfo.WorldScale.y,convexMeshinfo.WorldScale.z};
+	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
+	StaticRigidBody* rigidBody = SettingStaticBody(shape, convexMeshinfo.colliderInfo, collidertype, engininfo);
+
+	if (rigidBody->Initialize(convexMeshinfo.colliderInfo, shape, m_Physics))
+	{
+		// Insert the rigid body into the map
+		m_RigidBodyMap.insert(std::make_pair(convexMeshinfo.colliderInfo.EntityID, rigidBody));
+		// Add the rigid body to the scene
+		AddBodyScene(rigidBody);
+		shape->release();
+	}
+	else
+		assert(false);
+}
+
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
 	physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(boxinfo.Extent.x, boxinfo.Extent.y, boxinfo.Extent.z), *pxMaterial);
@@ -119,7 +147,7 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo boxinf
 
 }
 
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo sphereinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
 	physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(sphereinfo.Radius), *pxMaterial);
@@ -138,7 +166,7 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo sph
 
 
 
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo capsuleinfo, EColliderType collidertype, const VPPhysics::PhysicsInfo engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
 	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(capsuleinfo.Radius,capsuleinfo.HalfHeight), *pxMaterial);
@@ -156,7 +184,31 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo ca
 		assert(false);
 }
 
-StaticRigidBody* RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+{
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(convexMeshinfo.colliderInfo.StaticFriction, convexMeshinfo.colliderInfo.DynamicFriction, convexMeshinfo.colliderInfo.Restitution);
+	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(convexMeshinfo.FBXName);
+	physx::PxConvexMesh* pxConvexMesh = convexMesh.lock()->GetConvexMesh();
+
+	auto mesh = physx::PxConvexMeshGeometry(pxConvexMesh);
+	mesh.scale.scale = { convexMeshinfo.WorldScale.x ,convexMeshinfo.WorldScale.y,convexMeshinfo.WorldScale.z };
+	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
+	DynamicRigidBody* rigidBody = SettingDynamicBody(shape, convexMeshinfo.colliderInfo, collidertype, engininfo);
+	//CollisionData* collisiondata = new CollisionData;
+	if (rigidBody->Initialize(convexMeshinfo.colliderInfo, shape, m_Physics))
+	{
+		m_RigidBodyMap.insert(std::make_pair(convexMeshinfo.colliderInfo.EntityID, rigidBody));
+		AddBodyScene(rigidBody);
+		shape->release();
+
+	}
+	else
+		assert(false);
+
+
+}
+
+StaticRigidBody* RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxFilterData filterdata;
 	filterdata.word0 = (int)info.PhysicsLayer;
@@ -169,7 +221,7 @@ StaticRigidBody* RigidBodyManager::SettingStaticBody(physx::PxShape* shape, cons
 	return staticBody.get();
 }
 
-DynamicRigidBody* RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo engininfo)
+DynamicRigidBody* RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxFilterData filterdata;
 	filterdata.word0 = (int)info.PhysicsLayer;
@@ -258,7 +310,7 @@ bool RigidBodyManager::HasRigidBody(uint32_t EntityID)
 	return m_RigidBodyMap.count(EntityID) > 0;
 }
 
-void RigidBodyManager::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
+void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q)
 {
 	auto temp = GetRigidBody(entityID);
 	if (!temp) {
@@ -266,8 +318,11 @@ void RigidBodyManager::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath
 		return;
 	}
 	PxVec3 tempPos = { P.x, P.y, P.z };
-	Q.Normalize(); // Normalize quaternion before setting
+	//VPMath::Quaternion quat = Q;
+	//quat.Normalize();
+	//physx::PxQuat tempQuat = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
 	physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
+	tempQuat.normalize();
 	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
 	{
 		DynamicRigidBody* dynamicbody = static_cast<DynamicRigidBody*>(temp.get());
@@ -307,7 +362,7 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 	}
 }
 
-void RigidBodyManager::AddVelocity(uint32_t entityID, VPMath::Vector3 dir, float V)
+void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V)
 {
 	auto temp = GetRigidBody(entityID);
 	if (temp == nullptr)
@@ -319,8 +374,9 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, VPMath::Vector3 dir, float
 	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
 	{
 		DynamicRigidBody* dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
-		dir.Normalize();
-		PxVec3 force =  { dir.x,dir.y,dir.z };
+		VPMath::Vector3 Dir = dir;
+		Dir.Normalize();
+		PxVec3 force =  { Dir.x,Dir.y,Dir.z };
 		force *= V;
 		dynamicBody->GetPxDynamicRigid()->addForce(force,PxForceMode::eACCELERATION);
 

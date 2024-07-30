@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "ConvexMeshResourceManager.h"
+#include "PhysichResourceManager.h"
 #include "ConvexMeshResource.h"
 #include "VPPhysicsStructs.h"
-ConvexMeshResourceManager::ConvexMeshResourceManager()
+PhysichResourceManager::PhysichResourceManager()
 {
 }
 
-bool ConvexMeshResourceManager::Initialize(physx::PxPhysics* physics)
+bool PhysichResourceManager::Initialize(physx::PxPhysics* physics)
 {
 	if (!physics) {
 		return false;
@@ -15,25 +15,25 @@ bool ConvexMeshResourceManager::Initialize(physx::PxPhysics* physics)
 	return true;
 }
 
-ConvexMeshResourceManager::~ConvexMeshResourceManager()
+PhysichResourceManager::~PhysichResourceManager()
 {
 
 }
 
-std::shared_ptr<ConvexMeshResource> ConvexMeshResourceManager::GetConvexMeshResource(const std::string& key)
+std::shared_ptr<ConvexMeshResource> PhysichResourceManager::GetConvexMeshResource(const std::string& key)
 {
 	auto it = m_ConvexMeshMap.find(key);
 	if (it == m_ConvexMeshMap.end())
 		return nullptr;
 	return it->second;
 }
-void ConvexMeshResourceManager::LoadConvexMeshResource(const VPPhysics::ConvexMeshInfo& info)
+void PhysichResourceManager::LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info)
 {
 	std::shared_ptr<ConvexMeshResource> convexmesh = std::make_shared<ConvexMeshResource>(m_PxPhysics, info);
 	m_ConvexMeshMap[info.FBXName] = convexmesh;
 }
 
-bool ConvexMeshResourceManager::HasConvexMeshResource(const std::string& key)
+bool PhysichResourceManager::HasConvexMeshResource(const std::string& key)
 {
 	return m_ConvexMeshMap.find(key) != m_ConvexMeshMap.end();
 }
