@@ -13,7 +13,7 @@ ConvexMeshResource::ConvexMeshResource(physx::PxPhysics* physics, const VPPhysic
 	}
 }
 
-inline ConvexMeshResource::~ConvexMeshResource()
+ ConvexMeshResource::~ConvexMeshResource()
 {
 	PX_RELEASE(m_ConvexMesh);
 }

@@ -10,3 +10,4 @@
 #include "AnimationComponent.h"
 #include "RigidBodyComponent.h"
 #include "ControllerComponent.h"
+#include "GeometryComponent.h"

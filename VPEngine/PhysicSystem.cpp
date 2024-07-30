@@ -83,7 +83,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 
 			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
 			{
-				//ConvexInfo.Vertexs = comp->GetComponent<MeshComponent>()->FBX;
+				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
 				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
 			}
 			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
@@ -128,11 +128,11 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 
 			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
 			convexMeshResourceInfo.FBXName = rigidComp->GetComponent<MeshComponent>()->FBX;
+			
 
 			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
 			{
-				//ConvexInfo.Vertexs = m_Graphics.GetVertexs(convexMeshResourceInfo.FBXName);
-
+				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
 				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
 			}
 			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;

@@ -189,6 +189,9 @@
     <ClInclude Include="ControllerMovementSystem.h">
       <Filter>자체 엔진\System\Header</Filter>
     </ClInclude>
+    <ClInclude Include="GeometryComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -292,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="ControllerMovementSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryComponent.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

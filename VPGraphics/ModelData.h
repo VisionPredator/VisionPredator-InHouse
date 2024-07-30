@@ -36,5 +36,9 @@ public:
 	std::vector<std::shared_ptr<Animation>> m_Animations; //애니메이션 전체를 담고있는 컨테이너
 
 	std::weak_ptr<RenderState>  RS;
+
+	
+	std::vector<VPMath::Vector3> vertices;
+
 };
 
