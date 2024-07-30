@@ -19,5 +19,10 @@ void ParticlePass::Initialize(const std::shared_ptr<Device>& device,
 
 void ParticlePass::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	m_ParticleManager->Render(view, proj);
+	DirectX::SimpleMath::Matrix viewview = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock()->m_struct.view;
+	DirectX::SimpleMath::Matrix projproj = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock()->m_struct.proj;
+	//DirectX::SimpleMath::Matrix viewview = view;
+	//DirectX::SimpleMath::Matrix projproj = proj;
+
+	m_ParticleManager->Render(viewview, projproj);
 }

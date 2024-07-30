@@ -76,17 +76,17 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		std::vector<std::wstring> flares;
 		if (!m_Info.TexturePath.empty())
 		{
-			flares.push_back(Util::ToWide(m_Info.TexturePath));
+			flares.push_back(Util::ToWideChar(m_Info.TexturePath));
 		}
 		else
 		{
-			flares.push_back(Util::ToWide("../../../Resource/Texture/flare0.dds"));	
+			flares.push_back(Util::ToWideChar("../../../Resource/Texture/flare0.dds"));	
 		}
 		D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
 
 		if (m_Info.TexturePath.empty())
 			m_Info.TexturePath = "../../../Resource/Texture/flare0.dds";
-		m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWide(m_Info.TexturePath).c_str(), Util::ToWide(m_Info.TexturePath).c_str()).lock();
+		m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 		
 		// 랜덤 텍스처 생성
 		m_RandomTextureSRV = m_ResourceManager->Create<ShaderResourceView>(L"RandomTextureSRV").lock();
@@ -103,7 +103,7 @@ void ParticleObject::Update(const float& deltaTime, const float& totalGameTime)
 
 	if (m_Info.TexturePath.empty())
 		m_Info.TexturePath = "../../../Resource/Texture/flare0.dds";
-	m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWide(m_Info.TexturePath).c_str(), Util::ToWide(m_Info.TexturePath).c_str()).lock();
+	m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 }
 
 void ParticleObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
@@ -113,10 +113,18 @@ void ParticleObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 
 	UINT stride = sizeof(ParticleVertex);
 	UINT offset = 0;
-	//Matrix VP = CameraCB->m_struct.view * CameraCB->m_struct.proj;
-	//Matrix viewInvert = CameraCB->m_struct.view.Invert();
-	Matrix VP = view * proj;
-	Matrix viewInvert = view.Invert();
+
+	Matrix viewview = CameraCB->m_struct.view;
+	Matrix projproj = CameraCB->m_struct.proj;
+
+	Matrix projTranspose = projproj.Transpose();
+	Matrix viewTranspose = viewview.Transpose();
+
+	Matrix projInvert = projproj.Invert();
+	Matrix viewInvert = viewview.Invert().Transpose();
+	Matrix VP = CameraCB->m_struct.view * CameraCB->m_struct.proj;
+
+	VP = viewTranspose * projTranspose;
 
 	// CB data 갱신
 	m_PerFrame.ViewProj = VP.Transpose();

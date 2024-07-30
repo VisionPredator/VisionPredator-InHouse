@@ -5,9 +5,18 @@
 class Util
 {
 public:
-	static std::wstring ToWide(const std::string& str)
+	template <typename T>
+	static std::wstring ToWideChar(const T& value)
 	{
-		int num_chars = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.length(), NULL, 0);
+		std::wstringstream wss;
+		wss << value;
+		return wss.str();
+	}
+
+	template <>
+	static std::wstring ToWideChar(const std::string& str)
+	{
+		int num_chars = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.length()), nullptr, 0);
 		std::wstring wstrTo;
 		if (num_chars)
 		{
@@ -19,14 +28,15 @@ public:
 
 	static std::string ToMultiByte(const std::wstring& wstr)
 	{
-		int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), NULL, 0, NULL, NULL);
+		int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int>(wstr.length()), nullptr, 0, nullptr, nullptr);
 		std::string strTo;
 		if (num_chars > 0)
 		{
 			strTo.resize(num_chars);
-			WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), &strTo[0], num_chars, NULL, NULL);
+			WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int>(wstr.length()), &strTo[0], num_chars, nullptr, nullptr);
 		}
 		return strTo;
 	}
+
 };
 
