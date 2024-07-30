@@ -40,9 +40,9 @@ static void AutoRegisterMetaTypeFunction();
 #define MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) MEMBER_PASTE2(func, v1) MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
 #define MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) MEMBER_PASTE2(func, v1) MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
 #define MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
-#define MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10) MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9,v10)
-#define MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11) MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11)
-#define MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12) MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12)
+#define MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10) MEMBER_PASTE2(func, v1) MEMBER_PASTE10(func, v2, v3, v4, v5, v6, v7, v8, v9,v10)
+#define MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11) MEMBER_PASTE2(func, v1) MEMBER_PASTE11(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11)
+#define MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12)
 #define  MEMBERS(...)  MEMBER_EXPAND( MEMBER_PASTE( MEMBER, __VA_ARGS__))
 
 #define META_ADD_MEMBER(CLASS,...)\

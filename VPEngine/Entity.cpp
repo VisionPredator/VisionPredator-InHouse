@@ -54,9 +54,7 @@ std::shared_ptr<Component> Entity::AddComponent(entt::id_type compID)
             entt::meta_any result = myFunctionMeta.invoke(instance, sharedThis);
             if (auto componentPtr = result.try_cast<std::shared_ptr<Component>>())
             {
-                auto componentSharedPtr = *componentPtr;
-                AddComponentToMap(componentSharedPtr);
-                return componentSharedPtr;
+                return *componentPtr;
             }
             else
             {

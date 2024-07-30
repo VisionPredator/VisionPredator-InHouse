@@ -8,7 +8,7 @@
 #include "../VPGraphics/IGraphics.h"
 #include <thread>
 
-#define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager)
+#define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager.lock())
 
 #define COMPLOOP(ClassName)\
 for(auto& comp : COMPITER(ClassName))
@@ -42,23 +42,24 @@ for(auto& comp : COMPITER(ClassName))
 class System
 {
 public:
-	System(SceneManager* sceneManager) :m_SceneManager(sceneManager) {}
-	virtual ~System() { m_Jthread1 = nullptr; m_Jthread2 = nullptr; }
+    System(std::shared_ptr<SceneManager> sceneManager) : m_SceneManager(sceneManager) {}
+    virtual ~System() { m_Jthread1 = nullptr; m_Jthread2 = nullptr; }
 
     template<typename T>
     class CompIter
     {
-        SceneManager* m_SceneManager; // SceneManager의 참조 추가
+        std::weak_ptr<SceneManager> m_SceneManager; // SceneManager의 weak_ptr 추가
     public:
         std::vector<std::reference_wrapper<T>> innerVector;
 
-        CompIter(SceneManager* sceneManager) : m_SceneManager(sceneManager)
+        CompIter(std::shared_ptr<SceneManager> sceneManager) : m_SceneManager(sceneManager)
         {
-            if (!m_SceneManager)
+            auto sharedSceneManager = m_SceneManager.lock();
+            if (!sharedSceneManager)
                 throw std::runtime_error("SceneManager is not initialized");
 
             // 컴포넌트 풀에서 참조를 추출하여 벡터에 추가합니다.
-            auto components = m_SceneManager->GetComponentPool<T>();
+            auto components = sharedSceneManager->GetComponentPool<T>();
             for (const auto& comp : components)
             {
                 innerVector.push_back(*comp);
@@ -75,14 +76,14 @@ public:
             return innerVector.end();
         }
     };
+    SceneManager* GetSceneManager() { return m_SceneManager.lock().get(); }
+    inline void SetThread1(std::jthread* thread) { m_Jthread1 = thread; }
+    inline void SetThread2(std::jthread* thread) { m_Jthread2 = thread; }
+    std::jthread& GetThread1() { return *m_Jthread1; }
+    std::jthread& GetThread2() { return *m_Jthread2; }
 
-	inline void SetThread1(std::jthread* thread) { m_Jthread1 = thread; }
-	inline void SetThread2(std::jthread* thread) { m_Jthread2 = thread; }
-	std::jthread& GetThread1() { return *m_Jthread1; }
-	std::jthread& GetThread2() { return *m_Jthread2; }
-	protected:
-		SceneManager* m_SceneManager;
-		std::jthread* m_Jthread1=nullptr;
-		std::jthread* m_Jthread2 = nullptr;
-	};
-
+protected:
+    std::weak_ptr<SceneManager> m_SceneManager;
+    std::jthread* m_Jthread1 = nullptr;
+    std::jthread* m_Jthread2 = nullptr;
+};

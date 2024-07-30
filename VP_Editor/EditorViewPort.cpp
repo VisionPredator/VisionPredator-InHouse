@@ -4,7 +4,7 @@
 #include "HierarchySystem.h"
 #include <InputManager.h>
 
-EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
+EditorViewPort::EditorViewPort(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<EditorCamera> Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
 {
 	auto& style = ImGuizmo::GetStyle();
 	style.ScaleLineThickness = 3.f;
@@ -166,8 +166,8 @@ void EditorViewPort::ImGuizmoRender()
 {
 	ImGuizmo::SetDrawlist();
 	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-	VPMath::Matrix view = m_Camera->GetView();
-	VPMath::Matrix proj = m_Camera->GetProj();
+	VPMath::Matrix view = m_Camera.lock()->GetView();
+	VPMath::Matrix proj = m_Camera.lock()->GetProj();
 
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
@@ -194,10 +194,10 @@ void EditorViewPort::ImGuizmoRender()
 	ImGui::PopStyleVar();
 
 
-	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+	if (!m_SceneManager.lock()->HasEntity(HierarchySystem::m_SelectedEntityID))
 		return;
 	TransformComponent* transformComp
-		= m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
+		= m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 	float* snapValue =nullptr;
 
 	if (InputManager::GetInstance().GetKey(KEY::LCTRL))
@@ -225,11 +225,11 @@ void EditorViewPort::ImGuizmoRender()
 
 	if (ImGuizmo::IsUsing())
 	{
-		TransformComponent* selectedTransform = m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
+		TransformComponent* selectedTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 
-		if (Parent* parent = m_SceneManager->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID); parent)
+		if (Parent* parent = m_SceneManager.lock()->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID); parent)
 		{
-			TransformComponent* parentTransform = m_SceneManager->GetComponent<TransformComponent>(parent->ParentID);
+			TransformComponent* parentTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(parent->ParentID);
 			// Combine the parent transform with the ImGuizmoMatrix
 			ImGuizmoMatrix = ImGuizmoMatrix * parentTransform->WorldTransform.Invert();
 		}

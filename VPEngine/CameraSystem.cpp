@@ -3,7 +3,7 @@
 #include "CameraSystem.h"
 #include "../VPGraphics/IGraphics.h"
 
-CameraSystem::CameraSystem(SceneManager* sceneManager) :System(sceneManager)
+CameraSystem::CameraSystem(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSetMainCamera",CreateSubscriber(&CameraSystem::OnSetMainCamera));
 

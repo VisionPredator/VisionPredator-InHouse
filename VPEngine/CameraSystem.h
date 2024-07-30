@@ -5,7 +5,7 @@ class CameraSystem :
     public System, public IRenderable,public EventSubscriber,public ILateUpdatable
 {
 public:
-    CameraSystem(SceneManager* sceneManager);
+    CameraSystem(std::shared_ptr<SceneManager> sceneManager);
     ~CameraSystem() = default;
 
     void OnSetMainCamera(std::any data);

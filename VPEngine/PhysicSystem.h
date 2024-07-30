@@ -15,7 +15,7 @@ class PhysicSystem :
     public EventSubscriber
 {
 public:
-    PhysicSystem(SceneManager* sceneManager);
+    PhysicSystem(std::shared_ptr<SceneManager> sceneManager);
     ~PhysicSystem() = default;
 
 

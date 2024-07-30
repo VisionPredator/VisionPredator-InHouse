@@ -176,13 +176,17 @@ void SceneManager::OnRemoveChild(std::any data)
 
 void SceneManager::AddCompToPool(std::shared_ptr<Component> comp)
 {
-	m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()] = comp;
+	// 컴포넌트 풀에 컴포넌트를 추가합니다.
+	auto& pool = m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()];
+	pool.push_back(comp);
 }
+
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
 	std::list<uint32_t> DeleteEntityIDs;
 	DeleteEntityIDs.push_back(entityID);
 
+	// 엔티티가 부모 컴포넌트를 가지고 있는 경우, 부모와 자식 관계를 제거합니다.
 	if (HasComponent<Parent>(entityID))
 	{
 		auto parentEntity = GetEntity(GetComponent<Parent>(entityID)->ParentID);
@@ -197,68 +201,84 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", DeleteEntityID);
 		DeleteEntityIDs.pop_front();
 		auto entity = GetEntity(DeleteEntityID);
-		if (!entity->HasComponent<Children>())
-			continue;
 
-		auto children = entity->GetComponent<Children>();
-		DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
+		// 엔티티가 자식 컴포넌트를 가지고 있는 경우, 자식 엔티티도 삭제 리스트에 추가합니다.
+		if (entity->HasComponent<Children>())
+		{
+			auto children = entity->GetComponent<Children>();
+			DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
+		}
 	}
 }
 
+
 void SceneManager::OnDestroyEntity(std::any data)
 {
-    // EntityMap에서 해당 Entity를 찾습니다.
-    uint32_t entityID = std::any_cast<uint32_t>(data);
+	// EntityMap에서 해당 엔티티를 찾습니다.
+	uint32_t entityID = std::any_cast<uint32_t>(data);
 
-    auto& entityMap = GetEntityMap();
-    auto entityIter = entityMap.find(entityID);
-    if (entityIter != entityMap.end())
-    {
-        std::shared_ptr<Entity> entityToRemove = entityIter->second;
-        // m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
-        for (auto& compPair : m_CurrentScene->m_ComponentPool)
-        {
-            auto& weakComp = compPair.second;
-            if (auto sharedComp = weakComp.lock())
-            {
-                if (sharedComp->GetEntityID() == entityID)
-                {
-                    EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-                    ReleaseCompFromPool(compPair.first, sharedComp);
-                }
-            }
-        }
-        // EntityMap에서 해당 Entity를 제거합니다.
-        entityMap.erase(entityIter);
-    }
+	auto& entityMap = GetEntityMap();
+	auto entityIter = entityMap.find(entityID);
+	if (entityIter != entityMap.end())
+	{
+		std::shared_ptr<Entity> entityToRemove = entityIter->second;
+
+		// m_ComponentPool에서 해당 엔티티에 해당하는 컴포넌트들을 제거합니다.
+		for (auto& compPair : m_CurrentScene->m_ComponentPool)
+		{
+			auto& components = compPair.second;
+			components.erase(std::remove_if(components.begin(), components.end(),
+				[&entityID](std::weak_ptr<Component>& weakComp)
+				{
+					if (auto sharedComp = weakComp.lock())
+					{
+						if (sharedComp->GetEntityID() == entityID)
+						{
+							EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+							return true;
+						}
+					}
+					return false;
+				}), components.end());
+		}
+
+		// EntityMap에서 해당 엔티티를 제거합니다.
+		entityMap.erase(entityIter);
+	}
 }
 
 void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
 {
 	if (!entity)
 		return;
-	// Get the entity ID
+
+	// 엔티티 ID를 가져옵니다.
 	uint32_t entityID = entity->GetEntityID();
 
 	auto& entityMap = GetEntityMap();
 	auto entityIter = entityMap.find(entityID);
 	if (entityIter != entityMap.end())
 	{
-		// Entity found, proceed to remove components associated with the entity
+		// 해당 엔티티에 연결된 컴포넌트들을 제거합니다.
 		for (auto& compPair : m_CurrentScene->m_ComponentPool)
 		{
-			auto& weakComp = compPair.second;
-			if (auto sharedComp = weakComp.lock())
-			{
-				if (sharedComp->GetEntityID() == entityID)
+			auto& components = compPair.second;
+			components.erase(std::remove_if(components.begin(), components.end(),
+				[&entityID](std::weak_ptr<Component>& weakComp)
 				{
-					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-					ReleaseCompFromPool(compPair.first, sharedComp);
-				}
-			}
+					if (auto sharedComp = weakComp.lock())
+					{
+						if (sharedComp->GetEntityID() == entityID)
+						{
+							EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+							return true;
+						}
+					}
+					return false;
+				}), components.end());
 		}
 
-		// Remove the entity from the map
+		// 엔티티 맵에서 해당 엔티티를 제거합니다.
 		entityMap.erase(entityIter);
 	}
 }

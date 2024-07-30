@@ -3,7 +3,7 @@
 #include "../PhysxEngine/VPPhysicsStructs.h"
 #include "Components.h"
 
-ControllerMovementSystem::ControllerMovementSystem(SceneManager* sceneManager):System(sceneManager)
+ControllerMovementSystem::ControllerMovementSystem(std::shared_ptr<SceneManager> sceneManager):System(sceneManager)
 {
 }
 

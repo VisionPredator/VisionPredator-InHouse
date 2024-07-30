@@ -3,7 +3,7 @@
 #include "Components.h"
 #include <imgui.h>
 uint32_t HierarchySystem::m_SelectedEntityID=0;
-HierarchySystem::HierarchySystem(SceneManager* sceneManager) :System(sceneManager)
+HierarchySystem::HierarchySystem(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
 }
 
@@ -27,7 +27,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 {
 	bool isNodeOpened = false;
 	Children* entityChildren=nullptr;
-	auto entity = m_SceneManager->GetEntity(entityID);
+	auto entity = GetSceneManager()->GetEntity(entityID);
 
 
 	ImGui::PushID(entityID);
@@ -60,7 +60,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 	{
 		if (ImGui::MenuItem("Delete"))
 		{
-			m_SceneManager->DeleteEntity(m_RClickedEntityID);
+			GetSceneManager()->DeleteEntity(m_RClickedEntityID);
 			m_RClickedEntityID = 0;
 			m_IsEntityRClicked = false;
 		}
@@ -88,7 +88,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 			auto parentEntity = entityID;
 
 			if (childEntity != parentEntity)
-				m_SceneManager->AddChild(parentEntity, childEntity);
+				GetSceneManager()->AddChild(parentEntity, childEntity);
 		}
 		ImGui::EndDragDropTarget();
 	}

@@ -12,9 +12,9 @@ public:
 	~VP_Editor();
 	virtual void Update();
 	virtual void Render();
-	HierarchySystem* m_HierarchySystem;
-	std::vector<IImGui*> m_ImGuis;
-	EditorCamera* m_editorcamera;
+	std::shared_ptr<HierarchySystem> m_HierarchySystem;
+	std::vector<std::shared_ptr<IImGui>> m_ImGuis;
+	std::shared_ptr<EditorCamera> m_editorcamera;
 	void SetUnityDarkThemeColors();
 
 	bool m_IsEditorMode = true;

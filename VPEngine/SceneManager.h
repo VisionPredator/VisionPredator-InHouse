@@ -146,13 +146,15 @@ inline std::vector<std::shared_ptr<T>> SceneManager::GetComponentPool()
 {
 	std::vector<std::shared_ptr<T>> result;
 
-	// m_ComponentPool에서 해당 타입의 컴포넌트를 찾습니다.
-	auto range = m_CurrentScene->m_ComponentPool.equal_range(Reflection::GetTypeID<T>());
-	for (auto it = range.first; it != range.second; ++it)
+	auto it = m_CurrentScene->m_ComponentPool.find(Reflection::GetTypeID<T>());
+	if (it != m_CurrentScene->m_ComponentPool.end())
 	{
-		if (auto sharedComp = it->second.lock())
+		for (auto& weakComp : it->second)
 		{
-			result.push_back(std::dynamic_pointer_cast<T>(sharedComp));
+			if (auto sharedComp = weakComp.lock())
+			{
+				result.push_back(std::dynamic_pointer_cast<T>(sharedComp));
+			}
 		}
 	}
 
@@ -163,22 +165,24 @@ template<typename T>
 inline void SceneManager::ReleaseCompFromPool(std::shared_ptr<T> comp)
 {
 	auto& pool = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
-	if (auto sharedComp = pool.lock())
-	{
-		if (sharedComp == comp)
+	pool.erase(std::remove_if(pool.begin(), pool.end(), [&comp](const std::weak_ptr<Component>& weakComp)
 		{
-			pool.reset(); // Reset the weak pointer to release the component
-		}
-	}
+			if (auto sharedComp = weakComp.lock())
+			{
+				return sharedComp == comp;
+			}
+			return false;
+		}), pool.end());
 }
 inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, std::shared_ptr<Component> comp)
 {
-	auto& weakComp = m_CurrentScene->m_ComponentPool[compID];
-	if (auto sharedComp = weakComp.lock())
-	{
-		if (sharedComp == comp)
+	auto& pool = m_CurrentScene->m_ComponentPool[compID];
+	pool.erase(std::remove_if(pool.begin(), pool.end(), [&comp](const std::weak_ptr<Component>& weakComp)
 		{
-			weakComp.reset(); // Reset the weak pointer to release the component
-		}
-	}
+			if (auto sharedComp = weakComp.lock())
+			{
+				return sharedComp == comp;
+			}
+			return false;
+		}), pool.end());
 }

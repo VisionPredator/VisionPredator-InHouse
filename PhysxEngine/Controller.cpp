@@ -14,7 +14,7 @@ Controller::~Controller()
 
 bool Controller::ControllerInit(VPPhysics::ControllerInfo info,physx::PxMaterial* material, VPPhysics::PhysicsInfo physicsinfo)
 {
-	m_LayerNum = info.LayerNumber;
+	//m_LayerNum = info.LayerNumber;
 
 	///TODO : 원인 찾아보기.
 	m_FilterData = std::make_shared<PxFilterData>();

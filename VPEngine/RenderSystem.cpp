@@ -2,7 +2,7 @@
 #include "RenderSystem.h"
 #include "Components.h"
 #include "EventManager.h"
-RenderSystem::RenderSystem(SceneManager* sceneManager)
+RenderSystem::RenderSystem(std::shared_ptr<SceneManager> sceneManager)
 	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&RenderSystem::OnAddedComponent));

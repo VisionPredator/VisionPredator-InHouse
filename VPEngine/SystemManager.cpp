@@ -15,7 +15,6 @@
 	}
 	SystemManager::~SystemManager()
 	{
-		m_SceneManager = nullptr;
 		m_PhysicEngine = nullptr;
 		m_Graphics = nullptr;
 		m_FixedUpdatables.clear();
@@ -79,9 +78,9 @@
 
 
 
-	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
+	void SystemManager::Initialize(std::shared_ptr<SceneManager> sceneManger, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
 	{
-		m_SceneManager = entitymanager;
+		m_SceneManager = sceneManger;
 		m_Graphics = GraphicsInterface;
 		m_PhysicEngine = physicInterface;
 	}

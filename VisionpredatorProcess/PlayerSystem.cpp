@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PlayerSystem.h"
 
-PlayerSystem::PlayerSystem(SceneManager* sceneManager) :System{ sceneManager }
+PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 }
 

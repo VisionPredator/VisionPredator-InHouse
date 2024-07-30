@@ -3,7 +3,7 @@
 #include "../PhysxEngine/IPhysx.h"
 #include "TransformSystem.h"
 
-PhysicSystem::PhysicSystem(SceneManager* sceneManager)
+PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
 }
@@ -44,7 +44,7 @@ void PhysicSystem::Finalize()
 void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 {
 	
-	auto entity = m_SceneManager->GetEntity(EntityID);
+	auto entity = GetSceneManager()->GetEntity(EntityID);
 	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
 	if (!rigidComp)
 		return;
@@ -153,7 +153,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 
 void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 {
-	auto entity = m_SceneManager->GetEntity(EntityID);
+	auto entity = GetSceneManager()->GetEntity(EntityID);
 	auto controllercomp = entity->GetComponent<ControllerComponent>();
 	if (!controllercomp)
 		return;
@@ -167,7 +167,7 @@ void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 
 void PhysicSystem::ReleaseRigidBody(uint32_t EntityID)
 {
-	auto entity = m_SceneManager->GetEntity(EntityID);
+	auto entity = GetSceneManager()->GetEntity(EntityID);
 	if (!entity->HasComponent<RigidBodyComponent>())
 		return;
 	m_PhysicsEngine->ReleaseActor(EntityID);
@@ -176,7 +176,7 @@ void PhysicSystem::ReleaseRigidBody(uint32_t EntityID)
 
 void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
 {
-	auto entity = m_SceneManager->GetEntity(EntityID);
+	auto entity = GetSceneManager()->GetEntity(EntityID);
 	if (!entity->HasComponent<ControllerComponent>())
 		return;
 	m_PhysicsEngine->RemoveController(EntityID);

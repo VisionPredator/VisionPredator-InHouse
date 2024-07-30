@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LightSystem.h"
 
-LightSystem::LightSystem(SceneManager* sceneManager)
+LightSystem::LightSystem(std::shared_ptr<SceneManager> sceneManager)
 	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&LightSystem::OnAddedComponent));

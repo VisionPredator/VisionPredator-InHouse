@@ -36,7 +36,7 @@ bool ControllerManager::CreatCapsuleController(VPPhysics::CapsuleControllerInfo 
     auto capsuleController = std::make_shared<CapsuleController>();
     //CollisionData* collisionData = new CollisionData;
     capsuleController->Initialize(capsuleinfo,m_PxControllerManager, m_Material, physicsinfo);
-    m_CharectorMap.insert(std::make_pair(capsuleController->GetEntityID(), capsuleController.get()));
+    m_CharectorMap.insert(std::make_pair(capsuleController->GetEntityID(), capsuleController));
     return true;
 
 }

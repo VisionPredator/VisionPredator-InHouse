@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "AnimationSystem.h"
 
-AnimationSystem::AnimationSystem(SceneManager* sceneManager) : System(sceneManager)
+AnimationSystem::AnimationSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&AnimationSystem::OnAddedComponent));
 	EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&AnimationSystem::OnReleasedComponent));
