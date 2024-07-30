@@ -108,7 +108,7 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 void ControllerMovementSystem::PhysicsUpdate(float deltaTime)
 {
 ///인풋에 관련 하여 데이터 시스템을 업데이트 순서  ControllerMoveMentSystem -> Physicsysytem
-    COMPLOOP(ControllerComponent)
+    for (ControllerComponent& comp : COMPITER(ControllerComponent))
     {
         ControllerMoveCalculate(deltaTime, comp);
         m_PhysicsEngine->SetControllerVelocity(comp.GetEntityID(), comp.Velocity);

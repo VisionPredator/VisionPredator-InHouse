@@ -4,21 +4,21 @@
 #include "Components.h"
 void Scene::Clear()
 {
-    SceneName.clear();
+    
+    SceneName.clear();          // 씬 이름 초기화
 
-    // EntityMap의 엔티티들을 제거합니다.
-    EntityMap.clear();  // shared_ptr을 사용하므로 명시적인 delete가 필요 없습니다.
+   
+    for (auto& entry : EntityMap)    // Clear all entities and their components
+        entry.second.reset();        // Since entities and their components are managed by shared_ptr, just reset them
+    EntityMap.clear();
 
-    // m_ComponentPool의 컴포넌트들을 제거합니다.
-    for (auto& pool : m_ComponentPool) {
-        for (auto* component : pool.second) {
-            // 컴포넌트가 nullptr이 아닌 경우 삭제합니다.
-            if (component) {
-                delete component;  // Component를 삭제합니다.
-                component = nullptr;  // 삭제 후 포인터를 nullptr로 설정합니다.
-            }
-        }
-        pool.second.clear();  // 벡터를 비웁니다.
-    }
-    m_ComponentPool.clear();  // 맵을 비웁니다.
+	// Clear the component pool
+	for (auto& pool : m_ComponentPool)
+		if (auto sharedComp = pool.second.lock())       // Convert weak_ptr to shared_ptr and reset them if they are still valid
+			sharedComp.reset();
+
+	m_ComponentPool.clear();
+
+	// Clear physics info if needed
+	ScenePhysicInfo = VPPhysics::PhysicsInfo{};
 }

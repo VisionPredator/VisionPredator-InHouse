@@ -117,7 +117,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		temp.color.z = GeoComp.color.z;
 		temp.color.w = GeoComp.UseTexture;
 
-		IDComponent* idComp = GeoComp.GetComponent<IDComponent>();
+		auto idComp = GeoComp.GetComponent<IDComponent>();
 		temp.EntityID = idComp->GetEntityID();
 		temp.Pass = GeoComp.pass;
 		temp.Filter = GeoComp.FBXFilter;
@@ -140,7 +140,7 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
 	//IGraphics::Getinstance().Render(uint32_t, transform, ~~Á¤º¸);
 	RenderData temp;
-	IDComponent* idComp = meshComp.GetComponent<IDComponent>();
+	auto idComp = meshComp.GetComponent<IDComponent>();
 	temp.EntityID = idComp->GetEntityID();
 	std::wstring FbxName{};
 	std::wstring Name{};
@@ -157,7 +157,7 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 {
-	IDComponent* idComp = skinComp.GetComponent<IDComponent>();
+	auto idComp = skinComp.GetComponent<IDComponent>();
 	RenderData temp;
 	temp.EntityID = idComp->GetEntityID();
 	std::wstring FbxName{};

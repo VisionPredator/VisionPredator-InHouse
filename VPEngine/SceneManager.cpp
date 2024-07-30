@@ -60,7 +60,7 @@ std::pair<uint32_t, uint32_t>& SceneManager::findOrCreatePair(std::vector<std::p
 }
 bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
 {
-	Parent* nextParent = GetComponent<Parent>(child);
+	auto nextParent = GetComponent<Parent>(child);
 
 	while (nextParent != nullptr)
 	{
@@ -91,7 +91,7 @@ void SceneManager::OnAddChild(std::any data)
 	if (parent == child || CheckParent(parent, child))
 		return;
 
-	if (Parent* parentofchild = GetComponent<Parent>(child); parentofchild)
+	if (auto parentofchild = GetComponent<Parent>(child))
 	{
 		std::pair<uint32_t, uint32_t> newdata{ parentofchild->ParentID, child };
 		OnRemoveChild(newdata);
@@ -99,31 +99,28 @@ void SceneManager::OnAddChild(std::any data)
 
 	GetEntity(child)->AddComponent<Parent>(true)->ParentID = parent;
 
-	if (Children* children = GetComponent<Children>(parent); children)
+	if (auto children = GetComponent<Children>(parent))
 		children->ChildrenID.push_back(child);
 	else
 		GetEntity(parent)->AddComponent<Children>(true)->ChildrenID.push_back(child);
+
 	EventManager::GetInstance().ImmediateEvent("OnSetParentAndChild", data);
 }
 
 
 
 
-
 void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 {
-	if (Parent* parent = GetComponent<Parent>(childID); parent)
+	if (auto parent = GetComponent<Parent>(childID))
 	{
 		std::pair<uint32_t, uint32_t> data{ parent->ParentID, childID };
 		if (Immediate)
 		{
 			EventManager::GetInstance().ImmediateEvent("OnRemoveChild", data);
-
 			return;
 		}
-
 		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
-
 	}
 }
 
@@ -147,35 +144,28 @@ void SceneManager::SceneDeSerialize(std::string FilePath)
 
 void SceneManager::OnRemoveChild(std::any data)
 {
-
 	auto [parent, child] = std::any_cast<std::pair<uint32_t, uint32_t>>(data);
 	if (!CheckParent(parent, child))
 		return;
 
-	if (Parent* parentOfChild = GetComponent<Parent>(child); parentOfChild)
+	if (auto parentOfChild = GetComponent<Parent>(child))
 	{
-
 		if (parentOfChild->ParentID == parent)
 		{
-			Children* children = GetComponent<Children>(parent);
-			children->ChildrenID.remove_if(
-				[child](uint32_t id)
-				{
-					return id == child;
-				}
-			);
-
-			if (children->ChildrenID.empty())
+			auto children = GetComponent<Children>(parent);
+			if (children)
 			{
-				OnRemoveComponent(static_cast<Component*>(children));
+				children->ChildrenID.remove(child);
+
+				if (children->ChildrenID.empty())
+				{
+					OnRemoveComponent(GetEntity(parent)->GetComponent<Children>());
+				}
 			}
-			OnRemoveComponent(static_cast<Component*>(parentOfChild));
-
+			OnRemoveComponent(GetEntity(child)->GetComponent<Parent>());
 			EventManager::GetInstance().ImmediateEvent("OnRelaseParentAndChild", child);
-
 		}
 	}
-
 }
 
 
@@ -184,9 +174,9 @@ void SceneManager::OnRemoveChild(std::any data)
 
 
 
-void SceneManager::AddCompToPool(Component* comp)
+void SceneManager::AddCompToPool(std::shared_ptr<Component> comp)
 {
-	m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()].push_back(comp);
+	m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()] = comp;
 }
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
@@ -206,58 +196,47 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 
 		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", DeleteEntityID);
 		DeleteEntityIDs.pop_front();
-		if (!GetEntity(DeleteEntityID)->HasComponent<Children>())
+		auto entity = GetEntity(DeleteEntityID);
+		if (!entity->HasComponent<Children>())
 			continue;
-		Children* children = GetEntity(DeleteEntityID)->GetComponent<Children>();
+
+		auto children = entity->GetComponent<Children>();
 		DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
 	}
 }
 
 void SceneManager::OnDestroyEntity(std::any data)
 {
-	// EntityMap에서 해당 Entity를 찾습니다.
-	uint32_t entityID = std::any_cast<uint32_t>(data);
+    // EntityMap에서 해당 Entity를 찾습니다.
+    uint32_t entityID = std::any_cast<uint32_t>(data);
 
-	auto& entityMap = GetEntityMap();
-	auto entityIter = entityMap.find(entityID);
-	if (entityIter != entityMap.end())
-	{
-		std::shared_ptr<Entity> entityToRemove = entityIter->second;
-		// m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
-		for (auto& compPair : m_CurrentScene->m_ComponentPool)
-		{
-			auto& components = compPair.second;
-			std::vector<Component*> toDelete;
-
-			// 해당 Entity의 컴포넌트를 찾아 제거합니다.
-			components.erase(std::remove_if(components.begin(), components.end(),
-				[entityID, &toDelete](Component* comp)
-				{
-					if (comp->GetEntityID() == entityID)
-					{
-						toDelete.push_back(comp);
-						return true;
-					}
-					return false;
-				}), components.end());
-
-			// 제거된 컴포넌트들을 삭제합니다.
-			for (auto* comp : toDelete)
-			{
-				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
-				delete comp;
-			}
-		}
-		// EntityMap에서 해당 Entity를 제거합니다.
-		entityMap.erase(entityIter);
-	}
+    auto& entityMap = GetEntityMap();
+    auto entityIter = entityMap.find(entityID);
+    if (entityIter != entityMap.end())
+    {
+        std::shared_ptr<Entity> entityToRemove = entityIter->second;
+        // m_ComponentPool에서 해당 Entity에 해당하는 컴포넌트들을 제거합니다.
+        for (auto& compPair : m_CurrentScene->m_ComponentPool)
+        {
+            auto& weakComp = compPair.second;
+            if (auto sharedComp = weakComp.lock())
+            {
+                if (sharedComp->GetEntityID() == entityID)
+                {
+                    EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+                    ReleaseCompFromPool(compPair.first, sharedComp);
+                }
+            }
+        }
+        // EntityMap에서 해당 Entity를 제거합니다.
+        entityMap.erase(entityIter);
+    }
 }
 
 void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
 {
 	if (!entity)
 		return;
-
 	// Get the entity ID
 	uint32_t entityID = entity->GetEntityID();
 
@@ -268,26 +247,14 @@ void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
 		// Entity found, proceed to remove components associated with the entity
 		for (auto& compPair : m_CurrentScene->m_ComponentPool)
 		{
-			auto& components = compPair.second;
-			std::vector<Component*> toDelete;
-
-			// Find and mark components for deletion
-			components.erase(std::remove_if(components.begin(), components.end(),
-				[entityID, &toDelete](Component* comp)
-				{
-					if (comp->GetEntityID() == entityID)
-					{
-						toDelete.push_back(comp);
-						return true;
-					}
-					return false;
-				}), components.end());
-
-			// Delete the marked components
-			for (auto* comp : toDelete)
+			auto& weakComp = compPair.second;
+			if (auto sharedComp = weakComp.lock())
 			{
-				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
-				delete comp;
+				if (sharedComp->GetEntityID() == entityID)
+				{
+					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+					ReleaseCompFromPool(compPair.first, sharedComp);
+				}
 			}
 		}
 
@@ -295,7 +262,6 @@ void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
 		entityMap.erase(entityIter);
 	}
 }
-
 void SceneManager::OnClearAllEntity(std::any data)
 {
 	auto& entityMap = GetEntityMap();
@@ -394,23 +360,26 @@ void SceneManager::SerializePrefab(uint32_t entityID)
 void SceneManager::OnSerializePrefab(std::any data)
 {
 	uint32_t entityID = std::any_cast<uint32_t>(data);
-	std::list<uint32_t>  serializeIDs;
+	std::list<uint32_t> serializeIDs;
 	serializeIDs.push_back(entityID);
 
-	///Set FilePath
+	// 파일 경로 설정
 	std::string folderName = "../Data/Prefab/";
 	std::string entityName = GetEntity(entityID)->GetComponent<IDComponent>()->Name;
 	std::string fileExtension = ".prefab";
 	std::string filePath = folderName + entityName + fileExtension;
 
-	// Ensure directory exists before creating the file
+	// 파일을 생성하기 전에 디렉토리가 존재하는지 확인
 	std::filesystem::create_directories(folderName);
 
-	nlohmann::ordered_json SceneJson;			///ordered_json 하고 json의 차이 알아보기!
-	///Json을 저장할 파일 위치!
+	// JSON 객체 생성 (ordered_json 사용)
+	nlohmann::ordered_json SceneJson;
 	std::ofstream ofsPrefabPath(filePath);
 	if (!ofsPrefabPath)
+	{
 		VP_ASSERT(false, "파일을 여는데 실패하였습니다!");
+		return;
+	}
 
 	while (!serializeIDs.empty())
 	{
@@ -419,7 +388,9 @@ void SceneManager::OnSerializePrefab(std::any data)
 		auto serializeEntity = GetEntity(serializeID);
 		nlohmann::ordered_json entityJson;
 		entityJson["EntityID"] = serializeEntity->GetEntityID();
-		for (const auto& [id, comp] : serializeEntity->m_OwnedComp)
+
+		// 엔티티의 모든 컴포넌트를 순회하며 직렬화
+		for (const auto& comp : serializeEntity->GetOwnedComponents())
 		{
 			if (entityID == serializeID)
 			{
@@ -427,36 +398,34 @@ void SceneManager::OnSerializePrefab(std::any data)
 					continue;
 				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
 				{
-					auto temp = static_cast<TransformComponent*>(comp);
+					auto temp = std::dynamic_pointer_cast<TransformComponent>(comp);
 					TransformComponent Temp = *temp;
 					Temp.Local_Location = Temp.World_Location;
 					Temp.Local_Quaternion = Temp.World_Quaternion;
 					Temp.Local_Scale = Temp.World_Scale;
-					nlohmann::json compnentEntity;
-					Temp.SerializeComponent(compnentEntity);
-					compnentEntity["ComponentID"] = id;
-					entityJson["Component"].push_back(compnentEntity);
+					nlohmann::json componentEntity;
+					Temp.SerializeComponent(componentEntity);
+					componentEntity["ComponentID"] = comp->GetHandle()->type().id();
+					entityJson["Component"].push_back(componentEntity);
 					continue;
 				}
 			}
-
-
-
-			nlohmann::json compnentEntity;
-			comp->SerializeComponent(compnentEntity);
-			compnentEntity["ComponentID"] = id;
-			entityJson["Component"].push_back(compnentEntity);
+			nlohmann::json componentEntity;
+			comp->SerializeComponent(componentEntity);
+			componentEntity["ComponentID"] = comp->GetHandle()->type().id();
+			entityJson["Component"].push_back(componentEntity);
 		}
 
 		SceneJson.push_back(entityJson);
 		if (!serializeEntity->HasComponent<Children>())
 			continue;
-		Children* childrenComp = serializeEntity->GetComponent<Children>();
+		// 자식 엔티티를 직렬화 리스트에 추가
+		auto childrenComp = serializeEntity->GetComponent<Children>();
 		serializeIDs.insert(serializeIDs.end(), childrenComp->ChildrenID.begin(), childrenComp->ChildrenID.end());
 	}
 
+	// JSON 데이터를 파일에 저장
 	ofsPrefabPath << SceneJson.dump(4);
-
 	ofsPrefabPath.close();
 }
 
@@ -525,7 +494,6 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 {
 	uint32_t entityID = entityjson["EntityID"];
 	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
-	//Entity* tempEntity = new Entity;
 	tempEntity->SetEntityID(entityID);
 	SetEntityMap(entityID, tempEntity);
 
@@ -575,61 +543,68 @@ void SceneManager::OnDeSerializeEntity(std::any data)
 		}
 	}
 }
-
 std::shared_ptr<Entity> SceneManager::CreateEntity()
 {
+	// 난수 생성기를 사용하여 엔티티 ID를 생성합니다.
 	std::random_device rd;  // 난수 생성기
 	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
-	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_Max 까지의 난수 범위
+	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_MAX까지의 난수 범위
 	uint32_t id = dis(gen);
+
+	// 생성된 ID가 이미 존재하는지 확인하고, 존재하면 새로운 ID를 생성합니다.
 	while (HasEntity(id))
 	{
 		id = dis(gen);
 	}
-	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 
+	// 새로운 엔티티를 생성하고 ID를 설정합니다.
+	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 	tempEntity->SetEntityID(id);
 	SetEntityMap(id, tempEntity);
 
-	Component* IDComp = tempEntity->AddComponent(Reflection::GetTypeID<IDComponent>());
-	Component* TransformComp = tempEntity->AddComponent(Reflection::GetTypeID<TransformComponent>());
-	IDComponent* temp = static_cast<IDComponent*>(IDComp);
-	static int a = 0;
-	if (temp->Name == "Entity")
+	// IDComponent와 TransformComponent를 추가합니다.
+	std::shared_ptr<IDComponent> IDComp = tempEntity->AddComponent<IDComponent>();
+	std::shared_ptr<TransformComponent> TransformComp = tempEntity->AddComponent<TransformComponent>();
+
+	// IDComponent의 이름을 설정합니다.
+	if (IDComp->Name == "Entity")
 	{
-		temp->Name = temp->Name + std::to_string(a);
+		static int a = 0;
+		IDComp->Name = IDComp->Name + std::to_string(a);
 		a++;
 	}
 
 	return tempEntity;
 }
 
-
 std::shared_ptr<Entity> SceneManager::CreateEntity(uint32_t id)
 {
+	// 주어진 ID가 이미 존재하는지 확인합니다.
 	if (HasEntity(id))
 	{
 		VP_ASSERT(false, "이미 존재하는 EntityID 입니다.");
 		return nullptr;
 	}
-	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 
+	// 새로운 엔티티를 생성하고 ID를 설정합니다.
+	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 	tempEntity->SetEntityID(id);
 	SetEntityMap(id, tempEntity);
 
-	Component* IDComp = tempEntity->AddComponent(Reflection::GetTypeID<IDComponent>());
-	Component* TransformComp = tempEntity->AddComponent(Reflection::GetTypeID<TransformComponent>());
-	IDComponent* temp = static_cast<IDComponent*>(IDComp);
-	static int a = 0;
-	if (temp->Name == "Entity")
+	// IDComponent와 TransformComponent를 추가합니다.
+	std::shared_ptr<IDComponent> IDComp = tempEntity->AddComponent<IDComponent>();
+	std::shared_ptr<TransformComponent> TransformComp = tempEntity->AddComponent<TransformComponent>();
+
+	// IDComponent의 이름을 설정합니다.
+	if (IDComp->Name == "Entity")
 	{
-		temp->Name = temp->Name + std::to_string(a);
+		static int a = 0;
+		IDComp->Name = IDComp->Name + std::to_string(a);
 		a++;
 	}
 
 	return tempEntity;
 }
-
 uint32_t SceneManager::CreateRandomEntityID()
 {
 	std::random_device rd;  // 난수 생성기
@@ -653,14 +628,15 @@ VPPhysics::PhysicsInfo SceneManager::GetScenePhysic()
 
 void SceneManager::OnAddCompToScene(std::any data)
 {
-	auto comp = std::any_cast<Component*>(data);
+	// std::any에서 std::shared_ptr<Component>를 추출합니다.
+	std::shared_ptr<Component> comp = std::any_cast<std::shared_ptr<Component>>(data);
 	AddCompToPool(comp);
-	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", comp);
+	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", comp.get());
 }
 
 void SceneManager::OnRemoveComponent(std::any data)
 {
-	Component* comp = std::any_cast<Component*>(data);
+	std::shared_ptr<Component> comp = std::any_cast<std::shared_ptr<Component>>(data);
 
 	uint32_t EntityID = comp->GetEntityID();
 	entt::id_type CompID = comp->GetHandle()->type().id();
@@ -669,7 +645,7 @@ void SceneManager::OnRemoveComponent(std::any data)
 		VP_ASSERT(false, "해당 타입의 컴포넌트가 존재하지 않습니다.");
 		return;
 	}
-	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
+	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp.get());
 
 	comp->GetEntity()->ReleaseComponent(comp);
 	ReleaseCompFromPool(CompID, comp);

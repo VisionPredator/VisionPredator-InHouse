@@ -3,15 +3,15 @@
 //#include "SceneManager.h"
 struct Component
 {
-    Component();
+    Component() = default;
     virtual ~Component()
     {
         OwnedEntity.reset(); // Reset the weak pointer for safety
     }
 
-    virtual void SerializeComponent(nlohmann::json& json) const {};
-    virtual Component* DeserializeComponent(const nlohmann::json json, std::shared_ptr<Entity> parentEntity) const { return nullptr; }
-    virtual Component* AddComponent(std::shared_ptr<Entity> parentEntity) { return nullptr; }
+    virtual void SerializeComponent(nlohmann::json& json) const {}
+    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, std::shared_ptr<Entity> parentEntity) const { return nullptr; }
+    virtual std::shared_ptr<Component> AddComponent(std::shared_ptr<Entity> parentEntity) { return nullptr; }
 
     template <typename T>
     T* GetComponent()

@@ -11,6 +11,6 @@ public:
 
 	std::string SceneName{};
 	std::unordered_map<uint32_t, std::shared_ptr<Entity>> EntityMap;
-	std::unordered_map<entt::id_type, std::vector< Component*>> m_ComponentPool;
+	std::unordered_map<entt::id_type, std::weak_ptr<Component>> m_ComponentPool;
 	VPPhysics::PhysicsInfo ScenePhysicInfo;
 };

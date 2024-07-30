@@ -45,7 +45,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 {
 	
 	auto entity = m_SceneManager->GetEntity(EntityID);
-	RigidBodyComponent* rigidComp = entity->GetComponent<RigidBodyComponent>();
+	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
 	if (!rigidComp)
 		return;
 	TransformComponent rigidtransform = *rigidComp->GetComponent<TransformComponent>();
@@ -154,7 +154,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 {
 	auto entity = m_SceneManager->GetEntity(EntityID);
-	ControllerComponent* controllercomp = entity->GetComponent<ControllerComponent>();
+	auto controllercomp = entity->GetComponent<ControllerComponent>();
 	if (!controllercomp)
 		return;
 	controllercomp->Contollerinfo.EntityId = entity->GetEntityID();
@@ -186,7 +186,7 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 {
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
-		TransformComponent* rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
 		switch (rigidBodyComponent.ColliderShape)
 		{
@@ -220,7 +220,7 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 	}
 	for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
 	{
-		TransformComponent* ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
+		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
 
 		debug::OBBInfo temp{};
 		temp.OBB.Center = ControllerTransform->World_Location;
@@ -257,7 +257,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		uint32_t entityID = rigidBodyComponent.GetEntityID();
-		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 	
 		auto templocation = m_PhysicsEngine->GetGobalLocation(entityID);
 		auto offset_T = (rigidBodyTransform->World_Location - templocation).Length();
@@ -273,7 +273,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
 	{
 		uint32_t entityID = controllerCompoent.GetEntityID();
-		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
+		auto controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
 
 		auto templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
 		auto offset_T = (controllerTransform->World_Location - templocation).Length();
@@ -286,14 +286,14 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	m_PhysicsEngine->Update(deltaTime);
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
-		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
 		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
 	}
 
 	for (ControllerComponent& rigidBodyComponent : COMPITER(ControllerComponent))
 	{
-		TransformComponent* rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(rigidBodyComponent.GetEntityID());
 	}
 }

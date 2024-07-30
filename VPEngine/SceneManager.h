@@ -25,15 +25,14 @@ public:
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
 
-	std::vector<Component*> GetOwnedComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponent(); }
+	std::vector<std::shared_ptr<Component>> GetOwnedComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponent(); }
 
 
 	template<typename T>
-	bool HasComponent(uint32_t EntityID)
+	bool HasComponent(uint32_t entityID)
 	{
-		if (!HasEntity(EntityID))
-			return false;
-		return GetEntity(EntityID)->HasComponent<T>();
+		auto entity = GetEntity(entityID);
+		return entity ? entity->HasComponent<T>() : false;
 	}
 	bool HasComponent(uint32_t EntityID, entt::id_type compid)
 	{
@@ -41,39 +40,38 @@ public:
 			return false;
 		return GetEntity(EntityID)->HasComponent(compid);
 	}
-	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }
+	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }	///이거 체크
 
 	template<typename T>
 	T* GetComponent(uint32_t EntityID)
 	{
-		if (!HasEntity(EntityID))
-			return nullptr;
-		return GetEntity(EntityID)->GetComponent<T>();
+		auto entity = GetEntity(EntityID);
+		return entity ? entity->GetComponent<T>() : nullptr;
 	}
-	Component* GetComponent(uint32_t EntityID, entt::id_type compId)
-	{
-		if (!HasEntity(EntityID))
-			return nullptr;
-		return GetEntity(EntityID)->GetComponent(compId);
-	}
-	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
+
+	Component* GetComponent(uint32_t entityID, entt::id_type compId)
 	{
 		if (!HasEntity(entityID))
 			return nullptr;
-		return m_CurrentScene->EntityMap[entityID];
+		return GetEntity(entityID)->GetComponent(compId);
+	}
+	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
+	{
+		auto it = m_CurrentScene->EntityMap.find(entityID);
+		return it != m_CurrentScene->EntityMap.end() ? it->second : nullptr;
 	}
 	std::unordered_map<uint32_t, std::shared_ptr<Entity>>& GetEntityMap()
 	{
 		return m_CurrentScene->EntityMap;
 	}
-	const std::string GetSceneName() { return m_CurrentScene->SceneName; }
+	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 
 
 
-	void SetSceneName(std::string sceneName) { m_CurrentScene->SceneName = sceneName; }
+	void SetSceneName(const std::string& sceneName) { m_CurrentScene->SceneName = sceneName; }
 
 	template<typename T>
-	inline std::vector<T*> GetComponentPool();
+	inline  std::vector<std::shared_ptr<T>> GetComponentPool();
 
 	void AddChild(uint32_t Parent, uint32_t Child);
 	void RemoveParent(uint32_t child, bool Immediate = false);
@@ -92,7 +90,7 @@ private:
 
 	void SetEntityMap(uint32_t entityID, std::shared_ptr<Entity> entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 
-	void AddCompToPool(Component* comp);
+	void AddCompToPool(std::shared_ptr<Component> comp);
 	// 새로운 씬을 연다.
 	void OnNewScene(std::any data);
 
@@ -130,8 +128,8 @@ private:
 	void OnDeSerializeEntity(std::any data);
 
 	template<typename T>
-	void ReleaseCompFromPool(T* comp);
-	inline void ReleaseCompFromPool(entt::id_type compID, Component* comp);
+	void ReleaseCompFromPool(std::shared_ptr<T> comp);
+	inline void ReleaseCompFromPool(entt::id_type compID, std::shared_ptr<Component> comp);
 
 	friend class SceneSerializer;
 
@@ -143,37 +141,44 @@ private:
 };
 
 
-
 template<typename T>
-inline std::vector<T*> SceneManager::GetComponentPool()
+inline std::vector<std::shared_ptr<T>> SceneManager::GetComponentPool()
 {
-	auto& baseVec = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
-	std::vector<T*> result;
-	result.reserve(baseVec.size()); // 예비 메모리 할당
-	for (Component* comp : baseVec)
-		result.push_back(static_cast<T*>(comp));
+	std::vector<std::shared_ptr<T>> result;
+
+	// m_ComponentPool에서 해당 타입의 컴포넌트를 찾습니다.
+	auto range = m_CurrentScene->m_ComponentPool.equal_range(Reflection::GetTypeID<T>());
+	for (auto it = range.first; it != range.second; ++it)
+	{
+		if (auto sharedComp = it->second.lock())
+		{
+			result.push_back(std::dynamic_pointer_cast<T>(sharedComp));
+		}
+	}
+
 	return result;
 }
 
 template<typename T>
-inline void SceneManager::ReleaseCompFromPool(T* comp)
+inline void SceneManager::ReleaseCompFromPool(std::shared_ptr<T> comp)
 {
 	auto& pool = m_CurrentScene->m_ComponentPool[Reflection::GetTypeID<T>()];
-	auto it = std::find(pool.begin(), pool.end(), comp);
-	if (it != pool.end())
+	if (auto sharedComp = pool.lock())
 	{
-		std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
-		pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
+		if (sharedComp == comp)
+		{
+			pool.reset(); // Reset the weak pointer to release the component
+		}
 	}
 }
-inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, Component* comp)
+inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, std::shared_ptr<Component> comp)
 {
-	auto& pool = m_CurrentScene->m_ComponentPool[compID];
-	auto it = std::find(pool.begin(), pool.end(), comp);
-	if (it != pool.end())
+	auto& weakComp = m_CurrentScene->m_ComponentPool[compID];
+	if (auto sharedComp = weakComp.lock())
 	{
-		delete* it; // 포인터가 가리키는 실제 객체를 삭제
-		std::iter_swap(it, pool.end() - 1); // 해당 컴포넌트를 마지막 컴포넌트와 교환
-		pool.pop_back(); // 마지막 컴포넌트를 풀에서 제거
+		if (sharedComp == comp)
+		{
+			weakComp.reset(); // Reset the weak pointer to release the component
+		}
 	}
 }
