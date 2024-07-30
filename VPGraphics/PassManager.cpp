@@ -62,10 +62,10 @@ void PassManager::Render()
 
 	//deferred
 	m_Passes[PassState::Debug]->Render();
+	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
 	DrawGBuffer();
 
-	m_Passes[PassState::GeoMetry]->Render();
 
 	m_Passes[PassState::Forward]->Render();
 
