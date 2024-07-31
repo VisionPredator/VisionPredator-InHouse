@@ -4,7 +4,6 @@
 	{
 		// 현재 카운트
 		QueryPerformanceCounter(&m_PrevCount);
-
 		// 초당 카운트 횟수
 		QueryPerformanceFrequency(&m_Frequency);
 	}
@@ -24,3 +23,4 @@
 			m_FPS = 0;
 		}
 	}
+

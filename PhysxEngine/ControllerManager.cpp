@@ -51,7 +51,7 @@ bool ControllerManager::Update(float deltatime)
         {
             CapsuleController* capsuleController = static_cast<CapsuleController*>(controller.get());
 
-            physx::PxControllerCollisionFlags collisionFlags = capsuleController->m_Controller->move(capsuleController->m_Velocity, 0.001f, deltatime, *capsuleController->GetFilters());
+            physx::PxControllerCollisionFlags collisionFlags = capsuleController->m_Controller->move(capsuleController->m_Velocity*deltatime , 0.001f, deltatime, *capsuleController->GetFilters());
 
             if (collisionFlags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
                 capsuleController->SetIsFall(false);

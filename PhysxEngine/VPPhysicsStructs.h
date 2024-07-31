@@ -57,7 +57,7 @@ namespace VPPhysics
 		}
 
 		VPMath::Vector3 Gravity{};
-		int FrameRate = 60;
+		uint32_t FrameRate = 60;
 		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
 	};
 	struct ConvexMeshResourceInfo

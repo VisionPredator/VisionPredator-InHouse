@@ -196,7 +196,16 @@ void Toolbar::PhysicEngineImGui()
 		// 프레임 레이트 편집
 		ImGui::SetNextItemWidth(200.f);
 
-		ImGui::InputInt("Frame Rate", &m_phsicsinfo.FrameRate);
+		int tempFrameRate = static_cast<int>(m_phsicsinfo.FrameRate); // 임시 int 변수에 저장
+
+		if (ImGui::InputInt("Frame Rate", &tempFrameRate)) 
+		{
+			if (tempFrameRate < 1) {
+				tempFrameRate =1; // 음수 값을 0으로 설정
+			}
+			m_phsicsinfo.FrameRate = static_cast<uint32_t>(tempFrameRate); // uint32_t로 변환하여 저장
+		}
+
 
 		// 충돌 매트릭스 편집
 		ImGui::Text("Collision Matrix");
@@ -259,6 +268,7 @@ void Toolbar::PhysicEngineImGui()
 			// 수정된 정보를 물리 엔진에 설정합니다.
 			m_SceneManager.lock()->SetScenePhysic(m_phsicsinfo);
 			m_PhysicEngine->SetPhysicsInfo(m_SceneManager.lock()->GetScenePhysic());
+			EventManager::GetInstance().ImmediateEvent("OnSetPhysicUpdateRate", m_phsicsinfo.FrameRate);
 			m_ShowPhysicSettings = false;
 		}
 	}

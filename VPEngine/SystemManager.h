@@ -8,7 +8,7 @@
 	{
 		float m_ProgressedTime = 0.f;
 		float m_PhysicProgressedTime = 0.f;
-		int m_PhysicsFrame = 60;
+		uint32_t m_PhysicsFrame = 60;
 		int m_FixedFrame = 60;
 		float m_PhysicDeltatime = 1.f / 60.f;
 		float m_FixedDeltatime = 1.f / 60.f;
@@ -153,6 +153,7 @@
 		void InitializeSystems();
 		void FinalizeSystems();
 
+		void OnSetPhysicUpdateRate(std::any rate);
 		void OnInitializeSystems(std::any data)
 		{
 			InitializeSystems();

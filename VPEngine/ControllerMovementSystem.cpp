@@ -24,7 +24,6 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
         comp.InputDir.Normalize();
     }
     VPMath::Vector3 dir = comp.InputDir;
-
     // Set appropriate acceleration and friction values
     float acceleration = comp.IsFall ? comp.JumpXZAcceleration : comp.Acceleration;
     float friction = comp.IsFall ? comp.JumpXZDeceleration : comp.DynamicFriction;
@@ -70,7 +69,6 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 	if (comp.InputDir.y != 0 && !comp.IsFall)
 		comp.Velocity.y = comp.JumpSpeed;
 
-	// Clamp velocity to max speed
 	VPMath::Vector2 xzVelocity{ comp.Velocity.x, comp.Velocity.z };
 	comp.Speed = xzVelocity.Length();
 

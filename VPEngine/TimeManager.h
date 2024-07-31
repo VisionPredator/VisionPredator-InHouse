@@ -1,9 +1,9 @@
 #pragma once
 
 ///누수 없음.
+#include "EventSubscriber.h"
 
-
-	class TimeManager
+	class TimeManager:public EventSubscriber
 	{
 	private:
 		LARGE_INTEGER m_CurCount{};
@@ -20,7 +20,6 @@
 		TimeManager();
 		void Update();
 		~TimeManager() {}
-
 		const float GetDeltaTime() { return static_cast<float>(m_DeltaTime); }
 		uint32_t GetFPS() { return m_LastFPS; }
 

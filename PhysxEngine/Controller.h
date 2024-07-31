@@ -55,10 +55,6 @@ inline bool Controller::GetIsFall()
 inline void Controller::SetVelocity(VPMath::Vector3 velocity)
 {
 	m_Velocity = { velocity .x,velocity .y,velocity .z};
-
-
-
-
 }
 inline VPMath::Vector3 Controller::GetVelocity()
 {
