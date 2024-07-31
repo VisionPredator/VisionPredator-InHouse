@@ -40,6 +40,7 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 	//data->myId = m_EntityID;
 	//data->myLayerNumber = m_LayerNum;
 	//shape->userData = data;
+	shape->userData = &m_EntityID;
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);
 	physx::PxTransform transform;
@@ -66,7 +67,7 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[1] << 4) |
 		(PxRigidDynamicLockFlag::Enum)(colliderInfo.AngleLock[2] << 5));
 
-	//m_DynamicRigid->userData = data;
+	m_DynamicRigid->userData = &m_EntityID;
 	if (m_DynamicRigid == nullptr)
 		return false;
 

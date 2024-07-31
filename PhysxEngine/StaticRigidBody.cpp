@@ -41,7 +41,7 @@ bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shap
 	}
 	//data->myId = m_EntityID;
 	//data->myLayerNumber = m_LayerNum;
-	//shape->userData = data;
+	shape->userData = &m_EntityID;
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);
 	physx::PxTransform transform;
@@ -56,7 +56,7 @@ bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shap
 	transform.q.w = colliderInfo.WorldQuaternion.w;
 
 	m_StaticRigid = physics->createRigidStatic(transform);
-	//m_StaticRigid->userData = data;
+	m_StaticRigid->userData = &m_EntityID;
 	if (m_StaticRigid == nullptr)
 		return false;
 	if (!m_StaticRigid->attachShape(*shape))

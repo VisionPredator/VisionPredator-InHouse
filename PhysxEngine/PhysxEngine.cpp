@@ -9,6 +9,7 @@
 #include "PhysichResourceManager.h"
 #include "Controller.h"
 #include "../VPEngine/EventManager.h"
+#include "CollisionManager.h"
 #include <iostream>
 /// <summary>
 /// 충돌 콜백 함수
@@ -76,6 +77,7 @@ bool PhysxEngine::Initialize()
 	m_RigidBodyManager = std::make_shared<RigidBodyManager>();
 	m_ControllerManager =std::make_shared<ControllerManager>();
 	m_RecourceManager= std::make_shared<PhysichResourceManager>();
+	m_CollisionManager = std::make_shared<CollisionManager>();
 	m_Physics->Initialize();
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
@@ -112,6 +114,7 @@ void PhysxEngine::Update(float deltatime)
 
 	m_ControllerManager->Update(deltatime);
 	SimulateUpdate(deltatime);
+	m_CollisionManager->Update();
 	/// 충돌 체크 관런
 }
 

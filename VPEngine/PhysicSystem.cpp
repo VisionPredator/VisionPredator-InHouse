@@ -2,10 +2,73 @@
 #include "PhysicSystem.h"
 #include "../PhysxEngine/IPhysx.h"
 #include "TransformSystem.h"
-
+#include "EventManager.h"
 PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
+	EventManager::GetInstance().Subscribe("OnCollisionExit",CreateSubscriber(&PhysicSystem::OnCollisionExit));
+	EventManager::GetInstance().Subscribe("OnCollisionContact",CreateSubscriber(&PhysicSystem::OnCollisionContact));
+	EventManager::GetInstance().Subscribe("OnCollisionEnter",CreateSubscriber(&PhysicSystem::OnCollisionEnter));
+}
+
+void PhysicSystem::OnCollisionExit(std::any pair)
+{
+	auto [pairid1, pairid2] = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+	auto entity1 = GetSceneManager()->GetEntity(pairid1).get();
+	auto entity2 = GetSceneManager()->GetEntity(pairid2).get();
+
+	if (entity1->HasComponent<GeometryComponent>())
+	{
+		auto geoComp = entity1->GetComponent<GeometryComponent>();
+		geoComp->color = { 0,1,0 };
+	}
+	if (entity2->HasComponent<GeometryComponent>())
+	{
+		auto geoComp = entity2->GetComponent<GeometryComponent>();
+		geoComp->color = { 0,1,0 };
+
+	}
+
+
+}
+
+void PhysicSystem::OnCollisionContact(std::any pair)
+{
+	//auto [pairid1, pairid2] = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+	//auto entity1 =GetSceneManager()->GetEntity(pairid1).get();
+	//auto entity2 =GetSceneManager()->GetEntity(pairid2).get();
+
+	//if (entity1->HasComponent<GeometryComponent>())
+	//{
+	//	auto geoComp = entity1->GetComponent<GeometryComponent>();
+	//	geoComp->color = {1,0,0};
+	//}
+	//if (entity2->HasComponent<GeometryComponent>())
+	//{
+	//	auto geoComp = entity2->GetComponent<GeometryComponent>();
+	//	geoComp->color = { 1,0,0 };
+
+	//}
+
+}
+
+void PhysicSystem::OnCollisionEnter(std::any pair)
+{
+	auto [pairid1, pairid2] = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+	auto entity1 = GetSceneManager()->GetEntity(pairid1).get();
+	auto entity2 = GetSceneManager()->GetEntity(pairid2).get();
+
+	if (entity1->HasComponent<GeometryComponent>())
+	{
+		auto geoComp = entity1->GetComponent<GeometryComponent>();
+		geoComp->color = { 1,0,0 };
+	}
+	if (entity2->HasComponent<GeometryComponent>())
+	{
+		auto geoComp = entity2->GetComponent<GeometryComponent>();
+		geoComp->color = { 1,0,0 };
+
+	}
 }
 
 
@@ -296,4 +359,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(rigidBodyComponent.GetEntityID());
 	}
+
+
+
 }
