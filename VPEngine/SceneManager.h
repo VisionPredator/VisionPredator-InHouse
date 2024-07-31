@@ -130,6 +130,7 @@ private:
 	template<typename T>
 	void ReleaseCompFromPool(std::shared_ptr<T> comp);
 	inline void ReleaseCompFromPool(entt::id_type compID, std::shared_ptr<Component> comp);
+	inline void ReleaseCompFromPool(entt::id_type compID, Component* comp);
 
 	friend class SceneSerializer;
 
@@ -182,6 +183,19 @@ inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, std::shared_
 			if (auto sharedComp = weakComp.lock())
 			{
 				return sharedComp == comp;
+			}
+			return false;
+		}), pool.end());
+}
+
+inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, Component* comp)
+{
+	auto& pool = m_CurrentScene->m_ComponentPool[compID];
+	pool.erase(std::remove_if(pool.begin(), pool.end(), [comp](const std::weak_ptr<Component>& weakComp)
+		{
+			if (auto sharedComp = weakComp.lock())
+			{
+				return sharedComp.get() == comp;
 			}
 			return false;
 		}), pool.end());

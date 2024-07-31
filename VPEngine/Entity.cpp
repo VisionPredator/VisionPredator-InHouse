@@ -87,3 +87,16 @@ void Entity::ReleaseComponent(std::shared_ptr<Component> comp)
         VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
     }
 }
+void Entity::ReleaseComponent(Component* comp)
+{
+    auto it = m_OwnedComp.find(comp->GetHandle()->type().id());
+    if (it != m_OwnedComp.end())
+    {
+        it->second.reset(); // Reset the shared_ptr to release the resource
+        m_OwnedComp.erase(it);
+    }
+    else
+    {
+        VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
+    }
+}

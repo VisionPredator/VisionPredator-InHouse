@@ -111,6 +111,7 @@ private:
     }
 
     void ReleaseComponent(std::shared_ptr<Component> comp);
+    void ReleaseComponent(Component* comp);
 
     operator bool() const { return m_EntityID; }
     operator uint32_t() const { return m_EntityID; }

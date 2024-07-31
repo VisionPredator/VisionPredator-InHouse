@@ -159,10 +159,10 @@ void SceneManager::OnRemoveChild(std::any data)
 
 				if (children->ChildrenID.empty())
 				{
-					OnRemoveComponent(GetEntity(parent)->GetComponent<Children>());
+					OnRemoveComponent(GetEntity(parent)->GetComponent(Reflection::GetTypeID<Children>()));
 				}
 			}
-			OnRemoveComponent(GetEntity(child)->GetComponent<Parent>());
+			OnRemoveComponent(GetEntity(child)->GetComponent(Reflection::GetTypeID<Parent>()));
 			EventManager::GetInstance().ImmediateEvent("OnRelaseParentAndChild", child);
 		}
 	}
@@ -656,7 +656,7 @@ void SceneManager::OnAddCompToScene(std::any data)
 
 void SceneManager::OnRemoveComponent(std::any data)
 {
-	std::shared_ptr<Component> comp = std::any_cast<std::shared_ptr<Component>>(data);
+	Component* comp = std::any_cast<Component*>(data);
 
 	uint32_t EntityID = comp->GetEntityID();
 	entt::id_type CompID = comp->GetHandle()->type().id();
@@ -665,7 +665,7 @@ void SceneManager::OnRemoveComponent(std::any data)
 		VP_ASSERT(false, "해당 타입의 컴포넌트가 존재하지 않습니다.");
 		return;
 	}
-	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp.get());
+	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
 
 	comp->GetEntity()->ReleaseComponent(comp);
 	ReleaseCompFromPool(CompID, comp);

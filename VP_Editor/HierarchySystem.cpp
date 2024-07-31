@@ -31,7 +31,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 
 
 	ImGui::PushID(entityID);
-	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 
 	if (!entity->HasComponent<Children>())
 		node_flags |= ImGuiTreeNodeFlags_Leaf;
