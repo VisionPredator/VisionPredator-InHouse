@@ -13,6 +13,8 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     float4 N = gNormal.Sample(samLinear, input.tex);
     
     float3 result = float3(0, 0, 0);
+    float3 directlight = float3(0, 0, 0);
+    float3 indirectlight = float3(0, 0, 0);
     
     //View
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - position.xyz);
@@ -32,27 +34,31 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     
     for (int i = 0; i < DirIndex; i++)
     {
-        result += CalcDir(array[i], V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        directlight += CalcDir(array[i], V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
     }
 
     // Calculate Spot Light    
     for (int k = DirIndex; k < DirIndex + SpotIndex; k++)
     {        
-        result += CalcSpot(array[k], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
+        directlight += CalcSpot(array[k], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
     }
     // Calculate Point Light
     for (int j = DirIndex + SpotIndex; j < DirIndex + SpotIndex + PointIndex; j++)
     {
-        result += CalcPoint(array[j], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue, Depth);
+        directlight += CalcPoint(array[j], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue, Depth);
 
     }
     
+    indirectlight = albedoColor * 0.03;
 
     // ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
 
-    result = ambient + result;
+    directlight = ambient + directlight;
  
+    
+    result = directlight + indirectlight;
+    
     // HDR tonemapping
     result = result / (result + float3(1.0, 1.0, 1.0)) + EmissiveValue;
     
