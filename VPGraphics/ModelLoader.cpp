@@ -41,6 +41,7 @@ void ModelLoader::Initialize()
 	path = "..\\Data\\FBX\\";
 #endif
 
+	//처음에 디렉터리가 없으면 어떻게 처리할지 필요
 	for (const auto& entry : std::filesystem::directory_iterator(path))
 	{
 		std::vector<std::string> filelist;
@@ -65,21 +66,16 @@ void ModelLoader::Initialize()
 		m_ResourceDirectory.insert({ curFilter,filelist });
 	}
 
+	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
+	//멀티 스레드면 참 좋을듯
 	for (auto& dir : m_ResourceDirectory)
 	{
 		for (auto& file : dir.second)
 		{
 			LoadModel(file, dir.first);
-
 		}
 	}
 
-	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
-	//LoadModel("Flair.fbx", Filter::SKINNING);
-	//LoadModel("cerberus.fbx", Filter::STATIC);
-	//LoadModel("UVLH123.fbx", Filter::SKINNING);
-	//LoadModel("2024-07-31.fbx", Filter::SKINNING);
-	//LoadModel("reloading.fbx", Filter::SKINNING);
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
