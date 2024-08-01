@@ -31,7 +31,7 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 	std::wstring strExtension = _path.extension();
 	std::transform(strExtension.begin(), strExtension.end(), strExtension.begin(), ::towlower);
 
-	DirectX::TexMetadata metadata1;
+	DirectX::TexMetadata metadata;
 	DirectX::ScratchImage scratchImage;
 
 	HRESULT hr = S_OK;
@@ -42,24 +42,25 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 		//	filePath.c_str(),
 		//	nullptr, &m_view));
 
-		(hr = DirectX::LoadFromDDSFile(filePath.c_str(), DirectX::DDS_FLAGS_NONE, &metadata1, scratchImage));
+		(hr = DirectX::LoadFromDDSFile(filePath.c_str(), DirectX::DDS_FLAGS_NONE, &metadata, scratchImage));
 	}
 	else if (strExtension == L".tga")
 	{
-		(hr = DirectX::LoadFromTGAFile(filePath.c_str(), &metadata1, scratchImage));
+		(hr = DirectX::LoadFromTGAFile(filePath.c_str(), &metadata, scratchImage));
 	}
 	else if (strExtension == L".hdr")
 	{
-		(hr = DirectX::LoadFromHDRFile(filePath.c_str(), &metadata1, scratchImage));
+		(hr = DirectX::LoadFromHDRFile(filePath.c_str(), &metadata, scratchImage));
 	}
 	else // ±âÅ¸..
 	{
-		(hr = DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_NONE, &metadata1, scratchImage));
+		(hr = DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_NONE, &metadata, scratchImage));
 	}
 
-	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata1, &m_view));
+	m_Width = metadata.width;
+	m_Height = metadata.height;
 
-
+	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, &m_view));
 }
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc) : Resource(device)

@@ -53,7 +53,7 @@ namespace Graphics
 		virtual void UpdateModel(uint32_t EntityID, RenderData& data)abstract;
 		
 		//카메라의 상태 업데이트
-		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
+		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, const DirectX::SimpleMath::Matrix& orthoProj) abstract;
 
 		//렌더링
 		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") abstract;

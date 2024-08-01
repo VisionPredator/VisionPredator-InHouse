@@ -2616,6 +2616,14 @@ inline Matrix Matrix::CreateOrthographic(float width, float height, float zNearP
     return R;
 }
 
+inline Matrix Matrix::CreateOrthographic_LH(float width, float height, float zNearPlane, float zFarPlane) noexcept
+{
+    using namespace DirectX;
+    Matrix L;
+    XMStoreFloat4x4(&L, XMMatrixOrthographicLH(width, height, zNearPlane, zFarPlane));
+    return L;
+}
+
 inline Matrix Matrix::CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane) noexcept
 {
     using namespace DirectX;

@@ -17,5 +17,10 @@ public:
 
     // ILateUpdatable을(를) 통해 상속됨
     void LateUpdate(float deltaTime) override;
+
+private:
+    /// TEMP 값
+    float Width = 1920.f;
+    float Height = 1080.f;
 };
 

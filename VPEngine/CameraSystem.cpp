@@ -20,7 +20,7 @@ void CameraSystem::LateUpdate(float deltaTime)
 		IsMainCameraExist = true;
 
 		CameraCalculation(cameracomp);
-		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj);
+		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
 
 		///그런다음 for문 종료하기!
 		break;
@@ -89,7 +89,9 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 	mainCamera.View = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 	// Calculate projection matrix
 	// Assuming m_ratio, m_FOV, NearZ, and mainCamera.FarZ are properly set
-	mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, mainCamera.Ratio, mainCamera.NearZ, mainCamera.FarZ);
+	//mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, mainCamera.Ratio, mainCamera.NearZ, mainCamera.FarZ);
+	mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, Width / Height , mainCamera.NearZ, mainCamera.FarZ);
+	mainCamera.OrthoProj = VPMath::Matrix::CreateOrthographic_LH(Width, Height, mainCamera.NearZ, mainCamera.FarZ);
 }
 
 void CameraSystem::RenderUpdate(float deltaTime)
