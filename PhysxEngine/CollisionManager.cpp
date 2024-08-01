@@ -20,14 +20,14 @@ CollisionManager::~CollisionManager()
 void CollisionManager::Update()
 {
     // simulation의 결과 콜리전Exit 발생시!
-    for (auto it = CollisionExit.begin(); it != CollisionExit.end();)
+    for (auto it = m_CollisionExit.begin(); it != m_CollisionExit.end();)
     {
         auto pair = std::make_pair(it->first, it->second);
         EventManager::GetInstance().ImmediateEvent("OnCollisionExit", pair);
         it = EraseExit(it, false);
     }
 
-    for (auto it = TriggerExit.begin(); it != TriggerExit.end();)
+    for (auto it = m_TriggerExit.begin(); it != m_TriggerExit.end();)
     {
         auto pair = std::make_pair(it->first, it->second);
 
@@ -36,20 +36,20 @@ void CollisionManager::Update()
     }
 
     // On콜리전 발생시! 프레임 저하 발생시에 저거를하고, 대체품도 생각해보기
-    for (auto& entitypair : CollisionContact)
+    for (auto& entitypair : m_CollisionContact)
         EventManager::GetInstance().ImmediateEvent("OnCollisionContact", entitypair);
-    for (auto& entitypair : TriggerContact)
+    for (auto& entitypair : m_TriggerContact)
         EventManager::GetInstance().ImmediateEvent("OnTriggerContact", entitypair);
 
     // simulation의 결과 콜리전Enter 발생시!
-    for (auto it = CollisionEnter.begin(); it != CollisionEnter.end();)
+    for (auto it = m_CollisionEnter.begin(); it != m_CollisionEnter.end();)
     {
         auto pair = std::make_pair(it->first, it->second);
 
         EventManager::GetInstance().ImmediateEvent("OnCollisionEnter", pair);
         it = MoveEnterToContact(it, false);
     }
-    for (auto it = TriggerEnter.begin(); it != TriggerEnter.end();)
+    for (auto it = m_TriggerEnter.begin(); it != m_TriggerEnter.end();)
     {
         auto pair = std::make_pair(it->first, it->second);
         EventManager::GetInstance().ImmediateEvent("OnTriggerEnter", pair);
@@ -59,7 +59,7 @@ void CollisionManager::Update()
 
 void CollisionManager::AddEnter(std::pair<uint32_t, uint32_t> data, bool IsTrigger) 
 {
-    auto& enterSet = IsTrigger ? TriggerEnter : CollisionEnter;
+    auto& enterSet = IsTrigger ? m_TriggerEnter : m_CollisionEnter;
     auto range = enterSet.equal_range(data.first);
     bool exists = false;
     for (auto it = range.first; it != range.second; ++it)
@@ -79,20 +79,20 @@ std::multimap<uint32_t, uint32_t>::iterator CollisionManager::MoveEnterToContact
 {
     if (!IsTrigger)
     {
-        CollisionContact.insert(*it);
-        return CollisionEnter.erase(it);
+        m_CollisionContact.insert(*it);
+        return m_CollisionEnter.erase(it);
     }
     else
     {
-        TriggerContact.insert(*it);
-        return TriggerEnter.erase(it);
+        m_TriggerContact.insert(*it);
+        return m_TriggerEnter.erase(it);
     }
 }
 
 void CollisionManager::MoveContactToExit(std::pair<uint32_t, uint32_t> data, bool IsTrigger)
 {
-    auto& contactSet = IsTrigger ? TriggerContact : CollisionContact;
-    auto& exitSet = IsTrigger ? TriggerExit : CollisionExit;
+    auto& contactSet = IsTrigger ? m_TriggerContact : m_CollisionContact;
+    auto& exitSet = IsTrigger ? m_TriggerExit : m_CollisionExit;
     auto range = contactSet.equal_range(data.first);
     for (auto it = range.first; it != range.second; ++it)
     {
@@ -109,17 +109,17 @@ std::multimap<uint32_t, uint32_t>::iterator CollisionManager::EraseExit(std::mul
 {
     if (!IsTrigger)
     {
-        return CollisionExit.erase(it);
+        return m_CollisionExit.erase(it);
     }
     else
     {
-        return TriggerExit.erase(it);
+        return m_TriggerExit.erase(it);
     }
 }
 
 void CollisionManager::EraseExit(std::pair<uint32_t, uint32_t> data, bool IsTrigger)
 {
-    auto& exitSet = IsTrigger ? TriggerExit : CollisionExit;
+    auto& exitSet = IsTrigger ? m_TriggerExit : m_CollisionExit;
     auto range = exitSet.equal_range(data.first);
     for (auto it = range.first; it != range.second; ++it)
     {
@@ -131,6 +131,35 @@ void CollisionManager::EraseExit(std::pair<uint32_t, uint32_t> data, bool IsTrig
     }
 }
 
+void CollisionManager::RemoveMaps()
+{
+    m_CollisionEnter.clear();
+    m_CollisionContact.clear();
+    m_CollisionExit.clear();
+    m_TriggerEnter.clear();
+    m_TriggerContact.clear();
+    m_TriggerExit.clear();
+}
+void CollisionManager::RemoveEntity(uint32_t entityID) 
+{
+    auto removeEntityFromMap = [](auto& mmap, uint32_t id) {
+        for (auto it = mmap.begin(); it != mmap.end(); ) {
+            if (it->first == id || it->second == id) {
+                it = mmap.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+        };
+
+    removeEntityFromMap(m_CollisionEnter, entityID);
+    removeEntityFromMap(m_CollisionContact, entityID);
+    removeEntityFromMap(m_CollisionExit, entityID);
+    removeEntityFromMap(m_TriggerEnter, entityID);
+    removeEntityFromMap(m_TriggerContact, entityID);
+    removeEntityFromMap(m_TriggerExit, entityID);
+}
 void CollisionManager::OnAddEnter_Collision(std::any entityPair)
 {
     auto entitys = std::any_cast<std::pair<uint32_t, uint32_t>>(entityPair);

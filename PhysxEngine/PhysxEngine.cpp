@@ -93,7 +93,6 @@ bool PhysxEngine::Initialize()
 	sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
 	m_RecourceManager->Initialize(m_Physics->GetPxPhysics());
-
 	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_RecourceManager);
 	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager.get());
 #ifdef _DEBUG
@@ -156,6 +155,7 @@ void PhysxEngine::CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexin
 void PhysxEngine::ReleaseActor(uint32_t entityID)
 {
 	m_RigidBodyManager->ReleaseBodyScene(entityID);
+	m_CollisionManager->RemoveEntity(entityID);
 }
 
 void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)
@@ -178,6 +178,12 @@ void PhysxEngine::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexi
 {
 	m_RigidBodyManager->CreateDynamicBody(convexinfo, collidertype, m_PhyiscsInfo);
 
+}
+
+bool PhysxEngine::HasRigidBody(uint32_t entityID)
+{
+	
+	return m_RigidBodyManager->HasRigidBody(entityID);;
 }
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)

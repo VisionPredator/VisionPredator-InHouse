@@ -1,13 +1,14 @@
 #pragma once
 #include "IImGui.h"
 #include "EditorCamera.h"
+#include "EventSubscriber.h"
 class SceneManager;
 using namespace VPMath;
 namespace Graphics
 {
 	class Interface;
 }
-class EditorViewPort:public IImGui
+class EditorViewPort :public IImGui, public EventSubscriber
 {
 
 	enum class RENDERMODE
@@ -29,8 +30,13 @@ public:
 	void ImGuiRender() override;
 	void PlayingImGui();
 	void EditingImGui();
-	void EditViewPortImGui(std::wstring mode,ImVec2 pos, ImVec2 maxPos);
+	void EditViewPortImGui(std::wstring mode,ImVec2 pos, ImVec2 size);
 	void ImGuizmoRender();
+	void RenderImGuiViewport();
+	void OnResize(std::any hwnd);
+	std::wstring GetRenderModeString(RENDERMODE renderMode);
+
+
 private:
 	RENDERMODE m_CurrentRenderMode = RENDERMODE::IMGUI;
 	Vector3 m_TranslationSnapValue = Vector3(1.0f);
@@ -43,5 +49,8 @@ private:
 	Graphics::Interface* m_Graphics;
 	ImGuizmo::OPERATION m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
 	ImGuizmo::MODE Mode = ImGuizmo::MODE::LOCAL;
+	VPMath::Vector2 m_Rectsize;
+	ImVec2 m_DrawPos{};
+	ImVec2	m_DrawSize{};
 };
 

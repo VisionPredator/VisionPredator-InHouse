@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EditorCamera.h"
-#include "directxtk\SimpleMath.h"
+//#include "../include/directxtk/SimpleMath.h"
 #include <InputManager.h>
 #include "HierarchySystem.h"
 #include "SceneManager.h"

@@ -20,7 +20,6 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) abstract;
 	virtual void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) abstract;
 	virtual void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) abstract;
-
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;
 	virtual void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) abstract;
@@ -40,6 +39,7 @@ public:
 	virtual VPMath::Vector3 GetVelocity(uint32_t entityID)abstract;
 	virtual void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) abstract;
 	virtual void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) abstract;
+	virtual bool HasRigidBody(uint32_t entityID) abstract;
 
 
 	virtual bool HasConvexMeshResource(const std::string& key) abstract;

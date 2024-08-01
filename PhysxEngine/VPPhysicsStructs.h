@@ -122,6 +122,7 @@ namespace VPPhysics
 		uint32_t EntityID = noneID;
 		VPMath::Vector3	WorldLocation = {};
 		VPMath::Quaternion	WorldQuaternion = {};
+		VPMath::Vector3 WorldScale{};
 		bool UseGravity{};
 		std::array<bool, 3> LinearLock{};
 		std::array<bool, 3> AngleLock{};
@@ -134,10 +135,9 @@ namespace VPPhysics
 
 	struct BoxColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo, UseAABB, Extent)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo,  Extent)
 
 		ColliderInfo colliderInfo{};
-		bool UseAABB=false;
 		VPMath::Vector3 Extent = {1,1,1};		// ±Ê¿Ã
 	};
 
@@ -153,7 +153,6 @@ namespace VPPhysics
 		ColliderInfo colliderInfo{};
 		std::string FBXName{};
 		std::vector<VPMath::Vector3> Vertexs{};
-		VPMath::Vector3 WorldScale{};
 	};
 	struct CapsuleColliderInfo
 	{

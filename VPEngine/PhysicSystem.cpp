@@ -115,6 +115,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 	rigidComp->ColliderInfo.EntityID = EntityID;
 	rigidComp->ColliderInfo.WorldLocation = rigidtransform.World_Location;
 	rigidComp->ColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
+	rigidComp->ColliderInfo.WorldScale = rigidtransform.World_Scale;
 	if (!rigidComp->IsDynamic)
 	{
 		switch (rigidComp->ColliderShape)
@@ -147,12 +148,14 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
 			{
 				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
+				if (convexMeshResourceInfo.Vertexs.empty()) {
+					return; // Return null if no vertices were extracted
+				}
 				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
 			}
 			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
 			VPPhysics::ConvexColliderInfo convexColliderInfo{};
 			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
-			convexColliderInfo.WorldScale = rigidtransform.World_Scale;
 			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(convexColliderInfo, rigidComp->ColliderType);
 		}
@@ -196,12 +199,14 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
 			{
 				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
+				if (convexMeshResourceInfo.Vertexs.empty()) {
+					return; // Return null if no vertices were extracted
+				}
 				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
 			}
 			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
 			VPPhysics::ConvexColliderInfo convexColliderInfo{};
 			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
-			convexColliderInfo.WorldScale = rigidtransform.World_Scale;
 
 			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(convexColliderInfo, rigidComp->ColliderType);
@@ -245,6 +250,8 @@ void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
 	m_PhysicsEngine->RemoveController(EntityID);
 }
 
+
+
 void PhysicSystem::RenderUpdate(float deltaTime)
 {
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
@@ -257,7 +264,10 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 		{
 			debug::OBBInfo temp{};
 			temp.OBB.Center = rigidTransform->World_Location;
-			temp.OBB.Extents = rigidBodyComponent.BoxInfo.Extent;
+
+
+
+			temp.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
 
 			temp.xAxisAngle = rigidTransform->World_Rotation.x;
 			temp.yAxisAngle = rigidTransform->World_Rotation.y;
@@ -271,7 +281,8 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 		{
 			debug::SphereInfo temp{};
 			temp.Sphere.Center = rigidTransform->World_Location;
-			temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius;
+			float maxscle = rigidTransform->World_Scale.GetMaxComponent();
+			temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
 			m_Graphics->DrawSphere(temp);
 
 		}
@@ -287,7 +298,8 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 
 		debug::OBBInfo temp{};
 		temp.OBB.Center = ControllerTransform->World_Location;
-		temp.OBB.Extents = { ControllerComp.CapsuleControllerinfo.radius,ControllerComp.CapsuleControllerinfo.height/2 + ControllerComp.CapsuleControllerinfo.radius,ControllerComp.CapsuleControllerinfo.radius };
+		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
+		temp.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
 
 		temp.xAxisAngle = 0;
 		temp.yAxisAngle = 0;
@@ -319,12 +331,13 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
+		
 		uint32_t entityID = rigidBodyComponent.GetEntityID();
+		if (!m_PhysicsEngine->HasRigidBody(entityID))
+			continue;
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-	
 		auto templocation = m_PhysicsEngine->GetGobalLocation(entityID);
 		auto offset_T = (rigidBodyTransform->World_Location - templocation).Length();
-	
 		VPMath::Quaternion tempQuat = m_PhysicsEngine->GetGobalQuaternion(entityID);
 		float offset_R = (rigidBodyTransform->World_Quaternion - tempQuat).Length();
 		if (offset_R > m_rotation_threshold_degrees || offset_T > m_location_threshold)
@@ -336,28 +349,36 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
 	{
 		uint32_t entityID = controllerCompoent.GetEntityID();
-		auto controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
+		if (!m_PhysicsEngine->HasRigidBody(entityID))
+			continue;
 
-		auto templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
-		auto offset_T = (controllerTransform->World_Location - templocation).Length();
+		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
+		VPMath::Vector3 templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
+		float offset_T = (controllerTransform->World_Location - templocation).Length();
 
 		if (offset_T > m_location_threshold)
-		{
 			m_PhysicsEngine->SetControllerGobalPose(entityID, controllerTransform->World_Location);
-		}
 	}
+
 	m_PhysicsEngine->Update(deltaTime);
+
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
+		uint32_t entityID = rigidBodyComponent.GetEntityID();
+		if (!m_PhysicsEngine->HasRigidBody(entityID))
+			continue;
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
 		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
 	}
 
-	for (ControllerComponent& rigidBodyComponent : COMPITER(ControllerComponent))
+	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
 	{
-		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-		rigidBodyTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(rigidBodyComponent.GetEntityID());
+		uint32_t entityID = controllerComponent.GetEntityID();
+		if (!m_PhysicsEngine->HasRigidBody(entityID))
+			continue;
+		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
+		controllerTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(entityID);
 	}
 
 

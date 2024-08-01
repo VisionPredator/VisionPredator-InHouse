@@ -6,6 +6,8 @@ class CollisionManager :public EventSubscriber
 public:
     CollisionManager();
     ~CollisionManager();
+    void RemoveEntity(uint32_t entityID);
+    void RemoveMaps();
     void Update();
 
 private:
@@ -14,20 +16,18 @@ private:
     void MoveContactToExit(std::pair<uint32_t, uint32_t> data, bool IsTrigger = false);
     std::multimap<uint32_t, uint32_t>::iterator EraseExit(std::multimap<uint32_t, uint32_t>::iterator it, bool IsTrigger = false);
     void EraseExit(std::pair<uint32_t, uint32_t> data, bool IsTrigger = false);
-
     void OnAddEnter_Collision(std::any entityPair);
     void OnAddEnter_Trigger(std::any entityPair);
     void OnMoveContactToExit_Collision(std::any entityPair);
     void OnMoveContactToExit_Trigger(std::any entityPair);
 
-    std::vector<VPPhysics::CollisionData> m_CollisionData;
 
-    std::multimap<uint32_t, uint32_t> CollisionEnter;
-    std::multimap<uint32_t, uint32_t> CollisionContact;
-    std::multimap<uint32_t, uint32_t> CollisionExit;
+    std::multimap<uint32_t, uint32_t> m_CollisionEnter;
+    std::multimap<uint32_t, uint32_t> m_CollisionContact;
+    std::multimap<uint32_t, uint32_t> m_CollisionExit;
 
-    std::multimap<uint32_t, uint32_t> TriggerEnter;
-    std::multimap<uint32_t, uint32_t> TriggerContact;
-    std::multimap<uint32_t, uint32_t> TriggerExit;
+    std::multimap<uint32_t, uint32_t> m_TriggerEnter;
+    std::multimap<uint32_t, uint32_t> m_TriggerContact;
+    std::multimap<uint32_t, uint32_t> m_TriggerExit;
 };
 

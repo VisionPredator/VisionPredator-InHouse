@@ -14,6 +14,7 @@ public:
 	~RigidBodyManager();
 	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene, std::shared_ptr<PhysichResourceManager> resourceManager);
 	void Update();
+	void EndScene();
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const VPPhysics::PhysicsInfo& engininfo );
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);

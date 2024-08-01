@@ -275,6 +275,7 @@ namespace VisPred
             Vector3 Cross(const Vector3& V) const noexcept;
 
             void Normalize() noexcept;
+            float GetMaxComponent() const noexcept;
             void Normalize(Vector3& result) const noexcept;
 
             void Clamp(const Vector3& vmin, const Vector3& vmax) noexcept;
@@ -283,7 +284,6 @@ namespace VisPred
             // Static functions
             static float Distance(const Vector3& v1, const Vector3& v2) noexcept;
             static float DistanceSquared(const Vector3& v1, const Vector3& v2) noexcept;
-
             static void Min(const Vector3& v1, const Vector3& v2, Vector3& result) noexcept;
             static Vector3 Min(const Vector3& v1, const Vector3& v2) noexcept;
 
@@ -598,6 +598,7 @@ namespace VisPred
             static Matrix CreatePerspective(float width, float height, float nearPlane, float farPlane) noexcept;
             static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top, float nearPlane, float farPlane) noexcept;
             static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) noexcept;
+            static Matrix CreateOrthographic_LH(float width, float height, float zNearPlane, float zFarPlane) noexcept;
             static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane) noexcept;
 
             static Matrix CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up) noexcept;

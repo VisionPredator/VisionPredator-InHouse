@@ -105,6 +105,7 @@ void VPEngine::Loop()
 		if (VPEngine::isResize)
 		{
 			m_Graphics->OnResize(m_hWnd);
+			EventManager::GetInstance().ImmediateEvent("OnResize", m_hWnd);
 			VPEngine::isResize = false;
 		}
 

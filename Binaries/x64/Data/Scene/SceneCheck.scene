@@ -1,7 +1,7 @@
 {
     "Entitys": [
         {
-            "EntityID": 819713292,
+            "EntityID": 3119428992,
             "Component": [
                 {
                     "BoxInfo": {
@@ -34,12 +34,12 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 1.0,
+                        "Restitution": 0.0,
                         "StaticFriction": 1.0,
                         "UseGravity": false
                     },
-                    "ColliderShape": 0,
-                    "ColliderType": 0,
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
                     "ComponentID": 4217231799,
                     "IsDynamic": false,
                     "SphereInfo": {
@@ -48,7 +48,12 @@
                 },
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "Floor"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "",
+                    "FBXFilter": "Static"
                 },
                 {
                     "ComponentID": 3400599862,
