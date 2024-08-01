@@ -24,6 +24,7 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
 	m_OffScreenName[9] = L"IMGUI";
+	m_OffScreenName[10] = L"LightMap";
 	//m_OffScreenName[9] = L"RTV_Main";
 }
 

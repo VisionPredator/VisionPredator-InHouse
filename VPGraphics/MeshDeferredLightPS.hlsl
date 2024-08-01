@@ -49,9 +49,9 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 
     }
     
-    indirectlight = albedoColor * 0.03;
+    indirectlight = albedoColor; //* lightmapvalue;
 
-    // ambient lighting (constant factor for simplicity)
+    //ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
 
     directlight = ambient + directlight;

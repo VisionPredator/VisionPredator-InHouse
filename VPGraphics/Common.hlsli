@@ -85,6 +85,7 @@ Texture2D gEmissive : register(t7);
 
 Texture2D gGBuffer : register(t8);
 Texture2D gIMGUI : register(t9);
+Texture2D gLightMap : register(t10);
 
 //***********************************************
 // Sampler States                               *
