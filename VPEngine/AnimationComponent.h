@@ -10,8 +10,8 @@ struct AnimationComponent : public Component
 	std::wstring curAnimation = L"";
 	std::wstring preAnimation = L"";
 
-	float duration = 0.f;	//애니메이션 재생시간
-	float preDuration = 0.f;
+	float duration = 0;	//애니메이션 재생시간
+	float preDuration = 0;
 
 	std::vector<std::wstring> animationList;
 

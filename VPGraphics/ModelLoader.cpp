@@ -97,7 +97,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 	switch (filter)
 	{
 		case Filter::STATIC:
-			filePath = filePath + "STATIC\\" + filename;
+			filePath = filePath + "STATIC\\";
 
 			importFlags = aiProcess_Triangulate | // 삼각형으로 변환
 				aiProcess_GenNormals |	// 노말 생성/
@@ -110,7 +110,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 
 			break;
 		case Filter::SKINNING:
-			filePath = filePath + "SKINNING\\" + filename;
+			filePath = filePath + "SKINNING\\";
 
 			importFlags = aiProcess_Triangulate | // 삼각형으로 변환
 				aiProcess_GenNormals |	// 노말 생성/
@@ -119,7 +119,8 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
 				aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
 				/*aiProcess_FlipUVs|
-				aiProcess_FlipWindingOrder|*/
+				aiProcess_FlipWindingOrder|
+				*/
 				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
 			break;
@@ -129,7 +130,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 			break;
 	}
 
-
+	filePath += filename;
 
 	const aiScene* scene = importer.ReadFile(filePath, importFlags);
 	if (!scene)

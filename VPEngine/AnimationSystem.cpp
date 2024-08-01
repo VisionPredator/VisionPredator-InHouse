@@ -40,18 +40,32 @@ void AnimationSystem::Update(float deltaTime)
 		aniComp.isPlay = true;
 		aniComp.isChange = false;
 
-		if (aniComp.preAnimation != aniComp.curAnimation
-			|| aniComp.duration > m_Graphics->GetDuration(aniComp.curAnimation))
+
+		if (aniComp.duration > m_Graphics->GetDuration(aniComp.curAnimation))
+		{
+			aniComp.duration -= m_Graphics->GetDuration(aniComp.curAnimation);
+			//if (aniComp.duration < 0)
+			{
+				static int index = 0;
+				index++;
+				index = index % aniComp.animationList.size();
+
+				//aniComp.curAnimation = aniComp.animationList[index];
+
+			}
+		}
+
+		if (aniComp.preAnimation != aniComp.curAnimation)
 		{
 			aniComp.preAnimation = aniComp.curAnimation;
 			aniComp.preDuration = aniComp.duration;
-			aniComp.duration -= m_Graphics->GetDuration(aniComp.curAnimation);
-			if (aniComp.duration < 0)
-			{
-				aniComp.duration = 0;
-			}
+			aniComp.duration = 0;
+			
 			aniComp.isChange = true;
 		}
+
+		
+
 
 		if (!aniComp.curAnimation.empty())
 		{
