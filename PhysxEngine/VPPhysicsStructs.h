@@ -129,7 +129,7 @@ namespace VPPhysics
 		VPMath::Vector3 OffSet = {};
 		float StaticFriction = 1.f;							// 정적 마찰 계수
 		float DynamicFriction = 1.f;						// 동적 마찰 계수
-		float Restitution = 1.f;							// 복원 계수
+		float Restitution = 0.f;							// 복원 계수
 		float Density = 1.f;								// 밀도
 	};
 
