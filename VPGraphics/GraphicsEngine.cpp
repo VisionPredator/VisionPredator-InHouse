@@ -21,7 +21,6 @@
 #pragma region Util
 #include "Camera.h"
 #include "Desc.h"
-#include "SimpleMath.h"
 #include "VertexData.h"
 #include "StaticData.h"
 #include "ModelData.h"
@@ -121,11 +120,11 @@ bool GraphicsEngine::Finalize()
 void GraphicsEngine::BeginRender()
 {
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 1.f };
-	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
-	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
-	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
-	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
+	const VPMath::Color white = { 1.f, 1.f, 1.f, 1.f };
+	const VPMath::Color red = { 1.f, 0.f, 0.f, 1.f };
+	const VPMath::Color green = { 0.f, 1.f, 0.f, 1.f };
+	const VPMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+	const VPMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
@@ -180,7 +179,7 @@ void GraphicsEngine::EraseObject(uint32_t EntityID)
 	}
 }
 
-void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj)
 {
 	m_View = view;
 	m_Proj = proj;

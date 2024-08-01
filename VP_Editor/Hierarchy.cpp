@@ -2,7 +2,7 @@
 #include "Hierarchy.h"
 #include "SceneManager.h"
 #include "HierarchySystem.h"
-#include <EventManager.h>
+#include "EventManager.h"
 #include <InputManager.h>
 
 Hierarchy::Hierarchy(std::shared_ptr<SceneManager> scManager, std::shared_ptr<HierarchySystem> hierarchySystem) : m_SceneManager{ scManager }, m_HierarchySystem{ hierarchySystem }

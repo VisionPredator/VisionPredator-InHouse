@@ -8,7 +8,7 @@
 #include "CollisionCallback.h"
 #include "PhysichResourceManager.h"
 #include "Controller.h"
-#include "../VPEngine/EventManager.h"
+#include "EventManager.h"
 #include "CollisionManager.h"
 #include <iostream>
 /// <summary>

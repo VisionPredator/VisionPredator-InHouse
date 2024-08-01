@@ -1,5 +1,4 @@
 #pragma once
-#include "SimpleMath.h"
 #include <memory>
 
 class Mesh;
@@ -13,10 +12,10 @@ public:
 
 	std::wstring name;
 
-	DirectX::SimpleMath::Matrix m_Local;
-	DirectX::SimpleMath::Matrix m_LocalInverse;
-	DirectX::SimpleMath::Matrix m_World;
-	DirectX::SimpleMath::Matrix m_WorldInverse;
+	VPMath::Matrix m_Local;
+	VPMath::Matrix m_LocalInverse;
+	VPMath::Matrix m_World;
+	VPMath::Matrix m_WorldInverse;
 
 	unsigned int index;
 

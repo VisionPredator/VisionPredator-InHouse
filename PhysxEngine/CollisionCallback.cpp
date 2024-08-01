@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <iostream>
 #include "CollisionCallback.h"
-#include "../VPEngine/EventManager.h"
+#include "EventManager.h"
 
 using namespace physx;
 CollisionCallback::CollisionCallback()

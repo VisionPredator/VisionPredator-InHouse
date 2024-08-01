@@ -9,7 +9,6 @@
 #include <queue>
 #pragma endregion STL
 
-#include "../include/directxtk/SimpleMath.h"
 
 #include "MeshFilter.h"
 #include "CBuffer.h"
@@ -53,7 +52,7 @@ namespace Graphics
 		virtual void UpdateModel(uint32_t EntityID, RenderData& data)abstract;
 		
 		//카메라의 상태 업데이트
-		virtual void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) abstract;
+		virtual void SetCamera(VPMath::Matrix view, VPMath::Matrix proj) abstract;
 
 		//렌더링
 		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") abstract;

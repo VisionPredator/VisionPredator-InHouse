@@ -3,15 +3,14 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+
 
 class D3DUtill
 {
 public:
 	static float RandF();
 	static float RandF(float a, float b);
-	Vector4 RandUnitVec3(Vector4 n);
+	VPMath::Vector4 RandUnitVec3(VPMath::Vector4 n);
 
 	///<summary>For simple random data or noise generation</summary>
 	static void CreateRandomTexture1DSRV(ID3D11Device* device, ID3D11ShaderResourceView** ppSRV);

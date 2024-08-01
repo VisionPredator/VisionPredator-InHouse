@@ -28,7 +28,7 @@ struct RenderData
 {
 public:
 	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
-		, local(DirectX::SimpleMath::Matrix::Identity), world(DirectX::SimpleMath::Matrix::Identity)
+		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
 		, duration(0.f), preDuration(0.f), curAnimation(L""), preAnimation(L""), isPlay(false), isChange(false)
 		, color(), useTexture(false), textureName(L"")
 	{
@@ -67,8 +67,8 @@ public:
 	PassState Pass;
 	MeshFilter Filter;
 
-	DirectX::SimpleMath::Matrix world; //게임 세상의 위치
-	DirectX::SimpleMath::Matrix local; //캐릭터 자체 로컬
+	VPMath::Matrix world; //게임 세상의 위치
+	VPMath::Matrix local; //캐릭터 자체 로컬
 
 	float duration;
 	float preDuration;

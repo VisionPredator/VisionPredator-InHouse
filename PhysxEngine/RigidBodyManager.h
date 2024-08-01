@@ -1,6 +1,6 @@
 #pragma once
 #include "VPPhysicsStructs.h"
-#include "../VPEngine/EventSubscriber.h"
+#include "EventSubscriber.h"
 class CollisionManager;
 class RigidBody;
 using namespace VPPhysics;

@@ -7,20 +7,7 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include <windows.h>
-
-
-#include <memory>
-#include <string>
-#include <vector>
-#include <array>
-#include <map>
-#include <unordered_map>
-#include <filesystem>
-#include <iostream>
-#include <algorithm>
-#include "VisPredMath.h"
-
-namespace VPMath = VisPred::SimpleMath;
+// 여기에 미리 컴파일하려는 헤더 추가
+#include "framework.h"
 
 #endif //PCH_H

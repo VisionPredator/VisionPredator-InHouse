@@ -1,5 +1,5 @@
 #pragma once
-#include "EventManager.h"
+#include "../VPCommon/EventManager.h"
 
 class EventSubscriber
 {
@@ -15,6 +15,4 @@ protected:
 	{
 		return Subscriber(this, [this, func](std::any data) { (static_cast<T*>(this)->*func)(data); });
 	}
-
-
 };

@@ -123,7 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -149,7 +149,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -175,8 +175,6 @@
     <ClInclude Include="ControllerComponent.h" />
     <ClInclude Include="ControllerMovementSystem.h" />
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="EventManager.h" />
-    <ClInclude Include="EventSubscriber.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="DataRegister.h" />
     <ClInclude Include="GeometryComponent.h" />
@@ -188,7 +186,6 @@
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
     <ClInclude Include="RigidBodyComponent.h" />
-    <ClInclude Include="VisPredMath.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />
@@ -218,8 +215,6 @@
     <ClCompile Include="ControllerComponent.cpp" />
     <ClCompile Include="ControllerMovementSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EventManager.cpp" />
-    <ClCompile Include="EventSubscriber.cpp" />
     <ClCompile Include="DataRegister.cpp" />
     <ClCompile Include="GeometryComponent.cpp" />
     <ClCompile Include="IDComponent.cpp" />
@@ -248,7 +243,6 @@
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="TransformSystem.cpp" />
-    <ClCompile Include="VisPredMath.cpp" />
     <ClCompile Include="VPEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -256,11 +250,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="VisPredMath.inl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PhysxEngine\PhysxEngine.vcxproj">
       <Project>{ef7fdf1c-674f-4932-a48c-cc28515898b0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\VPCommon\VPCommon.vcxproj">
+      <Project>{43dd310d-9fff-48b4-b088-a7867cb467d5}</Project>
     </ProjectReference>
     <ProjectReference Include="..\VPGraphics\VPGraphics.vcxproj">
       <Project>{6af1262e-67c4-4738-97ac-a36899fe4316}</Project>

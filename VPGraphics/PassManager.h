@@ -46,7 +46,7 @@ private:
 
 	std::shared_ptr<ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager = nullptr;
-	DirectX::SimpleMath::Matrix m_View;
-	DirectX::SimpleMath::Matrix m_Proj;
+	VPMath::Matrix m_View;
+	VPMath::Matrix m_Proj;
 };
 

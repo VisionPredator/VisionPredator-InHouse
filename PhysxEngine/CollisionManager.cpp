@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CollisionManager.h"
-#include "../VPEngine/EventManager.h"
+#include "EventManager.h"
 CollisionManager::CollisionManager()
 {
 	EventManager::GetInstance().Subscribe("OnAddEnter_Collision", CreateSubscriber(&CollisionManager::OnAddEnter_Collision));

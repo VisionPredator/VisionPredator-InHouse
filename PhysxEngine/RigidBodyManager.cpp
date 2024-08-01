@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "RigidBodyManager.h"
 #include "StaticRigidBody.h"
-#include "../VPEngine/EventManager.h"
+#include "EventManager.h"
 #include "DynamicRigidBody.h"
 #include "ConvexMeshResource.h"
 #include "PhysichResourceManager.h"

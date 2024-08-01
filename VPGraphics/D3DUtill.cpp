@@ -17,16 +17,16 @@ float D3DUtill::RandF(float a, float b)
 	return a + RandF() * (b - a);
 }
 
-Vector4 D3DUtill::RandUnitVec3(Vector4 n)
+VPMath::Vector4 D3DUtill::RandUnitVec3(VPMath::Vector4 n)
 {
-	Vector4 One = { 1.0f, 1.0f, 1.0f, 1.0f };
-	Vector4 Zero = Vector4::Zero;
+	VPMath::Vector4 One = { 1.0f, 1.0f, 1.0f, 1.0f };
+	VPMath::Vector4 Zero = VPMath::Vector4::Zero;
 
 	// 반구 위의/안의 점이 나올 때까지 시도한다.
 	while (true)
 	{
 		// 입방체 [-1, 1]^3 안의 무작위 점 하나를 생성한다.
-		Vector4 v = { RandF(-1.0f, 1.0f), RandF(-1.0f, 1.0f), RandF(-1.0f, 1.0f), 0.0f };
+		VPMath::Vector4 v = { RandF(-1.0f, 1.0f), RandF(-1.0f, 1.0f), RandF(-1.0f, 1.0f), 0.0f };
 
 		// 단위 구에 대한 고른 분포를 얻기 위해, 단위 구 바깥의
 		// 점은 무시한다. 이렇게 하지 않으면 점들이 구보다는
@@ -48,7 +48,7 @@ void D3DUtill::CreateRandomTexture1DSRV(ID3D11Device* device, ID3D11ShaderResour
 	// 무작위 자료를 생성한다.
 	//
 	const size_t ELEMENT_COUNT = 1024u;
-	std::vector<Vector4> randomValues(ELEMENT_COUNT);
+	std::vector<VPMath::Vector4> randomValues(ELEMENT_COUNT);
 
 	for (size_t i = 0; i < ELEMENT_COUNT; ++i)
 	{
@@ -60,7 +60,7 @@ void D3DUtill::CreateRandomTexture1DSRV(ID3D11Device* device, ID3D11ShaderResour
 
 	D3D11_SUBRESOURCE_DATA initData;
 	initData.pSysMem = &randomValues[0];
-	initData.SysMemPitch = ELEMENT_COUNT * sizeof(Vector4);
+	initData.SysMemPitch = ELEMENT_COUNT * sizeof(VPMath::Vector4);
 	initData.SysMemSlicePitch = 0;
 
 	//

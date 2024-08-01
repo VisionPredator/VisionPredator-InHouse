@@ -1,6 +1,6 @@
 #pragma once
 #include "IPhysx.h"
-#include "../VPEngine/EventSubscriber.h"
+#include "EventSubscriber.h"
 class RigidBodyManager;
 class CollisionManager;
 class ControllerManager;

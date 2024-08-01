@@ -20,7 +20,7 @@ class DebugDrawManager
 public:
 	void Initialize(const std::shared_ptr<Device>& device);
 
-	void Execute(const std::shared_ptr<Device>& device, const DirectX::SimpleMath::Matrix view,const DirectX::SimpleMath::Matrix proj);
+	void Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view,const VPMath::Matrix proj);
 
 	void AddTask(const debug::SphereInfo& info) { m_SphereInfos.push(info); }
 	void AddTask(const debug::AABBInfo& info) { m_BoxInfos.push(info); }
@@ -43,7 +43,7 @@ private:
 	void Draw(const debug::QuadInfo& info);
 
 	void DrawRing(const debug::RingInfo& info);
-	void DrawCube(const SimpleMath::Matrix& worldTransform, const SimpleMath::Color& color);
+	void DrawCube(const VPMath::Matrix& worldTransform, const VPMath::Color& color);
 
 private:
 	std::unique_ptr<CommonStates> m_States;

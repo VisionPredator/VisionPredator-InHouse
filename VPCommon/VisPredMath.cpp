@@ -8,14 +8,9 @@
 // http://go.microsoft.com/fwlink/?LinkID=615561
 //-------------------------------------------------------------------------------------
 
-#include "pch.h"
 #include "VisPredMath.h"
-#include "../include/Macro/ReflectionMacro.h"
-using namespace entt::literals;
-
-
 /****************************************************************************
- *
+ * Please Set "PCH" OFF
  * Constants
  *
  ****************************************************************************/
@@ -164,7 +159,7 @@ Vector3 Quaternion::ToYawPitchRoll() const noexcept
 	// Yaw (around y axis)
 	yaw = atan2(2.0f * (w * x + y * z), 1.0f - 2.0f * (x * x + y * y));
 
-	return VPMath::Vector3{ yaw,  pitch, roll };
+	return VisPred::SimpleMath::Vector3{ yaw,  pitch, roll };
 }
 
 /****************************************************************************

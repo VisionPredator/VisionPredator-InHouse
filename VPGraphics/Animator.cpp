@@ -94,7 +94,7 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 			float t = time - cur;
 
 			std::shared_ptr<Node> curAni = ani->node.lock();
-			curAni->m_Local = DirectX::SimpleMath::Matrix::Lerp(ani->totals[cur], ani->totals[next], t).Transpose();
+			curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur], ani->totals[next], t).Transpose();
 		}
 	}
 
@@ -116,7 +116,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 		if (curOb->isChange)
 		{
 
-			std::map<std::wstring, DirectX::SimpleMath::Matrix> preAni;
+			std::map<std::wstring, VPMath::Matrix> preAni;
 
 			for (auto& ani : preModel.lock()->m_Animations[0]->m_Channels)
 			{
@@ -130,7 +130,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 					cur = i;
 				}
 
-				preAni.insert(std::pair<std::wstring, DirectX::SimpleMath::Matrix >(ani->nodename, ani->totals[cur]));
+				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, ani->totals[cur]));
 			}
 
 
@@ -156,7 +156,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				float t = curOb->duration - cur;
 
 				std::shared_ptr<Node> curAni = ani->node.lock();
-				curAni->m_Local = DirectX::SimpleMath::Matrix::Lerp(ani->totals[cur], preAni[ani->nodename], t).Transpose();
+				curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur], preAni[ani->nodename], t).Transpose();
 			}
 
 		}
@@ -187,7 +187,7 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 	}
 }
 
-DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
+VPMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
 {
 	std::shared_ptr<Key> cur = channel[0];
 	std::shared_ptr<Key> next;
@@ -198,9 +198,9 @@ DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::s
 		{
 			next = key;
 			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
-			DirectX::SimpleMath::Vector3 afterLerp = DirectX::SimpleMath::Vector3::Lerp((next)->value, (cur)->value, t);
+			VPMath::Vector3 afterLerp = VPMath::Vector3::Lerp((next)->value, (cur)->value, t);
 
-			return DirectX::SimpleMath::Matrix::CreateTranslation(afterLerp);
+			return VPMath::Matrix::CreateTranslation(afterLerp);
 		}
 
 		cur = key;
@@ -209,7 +209,7 @@ DirectX::SimpleMath::Matrix Animator::CalcMatrix(double time, std::vector<std::s
 
 }
 
-DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
+VPMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
 {
 
 	std::shared_ptr<Key> cur = rotationKey[0];
@@ -221,8 +221,8 @@ DirectX::SimpleMath::Matrix Animator::CalcRotation(double time, std::vector<std:
 		{
 			next = key;
 			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
-			DirectX::SimpleMath::Quaternion afterLerp = DirectX::SimpleMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
-			return DirectX::SimpleMath::Matrix::CreateFromQuaternion(afterLerp);
+			VPMath::Quaternion afterLerp = VPMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
+			return VPMath::Matrix::CreateFromQuaternion(afterLerp);
 		}
 
 		cur = key;
@@ -244,8 +244,8 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 
 			for (int i = 0; i < skinned->m_BoneData.size(); i++)
 			{
-				DirectX::SimpleMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
-				DirectX::SimpleMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
+				VPMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
+				VPMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
 
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
 				{
