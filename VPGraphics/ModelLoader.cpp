@@ -41,38 +41,45 @@ void ModelLoader::Initialize()
 	path = "..\\Data\\FBX\\";
 #endif
 
-	//처음에 디렉터리가 없으면 어떻게 처리할지 필요
-	for (const auto& entry : std::filesystem::directory_iterator(path))
+	if (!std::filesystem::exists(path))
 	{
-		std::vector<std::string> filelist;
-		std::string filename = std::filesystem::path(entry).filename().string();
-		Filter curFilter;
-		if (filename == "SKINNING")
-		{
-			curFilter = Filter::SKINNING;
-		}
-		else
-		{
-			curFilter = Filter::STATIC;
-		}
-
-		for (const auto& entry2 : std::filesystem::directory_iterator(entry))
-		{
-			std::string filename = std::filesystem::path(entry2).filename().string();
-
-			filelist.push_back(filename);
-		}
-
-		m_ResourceDirectory.insert({ curFilter,filelist });
+		//디렉토리 없으면 만들기
+		std::filesystem::create_directories(path);
 	}
-
-	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
-	//멀티 스레드면 참 좋을듯
-	for (auto& dir : m_ResourceDirectory)
+	else
 	{
-		for (auto& file : dir.second)
+		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
-			LoadModel(file, dir.first);
+			std::vector<std::string> filelist;
+			std::string filename = std::filesystem::path(entry).filename().string();
+			Filter curFilter;
+			if (filename == "SKINNING")
+			{
+				curFilter = Filter::SKINNING;
+			}
+			else
+			{
+				curFilter = Filter::STATIC;
+			}
+
+			for (const auto& entry2 : std::filesystem::directory_iterator(entry))
+			{
+				std::string filename = std::filesystem::path(entry2).filename().string();
+
+				filelist.push_back(filename);
+			}
+
+			m_ResourceDirectory.insert({ curFilter,filelist });
+		}
+
+		//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
+		//멀티 스레드면 참 좋을듯
+		for (auto& dir : m_ResourceDirectory)
+		{
+			for (auto& file : dir.second)
+			{
+				LoadModel(file, dir.first);
+			}
 		}
 	}
 
@@ -83,7 +90,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 	//std::filesystem::path path = ToWString(std::string(filename));
 
 #ifdef _DEBUG
-	 std::string filePath = "..\\..\\..\\Resource\\FBX\\";
+	std::string filePath = "..\\..\\..\\Resource\\FBX\\";
 #else
 	std::string filePath = "..\\Data\\FBX\\";
 #endif
@@ -344,7 +351,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		{
 			std::string temp = (texturePath.C_Str());
 			bool is_valid = true;
-			for (char c : temp) 
+			for (char c : temp)
 			{
 				if (c < 32 || c > 126) {
 					is_valid = false;
@@ -371,7 +378,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 						case aiTextureType_EMISSIVE:
 							texturename = L" Emissive";
 							break;
-						
+
 						case aiTextureType_METALNESS:
 							texturename = L" Metalic";
 							break;
@@ -387,7 +394,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 						default:
 							break;
 					}
-					
+
 
 					wfilename = L"Error loading files : " + wfilename + texturename + L" path is not valid";
 					LPCWSTR name = wfilename.c_str();
