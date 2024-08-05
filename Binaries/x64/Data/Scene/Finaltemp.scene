@@ -1,0 +1,504 @@
+{
+  "Entitys": [
+    {
+      "EntityID": 23504,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": 3.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "parent",
+          "ComponentID": 1365953231
+        },
+        {
+          "ColliderType": 1,
+          "ColliderShape": 0,
+          "IsDynamic": false,
+          "BoxInfo": {
+            "Extent": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "SphereInfo": {
+            "Radius": 0.5
+          },
+          "CapsuleInfo": {
+            "HalfHeight": 0.0,
+            "Radius": 0.0
+          },
+          "DefaultColliderInfo": {
+            "AngleLock": [
+              false,
+              false,
+              false
+            ],
+            "Density": 1.0,
+            "DynamicFriction": 1.0,
+            "LinearLock": [
+              false,
+              false,
+              false
+            ],
+            "OffSet": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "PhysicsLayer": 0,
+            "Restitution": 0.0,
+            "StaticFriction": 1.0,
+            "UseGravity": false
+          },
+          "ComponentID": 4217231799
+        },
+        {
+          "ChildrenID": [
+            23524,
+            23494
+          ],
+          "ComponentID": 188567026
+        },
+        {
+          "FBX": "unity default resources",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    },
+    {
+      "EntityID": 23524,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": 2.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "Child",
+          "ComponentID": 1365953231
+        },
+        {
+          "ColliderType": 1,
+          "ColliderShape": 0,
+          "IsDynamic": false,
+          "BoxInfo": {
+            "Extent": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "SphereInfo": {
+            "Radius": 0.5
+          },
+          "CapsuleInfo": {
+            "HalfHeight": 0.0,
+            "Radius": 0.0
+          },
+          "DefaultColliderInfo": {
+            "AngleLock": [
+              false,
+              false,
+              false
+            ],
+            "Density": 1.0,
+            "DynamicFriction": 1.0,
+            "LinearLock": [
+              false,
+              false,
+              false
+            ],
+            "OffSet": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "PhysicsLayer": 0,
+            "Restitution": 0.0,
+            "StaticFriction": 1.0,
+            "UseGravity": false
+          },
+          "ComponentID": 4217231799
+        },
+        {
+          "ParentID": 23504,
+          "ComponentID": 3243699741
+        },
+        {
+          "FBX": "unity default resources",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    },
+    {
+      "EntityID": 23494,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": -23.5997124,
+            "y": 21.9863625,
+            "z": -32.00433
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "Child2",
+          "ComponentID": 1365953231
+        },
+        {
+          "ColliderType": 1,
+          "ColliderShape": 0,
+          "IsDynamic": false,
+          "BoxInfo": {
+            "Extent": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "SphereInfo": {
+            "Radius": 0.5
+          },
+          "CapsuleInfo": {
+            "HalfHeight": 0.0,
+            "Radius": 0.0
+          },
+          "DefaultColliderInfo": {
+            "AngleLock": [
+              false,
+              false,
+              false
+            ],
+            "Density": 1.0,
+            "DynamicFriction": 1.0,
+            "LinearLock": [
+              false,
+              false,
+              false
+            ],
+            "OffSet": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "PhysicsLayer": 0,
+            "Restitution": 0.0,
+            "StaticFriction": 1.0,
+            "UseGravity": false
+          },
+          "ComponentID": 4217231799
+        },
+        {
+          "ParentID": 23504,
+          "ComponentID": 3243699741
+        },
+        {
+          "ChildrenID": [
+            23514
+          ],
+          "ComponentID": 188567026
+        },
+        {
+          "FBX": "unity default resources",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    },
+    {
+      "EntityID": 23514,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "Child2_3",
+          "ComponentID": 1365953231
+        },
+        {
+          "ColliderType": 1,
+          "ColliderShape": 0,
+          "IsDynamic": false,
+          "BoxInfo": {
+            "Extent": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "SphereInfo": {
+            "Radius": 0.5
+          },
+          "CapsuleInfo": {
+            "HalfHeight": 0.0,
+            "Radius": 0.0
+          },
+          "DefaultColliderInfo": {
+            "AngleLock": [
+              false,
+              false,
+              false
+            ],
+            "Density": 1.0,
+            "DynamicFriction": 1.0,
+            "LinearLock": [
+              false,
+              false,
+              false
+            ],
+            "OffSet": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "PhysicsLayer": 0,
+            "Restitution": 0.0,
+            "StaticFriction": 1.0,
+            "UseGravity": false
+          },
+          "ComponentID": 4217231799
+        },
+        {
+          "ParentID": 23494,
+          "ComponentID": 3243699741
+        },
+        {
+          "FBX": "unity default resources",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    },
+    {
+      "EntityID": 23484,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": -20.5997124,
+            "y": 21.9863625,
+            "z": -22.33
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "Alobg",
+          "ComponentID": 1365953231
+        },
+        {
+          "ColliderType": 1,
+          "ColliderShape": 1,
+          "IsDynamic": false,
+          "BoxInfo": {
+            "Extent": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "SphereInfo": {
+            "Radius": 0.5
+          },
+          "CapsuleInfo": {
+            "HalfHeight": 0.0,
+            "Radius": 0.0
+          },
+          "DefaultColliderInfo": {
+            "AngleLock": [
+              false,
+              false,
+              false
+            ],
+            "Density": 1.0,
+            "DynamicFriction": 1.0,
+            "LinearLock": [
+              false,
+              false,
+              false
+            ],
+            "OffSet": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "PhysicsLayer": 0,
+            "Restitution": 0.0,
+            "StaticFriction": 1.0,
+            "UseGravity": false
+          },
+          "ComponentID": 4217231799
+        },
+        {
+          "FBX": "unity default resources",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    },
+    {
+      "EntityID": 4294954370,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": -2.108722,
+            "y": 5.556252,
+            "z": -5.34990454
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "GameObject",
+          "ComponentID": 1365953231
+        },
+        {
+          "ChildrenID": [
+            4294954022
+          ],
+          "ComponentID": 188567026
+        },
+        {
+          "FBX": "cerberus.fbx",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    },
+    {
+      "EntityID": 4294954022,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": -2.25598455E-08,
+            "y": 0.0,
+            "z": -0.9372016
+          },
+          "Local_Quaternion": {
+            "x": -0.7071068,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.7071067
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "cerberus",
+          "ComponentID": 1365953231
+        },
+        {
+          "ParentID": 4294954370,
+          "ComponentID": 3243699741
+        },
+        {
+          "FBX": "cerberus.fbx",
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    }
+  ],
+  "PhysicsInfo": {
+    "CollisionMatrix": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "FrameRate": -1,
+    "Gravity": {
+      "x": 0.0,
+      "y": -9.81,
+      "z": 0.0
+    }
+  }
+}

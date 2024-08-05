@@ -112,29 +112,29 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 	if (!rigidComp)
 		return;
 	TransformComponent rigidtransform = *rigidComp->GetComponent<TransformComponent>();
-	rigidComp->ColliderInfo.EntityID = EntityID;
-	rigidComp->ColliderInfo.WorldLocation = rigidtransform.World_Location;
-	rigidComp->ColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
-	rigidComp->ColliderInfo.WorldScale = rigidtransform.World_Scale;
+	rigidComp->DefaultColliderInfo.EntityID = EntityID;
+	rigidComp->DefaultColliderInfo.WorldLocation = rigidtransform.World_Location;
+	rigidComp->DefaultColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
+	rigidComp->DefaultColliderInfo.WorldScale = rigidtransform.World_Scale;
 	if (!rigidComp->IsDynamic)
 	{
 		switch (rigidComp->ColliderShape)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
-			rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
+			rigidComp->BoxInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::CAPSULE:
 		{
-			rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
+			rigidComp->CapsuleInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
-			rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
+			rigidComp->SphereInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 		}
 		break;
@@ -156,7 +156,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
 			VPPhysics::ConvexColliderInfo convexColliderInfo{};
 			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
-			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
+			convexColliderInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateStaticBody(convexColliderInfo, rigidComp->ColliderType);
 		}
 		break;
@@ -171,19 +171,19 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
-			rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
+			rigidComp->BoxInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->BoxInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::CAPSULE:
 		{
-			rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
+			rigidComp->CapsuleInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
-			rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
+			rigidComp->SphereInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
 		}
 		break;
@@ -208,7 +208,7 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 			VPPhysics::ConvexColliderInfo convexColliderInfo{};
 			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
 
-			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
+			convexColliderInfo.colliderInfo = rigidComp->DefaultColliderInfo;
 			m_PhysicsEngine->CreateDynamicBody(convexColliderInfo, rigidComp->ColliderType);
 		}
 		break;
