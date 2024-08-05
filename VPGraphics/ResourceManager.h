@@ -67,7 +67,7 @@ private:
 	std::weak_ptr<ConstantBuffer<MatrixPallete>> m_Pallete;
 	std::array<std::unordered_map<std::wstring, std::shared_ptr<Resource>>, static_cast<int>(ResourceType::End)> m_ResourceArray;
 	
-	std::array<std::wstring, 10> m_OffScreenName;
+	std::array<std::wstring, 11> m_OffScreenName;
 };
 
 

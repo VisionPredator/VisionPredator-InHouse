@@ -30,7 +30,8 @@ static_assert(sizeof(CameraData) % 16 == 0, "must be align");
 
 struct MatrixPallete
 {
-	DirectX::SimpleMath::Matrix offset[128];
+	//임시로 엄청 넣어놓음
+	DirectX::SimpleMath::Matrix offset[1024];
 };
 
 
