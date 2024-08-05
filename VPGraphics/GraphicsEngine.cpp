@@ -180,29 +180,29 @@ void GraphicsEngine::EraseObject(uint32_t EntityID)
 	}
 }
 
-void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, const DirectX::SimpleMath::Matrix& orthoProj)
 {
 	m_View = view;
 	m_Proj = proj;
 	m_ViewProj = view * proj;
 
-	DirectX::XMFLOAT4X4 cb_worldviewproj;
-	DirectX::XMFLOAT4X4 cb_view;
-	DirectX::XMFLOAT4X4 cb_proj;
-	DirectX::XMFLOAT4X4 cb_viewInverse;
-	DirectX::XMFLOAT4X4 cb_projInverse;
+	SimpleMath::Matrix cb_worldviewproj;
+	SimpleMath::Matrix cb_view;
+	SimpleMath::Matrix cb_proj;
+	SimpleMath::Matrix cb_viewInverse;
+	SimpleMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
 	//상수 버퍼는 계산 순서때문에 전치한다
-	XMStoreFloat4x4(&cb_worldviewproj, XMMatrixTranspose(m_ViewProj));
-	XMStoreFloat4x4(&cb_view, XMMatrixTranspose(m_View));
-	XMStoreFloat4x4(&cb_proj, XMMatrixTranspose(m_Proj));
+	cb_worldviewproj = m_ViewProj.Transpose();
+	cb_view = m_View.Transpose();
+	cb_proj = m_Proj.Transpose();
 
-	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
-	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
+	SimpleMath::Matrix viewInverse = view.Invert();
+	cb_viewInverse = viewInverse.Transpose();
 
-	DirectX::XMMATRIX projInverse = XMMatrixInverse(nullptr, proj);
-	XMStoreFloat4x4(&cb_projInverse, XMMatrixTranspose(projInverse));
+	SimpleMath::Matrix projInverse = proj.Invert();
+	cb_projInverse = projInverse.Transpose();
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -210,6 +210,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.projInverse = cb_projInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
+	Camera.lock()->m_struct.orthoProj = orthoProj;
 	Camera.lock()->Update();
 }
 

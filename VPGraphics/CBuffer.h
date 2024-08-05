@@ -23,7 +23,10 @@ struct CameraData
 	DirectX::SimpleMath::Matrix proj;
 	DirectX::SimpleMath::Matrix viewInverse;
 	DirectX::SimpleMath::Matrix projInverse;
+	DirectX::SimpleMath::Matrix orthoProj;	// 이런식으로 데이터를 넣고 싶지 않았는데..
 };
+
+static_assert(sizeof(CameraData) % 16 == 0, "must be align");
 
 struct MatrixPallete
 {

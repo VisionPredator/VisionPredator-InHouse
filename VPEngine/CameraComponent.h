@@ -14,6 +14,7 @@ struct CameraComponent :
 	float Ratio = { 16.f / 9.f };	//16:9
 	VPMath::Matrix View;
 	VPMath::Matrix Proj;
+	VPMath::Matrix OrthoProj;
 
 	float m_maxPitch = 89.f; // Convert degrees to radians
 };

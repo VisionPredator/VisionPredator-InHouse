@@ -15,16 +15,13 @@ public:
 	void Render();
 
 	void CreateParticleObject(const uint32_t& id, const effect::ParticleInfo& info);
-	void DeleteParticleObjectByID(const uint32_t& id);
-
 	void UpdateParticleInfoByID(const uint32_t& id, const effect::ParticleInfo& info);
+	void DeleteParticleObjectByID(const uint32_t& id);
 
 private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 	TimeManager* m_TimeManager = nullptr;
-
-	int a = 1;
 
 	std::map<uint32_t, std::shared_ptr<ParticleObject>> m_ParticleObjects;
 };
