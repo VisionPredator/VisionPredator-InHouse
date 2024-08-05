@@ -45,7 +45,7 @@ public:
 
 	void OnResize(HWND hwnd) override;
 
-	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj) override;
+	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 
 	/// Model
 	bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;

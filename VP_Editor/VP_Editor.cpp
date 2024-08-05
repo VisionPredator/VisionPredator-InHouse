@@ -54,7 +54,7 @@ void VP_Editor::Update()
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
 
-		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
+		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
 
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());

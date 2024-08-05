@@ -19,8 +19,8 @@ class Mesh;
 
 enum class Filter
 {
-	STATIC = 0,
-	SKINNING,
+	SKINNING = 0,
+	STATIC = 1,
 
 	END
 };
@@ -60,5 +60,7 @@ private:
 	std::map<std::wstring, int> BoneMapping;
 
 private:
+
+	std::map<Filter, std::vector<std::string>> m_ResourceDirectory;
 
 };

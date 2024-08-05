@@ -22,11 +22,15 @@ struct CameraData
 	VPMath::Matrix proj;
 	VPMath::Matrix viewInverse;
 	VPMath::Matrix projInverse;
+	VPMath::Matrix orthoProj;	// 이런식으로 데이터를 넣고 싶지 않았는데..
 };
+
+static_assert(sizeof(CameraData) % 16 == 0, "must be align");
 
 struct MatrixPallete
 {
-	VPMath::Matrix offset[128];
+	//임시로 엄청 넣어놓음
+		VPMath::Matrix offset[1024];
 };
 
 

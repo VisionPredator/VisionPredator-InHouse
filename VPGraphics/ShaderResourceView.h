@@ -20,5 +20,8 @@ public:
 private:
 	ID3D11ShaderResourceView* m_view = nullptr;
 	ID3D11Texture2D* m_tex = nullptr;
+
+	UINT m_Width = 0;
+	UINT m_Height = 0;
 };
 

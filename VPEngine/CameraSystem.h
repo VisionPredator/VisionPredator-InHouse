@@ -17,6 +17,7 @@ public:
 
     // ILateUpdatable을(를) 통해 상속됨
     void LateUpdate(float deltaTime) override;
+private:
     void OnResize(std::any hwnd);
     float m_Width{};
     float m_Height{};

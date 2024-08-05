@@ -61,8 +61,8 @@ private:
 
 	std::shared_ptr<ShaderResourceView> m_TextureSRV;	// 파티클 2d 텍스쳐
 	std::shared_ptr<ShaderResourceView> m_RandomTextureSRV;		// 쉐이더용 난수 텍스처
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_TexArraySRV;		//						임시
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_RandomTexSRV;	// 쉐이더용 난수 텍스처,	임시
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_TexArraySRV;		// TODO:					임시
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_RandomTexSRV;	// TODO: 쉐이더용 난수 텍스처	임시
 
 	std::shared_ptr<Sampler> m_SamLinear;
 	std::shared_ptr<VertexShader> m_StreamOutVS;

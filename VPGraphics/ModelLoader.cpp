@@ -1,3 +1,4 @@
+
 #include "pch.h"
 #include "ModelLoader.h"
 
@@ -18,6 +19,8 @@
 
 #include "pbrmaterial.h"
 
+#include <iostream>
+#include <filesystem>
 
 ModelLoader::ModelLoader(std::shared_ptr<ResourceManager> manager, std::shared_ptr<Device> device) : m_Device(device), m_ResourceManager(manager)
 {
@@ -30,20 +33,59 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::Initialize()
 {
+	std::string path;
+#ifdef _DEBUG
+	path = "..\\..\\..\\Resource\\FBX\\";
+
+#else
+	path = "..\\Data\\FBX\\";
+#endif
+
+	//처음에 디렉터리가 없으면 어떻게 처리할지 필요
+	for (const auto& entry : std::filesystem::directory_iterator(path))
+	{
+		std::vector<std::string> filelist;
+		std::string filename = std::filesystem::path(entry).filename().string();
+		Filter curFilter;
+		if (filename == "SKINNING")
+		{
+			curFilter = Filter::SKINNING;
+		}
+		else
+		{
+			curFilter = Filter::STATIC;
+		}
+
+		for (const auto& entry2 : std::filesystem::directory_iterator(entry))
+		{
+			std::string filename = std::filesystem::path(entry2).filename().string();
+
+			filelist.push_back(filename);
+		}
+
+		m_ResourceDirectory.insert({ curFilter,filelist });
+	}
+
 	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
-	LoadModel("Flair.fbx", Filter::SKINNING);
-	LoadModel("cerberus.fbx", Filter::STATIC);
-	LoadModel("Cube.fbx", Filter::STATIC);
+	//멀티 스레드면 참 좋을듯
+	for (auto& dir : m_ResourceDirectory)
+	{
+		for (auto& file : dir.second)
+		{
+			LoadModel(file, dir.first);
+		}
+	}
+
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
-	
+
 #ifdef _DEBUG
-	const std::string filePath = "..\\..\\..\\Resource\\FBX\\" + filename;
+	 std::string filePath = "..\\..\\..\\Resource\\FBX\\";
 #else
-	const std::string filePath = "..\\Data\\FBX\\" + filename;
+	std::string filePath = "..\\Data\\FBX\\";
 #endif
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
@@ -55,6 +97,8 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 	switch (filter)
 	{
 		case Filter::STATIC:
+			filePath = filePath + "STATIC\\";
+
 			importFlags = aiProcess_Triangulate | // 삼각형으로 변환
 				aiProcess_GenNormals |	// 노말 생성/
 				aiProcess_GenUVCoords |		// UV 생성
@@ -63,17 +107,21 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				aiProcess_PreTransformVertices | // 노드의 변환행렬을 적용한 버텍스 생성 /주의 이 단계에서는 애니메이션이 제거됩니다.
 				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
+
 			break;
 		case Filter::SKINNING:
+			filePath = filePath + "SKINNING\\";
+
 			importFlags = aiProcess_Triangulate | // 삼각형으로 변환
 				aiProcess_GenNormals |	// 노말 생성/
 				aiProcess_GenUVCoords |		// UV 생성
 				aiProcess_CalcTangentSpace |  // 탄젠트 생성			
 				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
-				//aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
+				aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
 				/*aiProcess_FlipUVs|
-				aiProcess_FlipWindingOrder|*/
-				aiProcess_GlobalScale|	//단위를 미터로 설정할 수 있습니다.
+				aiProcess_FlipWindingOrder|
+				*/
+				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
 				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
 			break;
 		case Filter::END:
@@ -82,13 +130,13 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 			break;
 	}
 
-
+	filePath += filename;
 
 	const aiScene* scene = importer.ReadFile(filePath, importFlags);
 	if (!scene)
 	{
 		std::wstring wfilename;
-		wfilename.assign(filename.begin(),filename.end());
+		wfilename.assign(filename.begin(), filename.end());
 
 		wfilename = L"Error loading files : " + wfilename;
 		LPCWSTR name = wfilename.c_str();
@@ -294,8 +342,65 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		aiString texturePath;
 		if (AI_SUCCESS == material->GetTexture((aiTextureType)i, 0, &texturePath))
 		{
-			path = std::string(texturePath.C_Str());
-			textureProperties[i].second = path.filename().string();
+			std::string temp = (texturePath.C_Str());
+			bool is_valid = true;
+			for (char c : temp) 
+			{
+				if (c < 32 || c > 126) {
+					is_valid = false;
+
+					std::wstring wfilename;
+					wfilename.assign(Model->m_name.begin(), Model->m_name.end());
+
+					std::wstring texturename;
+
+					switch ((aiTextureType)i)
+					{
+						case aiTextureType_DIFFUSE:
+							texturename = L" Diffuse";
+							break;
+
+						case aiTextureType_NORMALS:
+							texturename = L" Normal";
+							break;
+
+						case aiTextureType_SPECULAR:
+							texturename = L" Specular";
+							break;
+
+						case aiTextureType_EMISSIVE:
+							texturename = L" Emissive";
+							break;
+						
+						case aiTextureType_METALNESS:
+							texturename = L" Metalic";
+							break;
+						case aiTextureType_SHININESS:
+							texturename = L" Roughness";
+							break;
+
+						case aiTextureType_AMBIENT_OCCLUSION:
+							texturename = L" AO";
+							break;
+
+
+						default:
+							break;
+					}
+					
+
+					wfilename = L"Error loading files : " + wfilename + texturename + L" path is not valid";
+					LPCWSTR name = wfilename.c_str();
+					MessageBox(0, name, 0, 0);
+					break;
+				}
+			}
+
+			if (is_valid)
+			{
+				path = std::string(texturePath.C_Str());
+				textureProperties[i].second = path.filename().string();
+			}
 		}
 	}
 
@@ -397,8 +502,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		newMaterial->AlbeoPath = finalPath;
-		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
+		newMaterial->AOPath = finalPath;
+		newMaterial->m_AOSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.w += 1;
 	}
 
@@ -502,7 +607,7 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 			prevTime = curAnimation.mTime;
 		}
 
-		//
+		//최종 애니메이션 행렬 연산
 		for (unsigned int j = 0; j < curChannel->mNumRotationKeys; j++)
 		{
 			VPMath::Matrix rotation{};
@@ -513,13 +618,13 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 
 			scale = VPMath::Matrix::CreateScale(ob_Channel->scalingkey[j]->value);
 
-			scale = VPMath::Matrix::CreateFromQuaternion(ob_Channel->rotationkey[j]->rotation);
+			rotation =VPMath::Matrix::CreateFromQuaternion(ob_Channel->rotationkey[j]->rotation);
 
 			VPMath::Matrix total = scale * rotation * translate;
 
 			ob_Channel->totals.push_back(total);
 		}
-		
+
 	}
 
 	Model->m_Animations.push_back(_Animation);
@@ -740,7 +845,7 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 		}
 
 	}
-		int a = 3;
+	int a = 3;
 }
 
 std::shared_ptr<Node> ModelLoader::FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode)

@@ -20,7 +20,7 @@ void CameraSystem::LateUpdate(float deltaTime)
 		IsMainCameraExist = true;
 
 		CameraCalculation(cameracomp);
-		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj);
+		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
 
 		///그런다음 for문 종료하기!
 		break;

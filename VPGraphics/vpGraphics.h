@@ -90,3 +90,25 @@ namespace effect
 	};
 
 }
+
+namespace ui
+{
+	// ---------------------------------------------------------------------------------
+	// 2D UI
+	// ---------------------------------------------------------------------------------
+	struct ImageInfo
+	{
+		std::string ImagePath;
+		float StartPosX = 0.f;
+		float StartPosY = 0.f;
+		float Width = 1.f;
+		float Height = 1.f;
+	};
+
+	struct TextInfo
+	{
+		std::wstring Text;
+		std::wstring FontPath;
+		VPMath::Color Color;
+	};
+}

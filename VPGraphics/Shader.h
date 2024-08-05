@@ -32,14 +32,8 @@ protected:
 	std::wstring m_filename;
 
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PS;
-	//ID3D11PixelShader* m_PS;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VS;
-	//ID3D11VertexShader* m_VS;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
-	//ID3D11InputLayout* m_InputLayout;
+
 	D3D11_INPUT_ELEMENT_DESC m_Desc = {};//???
-
-
-
 };
-

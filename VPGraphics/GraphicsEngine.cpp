@@ -179,29 +179,29 @@ void GraphicsEngine::EraseObject(uint32_t EntityID)
 	}
 }
 
-void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj)
+void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj)
 {
 	m_View = view;
 	m_Proj = proj;
 	m_ViewProj = view * proj;
 
-	DirectX::XMFLOAT4X4 cb_worldviewproj;
-	DirectX::XMFLOAT4X4 cb_view;
-	DirectX::XMFLOAT4X4 cb_proj;
-	DirectX::XMFLOAT4X4 cb_viewInverse;
-	DirectX::XMFLOAT4X4 cb_projInverse;
+	VPMath::Matrix cb_worldviewproj;
+	VPMath::Matrix cb_view;
+	VPMath::Matrix cb_proj;
+	VPMath::Matrix cb_viewInverse;
+	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
 	//상수 버퍼는 계산 순서때문에 전치한다
-	XMStoreFloat4x4(&cb_worldviewproj, XMMatrixTranspose(m_ViewProj));
-	XMStoreFloat4x4(&cb_view, XMMatrixTranspose(m_View));
-	XMStoreFloat4x4(&cb_proj, XMMatrixTranspose(m_Proj));
+	cb_worldviewproj = m_ViewProj.Transpose();
+	cb_view = m_View.Transpose();
+	cb_proj = m_Proj.Transpose();
 
-	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
-	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
+	VPMath::Matrix viewInverse = view.Invert();
+	cb_viewInverse = viewInverse.Transpose();
 
-	DirectX::XMMATRIX projInverse = XMMatrixInverse(nullptr, proj);
-	XMStoreFloat4x4(&cb_projInverse, XMMatrixTranspose(projInverse));
+	VPMath::Matrix projInverse = proj.Invert();
+	cb_projInverse = projInverse.Transpose();
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -209,6 +209,7 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj)
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.projInverse = cb_projInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
+	Camera.lock()->m_struct.orthoProj = orthoProj;
 	Camera.lock()->Update();
 }
 

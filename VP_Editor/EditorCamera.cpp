@@ -31,6 +31,8 @@ void EditorCamera::Initialize()
 	m_farZ = 1000;
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
 
+	// SUMIN_
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(1920.f, 1080.f, m_nearZ, m_farZ);
 }
 
 void EditorCamera::Update(float deltatime)
