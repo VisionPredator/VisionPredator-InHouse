@@ -15,6 +15,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 {
 	// Static Mesh
 	auto comp = std::any_cast<Component*>(data);
+
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
@@ -27,7 +28,6 @@ void RenderSystem::OnAddedComponent(std::any data)
 		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 		return;
 	}
-
 	// Skinned Mesh
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
@@ -98,11 +98,8 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 void RenderSystem::RenderUpdate(float deltaTime)
 {
+	THREAD_COMPONENTS(RenderSystem, MeshComponent, &RenderSystem::MeshCompRender);
 
-	for (MeshComponent& meshComp : COMPITER(MeshComponent))
-	{
-		MeshCompRender(meshComp);
-	}
 
 	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
 	{

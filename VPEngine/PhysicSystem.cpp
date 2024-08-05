@@ -254,60 +254,60 @@ void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
 
 void PhysicSystem::RenderUpdate(float deltaTime)
 {
-	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	{
-		auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+	//for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	//{
+	//	auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
-		switch (rigidBodyComponent.ColliderShape)
-		{
-		case VPPhysics::EColliderShape::BOX:
-		{
-			debug::OBBInfo temp{};
-			temp.OBB.Center = rigidTransform->World_Location;
-
-
-
-			temp.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
-
-			temp.xAxisAngle = rigidTransform->World_Rotation.x;
-			temp.yAxisAngle = rigidTransform->World_Rotation.y;
-			temp.zAxisAngle = rigidTransform->World_Rotation.z;
-			m_Graphics->DrawOBB(temp);
+	//	switch (rigidBodyComponent.ColliderShape)
+	//	{
+	//	case VPPhysics::EColliderShape::BOX:
+	//	{
+	//		debug::OBBInfo temp{};
+	//		temp.OBB.Center = rigidTransform->World_Location;
 
 
-		}
-		break;
-		case VPPhysics::EColliderShape::SPHERE:
-		{
-			debug::SphereInfo temp{};
-			temp.Sphere.Center = rigidTransform->World_Location;
-			float maxscle = rigidTransform->World_Scale.GetMaxComponent();
-			temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
-			m_Graphics->DrawSphere(temp);
 
-		}
-		break;
-		default:
-			break;
-		}
+	//		temp.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
 
-	}
-	for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
-	{
-		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
-
-		debug::OBBInfo temp{};
-		temp.OBB.Center = ControllerTransform->World_Location;
-		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
-		temp.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
-
-		temp.xAxisAngle = 0;
-		temp.yAxisAngle = 0;
-		temp.zAxisAngle = 0;
-		m_Graphics->DrawOBB(temp);
+	//		temp.xAxisAngle = rigidTransform->World_Rotation.x;
+	//		temp.yAxisAngle = rigidTransform->World_Rotation.y;
+	//		temp.zAxisAngle = rigidTransform->World_Rotation.z;
+	//		m_Graphics->DrawOBB(temp);
 
 
-	}
+	//	}
+	//	break;
+	//	case VPPhysics::EColliderShape::SPHERE:
+	//	{
+	//		debug::SphereInfo temp{};
+	//		temp.Sphere.Center = rigidTransform->World_Location;
+	//		float maxscle = rigidTransform->World_Scale.GetMaxComponent();
+	//		temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
+	//		m_Graphics->DrawSphere(temp);
+
+	//	}
+	//	break;
+	//	default:
+	//		break;
+	//	}
+
+	//}
+	//for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
+	//{
+	//	auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
+
+	//	debug::OBBInfo temp{};
+	//	temp.OBB.Center = ControllerTransform->World_Location;
+	//	VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
+	//	temp.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
+
+	//	temp.xAxisAngle = 0;
+	//	temp.yAxisAngle = 0;
+	//	temp.zAxisAngle = 0;
+	//	m_Graphics->DrawOBB(temp);
+
+
+	//}
 }
 // Function to compute the conjugate of a quaternion
 VPMath::Quaternion QuaternionConjugate(const VPMath::Quaternion& q)

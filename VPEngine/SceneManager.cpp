@@ -296,6 +296,7 @@ void SceneManager::OnClearAllEntity(std::any data)
 	for (auto& entity : entitiesToRemove) {
 		RemoveEntity(entity);
 	}
+	ClearCache();
 }
 void SceneManager::OnNewScene(std::any data)
 {
@@ -453,7 +454,6 @@ void SceneManager::DeSerializePrefab(std::string filePath)
 {
 	EventManager::GetInstance().ScheduleEvent("OnDeSerializePrefab", filePath);
 }
-
 void SceneManager::OnDeSerializePrefab(std::any data)
 {
 	std::string filePath = std::any_cast<std::string>(data);
@@ -596,35 +596,35 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 
 	return tempEntity;
 }
-
-std::shared_ptr<Entity> SceneManager::CreateEntity(uint32_t id)
-{
-	// 주어진 ID가 이미 존재하는지 확인합니다.
-	if (HasEntity(id))
-	{
-		VP_ASSERT(false, "이미 존재하는 EntityID 입니다.");
-		return nullptr;
-	}
-
-	// 새로운 엔티티를 생성하고 ID를 설정합니다.
-	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
-	tempEntity->SetEntityID(id);
-	SetEntityMap(id, tempEntity);
-
-	// IDComponent와 TransformComponent를 추가합니다.
-	std::shared_ptr<IDComponent> IDComp = tempEntity->AddComponent<IDComponent>();
-	std::shared_ptr<TransformComponent> TransformComp = tempEntity->AddComponent<TransformComponent>();
-
-	// IDComponent의 이름을 설정합니다.
-	if (IDComp->Name == "Entity")
-	{
-		static int a = 0;
-		IDComp->Name = IDComp->Name + std::to_string(a);
-		a++;
-	}
-
-	return tempEntity;
-}
+//
+//std::shared_ptr<Entity> SceneManager::CreateEntity(uint32_t id)
+//{
+//	// 주어진 ID가 이미 존재하는지 확인합니다.
+//	if (HasEntity(id))
+//	{
+//		VP_ASSERT(false, "이미 존재하는 EntityID 입니다.");
+//		return nullptr;
+//	}
+//
+//	// 새로운 엔티티를 생성하고 ID를 설정합니다.
+//	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
+//	tempEntity->SetEntityID(id);
+//	SetEntityMap(id, tempEntity);
+//
+//	// IDComponent와 TransformComponent를 추가합니다.
+//	std::shared_ptr<IDComponent> IDComp = tempEntity->AddComponent<IDComponent>();
+//	std::shared_ptr<TransformComponent> TransformComp = tempEntity->AddComponent<TransformComponent>();
+//
+//	// IDComponent의 이름을 설정합니다.
+//	if (IDComp->Name == "Entity")
+//	{
+//		static int a = 0;
+//		IDComp->Name = IDComp->Name + std::to_string(a);
+//		a++;
+//	}
+//
+//	return tempEntity;
+//}
 uint32_t SceneManager::CreateRandomEntityID()
 {
 	std::random_device rd;  // 난수 생성기
