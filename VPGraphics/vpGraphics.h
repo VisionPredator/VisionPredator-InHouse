@@ -8,13 +8,13 @@ namespace debug
 	struct SphereInfo
 	{
 		DirectX::BoundingSphere Sphere;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct AABBInfo	// AABB
 	{
 		DirectX::BoundingBox AABB;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct OBBInfo
@@ -23,57 +23,57 @@ namespace debug
 		float xAxisAngle = 0.f;
 		float yAxisAngle = 0.f;
 		float zAxisAngle = 0.f;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct FrustumInfo
 	{
 		DirectX::BoundingFrustum Frustum;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct GridInfo
 	{
-		DirectX::SimpleMath::Vector3 XAsix;
-		DirectX::SimpleMath::Vector3 YAsix;
-		DirectX::SimpleMath::Vector3 Origin;
+		VPMath::Vector3 XAsix;
+		VPMath::Vector3 YAsix;
+		VPMath::Vector3 Origin;
 		size_t XDivs;
 		size_t YDivs;
 		float GridSize;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct RingInfo
 	{
-		DirectX::SimpleMath::Vector3 Origin;
-		DirectX::SimpleMath::Vector3 MajorAxis;
-		DirectX::SimpleMath::Vector3 MinorAxis;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Vector3 Origin;
+		VPMath::Vector3 MajorAxis;
+		VPMath::Vector3 MinorAxis;
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct TriangleInfo
 	{
-		DirectX::SimpleMath::Vector2 PointA;
-		DirectX::SimpleMath::Vector2 PointB;
-		DirectX::SimpleMath::Vector2 PointC;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Vector2 PointA;
+		VPMath::Vector2 PointB;
+		VPMath::Vector2 PointC;
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct QuadInfo
 	{
-		DirectX::SimpleMath::Vector2 PointA;
-		DirectX::SimpleMath::Vector2 PointB;
-		DirectX::SimpleMath::Vector2 PointC;
-		DirectX::SimpleMath::Vector2 PointD;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Vector2 PointA;
+		VPMath::Vector2 PointB;
+		VPMath::Vector2 PointC;
+		VPMath::Vector2 PointD;
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 	struct RayInfo
 	{
-		DirectX::SimpleMath::Vector3 Origin;
-		DirectX::SimpleMath::Vector3 Direction;
+		VPMath::Vector3 Origin;
+		VPMath::Vector3 Direction;
 		bool Normalize = true;
-		DirectX::SimpleMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
 
@@ -85,8 +85,8 @@ namespace effect
 	{
 		std::string TexturePath;
 		UINT MaxParticles = 0;
-		DirectX::SimpleMath::Vector2 Size = { 1.0f, 1.0f };
-		DirectX::SimpleMath::Vector3 Direction = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+		VPMath::Vector2 Size = { 1.0f, 1.0f };
+		VPMath::Vector3 Direction = VPMath::Vector3(0.0f, 1.0f, 0.0f);
 	};
 
 }
@@ -109,6 +109,6 @@ namespace ui
 	{
 		std::wstring Text;
 		std::wstring FontPath;
-		DirectX::SimpleMath::Color Color;
+		VPMath::Color Color;
 	};
 }

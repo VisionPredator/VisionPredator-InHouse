@@ -21,7 +21,6 @@
 #pragma region Util
 #include "Camera.h"
 #include "Desc.h"
-#include "SimpleMath.h"
 #include "VertexData.h"
 #include "StaticData.h"
 #include "ModelData.h"
@@ -121,11 +120,11 @@ bool GraphicsEngine::Finalize()
 void GraphicsEngine::BeginRender()
 {
 	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 1.f };
-	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
-	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
-	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
-	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
+	const VPMath::Color white = { 1.f, 1.f, 1.f, 1.f };
+	const VPMath::Color red = { 1.f, 0.f, 0.f, 1.f };
+	const VPMath::Color green = { 0.f, 1.f, 0.f, 1.f };
+	const VPMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+	const VPMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
@@ -180,17 +179,17 @@ void GraphicsEngine::EraseObject(uint32_t EntityID)
 	}
 }
 
-void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, const DirectX::SimpleMath::Matrix& orthoProj)
+void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj)
 {
 	m_View = view;
 	m_Proj = proj;
 	m_ViewProj = view * proj;
 
-	SimpleMath::Matrix cb_worldviewproj;
-	SimpleMath::Matrix cb_view;
-	SimpleMath::Matrix cb_proj;
-	SimpleMath::Matrix cb_viewInverse;
-	SimpleMath::Matrix cb_projInverse;
+	VPMath::Matrix cb_worldviewproj;
+	VPMath::Matrix cb_view;
+	VPMath::Matrix cb_proj;
+	VPMath::Matrix cb_viewInverse;
+	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
 	//상수 버퍼는 계산 순서때문에 전치한다
@@ -198,10 +197,10 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	cb_view = m_View.Transpose();
 	cb_proj = m_Proj.Transpose();
 
-	SimpleMath::Matrix viewInverse = view.Invert();
+	VPMath::Matrix viewInverse = view.Invert();
 	cb_viewInverse = viewInverse.Transpose();
 
-	SimpleMath::Matrix projInverse = proj.Invert();
+	VPMath::Matrix projInverse = proj.Invert();
 	cb_projInverse = projInverse.Transpose();
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");

@@ -4,7 +4,6 @@
 
 #include <string>
 
-#include "../directxtk/SimpleMath.h"
 #include<memory>
 
 class Mesh;

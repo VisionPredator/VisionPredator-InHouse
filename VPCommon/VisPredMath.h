@@ -1,11 +1,6 @@
 //-------------------------------------------------------------------------------------
-// SimpleMath.h -- Simplified C++ Math wrapper for DirectXMath
-//
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
+// 
+// Added nlohmann/json.hpp for Serialized
 //-------------------------------------------------------------------------------------
 
 #pragma once
@@ -26,6 +21,8 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
+#include "nlohmann/json.hpp"
+
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -35,10 +32,12 @@
 #endif
 
 
-namespace DirectX
+namespace VisPred
 {
     namespace SimpleMath
     {
+        using namespace DirectX;
+
         struct Vector2;
         struct Vector4;
         struct Matrix;
@@ -114,6 +113,8 @@ namespace DirectX
         // 2D vector
         struct Vector2 : public XMFLOAT2
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Vector2, x, y)
+
             Vector2() noexcept : XMFLOAT2(0.f, 0.f) {}
             constexpr explicit Vector2(float ix) noexcept : XMFLOAT2(ix, ix) {}
             constexpr Vector2(float ix, float iy) noexcept : XMFLOAT2(ix, iy) {}
@@ -227,6 +228,8 @@ namespace DirectX
         // 3D vector
         struct Vector3 : public XMFLOAT3
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Vector3, x, y, z)
+
             Vector3() noexcept : XMFLOAT3(0.f, 0.f, 0.f) {}
             constexpr explicit Vector3(float ix) noexcept : XMFLOAT3(ix, ix, ix) {}
             constexpr Vector3(float ix, float iy, float iz) noexcept : XMFLOAT3(ix, iy, iz) {}
@@ -270,6 +273,7 @@ namespace DirectX
             Vector3 Cross(const Vector3& V) const noexcept;
 
             void Normalize() noexcept;
+            float GetMaxComponent() const noexcept;
             void Normalize(Vector3& result) const noexcept;
 
             void Clamp(const Vector3& vmin, const Vector3& vmax) noexcept;
@@ -278,7 +282,6 @@ namespace DirectX
             // Static functions
             static float Distance(const Vector3& v1, const Vector3& v2) noexcept;
             static float DistanceSquared(const Vector3& v1, const Vector3& v2) noexcept;
-
             static void Min(const Vector3& v1, const Vector3& v2, Vector3& result) noexcept;
             static Vector3 Min(const Vector3& v1, const Vector3& v2) noexcept;
 
@@ -347,6 +350,8 @@ namespace DirectX
         // 4D vector
         struct Vector4 : public XMFLOAT4
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Vector4, x, y,z,w)
+
             Vector4() noexcept : XMFLOAT4(0.f, 0.f, 0.f, 0.f) {}
             constexpr explicit Vector4(float ix) noexcept : XMFLOAT4(ix, ix, ix, ix) {}
             constexpr Vector4(float ix, float iy, float iz, float iw) noexcept : XMFLOAT4(ix, iy, iz, iw) {}
@@ -461,6 +466,8 @@ namespace DirectX
         // 4x4 Matrix (assumes right-handed cooordinates)
         struct Matrix : public XMFLOAT4X4
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Matrix, _11, _12, _13, _14, _21, _22, _23, _24, _31, _32, _33, _34, _41, _42, _43, _44)
+
             Matrix() noexcept
                 : XMFLOAT4X4(1.f, 0, 0, 0,
                     0, 1.f, 0, 0,
@@ -585,12 +592,15 @@ namespace DirectX
             static Matrix CreateFromAxisAngle(const Vector3& axis, float angle) noexcept;
 
             static Matrix CreatePerspectiveFieldOfView(float fov, float aspectRatio, float nearPlane, float farPlane) noexcept;
+            static Matrix CreatePerspectiveFieldOfView_LH(float fov, float aspectRatio, float nearPlane, float farPlane) noexcept;
             static Matrix CreatePerspective(float width, float height, float nearPlane, float farPlane) noexcept;
             static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top, float nearPlane, float farPlane) noexcept;
             static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) noexcept;
+            static Matrix CreateOrthographic_LH(float width, float height, float zNearPlane, float zFarPlane) noexcept;
             static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane) noexcept;
 
             static Matrix CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up) noexcept;
+            static Matrix CreateLookAt_LH(const Vector3& position, const Vector3& target, const Vector3& up) noexcept;
             static Matrix CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept;
 
             static Matrix CreateFromQuaternion(const Quaternion& quat) noexcept;
@@ -630,6 +640,8 @@ namespace DirectX
         // Plane
         struct Plane : public XMFLOAT4
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Plane, x, y, z, w)
+
             Plane() noexcept : XMFLOAT4(0.f, 1.f, 0.f, 0.f) {}
             constexpr Plane(float ix, float iy, float iz, float iw) noexcept : XMFLOAT4(ix, iy, iz, iw) {}
             Plane(const Vector3& normal, float d) noexcept : XMFLOAT4(normal.x, normal.y, normal.z, d) {}
@@ -684,6 +696,8 @@ namespace DirectX
         // Quaternion
         struct Quaternion : public XMFLOAT4
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Quaternion, x, y, z, w)
+
             Quaternion() noexcept : XMFLOAT4(0, 0, 0, 1.f) {}
             constexpr Quaternion(float ix, float iy, float iz, float iw) noexcept : XMFLOAT4(ix, iy, iz, iw) {}
             Quaternion(const Vector3& v, float scalar) noexcept : XMFLOAT4(v.x, v.y, v.z, scalar) {}
@@ -726,7 +740,7 @@ namespace DirectX
 
             void Conjugate() noexcept;
             void Conjugate(Quaternion& result) const noexcept;
-
+            Vector3 ToYawPitchRoll() const  noexcept; 
             void Inverse(Quaternion& result) const noexcept;
 
             float Dot(const Quaternion& Q) const noexcept;
@@ -781,6 +795,8 @@ namespace DirectX
         // Color
         struct Color : public XMFLOAT4
         {
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Color, x, y, z, w)
+
             Color() noexcept : XMFLOAT4(0, 0, 0, 1.f) {}
             constexpr Color(float _r, float _g, float _b) noexcept : XMFLOAT4(_r, _g, _b, 1.f) {}
             constexpr Color(float _r, float _g, float _b, float _a) noexcept : XMFLOAT4(_r, _g, _b, _a) {}
@@ -879,7 +895,9 @@ namespace DirectX
         // Ray
         class Ray
         {
+
         public:
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Ray, position, direction)
             Vector3 position;
             Vector3 direction;
 
@@ -993,7 +1011,7 @@ namespace DirectX
             static RECT __cdecl ComputeTitleSafeArea(UINT backBufferWidth, UINT backBufferHeight) noexcept;
         };
 
-    #include "SimpleMath.inl"
+    #include "VisPredMath.inl"
 
     } // namespace SimpleMath
 
@@ -1004,9 +1022,9 @@ namespace DirectX
 namespace std
 {
 
-    template<> struct less<DirectX::SimpleMath::Rectangle>
+    template<> struct less<VisPred::SimpleMath::Rectangle>
     {
-        bool operator()(const DirectX::SimpleMath::Rectangle& r1, const DirectX::SimpleMath::Rectangle& r2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Rectangle& r1, const VisPred::SimpleMath::Rectangle& r2) const noexcept
         {
             return ((r1.x < r2.x)
                 || ((r1.x == r2.x) && (r1.y < r2.y))
@@ -1015,17 +1033,17 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Vector2>
+    template<> struct less<VisPred::SimpleMath::Vector2>
     {
-        bool operator()(const DirectX::SimpleMath::Vector2& V1, const DirectX::SimpleMath::Vector2& V2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Vector2& V1, const VisPred::SimpleMath::Vector2& V2) const noexcept
         {
             return ((V1.x < V2.x) || ((V1.x == V2.x) && (V1.y < V2.y)));
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Vector3>
+    template<> struct less<VisPred::SimpleMath::Vector3>
     {
-        bool operator()(const DirectX::SimpleMath::Vector3& V1, const DirectX::SimpleMath::Vector3& V2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Vector3& V1, const VisPred::SimpleMath::Vector3& V2) const noexcept
         {
             return ((V1.x < V2.x)
                 || ((V1.x == V2.x) && (V1.y < V2.y))
@@ -1033,9 +1051,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Vector4>
+    template<> struct less<VisPred::SimpleMath::Vector4>
     {
-        bool operator()(const DirectX::SimpleMath::Vector4& V1, const DirectX::SimpleMath::Vector4& V2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Vector4& V1, const VisPred::SimpleMath::Vector4& V2) const noexcept
         {
             return ((V1.x < V2.x)
                 || ((V1.x == V2.x) && (V1.y < V2.y))
@@ -1044,9 +1062,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Matrix>
+    template<> struct less<VisPred::SimpleMath::Matrix>
     {
-        bool operator()(const DirectX::SimpleMath::Matrix& M1, const DirectX::SimpleMath::Matrix& M2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Matrix& M1, const VisPred::SimpleMath::Matrix& M2) const noexcept
         {
             if (M1._11 != M2._11) return M1._11 < M2._11;
             if (M1._12 != M2._12) return M1._12 < M2._12;
@@ -1069,9 +1087,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Plane>
+    template<> struct less<VisPred::SimpleMath::Plane>
     {
-        bool operator()(const DirectX::SimpleMath::Plane& P1, const DirectX::SimpleMath::Plane& P2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Plane& P1, const VisPred::SimpleMath::Plane& P2) const noexcept
         {
             return ((P1.x < P2.x)
                 || ((P1.x == P2.x) && (P1.y < P2.y))
@@ -1080,9 +1098,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Quaternion>
+    template<> struct less<VisPred::SimpleMath::Quaternion>
     {
-        bool operator()(const DirectX::SimpleMath::Quaternion& Q1, const DirectX::SimpleMath::Quaternion& Q2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Quaternion& Q1, const VisPred::SimpleMath::Quaternion& Q2) const noexcept
         {
             return ((Q1.x < Q2.x)
                 || ((Q1.x == Q2.x) && (Q1.y < Q2.y))
@@ -1091,9 +1109,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Color>
+    template<> struct less<VisPred::SimpleMath::Color>
     {
-        bool operator()(const DirectX::SimpleMath::Color& C1, const DirectX::SimpleMath::Color& C2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Color& C1, const VisPred::SimpleMath::Color& C2) const noexcept
         {
             return ((C1.x < C2.x)
                 || ((C1.x == C2.x) && (C1.y < C2.y))
@@ -1102,9 +1120,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Ray>
+    template<> struct less<VisPred::SimpleMath::Ray>
     {
-        bool operator()(const DirectX::SimpleMath::Ray& R1, const DirectX::SimpleMath::Ray& R2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Ray& R1, const VisPred::SimpleMath::Ray& R2) const noexcept
         {
             if (R1.position.x != R2.position.x) return R1.position.x < R2.position.x;
             if (R1.position.y != R2.position.y) return R1.position.y < R2.position.y;
@@ -1118,9 +1136,9 @@ namespace std
         }
     };
 
-    template<> struct less<DirectX::SimpleMath::Viewport>
+    template<> struct less<VisPred::SimpleMath::Viewport>
     {
-        bool operator()(const DirectX::SimpleMath::Viewport& vp1, const DirectX::SimpleMath::Viewport& vp2) const noexcept
+        bool operator()(const VisPred::SimpleMath::Viewport& vp1, const VisPred::SimpleMath::Viewport& vp2) const noexcept
         {
             if (vp1.x != vp2.x) return (vp1.x < vp2.x);
             if (vp1.y != vp2.y) return (vp1.y < vp2.y);

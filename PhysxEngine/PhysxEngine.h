@@ -1,6 +1,6 @@
 #pragma once
 #include "IPhysx.h"
-#include "../VPEngine/EventSubscriber.h"
+#include "EventSubscriber.h"
 class RigidBodyManager;
 class CollisionManager;
 class ControllerManager;
@@ -103,6 +103,10 @@ private:
 	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 
 	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	bool HasRigidBody(uint32_t entityID) override;
 
 };
 

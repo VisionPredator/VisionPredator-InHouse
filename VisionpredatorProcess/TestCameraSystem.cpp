@@ -3,7 +3,7 @@
 #include "Managers.h"
 #include "Components.h"
 
-TestCameraSystem::TestCameraSystem(SceneManager* sceneManager) :System(sceneManager)
+TestCameraSystem::TestCameraSystem(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
 }
 void TestCameraSystem::Update(float deltaTime)

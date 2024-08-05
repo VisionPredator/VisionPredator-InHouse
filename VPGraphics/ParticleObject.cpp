@@ -114,8 +114,8 @@ void ParticleObject::Draw()
 	UINT stride = sizeof(ParticleVertex);
 	UINT offset = 0;
 
-	Matrix viewInvert = CameraCB->m_struct.view.Invert().Transpose();
-	Matrix VP = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
+	VPMath::Matrix viewInvert = CameraCB->m_struct.view.Invert().Transpose();
+	VPMath::Matrix VP = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
 
 	// CB data °»½Å
 	m_PerFrame.ViewProj = VP.Transpose();

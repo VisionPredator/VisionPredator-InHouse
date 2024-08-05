@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "EditorCamera.h"
-#include "directxtk\SimpleMath.h"
 #include <InputManager.h>
 #include "HierarchySystem.h"
 #include "SceneManager.h"
@@ -14,7 +13,7 @@ float WrapAngle(float angle)
 }
 
 
-EditorCamera::EditorCamera(SceneManager* sceneManager) :m_SceneManager{ sceneManager }
+EditorCamera::EditorCamera(std::shared_ptr<SceneManager> sceneManager) :m_SceneManager{ sceneManager }
 {
 	Initialize();
 }
@@ -178,9 +177,9 @@ void EditorCamera::CalculateCameraTransform()
 
 void EditorCamera::DoubleClicked(float deltatime)
 {
-	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+	if (!m_SceneManager.lock()->HasEntity(HierarchySystem::m_SelectedEntityID))
 		return;
-	auto transform = m_SceneManager->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
+	auto transform = m_SceneManager.lock()->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
 
 	if (!HierarchySystem::IsItemDoubleClicked)
 	{

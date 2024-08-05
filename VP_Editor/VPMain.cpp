@@ -43,7 +43,7 @@ void ConfigureCRTDebug()
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
 	// Optionally set a specific allocation number to break on
-	// _CrtSetBreakAlloc(475);  // Uncomment and set the number if needed
+	 //_CrtSetBreakAlloc(208331);  // Uncomment and set the number if needed
 }
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,

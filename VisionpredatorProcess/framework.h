@@ -17,8 +17,7 @@
 #include <PxPhysicsAPI.h>
 
 #include "../include/entt/entt.hpp"
-#include "../VPEngine/VisPredMath.h"
-#include "../include/directxtk/SimpleMath.h"
+#include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;
 //#include <crtdbg.h>

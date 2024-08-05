@@ -7,7 +7,7 @@ class Inspector:
     public IImGui
 {
 public:
-    Inspector(SceneManager* sceneManager, HierarchySystem* hierarchySystem);
+    Inspector(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<HierarchySystem> hierarchySystem);
     // IImGui을(를) 통해 상속됨
     void ImGuiRender() override;
 
@@ -37,14 +37,14 @@ public:
     void TypeImGui_CapsuleColliderInfo(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_SphereColliderInfo(entt::meta_data memberMetaData, Component* component);
 
-    void TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Component* component);
-    void TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component);
+	void TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Component* component);
+	void TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component);
+	std::weak_ptr<SceneManager> m_SceneManager;
+	std::weak_ptr<HierarchySystem> m_HierarchySystem;
 
-    SceneManager* m_SceneManager;
-    HierarchySystem* m_HierarchySystem;
-    std::string m_searchComponent{};
-    bool IsClicked=false;
-    entt::id_type m_ClickedCompID{};
-    float m_TypeBoxsize = 200.f; // 예를 들어 200 픽셀 너비
+	std::string m_searchComponent{};
+	bool IsClicked = false;
+	entt::id_type m_ClickedCompID{};
+	float m_TypeBoxsize = 200.f; // 예를 들어 200 픽셀 너비
 };
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LightSystem.h"
 
-LightSystem::LightSystem(SceneManager* sceneManager)
+LightSystem::LightSystem(std::shared_ptr<SceneManager> sceneManager)
 	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&LightSystem::OnAddedComponent));
@@ -61,16 +61,16 @@ void LightSystem::RenderUpdate(float deltaTime)
 		debug::SphereInfo sphereInfo;
 		sphereInfo.Sphere.Center = temp.pos;
 		sphereInfo.Sphere.Radius = temp.range;
-		sphereInfo.Color = DirectX::SimpleMath::Color(temp.color);
+		sphereInfo.Color = VPMath::Color(temp.color);
 
 		debug::SphereInfo sphereInfo2;
 		sphereInfo2.Sphere.Center = temp.pos;
 		sphereInfo2.Sphere.Radius = 1;
-		sphereInfo2.Color = DirectX::SimpleMath::Color(DirectX::XMFLOAT3(0, 0.5, 0.5));
+		sphereInfo2.Color = VPMath::Color(DirectX::XMFLOAT3(0, 0.5, 0.5));
 
 
 		debug::RayInfo ray;
-		ray.Color = DirectX::SimpleMath::Color(DirectX::XMFLOAT3(0, 0.5, 0.5));
+		ray.Color = VPMath::Color(DirectX::XMFLOAT3(0, 0.5, 0.5));
 		ray.Direction = { temp.direction.x * temp.range, temp.direction.y * temp.range,temp.direction.z * temp.range };
 		ray.Origin = temp.pos;
 		ray.Normalize = false;

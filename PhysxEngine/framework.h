@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <SDKDDKVer.h>
+
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일
 #include <windows.h>
@@ -17,7 +18,6 @@
 #include <d3d11.h>
 #include <PxPhysicsAPI.h>
 
-#include "../VPEngine/VisPredMath.h"
-#include "../include/directxtk/SimpleMath.h"
+#include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;

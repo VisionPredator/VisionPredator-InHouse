@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include<vector>
-#include "SimpleMath.h"
 #include <map>
 #include "MeshFilter.h"
 
@@ -27,8 +26,8 @@ private:
 	void UpdateWorld(std::weak_ptr<RenderData> ob);
 	void CalcWorld(std::shared_ptr<Node> RootNode);
 
-	DirectX::SimpleMath::Matrix CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel);
-	DirectX::SimpleMath::Matrix CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey);
+	VPMath::Matrix CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel);
+	VPMath::Matrix CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey);
 
 	void UpdateMatrixPallete(std::shared_ptr<RenderData>& curData);
 

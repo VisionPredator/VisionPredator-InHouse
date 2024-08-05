@@ -34,7 +34,7 @@ void VPRegister::Register_Structs()
 {
 	META_ADD_STRUCT(PhysicsInfo, PhysicsInfo::Gravity, PhysicsInfo::FrameRate, PhysicsInfo::CollisionMatrix);
 	META_ADD_STRUCT(ColliderInfo, ColliderInfo::PhysicsLayer, ColliderInfo::OffSet, ColliderInfo::LinearLock, ColliderInfo::AngleLock, ColliderInfo::StaticFriction, ColliderInfo::DynamicFriction, ColliderInfo::Restitution, ColliderInfo::Density);
-	META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::UseAABB, BoxColliderInfo::Extent);
+	META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::Extent);
 	META_ADD_STRUCT(SphereColliderInfo, SphereColliderInfo::colliderInfo, SphereColliderInfo::Radius);
 	META_ADD_STRUCT(CapsuleColliderInfo, CapsuleColliderInfo::colliderInfo, CapsuleColliderInfo::Radius, CapsuleColliderInfo::HalfHeight);
 }
@@ -158,15 +158,13 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_MEMBER(Parent, Parent::ParentID);
 	META_ADD_MEMBER(Children, Children::ChildrenID);
-	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV, CameraComponent::Ratio);
+	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
 	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::animationList);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP, PlayerComponent::Maxspeed, PlayerComponent::Speed, PlayerComponent::Accel,PlayerComponent::Maxspeed, PlayerComponent::JumpFoce, PlayerComponent::MaxJumpCount, PlayerComponent::Jumpcount, PlayerComponent::Isground);
 	META_ADD_MEMBER(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
 	META_ADD_MEMBER(GeometryComponent, GeometryComponent::FBXFilter,GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
-
-
 	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::ColliderInfo);
-	META_ADD_MEMBER(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
+	META_ADD_MEMBER(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 }
 

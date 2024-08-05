@@ -952,6 +952,24 @@ inline void Vector3::Normalize() noexcept
     const XMVECTOR X = XMVector3Normalize(v1);
     XMStoreFloat3(this, X);
 }
+inline float Vector3::GetMaxComponent() const noexcept
+{
+	using namespace DirectX;
+
+	// Load the Vector3 into an XMVECTOR
+	XMVECTOR v = XMLoadFloat3(this);
+
+	// Extract components
+	float x = XMVectorGetX(v);
+	float y = XMVectorGetY(v);
+	float z = XMVectorGetZ(v);
+
+	float maxComponent = x;
+	if (y > maxComponent) maxComponent = y;
+	if (z > maxComponent) maxComponent = z;
+	// Return the maximum component
+	return maxComponent;
+}
 
 inline void Vector3::Normalize(Vector3& result) const noexcept
 {
@@ -2615,7 +2633,6 @@ inline Matrix Matrix::CreateOrthographic(float width, float height, float zNearP
     XMStoreFloat4x4(&R, XMMatrixOrthographicRH(width, height, zNearPlane, zFarPlane));
     return R;
 }
-
 inline Matrix Matrix::CreateOrthographic_LH(float width, float height, float zNearPlane, float zFarPlane) noexcept
 {
     using namespace DirectX;
@@ -2623,7 +2640,6 @@ inline Matrix Matrix::CreateOrthographic_LH(float width, float height, float zNe
     XMStoreFloat4x4(&L, XMMatrixOrthographicLH(width, height, zNearPlane, zFarPlane));
     return L;
 }
-
 inline Matrix Matrix::CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane) noexcept
 {
     using namespace DirectX;

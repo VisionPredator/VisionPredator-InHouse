@@ -22,8 +22,8 @@ DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceMan
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Debug;
 
-	m_View = DirectX::SimpleMath::Matrix::Identity;
-	m_Proj = DirectX::SimpleMath::Matrix::Identity;
+	m_View = VPMath::Matrix::Identity;
+	m_Proj = VPMath::Matrix::Identity;
 }
 
 DebugPass::~DebugPass()
@@ -74,13 +74,13 @@ void DebugPass::Render()
 			case MeshFilter::Grid:
 			{
 				debug::GridInfo gridInfo;
-				gridInfo.Origin = SimpleMath::Vector3{ 0, 0, 0 };
-				gridInfo.XAsix = SimpleMath::Vector3{ 1, 0, 0 };
-				gridInfo.YAsix = SimpleMath::Vector3{ 0, 0, 1 };
+				gridInfo.Origin = VPMath::Vector3{ 0, 0, 0 };
+				gridInfo.XAsix = VPMath::Vector3{ 1, 0, 0 };
+				gridInfo.YAsix = VPMath::Vector3{ 0, 0, 1 };
 				gridInfo.XDivs = 200;
 				gridInfo.YDivs = 200;
 				gridInfo.GridSize = 200.f;
-				gridInfo.Color = SimpleMath::Color{ 1,1,1, 1 };
+				gridInfo.Color = VPMath::Color{ 1,1,1, 1 };
 				debugManager->AddTask(gridInfo);
 			}
 				break;
@@ -91,26 +91,26 @@ void DebugPass::Render()
 
 				//x
 				debug::RayInfo x;
-				x.Origin = SimpleMath::Vector3{ 0, 0, 0 };
-				x.Direction = SimpleMath::Vector3{ distance, 0, 0 };
+				x.Origin = VPMath::Vector3{ 0, 0, 0 };
+				x.Direction = VPMath::Vector3{ distance, 0, 0 };
 				x.Normalize = false;
-				x.Color = SimpleMath::Color{ 1, 0, 0, 1 };
+				x.Color = VPMath::Color{ 1, 0, 0, 1 };
 				debugManager->AddTask(x);
 
 				//y
 				debug::RayInfo y;
-				y.Origin = SimpleMath::Vector3{ 0, 0, 0 };
-				y.Direction = SimpleMath::Vector3{ 0, distance, 0 };
+				y.Origin = VPMath::Vector3{ 0, 0, 0 };
+				y.Direction = VPMath::Vector3{ 0, distance, 0 };
 				y.Normalize = false;
-				y.Color = SimpleMath::Color{ 0, 1, 0, 1 };
+				y.Color = VPMath::Color{ 0, 1, 0, 1 };
 				debugManager->AddTask(y);
 
 				//z
 				debug::RayInfo z;
-				z.Origin = SimpleMath::Vector3{ 0, 0, 0 };
-				z.Direction = SimpleMath::Vector3{ 0, 0, distance };
+				z.Origin = VPMath::Vector3{ 0, 0, 0 };
+				z.Direction = VPMath::Vector3{ 0, 0, distance };
 				z.Normalize = false;
-				z.Color = SimpleMath::Color{ 0, 0, 1, 1 };
+				z.Color = VPMath::Color{ 0, 0, 1, 1 };
 				debugManager->AddTask(z);
 
 			}

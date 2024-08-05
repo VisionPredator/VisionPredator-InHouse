@@ -3,7 +3,7 @@
 #include "../PhysxEngine/VPPhysicsStructs.h"
 #include "Components.h"
 
-ControllerMovementSystem::ControllerMovementSystem(SceneManager* sceneManager):System(sceneManager)
+ControllerMovementSystem::ControllerMovementSystem(std::shared_ptr<SceneManager> sceneManager):System(sceneManager)
 {
 }
 
@@ -24,7 +24,6 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
         comp.InputDir.Normalize();
     }
     VPMath::Vector3 dir = comp.InputDir;
-
     // Set appropriate acceleration and friction values
     float acceleration = comp.IsFall ? comp.JumpXZAcceleration : comp.Acceleration;
     float friction = comp.IsFall ? comp.JumpXZDeceleration : comp.DynamicFriction;
@@ -70,7 +69,6 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 	if (comp.InputDir.y != 0 && !comp.IsFall)
 		comp.Velocity.y = comp.JumpSpeed;
 
-	// Clamp velocity to max speed
 	VPMath::Vector2 xzVelocity{ comp.Velocity.x, comp.Velocity.z };
 	comp.Speed = xzVelocity.Length();
 
@@ -108,7 +106,7 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 void ControllerMovementSystem::PhysicsUpdate(float deltaTime)
 {
 ///인풋에 관련 하여 데이터 시스템을 업데이트 순서  ControllerMoveMentSystem -> Physicsysytem
-    COMPLOOP(ControllerComponent)
+    for (ControllerComponent& comp : COMPITER(ControllerComponent))
     {
         ControllerMoveCalculate(deltaTime, comp);
         m_PhysicsEngine->SetControllerVelocity(comp.GetEntityID(), comp.Velocity);

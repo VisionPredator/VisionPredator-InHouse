@@ -12,8 +12,9 @@
 
 void UIManager::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<ResourceManager>& resourceManager)
-		: m_Device(device), m_ResourceManager(resourceManager)
 {
+	m_Device = device;
+	m_ResourceManager = resourceManager;
 }
 
 void UIManager::CreateImageObject(const uint32_t& entityID, const ui::ImageInfo& info)

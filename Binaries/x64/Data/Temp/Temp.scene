@@ -1,16 +1,19 @@
 {
     "Entitys": [
         {
-            "EntityID": 3942762984,
+            "EntityID": 690642543,
             "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
                 {
                     "BoxInfo": {
                         "Extent": {
                             "x": 1.0,
                             "y": 1.0,
                             "z": 1.0
-                        },
-                        "UseAABB": false
+                        }
                     },
                     "CapsuleInfo": {
                         "HalfHeight": 1.0,
@@ -35,11 +38,11 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 0.0,
+                        "Restitution": 0.4000000059604645,
                         "StaticFriction": 1.0,
                         "UseGravity": true
                     },
-                    "ColliderShape": 3,
+                    "ColliderShape": 0,
                     "ColliderType": 1,
                     "ComponentID": 4217231799,
                     "IsDynamic": true,
@@ -48,50 +51,68 @@
                     }
                 },
                 {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": "cerberus.fbx",
-                    "FBXFilter": "Static"
-                },
-                {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
-                        "y": 6.376457214355469,
+                        "y": 4.0,
                         "z": 0.0
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
-                        "x": -0.0,
+                        "x": 0.0,
                         "y": 0.0,
-                        "z": -0.0
+                        "z": 0.0
                     },
                     "Local_Scale": {
-                        "x": 5.0,
-                        "y": 5.0,
-                        "z": 5.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     }
                 }
             ]
         },
         {
-            "EntityID": 2900020491,
+            "EntityID": 64960933,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "Entity2"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 4247710784,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity1"
                 },
                 {
                     "BoxInfo": {
                         "Extent": {
-                            "x": 8.0,
+                            "x": 15.0,
                             "y": 1.0,
-                            "z": 8.0
-                        },
-                        "UseAABB": false
+                            "z": 15.0
+                        }
                     },
                     "CapsuleInfo": {
                         "HalfHeight": 1.0,
@@ -116,7 +137,7 @@
                             "z": 0.0
                         },
                         "PhysicsLayer": 0,
-                        "Restitution": 1.0,
+                        "Restitution": 0.4000000059604645,
                         "StaticFriction": 1.0,
                         "UseGravity": false
                     },
@@ -137,47 +158,6 @@
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 8.0,
-                        "y": 1.0,
-                        "z": 8.0
-                    }
-                },
-                {
-                    "ComponentID": 4075385036,
-                    "FBXFilter": "Box",
-                    "TextureName": "",
-                    "UseTexture": false,
-                    "color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "pass": 16
-                }
-            ]
-        },
-        {
-            "EntityID": 2157395768,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "sun"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 4.7937774658203125,
-                        "y": 0.0,
-                        "z": -5.384156703948975
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
@@ -187,29 +167,6 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "ComponentID": 4257272042,
-                    "attenuation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "direction": {
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "intensity": 1.0,
-                    "range": -1.0,
-                    "spot": -1.0,
-                    "type": "Direction"
                 }
             ]
         }

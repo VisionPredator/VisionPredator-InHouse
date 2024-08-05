@@ -4,7 +4,7 @@
 #include "SceneManager.h"
 #include <iostream>
 #include "Toolbar.h"
-FolderTool::FolderTool(SceneManager* sceneManager) :m_SceneManager{ sceneManager }
+FolderTool::FolderTool(std::shared_ptr<SceneManager> sceneManager) :m_SceneManager{ sceneManager }
 {
 	auto currPath = std::filesystem::current_path();
 
@@ -150,7 +150,7 @@ void FolderTool::FileImGui()
 				if (!Toolbar::m_IsPlaying)
 					if (entry.path().extension() == ".prefab")
 					{
-						m_SceneManager->DeSerializePrefab(entryPathString);
+						m_SceneManager.lock()->DeSerializePrefab(entryPathString);
 
 						// Handle double click for .prefab files
 					}

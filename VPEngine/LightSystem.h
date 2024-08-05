@@ -6,7 +6,7 @@ class LightSystem :
 	public System, public EventSubscriber,public IRenderable
 {
 public:
-	LightSystem(SceneManager* entityManager);
+	LightSystem(std::shared_ptr<SceneManager> entityManager);
 	~LightSystem() = default;
 	void OnAddedComponent(std::any data);
 	void OnReleasedComponent(std::any data);

@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 
-#include "SimpleMath.h"
 
 class Node;
 
@@ -11,12 +10,12 @@ struct Key
 	Key() :time(), value(), rotation(), RotationMatrix(), TranslateMatrix(), ScaleMatrix() {}
 
 	double time;
-	DirectX::SimpleMath::Vector3 value;
-	DirectX::SimpleMath::Quaternion rotation;
-	DirectX::SimpleMath::Matrix RotationMatrix;
-	DirectX::SimpleMath::Matrix TranslateMatrix;
-	DirectX::SimpleMath::Matrix ScaleMatrix;
-	DirectX::SimpleMath::Matrix total;
+	VPMath::Vector3 value;
+	VPMath::Quaternion rotation;
+	VPMath::Matrix RotationMatrix;
+	VPMath::Matrix TranslateMatrix;
+	VPMath::Matrix ScaleMatrix;
+	VPMath::Matrix total;
 };
 
 
@@ -29,7 +28,7 @@ struct Channel
 	std::vector<std::shared_ptr<Key>> positionkey;
 	std::vector<std::shared_ptr<Key>> rotationkey;
 	std::vector<std::shared_ptr<Key>> scalingkey;
-	std::vector<DirectX::SimpleMath::Matrix> totals;
+	std::vector<VPMath::Matrix> totals;
 };
 
 

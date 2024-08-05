@@ -1,22 +1,28 @@
 #include "pch.h"
 #include "EditorViewPort.h"
+#include "EventManager.h"
 #include "Toolbar.h"
 #include "HierarchySystem.h"
 #include <InputManager.h>
 
-EditorViewPort::EditorViewPort(SceneManager* sceneManager, EditorCamera* Camera, Graphics::Interface* Graphics) :m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
+EditorViewPort::EditorViewPort(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<EditorCamera> Camera, Graphics::Interface* Graphics)
+	: m_SceneManager{ sceneManager }, m_Camera{ Camera }, m_Graphics{ Graphics }
 {
+	// ImGuizmo 스타일 설정
 	auto& style = ImGuizmo::GetStyle();
 	style.ScaleLineThickness = 3.f;
 	style.TranslationLineThickness = 3.f;
 	style.RotationLineThickness = 5.f;
+
+	// 화면 크기 변경 이벤트 구독
+	EventManager::GetInstance().Subscribe("OnResize", CreateSubscriber(&EditorViewPort::OnResize));
 }
 
 void EditorViewPort::ImGuiRender()
 {
-	ImGuiWindowFlags wflags = 0;
-	wflags |= ImGuiWindowFlags_NoScrollWithMouse| ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse| ImGuiWindowFlags_NoResize;
-	ImGui::Begin("ViewPort" ,0, wflags);
+	// ImGui 창 설정
+	ImGuiWindowFlags wflags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+	ImGui::Begin("ViewPort", nullptr, wflags);
 	if (Toolbar::m_IsPlaying)
 	{
 		PlayingImGui();
@@ -25,112 +31,27 @@ void EditorViewPort::ImGuiRender()
 	{
 		EditingImGui();
 	}
-		ImGui::End();
+	ImGui::End();
 }
 
 void EditorViewPort::PlayingImGui()
 {
-	float FrameHeight = ImGui::GetFrameHeight();
-	auto current = ImGui::GetCurrentContext();
-	auto pos = ImVec2{ current->CurrentWindow->Pos.x, current->CurrentWindow->Pos.y + FrameHeight };
-	auto size = ImVec2{ current->CurrentWindow->Size.x, current->CurrentWindow->Size.y - FrameHeight };
-	auto idealSize = ImVec2(size.x, size.y);
-	auto maxpos = ImVec2(pos.x + idealSize.x, pos.y + idealSize.y);
-	auto borderSize = current->CurrentWindow->WindowBorderSize;
-
-	//뷰포트 설정된 것 출력하기
-	switch (m_CurrentRenderMode)
-	{
-	case EditorViewPort::RENDERMODE::Albedo:
-		EditViewPortImGui(L"Albedo", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Normal:
-		EditViewPortImGui(L"Normal", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Position:
-		EditViewPortImGui(L"Position", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Depth:
-		EditViewPortImGui(L"Depth", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Metalic:
-		EditViewPortImGui(L"Metalic", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Roughness:
-		EditViewPortImGui(L"Roughness", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Emissive:
-		EditViewPortImGui(L"Emissive", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::GBuffer:
-		EditViewPortImGui(L"GBuffer", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::IMGUI:
-		EditViewPortImGui(L"IMGUI", pos, maxpos);
-		break;
-	default:
-		break;
-	}
-
+	RenderImGuiViewport();
 }
 
 void EditorViewPort::EditingImGui()
-{  
-	float FrameHeight = ImGui::GetFrameHeight();
-	auto current = ImGui::GetCurrentContext();
-	auto pos = ImVec2{ current->CurrentWindow->Pos.x, current->CurrentWindow->Pos.y + FrameHeight };
-	auto size = ImVec2{ current->CurrentWindow->Size.x, current->CurrentWindow->Size.y - FrameHeight };
-	auto idealSize = ImVec2(size.x, size.y);
-	auto maxpos = ImVec2(pos.x + idealSize.x, pos.y + idealSize.y);
-	auto borderSize = current->CurrentWindow->WindowBorderSize;
-
-	//뷰포트 설정된 것 출력하기
-	switch (m_CurrentRenderMode)
-	{
-	case EditorViewPort::RENDERMODE::Albedo:
-		EditViewPortImGui(L"Albedo", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Normal:
-		EditViewPortImGui(L"Normal", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Position:
-		EditViewPortImGui(L"Position", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Depth:
-		EditViewPortImGui(L"Depth", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Metalic:
-		EditViewPortImGui(L"Metalic", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Roughness:
-		EditViewPortImGui(L"Roughness", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::Emissive:
-		EditViewPortImGui(L"Emissive", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::GBuffer:
-		EditViewPortImGui(L"GBuffer", pos, maxpos);
-		break;
-	case EditorViewPort::RENDERMODE::IMGUI:
-		EditViewPortImGui(L"IMGUI", pos, maxpos);
-		break;
-	default:
-		break;
-	}
-
-
-
-
-
+{
+	RenderImGuiViewport();
 	ImGuizmoRender();
-	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoTitleBar;
+
+	// RenderMode 버튼 설정
+	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	ImVec2 childWindowPos = ImVec2(maxpos.x - 125, pos.y);
+	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y);
 	ImGui::SetNextWindowPos(childWindowPos);
-	/// RenderMode 버튼 설정.
-	{
-		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-		ImGui::BeginChild("Tools", ImVec2{ 125,0 }, child_flags2, window_flags2);
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+	ImGui::BeginChild("Tools", ImVec2{ 125, 0 }, child_flags2, window_flags2);
 	if (ImGui::RadioButton("Albedo", m_CurrentRenderMode == RENDERMODE::Albedo))
 		m_CurrentRenderMode = RENDERMODE::Albedo;
 	if (ImGui::RadioButton("Normal", m_CurrentRenderMode == RENDERMODE::Normal))
@@ -149,32 +70,67 @@ void EditorViewPort::EditingImGui()
 		m_CurrentRenderMode = RENDERMODE::GBuffer;
 	if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
 		m_CurrentRenderMode = RENDERMODE::IMGUI;
-		ImGui::EndChild();
-		ImGui::PopStyleVar();
+	ImGui::EndChild();
+	ImGui::PopStyleVar();
+}
+
+void EditorViewPort::RenderImGuiViewport()
+{
+	float FrameHeight = ImGui::GetFrameHeight();
+	auto current = ImGui::GetCurrentContext();
+	auto pos = ImVec2{ current->CurrentWindow->Pos.x, current->CurrentWindow->Pos.y + FrameHeight };
+	auto size = ImVec2{ current->CurrentWindow->Size.x, current->CurrentWindow->Size.y - FrameHeight };
+
+	// 이미지의 종횡비 계산
+	float imageAspectRatio = (float)m_Rectsize.x / (float)m_Rectsize.y;
+	// 사용 가능한 영역의 종횡비 계산
+	float areaAspectRatio = size.x / size.y;
+
+	// 이미지 크기 조정
+	ImVec2 drawSize;
+	if (imageAspectRatio > areaAspectRatio)
+	{
+		// 이미지가 가로로 더 넓은 경우
+		drawSize.x = size.x;
+		drawSize.y = size.x / imageAspectRatio;
+	}
+	else
+	{
+		// 이미지가 세로로 더 긴 경우
+		drawSize.y = size.y;
+		drawSize.x = size.y * imageAspectRatio;
 	}
 
+	// 이미지를 중앙에 배치
+	ImVec2 imagePos = ImVec2(pos.x + (size.x - drawSize.x) / 2, pos.y + (size.y - drawSize.y) / 2);
+	ImVec2 imageMaxPos = ImVec2(imagePos.x + drawSize.x, imagePos.y + drawSize.y);
+
+	// 배경 그리기 (검정색)
+	ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), IM_COL32(10, 10, 10, 255));
+
+	// 이미지 그리기
+	ImGui::GetWindowDrawList()->AddImage((void*)m_Graphics->GetSRV(GetRenderModeString(m_CurrentRenderMode)), imagePos, imageMaxPos);
+
+	// ImGuizmo를 위한 크기 및 위치 저장
+	m_DrawPos = imagePos;
+	m_DrawSize = drawSize;
 }
-
-void EditorViewPort::EditViewPortImGui(std::wstring mode, ImVec2 pos, ImVec2 maxPos)
-{
-	ImGui::GetWindowDrawList()->AddImage((void*)m_Graphics->GetSRV(mode), ImVec2(pos.x, pos.y), ImVec2(maxPos.x, maxPos.y));
-}
-
-
 
 void EditorViewPort::ImGuizmoRender()
 {
 	ImGuizmo::SetDrawlist();
-	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-	VPMath::Matrix view = m_Camera->GetView();
-	VPMath::Matrix proj = m_Camera->GetProj();
 
+	// 저장된 크기와 위치를 기반으로 Rect 설정
+	ImGuizmo::SetRect(m_DrawPos.x, m_DrawPos.y, m_DrawSize.x, m_DrawSize.y);
 
+	VPMath::Matrix view = m_Camera.lock()->GetView();
+	VPMath::Matrix proj = m_Camera.lock()->GetProj();
+
+	// ImGuizmo 모드 선택
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
 	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	/// ImGuizmo 모드 선택
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
-	ImGui::BeginChild("Setting", ImVec2{ 120,0 }, child_flags, window_flags);
+	ImGui::BeginChild("Setting", ImVec2{ 120, 0 }, child_flags, window_flags);
 	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
@@ -193,51 +149,39 @@ void EditorViewPort::ImGuizmoRender()
 	ImGui::EndChild();
 	ImGui::PopStyleVar();
 
-
-	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+	if (!m_SceneManager.lock()->HasEntity(HierarchySystem::m_SelectedEntityID))
 		return;
-	TransformComponent* transformComp
-		= m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
-	float* snapValue =nullptr;
+
+	TransformComponent* transformComp = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
+	float* snapValue = nullptr;
 
 	if (InputManager::GetInstance().GetKey(KEY::LCTRL))
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
 	VPMath::Matrix ImGuizmoMatrix = transformComp->WorldTransform;
-	//float x = 10.0f; // 시작 x 위치
-	//float y = 10.0f; // 시작 y 위치
-	//float width = 800.0f; // 너비
-	//float height = 600.0f; // 높이
-
-	//// ImGuizmo의 위치와 크기를 설정합니다.
-	//ImGuizmo::SetRect(x, y, width, height);
-	auto& style = ImGuizmo::GetStyle();
-
 
 	ImGuizmo::Manipulate(
 		&view.m[0][0],
 		&proj.m[0][0],
 		m_ImGuizmoMode,
-		Mode,
+		ImGuizmo::WORLD,
 		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
 
-
 	if (ImGuizmo::IsUsing())
 	{
-		TransformComponent* selectedTransform = m_SceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
+		TransformComponent* selectedTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 
-		if (Parent* parent = m_SceneManager->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID); parent)
+		if (Parent* parent = m_SceneManager.lock()->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID); parent)
 		{
-			TransformComponent* parentTransform = m_SceneManager->GetComponent<TransformComponent>(parent->ParentID);
-			// Combine the parent transform with the ImGuizmoMatrix
+			TransformComponent* parentTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(parent->ParentID);
+			// 부모 변환과 ImGuizmoMatrix 결합
 			ImGuizmoMatrix = ImGuizmoMatrix * parentTransform->WorldTransform.Invert();
 		}
-		// Decompose the matrix back to the local transform components
+		// 매트릭스를 로컬 변환 요소로 분해
 		VPMath::Vector3 scale, translation;
 		VPMath::Quaternion rotation;
 		ImGuizmoMatrix.Decompose(scale, rotation, translation);
-
 
 		switch (m_ImGuizmoMode)
 		{
@@ -247,8 +191,8 @@ void EditorViewPort::ImGuizmoRender()
 
 		case ImGuizmo::OPERATION::ROTATE:
 			selectedTransform->Local_Quaternion = rotation;
-
 			break;
+
 		case ImGuizmo::OPERATION::SCALE:
 			selectedTransform->Local_Scale = scale;
 			break;
@@ -256,12 +200,43 @@ void EditorViewPort::ImGuizmoRender()
 		default:
 			break;
 		}
-
-		///여기서 바뀐 Quaternion 을 활용하여, Local_Rotation을 다시 넣고싶어
 	}
-
-
-
-
 }
 
+void EditorViewPort::OnResize(std::any hwnd)
+{
+	auto tempHwnd = std::any_cast<HWND>(hwnd);
+	RECT tempsize{};
+	GetClientRect(tempHwnd, &tempsize);
+
+	// 뷰포트 크기 업데이트
+	m_Rectsize.x = tempsize.right - tempsize.left;
+	m_Rectsize.y = tempsize.bottom - tempsize.top;
+}
+
+std::wstring EditorViewPort::GetRenderModeString(RENDERMODE renderMode)
+{
+	switch (renderMode)
+	{
+	case RENDERMODE::Albedo:
+		return L"Albedo";
+	case RENDERMODE::Normal:
+		return L"Normal";
+	case RENDERMODE::Position:
+		return L"Position";
+	case RENDERMODE::Depth:
+		return L"Depth";
+	case RENDERMODE::Metalic:
+		return L"Metalic";
+	case RENDERMODE::Roughness:
+		return L"Roughness";
+	case RENDERMODE::Emissive:
+		return L"Emissive";
+	case RENDERMODE::GBuffer:
+		return L"GBuffer";
+	case RENDERMODE::IMGUI:
+		return L"IMGUI";
+	default:
+		return L"Unknown";
+	}
+}

@@ -18,8 +18,8 @@
 #include <PxPhysicsAPI.h>
 
 #include "VisPredMath.h"
-#include "../include/directxtk/SimpleMath.h"
 namespace VPMath = VisPred::SimpleMath;
+
 using namespace entt::literals;
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"

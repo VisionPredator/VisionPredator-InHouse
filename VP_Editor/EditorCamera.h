@@ -4,7 +4,7 @@ class SceneManager;
 class EditorCamera:public IImGui
 {
 public: 
-	EditorCamera(SceneManager* sceneManager);
+	EditorCamera(std::shared_ptr<SceneManager> sceneManager);
 	~EditorCamera()=default;
 	void Initialize();
 	void Update(float deltatime);
@@ -53,6 +53,6 @@ private:
 	float m_LerpTime = 0.f;
 
 public:
-	SceneManager* m_SceneManager;
+	std::weak_ptr<SceneManager> m_SceneManager;
 };
 

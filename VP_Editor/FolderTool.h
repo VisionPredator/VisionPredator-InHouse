@@ -7,7 +7,7 @@ class FolderTool :
 {
 public:
     // IImGui을(를) 통해 상속됨
-    FolderTool(SceneManager* sceneManager);
+    FolderTool(std::shared_ptr<SceneManager> sceneManager);
     void ImGuiRender() override;
 
     FolderTool() = default;
@@ -16,12 +16,12 @@ public:
     std::string m_SearchName;
     std::string m_AssetFolderPath{};
     std::string m_CurrentFolderPath{};
-    SceneManager* m_SceneManager;
     bool m_ShowDeleteCaution = false;
     bool m_ShowOpenSceneCaution = false;
     std::filesystem::path m_DeleteFilePath;
     std::string m_OpenScenePath;
     void DeleteCautionImGui();
     void OpenCautionImGui();
+    std::weak_ptr<SceneManager> m_SceneManager;
 };
 

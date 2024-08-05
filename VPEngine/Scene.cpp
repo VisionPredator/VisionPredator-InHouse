@@ -4,21 +4,26 @@
 #include "Components.h"
 void Scene::Clear()
 {
+	// 씬 이름 초기화
 	SceneName.clear();
-	for (auto& entry : EntityMap) {
-		delete entry.second;  // Delete dynamically allocated Entity objects
-	}
-	EntityMap.clear();  // Clear the map after deleting all entities
-	// Assuming m_ComponentPool might have shared or unique components
-	for (auto& pool : m_ComponentPool) {
-		for (auto* component : pool.second) {
-			// Since components might be shared or already deleted, check if not null
-			if (component) {
-				delete component;  // Delete the Component
-				component = nullptr; // Set the pointer to nullptr after deletion
-			}
+
+	// 모든 엔티티와 그 컴포넌트를 삭제합니다.
+	for (auto& entry : EntityMap)
+		entry.second.reset();  // 엔티티와 그 컴포넌트가 shared_ptr로 관리되므로 reset()으로 해제합니다.
+	EntityMap.clear();  // 엔티티 맵을 초기화합니다.
+
+	// 컴포넌트 풀을 초기화합니다.
+	for (auto& pool : m_ComponentPool)
+	{
+		for (auto& weakComp : pool.second)
+		{
+			if (auto sharedComp = weakComp.lock())  // weak_ptr를 shared_ptr로 변환하여 유효한지 확인합니다.
+				sharedComp.reset();  // 유효하다면 reset()으로 해제합니다.
 		}
-		pool.second.clear();  // Clear each vector in the pool
+		pool.second.clear();  // 각 벡터를 초기화합니다.
 	}
-	m_ComponentPool.clear();  // Clear the component pool map
+	m_ComponentPool.clear();  // 컴포넌트 풀 맵을 초기화합니다.
+
+	// 물리 정보 초기화가 필요한 경우 초기화합니다.
+	ScenePhysicInfo = VPPhysics::PhysicsInfo{};
 }

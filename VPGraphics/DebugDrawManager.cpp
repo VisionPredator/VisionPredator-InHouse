@@ -2,9 +2,8 @@
 #include "DebugDrawManager.h"
 #include "Device.h"
 #include "Defines.h"
-#include "../include/directxtk/SimpleMath.h"
 
-using namespace DirectX::SimpleMath;
+using namespace VPMath;
 
 void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
 {
@@ -24,7 +23,7 @@ void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
         &m_BatchInputLayout));
 }
 
-void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj)
+void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view, const VPMath::Matrix proj)
 {
 
 
@@ -61,13 +60,13 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const Dire
 
 void DebugDrawManager::Draw(const debug::SphereInfo& info)
 {
-    SimpleMath::Vector3 origin = info.Sphere.Center;
+    VPMath::Vector3 origin = info.Sphere.Center;
 
     const float radius = info.Sphere.Radius;
 
-    SimpleMath::Vector3 xaxis = SimpleMath::Vector3::UnitX * radius;
-    SimpleMath::Vector3 yaxis = SimpleMath::Vector3::UnitY * radius;
-    SimpleMath::Vector3 zaxis = SimpleMath::Vector3::UnitZ * radius;
+    VPMath::Vector3 xaxis = VPMath::Vector3::UnitX * radius;
+    VPMath::Vector3 yaxis = VPMath::Vector3::UnitY * radius;
+    VPMath::Vector3 zaxis = VPMath::Vector3::UnitZ * radius;
 
     debug::RingInfo ringInfo;
     ringInfo.Origin = origin;
@@ -285,7 +284,7 @@ void DebugDrawManager::DrawRing(const debug::RingInfo& info)
     m_Batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP, verts, c_ringSegments + 1);
 }
 
-void DebugDrawManager::DrawCube(const SimpleMath::Matrix& worldTransform, const SimpleMath::Color& color)
+void DebugDrawManager::DrawCube(const VPMath::Matrix& worldTransform, const VPMath::Color& color)
 {
 	static const XMVECTORF32 s_verts[8] =
 	{

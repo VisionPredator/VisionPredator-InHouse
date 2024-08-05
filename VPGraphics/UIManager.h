@@ -12,7 +12,7 @@ class ImageObject;	// 비트맵 목록에서 텍스처 리소스 이름으로 파일을 찾아온다.
 class UIManager
 {
 public:
-	UIManager() = default;
+	UIManager();
 	~UIManager() = default;
 
 	void Initialize(const std::shared_ptr<class Device>& device

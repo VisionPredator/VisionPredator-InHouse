@@ -45,7 +45,7 @@ public:
 
 	void OnResize(HWND hwnd) override;
 
-	void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, const DirectX::SimpleMath::Matrix& orthoProj) override;
+	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 
 	/// Model
 	bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
@@ -106,9 +106,9 @@ private:
 	RECT m_wndSize;
 	
 	//camera
-	DirectX::SimpleMath::Matrix m_View;
-	DirectX::SimpleMath::Matrix m_Proj;
-	DirectX::SimpleMath::Matrix m_ViewProj;
+	VPMath::Matrix m_View;
+	VPMath::Matrix m_Proj;
+	VPMath::Matrix m_ViewProj;
 
 	// Pipeline
 	std::shared_ptr<PassManager> m_PassManager;

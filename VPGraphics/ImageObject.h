@@ -12,13 +12,13 @@ class ImageObject
 private:
 	struct ImageVertex
 	{
-		DirectX::SimpleMath::Vector3 Position;
-		DirectX::SimpleMath::Vector2 TexCoord;
+		VPMath::Vector3 Position;
+		VPMath::Vector2 TexCoord;
 	};
 
 	struct ColorCB
 	{
-		DirectX::SimpleMath::Vector4 Color;	// rgba
+		VPMath::Vector4 Color;	// rgba
 	};
 
 public:

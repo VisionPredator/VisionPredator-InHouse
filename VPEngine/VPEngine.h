@@ -28,8 +28,8 @@ protected:
 	virtual void EndRender();
 	void OnAddSystemLater(std::any);
 	TimeManager* m_TimeManager;
-	SystemManager* m_SystemManager;
-	SceneManager* m_SceneManager;
+	std::shared_ptr<SystemManager> m_SystemManager;
+	std::shared_ptr<SceneManager> m_SceneManager;
 	
 	float m_DeltaTime;
 

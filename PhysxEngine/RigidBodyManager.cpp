@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "RigidBodyManager.h"
 #include "StaticRigidBody.h"
-#include "../VPEngine/EventManager.h"
+#include "EventManager.h"
 #include "DynamicRigidBody.h"
 #include "ConvexMeshResource.h"
 #include "PhysichResourceManager.h"
@@ -31,12 +31,14 @@ void RigidBodyManager::Update()
 
 }
 
+
 void RigidBodyManager::CreateStaticBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the box
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
 	// Create the shape for the box collider
-	physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(boxinfo.Extent.x, boxinfo.Extent.y, boxinfo.Extent.z), *pxMaterial);
+	physx::PxBoxGeometry mesh(boxinfo.Extent.x* boxinfo.colliderInfo.WorldScale.x, boxinfo.Extent.y* boxinfo.colliderInfo.WorldScale.y, boxinfo.Extent.z* boxinfo.colliderInfo.WorldScale.z);
+	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 	// Set up the static body
 	StaticRigidBody* rigidBody = SettingStaticBody(shape, boxinfo.colliderInfo, collidertype, engininfo);
 	// Create collision data
@@ -45,7 +47,7 @@ void RigidBodyManager::CreateStaticBody(const BoxColliderInfo& boxinfo, const EC
 	if (rigidBody->Initialize(boxinfo.colliderInfo, shape, m_Physics))
 	{
 		rigidBody->SetExtent(boxinfo.Extent);
-
+		
 		// Insert the rigid body into the map
 		m_RigidBodyMap.insert(std::make_pair(boxinfo.colliderInfo.EntityID, rigidBody));
 		// Add the rigid body to the scene
@@ -62,7 +64,11 @@ void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& sphereinfo, co
 	// Create the material for the Sphere
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
 	// Create the shape for the sphere collider
-	physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(sphereinfo.Radius), *pxMaterial);
+
+	float Maxscale = sphereinfo.colliderInfo.WorldScale.GetMaxComponent();
+	float newRadius = (sphereinfo.Radius * Maxscale);
+	physx::PxSphereGeometry mesh(newRadius);
+	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 	// Set up the static body
 	StaticRigidBody* rigidBody = SettingStaticBody(shape, sphereinfo.colliderInfo, collidertype, engininfo);
 	// Create collision data
@@ -85,7 +91,14 @@ void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, 
 	// Create the material for the collider
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
 	// Create the shape for the capsule collider
-	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(capsuleinfo.Radius, capsuleinfo.HalfHeight), *pxMaterial);
+
+	VPMath::Vector3 scale = capsuleinfo.colliderInfo.WorldScale;
+	VPMath::Vector2 size{};
+	size.y = capsuleinfo.HalfHeight * scale.y;
+	scale.y = 0;
+	float Maxscale = scale.GetMaxComponent();
+	size.x = capsuleinfo.Radius * Maxscale;
+	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(size.x, size.y  ), *pxMaterial);
 	// Set up the static body
 	StaticRigidBody* rigidBody = SettingStaticBody(shape, capsuleinfo.colliderInfo, collidertype, engininfo);
 	// Create collision data
@@ -113,7 +126,7 @@ void RigidBodyManager::CreateStaticBody(const VPPhysics::ConvexColliderInfo& con
 	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(convexMeshinfo.FBXName);
 	physx::PxConvexMesh* pxConvexMesh = convexMesh.lock()->GetConvexMesh();
 	auto mesh = physx::PxConvexMeshGeometry(pxConvexMesh);
-	mesh.scale.scale = { convexMeshinfo.WorldScale.x ,convexMeshinfo.WorldScale.y,convexMeshinfo.WorldScale.z};
+	mesh.scale.scale = { convexMeshinfo.colliderInfo.WorldScale.x ,convexMeshinfo.colliderInfo.WorldScale.y,convexMeshinfo.colliderInfo.WorldScale.z};
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 	StaticRigidBody* rigidBody = SettingStaticBody(shape, convexMeshinfo.colliderInfo, collidertype, engininfo);
 
@@ -132,7 +145,8 @@ void RigidBodyManager::CreateStaticBody(const VPPhysics::ConvexColliderInfo& con
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
-	physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(boxinfo.Extent.x, boxinfo.Extent.y, boxinfo.Extent.z), *pxMaterial);
+	physx::PxBoxGeometry mesh(boxinfo.Extent.x * boxinfo.colliderInfo.WorldScale.x, boxinfo.Extent.y * boxinfo.colliderInfo.WorldScale.y, boxinfo.Extent.z * boxinfo.colliderInfo.WorldScale.z);
+	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 	DynamicRigidBody* rigidBody = SettingDynamicBody(shape, boxinfo.colliderInfo, collidertype, engininfo);
 	//CollisionData* collisiondata = new CollisionData;
 	if (rigidBody->Initialize(boxinfo.colliderInfo, shape, m_Physics))
@@ -150,7 +164,10 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxin
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
-	physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(sphereinfo.Radius), *pxMaterial);
+	float Maxscale = sphereinfo.colliderInfo.WorldScale.GetMaxComponent();
+	float newRadius = (sphereinfo.Radius * Maxscale);
+	physx::PxSphereGeometry mesh(newRadius);
+	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 	DynamicRigidBody* rigidBody = SettingDynamicBody(shape, sphereinfo.colliderInfo, collidertype, engininfo);
 	//CollisionData* collisiondata = new CollisionData;
 	if (rigidBody->Initialize(sphereinfo.colliderInfo, shape, m_Physics))
@@ -169,7 +186,13 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sp
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
-	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(capsuleinfo.Radius,capsuleinfo.HalfHeight), *pxMaterial);
+	VPMath::Vector3 scale = capsuleinfo.colliderInfo.WorldScale;
+	VPMath::Vector2 size{};
+	size.y = capsuleinfo.HalfHeight * scale.y;
+	scale.y = 0;
+	float Maxscale = scale.GetMaxComponent();
+	size.x = capsuleinfo.Radius * Maxscale;
+	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(size.x, size.y), *pxMaterial);
 	DynamicRigidBody* rigidBody = SettingDynamicBody(shape, capsuleinfo.colliderInfo, collidertype, engininfo);
 	//CollisionData* collisiondata = new CollisionData;
 	if (rigidBody->Initialize(capsuleinfo.colliderInfo, shape, m_Physics))
@@ -191,7 +214,7 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& co
 	physx::PxConvexMesh* pxConvexMesh = convexMesh.lock()->GetConvexMesh();
 
 	auto mesh = physx::PxConvexMeshGeometry(pxConvexMesh);
-	mesh.scale.scale = { convexMeshinfo.WorldScale.x ,convexMeshinfo.WorldScale.y,convexMeshinfo.WorldScale.z };
+	mesh.scale.scale = { convexMeshinfo.colliderInfo.WorldScale.x ,convexMeshinfo.colliderInfo.WorldScale.y,convexMeshinfo.colliderInfo.WorldScale.z };
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 	DynamicRigidBody* rigidBody = SettingDynamicBody(shape, convexMeshinfo.colliderInfo, collidertype, engininfo);
 	//CollisionData* collisiondata = new CollisionData;

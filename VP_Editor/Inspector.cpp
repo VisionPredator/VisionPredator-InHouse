@@ -5,7 +5,7 @@
 #include "imgui_stdlib.h"
 #include "Components.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
-Inspector::Inspector(SceneManager* sceneManager, HierarchySystem* hierarchySystem) :m_SceneManager{ sceneManager }, m_HierarchySystem{ hierarchySystem }
+Inspector::Inspector(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<HierarchySystem> hierarchySystem) :m_SceneManager{ sceneManager }, m_HierarchySystem{ hierarchySystem }
 {
 }
 
@@ -13,8 +13,8 @@ void Inspector::ImGuiRender()
 {
 	ImGui::Begin("Inspector");
 	{
-		const int entityID = m_HierarchySystem->m_SelectedEntityID;
-		if (entityID != 0 && m_SceneManager->HasEntity(entityID))
+		const int entityID = m_HierarchySystem.lock()->m_SelectedEntityID;
+		if (entityID != 0 && m_SceneManager.lock()->HasEntity(entityID))
 			EntityImGui(entityID);
 	}
 	ImGui::End();
@@ -25,7 +25,7 @@ void Inspector::EntityImGui(uint32_t entityID)
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.MouseDragThreshold = 10.0f;
 	ImGui::PushID(static_cast<int>(entityID));
-	auto& objectName = m_SceneManager->GetComponent<IDComponent>(entityID)->Name;
+	auto& objectName = m_SceneManager.lock()->GetComponent<IDComponent>(entityID)->Name;
 	ImGui::InputText("Name", &objectName);
 	ImGui::PopID();
 	ImGui::Separator();
@@ -33,11 +33,11 @@ void Inspector::EntityImGui(uint32_t entityID)
 	ImGui::Text("Serialize");	ImGui::SameLine();	
 	if (ImGui::Button("Save"))
 	{
-		m_SceneManager->SerializePrefab(entityID);
+		m_SceneManager.lock()->SerializePrefab(entityID);
 	}
 
 	ImGui::Separator();
-	TransformComponentImGui(m_SceneManager->GetComponent(entityID, Reflection::GetTypeID<TransformComponent>()));
+	TransformComponentImGui(m_SceneManager.lock()->GetComponent(entityID, Reflection::GetTypeID<TransformComponent>()));
 	ImGui::Separator();
 
 	if (ImGui::Button("  AddComponent  "))
@@ -84,13 +84,13 @@ void Inspector::EntityImGui(uint32_t entityID)
 				if (lowerClassName.find(lowerSearchComponent) == std::string::npos)
 					continue;
 
-				if (m_SceneManager->HasComponent(entityID, MetaTypeID))
+				if (m_SceneManager.lock()->HasComponent(entityID, MetaTypeID))
 					continue;
 
 				ImGui::PushID(ClassName.c_str());
 
 				if (ImGui::Button(ClassName.c_str(), ImVec2(235, 35)))
-					m_SceneManager->GetEntity(entityID)->AddComponent(MetaTypeID);
+					m_SceneManager.lock()->GetEntity(entityID)->AddComponent(MetaTypeID);
 				ImGui::PopID();
 			}
 		}
@@ -111,9 +111,9 @@ void Inspector::EntityImGui(uint32_t entityID)
 				metaTypeID == Reflection::GetTypeID<Parent>() ||
 				metaTypeID == Reflection::GetTypeID<Children>())
 				continue;
-			if (m_SceneManager->HasComponent(entityID, MetaType.id()))
+			if (m_SceneManager.lock()->HasComponent(entityID, MetaType.id()))
 			{
-				ComponentImGui(m_SceneManager->GetComponent(entityID, metaTypeID));
+				ComponentImGui(m_SceneManager.lock()->GetComponent(entityID, metaTypeID));
 			}
 		}
 	}
@@ -602,8 +602,6 @@ void Inspector::TypeImGui_BoxColliderInfo(entt::meta_data memberMetaData, Compon
 
 	ImGui::PushID(memberName.c_str());
 	ImGui::Text("Box colliderInfo");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	ImGui::Checkbox("UseAABB?", &tempBoxColliderInfo.UseAABB);
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	ImGui::DragFloat3("Extent", &tempBoxColliderInfo.Extent.x, 0.1f,0.1f);
 	if (tempBoxColliderInfo.Extent.x <= 0)

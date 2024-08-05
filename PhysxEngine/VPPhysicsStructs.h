@@ -57,7 +57,7 @@ namespace VPPhysics
 		}
 
 		VPMath::Vector3 Gravity{};
-		int FrameRate = 60;
+		uint32_t FrameRate = 60;
 		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
 	};
 	struct ConvexMeshResourceInfo
@@ -122,22 +122,22 @@ namespace VPPhysics
 		uint32_t EntityID = noneID;
 		VPMath::Vector3	WorldLocation = {};
 		VPMath::Quaternion	WorldQuaternion = {};
+		VPMath::Vector3 WorldScale{};
 		bool UseGravity{};
 		std::array<bool, 3> LinearLock{};
 		std::array<bool, 3> AngleLock{};
 		VPMath::Vector3 OffSet = {};
 		float StaticFriction = 1.f;							// 정적 마찰 계수
 		float DynamicFriction = 1.f;						// 동적 마찰 계수
-		float Restitution = 1.f;							// 복원 계수
+		float Restitution = 0.f;							// 복원 계수
 		float Density = 1.f;								// 밀도
 	};
 
 	struct BoxColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo, UseAABB, Extent)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo,  Extent)
 
 		ColliderInfo colliderInfo{};
-		bool UseAABB=false;
 		VPMath::Vector3 Extent = {1,1,1};		// 길이
 	};
 
@@ -153,7 +153,6 @@ namespace VPPhysics
 		ColliderInfo colliderInfo{};
 		std::string FBXName{};
 		std::vector<VPMath::Vector3> Vertexs{};
-		VPMath::Vector3 WorldScale{};
 	};
 	struct CapsuleColliderInfo
 	{

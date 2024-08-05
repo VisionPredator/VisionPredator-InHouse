@@ -14,21 +14,21 @@ public:
     Toolbar();
 
 
-    Toolbar(SceneManager* sceneManager, Physic::IPhysx* physicinterface);
-    ~Toolbar()=default;
+	Toolbar(std::shared_ptr<SceneManager> sceneManager, Physic::IPhysx* physicinterface);
+	~Toolbar() = default;
 
-    void ImGuiRender() override;
-    void Menu();
-    void Help();
-    void Serialize();
-    void Dialog_SaveAs();
-    void PhysicEngineImGui();
-    static bool m_IsPlaying;
-    bool m_IsPause = false;
-   static std::string m_CurrentScenePath;
-   bool m_ShowPhysicSettings{ false };
-    SceneManager* m_SceneManager;
-    Physic::IPhysx* m_PhysicEngine=nullptr;
-    VPPhysics::PhysicsInfo m_phsicsinfo{};
+	void ImGuiRender() override;
+	void Menu();
+	void Help();
+	void Serialize();
+	void Dialog_SaveAs();
+	void PhysicEngineImGui();
+	static bool m_IsPlaying;
+	bool m_IsPause = false;
+	static std::string m_CurrentScenePath;
+	bool m_ShowPhysicSettings{ false };
+	std::weak_ptr<SceneManager> m_SceneManager;
+	Physic::IPhysx* m_PhysicEngine = nullptr;
+	VPPhysics::PhysicsInfo m_phsicsinfo{};
 };
 

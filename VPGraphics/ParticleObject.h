@@ -19,20 +19,20 @@ public:
 public:
 	struct PerFrame
 	{
-		DirectX::SimpleMath::Matrix ViewProj;
-		DirectX::SimpleMath::Vector3 EyePosW;
+		VPMath::Matrix ViewProj;
+		VPMath::Vector3 EyePosW;
 		float GameTime;
-		DirectX::SimpleMath::Vector3 EmitPosW;
+		VPMath::Vector3 EmitPosW;
 		float TimeStep;
-		DirectX::SimpleMath::Vector3 EmitDirW;
+		VPMath::Vector3 EmitDirW;
 		float Unused;
 	};
 
 	struct ParticleVertex
 	{
-		DirectX::SimpleMath::Vector3 InitialPos;
-		DirectX::SimpleMath::Vector3 InitialVel;
-		DirectX::SimpleMath::Vector2 Size;
+		VPMath::Vector3 InitialPos;
+		VPMath::Vector3 InitialVel;
+		VPMath::Vector2 Size;
 		float Age;
 		unsigned int Type;
 	};
@@ -81,8 +81,8 @@ private:
 	// 수치 조절용
 	effect::ParticleInfo m_Info;
 	// TODO 아래 것도 교체좀.
-	DirectX::SimpleMath::Vector3 m_EyePosW = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-	DirectX::SimpleMath::Vector3 m_EmitPosW = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-	DirectX::SimpleMath::Vector3 m_EmitDirW = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+	VPMath::Vector3 m_EyePosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
+	VPMath::Vector3 m_EmitPosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
+	VPMath::Vector3 m_EmitDirW = VPMath::Vector3(0.0f, 1.0f, 0.0f);
 };
 

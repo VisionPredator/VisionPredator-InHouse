@@ -1,6 +1,6 @@
 #pragma once
 #include "VPPhysicsStructs.h"
-#include "../VPEngine/EventSubscriber.h"
+#include "EventSubscriber.h"
 class CollisionManager;
 class RigidBody;
 using namespace VPPhysics;
@@ -14,6 +14,7 @@ public:
 	~RigidBodyManager();
 	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene, std::shared_ptr<PhysichResourceManager> resourceManager);
 	void Update();
+	void EndScene();
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const VPPhysics::PhysicsInfo& engininfo );
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);

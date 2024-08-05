@@ -8,7 +8,8 @@
 #include "CollisionCallback.h"
 #include "PhysichResourceManager.h"
 #include "Controller.h"
-#include "../VPEngine/EventManager.h"
+#include "EventManager.h"
+#include "CollisionManager.h"
 #include <iostream>
 /// <summary>
 /// 충돌 콜백 함수
@@ -76,6 +77,7 @@ bool PhysxEngine::Initialize()
 	m_RigidBodyManager = std::make_shared<RigidBodyManager>();
 	m_ControllerManager =std::make_shared<ControllerManager>();
 	m_RecourceManager= std::make_shared<PhysichResourceManager>();
+	m_CollisionManager = std::make_shared<CollisionManager>();
 	m_Physics->Initialize();
 	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
@@ -91,7 +93,6 @@ bool PhysxEngine::Initialize()
 	sceneDesc.solverType = physx::PxSolverType::ePGS;
 	m_PxScene = physics->createScene(sceneDesc);
 	m_RecourceManager->Initialize(m_Physics->GetPxPhysics());
-
 	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_RecourceManager);
 	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager.get());
 #ifdef _DEBUG
@@ -109,24 +110,10 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
-	m_ElapsedTime += deltatime;
-	m_UpdateTime = (1.f / GetPhysicsInfo().FrameRate);
-	bool IsUpdated = false;
-	while (m_ElapsedTime >= m_UpdateTime)
-	{
-		IsUpdated = true;
-		m_ControllerManager->Update(m_UpdateTime);
-		SimulateUpdate(m_UpdateTime);
-		m_ElapsedTime -= m_UpdateTime;
-	}
-	if (IsUpdated && m_ElapsedTime > 0)
-	{
-		m_ControllerManager->Update(m_ElapsedTime);
-		SimulateUpdate(m_ElapsedTime);
 
-	}
-
-
+	m_ControllerManager->Update(deltatime);
+	SimulateUpdate(deltatime);
+	m_CollisionManager->Update();
 	/// 충돌 체크 관런
 }
 
@@ -168,6 +155,7 @@ void PhysxEngine::CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexin
 void PhysxEngine::ReleaseActor(uint32_t entityID)
 {
 	m_RigidBodyManager->ReleaseBodyScene(entityID);
+	m_CollisionManager->RemoveEntity(entityID);
 }
 
 void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)
@@ -190,6 +178,12 @@ void PhysxEngine::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexi
 {
 	m_RigidBodyManager->CreateDynamicBody(convexinfo, collidertype, m_PhyiscsInfo);
 
+}
+
+bool PhysxEngine::HasRigidBody(uint32_t entityID)
+{
+	
+	return m_RigidBodyManager->HasRigidBody(entityID);;
 }
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)

@@ -236,7 +236,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			{
 				ProcessVertexBuffer(TextureVertices, curMesh, i);
 
-				DirectX::SimpleMath::Vector3 curPos;
+				VPMath::Vector3 curPos;
 				curPos.x = TextureVertices.back().pos.x;
 				curPos.y = TextureVertices.back().pos.y;
 				curPos.z = TextureVertices.back().pos.z;
@@ -610,17 +610,17 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 		//최종 애니메이션 행렬 연산
 		for (unsigned int j = 0; j < curChannel->mNumRotationKeys; j++)
 		{
-			DirectX::SimpleMath::Matrix rotation{};
-			DirectX::SimpleMath::Matrix translate{};
-			DirectX::SimpleMath::Matrix scale{};
+			VPMath::Matrix rotation{};
+			VPMath::Matrix translate{};
+			VPMath::Matrix scale{};
 
-			translate = DirectX::SimpleMath::Matrix::CreateTranslation(ob_Channel->positionkey[j]->value);
+			translate = VPMath::Matrix::CreateTranslation(ob_Channel->positionkey[j]->value);
 
-			scale = DirectX::SimpleMath::Matrix::CreateScale(ob_Channel->scalingkey[j]->value);
+			scale = VPMath::Matrix::CreateScale(ob_Channel->scalingkey[j]->value);
 
-			rotation = DirectX::SimpleMath::Matrix::CreateFromQuaternion(ob_Channel->rotationkey[j]->rotation);
+			rotation =VPMath::Matrix::CreateFromQuaternion(ob_Channel->rotationkey[j]->rotation);
 
-			DirectX::SimpleMath::Matrix total = scale * rotation * translate;
+			VPMath::Matrix total = scale * rotation * translate;
 
 			ob_Channel->totals.push_back(total);
 		}

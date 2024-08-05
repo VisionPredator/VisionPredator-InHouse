@@ -1,5 +1,4 @@
 #pragma once
-#include "SimpleMath.h"
 #include <d3d11.h>
 
 #pragma region BaseVertex
