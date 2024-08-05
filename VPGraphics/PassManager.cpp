@@ -58,23 +58,22 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 
 void PassManager::Render()
 {
-	DrawIMGUI();
 
 	//deferred
 	m_Passes[PassState::Debug]->Render();
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
-	DrawGBuffer();
-
-
 	m_Passes[PassState::Forward]->Render();
 
+	DrawGBuffer();
+
 	m_ParticlePass->Render();
+	DrawIMGUI();
 }
 
 void PassManager::OnResize()
 {
-	for (auto& pass : m_Passes)
+	for (auto& pass : m_Passes)	
 	{
 		pass.second->OnResize();
 	}
@@ -102,7 +101,7 @@ void PassManager::DrawGBuffer()
 	std::shared_ptr<ShaderResourceView> gBuffer = resourcemanager->Get<ShaderResourceView>(L"GBuffer").lock();
 
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
-	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
+	//std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 	Device->UnBindSRV();
 	Device->BindVS(vs);

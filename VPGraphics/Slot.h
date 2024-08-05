@@ -28,6 +28,7 @@ enum class Slot_T
 	Emissive, 
 	GBuffer,
 	End,
+	Opacity,
 };
 
 

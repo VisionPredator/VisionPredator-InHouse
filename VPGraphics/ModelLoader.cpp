@@ -435,7 +435,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
-		newMaterial->m_Data.useNE.x += true;
+		newMaterial->m_Data.useNEO.x += true;
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
@@ -462,15 +462,18 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		newMaterial->EmissivePath = finalPath;
 		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
-		newMaterial->m_Data.useNE.y += true;
+		newMaterial->EmissivePath = finalPath;
+		newMaterial->m_Data.useNEO.y += true;
 	}
 
 	path = (textureProperties[aiTextureType_OPACITY].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		newMaterial->m_OpacitySRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
+		newMaterial->OpacityPath = finalPath;
+		newMaterial->m_Data.useNEO.z += true;
 		//m_pOpacity = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::OPACITY;
 	}

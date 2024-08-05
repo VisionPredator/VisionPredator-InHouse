@@ -16,9 +16,10 @@
 
 ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
-	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
-	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
+	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
+	//m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
@@ -27,6 +28,7 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 
 	m_state = PassState::Forward;
+	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"DefaultBlending");
 }
 
 ForwardPass::~ForwardPass()
@@ -38,12 +40,17 @@ ForwardPass::~ForwardPass()
 void ForwardPass::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
+	//뭔가 rtv가 달라짐 그래서 다시 받아왔음 왜그러지?
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer").lock();
+
 	std::shared_ptr<DepthStencilView> DSV = m_DSV.lock();
 	std::shared_ptr<RenderTargetView> RTV = m_RTV.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<BlendState> state = m_BlendState.lock();
 
 	Device->UnBindSRV();
-	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
+	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), DSV->Get());
+	Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
 
 	while (!m_RenderDataQueue.empty())
 	{

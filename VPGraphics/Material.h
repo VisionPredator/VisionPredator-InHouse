@@ -18,6 +18,7 @@ public:
 	std::wstring RoughnessPath;
 	std::wstring AOPath;
 	std::wstring EmissivePath;
+	std::wstring OpacityPath;
 
 	std::weak_ptr <ShaderResourceView> m_AlbedoSRV;
 	std::weak_ptr <ShaderResourceView> m_NormalSRV;
@@ -25,6 +26,7 @@ public:
 	std::weak_ptr <ShaderResourceView> m_RoughnessSRV;
 	std::weak_ptr <ShaderResourceView> m_AOSRV;
 	std::weak_ptr <ShaderResourceView> m_EmissiveSRV;
+	std::weak_ptr <ShaderResourceView> m_OpacitySRV;
 
 	MaterialData m_Data;
 

@@ -31,9 +31,12 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         
 
     output.Albedo = input.color;
+       
+    if (AMRO.x > 0)
+    {
+        output.Albedo = gAlbedo.Sample(samLinear, input.tex);
+    }
     
-   
-	
     output.Metalic = 0.04f;
     if (AMRO.y >= 1)
     {
@@ -55,7 +58,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     }
     
     output.Normal = input.normal;
-    if (useNE.x >= 1)
+    if (useNEO.x >= 1)
     {
         float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb;
         NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
@@ -66,14 +69,14 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     }
 	
     output.Emissive = 0;
-    if (useNE.y >= 1)
+    if (useNEO.y >= 1)
     {
         output.Emissive = gEmissive.Sample(samLinear, input.tex);
     }
     
-    if (AMRO.x > 0)
+    if(useNEO.z >= 1)
     {
-        output.Albedo = gAlbedo.Sample(samLinear, input.tex);
+        output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
     
     
