@@ -98,8 +98,11 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 void RenderSystem::RenderUpdate(float deltaTime)
 {
-	THREAD_COMPONENTS(RenderSystem, MeshComponent, &RenderSystem::MeshCompRender);
-
+	//THREAD_COMPONENTS(RenderSystem, MeshComponent, &RenderSystem::MeshCompRender);
+	for (MeshComponent& meshcomp : COMPITER(MeshComponent))
+	{
+		MeshCompRender(meshcomp);
+	}
 
 	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
 	{
@@ -136,19 +139,16 @@ void RenderSystem::RenderUpdate(float deltaTime)
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
 	//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-	RenderData temp;
+	///RenderData  연산자 = 필요합니당~
+	RenderData temp; 
+	temp.EntityID = meshComp.GetEntityID();
+	// Use move semantics to avoid unnecessary copying
+	temp.FBX = std::wstring(meshComp.FBX.begin(), meshComp.FBX.end());
 	auto idComp = meshComp.GetComponent<IDComponent>();
-	temp.EntityID = idComp->GetEntityID();
-	std::wstring FbxName{};
-	std::wstring Name{};
-	FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-	Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
+	temp.Name = std::wstring(idComp->Name.begin(), idComp->Name.end());
 	temp.Filter = meshComp.FBXFilter;
 	temp.world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
-	temp.Name = Name;
-	temp.FBX = FbxName;
 	temp.duration = 0;
-
 	m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 }
 

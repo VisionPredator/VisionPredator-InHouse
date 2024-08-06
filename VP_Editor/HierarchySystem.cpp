@@ -13,7 +13,6 @@ void HierarchySystem::ShowEntitys()
 
 	for (TransformComponent& transcomp :COMPITER(TransformComponent))
 	{
-
 		// 부모가 없으면 루트
 		if (transcomp.HasComponent<Parent>())
 			continue;

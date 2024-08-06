@@ -1,0 +1,168 @@
+{
+  "Entitys": [
+    {
+      "EntityID": 4294914656,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": -10.0
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "Main Camera",
+          "ComponentID": 1365953231
+        }
+      ]
+    },
+    {
+      "EntityID": 4294914648,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": 0.0,
+            "y": 3.0,
+            "z": 0.0
+          },
+          "Local_Quaternion": {
+            "x": 0.408217877,
+            "y": -0.234569684,
+            "z": 0.109381631,
+            "w": 0.8754261
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "Directional Light",
+          "ComponentID": 1365953231
+        }
+      ]
+    },
+    {
+      "EntityID": 4294914344,
+      "Component": [
+        {
+          "Local_Location": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Local_Quaternion": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "Local_Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "ComponentID": 3400599862
+        },
+        {
+          "Name": "GameObject",
+          "ComponentID": 1365953231
+        },
+        {
+          "ColliderType": 1,
+          "ColliderShape": 3,
+          "IsDynamic": false,
+          "BoxInfo": {
+            "Extent": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "SphereInfo": {
+            "Radius": 0.5
+          },
+          "CapsuleInfo": {
+            "HalfHeight": 0.0,
+            "Radius": 0.0
+          },
+          "DefaultColliderInfo": {
+            "AngleLock": [
+              false,
+              false,
+              false
+            ],
+            "Density": 1.0,
+            "DynamicFriction": 1.0,
+            "LinearLock": [
+              false,
+              false,
+              false
+            ],
+            "OffSet": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "PhysicsLayer": 0,
+            "Restitution": 0.0,
+            "StaticFriction": 1.0,
+            "UseGravity": false
+          },
+          "ComponentID": 4217231799
+        },
+        {
+          "FBX": [
+            99,
+            101,
+            114,
+            98,
+            101,
+            114,
+            117,
+            115,
+            46,
+            102,
+            98,
+            120
+          ],
+          "FBXFilter": "Static",
+          "ComponentID": 3774279003
+        }
+      ]
+    }
+  ],
+  "PhysicsInfo": {
+    "CollisionMatrix": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "FrameRate": 60,
+    "Gravity": {
+      "x": 0.0,
+      "y": -9.81,
+      "z": 0.0
+    }
+  }
+}

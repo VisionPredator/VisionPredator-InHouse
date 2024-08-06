@@ -47,7 +47,7 @@ void EditorViewPort::EditingImGui()
 	// RenderMode 버튼 설정
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y);
+	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y+20);
 	ImGui::SetNextWindowPos(childWindowPos);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);

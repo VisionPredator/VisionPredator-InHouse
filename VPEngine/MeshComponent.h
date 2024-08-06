@@ -6,8 +6,10 @@
     {
         MeshComponent() = default;
         VP_JSONBODY(MeshComponent, FBX, FBXFilter)
-        std::string FBX;
+        std::wstring FBX;
         MeshFilter FBXFilter = MeshFilter::Static;
+        //float a;
+        //RenderData RenderData{};
 
     };
 

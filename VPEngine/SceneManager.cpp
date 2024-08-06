@@ -100,9 +100,15 @@ void SceneManager::OnAddChild(std::any data)
 	GetEntity(child)->AddComponent<Parent>(true)->ParentID = parent;
 
 	if (auto children = GetComponent<Children>(parent))
+	{
 		children->ChildrenID.push_back(child);
+	}
 	else
-		GetEntity(parent)->AddComponent<Children>(true)->ChildrenID.push_back(child);
+	{
+		auto entity = GetEntity(parent);
+		auto comp= entity->AddComponent<Children>(true);
+		comp->ChildrenID.push_back(child);
+	}
 
 	EventManager::GetInstance().ImmediateEvent("OnSetParentAndChild", data);
 }
@@ -459,13 +465,13 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 	std::string filePath = std::any_cast<std::string>(data);
 
 	std::ifstream inputFile(filePath);
-	std::vector<std::pair<uint32_t, uint32_t> > entityResettingPair{};
+	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
 
 	if (inputFile.is_open())
 	{
 		nlohmann::json prefabJson;
 		inputFile >> prefabJson;
-		//테스트코드
+		// 테스트코드
 		auto count = prefabJson.size();
 		for (const auto& entityJson : prefabJson)
 		{
@@ -481,7 +487,6 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 				auto metaType = entt::resolve(comp_id);
 				if (metaType)
 				{
-
 					// 메타 타입으로부터 인스턴스를 생성합니다.
 					auto instance = metaType.construct();
 					// 특정 함수를 찾고 호출합니다.
@@ -489,17 +494,18 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 					if (myFunctionMeta)
 					{
 						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity);
-						if (auto compPPtr = result.try_cast<Component*>())
+						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
 							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
-								for (auto& childID : static_cast<Children*> (compPtr)->ChildrenID)
+								for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
 									childID = findOrCreatePair(entityResettingPair, childID).second;
 							else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
 							{
-								Parent* parentComponet = static_cast<Parent*> (compPtr);
+								Parent* parentComponet = static_cast<Parent*>(compPtr.get());
 								parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
 							}
+
 						}
 					}
 					else
@@ -667,7 +673,16 @@ void SceneManager::OnRemoveComponent(std::any data)
 	}
 	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
 
+	// 컴포넌트를 엔티티에서 삭제
 	comp->GetEntity()->ReleaseComponent(comp);
+
+	// 캐시에서 컴포넌트를 삭제
+	auto it = m_ComponentCache.find({ EntityID, CompID });
+	if (it != m_ComponentCache.end())
+	{
+		m_ComponentCache.erase(it);
+	}
+
 	ReleaseCompFromPool(CompID, comp);
 }
 

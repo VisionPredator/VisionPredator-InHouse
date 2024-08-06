@@ -275,7 +275,7 @@ void PhysxEngine::LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo
 	m_RecourceManager->LoadConvexMeshResource(info);
 }
 
-bool PhysxEngine::HasConvexMeshResource(const std::string& key)
+bool PhysxEngine::HasConvexMeshResource(const std::wstring& key)
 {
 	return 	m_RecourceManager->HasConvexMeshResource(key);
 }

@@ -45,23 +45,31 @@ public:
 	template<typename T>
 	T* GetComponent(uint32_t EntityID)
 	{
-		auto entity = GetEntity(EntityID);
-		if (entity)
-		{
-			auto cachedComponent = m_ComponentCache.find({ EntityID, Reflection::GetTypeID<T>() });
-			if (cachedComponent != m_ComponentCache.end())
-			{
-				return static_cast<T*>(cachedComponent->second);
-			}
+		// 캐시된 컴포넌트 ID를 저장하여 반복 호출을 줄임
+			static const auto componentTypeID = Reflection::GetTypeID<T>();
 
-			T* component = entity->GetComponent<T>();
-			if (component)
-			{
-				m_ComponentCache[{EntityID, Reflection::GetTypeID<T>()}] = component;
-			}
-			return component;
+		// 캐시를 먼저 확인
+		auto cachedComponent = m_ComponentCache.find({ EntityID, componentTypeID });
+		if (cachedComponent != m_ComponentCache.end())
+		{
+			return static_cast<T*>(cachedComponent->second);
 		}
-		return nullptr;
+
+		// 엔티티를 가져옴
+		auto entity = GetEntity(EntityID);
+		if (!entity)
+		{
+			return nullptr;
+		}
+
+		// 엔티티에서 컴포넌트를 가져옴
+		T* component = entity->GetComponent<T>();
+		if (component)
+		{
+			// 캐시에 저장
+			m_ComponentCache[{EntityID, componentTypeID}] = component;
+		}
+		return component;
 	}
 
 	Component* GetComponent(uint32_t entityID, entt::id_type compId)

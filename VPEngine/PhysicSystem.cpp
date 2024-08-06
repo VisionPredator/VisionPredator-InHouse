@@ -147,7 +147,9 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 
 			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
 			{
-				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
+				///TODO GetVertices wstring으로
+				std::string temp(convexMeshResourceInfo.FBXName.begin(), convexMeshResourceInfo.FBXName.end());
+				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(temp);
 				if (convexMeshResourceInfo.Vertexs.empty()) {
 					return; // Return null if no vertices were extracted
 				}
@@ -198,7 +200,9 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 
 			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
 			{
-				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
+				///TODO GetVertices wstring으로
+				std::string temp(convexMeshResourceInfo.FBXName.begin(), convexMeshResourceInfo.FBXName.end());
+				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(temp);
 				if (convexMeshResourceInfo.Vertexs.empty()) {
 					return; // Return null if no vertices were extracted
 				}

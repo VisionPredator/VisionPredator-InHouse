@@ -23,8 +23,8 @@ public:
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
 	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	StaticRigidBody* SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
-	DynamicRigidBody* SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
 	bool HasRigidBody(uint32_t EntityID);
@@ -40,7 +40,7 @@ public:
 private:
 	void OnAddBodyScene(std::any data);
 	void OnReleaseBodyScene(std::any data);
-	void AddBodyScene(RigidBody* body);
+	void AddBodyScene(std::shared_ptr<RigidBody> body);
 
 	std::weak_ptr<CollisionManager> m_Collsion;
 

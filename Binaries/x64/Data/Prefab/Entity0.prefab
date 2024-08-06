@@ -1,53 +1,25 @@
 [
     {
-        "EntityID": 298834836,
+        "EntityID": 730531035,
         "Component": [
             {
                 "ComponentID": 1365953231,
                 "Name": "Entity0"
             },
             {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ChildrenID": [
-                    2358318996,
-                    3778004496,
-                    3611471041,
-                    422205171,
-                    1653919189,
-                    697614221,
-                    1534694173,
-                    2146279937,
-                    798184036,
-                    392025789
+                "ComponentID": 3774279003,
+                "FBX": [
+                    115,
+                    97,
+                    100,
+                    102,
+                    32,
+                    97,
+                    115,
+                    100,
+                    102
                 ],
-                "ComponentID": 188567026
-            }
-        ]
-    },
-    {
-        "EntityID": 2358318996,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity1"
+                "FBXFilter": "Static"
             },
             {
                 "ComponentID": 3400599862,
@@ -58,307 +30,15 @@
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 3778004496,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity2"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
                 "Local_Scale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 3611471041,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity3"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 422205171,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity4"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 1653919189,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity5"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 697614221,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity6"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 1534694173,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity7"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 2146279937,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity8"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 798184036,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity9"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
-            }
-        ]
-    },
-    {
-        "EntityID": 392025789,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Entity10"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 298834836
             }
         ]
     }

@@ -62,7 +62,7 @@ namespace VPPhysics
 	};
 	struct ConvexMeshResourceInfo
 	{
-		std::string FBXName{};
+		std::wstring FBXName{};
 		std::vector<VPMath::Vector3> Vertexs{};
 	};
 	/// <summary>
@@ -151,7 +151,7 @@ namespace VPPhysics
 	struct ConvexColliderInfo
 	{
 		ColliderInfo colliderInfo{};
-		std::string FBXName{};
+		std::wstring FBXName{};
 		std::vector<VPMath::Vector3> Vertexs{};
 	};
 	struct CapsuleColliderInfo
