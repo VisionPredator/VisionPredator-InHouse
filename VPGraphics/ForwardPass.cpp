@@ -28,7 +28,7 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 
 	m_state = PassState::Forward;
-	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"DefaultBlending");
+	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"Transparency");
 }
 
 ForwardPass::~ForwardPass()
@@ -54,8 +54,8 @@ void ForwardPass::Render()
 
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
-	//Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
-	//Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);
+	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	Device->Context()->OMSetDepthStencilState(nullptr, 1);
 
 	while (!m_RenderDataQueue.empty())
 	{
@@ -115,6 +115,13 @@ void ForwardPass::Render()
 
 					MaterialData curMaterialData = curMaterial->m_Data;
 					curData->Update(curMaterialData);
+
+					if (curData->m_struct.useNEO.z > 0)
+					{
+						Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
+						Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);
+					}
+					
 
 					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 					{

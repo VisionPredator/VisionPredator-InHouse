@@ -120,12 +120,12 @@ bool GraphicsEngine::Finalize()
 
 void GraphicsEngine::BeginRender()
 {
-	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
-	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 1.f };
-	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 1.f };
-	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 1.f };
-	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
-	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
+	FLOAT Black[4] = { 0.f,0.f,0.f,0.f };
+	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 0.f };
+	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 0.f };
+	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 0.f };
+	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 0.f };
+	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 0.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
@@ -252,6 +252,11 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 		{
 			//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
 			//m_RenderList[EntityID]->Pass = PassState::Forward;
+
+			if (m_RenderList[EntityID]->FBX == L"cctv_lens_low.fbx")
+			{
+				m_RenderList[EntityID]->Pass = PassState::Forward;
+			}
 		}
 		break;
 

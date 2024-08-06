@@ -59,6 +59,7 @@ void ResourceManager::Initialize()
 	{
 		Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
 		Create<BlendState>(L"DefaultBlending", BlendStateType::Default);
+		Create<BlendState>(L"Transparency", BlendStateType::Transparency);
 	}
 
 	//Sampler
