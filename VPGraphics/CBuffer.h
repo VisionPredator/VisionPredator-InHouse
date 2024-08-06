@@ -85,7 +85,7 @@ struct MaterialData
 	}
 
 	DirectX::XMFLOAT4 useAMRO;	//텍스처를 가지고 있는가 albedo, metalic, roughness, AO
-	DirectX::XMFLOAT4 useNEO;	//텍스처를 가지고 있는가 normal, Emissive
+	DirectX::XMFLOAT4 useNEO;	//텍스처를 가지고 있는가 normal, Emissive, opacity
 	DirectX::XMFLOAT4 albedo;
 	float metalness;
 	float roughness;

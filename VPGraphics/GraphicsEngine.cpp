@@ -250,6 +250,8 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
 		case MeshFilter::Static:
 		case MeshFilter::Skinning:
 		{
+			//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
+			//m_RenderList[EntityID]->Pass = PassState::Forward;
 		}
 		break;
 

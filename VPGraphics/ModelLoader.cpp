@@ -45,6 +45,8 @@ void ModelLoader::Initialize()
 	{
 		//디렉토리 없으면 만들기
 		std::filesystem::create_directories(path);
+		std::filesystem::create_directories(path + "SKINNING");
+		std::filesystem::create_directories(path + "STATIC");
 	}
 	else
 	{

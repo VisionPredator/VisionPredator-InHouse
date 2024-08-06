@@ -79,6 +79,6 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
     
-    
     return output;
+    
 }

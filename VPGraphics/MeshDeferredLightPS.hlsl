@@ -1,3 +1,4 @@
+
 #include"Common.hlsli"
 
 struct PS_OUTPUT
@@ -8,6 +9,12 @@ struct PS_OUTPUT
 PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 {
     PS_OUTPUT output;
+    
+    float opacity = 1.0f;
+    if (useNEO.z >= 1)
+    {
+        opacity = gOpacity.Sample(samLinear, input.tex).r;
+    }
     
     float4 position = gPosition.Sample(samLinear, input.tex);   
     float4 N = gNormal.Sample(samLinear, input.tex);
@@ -64,7 +71,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     
     // gamma correct
     result = pow(result, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
-        
+    
     output.Gbuffer = float4(result, 1);
     
     return output;
