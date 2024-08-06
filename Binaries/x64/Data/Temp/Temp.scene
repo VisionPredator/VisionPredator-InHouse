@@ -21,9 +21,9 @@
                     },
                     "ColliderInfo": {
                         "AngleLock": [
-                            false,
-                            false,
-                            false
+                            true,
+                            true,
+                            true
                         ],
                         "Density": 1.0,
                         "DynamicFriction": 1.0,
@@ -68,6 +68,20 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": "cerberus.fbx",
+                    "FBXFilter": "Static"
+                },
+                {
+                    "Accel": 0.5,
+                    "AirControl": 0.0,
+                    "ComponentID": 4183631247,
+                    "HP": 0,
+                    "JumpFoce": 0.0,
+                    "MaxJumpCount": 0,
+                    "Maxspeed": 1.0
                 }
             ]
         },

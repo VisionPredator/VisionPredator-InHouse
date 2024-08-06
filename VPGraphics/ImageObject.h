@@ -12,8 +12,8 @@ class ImageObject
 private:
 	struct ImageVertex
 	{
-		VPMath::Vector3 Position;
-		VPMath::Vector2 TexCoord;
+		DirectX::XMFLOAT4 Position;
+		DirectX::XMFLOAT2 TexCoord;
 	};
 
 	struct ColorCB
@@ -46,8 +46,8 @@ private:
 	ui::ImageInfo m_Info;
 
 	// 화면 사이즈는 UI 매니저가 가지고 잇는게 나을듯.
-	uint32_t m_ScreenWidth = 0;		// 렌더링을 할 정확한 정점 위치가 필요하기 때문에 저장.
-	uint32_t m_ScreenHeight = 0;
+	int m_ScreenWidth = 0;		// 렌더링을 할 정확한 정점 위치가 필요하기 때문에 저장.
+	int m_ScreenHeight = 0;
 	uint32_t m_BitmapWidth = 0;		// 임시
 	uint32_t m_BitmapHeight = 0;	// 임시
 
@@ -57,14 +57,10 @@ private:
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<IndexBuffer> m_IndexBuffer;
 
-	/*
-	 * Constant Buffer
-	 * 이미지의 색상 값을 pixel shader 에 넘겨주기 위해 필요하다.
-	 */
-	std::shared_ptr<ConstantBuffer<ColorCB>> m_ColorCB;	
-
-	int m_vertexCount = 0;
-	int m_indexCount = 0;
+	std::shared_ptr<ConstantBuffer<ColorCB>> m_ColorCB;		// 이미지의 색상 값을 pixel shader 에 넘겨주기 위해 필요하다.
 
 	std::shared_ptr<ShaderResourceView> m_Texture;
+	
+	int m_vertexCount = 0;
+	int m_indexCount = 0;
 };

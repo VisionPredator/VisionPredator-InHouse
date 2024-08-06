@@ -23,9 +23,19 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	m_ScreenWidth = m_Device->GetWndSize().right - m_Device->GetWndSize().left;
 	m_ScreenHeight = m_Device->GetWndSize().bottom - m_Device->GetWndSize().top;
 
+	// 모델의 텍스처 로드
+	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
+		m_Texture = m_ResourceManager->Get<ShaderResourceView>(L"DefaultUI").lock();
+	else
+		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
+
 	// 렌더링할 비트맵의 픽셀의 크기를 저장
 	m_BitmapWidth = m_Texture->GetWidth();
 	m_BitmapHeight = m_Texture->GetHeight();
+
+	// 텍스처 크기는 원본 사이즈로 초기화
+	m_Info.Width = (float)m_BitmapWidth;
+	m_Info.Height = (float)m_BitmapHeight;
 
 	// 이전 렌더링 위치를 음수로 초기화
 	m_PreviousPosX = -1;
@@ -34,11 +44,8 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	// 정점 및 인덱스 버퍼 초기화
 	InitializeBuffers();
 
-	// 모델의 텍스처 로드
-	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
-		m_Texture = m_ResourceManager->Get<ShaderResourceView>(L"DefaultTextureImage").lock();
-	else
-		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
+	// Initialize Constant Buffers
+	m_ColorCB = m_ResourceManager->Create<ConstantBuffer<ColorCB>>(L"ImageColorCB", BufferDESC::Constant::DefaultTransform).lock();
 }
 
 void ImageObject::Render()
@@ -50,9 +57,16 @@ void ImageObject::Render()
 	UINT stride = sizeof(ImageVertex);
 	UINT offset = 0;
 
+	// CB Update;
+	ColorCB alpha;
+	alpha.Color = m_Info.Color;
+	m_ColorCB->Update(alpha);
+
 	m_Device->Context()->IASetVertexBuffers(0, 1, m_VertexBuffer->GetAddress(), &stride, &offset);
 	m_Device->Context()->IASetIndexBuffer(m_IndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
-	m_Device->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_Device->Context()->PSSetShaderResources(0, 1, m_Texture->GetAddress());
+	m_Device->Context()->VSSetConstantBuffers(1, 1, m_ColorCB->GetAddress());
+	m_Device->Context()->DrawIndexed(m_indexCount, 0, 0);
 }
 
 void ImageObject::SetImageInfo(const ui::ImageInfo& info)
@@ -110,10 +124,10 @@ void ImageObject::UpdateBuffers()
 	m_PreviousPosY = m_Info.StartPosY;
 
 	// 비트맵의 좌표 계산
-	left = (float)((m_ScreenWidth / 2) * -1) + (float)m_Info.StartPosX;
-	right = left + (float)m_BitmapWidth;
-	top = (float)(m_ScreenHeight / 2) - (float)m_Info.StartPosY;
-	bottom = top - (float)m_BitmapHeight;
+	left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.StartPosX;
+	right = left + m_Info.Width;
+	top = (float)(m_ScreenHeight / 2) - m_Info.StartPosY;
+	bottom = top - m_Info.Height;
 
 	vertices.resize(m_vertexCount);
 	if (vertices.empty())
@@ -121,18 +135,18 @@ void ImageObject::UpdateBuffers()
 
 	// 동적 정점 배열에 데이터를 로드한다.
 	// 첫 번째 삼각형
-	vertices[0].Position = DirectX::XMFLOAT3(left, top, 0.0f);	// Top left.
+	vertices[0].Position = DirectX::XMFLOAT4(left, top, 0.0f, 1.0f);	// Top left.
 	vertices[0].TexCoord = DirectX::XMFLOAT2(0.0f, 0.0f);
-	vertices[1].Position = DirectX::XMFLOAT3(right, bottom, 0.0f);	// Bottom right.
+	vertices[1].Position = DirectX::XMFLOAT4(right, bottom, 0.0f, 1.0f);	// Bottom right.
 	vertices[1].TexCoord = DirectX::XMFLOAT2(1.0f, 1.0f);
-	vertices[2].Position = DirectX::XMFLOAT3(left, bottom, 0.0f);	// Bottom left.
+	vertices[2].Position = DirectX::XMFLOAT4(left, bottom, 0.0f, 1.0f);	// Bottom left.
 	vertices[2].TexCoord = DirectX::XMFLOAT2(0.0f, 1.0f);
 	// 두 번째 삼각형
-	vertices[3].Position = DirectX::XMFLOAT3(left, top, 0.0f);	// Top left.
+	vertices[3].Position = DirectX::XMFLOAT4(left, top, 0.0f, 1.0f);	// Top left.
 	vertices[3].TexCoord = DirectX::XMFLOAT2(0.0f, 0.0f);
-	vertices[4].Position = DirectX::XMFLOAT3(right, top, 0.0f);	// Top right.
+	vertices[4].Position = DirectX::XMFLOAT4(right, top, 0.0f, 1.0f);	// Top right.
 	vertices[4].TexCoord = DirectX::XMFLOAT2(1.0f, 0.0f);
-	vertices[5].Position = DirectX::XMFLOAT3(right, bottom, 0.0f);	// Bottom right.
+	vertices[5].Position = DirectX::XMFLOAT4(right, bottom, 0.0f, 1.0f);	// Bottom right.
 	vertices[5].TexCoord = DirectX::XMFLOAT2(1.0f, 1.0f);
 
 	// 버텍스 버퍼를 쓸 수 있도록 잠근다.
