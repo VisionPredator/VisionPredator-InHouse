@@ -38,18 +38,6 @@ void PhysicSystem::OnCollisionContact(std::any pair)
 	//auto entity1 =GetSceneManager()->GetEntity(pairid1).get();
 	//auto entity2 =GetSceneManager()->GetEntity(pairid2).get();
 
-	//if (entity1->HasComponent<GeometryComponent>())
-	//{
-	//	auto geoComp = entity1->GetComponent<GeometryComponent>();
-	//	geoComp->color = {1,0,0};
-	//}
-	//if (entity2->HasComponent<GeometryComponent>())
-	//{
-	//	auto geoComp = entity2->GetComponent<GeometryComponent>();
-	//	geoComp->color = { 1,0,0 };
-
-	//}
-
 }
 
 void PhysicSystem::OnCollisionEnter(std::any pair)
@@ -258,60 +246,59 @@ void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
 
 void PhysicSystem::RenderUpdate(float deltaTime)
 {
-	//for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
-	//{
-	//	auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+	debug::OBBInfo obbInfo{};
+	debug::SphereInfo sphereInfo{};
 
-	//	switch (rigidBodyComponent.ColliderShape)
-	//	{
-	//	case VPPhysics::EColliderShape::BOX:
-	//	{
-	//		debug::OBBInfo temp{};
-	//		temp.OBB.Center = rigidTransform->World_Location;
+	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
+	{
+		auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
-
-
-	//		temp.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
-
-	//		temp.xAxisAngle = rigidTransform->World_Rotation.x;
-	//		temp.yAxisAngle = rigidTransform->World_Rotation.y;
-	//		temp.zAxisAngle = rigidTransform->World_Rotation.z;
-	//		m_Graphics->DrawOBB(temp);
+		switch (rigidBodyComponent.ColliderShape)
+		{
+		case VPPhysics::EColliderShape::BOX:
+		{
 
 
-	//	}
-	//	break;
-	//	case VPPhysics::EColliderShape::SPHERE:
-	//	{
-	//		debug::SphereInfo temp{};
-	//		temp.Sphere.Center = rigidTransform->World_Location;
-	//		float maxscle = rigidTransform->World_Scale.GetMaxComponent();
-	//		temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
-	//		m_Graphics->DrawSphere(temp);
-
-	//	}
-	//	break;
-	//	default:
-	//		break;
-	//	}
-
-	//}
-	//for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
-	//{
-	//	auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
-
-	//	debug::OBBInfo temp{};
-	//	temp.OBB.Center = ControllerTransform->World_Location;
-	//	VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
-	//	temp.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
-
-	//	temp.xAxisAngle = 0;
-	//	temp.yAxisAngle = 0;
-	//	temp.zAxisAngle = 0;
-	//	m_Graphics->DrawOBB(temp);
+			obbInfo.OBB.Center = rigidTransform->World_Location;
+			obbInfo.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
+			obbInfo.xAxisAngle = rigidTransform->World_Rotation.x;
+			obbInfo.yAxisAngle = rigidTransform->World_Rotation.y;
+			obbInfo.zAxisAngle = rigidTransform->World_Rotation.z;
+			m_Graphics->DrawOBB(obbInfo);
 
 
-	//}
+		}
+		break;
+		case VPPhysics::EColliderShape::SPHERE:
+		{
+			sphereInfo.Sphere.Center = rigidTransform->World_Location;
+			float maxscle = rigidTransform->World_Scale.GetMaxComponent();
+			sphereInfo.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
+			m_Graphics->DrawSphere(sphereInfo);
+
+		}
+		break;
+		default:
+			break;
+		}
+
+	}
+	for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
+	{
+		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
+
+		debug::OBBInfo obbInfo{};
+		obbInfo.OBB.Center = ControllerTransform->World_Location;
+		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
+		obbInfo.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
+
+		obbInfo.xAxisAngle = 0;
+		obbInfo.yAxisAngle = 0;
+		obbInfo.zAxisAngle = 0;
+		m_Graphics->DrawOBB(obbInfo);
+
+
+	}
 }
 // Function to compute the conjugate of a quaternion
 VPMath::Quaternion QuaternionConjugate(const VPMath::Quaternion& q)
@@ -350,7 +337,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		}
 	}
 
-	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
+	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))						
 	{
 		uint32_t entityID = controllerCompoent.GetEntityID();
 		if (!m_PhysicsEngine->HasRigidBody(entityID))
@@ -384,7 +371,6 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
 		controllerTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(entityID);
 	}
-
-
+	EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 
 }

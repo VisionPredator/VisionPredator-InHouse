@@ -1,25 +1,10 @@
 [
     {
-        "EntityID": 730531035,
+        "EntityID": 1399913804,
         "Component": [
             {
                 "ComponentID": 1365953231,
                 "Name": "Entity0"
-            },
-            {
-                "ComponentID": 3774279003,
-                "FBX": [
-                    115,
-                    97,
-                    100,
-                    102,
-                    32,
-                    97,
-                    115,
-                    100,
-                    102
-                ],
-                "FBXFilter": "Static"
             },
             {
                 "ComponentID": 3400599862,

@@ -69,25 +69,15 @@ public:
     }
 
 private:
-    std::vector<std::shared_ptr<Component>> GetOwnedComponents() const
-    {
-        std::vector<std::shared_ptr<Component>> components;
-        for (const auto& [id, comp] : m_OwnedComp)
-        {
-            components.push_back(comp);
-        }
-        return components;
-    }
 
-
-    std::vector<std::shared_ptr<Component>> GetOwnedComponent()
+    std::vector<std::shared_ptr<Component>> GetOwnedComponents()
     {
-        std::vector<std::shared_ptr<Component>> tempComponentPool;
-        for (auto& component : m_OwnedComp)
+        std::vector<std::shared_ptr<Component>> componentPool;
+        for (auto& [id,component] : m_OwnedComp)
         {
-            tempComponentPool.push_back(component.second);
+            componentPool.push_back(component);
         }
-        return tempComponentPool;
+        return componentPool;
     }
 
     void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
