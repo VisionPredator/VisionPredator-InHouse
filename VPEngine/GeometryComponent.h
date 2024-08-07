@@ -10,7 +10,8 @@ struct GeometryComponent :
 	PassState pass = PassState::GeoMetry;
 	VPMath::Color color{ 1,1,1 };
 	bool UseTexture = false;
-	std::string  TextureName;
+	std::wstring  TextureName;
+	std::shared_ptr<RenderData> Renderdata;
 
 };
 

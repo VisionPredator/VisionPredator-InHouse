@@ -1,7 +1,7 @@
 {
     "Entitys": [
         {
-            "EntityID": 730531035,
+            "EntityID": 1095884436,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -25,20 +25,6 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": [
-                        84,
-                        101,
-                        115,
-                        116,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "FBXFilter": "Static"
                 }
             ]
         }

@@ -12,6 +12,7 @@ struct RigidBodyComponent :
     VPPhysics::BoxColliderInfo BoxInfo{};
     VPPhysics::SphereColliderInfo SphereInfo{};
     VPPhysics::CapsuleColliderInfo CapsuleInfo{};
+    VPPhysics::ConvexColliderInfo ConvexColliderInfo{};
     VPPhysics::ColliderInfo DefaultColliderInfo{};
 
 };

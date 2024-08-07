@@ -27,6 +27,8 @@ public:
 	void Finish(uint32_t EntityID) override;
 	void Finalize() override;
 	void CreateRigidBody(uint32_t EntityID);
+	void CreateStatic(RigidBodyComponent* staticbody);
+	void CreateDynamic(RigidBodyComponent* dynamicbody);
 	void CreateCapsuleController(uint32_t EntityID);
 	void ReleaseRigidBody(uint32_t EntityID);
 	void ReleaseCapsuleController(uint32_t EntityID);

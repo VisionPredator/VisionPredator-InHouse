@@ -17,6 +17,7 @@ public:
 
     void MeshCompRender(MeshComponent& Comp);
     void SkincompRender(SkinningMeshComponent& Comp);
+    void GeometryRender(GeometryComponent& Comp);
 
 };
 

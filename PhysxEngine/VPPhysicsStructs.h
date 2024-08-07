@@ -152,7 +152,7 @@ namespace VPPhysics
 	{
 		ColliderInfo colliderInfo{};
 		std::wstring FBXName{};
-		std::vector<VPMath::Vector3> Vertexs{};
+		//std::vector<VPMath::Vector3> Vertexs{};
 	};
 	struct CapsuleColliderInfo
 	{
