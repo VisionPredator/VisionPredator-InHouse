@@ -3,6 +3,15 @@
 #include "Entity.h"
 #include "Components.h"
 #include "EventSubscriber.h"
+struct PrefabData
+{
+	std::string prefabname;
+	VPMath::Vector3 pos;
+	VPMath::Vector3 direction;
+	VPMath::Vector3 scale;
+};
+
+
 class SceneManager :public EventSubscriber
 {
 public:
@@ -13,9 +22,11 @@ public:
 	// 엔티티를 삭제한다.
 	void DeleteEntity(uint32_t entityID);
 
-
+	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 direction = {0,0,1}, VPMath::Vector3 scele = { 1,1,1 });
+	void OnSpawnPrefab(std::any pair);
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
+	
 	/// 해당 json를 Deserialize 한다.
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();
