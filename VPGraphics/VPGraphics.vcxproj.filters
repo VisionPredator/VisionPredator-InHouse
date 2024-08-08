@@ -462,10 +462,10 @@
     <FxCompile Include="ParticleVS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
-    <FxCompile Include="2DSpritePS.hlsl">
+    <FxCompile Include="Sprite2DPS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
-    <FxCompile Include="2DSpriteVS.hlsl">
+    <FxCompile Include="Sprite2DVS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
   </ItemGroup>

@@ -33,15 +33,12 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 	testInfo3.StartPosY = 300.f;
 	testInfo3.Layer = 3;
 	m_UIManager->CreateImageObject(600, testInfo3);
-
-
-	
 #pragma endregion
 
 	m_ImageTransformCB = m_ResourceManager->Create<ConstantBuffer<ImageTransformCB>>(L"ImageTransformCB", BufferDESC::Constant::DefaultTransform).lock();
 
-	m_VertexShader = std::make_shared<VertexShader>(m_Device, L"2DSpriteVS", "main");
-	m_PixelShader = std::make_shared<PixelShader>(m_Device, L"2DSpritePS", "main");
+	m_VertexShader = std::make_shared<VertexShader>(m_Device, L"Sprite2DVS", "main");
+	m_PixelShader = std::make_shared<PixelShader>(m_Device, L"Sprite2DPS", "main");
 }
 
 void UIPass::Render()
@@ -57,14 +54,11 @@ void UIPass::Render()
 
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 
-#pragma region TEST
-	ImageTransformCB test;
-	test.World = VPMath::Matrix::Identity.Transpose();
-	test.View = CameraCB->m_struct.view;
-	//test.View._34 = 6;	// test
-	test.Projection = CameraCB->m_struct.orthoProj;
-	m_ImageTransformCB->Update(test);
-#pragma endregion
+	ImageTransformCB transform;
+	transform.World = VPMath::Matrix::Identity.Transpose();
+	transform.View = CameraCB->m_struct.view;
+	transform.Projection = CameraCB->m_struct.orthoProj;
+	m_ImageTransformCB->Update(transform);
 
 	m_Device->Context()->IASetInputLayout(m_VertexShader->InputLayout());
 	m_Device->Context()->VSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
@@ -79,5 +73,5 @@ void UIPass::Render()
 	m_UIManager->Render();
 
 	// TODO: 2D 렌더링이 완료되었으므로 다시 Z 버퍼 키기
-	m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DisableDepth").lock()->GetState().Get(), 0);
+	m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);
 }
