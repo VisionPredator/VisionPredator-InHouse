@@ -49,13 +49,13 @@ namespace Graphics
 
 		///추가해야할거
 		//엔티티의 데이터가 업데이트 되면 그값을 renderlist의 값에 갱신 시켜줘야하는 함수 근데 이게 맞아? 매번 엔티티마다 이함수를 부를거야? 그건 좀..
-		virtual void UpdateModel(uint32_t EntityID, RenderData& data)abstract;
+		virtual void UpdateModel(uint32_t EntityID)abstract;
 		
 		//카메라의 상태 업데이트
 		virtual void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) abstract;
 
 		//렌더링
-		virtual bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") abstract;
+		virtual bool AddRenderModel(std::shared_ptr<RenderData> data) abstract;
 
 		virtual const double GetDuration(std::wstring name) abstract;
 

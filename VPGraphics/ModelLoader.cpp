@@ -40,50 +40,49 @@ void ModelLoader::Initialize()
 	path = "..\\Data\\FBX\\";
 #endif
 
-		if (!std::filesystem::exists(path))
+	if (!std::filesystem::exists(path))
+	{
+		//디렉토리 없으면 만들기
+		std::filesystem::create_directories(path);
+		std::filesystem::create_directories(path + "SKINNING");
+		std::filesystem::create_directories(path + "STATIC");
+	}
+	else
+	{
+		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
-			//디렉토리 없으면 만들기
-			std::filesystem::create_directories(path);
-		}
-		else
-		{
-
-			//처음에 디렉터리가 없으면 어떻게 처리할지 필요
-			for (const auto& entry : std::filesystem::directory_iterator(path))
+			std::vector<std::string> filelist;
+			std::string filename = std::filesystem::path(entry).filename().string();
+			Filter curFilter;
+			if (filename == "SKINNING")
 			{
-				std::vector<std::string> filelist;
-				std::string filename = std::filesystem::path(entry).filename().string();
-				Filter curFilter;
-				if (filename == "SKINNING")
-				{
-					curFilter = Filter::SKINNING;
-				}
-				else
-				{
-					curFilter = Filter::STATIC;
-				}
-
-				for (const auto& entry2 : std::filesystem::directory_iterator(entry))
-				{
-					std::string filename = std::filesystem::path(entry2).filename().string();
-
-					filelist.push_back(filename);
-				}
-
-				m_ResourceDirectory.insert({ curFilter,filelist });
+				curFilter = Filter::SKINNING;
+			}
+			else
+			{
+				curFilter = Filter::STATIC;
 			}
 
-	//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
-	//멀티 스레드면 참 좋을듯
-	for (auto& dir : m_ResourceDirectory)
-	{
-		for (auto& file : dir.second)
-		{
-			LoadModel(file, dir.first);
-		}
-	}
+			for (const auto& entry2 : std::filesystem::directory_iterator(entry))
+			{
+				std::string filename = std::filesystem::path(entry2).filename().string();
+
+				filelist.push_back(filename);
+			}
+
+			m_ResourceDirectory.insert({ curFilter,filelist });
 		}
 
+		//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
+		//멀티 스레드면 참 좋을듯
+		for (auto& dir : m_ResourceDirectory)
+		{
+			for (auto& file : dir.second)
+			{
+				LoadModel(file, dir.first);
+			}
+		}
+	}
 }
 
 bool ModelLoader::LoadModel(std::string filename, Filter filter)
@@ -427,7 +426,6 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.x += 1;
-
 	}
 	else
 	{
@@ -443,7 +441,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
-		newMaterial->m_Data.useNE.x += true;
+		newMaterial->m_Data.useNEO.x += true;
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
@@ -470,15 +468,18 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
-		newMaterial->EmissivePath = finalPath;
 		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
-		newMaterial->m_Data.useNE.y += true;
+		newMaterial->EmissivePath = finalPath;
+		newMaterial->m_Data.useNEO.y += true;
 	}
 
 	path = (textureProperties[aiTextureType_OPACITY].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		newMaterial->m_OpacitySRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
+		newMaterial->OpacityPath = finalPath;
+		newMaterial->m_Data.useNEO.z += true;
 		//m_pOpacity = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::OPACITY;
 	}

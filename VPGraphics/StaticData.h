@@ -338,7 +338,7 @@ namespace Quad_Deth1
 		//물론 dsv가 있을 경우
 		//z값을 1로하는 이유는 foward를 하는 경우에는 quad(texture)가 깊이값에 의해 덮어 그려버릴수도있다
 
-		static float depth = 1.f;
+		static float depth = 0.99f;
 
 		static QuadVertex Buffer[] = {
 

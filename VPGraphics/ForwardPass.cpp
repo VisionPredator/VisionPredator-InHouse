@@ -13,12 +13,13 @@
 #include "Slot.h"
 #include "StaticData.h"
 #include "DebugDrawManager.h"
+#include "DepthStencilState.h"
 
 ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
-	//m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"IMGUI");
-	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
-	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");
+	//deferred와 같이 쓰려면 deferred를 연산한 곳에 같이 그려야지
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
@@ -27,6 +28,7 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 
 	m_state = PassState::Forward;
+	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
 }
 
 ForwardPass::~ForwardPass()
@@ -38,12 +40,22 @@ ForwardPass::~ForwardPass()
 void ForwardPass::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
+	//뭔가 rtv가 달라짐 그래서 다시 받아왔음 왜그러지?
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer").lock();
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
+
 	std::shared_ptr<DepthStencilView> DSV = m_DSV.lock();
 	std::shared_ptr<RenderTargetView> RTV = m_RTV.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<BlendState> state = m_BlendState.lock();
+	std::shared_ptr<DepthStencilState> depth = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
+
+
 
 	Device->UnBindSRV();
-	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
+	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	Device->Context()->OMSetDepthStencilState(nullptr, 1);
 
 	while (!m_RenderDataQueue.empty())
 	{
@@ -103,6 +115,13 @@ void ForwardPass::Render()
 
 					MaterialData curMaterialData = curMaterial->m_Data;
 					curData->Update(curMaterialData);
+
+					if (curData->m_struct.useNEO.z > 0)
+					{
+						Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
+						Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);
+					}
+					
 
 					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 					{

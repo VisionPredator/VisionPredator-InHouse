@@ -1,3 +1,4 @@
+
 #include"Common.hlsli"
 
 struct PS_OUTPUT
@@ -5,11 +6,41 @@ struct PS_OUTPUT
     float4 Gbuffer : SV_Target0;
 };
 
+float4 calcindirect()
+{
+    //for (int i = 0; i < sampleCount; ++i)
+    //{
+    //// Generate sample direction
+    //    float3 sampleDir = normalize(float3(rand() - 0.5, rand() - 0.5, rand() - 0.5));
+    
+    //// Project sample point
+    //    float3 samplePos = position + sampleDir * radius;
+    
+    //// Fetch the indirect lighting contribution from the sample point
+    //    float3 sampleColor = gAlbedo.Sample(samLinear, samplePos.xy).rgb;
+    //    float3 sampleNormal = normalize(gNormal.Sample(samLinear, samplePos.xy).xyz);
+    
+    //// Simple Lambertian reflection model for indirect light
+    //    float NdotL = max(dot(normal, sampleDir), 0.0);
+    //    indirectLight += sampleColor * NdotL;
+    //}
+    
+    return float4(0,0,0,0);
+
+}
+
+
 PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 {
     PS_OUTPUT output;
     
-    float4 position = gPosition.Sample(samLinear, input.tex);   
+    float opacity = 1.0f;
+    if (useNEO.z >= 1)
+    {
+        opacity = gOpacity.Sample(samLinear, input.tex).r;
+    }
+    
+    float4 position = gPosition.Sample(samLinear, input.tex);
     float4 N = gNormal.Sample(samLinear, input.tex);
     
     float3 result = float3(0, 0, 0);
@@ -39,7 +70,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 
     // Calculate Spot Light    
     for (int k = DirIndex; k < DirIndex + SpotIndex; k++)
-    {        
+    {
         directlight += CalcSpot(array[k], position, V, N.xyz, F0, albedoColor, roughnessValue, metallicValue);
     }
     // Calculate Point Light
@@ -49,7 +80,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 
     }
     
-    indirectlight = albedoColor; //* lightmapvalue;
+    //indirectlight = albedoColor; //* lightmapvalue;
 
     //ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
@@ -64,7 +95,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     
     // gamma correct
     result = pow(result, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
-        
+    
     output.Gbuffer = float4(result, 1);
     
     return output;

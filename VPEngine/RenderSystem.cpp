@@ -24,7 +24,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
 		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
+		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 		return;
 	}
 
@@ -38,7 +38,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
 		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
+		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 
 		return;
 	}
@@ -48,7 +48,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
 		auto IDComp = meshComponent->GetComponent<IDComponent>();
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
+		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
 		return;
 	}	// Particle Object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
@@ -124,7 +124,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		temp.world = GeoComp.GetComponent<TransformComponent>()->WorldTransform;
 		temp.useTexture = GeoComp.UseTexture;
 		temp.textureName = temp.textureName.assign(GeoComp.TextureName.begin(),GeoComp.TextureName.end());
-		m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
+		//m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
 	}
 	for (ParticleComponent& component : COMPITER(ParticleComponent))
 	{
@@ -152,7 +152,7 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 	temp.FBX = FbxName;
 	temp.duration = 0;
 
-	m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
+	//m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
@@ -187,5 +187,5 @@ void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 		}
 	}
 
-	m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
+	//m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
 }

@@ -48,9 +48,9 @@ public:
 	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 
 	/// Model
-	bool AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx = L"") override;
+	bool AddRenderModel(std::shared_ptr<RenderData> data)override;
 	void EraseObject(uint32_t EntityID) override;
-	void UpdateModel(uint32_t EntityID, RenderData& data)override;
+	void UpdateModel(uint32_t EntityID)override;
 	const double GetDuration(std::wstring name) override;
 
 	/// Particle

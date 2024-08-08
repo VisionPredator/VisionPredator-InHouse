@@ -15,7 +15,7 @@ VS_OUTPUT main(VS_INPUT input)
            
     /*
     */
-    if (useNE.x > 0)
+    if (useNEO.x > 0)
     {
         float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
         
@@ -29,8 +29,6 @@ VS_OUTPUT main(VS_INPUT input)
         output.tangent = float4(vTangent.xyz, 0);
         output.bitangent = float4(vBitangent.xyz, 0);        
     }
-    
-   
     
     
     
