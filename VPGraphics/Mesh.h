@@ -17,9 +17,9 @@ public:
 	{}
 
 	std::wstring name;
-	DirectX::SimpleMath::Matrix offsetMatrix;
-	DirectX::SimpleMath::Matrix offsetMatrixInverse;
-	DirectX::SimpleMath::Matrix NodeMatrix;
+	VPMath::Matrix offsetMatrix;
+	VPMath::Matrix offsetMatrixInverse;
+	VPMath::Matrix NodeMatrix;
 	int Boneindex;
 	int vertexid;
 	float weight;

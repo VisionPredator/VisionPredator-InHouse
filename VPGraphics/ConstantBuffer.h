@@ -14,6 +14,9 @@ public:
 	ConstantBuffer(std::shared_ptr<Device> device);
 	ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc);
 	ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data);
+
+	//ConstantBuffer(const std::shared_ptr<Device>& device, )
+
 	~ConstantBuffer();
 
 	virtual void Release() override;

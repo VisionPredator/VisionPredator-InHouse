@@ -21,7 +21,6 @@
 #pragma region Util
 #include "Camera.h"
 #include "Desc.h"
-#include "SimpleMath.h"
 #include "VertexData.h"
 #include "StaticData.h"
 #include "ModelData.h"
@@ -37,6 +36,7 @@
 #include "DebugDrawManager.h"
 #include "ParticleManager.h"
 #include "TimeManager.h"
+#include "UIManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -44,6 +44,8 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 #pragma endregion IMGUI
+
+#include <memory>
 
 #include "Animation.h"
 GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
@@ -85,7 +87,10 @@ bool GraphicsEngine::Initialize()
 	m_ParticleManager = std::make_shared<ParticleManager>();
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager);
+	m_UIManager = std::make_shared<UIManager>();
+	m_UIManager->Initialize(m_Device, m_ResourceManager);
+
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager, m_UIManager);
 	m_PassManager->Initialize();
 
 	OnResize(m_hWnd);
@@ -120,12 +125,12 @@ bool GraphicsEngine::Finalize()
 
 void GraphicsEngine::BeginRender()
 {
-	FLOAT Black[4] = { 0.f,0.f,0.f,0.f };
-	const DirectX::SimpleMath::Color white = { 1.f, 1.f, 1.f, 0.f };
-	const DirectX::SimpleMath::Color red = { 1.f, 0.f, 0.f, 0.f };
-	const DirectX::SimpleMath::Color green = { 0.f, 1.f, 0.f, 0.f };
-	const DirectX::SimpleMath::Color blue = { 0.f, 0.f, 1.f, 0.f };
-	const DirectX::SimpleMath::Color gray = { 0.5f, 0.5f, 0.5f, 0.f };
+	FLOAT Black[4] = { 0.f,0.f,0.f,1.f };
+	const VPMath::Color white = { 1.f, 1.f, 1.f, 1.f };
+	const VPMath::Color red = { 1.f, 0.f, 0.f, 1.f };
+	const VPMath::Color green = { 0.f, 1.f, 0.f, 1.f };
+	const VPMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
+	const VPMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
@@ -174,29 +179,29 @@ void GraphicsEngine::EraseObject(uint32_t EntityID)
 	}
 }
 
-void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj)
 {
 	m_View = view;
 	m_Proj = proj;
 	m_ViewProj = view * proj;
 
-	DirectX::XMFLOAT4X4 cb_worldviewproj;
-	DirectX::XMFLOAT4X4 cb_view;
-	DirectX::XMFLOAT4X4 cb_proj;
-	DirectX::XMFLOAT4X4 cb_viewInverse;
-	DirectX::XMFLOAT4X4 cb_projInverse;
+	VPMath::Matrix cb_worldviewproj;
+	VPMath::Matrix cb_view;
+	VPMath::Matrix cb_proj;
+	VPMath::Matrix cb_viewInverse;
+	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
 	//상수 버퍼는 계산 순서때문에 전치한다
-	XMStoreFloat4x4(&cb_worldviewproj, XMMatrixTranspose(m_ViewProj));
-	XMStoreFloat4x4(&cb_view, XMMatrixTranspose(m_View));
-	XMStoreFloat4x4(&cb_proj, XMMatrixTranspose(m_Proj));
+	cb_worldviewproj = m_ViewProj.Transpose();
+	cb_view = m_View.Transpose();
+	cb_proj = m_Proj.Transpose();
 
-	DirectX::XMMATRIX viewInverse = XMMatrixInverse(nullptr, view);
-	XMStoreFloat4x4(&cb_viewInverse, XMMatrixTranspose(viewInverse));
+	VPMath::Matrix viewInverse = view.Invert();
+	cb_viewInverse = viewInverse.Transpose();
 
-	DirectX::XMMATRIX projInverse = XMMatrixInverse(nullptr, proj);
-	XMStoreFloat4x4(&cb_projInverse, XMMatrixTranspose(projInverse));
+	VPMath::Matrix projInverse = proj.Invert();
+	cb_projInverse = projInverse.Transpose();
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -204,6 +209,7 @@ void GraphicsEngine::SetCamera(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Camera.lock()->m_struct.viewInverse = cb_viewInverse;
 	Camera.lock()->m_struct.projInverse = cb_projInverse;
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
+	Camera.lock()->m_struct.orthoProj = orthoProj;
 	Camera.lock()->Update();
 }
 
@@ -354,18 +360,18 @@ ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 	return m_ResourceManager->Get<ShaderResourceView>(name).lock()->Get();
 }
 
-std::vector<DirectX::SimpleMath::Vector3> GraphicsEngine::GetVertices(std::wstring fbx)
+std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
 {
-	std::weak_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx);
+	std::wstring tempfbx{};
+	tempfbx.assign(fbx.begin(), fbx.end());
+	std::weak_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(tempfbx);
 
 	if (curFBX.lock() != nullptr)
 	{
 		return curFBX.lock()->vertices;
 	}
 
-	/// 빌드 때문에 임시로 반환. 수정 요함.
-	std::vector<SimpleMath::Vector3> temp;
-	return temp;
+	return {};
 }
 
 void GraphicsEngine::OnResize(HWND hwnd)

@@ -215,7 +215,7 @@ void DeferredPass::Geometry()
 					}
 					else
 					{
-						renew.local = DirectX::SimpleMath::Matrix::Identity;
+						renew.local = VPMath::Matrix::Identity;
 					}
 
 					XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));

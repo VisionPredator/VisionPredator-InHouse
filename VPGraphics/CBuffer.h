@@ -1,34 +1,36 @@
 #pragma once
-#include "../include/directxtk/SimpleMath.h"
 
 
 struct TransformData
 {
-	TransformData() : world(DirectX::SimpleMath::Matrix::Identity),local(DirectX::SimpleMath::Matrix::Identity),
-		localInverse(DirectX::SimpleMath::Matrix::Identity), worldInverse(DirectX::SimpleMath::Matrix::Identity)
+	TransformData() : world(VPMath::Matrix::Identity),local(VPMath::Matrix::Identity),
+		localInverse(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity)
 	{
 	}
 
-	DirectX::SimpleMath::Matrix world;
-	DirectX::SimpleMath::Matrix local;
+	VPMath::Matrix world;
+	VPMath::Matrix local;
 
-	DirectX::SimpleMath::Matrix localInverse;
-	DirectX::SimpleMath::Matrix worldInverse;
+	VPMath::Matrix localInverse;
+	VPMath::Matrix worldInverse;
 };
 
 struct CameraData
 {
-	DirectX::SimpleMath::Matrix worldviewproj;
-	DirectX::SimpleMath::Matrix view;
-	DirectX::SimpleMath::Matrix proj;
-	DirectX::SimpleMath::Matrix viewInverse;
-	DirectX::SimpleMath::Matrix projInverse;
+	VPMath::Matrix worldviewproj;
+	VPMath::Matrix view;
+	VPMath::Matrix proj;
+	VPMath::Matrix viewInverse;
+	VPMath::Matrix projInverse;
+	VPMath::Matrix orthoProj;	// 이런식으로 데이터를 넣고 싶지 않았는데..
 };
+
+static_assert(sizeof(CameraData) % 16 == 0, "must be align");
 
 struct MatrixPallete
 {
 	//임시로 엄청 넣어놓음
-	DirectX::SimpleMath::Matrix offset[1024];
+		VPMath::Matrix offset[1024];
 };
 
 

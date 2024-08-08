@@ -52,8 +52,8 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 
 	m_TimeManager = new TimeManager;
 	m_PhysicEngine = new PhysxEngine;
-	m_SceneManager = new SceneManager;
-	m_SystemManager = new SystemManager;
+	m_SceneManager =std::make_shared< SceneManager>();
+	m_SystemManager = std::make_shared<SystemManager>();
 	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
@@ -70,13 +70,13 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 
 VPEngine::~VPEngine()
 {
-	delete m_TimeManager;
-	delete m_SceneManager;
-	delete m_SystemManager;
+	m_SceneManager = nullptr;
+	m_SystemManager = nullptr;
 
 	m_Graphics->Finalize();
 	delete m_Graphics;
 	delete m_PhysicEngine;
+	delete m_TimeManager;
 	InputManager::GetInstance().Release();
 }
 void VPEngine::Addsystem()
@@ -105,6 +105,7 @@ void VPEngine::Loop()
 		if (VPEngine::isResize)
 		{
 			m_Graphics->OnResize(m_hWnd);
+			EventManager::GetInstance().ImmediateEvent("OnResize", m_hWnd);
 			VPEngine::isResize = false;
 		}
 

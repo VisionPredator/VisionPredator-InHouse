@@ -5,7 +5,7 @@ class ControllerMovementSystem :
 {
 public:
 
-    ControllerMovementSystem(SceneManager* sceneManager);
+    ControllerMovementSystem(std::shared_ptr<SceneManager> sceneManager);
         ~ControllerMovementSystem()=default;
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;

@@ -6,9 +6,9 @@ class SceneSerializer : public System, public EventSubscriber
 {
 public:
 	using System::System;
-	SceneSerializer(SceneManager* entityManager);
+	SceneSerializer(std::shared_ptr<SceneManager> entityManager);
 	~SceneSerializer();
-	void Initialize(SceneManager* entityManager);
+	void Initialize(std::shared_ptr<SceneManager> entityManager);
 
 	/// æ¿¿ª serialize «’¥œ¥Ÿ.
 	void OnSerializeScene(std::any data);

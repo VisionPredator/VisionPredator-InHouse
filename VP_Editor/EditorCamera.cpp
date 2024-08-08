@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "EditorCamera.h"
-#include "directxtk\SimpleMath.h"
 #include <InputManager.h>
 #include "HierarchySystem.h"
 #include "SceneManager.h"
@@ -14,7 +13,7 @@ float WrapAngle(float angle)
 }
 
 
-EditorCamera::EditorCamera(SceneManager* sceneManager) :m_SceneManager{ sceneManager }
+EditorCamera::EditorCamera(std::shared_ptr<SceneManager> sceneManager) :m_SceneManager{ sceneManager }
 {
 	Initialize();
 }
@@ -32,6 +31,8 @@ void EditorCamera::Initialize()
 	m_farZ = 1000;
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
 
+	// SUMIN_
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(1920.f, 1080.f, m_nearZ, m_farZ);
 }
 
 void EditorCamera::Update(float deltatime)
@@ -176,9 +177,9 @@ void EditorCamera::CalculateCameraTransform()
 
 void EditorCamera::DoubleClicked(float deltatime)
 {
-	if (!m_SceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
+	if (!m_SceneManager.lock()->HasEntity(HierarchySystem::m_SelectedEntityID))
 		return;
-	auto transform = m_SceneManager->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
+	auto transform = m_SceneManager.lock()->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
 
 	if (!HierarchySystem::IsItemDoubleClicked)
 	{

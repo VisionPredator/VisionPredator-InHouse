@@ -8,7 +8,7 @@
 	{
 		float m_ProgressedTime = 0.f;
 		float m_PhysicProgressedTime = 0.f;
-		int m_PhysicsFrame = 60;
+		uint32_t m_PhysicsFrame = 60;
 		int m_FixedFrame = 60;
 		float m_PhysicDeltatime = 1.f / 60.f;
 		float m_FixedDeltatime = 1.f / 60.f;
@@ -17,7 +17,7 @@
 		SystemManager();
 		~SystemManager();
 		void Update(float deltatime);
-		void Initialize(SceneManager* entitymanager,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
+		void Initialize(std::shared_ptr<SceneManager> sceneManger,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
 
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
@@ -42,7 +42,7 @@
 			{
 				return nullptr;
 			}
-			m_Systems.push_back(std::make_unique<T>(m_SceneManager));
+			m_Systems.push_back(std::make_unique<T>(m_SceneManager.lock()));
 
 
 			auto* system = static_cast<T*>(m_Systems.back().get());
@@ -153,6 +153,7 @@
 		void InitializeSystems();
 		void FinalizeSystems();
 
+		void OnSetPhysicUpdateRate(std::any rate);
 		void OnInitializeSystems(std::any data)
 		{
 			InitializeSystems();
@@ -165,7 +166,7 @@
 
 		std::jthread m_JThread1;
 		std::jthread m_JThread2;
-		SceneManager* m_SceneManager = nullptr;
+		std::weak_ptr<SceneManager>m_SceneManager;
 		Physic::IPhysx* m_PhysicEngine=nullptr;
 		Graphics::Interface* m_Graphics = nullptr;
 

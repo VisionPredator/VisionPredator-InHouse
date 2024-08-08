@@ -5,6 +5,3 @@
 
 
 
-	Component::Component()
-	{
-	}

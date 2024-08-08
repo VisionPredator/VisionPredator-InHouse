@@ -45,7 +45,7 @@ public:
 
 	void OnResize(HWND hwnd) override;
 
-	void SetCamera(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
+	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 
 	/// Model
 	bool AddRenderModel(std::shared_ptr<RenderData> data)override;
@@ -78,7 +78,7 @@ public:
 	ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
 
 	///¹°¸®
-	virtual std::vector<DirectX::SimpleMath::Vector3> GetVertices(std::wstring fbx) override;
+	virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) override;
 
 
 protected:
@@ -100,15 +100,16 @@ private:
 	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
+	std::shared_ptr<class UIManager> m_UIManager;
 
 private:
 	HWND m_hWnd;
 	RECT m_wndSize;
 	
 	//camera
-	DirectX::SimpleMath::Matrix m_View;
-	DirectX::SimpleMath::Matrix m_Proj;
-	DirectX::SimpleMath::Matrix m_ViewProj;
+	VPMath::Matrix m_View;
+	VPMath::Matrix m_Proj;
+	VPMath::Matrix m_ViewProj;
 
 	// Pipeline
 	std::shared_ptr<PassManager> m_PassManager;

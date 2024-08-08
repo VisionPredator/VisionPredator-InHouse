@@ -122,7 +122,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -145,7 +145,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -166,10 +166,13 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CollisionCallback.h" />
     <ClInclude Include="ControllerQueryFilterCallback.h" />
+    <ClInclude Include="ConvexMeshResource.h" />
+    <ClInclude Include="PhysichResourceManager.h" />
     <ClInclude Include="DynamicRigidBody.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IPhysx.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PhysicModelLoader.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="PhysxEngine.h" />
@@ -185,6 +188,8 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CollisionCallback.cpp" />
     <ClCompile Include="ControllerQueryFilterCallback.cpp" />
+    <ClCompile Include="ConvexMeshResource.cpp" />
+    <ClCompile Include="PhysichResourceManager.cpp" />
     <ClCompile Include="DynamicRigidBody.cpp" />
     <ClCompile Include="IPhysx.cpp" />
     <ClCompile Include="pch.cpp">
@@ -193,6 +198,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PhysicModelLoader.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="PhysxEngine.cpp" />
@@ -200,6 +206,11 @@
     <ClCompile Include="RigidBodyManager.cpp" />
     <ClCompile Include="VPPhysicsStructs.cpp" />
     <ClCompile Include="StaticRigidBody.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VPCommon\VPCommon.vcxproj">
+      <Project>{43dd310d-9fff-48b4-b088-a7867cb467d5}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

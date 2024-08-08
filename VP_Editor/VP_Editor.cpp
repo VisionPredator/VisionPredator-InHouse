@@ -10,6 +10,7 @@
 #include "HierarchySystem.h"
 #include "EditorViewPort.h"
 #include "LightSystem.h"
+#include "ImGuiFileDialog.h"
 
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
@@ -19,13 +20,13 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
     SetUnityDarkThemeColors();
 	///Imgui Setting
 
-    m_editorcamera = new EditorCamera{m_SceneManager};
-	m_HierarchySystem = new HierarchySystem{m_SceneManager};
-	m_ImGuis.push_back(new Toolbar{ m_SceneManager,m_PhysicEngine });
-	m_ImGuis.push_back(new FolderTool{ m_SceneManager });
-	m_ImGuis.push_back(new Hierarchy{m_SceneManager,m_HierarchySystem});
-	m_ImGuis.push_back(new Inspector{ m_SceneManager,m_HierarchySystem });
-	m_ImGuis.push_back(new EditorViewPort{ m_SceneManager,m_editorcamera, m_Graphics });
+    m_editorcamera = std::make_shared<EditorCamera>(m_SceneManager);
+	m_HierarchySystem = std::make_shared<HierarchySystem>(m_SceneManager);
+	m_ImGuis.push_back(std::make_shared<Toolbar>(m_SceneManager, m_PhysicEngine));
+	m_ImGuis.push_back(std::make_shared<FolderTool>(m_SceneManager));
+	m_ImGuis.push_back(std::make_shared<Hierarchy>(m_SceneManager, m_HierarchySystem));
+	m_ImGuis.push_back(std::make_shared<Inspector>(m_SceneManager, m_HierarchySystem));
+	m_ImGuis.push_back(std::make_shared<EditorViewPort>(m_SceneManager, m_editorcamera, m_Graphics));
 	m_ImGuis.push_back(m_editorcamera);
 	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&VP_Editor::OnPlayButton));
 	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&VP_Editor::OnStopButton));
@@ -35,10 +36,11 @@ VP_Editor::~VP_Editor()
 {
 	for (auto& ImGui : m_ImGuis)
 	{
-		delete ImGui;
+        ImGui.reset();
 	}
 	m_ImGuis.clear();
-	delete    m_HierarchySystem;
+    
+    m_HierarchySystem.reset();
 }
 
 void VP_Editor::Update()
@@ -52,7 +54,7 @@ void VP_Editor::Update()
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
 
-		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj());
+		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
 
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());
@@ -80,7 +82,6 @@ void VP_Editor::Render()
         //    continue;
 		ImGui->ImGuiRender();
 	}
-
 }
 
 void VP_Editor::SetUnityDarkThemeColors()

@@ -7,7 +7,7 @@ enum class BlendStateType
 {
 	Default,
 	AdditiveBlending,
-	Transparency
+	AlphaBlending
 
 };
 

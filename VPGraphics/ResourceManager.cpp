@@ -57,9 +57,9 @@ void ResourceManager::Initialize()
 
 	// Blend State
 	{
+		Create<BlendState>(L"AlphaBlending", BlendStateType::AlphaBlending);
 		Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
 		Create<BlendState>(L"DefaultBlending", BlendStateType::Default);
-		Create<BlendState>(L"Transparency", BlendStateType::Transparency);
 	}
 
 	//Sampler
@@ -117,6 +117,9 @@ void ResourceManager::Initialize()
 #endif
 		//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 		Create<ShaderResourceView>(filePath, L"base.png");
+
+		// Default UI Image
+		Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
 	}
 
 	//RTV

@@ -2,13 +2,13 @@
 #include "Toolbar.h"
 #include "ImGuiFileDialog.h"
 #include "SceneManager.h"
-#include <EventManager.h>
+#include "EventManager.h"
 #include "../PhysxEngine/IPhysx.h"
 bool Toolbar::m_IsPlaying = false;
 Toolbar::Toolbar()
 {
 }
-Toolbar::Toolbar(SceneManager* sceneManager, Physic::IPhysx* physicinterface) :m_SceneManager{ sceneManager }, m_PhysicEngine{ physicinterface }
+Toolbar::Toolbar(std::shared_ptr<SceneManager> sceneManager, Physic::IPhysx* physicinterface) :m_SceneManager{ sceneManager }, m_PhysicEngine{ physicinterface }
 {
 }
 std::string Toolbar::m_CurrentScenePath = {};
@@ -70,7 +70,7 @@ void Toolbar::ImGuiRender()
 	}
 	ImGui::SameLine(ImGui::GetWindowWidth() - 300);
 
-	ImGui::Text("Scene : %s", m_SceneManager->GetSceneName().c_str());
+	ImGui::Text("Scene : %s", m_SceneManager.lock()->GetSceneName().c_str());
 
 
 	ImGui::EndMainMenuBar();
@@ -99,14 +99,14 @@ void Toolbar::ImGuiRender()
 			size_t lastindex = currentFileName.find_last_of(".");
 
 			currentFileNameWithoutExt = currentFileName.substr(0, lastindex);
-			m_SceneManager->SetSceneName(currentFileNameWithoutExt);
+			m_SceneManager.lock()->SetSceneName(currentFileNameWithoutExt);
 
 			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 			filePath += "/";
 
-			filePath += m_SceneManager->GetSceneName();
+			filePath += m_SceneManager.lock()->GetSceneName();
 			filePath += ".scene";
-			m_SceneManager->SceneSerialize(filePath);
+			m_SceneManager.lock()->SceneSerialize(filePath);
 			m_CurrentScenePath = filePath;
 		}
 			// close
@@ -121,7 +121,7 @@ void Toolbar::Menu()
 	if (ImGui::MenuItem("New Scene"))
 	{
 		m_CurrentScenePath.clear();
-		m_SceneManager->OpenNewScene();
+		m_SceneManager.lock()->OpenNewScene();
 	}
 	if (ImGui::MenuItem("Open"))
 	{
@@ -136,7 +136,7 @@ void Toolbar::Menu()
 			Dialog_SaveAs();
 		else
 		{
-			m_SceneManager->SceneSerialize(m_CurrentScenePath);
+			m_SceneManager.lock()->SceneSerialize(m_CurrentScenePath);
 		}
 	}
 	if (ImGui::MenuItem("Save as"))
@@ -170,7 +170,7 @@ void Toolbar::PhysicEngineImGui()
 {
 	if (!m_ShowPhysicSettings) // Show the settings window if the flag is true
 	{
-		m_phsicsinfo = m_SceneManager->GetScenePhysic();
+		m_phsicsinfo = m_SceneManager.lock()->GetScenePhysic();
 		return;
 	}
 	// Static cache for enum members to avoid recomputation
@@ -196,7 +196,16 @@ void Toolbar::PhysicEngineImGui()
 		// 프레임 레이트 편집
 		ImGui::SetNextItemWidth(200.f);
 
-		ImGui::InputInt("Frame Rate", &m_phsicsinfo.FrameRate);
+		int tempFrameRate = static_cast<int>(m_phsicsinfo.FrameRate); // 임시 int 변수에 저장
+
+		if (ImGui::InputInt("Frame Rate", &tempFrameRate)) 
+		{
+			if (tempFrameRate < 1) {
+				tempFrameRate =1; // 음수 값을 0으로 설정
+			}
+			m_phsicsinfo.FrameRate = static_cast<uint32_t>(tempFrameRate); // uint32_t로 변환하여 저장
+		}
+
 
 		// 충돌 매트릭스 편집
 		ImGui::Text("Collision Matrix");
@@ -257,8 +266,9 @@ void Toolbar::PhysicEngineImGui()
 		if (ImGui::Button("Apply"))
 		{
 			// 수정된 정보를 물리 엔진에 설정합니다.
-			m_SceneManager->SetScenePhysic(m_phsicsinfo);
-			m_PhysicEngine->SetPhysicsInfo(m_SceneManager->GetScenePhysic());
+			m_SceneManager.lock()->SetScenePhysic(m_phsicsinfo);
+			m_PhysicEngine->SetPhysicsInfo(m_SceneManager.lock()->GetScenePhysic());
+			EventManager::GetInstance().ImmediateEvent("OnSetPhysicUpdateRate", m_phsicsinfo.FrameRate);
 			m_ShowPhysicSettings = false;
 		}
 	}

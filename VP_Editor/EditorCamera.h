@@ -4,7 +4,7 @@ class SceneManager;
 class EditorCamera:public IImGui
 {
 public: 
-	EditorCamera(SceneManager* sceneManager);
+	EditorCamera(std::shared_ptr<SceneManager> sceneManager);
 	~EditorCamera()=default;
 	void Initialize();
 	void Update(float deltatime);
@@ -19,7 +19,7 @@ public:
 	void ImGuiRender() override;
 	VPMath::Matrix GetView() const { return m_view; }
 	VPMath::Matrix GetProj() const { return m_proj; }
-	
+	VPMath::Matrix GetOrthoProj() const { return m_orthoProj; }	// SUMIN_
 
 private:
 	float m_sensitivity= 0.1f;
@@ -29,6 +29,7 @@ private:
 	float m_farZ = 0.f;
 	VPMath::Matrix m_view;
 	VPMath::Matrix m_proj;
+	VPMath::Matrix m_orthoProj;		// SUMIN_
 	const float m_maxPitch = 89.f; // Convert degrees to radians
 
 	float m_FOV = 0.f;
@@ -52,6 +53,6 @@ private:
 	float m_LerpTime = 0.f;
 
 public:
-	SceneManager* m_SceneManager;
+	std::weak_ptr<SceneManager> m_SceneManager;
 };
 

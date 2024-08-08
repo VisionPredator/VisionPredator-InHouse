@@ -6,7 +6,7 @@ class Hierarchy :
     public IImGui
 {
 public:
-    Hierarchy(SceneManager* scManager, HierarchySystem* hierarchySystem);
+    Hierarchy(std::shared_ptr<SceneManager> scManager, std::shared_ptr<HierarchySystem> hierarchySystem);
 
     // IImGui을(를) 통해 상속됨
     void ImGuiRender() override;
@@ -14,7 +14,7 @@ public:
     Hierarchy() = default;
 private:
 
-    HierarchySystem* m_HierarchySystem; 
-    SceneManager* m_SceneManager;
+    std::weak_ptr<HierarchySystem> m_HierarchySystem;
+    std::weak_ptr<SceneManager> m_SceneManager;
 };
 

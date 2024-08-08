@@ -4,7 +4,6 @@
 
 #include <string>
 
-#include "../directxtk/SimpleMath.h"
 #include<memory>
 
 class Mesh;
@@ -37,8 +36,8 @@ public:
 
 	std::weak_ptr<RenderState>  RS;
 
-
-	std::vector<DirectX::SimpleMath::Vector3> vertices;
+	
+	std::vector<VPMath::Vector3> vertices;
 
 };
 

@@ -11,6 +11,7 @@ ControllerManager::ControllerManager()
 ControllerManager::~ControllerManager()
 {
     m_CharectorMap.clear();
+    
     PX_RELEASE(m_PxControllerManager);
 }
 
@@ -31,7 +32,8 @@ bool ControllerManager::CreatController()
 
 bool ControllerManager::CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo)
 {
-    CapsuleController* capsuleController = new CapsuleController;
+    
+    auto capsuleController = std::make_shared<CapsuleController>();
     //CollisionData* collisionData = new CollisionData;
     capsuleController->Initialize(capsuleinfo,m_PxControllerManager, m_Material, physicsinfo);
     m_CharectorMap.insert(std::make_pair(capsuleController->GetEntityID(), capsuleController));
@@ -47,9 +49,9 @@ bool ControllerManager::Update(float deltatime)
     {
         if (controller ->GetTypeID() == Reflection::GetTypeID<CapsuleController>())
         {
-            CapsuleController* capsuleController = static_cast<CapsuleController*>(controller);
+            CapsuleController* capsuleController = static_cast<CapsuleController*>(controller.get());
 
-            physx::PxControllerCollisionFlags collisionFlags = capsuleController->m_Controller->move(capsuleController->m_Velocity, 0.001f, deltatime, *capsuleController->GetFilters());
+            physx::PxControllerCollisionFlags collisionFlags = capsuleController->m_Controller->move(capsuleController->m_Velocity*deltatime , 0.001f, deltatime, *capsuleController->GetFilters());
 
             if (collisionFlags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
                 capsuleController->SetIsFall(false);
@@ -66,7 +68,6 @@ bool ControllerManager::RemoveController(const unsigned int& id)
     auto controller = m_CharectorMap.find(id);
     if (controller != m_CharectorMap.end())
     {
-        delete controller->second;
         m_CharectorMap.erase(controller);
         return true;
     }
@@ -83,5 +84,5 @@ Controller* ControllerManager::GetController(uint32_t entityID)
 {
 	if (!HasController(entityID))
     return nullptr;
-    return m_CharectorMap[entityID];
+    return m_CharectorMap[entityID].get();
 }

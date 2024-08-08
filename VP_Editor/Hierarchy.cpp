@@ -2,10 +2,10 @@
 #include "Hierarchy.h"
 #include "SceneManager.h"
 #include "HierarchySystem.h"
-#include <EventManager.h>
+#include "EventManager.h"
 #include <InputManager.h>
 
-Hierarchy::Hierarchy(SceneManager* scManager, HierarchySystem* hierarchySystem) : m_SceneManager{ scManager }, m_HierarchySystem{ hierarchySystem }
+Hierarchy::Hierarchy(std::shared_ptr<SceneManager> scManager, std::shared_ptr<HierarchySystem> hierarchySystem) : m_SceneManager{ scManager }, m_HierarchySystem{ hierarchySystem }
 {
 }
 
@@ -26,30 +26,30 @@ void Hierarchy::ImGuiRender()
 	if (isOnHierarchy	&&ImGui::IsMouseClicked(0)
 		)
 	{
-		m_HierarchySystem->m_SelectedEntityID = 0;
+		m_HierarchySystem.lock()->m_SelectedEntityID = 0;
 	}
 
 	if (const ImGuiPayload* payload = ImGui::GetDragDropPayload(); payload && ImGui::IsMouseReleased(0) && isOnHierarchy)
 	{
 		auto move_from = *(const int*)payload->Data;
-		if (m_SceneManager->HasEntity(move_from))
+		if (m_SceneManager.lock()->HasEntity(move_from))
 		{
 
-		m_SceneManager->RemoveParent(move_from);
+		m_SceneManager.lock()->RemoveParent(move_from);
 		}
 	}
 
 
-	if (!m_HierarchySystem->m_IsEntityRClicked &&ImGui::BeginPopupContextWindow())
+	if (!m_HierarchySystem.lock()->m_IsEntityRClicked &&ImGui::BeginPopupContextWindow())
 	{
 		if (ImGui::MenuItem("Create Empty"))
 		{
-			m_SceneManager->CreateEntity();
+			m_SceneManager.lock()->CreateEntity();
 		}
 
 		ImGui::EndPopup();
 	}
-	m_HierarchySystem->ShowEntitys();
+	m_HierarchySystem.lock()->ShowEntitys();
 
 	ImGui::End();
 

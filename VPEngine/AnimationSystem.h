@@ -4,7 +4,7 @@ class AnimationSystem :
 	public System, public EventSubscriber, public IRenderable,public IUpdatable
 {
 public:
-	AnimationSystem(SceneManager* sceneManager);
+	AnimationSystem(std::shared_ptr<SceneManager> sceneManager);
 	~AnimationSystem() = default;
 
 	void OnAddedComponent(std::any data);

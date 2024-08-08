@@ -28,7 +28,7 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 
 	m_state = PassState::Forward;
-	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"Transparency");
+	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
 }
 
 ForwardPass::~ForwardPass()

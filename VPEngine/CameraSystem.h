@@ -5,7 +5,7 @@ class CameraSystem :
     public System, public IRenderable,public EventSubscriber,public ILateUpdatable
 {
 public:
-    CameraSystem(SceneManager* sceneManager);
+    CameraSystem(std::shared_ptr<SceneManager> sceneManager);
     ~CameraSystem() = default;
 
     void OnSetMainCamera(std::any data);
@@ -13,9 +13,13 @@ public:
 
     // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
-    uint32_t m_MainCameraID;
+    uint32_t m_MainCameraID=0;
 
     // ILateUpdatable을(를) 통해 상속됨
     void LateUpdate(float deltaTime) override;
+private:
+    void OnResize(std::any hwnd);
+    float m_Width{};
+    float m_Height{};
 };
 

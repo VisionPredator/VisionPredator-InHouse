@@ -3,10 +3,10 @@
 #include "CameraSystem.h"
 #include "../VPGraphics/IGraphics.h"
 
-CameraSystem::CameraSystem(SceneManager* sceneManager) :System(sceneManager)
+CameraSystem::CameraSystem(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSetMainCamera",CreateSubscriber(&CameraSystem::OnSetMainCamera));
-
+	EventManager::GetInstance().Subscribe("OnResize", CreateSubscriber(&CameraSystem::OnResize));
 }
 
 void CameraSystem::LateUpdate(float deltaTime)
@@ -20,7 +20,7 @@ void CameraSystem::LateUpdate(float deltaTime)
 		IsMainCameraExist = true;
 
 		CameraCalculation(cameracomp);
-		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj);
+		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
 
 		///그런다음 for문 종료하기!
 		break;
@@ -34,6 +34,17 @@ void CameraSystem::LateUpdate(float deltaTime)
 
 	}
 }
+
+void CameraSystem::OnResize(std::any hwnd)
+{
+	auto tempHwnd = std::any_cast<HWND>(hwnd);
+	RECT tempsize{};
+	GetClientRect(tempHwnd, &tempsize);
+
+	m_Width = tempsize.right- tempsize.left;
+	m_Height = tempsize.bottom- tempsize.top;
+}
+
 
 void CameraSystem::OnSetMainCamera(std::any data)
 {
@@ -70,7 +81,7 @@ void CameraSystem::OnSetMainCamera(std::any data)
 
 void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 {
-
+	float ratio = m_Width / m_Height;
 	if (mainCamera.NearZ < 1)
 	{
 		mainCamera.NearZ = 1;
@@ -89,7 +100,8 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 	mainCamera.View = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 	// Calculate projection matrix
 	// Assuming m_ratio, m_FOV, NearZ, and mainCamera.FarZ are properly set
-	mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, mainCamera.Ratio, mainCamera.NearZ, mainCamera.FarZ);
+	mainCamera.Proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(mainCamera.FOV, ratio, mainCamera.NearZ, mainCamera.FarZ);
+	mainCamera.OrthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, mainCamera.NearZ, mainCamera.FarZ);
 }
 
 void CameraSystem::RenderUpdate(float deltaTime)

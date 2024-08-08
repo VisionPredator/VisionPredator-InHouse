@@ -2,7 +2,7 @@
 #include "RenderSystem.h"
 #include "Components.h"
 #include "EventManager.h"
-RenderSystem::RenderSystem(SceneManager* sceneManager)
+RenderSystem::RenderSystem(std::shared_ptr<SceneManager> sceneManager)
 	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&RenderSystem::OnAddedComponent));
@@ -24,7 +24,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
 		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
+		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 		return;
 	}
 
@@ -38,7 +38,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
 		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
+		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
 
 		return;
 	}
@@ -48,7 +48,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
 		auto IDComp = meshComponent->GetComponent<IDComponent>();
 
-		m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
+		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
 		return;
 	}	// Particle Object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
@@ -117,14 +117,14 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		temp.color.z = GeoComp.color.z;
 		temp.color.w = GeoComp.UseTexture;
 
-		IDComponent* idComp = GeoComp.GetComponent<IDComponent>();
+		auto idComp = GeoComp.GetComponent<IDComponent>();
 		temp.EntityID = idComp->GetEntityID();
 		temp.Pass = GeoComp.pass;
 		temp.Filter = GeoComp.FBXFilter;
 		temp.world = GeoComp.GetComponent<TransformComponent>()->WorldTransform;
 		temp.useTexture = GeoComp.UseTexture;
 		temp.textureName = temp.textureName.assign(GeoComp.TextureName.begin(),GeoComp.TextureName.end());
-		m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
+		//m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
 	}
 	for (ParticleComponent& component : COMPITER(ParticleComponent))
 	{
@@ -140,7 +140,7 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
 	//IGraphics::Getinstance().Render(uint32_t, transform, ~~Á¤º¸);
 	RenderData temp;
-	IDComponent* idComp = meshComp.GetComponent<IDComponent>();
+	auto idComp = meshComp.GetComponent<IDComponent>();
 	temp.EntityID = idComp->GetEntityID();
 	std::wstring FbxName{};
 	std::wstring Name{};
@@ -152,12 +152,12 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 	temp.FBX = FbxName;
 	temp.duration = 0;
 
-	m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
+	//m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 {
-	IDComponent* idComp = skinComp.GetComponent<IDComponent>();
+	auto idComp = skinComp.GetComponent<IDComponent>();
 	RenderData temp;
 	temp.EntityID = idComp->GetEntityID();
 	std::wstring FbxName{};
@@ -187,5 +187,5 @@ void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 		}
 	}
 
-	m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
+	//m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
 }

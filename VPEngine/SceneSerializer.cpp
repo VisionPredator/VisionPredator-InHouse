@@ -6,7 +6,7 @@
 #include <iostream>
 #include "Macro\VisPredMacro.h"
 
-SceneSerializer::SceneSerializer(SceneManager* sceneManager) :System(sceneManager)
+SceneSerializer::SceneSerializer(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSerializeScene", CreateSubscriber(&SceneSerializer::OnSerializeScene));
 	EventManager::GetInstance().Subscribe("OnDeSerializeScene", CreateSubscriber(&SceneSerializer::OnDeSerializeScene));
@@ -14,7 +14,7 @@ SceneSerializer::SceneSerializer(SceneManager* sceneManager) :System(sceneManage
 SceneSerializer::~SceneSerializer()
 {
 }
-void SceneSerializer::Initialize(SceneManager* sceneManager)
+void SceneSerializer::Initialize(std::shared_ptr<SceneManager> sceneManager)
 {
 	m_SceneManager = sceneManager;
 }
@@ -41,7 +41,7 @@ void SceneSerializer::OnSerializeScene(std::any data)
 	}
 	///TODO 씬이름으로 json 파일 만들어서 넣기!!
 	try {
-		for (const auto& entityPair : m_SceneManager->GetEntityMap())
+		for (const auto& entityPair : GetSceneManager()->GetEntityMap())
 		{
 			nlohmann::ordered_json entityJson;
 			entityJson["EntityID"] = entityPair.first;
@@ -55,7 +55,7 @@ void SceneSerializer::OnSerializeScene(std::any data)
 			SceneJson["Entitys"].push_back(entityJson);
 		}
 		        // Serialize scene physics data
-        VPPhysics::PhysicsInfo ScenePhysicInfo = m_SceneManager->GetScenePhysic();
+        VPPhysics::PhysicsInfo ScenePhysicInfo = GetSceneManager()->GetScenePhysic();
 
 		nlohmann::json physicsJson = ScenePhysicInfo;
         SceneJson["PhysicsInfo"] = physicsJson;
@@ -108,16 +108,16 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 			for (auto& entityJson : sceneJson["Entitys"])
 			{
 				EventManager::GetInstance().ImmediateEvent("OnDeSerializeEntity", entityJson);
-				m_SceneManager->DeSerializeEntity(entityJson);
+				GetSceneManager()->DeSerializeEntity(entityJson);
 			}
 		}
-		m_SceneManager->SetSceneName(SceneName);
+		GetSceneManager()->SetSceneName(SceneName);
 		// Deserialize and set physics information
 		if (sceneJson.contains("PhysicsInfo"))
 		{
 			VPPhysics::PhysicsInfo ScenePhysicInfo;
 			sceneJson.at("PhysicsInfo").get_to(ScenePhysicInfo);
-			m_SceneManager->SetScenePhysic(ScenePhysicInfo);
+			GetSceneManager()->SetScenePhysic(ScenePhysicInfo);
 		}
 	}
 	catch (const std::exception&)

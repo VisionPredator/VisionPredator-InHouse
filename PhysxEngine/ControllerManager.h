@@ -33,7 +33,7 @@ public:
 
 	bool HasController(uint32_t entityID);
 	Controller* GetController(uint32_t entityID);
-	std::unordered_map<uint32_t, Controller*> m_CharectorMap{};
+	std::unordered_map<uint32_t, std::shared_ptr<Controller> > m_CharectorMap{};
 	physx::PxMaterial* m_Material{};
 
 

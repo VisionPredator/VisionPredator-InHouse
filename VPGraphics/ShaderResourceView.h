@@ -17,8 +17,14 @@ public:
 	ID3D11ShaderResourceView** GetAddress();
 	virtual void Release() override;
 
+	UINT GetWidth() { return m_Width; }
+	UINT GetHeight() { return m_Height; }
+
 private:
 	ID3D11ShaderResourceView* m_view = nullptr;
 	ID3D11Texture2D* m_tex = nullptr;
+
+	UINT m_Width = 0;
+	UINT m_Height = 0;
 };
 

@@ -7,7 +7,7 @@ class TransformSystem :
 	public System, public IUpdatable, public EventSubscriber
 {
 public:
-	TransformSystem(SceneManager* entityManager);
+	TransformSystem(std::shared_ptr<SceneManager> entityManager);
 	~TransformSystem() override = default;
 
 

@@ -9,13 +9,14 @@
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
+		EventManager::GetInstance().Subscribe("OnSetPhysicUpdateRate", CreateSubscriber(&SystemManager::OnSetPhysicUpdateRate));
+
 		m_FixedDeltatime = 1.f / m_FixedFrame;
 		m_PhysicDeltatime= 1.f / m_PhysicsFrame;
 
 	}
 	SystemManager::~SystemManager()
 	{
-		m_SceneManager = nullptr;
 		m_PhysicEngine = nullptr;
 		m_Graphics = nullptr;
 		m_FixedUpdatables.clear();
@@ -27,7 +28,6 @@
 	}
 	void SystemManager::PhysicUpdatable(float deltatime)
 	{
-
 		m_PhysicProgressedTime += deltatime;
 		while (m_PhysicProgressedTime > m_PhysicDeltatime)
 		{
@@ -79,9 +79,9 @@
 
 
 
-	void SystemManager::Initialize(SceneManager* entitymanager, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
+	void SystemManager::Initialize(std::shared_ptr<SceneManager> sceneManger, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
 	{
-		m_SceneManager = entitymanager;
+		m_SceneManager = sceneManger;
 		m_Graphics = GraphicsInterface;
 		m_PhysicEngine = physicInterface;
 	}
@@ -97,6 +97,12 @@
 	{
 		for (auto startable : m_Startables)
 			startable->Finalize();
+	}
+
+	void SystemManager::OnSetPhysicUpdateRate(std::any rate)
+	{
+		m_PhysicsFrame = std::any_cast<uint32_t>(rate);
+		m_PhysicDeltatime = 1.f / m_PhysicsFrame;
 	}
 
 

@@ -3,7 +3,7 @@
 class HierarchySystem :public System
 {
 public:
-	HierarchySystem(SceneManager* sceneManager);
+	HierarchySystem(std::shared_ptr<SceneManager> sceneManager);
 	void ShowEntitys();
 	~HierarchySystem() override = default;
 

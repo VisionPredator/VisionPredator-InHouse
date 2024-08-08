@@ -22,12 +22,12 @@ public:
 	inline uint32_t GetEntityID();
 	inline physx::PxControllerFilters* GetFilters();
 	uint32_t m_EntityID;
-	physx::PxFilterData* m_FilterData{};
 	physx::PxController* m_Controller{};
 	VPPhysics::EPhysicsLayer m_LayerNum{};
 	physx::PxMaterial* m_Material{};
-	ControllerQueryFilterCallback* m_ControllerQueryFilterCallback{};
-	physx::PxControllerFilters* m_Filters{};
+	std::shared_ptr<PxFilterData> m_FilterData{};
+	std::shared_ptr<ControllerQueryFilterCallback> m_ControllerQueryFilterCallback{};
+	std::shared_ptr<PxControllerFilters> m_Filters;
 
 	physx::PxVec3 m_Velocity{};
 	bool m_IsFall{};
@@ -41,7 +41,7 @@ inline uint32_t Controller::GetEntityID()
 
 inline physx::PxControllerFilters* Controller::GetFilters()
 {
-	return m_Filters;
+	return m_Filters.get();
 }
 inline void Controller::SetIsFall(bool isfall)
 {
@@ -55,10 +55,6 @@ inline bool Controller::GetIsFall()
 inline void Controller::SetVelocity(VPMath::Vector3 velocity)
 {
 	m_Velocity = { velocity .x,velocity .y,velocity .z};
-
-
-
-
 }
 inline VPMath::Vector3 Controller::GetVelocity()
 {

@@ -10,24 +10,21 @@ Controller::Controller()
 Controller::~Controller()
 {
 	PX_RELEASE(m_Controller);
-	delete m_FilterData;
 }
 
 bool Controller::ControllerInit(VPPhysics::ControllerInfo info,physx::PxMaterial* material, VPPhysics::PhysicsInfo physicsinfo)
 {
-	m_LayerNum = info.LayerNumber;
+	//m_LayerNum = info.LayerNumber;
 
 	///TODO : 원인 찾아보기.
-	m_FilterData = new physx::PxFilterData;
+	m_FilterData = std::make_shared<PxFilterData>();
 	m_FilterData->word0 = 0;
-	//m_FilterData->word0 = (int)m_LayerNum;
-	//m_FilterData->word1 = physicsinfo.CollisionMatrix[(int)m_LayerNum];
-	physx::PxFilterData* data = new physx::PxFilterData;
+	std::shared_ptr<physx::PxFilterData> data = std::make_shared<physx::PxFilterData>();
 	data->word0 = (int)m_LayerNum;
 	m_Material = material;
 	data->word1 = physicsinfo.CollisionMatrix[(int)m_LayerNum];
-	m_ControllerQueryFilterCallback = new ControllerQueryFilterCallback(data);
-	m_Filters =new physx::PxControllerFilters(m_FilterData, m_ControllerQueryFilterCallback);
+	m_ControllerQueryFilterCallback = std::make_shared<ControllerQueryFilterCallback>(data);
+	m_Filters = std::make_shared<PxControllerFilters>(m_FilterData.get(), m_ControllerQueryFilterCallback.get());
 	m_EntityID = info.EntityId;
 
 	return true;

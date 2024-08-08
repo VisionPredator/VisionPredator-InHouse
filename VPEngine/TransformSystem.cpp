@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-TransformSystem::TransformSystem(SceneManager* sceneManager)
+TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSetParentAndChild", CreateSubscriber(&TransformSystem::OnSetParentAndChild));
@@ -21,7 +21,7 @@ void TransformSystem::Update(float deltaTime)	///transform update 값을 수정하는 
 	auto b = Reflection::GetTypeID<Children>();
 	std::list<uint32_t> updatelist;
 	///최상단의 Entity 만 기억하기. 근데 뭘로 기억하는게 좋을까 고민해보기.
-	for (TransformComponent& comp : CompIter<TransformComponent>(m_SceneManager))
+	for (TransformComponent& comp : COMPITER(TransformComponent))
 	{
 		if (comp.HasComponent<Parent>())
 			continue;
@@ -32,7 +32,7 @@ void TransformSystem::Update(float deltaTime)	///transform update 값을 수정하는 
 	{
 		uint32_t transformid = updatelist.front();
 
-		TransformComponent* transformcomp = m_SceneManager->GetComponent<TransformComponent>(transformid);
+		TransformComponent* transformcomp = GetSceneManager()->GetComponent<TransformComponent>(transformid);
 
 		CalulateTransform(transformcomp);
 		updatelist.pop_front();
@@ -52,11 +52,11 @@ void TransformSystem::OnSetParentAndChild(std::any Parent_Child)
 {
 	auto [ParentID, ChildID] = std::any_cast<std::pair<uint32_t, uint32_t>>(Parent_Child);
 
-	if (!m_SceneManager->HasEntity(ChildID) || !m_SceneManager->HasEntity(ParentID))
+	if (!GetSceneManager()->HasEntity(ChildID) || !GetSceneManager()->HasEntity(ParentID))
 		return;
-	TransformComponent* childTransform = m_SceneManager->GetComponent<TransformComponent>(ChildID);
+	TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(ChildID);
 
-	TransformComponent* parentTransform = m_SceneManager->GetComponent<TransformComponent>(ParentID);
+	TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(ParentID);
 
 	VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
 	newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
@@ -73,7 +73,7 @@ void TransformSystem::OnRelaseParentAndChild(std::any Child)
 {
 	auto ChildID = std::any_cast<uint32_t>(Child);
 
-	TransformComponent* childTransform = m_SceneManager->GetComponent<TransformComponent>(ChildID);
+	TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(ChildID);
 	childTransform->WorldTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
 
 	Update(0);
@@ -99,7 +99,7 @@ void TransformSystem::CalulateTransform(TransformComponent* transform)
 	///둘다 안 바뀌고, Parent의 위치가 바뀌었는가?
 	else if (transform->HasComponent<Parent>())
 	{
-		TransformComponent parentComponent = *m_SceneManager->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
+		TransformComponent parentComponent = *GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
 		VPMath::Matrix WorldTransform = transform->LocalTransform * parentComponent.WorldTransform;
 		if (transform->WorldTransform != WorldTransform)
 		{
@@ -167,7 +167,7 @@ void TransformSystem::CalulateTransform_World(TransformComponent* transform)
 	// Check if there is a parent and recalculate local transform
 	if (transform->HasComponent<Parent>())
 	{
-		const TransformComponent parentTransform = *m_SceneManager->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
+		const TransformComponent parentTransform = *GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
 		VPMath::Matrix inverseParentWorldTransform = parentTransform.WorldTransform.Invert();
 		transform->LocalTransform = transform->WorldTransform * inverseParentWorldTransform;
 	}
@@ -225,7 +225,7 @@ void TransformSystem::CalulateTransform_Local(TransformComponent* transform)
 	if (transform->HasComponent<Parent>())
 	{
 		const uint32_t parentID = transform->GetComponent<Parent>()->ParentID;
-		const TransformComponent parentTransform = *m_SceneManager->GetComponent<TransformComponent>(parentID);
+		const TransformComponent parentTransform = *GetSceneManager()->GetComponent<TransformComponent>(parentID);
 		transform->WorldTransform = transform->LocalTransform * parentTransform.WorldTransform;
 	}
 	else

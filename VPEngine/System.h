@@ -8,22 +8,21 @@
 #include "../VPGraphics/IGraphics.h"
 #include <thread>
 
-#define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager)
+#define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager.lock())
 
 #define COMPLOOP(ClassName)\
-for(ClassName& comp : COMPITER(ClassName))
-
+for(auto& comp : COMPITER(ClassName))
 
 ///쓰레드를 위한 매크로
 #define THREAD_COMPONENTS(System_Name, ComponentType, Function)                                                                   \
 {                                                                                                                                 \
-    auto task = [](std::vector<std::reference_wrapper<ComponentType>>& components, size_t start, size_t end, System_Name* sys)    \
+    auto task = [](std::vector<std::shared_ptr<ComponentType>>& components, size_t start, size_t end, System_Name* sys)    \
     {                                                                                                                             \
         for (size_t i = start; i < end; ++i)                                                                                      \
-            (sys->*Function)(components[i]);                                                                                      \
+            (sys->*Function)(*components[i]);                                                                                     \
     };                                                                                                                            \
     auto ComponentType##Pool = COMPITER(ComponentType);                                                                           \
-    std::vector<std::reference_wrapper<ComponentType>> components(ComponentType##Pool.begin(), ComponentType##Pool.end());        \
+    std::vector<std::shared_ptr<ComponentType>> components(ComponentType##Pool.begin(), ComponentType##Pool.end());        \
     if (!components.empty())                                                                                                      \
     {                                                                                                                             \
         size_t midPoint = components.size() / 2;                                                                                  \
@@ -43,42 +42,48 @@ for(ClassName& comp : COMPITER(ClassName))
 class System
 {
 public:
-	System(SceneManager* sceneManager) :m_SceneManager(sceneManager) {}
-	virtual ~System() { m_Jthread1 = nullptr; m_Jthread2 = nullptr; }
+    System(std::shared_ptr<SceneManager> sceneManager) : m_SceneManager(sceneManager) {}
+    virtual ~System() { m_Jthread1 = nullptr; m_Jthread2 = nullptr; }
 
-		template<typename T>
-		class CompIter 
-		{
-			SceneManager* m_SceneManager; // sceneManager의 참조 추가
-		public:
-			std::vector<std::reference_wrapper<T>> innerVector;
+    template<typename T>
+    class CompIter
+    {
+        std::weak_ptr<SceneManager> m_SceneManager; // SceneManager의 weak_ptr 추가
+    public:
+        std::vector<std::reference_wrapper<T>> innerVector;
 
-			CompIter(SceneManager* sceneManager) : m_SceneManager(sceneManager) {
-				if (!m_SceneManager) {
-					throw std::runtime_error("sceneManager is not initialized");
-				}
-				auto components = m_SceneManager->GetComponentPool<T>(); // 반환된 벡터를 복사합니다.
-				for (T* comp : components) {
-					innerVector.emplace_back(*comp);
-				}
-			}
+        CompIter(std::shared_ptr<SceneManager> sceneManager) : m_SceneManager(sceneManager)
+        {
+            auto sharedSceneManager = m_SceneManager.lock();
+            if (!sharedSceneManager)
+                throw std::runtime_error("SceneManager is not initialized");
 
-			typename std::vector<std::reference_wrapper<T>>::iterator begin() {
-				return innerVector.begin();
-			}
+            // 컴포넌트 풀에서 참조를 추출하여 벡터에 추가합니다.
+            auto components = sharedSceneManager->GetComponentPool<T>();
+            for (const auto& comp : components)
+            {
+                innerVector.push_back(*comp);
+            }
+        }
 
-			typename std::vector<std::reference_wrapper<T>>::iterator end() {
-				return innerVector.end();
-			}
-		};
+        typename std::vector<std::reference_wrapper<T>>::iterator begin()
+        {
+            return innerVector.begin();
+        }
 
-		inline void SetThread1(std::jthread* thread) { m_Jthread1 = thread; }
-		inline void SetThread2(std::jthread* thread) { m_Jthread2 = thread; }
-		std::jthread& GetThread1() { return *m_Jthread1; }
-		std::jthread& GetThread2() { return *m_Jthread2; }
-	protected:
-		SceneManager* m_SceneManager;
-		std::jthread* m_Jthread1=nullptr;
-		std::jthread* m_Jthread2 = nullptr;
-	};
+        typename std::vector<std::reference_wrapper<T>>::iterator end()
+        {
+            return innerVector.end();
+        }
+    };
+    SceneManager* GetSceneManager() { return m_SceneManager.lock().get(); }
+    inline void SetThread1(std::jthread* thread) { m_Jthread1 = thread; }
+    inline void SetThread2(std::jthread* thread) { m_Jthread2 = thread; }
+    std::jthread& GetThread1() { return *m_Jthread1; }
+    std::jthread& GetThread2() { return *m_Jthread2; }
 
+protected:
+    std::weak_ptr<SceneManager> m_SceneManager;
+    std::jthread* m_Jthread1 = nullptr;
+    std::jthread* m_Jthread2 = nullptr;
+};
