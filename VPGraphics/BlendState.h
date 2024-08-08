@@ -6,7 +6,9 @@
 enum class BlendStateType
 {
 	Default,
-	AdditiveBlending
+	AdditiveBlending,
+	AlphaBlending
+
 };
 
 class BlendState : public Resource

@@ -56,7 +56,6 @@ DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 
 	//??
 	m_States = std::make_unique<CommonStates>(device->Get());
-
 }
 
 DeferredPass::~DeferredPass()
@@ -66,7 +65,6 @@ DeferredPass::~DeferredPass()
 
 void DeferredPass::Render()
 {
-	//m_Device.lock()->Context()->OMSetBlendState(m_States->Opaque(), nullptr, 0xFFFFFFFF);
 	//m_Device.lock()->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
 	//m_Device.lock() ->Context()->RSSetState(m_States->CullNone());
 
@@ -297,7 +295,9 @@ void DeferredPass::Light()
 
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+		//Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
 

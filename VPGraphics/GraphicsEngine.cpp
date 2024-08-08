@@ -36,6 +36,7 @@
 #include "DebugDrawManager.h"
 #include "ParticleManager.h"
 #include "TimeManager.h"
+#include "UIManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -44,9 +45,11 @@
 #include <imgui_impl_dx11.h>
 #pragma endregion IMGUI
 
+#include <memory>
+
 #include "Animation.h"
 GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
-	: m_TimeManager(timeManager), m_hWnd(hWnd), m_wndSize(){
+	: m_TimeManager(timeManager), m_hWnd(hWnd), m_wndSize() {
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -80,11 +83,14 @@ bool GraphicsEngine::Initialize()
 	m_Animator = std::make_shared <Animator>(m_ResourceManager);
 	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
 	m_DebugDrawManager->Initialize(m_Device);
-	
+
 	m_ParticleManager = std::make_shared<ParticleManager>();
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager);
+	m_UIManager = std::make_shared<UIManager>();
+	m_UIManager->Initialize(m_Device, m_ResourceManager);
+
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager, m_UIManager);
 	m_PassManager->Initialize();
 
 	OnResize(m_hWnd);
@@ -152,21 +158,15 @@ void GraphicsEngine::EndRender()
 	m_Device->EndRender();
 }
 
-bool GraphicsEngine::AddRenderModel(MeshFilter mesh, uint32_t EntityID, std::wstring fbx)
+bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 {
-
-	std::shared_ptr<RenderData> newData = std::make_shared<RenderData>();
-	newData->EntityID = EntityID;
-	newData->FBX = fbx;
-	newData->Filter = mesh;
-
-	std::wstring id = std::to_wstring(EntityID);
-	if (newData->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+	std::wstring id = std::to_wstring(data->EntityID);
+	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
 	{
 		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
 	}
 
-	m_RenderList[EntityID] = newData;
+	m_RenderList[data->EntityID] = data;
 
 	return true;
 }
@@ -213,51 +213,45 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	Camera.lock()->Update();
 }
 
-void GraphicsEngine::UpdateModel(uint32_t EntityID, RenderData& data)
+void GraphicsEngine::UpdateModel(uint32_t EntityID)
 {
-	m_RenderList[EntityID]->EntityID = data.EntityID;
-	m_RenderList[EntityID]->Filter = data.Filter;
-	m_RenderList[EntityID]->Name = std::move(data.Name);
-	m_RenderList[EntityID]->FBX = std::move(data.FBX);
-	m_RenderList[EntityID]->world = data.world;
-	m_RenderList[EntityID]->local = data.local;
-	m_RenderList[EntityID]->duration = data.duration;
-	m_RenderList[EntityID]->preDuration = data.preDuration;
-	m_RenderList[EntityID]->isChange = data.isChange;
-	m_RenderList[EntityID]->isPlay = data.isPlay;
-	m_RenderList[EntityID]->curAnimation = std::move(data.curAnimation);
-	m_RenderList[EntityID]->preAnimation = std::move(data.preAnimation);
-
-
-	switch (data.Filter)
+	if (m_RenderList.find(EntityID) != m_RenderList.end())
 	{
-		case MeshFilter::Axis:
-		case MeshFilter::Grid:
+		switch (m_RenderList[EntityID]->Filter)
 		{
-			m_RenderList[EntityID]->Pass = PassState::Debug;
+			case MeshFilter::Axis:
+			case MeshFilter::Grid:
+			{
+				m_RenderList[EntityID]->Pass = PassState::Debug;
 
-		}
-		break;
-
-		case MeshFilter::Box:
-		{
-			m_RenderList[EntityID]->color = data.color;
-			m_RenderList[EntityID]->useTexture = data.useTexture;
-			m_RenderList[EntityID]->textureName = std::move(data.textureName);
-			m_RenderList[EntityID]->Pass = PassState::GeoMetry; 
-		}
-			break;
-		case MeshFilter::Static:
-		case MeshFilter::Skinning:
-		{
-		}
-		break;
-
-		case MeshFilter::None:
+			}
 			break;
 
-		default:
+			case MeshFilter::Box:
+			{
+				m_RenderList[EntityID]->Pass = PassState::GeoMetry;
+			}
 			break;
+			case MeshFilter::Static:
+			case MeshFilter::Skinning:
+			{
+				//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
+				//m_RenderList[EntityID]->Pass = PassState::Forward;
+				m_RenderList[EntityID]->Pass = PassState::Forward;
+
+				if (m_RenderList[EntityID]->FBX == L"cctv_lens_low.fbx")
+				{
+					m_RenderList[EntityID]->Pass = PassState::Forward;
+				}
+			}
+			break;
+
+			case MeshFilter::None:
+				break;
+
+			default:
+				break;
+		}
 	}
 }
 

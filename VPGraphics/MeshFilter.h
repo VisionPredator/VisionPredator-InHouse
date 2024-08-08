@@ -23,7 +23,7 @@ enum class PassState : unsigned int
 	End = 99999
 };
 
-
+//지금 다 섞여있는데 data를 쓰는 기능에따라 나눠서 entity id로 접근해야할듯 덩치가 너무 큼
 struct RenderData
 {
 public:

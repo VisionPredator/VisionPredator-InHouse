@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderPass.h"
+#include "BlendState.h"
 
 class ForwardPass :
     public RenderPass
@@ -12,5 +13,7 @@ public:
 	virtual void OnResize() override;
 
 private:
+	std::weak_ptr<BlendState> m_BlendState;
+
 };
 

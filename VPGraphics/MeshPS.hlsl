@@ -7,6 +7,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float metallicValue;
     float roughnessValue;
     float aoValue;
+    float opacity = 1.0f;
     //수직 입사 시의 반사율 - 비금속이면 0.04 금속이면 metalic RGB 언리얼4는 이렇게 쓴다
     float3 F0 = Fdielectric;
     
@@ -76,7 +77,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         aoValue = 0;
     }
         
-    if(useNE.y > 0)
+    if (useNEO.y > 0)
     {
      emissive = gEmissive.Sample(samLinear, input.tex);    
         
@@ -86,6 +87,10 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         emissive = 0;
     }
     
+    if (useNEO.y > 0)
+    {
+        opacity = gOpacity.Sample(samLinear, input.tex);    
+    }
     
     for (int i = 0; i < DirIndex; i++)
     {
@@ -113,11 +118,11 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 
     
     // HDR tonemapping
-    color = color / (color + float3(1.0, 1.0, 1.0));
+    color = color / (color + float3(1.0, 1.0, 1.0)) + emissive;
     
     // gamma correct
     color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2));
        
-    return float4(color, 1);
+    return float4(color, opacity);
 
 }

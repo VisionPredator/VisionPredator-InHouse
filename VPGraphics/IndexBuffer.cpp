@@ -23,6 +23,24 @@ IndexBuffer::IndexBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc,
 	}
 }
 
+IndexBuffer::IndexBuffer(const std::shared_ptr<Device>& device, const std::vector<unsigned>& indices)
+{
+	D3D11_BUFFER_DESC desc = {};
+	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+	desc.StructureByteStride = 0u;
+	desc.ByteWidth = (UINT)(sizeof(unsigned int) * indices.size());
+
+	D3D11_SUBRESOURCE_DATA data = {};
+	data.pSysMem = indices.data();
+	data.SysMemPitch = 0;
+	data.SysMemSlicePitch = 0;
+
+	device->Get()->CreateBuffer(&desc, &data, &m_buffer);
+}
+
 void IndexBuffer::Update()
 {
 

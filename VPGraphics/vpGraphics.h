@@ -103,6 +103,8 @@ namespace ui
 		float StartPosY = 0.f;
 		float Width = 1.f;
 		float Height = 1.f;
+		uint32_t Layer = 0;		// 이미지 깊이값
+		VPMath::Vector4 Color = { 0.f, 0.f, 0.f, 1.f };	// 이미지 색상. rgba
 	};
 
 	struct TextInfo

@@ -4,22 +4,28 @@
 #include <memory>
 
 #include "ModelData.h"
+
+#pragma region Manager
 #include "ResourceManager.h"
 #include "DebugDrawManager.h"
 #include "ParticleManager.h"
 #include "TimeManager.h"
+#include "UIManager.h"
+#pragma endregion 
 
 #include "ParticlePass.h"
 #include "GeoMetryPass.h"
+#include "UIPass.h"
 
 #include "StaticData.h"
 #include "Slot.h"
 
 PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-	const std::shared_ptr<ParticleManager>& particleManager)
-	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager)
+	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager)
+	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager), m_UIManager(uiManager)
 {
 	m_ParticlePass = std::make_shared<ParticlePass>();
+	m_UIPass = std::make_shared<UIPass>();
 }
 
 PassManager::~PassManager()
@@ -40,7 +46,7 @@ void PassManager::Initialize()
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::GeoMetry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
-
+	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 }
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
@@ -58,23 +64,23 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 
 void PassManager::Render()
 {
-	DrawIMGUI();
 
 	//deferred
 	m_Passes[PassState::Debug]->Render();
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
-	DrawGBuffer();
-
-
 	m_Passes[PassState::Forward]->Render();
 
+	DrawGBuffer();
+
 	m_ParticlePass->Render();
+	m_UIPass->Render();
+	DrawIMGUI();
 }
 
 void PassManager::OnResize()
 {
-	for (auto& pass : m_Passes)
+	for (auto& pass : m_Passes)	
 	{
 		pass.second->OnResize();
 	}
@@ -102,7 +108,7 @@ void PassManager::DrawGBuffer()
 	std::shared_ptr<ShaderResourceView> gBuffer = resourcemanager->Get<ShaderResourceView>(L"GBuffer").lock();
 
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
-	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
+	//std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 	Device->UnBindSRV();
 	Device->BindVS(vs);

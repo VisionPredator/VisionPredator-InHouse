@@ -24,7 +24,7 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
 	m_OffScreenName[9] = L"IMGUI";
-	m_OffScreenName[10] = L"LightMap";
+	m_OffScreenName[10] = L"Opacity";
 	//m_OffScreenName[9] = L"RTV_Main";
 }
 
@@ -57,7 +57,9 @@ void ResourceManager::Initialize()
 
 	// Blend State
 	{
+		Create<BlendState>(L"AlphaBlending", BlendStateType::AlphaBlending);
 		Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
+		Create<BlendState>(L"DefaultBlending", BlendStateType::Default);
 	}
 
 	//Sampler
@@ -115,6 +117,9 @@ void ResourceManager::Initialize()
 #endif
 		//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 		Create<ShaderResourceView>(filePath, L"base.png");
+
+		// Default UI Image
+		Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
 	}
 
 	//RTV
