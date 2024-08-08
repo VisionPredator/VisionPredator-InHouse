@@ -100,6 +100,7 @@ private:
 	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
+	std::shared_ptr<class UIManager> m_UIManager;
 
 private:
 	HWND m_hWnd;

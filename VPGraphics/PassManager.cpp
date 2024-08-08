@@ -4,22 +4,28 @@
 #include <memory>
 
 #include "ModelData.h"
+
+#pragma region Manager
 #include "ResourceManager.h"
 #include "DebugDrawManager.h"
 #include "ParticleManager.h"
 #include "TimeManager.h"
+#include "UIManager.h"
+#pragma endregion 
 
 #include "ParticlePass.h"
 #include "GeoMetryPass.h"
+#include "UIPass.h"
 
 #include "StaticData.h"
 #include "Slot.h"
 
 PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-	const std::shared_ptr<ParticleManager>& particleManager)
-	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager)
+	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager)
+	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager), m_UIManager(uiManager)
 {
 	m_ParticlePass = std::make_shared<ParticlePass>();
+	m_UIPass = std::make_shared<UIPass>();
 }
 
 PassManager::~PassManager()
@@ -40,7 +46,7 @@ void PassManager::Initialize()
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::GeoMetry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
-
+	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 }
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
@@ -70,6 +76,7 @@ void PassManager::Render()
 	m_Passes[PassState::Forward]->Render();
 
 	m_ParticlePass->Render();
+	m_UIPass->Render();
 }
 
 void PassManager::OnResize()

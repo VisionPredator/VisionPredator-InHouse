@@ -274,9 +274,6 @@
     <ClInclude Include="UIManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Bitmap.h">
-      <Filter>GraphicsEngine</Filter>
-    </ClInclude>
     <ClInclude Include="UIPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
@@ -430,9 +427,6 @@
     <ClCompile Include="UIManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Bitmap.cpp">
-      <Filter>GraphicsEngine</Filter>
-    </ClCompile>
     <ClCompile Include="UIPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
@@ -466,6 +460,12 @@
       <Filter>HLSL\PS</Filter>
     </FxCompile>
     <FxCompile Include="ParticleVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="Sprite2DPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="Sprite2DVS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
   </ItemGroup>

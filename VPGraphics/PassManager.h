@@ -15,12 +15,13 @@ class TimeManager;
 class ParticleManager;
 class ModelData;
 class DebugDrawManager;
+class UIManager;
 
 class PassManager
 {
 public:
 	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-		const std::shared_ptr<ParticleManager>& particleManager);
+		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager);
 	~PassManager();
 
 	void Initialize();
@@ -39,13 +40,15 @@ private:
 
 	// юс╫ц
 	std::shared_ptr<ParticlePass> m_ParticlePass;
+	std::shared_ptr<class UIPass> m_UIPass;
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;
 	std::weak_ptr<DebugDrawManager> m_DebugDrawManager;
-
 	std::shared_ptr<ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager = nullptr;
+	std::shared_ptr<UIManager> m_UIManager;
+
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;
 };

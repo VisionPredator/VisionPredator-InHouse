@@ -36,6 +36,7 @@
 #include "DebugDrawManager.h"
 #include "ParticleManager.h"
 #include "TimeManager.h"
+#include "UIManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -43,6 +44,8 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 #pragma endregion IMGUI
+
+#include <memory>
 
 #include "Animation.h"
 GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
@@ -84,7 +87,10 @@ bool GraphicsEngine::Initialize()
 	m_ParticleManager = std::make_shared<ParticleManager>();
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager);
+	m_UIManager = std::make_shared<UIManager>();
+	m_UIManager->Initialize(m_Device, m_ResourceManager);
+
+	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager, m_UIManager);
 	m_PassManager->Initialize();
 
 	OnResize(m_hWnd);
