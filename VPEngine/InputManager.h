@@ -7,40 +7,20 @@
 #include <directxmath.h>
 #pragma comment(lib, "dinput8.lib")
 
-#define INPUTKEYDOWN(KEYENUM) InputManager::GetInstance().NewGetKeyDown(KEYENUM)
-#define INPUTKEY(KEYENUM) InputManager::GetInstance().NewGetKeyHold(KEYENUM)
-#define INPUTKEYUP(KEYENUM) InputManager::GetInstance().NewGetKeyUp(KEYENUM)
-
-enum class KEY_STATE
-{
-	NONE,
-	DOWN,
-	HOLD,
-	UP,
-};
+#define INPUTKEYDOWN(KEYENUM) InputManager::GetInstance().GetKeyDown(KEYENUM)
+#define INPUTKEY(KEYENUM) InputManager::GetInstance().GetKey(KEYENUM)
+#define INPUTKEYUP(KEYENUM) InputManager::GetInstance().GetKeyUp(KEYENUM)
 
 enum class MOUSEKEY
 {
-	LEFT = 0,
-	RIGHT = 1,
-	MIDDLE = 2,
+	LBUTTON = 0,
+	RBUTTON = 1,
+	MBUTTON = 2,
 	BUTTON4 = 3,
 	BUTTON5 = 4
-	// Add more buttons if needed
 };
 
-//enum class BUTTON
-//{
-//	RIGHT_BUTTON,
-//	LEFT_BUTTON,
-//	UP_BUTTON,
-//	DOWN_BUTTON,
-//	FIRE_BUTTON,
-//	RELOAD_BUTTON, 
-//	OPTION_BUTTON,
-//};
-
-enum class NEWKEY
+enum class KEYBOARDKEY
 {
 	ESCAPE = DIK_ESCAPE,
 	NUM1 = DIK_1,
@@ -68,8 +48,8 @@ enum class NEWKEY
 	O = DIK_O,
 	P = DIK_P,
 	LBRACKET = DIK_LBRACKET,
-	RBRACKET = DIK_RBRACKET,
-	RETURN = DIK_RETURN,
+	RBRACKET= DIK_RBRACKET,
+	ENTER = DIK_RETURN,
 	LCONTROL = DIK_LCONTROL,
 	A = DIK_A,
 	S = DIK_S,
@@ -188,50 +168,15 @@ enum class NEWKEY
 	MEDIASELECT = DIK_MEDIASELECT,
 };
 
-
-enum class KEY
-{
-	RIGHT,
-	LEFT,
-	UP,
-	DOWN,
-	A, B, C, D, E,
-	F, G, H, Q, R,
-	S, V, W, X, Z,
-	NUM1, NUM2, NUM3, NUM4, NUM5,
-	SPACE, ENTER, ESC, LSHFIT, LCTRL,
-	LBUTTON, RBUTTON,
-
-	END
-};
-struct KeyInputInfo
-{
-	KEY_STATE KeyState;
-	bool IsPushed;
-};
-
-struct ButtonInfo
-{
-	int key[(int)KEY::END];
-};
-
 class InputManager : public EventSubscriber
 {
-
-	///버튼을 아직 어떻게 만들지 모르겠음.
-	//std::vector<ButtonInfo> m_ButtonInfos;
-
-	
 
 public:
 	InputManager();
 	static InputManager* instance;
-
-
-	void Initialize();
 	~InputManager() = default;
-	bool Initialize(HINSTANCE, HWND, int, int);
-	bool NewUpdate();
+	bool Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight);
+	bool Update();
 	static InputManager& GetInstance()
 	{
 		if (instance == nullptr)
@@ -242,39 +187,29 @@ public:
 	}
 	void Release()
 	{
-		m_KeyInputInfos.clear();
 		Shutdown();
 		delete instance;
 	}
-
-
-	void ProcessMouseInput();
-
-	void CalculateMouseDelta(); // 마우스의 델타 이동을 계산하는 함수
-	void OnSetKeyState(std::any data);
-	void Update();
-	bool GetKey(KEY key);
-	bool GetKeyUp(KEY key);
-	bool GetKeyDown(KEY key);
-	VPMath::Vector2 GetCurPos() const { return m_CurPos; }
-	VPMath::Vector2 GetDeltaCurPos() const { return m_DeltaCurPos; }
-	VPMath::Vector2 m_DeltaCurPos{};
-
 	int GetMouseX() const { return m_mouseX; }
 	int GetMouseY() const { return m_mouseY; }
 	int GetMouseDeltaX() const { return m_mouseDeltaX; }
 	int GetMouseDeltaY() const { return m_mouseDeltaY; }
 	void Shutdown();
 
+	bool GetKeyDown(KEYBOARDKEY inputkey);
+	bool GetKeyUp(KEYBOARDKEY inputkey);
+	bool GetKey(KEYBOARDKEY inputkey);
+	bool GetKeyDown(MOUSEKEY inputkey);
+	bool GetKeyUp(MOUSEKEY inputkey);
+	bool GetKey(MOUSEKEY);
+	bool IsEscapePressed();
+
 private:
 	void CopyKeyStateToPrevious();
 	void CopyMouseStateToPrevious();
-	bool NewGetKeyDown(NEWKEY inputkey);
-	bool NewGetKeyUP(NEWKEY inputkey);
-	bool NewGetKeyHold(NEWKEY inputkey);
-	bool NewGetKeyDown(MOUSEKEY inputkey);
-	bool NewGetKeyUP(MOUSEKEY inputkey);
-	bool NewGetKeyHold(MOUSEKEY );
+	void CalculateMouseDelta(); // 마우스의 델타 이동을 계산하는 함수
+	void ProcessMouseInput();
+
 
 	IDirectInput8* m_directInput = nullptr;
 	IDirectInputDevice8* m_keyboard = nullptr;

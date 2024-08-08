@@ -15,20 +15,20 @@ void PlayerSystem::Update(float deltaTime)
 		{
 			ControllerComponent* controllercomp = comp.GetComponent<ControllerComponent>();
 			controllercomp->InputDir = {};
-			if (INPUTKEY(KEY::W))
+			if (INPUTKEY(KEYBOARDKEY::W))
 			{
 				controllercomp->InputDir += TransformComp->FrontVector;
 			}
-			if (INPUTKEY(KEY::S))
+			if (INPUTKEY(KEYBOARDKEY::S))
 			{
 				controllercomp->InputDir -= TransformComp->FrontVector;
 
 			}
-			if (INPUTKEY(KEY::A))
+			if (INPUTKEY(KEYBOARDKEY::A))
 			{
 				controllercomp->InputDir -= TransformComp->RightVector;
 			}
-			if (INPUTKEY(KEY::D))
+			if (INPUTKEY(KEYBOARDKEY::D))
 			{
 				controllercomp->InputDir += TransformComp->RightVector;
 			}
@@ -38,21 +38,21 @@ void PlayerSystem::Update(float deltaTime)
 
 
 		uint32_t entityID = comp.GetEntityID();
-		if (INPUTKEY(KEY::W))
+		if (INPUTKEY(KEYBOARDKEY::W))
 		{
 			m_PhysicsEngine->AddVelocity(entityID, TransformComp->FrontVector, comp.Accel);
 
 		}		
-		if (INPUTKEY(KEY::S))
+		if (INPUTKEY(KEYBOARDKEY::S))
 		{
 			m_PhysicsEngine->AddVelocity(entityID, -TransformComp->FrontVector, comp.Accel);
 
 		}
-		if (INPUTKEY(KEY::A))
+		if (INPUTKEY(KEYBOARDKEY::A))
 		{
 			m_PhysicsEngine->AddVelocity(entityID, -TransformComp->RightVector, comp.Accel);
 		}
-		if (INPUTKEY(KEY::D))
+		if (INPUTKEY(KEYBOARDKEY::D))
 		{
 			m_PhysicsEngine->AddVelocity(entityID, TransformComp->RightVector, comp.Accel);
 		}

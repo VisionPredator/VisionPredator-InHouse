@@ -708,3 +708,11 @@ void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, 
 	memberMetaData.set(component->GetHandle(), tempCapsuleControllerInfo);
 	ImGui::PopID();
 }
+
+bool Inspector::ShouldSkipComponent(entt::id_type metaTypeID)
+{
+	return metaTypeID == Reflection::GetTypeID<IDComponent>() ||
+		metaTypeID == Reflection::GetTypeID<TransformComponent>() ||
+		metaTypeID == Reflection::GetTypeID<Parent>() ||
+		metaTypeID == Reflection::GetTypeID<Children>();
+}

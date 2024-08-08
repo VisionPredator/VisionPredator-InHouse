@@ -155,7 +155,7 @@ void EditorViewPort::ImGuizmoRender()
 	TransformComponent* transformComp = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 	float* snapValue = nullptr;
 
-	if (InputManager::GetInstance().GetKey(KEY::LCTRL))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::LCONTROL))
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
 	VPMath::Matrix ImGuizmoMatrix = transformComp->WorldTransform;

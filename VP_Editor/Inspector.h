@@ -43,13 +43,8 @@ public:
 	void TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Component* component);
 	void TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component);
 
-    bool ShouldSkipComponent(entt::id_type metaTypeID)
-    {
-        return metaTypeID == Reflection::GetTypeID<IDComponent>() ||
-            metaTypeID == Reflection::GetTypeID<TransformComponent>() ||
-            metaTypeID == Reflection::GetTypeID<Parent>() ||
-            metaTypeID == Reflection::GetTypeID<Children>();
-    }
+    bool ShouldSkipComponent(entt::id_type metaTypeID);
+
 	std::weak_ptr<SceneManager> m_SceneManager;
 	std::weak_ptr<HierarchySystem> m_HierarchySystem;
 

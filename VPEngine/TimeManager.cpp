@@ -22,5 +22,9 @@
 			m_LastFPS = m_FPS;
 			m_FPS = 0;
 		}
+		else 
+		{
+			m_PreviousLastFPS = m_LastFPS;
+		}
 	}
 

@@ -23,27 +23,28 @@ void TestCameraSystem::Update(float deltaTime)
 		VPMath::Vector3 moveDirection{};
 		VPMath::Vector3 MoveWay{};
 
-		if (INPUTKEY(KEY::W))
+		if (INPUTKEY(KEYBOARDKEY::W))
 			moveDirection += cameraTransform->FrontVector;
-		if (INPUTKEY(KEY::S))
+		if (INPUTKEY(KEYBOARDKEY::S))
 			moveDirection -= cameraTransform->FrontVector;
-		if (INPUTKEY(KEY::A))
+		if (INPUTKEY(KEYBOARDKEY::A))
 			moveDirection -= cameraTransform->RightVector;
-		if (INPUTKEY(KEY::D))
+		if (INPUTKEY(KEYBOARDKEY::D))
 			moveDirection += cameraTransform->RightVector;
-		if (INPUTKEY(KEY::Q))
+		if (INPUTKEY(KEYBOARDKEY::Q))
 			moveDirection.y -= 1;
-		if (INPUTKEY(KEY::E))
+		if (INPUTKEY(KEYBOARDKEY::E))
 			moveDirection.y += 1;
 
 		moveDirection.Normalize();
 		cameraTransform->World_Location += moveSpeed * moveDirection * deltaTime;
 
-		if (INPUTKEY(KEY::RBUTTON))
+		if (INPUTKEY(MOUSEKEY::RBUTTON))
 		{
-			VPMath::Vector2 DeltaCurpos = InputManager::GetInstance().GetDeltaCurPos();
-			float yaw = DeltaCurpos.x * 0.1f;
-			float pitch = DeltaCurpos.y * 0.1f;
+			INT DeltaCurposX = InputManager::GetInstance().GetMouseDeltaX();
+			INT DeltaCurposY = InputManager::GetInstance().GetMouseDeltaY();
+			float yaw = DeltaCurposX * 0.1f;
+			float pitch = DeltaCurposY * 0.1f;
 
 			// Update rotation angles
 			cameraTransform->World_Rotation.y += yaw; // Yaw affects the y-axis

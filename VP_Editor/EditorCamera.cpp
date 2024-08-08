@@ -47,22 +47,22 @@ void EditorCamera::Update(float deltatime)
 
 void EditorCamera::CameraMove(float deltatime)
 {
-	if (!InputManager::GetInstance().GetKey(KEY::RBUTTON))
+	if (!InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
 		return;
 
 	VPMath::Vector3 moveDirection = {};
 
-	if (InputManager::GetInstance().GetKey(KEY::W))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::W))
 		moveDirection += m_FrontVector;
-	if (InputManager::GetInstance().GetKey(KEY::S))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::S))
 		moveDirection -= m_FrontVector;
-	if (InputManager::GetInstance().GetKey(KEY::A))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::A))
 		moveDirection -= m_RightVector;
-	if (InputManager::GetInstance().GetKey(KEY::D))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::D))
 		moveDirection += m_RightVector;
-	if (InputManager::GetInstance().GetKey(KEY::Q))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::Q))
 		moveDirection.y -= 1;
-	if (InputManager::GetInstance().GetKey(KEY::E))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::E))
 		moveDirection.y += 1;
 
 	if (moveDirection.Length() < 0.5f)
@@ -73,19 +73,20 @@ void EditorCamera::CameraMove(float deltatime)
 
 	m_Location += moveWay;
 
-	if (InputManager::GetInstance().GetKeyDown(KEY::LSHFIT))
+	if (InputManager::GetInstance().GetKeyDown(KEYBOARDKEY::LSHIFT))
 		m_PressedShift = true;
-	else if (InputManager::GetInstance().GetKeyUp(KEY::LSHFIT))
+	else if (InputManager::GetInstance().GetKeyUp(KEYBOARDKEY::LSHIFT))
 		m_PressedShift = false;
 }
 
 void EditorCamera::CameraRotation()
 {
-	if (InputManager::GetInstance().GetKey(KEY::RBUTTON))
+	if (InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
 	{
-		VPMath::Vector2 deltaCurpos = InputManager::GetInstance().GetDeltaCurPos();
-		float yaw = deltaCurpos.x * m_sensitivity;
-		float pitch = deltaCurpos.y * m_sensitivity;
+		int deltaCurposx = InputManager::GetInstance().GetMouseDeltaX();
+		int deltaCurposy = InputManager::GetInstance().GetMouseDeltaY();
+		float yaw = deltaCurposx * m_sensitivity;
+		float pitch = deltaCurposy * m_sensitivity;
 
 		m_Rotation.y += yaw;
 		m_Rotation.x += pitch;
