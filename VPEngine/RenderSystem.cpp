@@ -21,13 +21,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-		///TODO=========Name 은 딱히 필요없을 것 같으니 제거 생각중===========
-		auto IDComp = meshComponent->GetComponent<IDComponent>();
-		std::wstring Name{};
-		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
-		/// FBX도 RenderData에 있으므로 보내주지 않아도 될듯함.
-		std::wstring Path= meshComponent->FBX;
-		///================================================================
+
 		///Graphic에 RenderModel 만들 때 std::share_ptr<RenderData> 받기
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
@@ -47,15 +41,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
 		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
-		///TODO=========Name 은 딱히 필요없을 것 같으니 제거 생각중===========
-		auto IDComp = meshComponent->GetComponent<IDComponent>();
-		std::wstring Name{};
-		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
-		/// FBX도 RenderData에 있으므로 보내주지 않아도 될듯함.
-		std::wstring Path= meshComponent->FBX;
-		///================================================================
-		///Graphic에 RenderModel 만들 때 std::share_ptr<RenderData> 받기
-		///보내주기전에 Initialize();
+
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 
@@ -63,10 +49,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->duration = 0;
-		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
-		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
-		/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
-		/// m_Graphics->AddRenderModel(meshComponent->GetEntityID(),meshComponent->Renderdata)
+
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
 	}
@@ -79,14 +62,11 @@ void RenderSystem::OnAddedComponent(std::any data)
 		auto IDComp = meshComponent->GetComponent<IDComponent>();
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
-
 		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->useTexture = meshComponent->UseTexture;
 		meshComponent->Renderdata->color = meshComponent->color;
 		meshComponent->Renderdata->textureName = meshComponent->TextureName;
-		///마찬가지로 RenderData initialize 이후 다음 함수로 보내주세요!
-		/// m_Graphics->AddRenderModel(meshComponent->GetEntityID(),meshComponent->Renderdata)
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
@@ -101,7 +81,8 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.TexturePath = Path;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
-	}}
+	}
+}
 
 void RenderSystem::OnReleasedComponent(std::any data)
 {
@@ -222,7 +203,6 @@ void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
 	renderdata->useTexture = geometryComp.UseTexture;
 	renderdata->textureName = geometryComp.TextureName;
 	m_Graphics->UpdateModel(geometryComp.GetEntityID()); 
-
 
 }
 

@@ -303,9 +303,9 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
 		obbInfo.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
 
-		obbInfo.xAxisAngle = 0;
-		obbInfo.yAxisAngle = 0;
-		obbInfo.zAxisAngle = 0;
+		obbInfo.xAxisAngle = ControllerTransform->World_Rotation.x;
+		obbInfo.yAxisAngle = ControllerTransform->World_Rotation.y;
+		obbInfo.zAxisAngle = ControllerTransform->World_Rotation.z;
 		m_Graphics->DrawOBB(obbInfo);
 
 
@@ -351,8 +351,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))						
 	{
 		uint32_t entityID = controllerCompoent.GetEntityID();
-		if (!m_PhysicsEngine->HasRigidBody(entityID))
-			continue;
+
 
 		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
 		VPMath::Vector3 templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
@@ -377,8 +376,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
 	{
 		uint32_t entityID = controllerComponent.GetEntityID();
-		if (!m_PhysicsEngine->HasRigidBody(entityID))
-			continue;
+
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
 		controllerTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(entityID);
 	}

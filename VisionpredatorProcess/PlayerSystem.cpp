@@ -33,28 +33,15 @@ void PlayerSystem::Update(float deltaTime)
 				controllercomp->InputDir += TransformComp->RightVector;
 			}
 
-			return;
 		}
 
+		if (INPUTKEYDOWN(KEYBOARDKEY::SPACE))
+		{
+			auto temppos =TransformComp->World_Location + TransformComp->FrontVector * 2;
+			auto tempdir =TransformComp->FrontVector;
+			VPMath::Vector3 tempscale = {1,1,1};
 
-		uint32_t entityID = comp.GetEntityID();
-		if (INPUTKEY(KEYBOARDKEY::W))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, TransformComp->FrontVector, comp.Accel);
-
-		}		
-		if (INPUTKEY(KEYBOARDKEY::S))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, -TransformComp->FrontVector, comp.Accel);
-
-		}
-		if (INPUTKEY(KEYBOARDKEY::A))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, -TransformComp->RightVector, comp.Accel);
-		}
-		if (INPUTKEY(KEYBOARDKEY::D))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, TransformComp->RightVector, comp.Accel);
+			m_SceneManager.lock()->SpawnPrefab("../Data/Prefab/cube.prefab", temppos, tempdir, tempscale);
 		}
 
 	}

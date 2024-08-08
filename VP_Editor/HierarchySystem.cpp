@@ -10,21 +10,22 @@ HierarchySystem::HierarchySystem(std::shared_ptr<SceneManager> sceneManager) :Sy
 void HierarchySystem::ShowEntitys()
 {
 	std::string lowerSearchingName = ToLower(m_SearchingName);
+		ShowDelete = false;
 
 	for (TransformComponent& transcomp : COMPITER(TransformComponent))
 	{
-		std::string entityName = transcomp.GetComponent<IDComponent>()->Name;
-		std::string lowerEntityName = ToLower(entityName);
+		//std::string entityName = transcomp.GetComponent<IDComponent>()->Name;
+		//std::string lowerEntityName = ToLower(entityName);
+		if (transcomp.HasComponent<Parent>())
+			continue;
 
-		// Check if the entity name contains the search string (case-insensitive)
-		if (lowerSearchingName.empty() || lowerEntityName.find(lowerSearchingName) != std::string::npos)
-		{
-			// Skip if the entity has a parent (not a root entity)
-			if (transcomp.HasComponent<Parent>())
-				continue;
+		ShowParentEntity(transcomp.GetEntityID());
+		//// Check if the entity name contains the search string (case-insensitive)
+		//if (lowerSearchingName.empty() || lowerEntityName.find(lowerSearchingName) != std::string::npos)
+		//{
+		//	// Skip if the entity has a parent (not a root entity)
 
-			ShowParentEntity(transcomp.GetEntityID());
-		}
+		//}
 	}
 
 }
@@ -37,7 +38,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 
 
 	ImGui::PushID(entityID);
-	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow| ImGuiTreeNodeFlags_SpanFullWidth;
 
 	if (!entity->HasComponent<Children>())
 		node_flags |= ImGuiTreeNodeFlags_Leaf;
@@ -51,19 +52,24 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 
 
 	isNodeOpened = ImGui::TreeNodeEx(IDcomp->Name.c_str(), node_flags);
+	if (!ShowDelete)
+	{
+		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("Entity_Popup");
+			m_RClickedEntityID = entityID;
+			m_IsEntityRClicked = true;
+			ShowDelete = true;
+		}
+		else if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+		{
+			ImGui::CloseCurrentPopup();
+			m_RClickedEntityID = 0;
+			m_IsEntityRClicked = false;
+		}
 
-	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
-	{
-		ImGui::OpenPopup("Entity_Popup");
-		m_RClickedEntityID = entityID;
-		m_IsEntityRClicked = true;
 	}
-	else if(ImGui::IsMouseReleased(ImGuiMouseButton_Right))
-	{
-		ImGui::CloseCurrentPopup();
-		m_RClickedEntityID = 0;
-		m_IsEntityRClicked = false;
-	}
+
 
 
 

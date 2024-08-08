@@ -170,20 +170,12 @@ void SceneManager::OnRemoveChild(std::any data)
 		}
 	}
 }
-
-
-
-
-
-
-
 void SceneManager::AddCompToPool(std::shared_ptr<Component> comp)
 {
 	// 컴포넌트 풀에 컴포넌트를 추가합니다.
 	auto& pool = m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()];
 	pool.push_back(comp);
 }
-
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
 	std::list<uint32_t> DeleteEntityIDs;
@@ -311,10 +303,8 @@ void SceneManager::OnNewScene(std::any data)
 void SceneManager::OnOpenNewScene(std::any null)
 {
 	//씬 삭제 후 새로운 씬 생성
-
 	EventManager::GetInstance().ImmediateEvent("OnNewScene");
 	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
-
 }
 
 //씬 체인지 이벤트 인게임 도중 씬 체인지 작동용도!
@@ -377,13 +367,7 @@ void SceneManager::OnEndScene(std::any data)
 void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 direction, VPMath::Vector3 scele)
 {
 	// Create scale matrix
-	struct PrefabData
-	{
-		std::string prefabname;
-		VPMath::Vector3 pos;
-		VPMath::Vector3 direction;
-		VPMath::Vector3 scale;
-	};
+
 	PrefabData temp = { prefabname ,pos,direction,scele };
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnSpawnPrefab", data);
@@ -555,28 +539,43 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 
 void SceneManager::OnDeSerializeEntity(std::any data)
 {
-	const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
-	uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
-	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
-
-	tempEntity->SetEntityID(entityID);
-	SetEntityMap(entityID, tempEntity);
-
-	for (auto& componentjson : entityjson["Component"])
+	try
 	{
-		entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
-		auto metaType = entt::resolve(comp_id);
-		if (metaType)
+		const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
+		uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
+		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
+
+		tempEntity->SetEntityID(entityID);
+		SetEntityMap(entityID, tempEntity);
+
+		for (auto& componentjson : entityjson["Component"])
 		{
-			// 메타 타입으로부터 인스턴스를 생성합니다.
-			auto instance = metaType.construct();
-			// 특정 함수를 찾고 호출합니다.
-			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
-			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity);
-			else
-				VP_ASSERT(false, "Reflection 함수 실패!");
+			entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
+			auto metaType = entt::resolve(comp_id);
+			if (metaType)
+			{
+				// 메타 타입으로부터 인스턴스를 생성합니다.
+				auto instance = metaType.construct();
+				// 특정 함수를 찾고 호출합니다.
+				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+				if (myFunctionMeta)
+					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity);
+				else
+					VP_ASSERT(false, "Reflection 함수 실패!");
+			}
 		}
+	}
+	catch (const std::bad_any_cast& e)
+	{
+		VP_ASSERT(false, "std::any_cast 실패: {}", e.what());
+	}
+	catch (const nlohmann::json::exception& e)
+	{
+		VP_ASSERT(false, "JSON 구문 분석 실패: {}", e.what());
+	}
+	catch (const std::exception& e)
+	{
+		VP_ASSERT(false, "예기치 않은 오류 발생: {}", e.what());
 	}
 }
 std::shared_ptr<Entity> SceneManager::CreateEntity()
@@ -735,7 +734,6 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 		Transform->Local_Scale = prefabData.scale;
 		VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
 		Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrix(rotationMatrix);
-
 
 	}
 }

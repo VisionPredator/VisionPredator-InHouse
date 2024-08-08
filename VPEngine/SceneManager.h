@@ -23,7 +23,6 @@ public:
 	void DeleteEntity(uint32_t entityID);
 
 	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 direction = {0,0,1}, VPMath::Vector3 scele = { 1,1,1 });
-	void OnSpawnPrefab(std::any pair);
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
 	
@@ -119,6 +118,8 @@ private:
 	bool CheckParent(uint32_t parent, uint32_t child);
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
+	void OnSpawnPrefab(std::any pair);
+
 	void SetEntityMap(uint32_t entityID, std::shared_ptr<Entity> entity) { m_CurrentScene->EntityMap[entityID] = entity; }
 	void AddCompToPool(std::shared_ptr<Component> comp);
 	// 새로운 씬을 연다.
