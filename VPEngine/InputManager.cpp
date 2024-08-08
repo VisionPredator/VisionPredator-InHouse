@@ -11,6 +11,74 @@ void InputManager::Initialize()
 	}
 }
 
+
+
+InputManager::InputManager()
+{
+	EventManager::GetInstance().Subscribe("OnSetKeyState", CreateSubscriber(&InputManager::OnSetKeyState));
+
+}
+
+void InputManager::CalculateMouseDelta()
+{
+	m_mouseDeltaX = m_mouseState.lX;
+	m_mouseDeltaY = m_mouseState.lY;
+}
+
+void InputManager::OnSetKeyState(std::any data)
+//int vkCode, KEY_STATE state)
+{
+	auto [vkCode, state] = std::any_cast<std::pair<int, KEY_STATE>>(data);
+
+	auto it = std::find(std::begin(arrayVK), std::end(arrayVK), vkCode);
+	if (it != std::end(arrayVK))
+	{
+		size_t index = std::distance(std::begin(arrayVK), it);
+		auto& keyInfo = m_KeyInputInfos[index];
+
+		keyInfo.KeyState = state;
+		keyInfo.IsPushed = (state == KEY_STATE::DOWN) || (state == KEY_STATE::HOLD);
+
+		if (keyInfo.KeyState == KEY_STATE::DOWN && keyInfo.IsPushed)
+		{
+			// 1프레임 동안만 DOWN 유지 이후 HOLD로 변경
+			EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::make_pair(vkCode, KEY_STATE::HOLD), 0.00001f);
+		}
+		else if (keyInfo.KeyState == KEY_STATE::UP && !keyInfo.IsPushed)
+		{
+			// 1프레임 동안만 UP 유지 이후 NONE으로 변경
+			EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::make_pair(vkCode, KEY_STATE::NONE), 0.00001f);
+		}
+	}
+}
+void InputManager::Update()
+{
+	if (HWND hWnd = GetFocus(); hWnd != nullptr) // 화면이 포커스 되어있을 때만 인풋값을 받는다.
+	{
+		// 마우스 위치 저장하는 함수 포함하기
+		POINT curPos;
+		if (GetCursorPos(&curPos) && ScreenToClient(hWnd, &curPos)) // GetCursorPos 및 ScreenToClient 성공 여부 확인
+		{
+			auto [curX, curY] = std::pair{ static_cast<float>(curPos.x), static_cast<float>(curPos.y) };
+			m_DeltaCurPos = { curX - m_CurPos.x, curY - m_CurPos.y };
+			m_CurPos = { curX, curY };
+		}
+	}
+}
+bool InputManager::GetKey(KEY key)
+{
+	return m_KeyInputInfos[(int)key].KeyState == KEY_STATE::HOLD;
+}
+bool InputManager::GetKeyUp(KEY key)
+{
+	return m_KeyInputInfos[(int)key].KeyState == KEY_STATE::UP;
+
+}
+bool InputManager::GetKeyDown(KEY key)
+{
+	return  m_KeyInputInfos[(int)key].KeyState == KEY_STATE::DOWN;
+}
+
 bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight)
 {
 	// 마우스 커서의 위치 지정에 사용될 화면 크기를 설정합니다.
@@ -65,103 +133,24 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 	return true;
 }
 
-bool InputManager::Frame()
+bool InputManager::NewUpdate()
 {
+	//이전 키 설정을 저장하여 Key Down/Up/Hold 를 구별하는데 쓰입니다.
+	CopyKeyStateToPrevious();
 	// 키보드의 현재 상태를 읽는다.
 	if (!ReadKeyboard())
-	{
 		return false;
-	}
 
 	// 마우스의 현재 상태를 읽는다.
 	if (!ReadMouse())
-	{
 		return false;
-	}
 
-	// 키보드와 마우스의 변경상태를 처리합니다.
-	ProcessInput();
-
+	//마우스의 변경상태를 처리합니다.
+	ProcessMouseInput();
 	return true;
 }
 
 
-
-void InputManager::ProcessInput()
-{
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
-	//프레임 동안 마우스 위치의 변경을 기반으로 마우스 커서의 위치를 업데이트한다.
-	if (m_mouseX < 0) { m_mouseX = 0; }
-	if (m_mouseY < 0) { m_mouseY = 0; }
-	//마우스 위치가 화면 너비 또는 높이를 초과하지 않는지 확인한다.
-	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
-	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
-}
-
-
-InputManager::InputManager()
-{
-	EventManager::GetInstance().Subscribe("OnSetKeyState", CreateSubscriber(&InputManager::OnSetKeyState));
-
-}
-
-void InputManager::OnSetKeyState(std::any data)
-//int vkCode, KEY_STATE state)
-{
-	auto [vkCode, state] = std::any_cast<std::pair<int, KEY_STATE>>(data);
-
-	auto it = std::find(std::begin(arrayVK), std::end(arrayVK), vkCode);
-	if (it != std::end(arrayVK))
-	{
-		size_t index = std::distance(std::begin(arrayVK), it);
-		auto& keyInfo = m_KeyInputInfos[index];
-
-		keyInfo.KeyState = state;
-		keyInfo.IsPushed = (state == KEY_STATE::DOWN) || (state == KEY_STATE::HOLD);
-
-		if (keyInfo.KeyState == KEY_STATE::DOWN && keyInfo.IsPushed)
-		{
-			// 1프레임 동안만 DOWN 유지 이후 HOLD로 변경
-			EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::make_pair(vkCode, KEY_STATE::HOLD), 0.00001f);
-		}
-		else if (keyInfo.KeyState == KEY_STATE::UP && !keyInfo.IsPushed)
-		{
-			// 1프레임 동안만 UP 유지 이후 NONE으로 변경
-			EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::make_pair(vkCode, KEY_STATE::NONE), 0.00001f);
-		}
-	}
-}
-void InputManager::Update()
-{
-	if (HWND hWnd = GetFocus(); hWnd != nullptr) // 화면이 포커스 되어있을 때만 인풋값을 받는다.
-	{
-		// 마우스 위치 저장하는 함수 포함하기
-		POINT curPos;
-		if (GetCursorPos(&curPos) && ScreenToClient(hWnd, &curPos)) // GetCursorPos 및 ScreenToClient 성공 여부 확인
-		{
-			auto [curX, curY] = std::pair{ static_cast<float>(curPos.x), static_cast<float>(curPos.y) };
-			m_DeltaCurPos = { curX - m_CurPos.x, curY - m_CurPos.y };
-			m_CurPos = { curX, curY };
-		}
-	}
-}
-
-bool InputManager::GetKey(KEY key)
-{
-	return m_KeyInputInfos[(int)key].KeyState == KEY_STATE::HOLD;
-}
-
-bool InputManager::GetKeyUp(KEY key)
-{
-	return m_KeyInputInfos[(int)key].KeyState == KEY_STATE::UP;
-
-}
-
-bool InputManager::GetKeyDown(KEY key)
-{
-	return  m_KeyInputInfos[(int)key].KeyState == KEY_STATE::DOWN;
-}
 
 void InputManager::Shutdown()
 {
@@ -187,6 +176,68 @@ void InputManager::Shutdown()
 		m_directInput->Release();
 		m_directInput = 0;
 	}
+}
+void InputManager::ProcessMouseInput()
+{
+	CalculateMouseDelta();
+
+	m_mouseX += m_mouseState.lX;
+	m_mouseY += m_mouseState.lY;
+	//프레임 동안 마우스 위치의 변경을 기반으로 마우스 커서의 위치를 업데이트한다.
+	if (m_mouseX < 0) { m_mouseX = 0; }
+	if (m_mouseY < 0) { m_mouseY = 0; }
+	//마우스 위치가 화면 너비 또는 높이를 초과하지 않는지 확인한다.
+	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
+	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
+}
+
+void InputManager::CopyKeyStateToPrevious()
+{
+	memcpy(m_previousKeyboardState, m_keyboardState, sizeof(m_keyboardState));
+}
+
+void InputManager::CopyMouseStateToPrevious()
+{
+	m_previousMouseState = m_mouseState;
+}
+
+bool InputManager::NewGetKeyDown(NEWKEY inputkey) 
+{
+	int keyCode = static_cast<int>(inputkey);
+	return (m_keyboardState[keyCode] & 0x80) && !(m_previousKeyboardState[keyCode] & 0x80);
+}
+
+bool InputManager::NewGetKeyUP(NEWKEY inputkey) 
+{
+	int keyCode = static_cast<int>(inputkey);
+	return !(m_keyboardState[keyCode] & 0x80) && (m_previousKeyboardState[keyCode] & 0x80);
+}
+
+bool InputManager::NewGetKeyHold(NEWKEY inputkey) 
+{
+	int keyCode = static_cast<int>(inputkey);
+	return (m_keyboardState[keyCode] & 0x80) && (m_previousKeyboardState[keyCode] & 0x80);
+}
+
+bool InputManager::NewGetKeyDown(MOUSEKEY button)
+{
+	// 마우스 버튼이 현재 눌려 있고, 이전 프레임에서는 눌려 있지 않다면 true 반환
+	return (m_mouseState.rgbButtons[static_cast<int>(button)] & 0x80) &&
+		!(m_previousMouseState.rgbButtons[static_cast<int>(button)] & 0x80);
+}
+
+bool InputManager::NewGetKeyUP(MOUSEKEY button)
+{
+	// 마우스 버튼이 현재 눌려 있지 않고, 이전 프레임에서는 눌려 있었다면 true 반환
+	return !(m_mouseState.rgbButtons[static_cast<int>(button)] & 0x80) &&
+		(m_previousMouseState.rgbButtons[static_cast<int>(button)] & 0x80);
+}
+
+bool InputManager::NewGetKeyHold(MOUSEKEY button)
+{
+	// 마우스 버튼이 현재와 이전 프레임 모두에서 눌려 있다면 true 반환
+	return (m_mouseState.rgbButtons[static_cast<int>(button)] & 0x80) &&
+		(m_previousMouseState.rgbButtons[static_cast<int>(button)] & 0x80);
 }
 
 bool InputManager::ReadKeyboard()
