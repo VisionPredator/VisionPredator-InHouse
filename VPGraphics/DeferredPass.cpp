@@ -60,7 +60,10 @@ DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 
 DeferredPass::~DeferredPass()
 {
-
+	if (!m_AlbedoRTV.expired())
+	{
+		int a = 3;
+	}
 }
 
 void DeferredPass::Render()
@@ -76,7 +79,6 @@ void DeferredPass::OnResize()
 {
 
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
-
 
 	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
@@ -116,6 +118,49 @@ void DeferredPass::OnResize()
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
 }
 
+void DeferredPass::Release()
+{
+	m_DepthStencilView.reset();
+
+	m_AlbedoRTV.reset();
+	m_NormalRTV .reset();
+	m_PositionRTV .reset();
+	m_DepthRTV .reset();
+	m_MetalicRTV .reset();
+	m_RoughnessRTV .reset();
+	m_AORTV .reset();
+	m_EmissiveRTV .reset();
+
+	m_StaticMeshVS.reset();
+	m_StaticMeshVS.reset();
+	m_GeometryPS.reset();
+
+	m_QuadVB .reset();
+	m_QuadIB .reset();
+	m_QuadVS .reset();
+	m_QuadPS .reset();
+
+	m_Deferred.reset();
+
+	m_Albedo .reset();
+	m_Normal .reset();
+	m_Position .reset();
+	m_Depth .reset();
+	m_Metalic .reset();
+	m_Roughness .reset();
+	m_AO .reset();
+	m_Emissive .reset();
+	m_GBuffer .reset();
+
+
+	m_SkeletalMeshVS .reset();
+	m_StaticMeshVS .reset();
+	m_MeshPS .reset();
+
+	//??
+	m_States.reset();
+}
+
 void DeferredPass::Geometry()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
@@ -136,7 +181,7 @@ void DeferredPass::Geometry()
 		RTVs.push_back(m_RoughnessRTV.lock()->Get());
 		RTVs.push_back(m_AORTV.lock()->Get());
 		RTVs.push_back(m_EmissiveRTV.lock()->Get());
-		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView->Get());
+		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView.lock()->Get());
 
 		Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());

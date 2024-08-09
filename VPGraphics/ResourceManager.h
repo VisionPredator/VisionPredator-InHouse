@@ -124,6 +124,7 @@ void ResourceManager::Erase(const std::wstring path)
 	if (curMap.find(path) != curMap.end())
 	{
 		curMap[path]->Release();
+		curMap[path].reset();
 		//delete curMap[path];
 		curMap.erase(path);
 	}

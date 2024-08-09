@@ -187,21 +187,27 @@ void ResourceManager::OnResize(RECT& wndsize)
 	Erase<ViewPort>(L"Main");
 	Create<ViewPort>(L"Main", wndsize);
 
-	auto& OffScreenMap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<Texture2D>())];
-	for (auto& tex : OffScreenMap)
+	for (auto tex : m_OffScreenName)
 	{
-		tex.second->Release();
+		Erase<Texture2D>(tex);
 	}
-	OffScreenMap.clear();
 
-	auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
+	Erase<RenderTargetView>(L"RTV_Main");
+
+	for (auto tex : m_OffScreenName)
+	{
+		Erase<RenderTargetView>(tex);
+	}
+
+
+	/*auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
 	int numRTV = static_cast<int>(RTVmap.size());
 
 	for (auto& rtv : RTVmap)
 	{
 		rtv.second->Release();
 	}
-	RTVmap.clear();
+	RTVmap.clear();*/
 
 	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
 	texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
