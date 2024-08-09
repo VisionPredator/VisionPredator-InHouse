@@ -60,7 +60,10 @@ DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 
 DeferredPass::~DeferredPass()
 {
-
+	if (!m_AlbedoRTV.expired())
+	{
+		int a = 3;
+	}
 }
 
 void DeferredPass::Render()
@@ -76,7 +79,6 @@ void DeferredPass::OnResize()
 {
 
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
-
 
 	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
@@ -136,7 +138,7 @@ void DeferredPass::Geometry()
 		RTVs.push_back(m_RoughnessRTV.lock()->Get());
 		RTVs.push_back(m_AORTV.lock()->Get());
 		RTVs.push_back(m_EmissiveRTV.lock()->Get());
-		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView->Get());
+		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView.lock()->Get());
 
 		Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());

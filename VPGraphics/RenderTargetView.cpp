@@ -34,7 +34,7 @@ RenderTargetView::RenderTargetView(std::shared_ptr<Device>device, std::weak_ptr<
 	HRESULT hr;
 
 	hr = m_Device.lock()->Get()->CreateRenderTargetView(backbuffer.lock()->Get(), 0, &m_RTV);
-
+	m_tex = backbuffer;
 	if (FAILED(hr))
 	{
 		MessageBox(0, L"Device CreateRenderTargetView Failed", 0, 0);
@@ -44,6 +44,8 @@ RenderTargetView::RenderTargetView(std::shared_ptr<Device>device, std::weak_ptr<
 RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> backbuffer, D3D11_RENDER_TARGET_VIEW_DESC desc) : Resource(device)
 {
 	m_Device.lock()->Get()->CreateRenderTargetView(backbuffer.lock()->Get(), &desc, &m_RTV);
+	m_tex = backbuffer;
+
 }
 
 RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height)

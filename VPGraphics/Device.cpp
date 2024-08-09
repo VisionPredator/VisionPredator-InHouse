@@ -24,6 +24,10 @@ Device::~Device()
 	m_Context->Release();
 	m_Device->Release();
 
+	m_Device = nullptr;
+	m_Context = nullptr;
+	m_SwapChain = nullptr;
+
 }
 
 void Device::Initialize()

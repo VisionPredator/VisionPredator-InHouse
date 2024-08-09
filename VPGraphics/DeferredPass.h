@@ -15,10 +15,10 @@ private:
 	void Geometry();
 
 private:
-	std::shared_ptr<DepthStencilView> m_DepthStencilView;
+	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 
 	//Geometry
-	std::shared_ptr<PixelShader> m_GeometryPS;
+	std::weak_ptr<PixelShader> m_GeometryPS;
 
 	// Multi Render Target
 	std::weak_ptr<RenderTargetView> m_AlbedoRTV;

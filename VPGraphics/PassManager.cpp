@@ -47,6 +47,8 @@ void PassManager::Initialize()
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
+	/*
+	*/
 }
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
@@ -60,6 +62,8 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 		CheckPassState(curModel, PassState::Debug);
 		CheckPassState(curModel, PassState::GeoMetry);
 	}
+	/*
+	*/
 }
 
 void PassManager::Render()
@@ -76,6 +80,8 @@ void PassManager::Render()
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 	DrawIMGUI();
+	/*
+	*/
 }
 
 void PassManager::OnResize()

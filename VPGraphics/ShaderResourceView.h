@@ -11,7 +11,7 @@ public:
 	ShaderResourceView(std::shared_ptr<Device>device, std::weak_ptr<RenderTargetView> rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc);
 	ShaderResourceView(std::shared_ptr<Device> device, RenderTargetView* rtv);
 	ShaderResourceView(std::shared_ptr<Device> device, const std::shared_ptr<RenderTargetView>& rtv);
-	~ShaderResourceView() = default;
+	~ShaderResourceView();
 
 	ID3D11ShaderResourceView* Get() const;
 	ID3D11ShaderResourceView** GetAddress();
@@ -22,7 +22,7 @@ public:
 
 private:
 	ID3D11ShaderResourceView* m_view = nullptr;
-	ID3D11Texture2D* m_tex = nullptr;
+	std::weak_ptr<Texture2D> m_tex;
 
 	UINT m_Width = 0;
 	UINT m_Height = 0;
