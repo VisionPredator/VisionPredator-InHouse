@@ -74,7 +74,6 @@ void Toolbar::ImGuiRender()
 
 
 	ImGui::EndMainMenuBar();
-
 	if (ImGuiFileDialog::Instance()->Display("ChooseSceneDlgKey", ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove, { 1000, 500 }))
 	{
 		if (ImGuiFileDialog::Instance()->IsOk()) 

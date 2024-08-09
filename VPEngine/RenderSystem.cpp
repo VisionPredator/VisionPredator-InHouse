@@ -14,106 +14,106 @@ RenderSystem::RenderSystem(std::shared_ptr<SceneManager> sceneManager)
 void RenderSystem::OnAddedComponent(std::any data)
 {
 	// Static Mesh
-	auto comp = std::any_cast<Component*>(data);
+	//auto comp = std::any_cast<Component*>(data);
 
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
-	{
-		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
-		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
+	//{
+	//	MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+	//	const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
 
-		///Graphic에 RenderModel 만들 때 std::share_ptr<RenderData> 받기
-		meshComponent->Renderdata = std::make_shared<RenderData>();
-		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
-		meshComponent->Renderdata->FBX = meshComponent->FBX;
-		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
-		meshComponent->Renderdata->world = Transform.WorldTransform;
-		
-		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
-		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
-		/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
-		/// m_Graphics->AddRenderModel(meshComponent->GetEntityID(),meshComponent->Renderdata)
-		m_Graphics->AddRenderModel(meshComponent->Renderdata);
-		return;
-	}
-	// Skinned Mesh
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
-	{
-		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
-		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
+	//	///Graphic에 RenderModel 만들 때 std::share_ptr<RenderData> 받기
+	//	meshComponent->Renderdata = std::make_shared<RenderData>();
+	//	meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
+	//	meshComponent->Renderdata->FBX = meshComponent->FBX;
+	//	meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
+	//	meshComponent->Renderdata->world = Transform.WorldTransform;
+	//	
+	//	///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
+	//	/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
+	//	/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
+	//	/// m_Graphics->AddRenderModel(meshComponent->GetEntityID(),meshComponent->Renderdata)
+	//	m_Graphics->AddRenderModel(meshComponent->Renderdata);
+	//	return;
+	//}
+	//// Skinned Mesh
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
+	//{
+	//	SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
+	//	const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-		meshComponent->Renderdata = std::make_shared<RenderData>();
-		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
+	//	meshComponent->Renderdata = std::make_shared<RenderData>();
+	//	meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 
-		meshComponent->Renderdata->FBX= meshComponent->FBX;
-		meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
-		meshComponent->Renderdata->world = Transform.WorldTransform;
-		meshComponent->Renderdata->duration = 0;
+	//	meshComponent->Renderdata->FBX= meshComponent->FBX;
+	//	meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
+	//	meshComponent->Renderdata->world = Transform.WorldTransform;
+	//	meshComponent->Renderdata->duration = 0;
 
-		m_Graphics->AddRenderModel(meshComponent->Renderdata);
-		return;
-	}
+	//	m_Graphics->AddRenderModel(meshComponent->Renderdata);
+	//	return;
+	//}
 
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
-	{
-		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
-		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
+	//{
+	//	GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
+	//	const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-		auto IDComp = meshComponent->GetComponent<IDComponent>();
-		meshComponent->Renderdata = std::make_shared<RenderData>();
-		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
-		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
-		meshComponent->Renderdata->world = Transform.WorldTransform;
-		meshComponent->Renderdata->useTexture = meshComponent->UseTexture;
-		meshComponent->Renderdata->color = meshComponent->color;
-		meshComponent->Renderdata->textureName = meshComponent->TextureName;
+	//	auto IDComp = meshComponent->GetComponent<IDComponent>();
+	//	meshComponent->Renderdata = std::make_shared<RenderData>();
+	//	meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
+	//	meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
+	//	meshComponent->Renderdata->world = Transform.WorldTransform;
+	//	meshComponent->Renderdata->useTexture = meshComponent->UseTexture;
+	//	meshComponent->Renderdata->color = meshComponent->color;
+	//	meshComponent->Renderdata->textureName = meshComponent->TextureName;
 
-		m_Graphics->AddRenderModel(meshComponent->Renderdata);
-		return;
-	}	// Particle Object
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
-	{
-		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
-		std::string Path;
-		Path.assign(component->TexturePath.begin(), component->TexturePath.end());
+	//	m_Graphics->AddRenderModel(meshComponent->Renderdata);
+	//	return;
+	//}	// Particle Object
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
+	//{
+	//	ParticleComponent* component = static_cast<ParticleComponent*>(comp);
+	//	std::string Path;
+	//	Path.assign(component->TexturePath.begin(), component->TexturePath.end());
 
-		effect::ParticleInfo info;
-		info.TexturePath = Path;
-		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
-		return;
-	}
+	//	effect::ParticleInfo info;
+	//	info.TexturePath = Path;
+	//	m_Graphics->CreateParticleObject(component->GetEntityID(), info);
+	//	return;
+	//}
 }
 
 void RenderSystem::OnReleasedComponent(std::any data)
 {
-	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
-	{
-		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
-		m_Graphics->EraseObject(meshComponent->GetEntityID());
-		meshComponent->Renderdata.reset();
-		return;
-	}
+	//auto comp = std::any_cast<Component*>(data);
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
+	//{
+	//	MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
+	//	m_Graphics->EraseObject(meshComponent->GetEntityID());
+	//	meshComponent->Renderdata.reset();
+	//	return;
+	//}
 
-	//Skinned
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
-	{
-		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
-		m_Graphics->EraseObject(meshComponent->GetEntityID());
-		meshComponent->Renderdata.reset();
+	////Skinned
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
+	//{
+	//	SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
+	//	m_Graphics->EraseObject(meshComponent->GetEntityID());
+	//	meshComponent->Renderdata.reset();
 
-		return;
-	}
+	//	return;
+	//}
 
-	//
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
-	{
-		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
-		m_Graphics->EraseObject(meshComponent->GetEntityID());
-		meshComponent->Renderdata.reset();
+	////
+	//if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
+	//{
+	//	GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
+	//	m_Graphics->EraseObject(meshComponent->GetEntityID());
+	//	meshComponent->Renderdata.reset();
 
-		return;
-	}
+	//	return;
+	//}
 
 }
 
@@ -122,28 +122,28 @@ void RenderSystem::OnReleasedComponent(std::any data)
 void RenderSystem::RenderUpdate(float deltaTime)
 {
 	//THREAD_COMPONENTS(RenderSystem, MeshComponent, &RenderSystem::MeshCompRender);
-	for (MeshComponent& meshcomp : COMPITER(MeshComponent))
-	{
-		MeshCompRender(meshcomp);
-	}
+	//for (MeshComponent& meshcomp : COMPITER(MeshComponent))
+	//{
+	//	MeshCompRender(meshcomp);
+	//}
 
-	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
-	{
-		SkincompRender(skinComp);
-	}
+	//for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
+	//{
+	//	SkincompRender(skinComp);
+	//}
 
-	for (GeometryComponent& geometryComp : COMPITER(GeometryComponent))
-	{
-		GeometryRender(geometryComp);
-	}
-	for (ParticleComponent& component : COMPITER(ParticleComponent))
-	{
-		effect::ParticleInfo info;
-		info.TexturePath = component.TexturePath;
-		info.MaxParticles = component.MaxParticle;
+	//for (GeometryComponent& geometryComp : COMPITER(GeometryComponent))
+	//{
+	//	GeometryRender(geometryComp);
+	//}
+	//for (ParticleComponent& component : COMPITER(ParticleComponent))
+	//{
+	//	effect::ParticleInfo info;
+	//	info.TexturePath = component.TexturePath;
+	//	info.MaxParticles = component.MaxParticle;
 
-		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
-	}
+	//	m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+	//}
 }
 
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)

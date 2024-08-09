@@ -35,7 +35,7 @@ public:
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
 
-	std::vector<std::shared_ptr<Component>> GetOwnedComponents(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponents(); }
+	//std::vector<std::shared_ptr<Component>> GetOwnedComponents(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponents(); }
 
 
 	template<typename T>
@@ -55,8 +55,10 @@ public:
 	template<typename T>
 	T* GetComponent(uint32_t EntityID)
 	{
+		//return GetEntity(EntityID)->GetComponent<T>();
+
 		// 캐시된 컴포넌트 ID를 저장하여 반복 호출을 줄임
-			static const auto componentTypeID = Reflection::GetTypeID<T>();
+		static const auto componentTypeID = Reflection::GetTypeID<T>();
 
 		// 캐시를 먼저 확인
 		auto cachedComponent = m_ComponentCache.find({ EntityID, componentTypeID });
@@ -197,6 +199,8 @@ inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 	auto it = m_CurrentScene->m_ComponentPool.find(Reflection::GetTypeID<T>());
 	if (it != m_CurrentScene->m_ComponentPool.end())
 	{
+		result.reserve(it->second.size()); // 메모리 할당 최적화
+
 		for (auto& weakComp : it->second)
 		{
 			if (auto sharedComp = weakComp.lock())
@@ -206,7 +210,7 @@ inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 		}
 	}
 
-	return result;
+	return result; // RVO (Return Value Optimization) 또는 std::move가 적용될 수 있음
 }
 
 template<typename T>

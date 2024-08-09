@@ -96,9 +96,9 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 {
 	
 	auto entity = GetSceneManager()->GetEntity(EntityID);
-	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
-	if (!rigidComp)
+	if (!entity->HasComponent<RigidBodyComponent>())
 		return;
+	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
 	const TransformComponent& rigidtransform = *rigidComp->GetComponent<TransformComponent>();
 	rigidComp->DefaultColliderInfo.EntityID = EntityID;
 	rigidComp->DefaultColliderInfo.WorldLocation = rigidtransform.World_Location;
@@ -227,9 +227,9 @@ void PhysicSystem::CreateDynamic(RigidBodyComponent* dynamicBody)
 void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 {
 	auto entity = GetSceneManager()->GetEntity(EntityID);
-	auto controllercomp = entity->GetComponent<ControllerComponent>();
-	if (!controllercomp)
+	if (!entity->HasComponent<ControllerComponent>())
 		return;
+	auto controllercomp = entity->GetComponent<ControllerComponent>();
 	controllercomp->Contollerinfo.EntityId = entity->GetEntityID();
 	controllercomp->CapsuleControllerinfo.position = entity->GetComponent<TransformComponent>()->World_Location;
 	controllercomp->CapsuleControllerinfo.Info = controllercomp->Contollerinfo;

@@ -47,7 +47,7 @@
 /// \param 추가 매개변수 : 가지고있는 멤버변수 순서 맞춰서 기입해주세요.
 #define VP_JSONBODY(CLASSNAME,...)\
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(CLASSNAME, __VA_ARGS__)\
-    std::shared_ptr<Component> AddComponent(std::shared_ptr<Entity> parentEntity) override\
+    std::shared_ptr<Component> AddComponent(Entity*  parentEntity) override\
     {\
         auto component = parentEntity->AddComponent<CLASSNAME>();\
         return component;\
@@ -56,7 +56,7 @@
     {\
         to_json(json, *this);\
     }\
-    std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, std::shared_ptr<Entity> parentEntity) const override\
+    std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity*  parentEntity) const override\
     {\
         auto component = parentEntity->AddComponent<CLASSNAME>();\
         *component = json.get<CLASSNAME>();\

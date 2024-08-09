@@ -24,11 +24,11 @@ void TransformSystem::Update(float deltaTime)
             updateList.push_back(&comp);
         }
     }
-
-    for (TransformComponent* transformComp : updateList)
-    {
-        CalculateTransform_new(transformComp, false);
-    }
+	if (!updateList.empty())
+		for (TransformComponent* transformComp : updateList)
+		{
+			CalculateTransform_new(transformComp, false);
+		}
 }
 void TransformSystem::OnSetParentAndChild(std::any parentChild)
 {

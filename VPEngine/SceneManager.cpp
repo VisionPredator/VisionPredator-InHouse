@@ -151,18 +151,22 @@ void SceneManager::OnRemoveChild(std::any data)
 	if (!CheckParent(parent, child))
 		return;
 
-	if (auto parentOfChild = GetComponent<Parent>(child))
+	if (HasComponent<Parent>(child))
 	{
+		auto parentOfChild = GetComponent<Parent>(child);
 		if (parentOfChild->ParentID == parent)
 		{
-			auto children = GetComponent<Children>(parent);
-			if (children)
+			if (HasComponent<Children>(parent))
 			{
-				children->ChildrenID.remove(child);
-
-				if (children->ChildrenID.empty())
+				auto children = GetComponent<Children>(parent);
+				if (children)
 				{
-					OnRemoveComponent(GetEntity(parent)->GetComponent(Reflection::GetTypeID<Children>()));
+					children->ChildrenID.remove(child);
+
+					if (children->ChildrenID.empty())
+					{
+						OnRemoveComponent(GetEntity(parent)->GetComponent(Reflection::GetTypeID<Children>()));
+					}
 				}
 			}
 			OnRemoveComponent(GetEntity(child)->GetComponent(Reflection::GetTypeID<Parent>()));
@@ -170,6 +174,7 @@ void SceneManager::OnRemoveChild(std::any data)
 		}
 	}
 }
+
 void SceneManager::AddCompToPool(std::shared_ptr<Component> comp)
 {
 	// 컴포넌트 풀에 컴포넌트를 추가합니다.
@@ -487,7 +492,7 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get());
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -528,7 +533,7 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 			// 특정 함수를 찾고 호출합니다.
 			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity);
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity.get());
 			else
 				VP_ASSERT(false, "Reflection 함수 실패!");
 		}
@@ -559,7 +564,7 @@ void SceneManager::OnDeSerializeEntity(std::any data)
 				// 특정 함수를 찾고 호출합니다.
 				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 				if (myFunctionMeta)
-					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity);
+					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity.get());
 				else
 					VP_ASSERT(false, "Reflection 함수 실패!");
 			}
@@ -704,11 +709,11 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get());
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
-							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
+							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>()) 
 								for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
 									childID = findOrCreatePair(entityResettingPair, childID).second;
 							else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())

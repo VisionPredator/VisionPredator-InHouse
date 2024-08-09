@@ -30,7 +30,23 @@ struct Children : public Component
 struct TransformComponent :public Component
 {
 public:
-	VP_JSONBODY(TransformComponent, Local_Location, Local_Quaternion, Local_Scale)
+	friend void to_json(nlohmann::json& nlohmann_json_j, const TransformComponent& nlohmann_json_t) {
+		nlohmann_json_j["Local_Location"] = nlohmann_json_t.Local_Location; nlohmann_json_j["Local_Quaternion"] = nlohmann_json_t.Local_Quaternion; nlohmann_json_j["Local_Scale"] = nlohmann_json_t.Local_Scale;
+	} friend void from_json(const nlohmann::json& nlohmann_json_j, TransformComponent& nlohmann_json_t) {
+		nlohmann_json_j.at("Local_Location").get_to(nlohmann_json_t.Local_Location); nlohmann_json_j.at("Local_Quaternion").get_to(nlohmann_json_t.Local_Quaternion); nlohmann_json_j.at("Local_Scale").get_to(nlohmann_json_t.Local_Scale);
+	} std::shared_ptr<Component> AddComponent(Entity* parentEntity) override {
+		auto component = parentEntity->AddComponent<TransformComponent>(); return component;
+	} void SerializeComponent(nlohmann::json& json) const override 
+	{
+		to_json(json, *this);
+	} std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity) const override
+	{
+		auto component = parentEntity->AddComponent<TransformComponent>();
+		*component = json.get<TransformComponent>();
+		component->SetEntity(parentEntity); return component;
+	} entt::meta_handle GetHandle() override {
+		return *this;
+	}
 		TransformComponent();
 
 

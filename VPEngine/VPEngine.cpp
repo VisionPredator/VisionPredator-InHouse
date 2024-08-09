@@ -98,7 +98,7 @@ void VPEngine::Addsystem()
 }
 void VPEngine::OnAddSystemLater(std::any)
 {
-	m_SystemManager->AddSystem<TransformSystem>();
+	m_TransformSystem =m_SystemManager->AddSystem<TransformSystem>();
 }
 void VPEngine::Loop()
 {

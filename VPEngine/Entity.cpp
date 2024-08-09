@@ -50,8 +50,8 @@ std::shared_ptr<Component> Entity::AddComponent(entt::id_type compID)
         return nullptr;
     }
 
-    auto sharedThis = shared_from_this();
-    auto result = myFunctionMeta.invoke(instance, sharedThis);
+    //auto sharedThis = shared_from_this();
+    auto result = myFunctionMeta.invoke(instance, this);
     if (auto componentPtr = result.try_cast<std::shared_ptr<Component>>())
     {
         return *componentPtr;

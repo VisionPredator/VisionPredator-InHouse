@@ -14,12 +14,13 @@ public:
     template<typename T>
     T* GetComponent() requires std::derived_from<T, Component>
     {
-        return FindComponent<T>();
+        return std::static_pointer_cast<T>(m_OwnedComp[Reflection::GetTypeID<T>()]).get();
+
     }
 
     Component* GetComponent(entt::id_type compID)
     {
-        return FindComponent(compID);
+        return m_OwnedComp[compID].get();
     }
 
     template<typename T>
@@ -47,7 +48,7 @@ public:
         }
         std::shared_ptr<T> newcomp = std::make_shared<T>();
         AddComponentToMap(newcomp);
-        newcomp->SetEntity(shared_from_this()); // Use shared_from_this to set the entity
+        newcomp->SetEntity(this); // Use shared_from_this to set the entity
         if (!Immediately)
             EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
         else
@@ -82,23 +83,7 @@ private:
 
     void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
 
-    template<typename T>
-    T* FindComponent()
-    {
-        auto it = m_OwnedComp.find(Reflection::GetTypeID<T>());
-        return (it != m_OwnedComp.end()) ? std::static_pointer_cast<T>(it->second).get() : nullptr;
-    }
 
-    Component* FindComponent(entt::id_type compID)
-    {
-        auto it = m_OwnedComp.find(compID);
-        if (it == m_OwnedComp.end())
-        {
-            VP_ASSERT(false, "Component not found in m_OwnedComp");
-            return nullptr;
-        }
-        return it->second.get();
-    }
 
     void ReleaseComponent(std::shared_ptr<Component> comp);
     void ReleaseComponent(Component* comp);
