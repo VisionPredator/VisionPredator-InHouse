@@ -13,24 +13,20 @@ Entity::Entity(uint32_t entityID)
 
 Entity::~Entity()
 {
-    for (auto& comp : m_OwnedComp)
-    {
-        comp.second.reset(); // Reset the shared_ptr to release the resource
-    }
-    m_OwnedComp.clear();
+    m_OwnedComp.clear(); // shared_ptr의 소멸자가 자동으로 자원을 해제합니다.
 }
+
 
 void Entity::AddComponentToMap(std::shared_ptr<Component> comp)
 {
-    // 메타를 사용하여 T를 타입추론해서 ID값에 해당하는 컴포넌트를 추가할수 있을듯함.
-    if (HasComponent(comp->GetHandle()->type().id()))
+    auto compID = comp->GetHandle()->type().id();
+    if (HasComponent(compID))
     {
         VP_ASSERT(false, "컴포넌트가 존재합니다");
         return;
     }
-    m_OwnedComp[comp->GetHandle()->type().id()] = comp;
+    m_OwnedComp[compID] = std::move(comp);
 }
-
 std::shared_ptr<Component> Entity::AddComponent(entt::id_type compID)
 {
     if (HasComponent(compID))
@@ -40,47 +36,39 @@ std::shared_ptr<Component> Entity::AddComponent(entt::id_type compID)
     }
 
     auto metaType = entt::resolve(compID);
-
-    if (metaType)
-    {
-        // 메타 타입으로부터 인스턴스를 생성합니다.
-        auto instance = metaType.construct();
-        // 특정 함수를 찾고 호출합니다.
-        auto myFunctionMeta = metaType.func("AddComponent"_hs);
-        if (myFunctionMeta)
-        {
-            // 현재 엔티티의 shared_ptr을 얻기 위해 shared_from_this()를 사용합니다.
-            std::shared_ptr<Entity> sharedThis = shared_from_this();
-            entt::meta_any result = myFunctionMeta.invoke(instance, sharedThis);
-            if (auto componentPtr = result.try_cast<std::shared_ptr<Component>>())
-            {
-                return *componentPtr;
-            }
-            else
-            {
-                VP_ASSERT(false, " 함수 리턴 실패!");
-            }
-        }
-        else
-        {
-            VP_ASSERT(false, "FunctionMeta 함수 실패!");
-        }
-    }
-    else
+    if (!metaType)
     {
         VP_ASSERT(false, "resolve 함수 실패!");
+        return nullptr;
     }
 
+    auto instance = metaType.construct();
+    auto myFunctionMeta = metaType.func("AddComponent"_hs);
+    if (!myFunctionMeta)
+    {
+        VP_ASSERT(false, "FunctionMeta 함수 실패!");
+        return nullptr;
+    }
+
+    auto sharedThis = shared_from_this();
+    auto result = myFunctionMeta.invoke(instance, sharedThis);
+    if (auto componentPtr = result.try_cast<std::shared_ptr<Component>>())
+    {
+        return *componentPtr;
+    }
+
+    VP_ASSERT(false, " 함수 리턴 실패!");
     return nullptr;
 }
 
+
 void Entity::ReleaseComponent(std::shared_ptr<Component> comp)
 {
-    auto it = m_OwnedComp.find(comp->GetHandle()->type().id());
+    auto compID = comp->GetHandle()->type().id();
+    auto it = m_OwnedComp.find(compID);
     if (it != m_OwnedComp.end())
     {
-        it->second.reset(); // Reset the shared_ptr to release the resource
-        m_OwnedComp.erase(it);
+        m_OwnedComp.erase(it); // shared_ptr의 소멸자가 자동으로 자원을 해제합니다.
     }
     else
     {
@@ -89,11 +77,11 @@ void Entity::ReleaseComponent(std::shared_ptr<Component> comp)
 }
 void Entity::ReleaseComponent(Component* comp)
 {
-    auto it = m_OwnedComp.find(comp->GetHandle()->type().id());
+    auto compID = comp->GetHandle()->type().id();
+    auto it = m_OwnedComp.find(compID);
     if (it != m_OwnedComp.end())
     {
-        it->second.reset(); // Reset the shared_ptr to release the resource
-        m_OwnedComp.erase(it);
+        m_OwnedComp.erase(it); // shared_ptr의 소멸자가 자동으로 자원을 해제합니다.
     }
     else
     {

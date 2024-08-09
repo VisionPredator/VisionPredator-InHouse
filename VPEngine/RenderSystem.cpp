@@ -15,40 +15,60 @@ void RenderSystem::OnAddedComponent(std::any data)
 {
 	// Static Mesh
 	auto comp = std::any_cast<Component*>(data);
+
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
-		auto IDComp = meshComponent->GetComponent<IDComponent>();
-		std::wstring Name{};
-		std::wstring Path{};
-		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
-		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
+		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
+
+		///Graphic에 RenderModel 만들 때 std::share_ptr<RenderData> 받기
+		meshComponent->Renderdata = std::make_shared<RenderData>();
+		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
+		meshComponent->Renderdata->FBX = meshComponent->FBX;
+		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
+		meshComponent->Renderdata->world = Transform.WorldTransform;
+		
+		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
+		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
+		/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
+		/// m_Graphics->AddRenderModel(meshComponent->GetEntityID(),meshComponent->Renderdata)
+		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
 	}
-
 	// Skinned Mesh
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
-		auto IDComp = meshComponent->GetComponent<IDComponent>();
-		std::wstring Name{};
-		std::wstring Path{};
-		Name.assign(IDComp->Name.begin(), IDComp->Name.end());
-		Path.assign(meshComponent->FBX.begin(), meshComponent->FBX.end());
+		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID(), Path);
+		meshComponent->Renderdata = std::make_shared<RenderData>();
+		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 
+		meshComponent->Renderdata->FBX= meshComponent->FBX;
+		meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
+		meshComponent->Renderdata->world = Transform.WorldTransform;
+		meshComponent->Renderdata->duration = 0;
+
+		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
 	}
 
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<GeometryComponent>())
 	{
 		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
-		auto IDComp = meshComponent->GetComponent<IDComponent>();
+		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-		//m_Graphics->AddRenderModel(meshComponent->FBXFilter, meshComponent->GetEntityID());
+		auto IDComp = meshComponent->GetComponent<IDComponent>();
+		meshComponent->Renderdata = std::make_shared<RenderData>();
+		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
+		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
+		meshComponent->Renderdata->world = Transform.WorldTransform;
+		meshComponent->Renderdata->useTexture = meshComponent->UseTexture;
+		meshComponent->Renderdata->color = meshComponent->color;
+		meshComponent->Renderdata->textureName = meshComponent->TextureName;
+
+		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
 	}	// Particle Object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
@@ -61,7 +81,8 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.TexturePath = Path;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
-	}}
+	}
+}
 
 void RenderSystem::OnReleasedComponent(std::any data)
 {
@@ -70,7 +91,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	{
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 		m_Graphics->EraseObject(meshComponent->GetEntityID());
-
+		meshComponent->Renderdata.reset();
 		return;
 	}
 
@@ -79,6 +100,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
 		m_Graphics->EraseObject(meshComponent->GetEntityID());
+		meshComponent->Renderdata.reset();
 
 		return;
 	}
@@ -88,6 +110,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	{
 		GeometryComponent* meshComponent = static_cast<GeometryComponent*>(comp);
 		m_Graphics->EraseObject(meshComponent->GetEntityID());
+		meshComponent->Renderdata.reset();
 
 		return;
 	}
@@ -98,10 +121,10 @@ void RenderSystem::OnReleasedComponent(std::any data)
 
 void RenderSystem::RenderUpdate(float deltaTime)
 {
-
-	for (MeshComponent& meshComp : COMPITER(MeshComponent))
+	//THREAD_COMPONENTS(RenderSystem, MeshComponent, &RenderSystem::MeshCompRender);
+	for (MeshComponent& meshcomp : COMPITER(MeshComponent))
 	{
-		MeshCompRender(meshComp);
+		MeshCompRender(meshcomp);
 	}
 
 	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
@@ -109,22 +132,9 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		SkincompRender(skinComp);
 	}
 
-	for (GeometryComponent& GeoComp : COMPITER(GeometryComponent))
+	for (GeometryComponent& geometryComp : COMPITER(GeometryComponent))
 	{
-		RenderData temp;
-		temp.color.x = GeoComp.color.x;
-		temp.color.y = GeoComp.color.y;
-		temp.color.z = GeoComp.color.z;
-		temp.color.w = GeoComp.UseTexture;
-
-		auto idComp = GeoComp.GetComponent<IDComponent>();
-		temp.EntityID = idComp->GetEntityID();
-		temp.Pass = GeoComp.pass;
-		temp.Filter = GeoComp.FBXFilter;
-		temp.world = GeoComp.GetComponent<TransformComponent>()->WorldTransform;
-		temp.useTexture = GeoComp.UseTexture;
-		temp.textureName = temp.textureName.assign(GeoComp.TextureName.begin(),GeoComp.TextureName.end());
-		//m_Graphics->UpdateModel(GeoComp.GetEntityID(), temp);
+		GeometryRender(geometryComp);
 	}
 	for (ParticleComponent& component : COMPITER(ParticleComponent))
 	{
@@ -138,54 +148,62 @@ void RenderSystem::RenderUpdate(float deltaTime)
 
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
-	//IGraphics::Getinstance().Render(uint32_t, transform, ~~정보);
-	RenderData temp;
-	auto idComp = meshComp.GetComponent<IDComponent>();
-	temp.EntityID = idComp->GetEntityID();
-	std::wstring FbxName{};
-	std::wstring Name{};
-	FbxName = FbxName.assign(meshComp.FBX.begin(), meshComp.FBX.end());
-	Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-	temp.Filter = meshComp.FBXFilter;
-	temp.world = meshComp.GetComponent<TransformComponent>()->WorldTransform;
-	temp.Name = Name;
-	temp.FBX = FbxName;
-	temp.duration = 0;
+	const TransformComponent& transform = *meshComp.GetComponent<TransformComponent>();
+	bool IsChanged=false;
+	auto renderdata = meshComp.Renderdata;
 
-	//m_Graphics->UpdateModel(meshComp.GetEntityID(), temp);
+	renderdata->FBX = meshComp.FBX;
+	renderdata->world = transform.WorldTransform;
+	renderdata->Filter = meshComp.FBXFilter;
+	m_Graphics->UpdateModel(meshComp.GetEntityID()); 
+
+
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 {
-	auto idComp = skinComp.GetComponent<IDComponent>();
-	RenderData temp;
-	temp.EntityID = idComp->GetEntityID();
-	std::wstring FbxName{};
-	std::wstring Name{};
-	FbxName = FbxName.assign(skinComp.FBX.begin(), skinComp.FBX.end());
-	Name = Name.assign(idComp->Name.begin(), idComp->Name.end());
-	temp.Filter = skinComp.FBXFilter;
-	temp.world = skinComp.GetComponent<TransformComponent>()->WorldTransform;
-	temp.Name = Name;
-
-	temp.FBX = FbxName;
-	temp.duration = 0;
-
+	const TransformComponent& transform = *skinComp.GetComponent<TransformComponent>();
+	auto renderdata = skinComp.Renderdata;
+	renderdata->FBX = skinComp.FBX;
+	renderdata->world = transform.WorldTransform;
+	renderdata->Filter = skinComp.FBXFilter;
+	renderdata->duration = 0;
 	if (skinComp.HasComponent<AnimationComponent>())
 	{
 		auto anicomp = skinComp.GetComponent<AnimationComponent>();
 
-		temp.curAnimation = anicomp->curAnimation;
-		if (!temp.curAnimation.empty())
+		renderdata->curAnimation = anicomp->curAnimation;
+		if (!renderdata->curAnimation.empty())
 		{
-			temp.FBX = temp.curAnimation;
-			temp.duration = anicomp->duration;
-			temp.isPlay = anicomp->isPlay;
-			temp.isChange = anicomp->isChange;
-			temp.preDuration = anicomp->preDuration;
-			temp.preAnimation = anicomp->preAnimation;
+			renderdata->FBX = renderdata->curAnimation;
+			renderdata->duration = anicomp->duration;
+			renderdata->isPlay = anicomp->isPlay;
+			renderdata->isChange = anicomp->isChange;
+			renderdata->preDuration = anicomp->preDuration;
+			renderdata->preAnimation = anicomp->preAnimation;
 		}
 	}
+	m_Graphics->UpdateModel(skinComp.GetEntityID());
 
-	//m_Graphics->UpdateModel(skinComp.GetEntityID(), temp);
+	
+
 }
+
+void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
+{
+	const TransformComponent& transform = *geometryComp.GetComponent<TransformComponent>();
+
+	auto renderdata = geometryComp.Renderdata;
+	renderdata->color = geometryComp.color;
+	renderdata->color.w = geometryComp.UseTexture;	//shader에서 color의 w값으로 텍스처있는지 판단함
+	renderdata->useTexture = geometryComp.UseTexture;
+	renderdata->Pass = geometryComp.pass;
+	renderdata->Filter = geometryComp.FBXFilter;
+	renderdata->world = transform.WorldTransform;
+	renderdata->useTexture = geometryComp.UseTexture;
+	renderdata->textureName = geometryComp.TextureName;
+	m_Graphics->UpdateModel(geometryComp.GetEntityID()); 
+
+}
+
+

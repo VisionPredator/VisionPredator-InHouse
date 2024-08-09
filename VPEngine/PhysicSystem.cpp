@@ -38,18 +38,6 @@ void PhysicSystem::OnCollisionContact(std::any pair)
 	//auto entity1 =GetSceneManager()->GetEntity(pairid1).get();
 	//auto entity2 =GetSceneManager()->GetEntity(pairid2).get();
 
-	//if (entity1->HasComponent<GeometryComponent>())
-	//{
-	//	auto geoComp = entity1->GetComponent<GeometryComponent>();
-	//	geoComp->color = {1,0,0};
-	//}
-	//if (entity2->HasComponent<GeometryComponent>())
-	//{
-	//	auto geoComp = entity2->GetComponent<GeometryComponent>();
-	//	geoComp->color = { 1,0,0 };
-
-	//}
-
 }
 
 void PhysicSystem::OnCollisionEnter(std::any pair)
@@ -111,111 +99,128 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
 	if (!rigidComp)
 		return;
-	TransformComponent rigidtransform = *rigidComp->GetComponent<TransformComponent>();
-	rigidComp->ColliderInfo.EntityID = EntityID;
-	rigidComp->ColliderInfo.WorldLocation = rigidtransform.World_Location;
-	rigidComp->ColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
-	rigidComp->ColliderInfo.WorldScale = rigidtransform.World_Scale;
+	const TransformComponent& rigidtransform = *rigidComp->GetComponent<TransformComponent>();
+	rigidComp->DefaultColliderInfo.EntityID = EntityID;
+	rigidComp->DefaultColliderInfo.WorldLocation = rigidtransform.World_Location;
+	rigidComp->DefaultColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
+	rigidComp->DefaultColliderInfo.WorldScale = rigidtransform.World_Scale;
 	if (!rigidComp->IsDynamic)
 	{
-		switch (rigidComp->ColliderShape)
-		{
-		case VPPhysics::EColliderShape::BOX:
-		{
-			rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateStaticBody(rigidComp->BoxInfo, rigidComp->ColliderType);
-		}
-		break;
-		case VPPhysics::EColliderShape::CAPSULE:
-		{
-			rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateStaticBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
-		}
-		break;
-		case VPPhysics::EColliderShape::SPHERE:
-		{
-			rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateStaticBody(rigidComp->SphereInfo, rigidComp->ColliderType);
-		}
-		break;
-		case VPPhysics::EColliderShape::CONVEX:
-		{
-			if (!rigidComp->HasComponent<MeshComponent>())
-				return;
-			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
-			convexMeshResourceInfo.FBXName = rigidComp->GetComponent<MeshComponent>()->FBX;
-
-			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
-			{
-				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
-				if (convexMeshResourceInfo.Vertexs.empty()) {
-					return; // Return null if no vertices were extracted
-				}
-				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
-			}
-			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
-			VPPhysics::ConvexColliderInfo convexColliderInfo{};
-			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
-			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateStaticBody(convexColliderInfo, rigidComp->ColliderType);
-		}
-		break;
-
-		default:
-			break;
-		}
+		CreateStatic(rigidComp);
 	}
 	else
 	{
-		switch (rigidComp->ColliderShape)
-		{
-		case VPPhysics::EColliderShape::BOX:
-		{
-			rigidComp->BoxInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateDynamicBody(rigidComp->BoxInfo, rigidComp->ColliderType);
-		}
-		break;
-		case VPPhysics::EColliderShape::CAPSULE:
-		{
-			rigidComp->CapsuleInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateDynamicBody(rigidComp->CapsuleInfo, rigidComp->ColliderType);
-		}
-		break;
-		case VPPhysics::EColliderShape::SPHERE:
-		{
-			rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateDynamicBody(rigidComp->SphereInfo, rigidComp->ColliderType);
-		}
-		break;
-		case VPPhysics::EColliderShape::CONVEX:
-		{
-			if (!rigidComp->HasComponent<MeshComponent>())
-				return;
+		CreateDynamic(rigidComp);
+	}
+}
 
+void PhysicSystem::CreateStatic(RigidBodyComponent* staticBody)
+{
+	switch (staticBody->ColliderShape)
+	{
+	case VPPhysics::EColliderShape::BOX:
+	{
+		staticBody->BoxInfo.colliderInfo = staticBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateStaticBody(staticBody->BoxInfo, staticBody->ColliderType);
+	}
+	break;
+	case VPPhysics::EColliderShape::CAPSULE:
+	{
+		staticBody->CapsuleInfo.colliderInfo = staticBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateStaticBody(staticBody->CapsuleInfo, staticBody->ColliderType);
+	}
+	break;
+	case VPPhysics::EColliderShape::SPHERE:
+	{
+		staticBody->SphereInfo.colliderInfo = staticBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateStaticBody(staticBody->SphereInfo, staticBody->ColliderType);
+	}
+	break;
+	case VPPhysics::EColliderShape::CONVEX:
+	{
+		if (!staticBody->HasComponent<MeshComponent>())
+			return;
+		auto meshcomp = staticBody->GetComponent<MeshComponent>();
+
+		if (!m_PhysicsEngine->HasConvexMeshResource(meshcomp->FBX))
+		{
 			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
-			convexMeshResourceInfo.FBXName = rigidComp->GetComponent<MeshComponent>()->FBX;
-			
+			convexMeshResourceInfo.FBXName = meshcomp->FBX;
+			///TODO GetVertices wstring으로
+			std::string temp(convexMeshResourceInfo.FBXName.begin(), convexMeshResourceInfo.FBXName.end());
+			convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(temp);
+			if (convexMeshResourceInfo.Vertexs.empty())
+				return; // Return null if no vertices were extracted
 
-			if (!m_PhysicsEngine->HasConvexMeshResource(convexMeshResourceInfo.FBXName))
-			{
-				convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
-				if (convexMeshResourceInfo.Vertexs.empty()) {
-					return; // Return null if no vertices were extracted
-				}
-				m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
-			}
-			//rigidComp->SphereInfo.colliderInfo = rigidComp->ColliderInfo;
-			VPPhysics::ConvexColliderInfo convexColliderInfo{};
-			convexColliderInfo.FBXName = convexMeshResourceInfo.FBXName;
-
-			convexColliderInfo.colliderInfo = rigidComp->ColliderInfo;
-			m_PhysicsEngine->CreateDynamicBody(convexColliderInfo, rigidComp->ColliderType);
+			m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
 		}
+		staticBody->ConvexColliderInfo.FBXName = meshcomp->FBX;
+		staticBody->ConvexColliderInfo.colliderInfo = staticBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateStaticBody(staticBody->ConvexColliderInfo, staticBody->ColliderType);
+
+	}
+	break;
+
+	default:
 		break;
+	}
+}
+void PhysicSystem::CreateDynamic(RigidBodyComponent* dynamicBody)
+{
+	switch (dynamicBody->ColliderShape)
+	{
+	case VPPhysics::EColliderShape::BOX:
+	{
+		dynamicBody->BoxInfo.colliderInfo = dynamicBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateDynamicBody(dynamicBody->BoxInfo, dynamicBody->ColliderType);
+	}
+	break;
+	case VPPhysics::EColliderShape::CAPSULE:
+	{
+		dynamicBody->CapsuleInfo.colliderInfo = dynamicBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateDynamicBody(dynamicBody->CapsuleInfo, dynamicBody->ColliderType);
+	}
+	break;
+	case VPPhysics::EColliderShape::SPHERE:
+	{
+		dynamicBody->SphereInfo.colliderInfo = dynamicBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateDynamicBody(dynamicBody->SphereInfo, dynamicBody->ColliderType);
+	}
+	break;
+	case VPPhysics::EColliderShape::CONVEX:
+	{
+		if (!dynamicBody->HasComponent<MeshComponent>())
+			return;
+		auto meshcomp = dynamicBody->GetComponent<MeshComponent>();
 
-		default:
-			break;
+		///해당 메쉬에 대한 Convex가 존재하지 않는가?
+		if (!m_PhysicsEngine->HasConvexMeshResource(meshcomp->FBX))
+		{
+			//VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
+			//convexMeshResourceInfo.FBXName = meshcomp->FBX;
+			//convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
+			//if (convexMeshResourceInfo.Vertexs.empty())
+			//return;
+			//m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
+			///=======================삭제 예정=======================
+			///TODO GetVertices wstring으로
+			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
+			convexMeshResourceInfo.FBXName = meshcomp->FBX;
+			std::string temp(meshcomp->FBX.begin(), meshcomp->FBX.end());
+			convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(temp);
+			if (convexMeshResourceInfo.Vertexs.empty())
+				return; // Return null if no vertices were extracted
+			m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
+			///=======================================================
 		}
+		dynamicBody->ConvexColliderInfo.FBXName = meshcomp->FBX;
+		dynamicBody->ConvexColliderInfo.colliderInfo = dynamicBody->DefaultColliderInfo;
+		m_PhysicsEngine->CreateDynamicBody(dynamicBody->ConvexColliderInfo, dynamicBody->ColliderType);
+	}
+	break;
+
+	default:
+		break;
 	}
 }
 
@@ -229,8 +234,6 @@ void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 	controllercomp->CapsuleControllerinfo.position = entity->GetComponent<TransformComponent>()->World_Location;
 	controllercomp->CapsuleControllerinfo.Info = controllercomp->Contollerinfo;
 	m_PhysicsEngine->CreatCapsuleController(controllercomp->CapsuleControllerinfo);
-
-
 }
 
 void PhysicSystem::ReleaseRigidBody(uint32_t EntityID)
@@ -254,6 +257,9 @@ void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
 
 void PhysicSystem::RenderUpdate(float deltaTime)
 {
+	debug::OBBInfo obbInfo{};
+	debug::SphereInfo sphereInfo{};
+
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
@@ -262,28 +268,24 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 		{
 		case VPPhysics::EColliderShape::BOX:
 		{
-			debug::OBBInfo temp{};
-			temp.OBB.Center = rigidTransform->World_Location;
 
 
-
-			temp.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
-
-			temp.xAxisAngle = rigidTransform->World_Rotation.x;
-			temp.yAxisAngle = rigidTransform->World_Rotation.y;
-			temp.zAxisAngle = rigidTransform->World_Rotation.z;
-			m_Graphics->DrawOBB(temp);
+			obbInfo.OBB.Center = rigidTransform->World_Location;
+			obbInfo.OBB.Extents = rigidBodyComponent.BoxInfo.Extent*rigidTransform->World_Scale;
+			obbInfo.xAxisAngle = rigidTransform->World_Rotation.x;
+			obbInfo.yAxisAngle = rigidTransform->World_Rotation.y;
+			obbInfo.zAxisAngle = rigidTransform->World_Rotation.z;
+			m_Graphics->DrawOBB(obbInfo);
 
 
 		}
 		break;
 		case VPPhysics::EColliderShape::SPHERE:
 		{
-			debug::SphereInfo temp{};
-			temp.Sphere.Center = rigidTransform->World_Location;
+			sphereInfo.Sphere.Center = rigidTransform->World_Location;
 			float maxscle = rigidTransform->World_Scale.GetMaxComponent();
-			temp.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
-			m_Graphics->DrawSphere(temp);
+			sphereInfo.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius* maxscle;
+			m_Graphics->DrawSphere(sphereInfo);
 
 		}
 		break;
@@ -296,15 +298,15 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 	{
 		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
 
-		debug::OBBInfo temp{};
-		temp.OBB.Center = ControllerTransform->World_Location;
+		debug::OBBInfo obbInfo{};
+		obbInfo.OBB.Center = ControllerTransform->World_Location;
 		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
-		temp.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
+		obbInfo.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
 
-		temp.xAxisAngle = 0;
-		temp.yAxisAngle = 0;
-		temp.zAxisAngle = 0;
-		m_Graphics->DrawOBB(temp);
+		obbInfo.xAxisAngle = ControllerTransform->World_Rotation.x;
+		obbInfo.yAxisAngle = ControllerTransform->World_Rotation.y;
+		obbInfo.zAxisAngle = ControllerTransform->World_Rotation.z;
+		m_Graphics->DrawOBB(obbInfo);
 
 
 	}
@@ -346,11 +348,10 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		}
 	}
 
-	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
+	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))						
 	{
 		uint32_t entityID = controllerCompoent.GetEntityID();
-		if (!m_PhysicsEngine->HasRigidBody(entityID))
-			continue;
+
 
 		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
 		VPMath::Vector3 templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
@@ -375,12 +376,10 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
 	{
 		uint32_t entityID = controllerComponent.GetEntityID();
-		if (!m_PhysicsEngine->HasRigidBody(entityID))
-			continue;
+
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
 		controllerTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(entityID);
 	}
-
-
+	EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 
 }

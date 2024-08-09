@@ -56,8 +56,11 @@ void VP_Editor::Update()
 
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
 
+        if (m_TimeManager->GetPrevFPS()!= m_TimeManager->GetFPS())
+        {
         std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
         SetWindowTextW(m_hWnd, newname.c_str());
+        }
 
 	}
 	else

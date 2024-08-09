@@ -42,7 +42,7 @@ public:
 	virtual bool HasRigidBody(uint32_t entityID) abstract;
 
 
-	virtual bool HasConvexMeshResource(const std::string& key) abstract;
+	virtual bool HasConvexMeshResource(const std::wstring& key) abstract;
 
 
 

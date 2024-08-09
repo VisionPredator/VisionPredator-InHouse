@@ -38,7 +38,17 @@ void Hierarchy::ImGuiRender()
 		m_SceneManager.lock()->RemoveParent(move_from);
 		}
 	}
+	// Add a search input field
+	static char searchBuffer[256];
+	ImGui::InputText("Search", searchBuffer, sizeof(searchBuffer));
+	m_HierarchySystem.lock()->m_SearchingName = searchBuffer;
+	m_HierarchySystem.lock()->ShowEntitys();
 
+	// Add padding lines at the end
+	for (int i = 0; i < 3; ++i)
+	{
+		ImGui::Text("");
+	}
 
 	if (!m_HierarchySystem.lock()->m_IsEntityRClicked &&ImGui::BeginPopupContextWindow())
 	{
@@ -49,7 +59,6 @@ void Hierarchy::ImGuiRender()
 
 		ImGui::EndPopup();
 	}
-	m_HierarchySystem.lock()->ShowEntitys();
 
 	ImGui::End();
 

@@ -1,7 +1,8 @@
 #pragma once
 #include "IImGui.h"
+#include "../VPCommon/EventSubscriber.h"
 class SceneManager;
-class EditorCamera:public IImGui
+class EditorCamera:public IImGui,public EventSubscriber
 {
 public: 
 	EditorCamera(std::shared_ptr<SceneManager> sceneManager);
@@ -13,7 +14,7 @@ public:
 	void CalculateCamera();
 	void CalculateCameraTransform();
 	void DoubleClicked(float deltatime);
-
+	void OnReSize(std::any hwnd);
 
 	// IImGui을(를) 통해 상속됨
 	void ImGuiRender() override;

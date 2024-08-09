@@ -23,8 +23,11 @@ struct Component
     template <typename T>
     bool HasComponent()
     {
-        auto sharedEntity = OwnedEntity.lock();
-        return sharedEntity ? sharedEntity->HasComponent<T>() : false;
+        if (auto sharedEntity = OwnedEntity.lock())
+        {
+            return sharedEntity->HasComponent<T>();
+        }
+        return false;
     }
 
     uint32_t GetEntityID()
