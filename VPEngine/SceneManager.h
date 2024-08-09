@@ -69,18 +69,9 @@ public:
 
 		// 엔티티를 가져옴
 		auto entity = GetEntity(EntityID);
-		if (!entity)
-		{
-			return nullptr;
-		}
-
 		// 엔티티에서 컴포넌트를 가져옴
 		T* component = entity->GetComponent<T>();
-		if (component)
-		{
-			// 캐시에 저장
-			m_ComponentCache[{EntityID, componentTypeID}] = component;
-		}
+		m_ComponentCache[{EntityID, componentTypeID}] = component;
 		return component;
 	}
 

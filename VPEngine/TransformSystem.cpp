@@ -14,16 +14,16 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
 
 void TransformSystem::Update(float deltaTime)
 {
-    std::vector<TransformComponent*> updateList;
+	std::vector<TransformComponent*> updateList;
 
-    // 최상단의 Entity 만 기억하기
-    for (TransformComponent& comp : COMPITER(TransformComponent))
-    {
-        if (!comp.HasComponent<Parent>())
-        {
-            updateList.push_back(&comp);
-        }
-    }
+	// 최상단의 Entity 만 기억하기
+	for (TransformComponent& comp : COMPITER(TransformComponent))
+	{
+		if (!comp.HasComponent<Parent>())
+		{
+			updateList.push_back(&comp);
+		}
+	}
 	if (!updateList.empty())
 		for (TransformComponent* transformComp : updateList)
 		{
@@ -83,23 +83,20 @@ void TransformSystem::CalculateTransform_new(TransformComponent* transform, bool
         CalculateTransformWorld(transform);
         IsParentWorldChanged = true;
     }
-    else if (IsParentWorldChanged)
-    {
-        TransformComponent* parentComponent = GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
-        if (parentComponent)
-        {
-            VPMath::Matrix worldTransform = transform->LocalTransform * parentComponent->WorldTransform;
-            if (transform->WorldTransform != worldTransform)
-            {
-                UpdateWorldTransform(transform, worldTransform);
-                IsParentWorldChanged = true;
-            }
-        }
-    }
+	else if (IsParentWorldChanged)
+	{
+		TransformComponent* parentComponent = GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
+		VPMath::Matrix worldTransform = transform->LocalTransform * parentComponent->WorldTransform;
+		if (transform->WorldTransform != worldTransform)
+		{
+			UpdateWorldTransform(transform, worldTransform);
+			IsParentWorldChanged = true;
+		}
+	}
 
-    if (transform->HasComponent<Children>())
+	if (transform->HasComponent<Children>())
     {
-        auto* children = transform->GetComponent<Children>();
+        auto children = transform->GetComponent<Children>();
         for (auto childID : children->ChildrenID)
         {
             TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);

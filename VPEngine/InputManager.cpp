@@ -23,56 +23,76 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 
 	// Direct Input 인터페이스를 초기화 합니다.
 	HRESULT result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
+	//if (FAILED(result))
+	//{
+	//	return false;
+	//}
+	bool returnbool = true;
 	// 키보드의 Direct Input 인터페이스를 생성합니다
 	result = m_directInput->CreateDevice(GUID_SysKeyboard, &m_keyboard, NULL);
 	if (FAILED(result))
-		return false;
+	{
+		VP_ASSERT(false, "m_directInput->CreateDevice");
+		
+		returnbool = false;
+	}
+
 
 	// 데이터 형식을 설정하십시오. 이 경우 키보드이므로 사전 정의된 데이터 형식을 사용할 수 있습니다.
 	result = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
 	if (FAILED(result))
-		return false;
-
+	{
+		VP_ASSERT(false, "m_keyboard->SetDataFormat");
+		returnbool = false;
+	}
 	// 다른 프로그램과 공유하지 않도록 키보드의 협조 수준을 설정합니다
 	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
-		return false;
+	{
+		VP_ASSERT(false, "m_keyboard->SetCooperativeLevel");
+		returnbool = false;
+	}
 
-	// 키보드를 할당받는다
-	result = m_keyboard->Acquire();
-	if (FAILED(result))
-		return false;
 
 	// 마우스 Direct Input 인터페이스를 생성합니다.
 	result = m_directInput->CreateDevice(GUID_SysMouse, &m_mouse, NULL);
 	if (FAILED(result))
-		return false;
+	{
+		VP_ASSERT(false, " m_directInput->CreateDevice");
+		returnbool = false;
+	}
 
 	// 미리 정의 된 마우스 데이터 형식을 사용하여 마우스의 데이터 형식을 설정합니다.
 	result = m_mouse->SetDataFormat(&c_dfDIMouse);
 	if (FAILED(result))
-		return false;
-
+	{
+		VP_ASSERT(false, " m_mouse->SetDataFormat");
+		returnbool = false;
+	}
 	// 다른 프로그램과 공유 할 수 있도록 마우스의 협력 수준을 설정합니다.
 	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
 	{
-		return false;
+		VP_ASSERT(false, " m_mouse->SetCooperativeLevel");
+		returnbool = false;
 	}
 
+	// 키보드를 할당받는다
+	result = m_keyboard->Acquire();
+	if (FAILED(result))
+	{
+		VP_ASSERT(false, "m_keyboard->Acquire()");
+		returnbool = false;
+	}
 	// 마우스를 할당받는다
 	result = m_mouse->Acquire();
 	if (FAILED(result))
 	{
-		return false;
+		VP_ASSERT(false, "m_mouse->Acquire()");
+		returnbool = false;
 	}
 
-	return true;
+	return returnbool;
 }
 
 bool InputManager::Update()
