@@ -250,7 +250,7 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
 				{
 					std::wstring id = std::to_wstring(curData->EntityID);
-					resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld );
+					resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld * offset);
 				}
 			}
 		}

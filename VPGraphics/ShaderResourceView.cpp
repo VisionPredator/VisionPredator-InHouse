@@ -12,13 +12,13 @@
 #include "Defines.h"
 
 
-ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resource(device), m_tex(nullptr), m_view(nullptr)
+ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resource(device), m_tex(), m_view(nullptr)
 {
 
 
 }
 
-ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename) : Resource(device), m_tex(nullptr)
+ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstring filename) : Resource(device), m_tex()
 {
 #ifdef _DEBUG
 	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
@@ -65,22 +65,27 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc) : Resource(device)
 {
-	m_tex = texture.lock()->Get();
+	m_tex = texture;
 
-	m_Device.lock()->Get()->CreateShaderResourceView(m_tex, &desc, &m_view);
+	m_Device.lock()->Get()->CreateShaderResourceView(m_tex.lock()->Get(), &desc, &m_view);
 }
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, std::weak_ptr<RenderTargetView> rtv, D3D11_SHADER_RESOURCE_VIEW_DESC desc) : Resource(device)
 {
-	ID3D11Texture2D* renderTargetTexture = nullptr;
-	rtv.lock()->Get()->GetResource(reinterpret_cast<ID3D11Resource**>(&renderTargetTexture));
+	std::shared_ptr<RenderTargetView> _rtv = rtv.lock();
+	std::shared_ptr<Texture2D> tex = rtv.lock()->Texture().lock();
+	m_tex = tex;
+	//ID3D11Texture2D* renderTargetTexture = nullptr;
+	//_rtv->Get()->GetResource(reinterpret_cast<ID3D11Resource**>(tex->GetAddress())); //이게 누수였네
+	//이 함수는 리소스의 참조 수를 1씩 증가하므로 애플리케이션이 완료될 때 반환된 포인터에서 Release 를 호출해야 합니다.
+	//  Release가 호출되기 전에 반환된 포인터를 삭제(또는 손실)하면 메모리 누수가 발생합니다.
 
 	D3D11_TEXTURE2D_DESC textureDesc;
-	renderTargetTexture->GetDesc(&textureDesc);
+	tex->Get()->GetDesc(&textureDesc);
 	desc.Format = textureDesc.Format;
 	desc.Texture2D.MipLevels = textureDesc.MipLevels;
 
-	m_Device.lock()->Get()->CreateShaderResourceView(renderTargetTexture, &desc, &m_view);
+	m_Device.lock()->Get()->CreateShaderResourceView(tex->Get(), &desc, &m_view);
 }
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, RenderTargetView* rtv) : Resource(device)
@@ -117,6 +122,15 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, const std
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(rtvTexture.Get(), &srvDesc, &m_view));
 }
 
+ShaderResourceView::~ShaderResourceView()
+{
+	if (m_view != nullptr)
+	{
+		m_view->Release();
+		m_view = nullptr;
+	}
+}
+
 ID3D11ShaderResourceView* ShaderResourceView::Get() const
 {
 	return m_view;
@@ -133,5 +147,10 @@ void ShaderResourceView::Release()
 	{
 		m_view->Release();
 		m_view = nullptr;
+	}
+
+	if (!m_tex.expired())
+	{
+		m_tex.reset();
 	}
 }

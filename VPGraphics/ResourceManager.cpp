@@ -187,10 +187,10 @@ void ResourceManager::OnResize(RECT& wndsize)
 	Erase<ViewPort>(L"Main");
 	Create<ViewPort>(L"Main", wndsize);
 
-	for (auto tex : m_OffScreenName)
+	/*for (auto tex : m_OffScreenName)
 	{
 		Erase<Texture2D>(tex);
-	}
+	}*/
 
 	Erase<RenderTargetView>(L"RTV_Main");
 
@@ -200,20 +200,20 @@ void ResourceManager::OnResize(RECT& wndsize)
 	}
 
 
-	/*auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
-	int numRTV = static_cast<int>(RTVmap.size());
+	//	/*
+	//	auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
+	//	int numRTV = static_cast<int>(RTVmap.size());
 
-	for (auto& rtv : RTVmap)
-	{
-		rtv.second->Release();
-	}
-	RTVmap.clear();*/
+	//	for (auto& rtv : RTVmap)
+	//	{
+	//		rtv.second->Release();
+	//	}
+	//	RTVmap.clear();
+	//	*/
 
-	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
-	texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
-	texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 
-	//출력용 backbuffer
+
+	//	//출력용 backbuffer
 	Create<RenderTargetView>(L"RTV_Main");
 
 	//디퍼드용
@@ -222,6 +222,14 @@ void ResourceManager::OnResize(RECT& wndsize)
 
 	for (int i = 0; i < m_OffScreenName.size(); i++)
 	{
+		//기존에 있으면 지우고
+		Erase<ShaderResourceView>(m_OffScreenName[i]);
+		Erase<Texture2D>(m_OffScreenName[i]);
+
+		D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
+		texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+		texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+
 		// 렌더 타겟 뷰의 설명을 설정합니다.
 		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 		renderTargetViewDesc.Format = texDesc.Format;
@@ -231,7 +239,6 @@ void ResourceManager::OnResize(RECT& wndsize)
 		std::weak_ptr <Texture2D> offscreenTex = Create<Texture2D>(m_OffScreenName[i], texDesc);
 		std::weak_ptr <RenderTargetView> newRTV = Create<RenderTargetView>(m_OffScreenName[i], offscreenTex, renderTargetViewDesc);
 
-
 		// 셰이더 리소스 뷰의 설명을 설정합니다.
 		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 		shaderResourceViewDesc.Format = texDesc.Format;
@@ -239,32 +246,28 @@ void ResourceManager::OnResize(RECT& wndsize)
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-		//기존에 있으면 지우고
-		Erase<ShaderResourceView>(m_OffScreenName[i]);
-
-		/*
-#pragma region SUMIN
-		if (m_OffScreenName[i] == L"IMGUI")
-		{
-			Create<ShaderResourceView>(m_OffScreenName[i], Get<RenderTargetView>(L"RTV_Main").lock());
-			continue;
-		}
-#pragma endregion SUMIN
-		 */
-
 		// 셰이더 리소스 뷰를 만듭니다.
 		Create<ShaderResourceView>(m_OffScreenName[i], newRTV, shaderResourceViewDesc);
 	}
 
-	auto& DSVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<DepthStencilView>())];
-	int numDSV = static_cast<int>(DSVmap.size());
-
-	for (auto& dsv : DSVmap)
 	{
-		dsv.second->Release();
-	}
-	DSVmap.clear();
+		D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
+		texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+		texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 
-	Create<DepthStencilView>(L"DSV_Main", texDesc);
-	Create<DepthStencilView>(L"DSV_Deferred", texDesc);
+		auto& DSVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<DepthStencilView>())];
+		int numDSV = static_cast<int>(DSVmap.size());
+
+		for (auto& dsv : DSVmap)
+		{
+			dsv.second->Release();
+		}
+		DSVmap.clear();
+
+		Create<DepthStencilView>(L"DSV_Main", texDesc);
+		Create<DepthStencilView>(L"DSV_Deferred", texDesc);
+	}
+	/*
+	*/
+
 }

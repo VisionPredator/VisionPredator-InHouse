@@ -93,6 +93,10 @@ bool GraphicsEngine::Initialize()
 	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager, m_UIManager);
 	m_PassManager->Initialize();
 
+
+	/*
+	*/
+
 	OnResize(m_hWnd);
 
 	InitializeImGui();
@@ -102,6 +106,8 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
+	/*
+	*/
 	m_Animator->Update(dt, m_RenderList);
 
 	m_PassManager->Update(m_RenderList);
@@ -115,8 +121,11 @@ bool GraphicsEngine::Finalize()
 
 	m_Device.reset();
 	m_ResourceManager.reset();
+	m_UIManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
+	m_PassManager.reset();
+	m_ParticleManager.reset();
 	DestroyImGui();
 
 
@@ -147,6 +156,8 @@ void GraphicsEngine::BeginRender()
 
 void GraphicsEngine::Render()
 {
+	/*
+	*/
 	m_PassManager->Render();
 	BeginImGui();
 }
@@ -357,7 +368,13 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 
 ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 {
-	return m_ResourceManager->Get<ShaderResourceView>(name).lock()->Get();
+	std::shared_ptr<ShaderResourceView> srv = m_ResourceManager->Get<ShaderResourceView>(name).lock();
+	if (srv != nullptr)
+	{
+		return srv->Get();
+	}
+
+	return nullptr;
 }
 
 std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
@@ -401,6 +418,8 @@ void GraphicsEngine::OnResize(HWND hwnd)
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));
+	/*
+	*/
 
 
 	m_PassManager->OnResize();
