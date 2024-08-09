@@ -8,7 +8,6 @@ public:
 	~DeferredPass();
 	virtual void Render() override;
 	void OnResize() override;
-	virtual void Release() override;
 
 private:
 

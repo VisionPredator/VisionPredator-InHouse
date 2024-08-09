@@ -237,7 +237,7 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID)
 			{
 				//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
 				//m_RenderList[EntityID]->Pass = PassState::Forward;
-				m_RenderList[EntityID]->Pass = PassState::Forward;
+				//m_RenderList[EntityID]->Pass = PassState::Forward;
 
 				if (m_RenderList[EntityID]->FBX == L"cctv_lens_low.fbx")
 				{

@@ -94,7 +94,7 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 			float t = time - cur;
 
 			std::shared_ptr<Node> curAni = ani->node.lock();
-			curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur], ani->totals[next], t).Transpose();
+			curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur].second, ani->totals[next].second, t).Transpose();
 		}
 	}
 
@@ -130,7 +130,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 					cur = i;
 				}
 
-				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, ani->totals[cur]));
+				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, ani->totals[cur].second));
 			}
 
 
@@ -156,7 +156,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				float t = curOb->duration - cur;
 
 				std::shared_ptr<Node> curAni = ani->node.lock();
-				curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur], preAni[ani->nodename], t).Transpose();
+				curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur].second, preAni[ani->nodename], t).Transpose();
 			}
 
 		}
@@ -250,7 +250,7 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
 				{
 					std::wstring id = std::to_wstring(curData->EntityID);
-					resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld * offset);
+					resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld );
 				}
 			}
 		}
@@ -260,7 +260,7 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 	//mixamo 기준 hips가 pelvis 이거로 상하체구분을 해보자
 	std::shared_ptr<Node> pelvis = ob->m_RootNode->m_Childs[1]; //hips
 
-	std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
+	//std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
 
 
 }

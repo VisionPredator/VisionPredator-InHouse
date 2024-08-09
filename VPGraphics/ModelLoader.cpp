@@ -631,7 +631,7 @@ void ModelLoader::ProcessAnimation(std::shared_ptr<ModelData> Model, aiAnimation
 
 			VPMath::Matrix total = scale * rotation * translate;
 
-			ob_Channel->totals.push_back(total);
+			ob_Channel->totals.push_back({ curChannel->mRotationKeys[j].mTime, total });
 		}
 
 	}
