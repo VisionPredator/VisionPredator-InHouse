@@ -20,7 +20,7 @@ PhysichResourceManager::~PhysichResourceManager()
 
 }
 
-std::shared_ptr<ConvexMeshResource> PhysichResourceManager::GetConvexMeshResource(const std::string& key)
+std::shared_ptr<ConvexMeshResource> PhysichResourceManager::GetConvexMeshResource(const std::wstring& key)
 {
 	auto it = m_ConvexMeshMap.find(key);
 	if (it == m_ConvexMeshMap.end())
@@ -33,7 +33,7 @@ void PhysichResourceManager::LoadConvexMeshResource(const VPPhysics::ConvexMeshR
 	m_ConvexMeshMap[info.FBXName] = convexmesh;
 }
 
-bool PhysichResourceManager::HasConvexMeshResource(const std::string& key)
+bool PhysichResourceManager::HasConvexMeshResource(const std::wstring& key)
 {
 	return m_ConvexMeshMap.find(key) != m_ConvexMeshMap.end();
 }

@@ -24,7 +24,6 @@
 		m_Renderables.clear();
 		m_Startables.clear();
 		m_LateUpdatable.clear();
-
 	}
 	void SystemManager::PhysicUpdatable(float deltatime)
 	{
@@ -34,7 +33,6 @@
 			for (auto physicsUpdatable : m_PhysicUpdatable)
 			{
 				physicsUpdatable->PhysicsUpdate(m_PhysicDeltatime);
-				EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 			}
 			m_PhysicProgressedTime -= m_PhysicDeltatime;
 		}

@@ -60,6 +60,7 @@ void GeoMetryPass::Render()
 			position->Update(renew);
 
 			Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
+			Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, position->GetAddress());
 
 			std::shared_ptr<RenderState> rs = m_ResourceManager.lock()->Get<RenderState>(L"Solid").lock();
 

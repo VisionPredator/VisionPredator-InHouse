@@ -9,16 +9,23 @@ HierarchySystem::HierarchySystem(std::shared_ptr<SceneManager> sceneManager) :Sy
 
 void HierarchySystem::ShowEntitys()
 {
+	std::string lowerSearchingName = ToLower(m_SearchingName);
+		ShowDelete = false;
 
-
-	for (TransformComponent& transcomp :COMPITER(TransformComponent))
+	for (TransformComponent& transcomp : COMPITER(TransformComponent))
 	{
-
-		// 부모가 없으면 루트
+		//std::string entityName = transcomp.GetComponent<IDComponent>()->Name;
+		//std::string lowerEntityName = ToLower(entityName);
 		if (transcomp.HasComponent<Parent>())
 			continue;
 
 		ShowParentEntity(transcomp.GetEntityID());
+		//// Check if the entity name contains the search string (case-insensitive)
+		//if (lowerSearchingName.empty() || lowerEntityName.find(lowerSearchingName) != std::string::npos)
+		//{
+		//	// Skip if the entity has a parent (not a root entity)
+
+		//}
 	}
 
 }
@@ -31,7 +38,7 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 
 
 	ImGui::PushID(entityID);
-	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow| ImGuiTreeNodeFlags_SpanFullWidth;
 
 	if (!entity->HasComponent<Children>())
 		node_flags |= ImGuiTreeNodeFlags_Leaf;
@@ -41,17 +48,28 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 	if (m_SelectedEntityID == entityID)
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	auto IDcomp = entity->GetComponent<IDComponent>();
+
+
+
 	isNodeOpened = ImGui::TreeNodeEx(IDcomp->Name.c_str(), node_flags);
-
-
-
-
-	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+	if (!ShowDelete)
 	{
-		ImGui::OpenPopup("Entity_Popup");
-		m_RClickedEntityID = entityID;
-		m_IsEntityRClicked = true;
+		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("Entity_Popup");
+			m_RClickedEntityID = entityID;
+			m_IsEntityRClicked = true;
+			ShowDelete = true;
+		}
+		else if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+		{
+			ImGui::CloseCurrentPopup();
+			m_RClickedEntityID = 0;
+			m_IsEntityRClicked = false;
+		}
+
 	}
+
 
 
 

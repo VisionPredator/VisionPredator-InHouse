@@ -231,7 +231,7 @@ void DeferredPass::Geometry()
 					Device->BindVS(m_StaticMeshVS.lock());
 
 					// CB Update
-					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 
 					TransformData renew;
 					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));

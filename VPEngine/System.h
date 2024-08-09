@@ -16,13 +16,17 @@ for(auto& comp : COMPITER(ClassName))
 ///쓰레드를 위한 매크로
 #define THREAD_COMPONENTS(System_Name, ComponentType, Function)                                                                   \
 {                                                                                                                                 \
-    auto task = [](std::vector<std::shared_ptr<ComponentType>>& components, size_t start, size_t end, System_Name* sys)    \
+    auto task = [](std::vector<ComponentType*>& components, size_t start, size_t end, System_Name* sys)                           \
     {                                                                                                                             \
         for (size_t i = start; i < end; ++i)                                                                                      \
             (sys->*Function)(*components[i]);                                                                                     \
     };                                                                                                                            \
-    auto ComponentType##Pool = COMPITER(ComponentType);                                                                           \
-    std::vector<std::shared_ptr<ComponentType>> components(ComponentType##Pool.begin(), ComponentType##Pool.end());        \
+    auto ComponentType##Pool = CompIter<ComponentType>(m_SceneManager.lock());                                                    \
+    std::vector<ComponentType*> components;                                                                                       \
+    for (auto& comp : ComponentType##Pool)                                                                                        \
+    {                                                                                                                             \
+        components.push_back(&comp.get());                                                                                        \
+    }                                                                                                                             \
     if (!components.empty())                                                                                                      \
     {                                                                                                                             \
         size_t midPoint = components.size() / 2;                                                                                  \
@@ -39,6 +43,7 @@ for(auto& comp : COMPITER(ClassName))
     }                                                                                                                             \
 }
 
+
 class System
 {
 public:
@@ -48,22 +53,17 @@ public:
     template<typename T>
     class CompIter
     {
-        std::weak_ptr<SceneManager> m_SceneManager; // SceneManager의 weak_ptr 추가
+        SceneManager* m_SceneManager; // SceneManager의 포인터 추가
     public:
         std::vector<std::reference_wrapper<T>> innerVector;
 
-        CompIter(std::shared_ptr<SceneManager> sceneManager) : m_SceneManager(sceneManager)
+        CompIter(std::shared_ptr<SceneManager> sceneManager) : m_SceneManager(sceneManager.get())
         {
-            auto sharedSceneManager = m_SceneManager.lock();
-            if (!sharedSceneManager)
+            if (!m_SceneManager)
                 throw std::runtime_error("SceneManager is not initialized");
 
-            // 컴포넌트 풀에서 참조를 추출하여 벡터에 추가합니다.
-            auto components = sharedSceneManager->GetComponentPool<T>();
-            for (const auto& comp : components)
-            {
-                innerVector.push_back(*comp);
-            }
+            // SceneManager의 GetComponentPool 메서드를 사용하여 벡터에 추가합니다.
+            innerVector = m_SceneManager->GetComponentPool<T>();
         }
 
         typename std::vector<std::reference_wrapper<T>>::iterator begin()

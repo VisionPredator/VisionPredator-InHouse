@@ -4,7 +4,7 @@
 struct RigidBodyComponent :
     public Component
 {
-    VP_JSONBODY(RigidBodyComponent, IsDynamic, ColliderType, ColliderShape, BoxInfo, SphereInfo, CapsuleInfo, ColliderInfo)
+    VP_JSONBODY(RigidBodyComponent, IsDynamic, ColliderType, ColliderShape, BoxInfo, SphereInfo, CapsuleInfo, DefaultColliderInfo)
         RigidBodyComponent();
     bool IsDynamic = false;
     VPPhysics::EColliderType ColliderType{};
@@ -12,7 +12,8 @@ struct RigidBodyComponent :
     VPPhysics::BoxColliderInfo BoxInfo{};
     VPPhysics::SphereColliderInfo SphereInfo{};
     VPPhysics::CapsuleColliderInfo CapsuleInfo{};
-    VPPhysics::ColliderInfo ColliderInfo{};
+    VPPhysics::ConvexColliderInfo ConvexColliderInfo{};
+    VPPhysics::ColliderInfo DefaultColliderInfo{};
 
 };
 

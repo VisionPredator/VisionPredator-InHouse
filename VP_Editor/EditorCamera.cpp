@@ -2,7 +2,9 @@
 #include "EditorCamera.h"
 #include <InputManager.h>
 #include "HierarchySystem.h"
+#include "../VPCommon/EventManager.h"
 #include "SceneManager.h"
+
 float WrapAngle(float angle)
 {
 	while (angle > 360.0f)
@@ -22,7 +24,7 @@ void EditorCamera::Initialize()
 {
 	m_Width = 16;
 	m_Height = 9;
-	m_ratio = { (float)m_Width/ (float)m_Height };
+	m_ratio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
 
 	m_view = VPMath::Matrix::Identity;
 	m_proj = VPMath::Matrix::Identity;
@@ -32,7 +34,7 @@ void EditorCamera::Initialize()
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
 
 	// SUMIN_
-	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(1920.f, 1080.f, m_nearZ, m_farZ);
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, m_nearZ, m_farZ);
 }
 
 void EditorCamera::Update(float deltatime)
@@ -45,106 +47,87 @@ void EditorCamera::Update(float deltatime)
 
 void EditorCamera::CameraMove(float deltatime)
 {
-	VPMath::Vector3 MoveDirection = {};
-
-	if (InputManager::GetInstance().GetKey(KEY::RBUTTON))
-	{
-	if (InputManager::GetInstance().GetKey(KEY::W))
-		MoveDirection += m_FrontVector;
-	if (InputManager::GetInstance().GetKey(KEY::S))
-		MoveDirection -= m_FrontVector;
-	if (InputManager::GetInstance().GetKey(KEY::A))
-		MoveDirection -= m_RightVector;
-	if (InputManager::GetInstance().GetKey(KEY::D))
-		MoveDirection += m_RightVector;
-	if (InputManager::GetInstance().GetKey(KEY::Q))
-		MoveDirection.y -= 1;
-	if (InputManager::GetInstance().GetKey(KEY::E))
-		MoveDirection.y += 1;
-
-	if (InputManager::GetInstance().GetKeyDown(KEY::LSHFIT))
-		m_PressedShift = true;
-	else if (InputManager::GetInstance().GetKeyUp(KEY::LSHFIT))
-		m_PressedShift = false;
-	}
-
-	if (MoveDirection.Length() < 0.5)
+	if (!InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
 		return;
 
-	MoveDirection.Normalize();
-	VPMath::Vector3 moveWay{};
-	if (m_PressedShift)
-		moveWay = m_ShiftSpeed * deltatime * MoveDirection;
-	else
-		moveWay = m_DeflaultSpeed * deltatime * MoveDirection;
+	VPMath::Vector3 moveDirection = {};
+
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::W))
+		moveDirection += m_FrontVector;
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::S))
+		moveDirection -= m_FrontVector;
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::A))
+		moveDirection -= m_RightVector;
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::D))
+		moveDirection += m_RightVector;
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::Q))
+		moveDirection.y -= 1;
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::E))
+		moveDirection.y += 1;
+
+	if (moveDirection.Length() < 0.5f)
+		return;
+
+	moveDirection.Normalize();
+	VPMath::Vector3 moveWay = (m_PressedShift ? m_ShiftSpeed : m_DeflaultSpeed) * deltatime * moveDirection;
 
 	m_Location += moveWay;
-}
 
+	if (InputManager::GetInstance().GetKeyDown(KEYBOARDKEY::LSHIFT))
+		m_PressedShift = true;
+	else if (InputManager::GetInstance().GetKeyUp(KEYBOARDKEY::LSHIFT))
+		m_PressedShift = false;
+}
 
 void EditorCamera::CameraRotation()
 {
-	if (InputManager::GetInstance().GetKey(KEY::RBUTTON))
+	if (InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
 	{
-		VPMath::Vector2 DeltaCurpos = InputManager::GetInstance().GetDeltaCurPos();
-		float yaw = DeltaCurpos.x * m_sensitivity;
-		float pitch = DeltaCurpos.y * m_sensitivity;
+		int deltaCurposx = InputManager::GetInstance().GetMouseDeltaX();
+		int deltaCurposy = InputManager::GetInstance().GetMouseDeltaY();
+		float yaw = deltaCurposx * m_sensitivity;
+		float pitch = deltaCurposy * m_sensitivity;
 
-		// Update rotation angles
-		m_Rotation.y += yaw; // Yaw affects the y-axis
-		m_Rotation.x += pitch; // Pitch affects the x-axis
+		m_Rotation.y += yaw;
+		m_Rotation.x += pitch;
 
-		// Clamp pitch to avoid gimbal lock
-		if (m_Rotation.x > m_maxPitch)
-			m_Rotation.x = m_maxPitch;
-		if (m_Rotation.x < -m_maxPitch)
-			m_Rotation.x = -m_maxPitch;
+		m_Rotation.x = std::clamp(m_Rotation.x, -m_maxPitch, m_maxPitch);
 	}
 }
+
 
 
 
 void EditorCamera::CalculateCamera()
 {
-	if (m_nearZ < 1)
-	{
-		m_nearZ = 1;
-	}
-	if (m_farZ <= m_nearZ)
-	{
-		m_farZ = m_nearZ + 1;
-	}
+	if (m_nearZ < 1.0f)
+		m_nearZ = 1.0f;
 
-	if (m_Width <= 0)
-	{
+	if (m_farZ < m_nearZ + 1.0f)
+		m_farZ = m_nearZ + 1.0f;
+
+	if (m_Width < 1)
 		m_Width = 1;
-	}
-	if (m_Height <= 0)
-	{
+
+	if (m_Height < 1)
 		m_Height = 1;
-	}
+
 	CalculateCameraTransform();
 
 	m_ratio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
-	if (m_ratio < 0.00001f)
-	{
+	if (m_ratio < 0.00002f)
 		m_ratio = 0.00002f;
-	}
 
-
-
-
-	// Update view matrix
-	// To get view matrix, we need to invert the world matrix
 	VPMath::Vector3 eye = m_Location;
-	VPMath::Vector3 target = eye + m_FrontVector; // Assuming the camera looks along the FrontVector
+	VPMath::Vector3 target = eye + m_FrontVector;
 	VPMath::Vector3 up = m_UpVector;
 	m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 
-	// Calculate projection matrix
-	// Assuming m_ratio, m_FOV, m_nearZ, and m_farZ are properly set
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, m_nearZ, m_farZ);
+
 }
+
 
 void EditorCamera::CalculateCameraTransform()
 {
@@ -177,17 +160,17 @@ void EditorCamera::CalculateCameraTransform()
 
 void EditorCamera::DoubleClicked(float deltatime)
 {
-	if (!m_SceneManager.lock()->HasEntity(HierarchySystem::m_SelectedEntityID))
+	auto sceneManager = m_SceneManager.lock();
+	if (!sceneManager || !sceneManager->HasEntity(HierarchySystem::m_SelectedEntityID))
 		return;
-	auto transform = m_SceneManager.lock()->GetComponent<TransformComponent>( HierarchySystem::m_SelectedEntityID);
+
+	auto transform = sceneManager->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 
 	if (!HierarchySystem::IsItemDoubleClicked)
 	{
 		m_LerpTime = 0;
-	m_LerpStartPos= m_Location;
-	m_LerpEndPos.x = transform->World_Location.x - 30 * m_FrontVector.x;
-	m_LerpEndPos.y = transform->World_Location.y - 30 * m_FrontVector.y;
-	m_LerpEndPos.z = transform->World_Location.z - 30 * m_FrontVector.z;
+		m_LerpStartPos = m_Location;
+		m_LerpEndPos = transform->World_Location - 30 * m_FrontVector;
 	}
 	else
 	{
@@ -195,12 +178,20 @@ void EditorCamera::DoubleClicked(float deltatime)
 		if (m_LerpTime > m_LerpEndTime)
 		{
 			HierarchySystem::IsItemDoubleClicked = false;
-			m_LerpTime =m_LerpEndTime;
+			m_LerpTime = m_LerpEndTime;
 		}
-		m_Location = VPMath::Vector3::Lerp(m_LerpStartPos, m_LerpEndPos, (m_LerpTime / m_LerpEndTime));
-	
+		m_Location = VPMath::Vector3::Lerp(m_LerpStartPos, m_LerpEndPos, m_LerpTime / m_LerpEndTime);
 	}
+}
 
+void EditorCamera::OnReSize(std::any hwnd)
+{
+	auto tempHwnd = std::any_cast<HWND>(hwnd);
+	RECT tempsize{};
+	GetClientRect(tempHwnd, &tempsize);
+
+	m_Width = tempsize.right - tempsize.left;
+	m_Height = tempsize.bottom - tempsize.top;
 }
 
 void EditorCamera::ImGuiRender()
@@ -231,26 +222,6 @@ void EditorCamera::ImGuiRender()
 
 		ImGui::SetNextItemWidth(dragBoxWidth);
 		ImGui::DragFloat("MaxSpeed", &m_ShiftSpeed, 1.f, -FLT_MAX, FLT_MAX);
-
-
-		int CameraSize[2] = { (int)m_Width,(int)m_Height };
-		ImGui::SetNextItemWidth(dragBoxWidth);
-		ImGui::DragInt2("Width/Height", CameraSize, 1, 1, INT_MAX);
-
-		ImGui::SameLine();
-
-		if (CameraSize[0] <=0)
-		{
-			CameraSize[0] = 1;
-		}
-		if (CameraSize[1] <= 0)
-		{
-			CameraSize[1] = 1;
-		}
-
-		m_Width = CameraSize[0];
-		m_Height = CameraSize[1];
-
 	}
 
 	ImGui::End();

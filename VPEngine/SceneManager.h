@@ -3,6 +3,15 @@
 #include "Entity.h"
 #include "Components.h"
 #include "EventSubscriber.h"
+struct PrefabData
+{
+	std::string prefabname;
+	VPMath::Vector3 pos;
+	VPMath::Vector3 direction;
+	VPMath::Vector3 scale;
+};
+
+
 class SceneManager :public EventSubscriber
 {
 public:
@@ -13,19 +22,20 @@ public:
 	// 엔티티를 삭제한다.
 	void DeleteEntity(uint32_t entityID);
 
-
+	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 direction = {0,0,1}, VPMath::Vector3 scele = { 1,1,1 });
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
+	
 	/// 해당 json를 Deserialize 한다.
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();
-	std::shared_ptr<Entity> CreateEntity(uint32_t id);
+	//std::shared_ptr<Entity> CreateEntity(uint32_t id);
 	uint32_t CreateRandomEntityID();
 
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
 
-	std::vector<std::shared_ptr<Component>> GetOwnedComponent(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponent(); }
+	std::vector<std::shared_ptr<Component>> GetOwnedComponents(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponents(); }
 
 
 	template<typename T>
@@ -45,8 +55,31 @@ public:
 	template<typename T>
 	T* GetComponent(uint32_t EntityID)
 	{
+		// 캐시된 컴포넌트 ID를 저장하여 반복 호출을 줄임
+			static const auto componentTypeID = Reflection::GetTypeID<T>();
+
+		// 캐시를 먼저 확인
+		auto cachedComponent = m_ComponentCache.find({ EntityID, componentTypeID });
+		if (cachedComponent != m_ComponentCache.end())
+		{
+			return static_cast<T*>(cachedComponent->second);
+		}
+
+		// 엔티티를 가져옴
 		auto entity = GetEntity(EntityID);
-		return entity ? entity->GetComponent<T>() : nullptr;
+		if (!entity)
+		{
+			return nullptr;
+		}
+
+		// 엔티티에서 컴포넌트를 가져옴
+		T* component = entity->GetComponent<T>();
+		if (component)
+		{
+			// 캐시에 저장
+			m_ComponentCache[{EntityID, componentTypeID}] = component;
+		}
+		return component;
 	}
 
 	Component* GetComponent(uint32_t entityID, entt::id_type compId)
@@ -60,10 +93,7 @@ public:
 		auto it = m_CurrentScene->EntityMap.find(entityID);
 		return it != m_CurrentScene->EntityMap.end() ? it->second : nullptr;
 	}
-	std::unordered_map<uint32_t, std::shared_ptr<Entity>>& GetEntityMap()
-	{
-		return m_CurrentScene->EntityMap;
-	}
+
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 
 
@@ -71,29 +101,29 @@ public:
 	void SetSceneName(const std::string& sceneName) { m_CurrentScene->SceneName = sceneName; }
 
 	template<typename T>
-	inline  std::vector<std::shared_ptr<T>> GetComponentPool();
+	inline std::vector<std::reference_wrapper<T>> GetComponentPool();
 
 	void AddChild(uint32_t Parent, uint32_t Child);
 	void RemoveParent(uint32_t child, bool Immediate = false);
 protected:
 	friend class CompIter;
 private:
+	std::unordered_map<uint32_t, std::shared_ptr<Entity>>& GetEntityMap()
+	{
+		return m_CurrentScene->EntityMap;
+	}
 	void OpenNewScene();
 	void SceneSerialize(std::string FilePath);
 	void SceneDeSerialize(std::string FilePath);
-
-
-
 	bool CheckParent(uint32_t parent, uint32_t child);
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
+	void OnSpawnPrefab(std::any pair);
 
 	void SetEntityMap(uint32_t entityID, std::shared_ptr<Entity> entity) { m_CurrentScene->EntityMap[entityID] = entity; }
-
 	void AddCompToPool(std::shared_ptr<Component> comp);
 	// 새로운 씬을 연다.
 	void OnNewScene(std::any data);
-
 	// 새로운 씬을 연다.
 	void OnOpenNewScene(std::any null);
 
@@ -137,15 +167,32 @@ private:
 	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
 	Scene* m_CurrentScene = nullptr;
+	void ClearCache()
+	{
+		m_ComponentCache.clear();
+	}
+	struct pair_hash
+	{
+		template <class T1, class T2>
+		std::size_t operator () (const std::pair<T1, T2>& pair) const
+		{
+			auto hash1 = std::hash<T1>{}(pair.first);
+			auto hash2 = std::hash<T2>{}(pair.second);
+			return hash1 ^ hash2;
+		}
+	};
+	std::unordered_map<std::pair<uint32_t, entt::id_type>, Component*, pair_hash> m_ComponentCache;
+
+
 
 	friend class Toolbar;
 };
 
 
 template<typename T>
-inline std::vector<std::shared_ptr<T>> SceneManager::GetComponentPool()
+inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 {
-	std::vector<std::shared_ptr<T>> result;
+	std::vector<std::reference_wrapper<T>> result;
 
 	auto it = m_CurrentScene->m_ComponentPool.find(Reflection::GetTypeID<T>());
 	if (it != m_CurrentScene->m_ComponentPool.end())
@@ -154,7 +201,7 @@ inline std::vector<std::shared_ptr<T>> SceneManager::GetComponentPool()
 		{
 			if (auto sharedComp = weakComp.lock())
 			{
-				result.push_back(std::dynamic_pointer_cast<T>(sharedComp));
+				result.push_back(*std::dynamic_pointer_cast<T>(sharedComp));
 			}
 		}
 	}

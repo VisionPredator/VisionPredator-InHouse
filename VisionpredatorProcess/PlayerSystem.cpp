@@ -15,46 +15,33 @@ void PlayerSystem::Update(float deltaTime)
 		{
 			ControllerComponent* controllercomp = comp.GetComponent<ControllerComponent>();
 			controllercomp->InputDir = {};
-			if (INPUTKEY(KEY::W))
+			if (INPUTKEY(KEYBOARDKEY::W))
 			{
 				controllercomp->InputDir += TransformComp->FrontVector;
 			}
-			if (INPUTKEY(KEY::S))
+			if (INPUTKEY(KEYBOARDKEY::S))
 			{
 				controllercomp->InputDir -= TransformComp->FrontVector;
 
 			}
-			if (INPUTKEY(KEY::A))
+			if (INPUTKEY(KEYBOARDKEY::A))
 			{
 				controllercomp->InputDir -= TransformComp->RightVector;
 			}
-			if (INPUTKEY(KEY::D))
+			if (INPUTKEY(KEYBOARDKEY::D))
 			{
 				controllercomp->InputDir += TransformComp->RightVector;
 			}
 
-			return;
 		}
 
+		if (INPUTKEYDOWN(KEYBOARDKEY::SPACE))
+		{
+			auto temppos =TransformComp->World_Location + TransformComp->FrontVector * 2;
+			auto tempdir =TransformComp->FrontVector;
+			VPMath::Vector3 tempscale = {1,1,1};
 
-		uint32_t entityID = comp.GetEntityID();
-		if (INPUTKEY(KEY::W))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, TransformComp->FrontVector, comp.Accel);
-
-		}		
-		if (INPUTKEY(KEY::S))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, -TransformComp->FrontVector, comp.Accel);
-
-		}
-		if (INPUTKEY(KEY::A))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, -TransformComp->RightVector, comp.Accel);
-		}
-		if (INPUTKEY(KEY::D))
-		{
-			m_PhysicsEngine->AddVelocity(entityID, TransformComp->RightVector, comp.Accel);
+			m_SceneManager.lock()->SpawnPrefab("../Data/Prefab/cube.prefab", temppos, tempdir, tempscale);
 		}
 
 	}

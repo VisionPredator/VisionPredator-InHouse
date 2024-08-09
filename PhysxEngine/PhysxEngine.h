@@ -96,7 +96,7 @@ private:
 	// IPhysx을(를) 통해 상속됨
 	void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) override;
 
-	bool HasConvexMeshResource(const std::string& key) override;
+	bool HasConvexMeshResource(const std::wstring& key) override;
 
 
 	// IPhysx을(를) 통해 상속됨

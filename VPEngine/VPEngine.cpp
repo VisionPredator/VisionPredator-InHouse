@@ -16,7 +16,7 @@
 #include "../PhysxEngine/PhysxEngine.h"
 #include "../PhysxEngine/IPhysx.h"
 #ifdef _DEBUG
-#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
 #include "PhysicSystem.h"
 
@@ -27,12 +27,13 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 {
 	auto wTitle = std::wstring(title.begin(), title.end());
 	// 윈도우 클래스 구조체 정의
+	m_hinstance = GetModuleHandle(NULL);
 	WNDCLASS wndclass{};
 	wndclass.style = CS_HREDRAW | CS_VREDRAW;
 	wndclass.lpfnWndProc = WndProc;
 	wndclass.cbClsExtra = 0;
 	wndclass.cbWndExtra = 0;
-	wndclass.hInstance = hInstance;
+	wndclass.hInstance = m_hinstance;
 	wndclass.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
 	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
@@ -41,12 +42,20 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	RegisterClass(&wndclass);
 	RECT rcClient = { 0, 0, (LONG)width, (LONG)height };
 	AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
-	m_hWnd = CreateWindowW(
+
+	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
 		wTitle.c_str(),
 		wTitle.c_str(),
 		WS_OVERLAPPEDWINDOW,
 		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
+
+	ShowWindow(m_hWnd, SW_SHOWNORMAL);
+	UpdateWindow(m_hWnd);
+	SetFocus(m_hWnd);
+	m_ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	m_ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	InputManager::GetInstance().Initialize(m_hinstance, m_hWnd, m_ScreenWidth, m_ScreenHeight);
 
 	VPRegister::Register_Metadata();
 
@@ -59,10 +68,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
 	m_SystemManager->Initialize(m_SceneManager,m_Graphics,m_PhysicEngine);
-	InputManager::GetInstance().Initialize();
 	/// 다 초기화 되고 윈도우 만들기
-	ShowWindow(m_hWnd, SW_SHOWNORMAL);
-	UpdateWindow(m_hWnd);
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater",CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
@@ -131,6 +137,12 @@ void VPEngine::Loop()
 				EndRender();
 				tempTime -= (1/90.f);
 			}
+
+			// 사용자가 ESC키를 눌렀는지 확인 후 종료 처리함
+			if (InputManager::GetInstance().IsEscapePressed())
+			{
+				break;
+			}
 		}
 	}
 }
@@ -152,8 +164,12 @@ void VPEngine::Update()
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
 
-	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
-	SetWindowTextW(m_hWnd, newname.c_str());
+	if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
+	{
+		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
+		SetWindowTextW(m_hWnd, newname.c_str());
+	}
+
 }
 
 
@@ -204,43 +220,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	}
 	break;
-	case WM_KEYDOWN:
-	{
-		std::pair<int, KEY_STATE> data = { static_cast<int>(wParam), KEY_STATE::DOWN };
-		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
-		break;
-	}
-	case WM_KEYUP:
-	{
-		std::pair<int, KEY_STATE> data = { static_cast<int>(wParam), KEY_STATE::UP };
-		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
-		break;
-	}
-	case WM_LBUTTONDOWN:
-	{
-		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_LBUTTON), KEY_STATE::DOWN };
-		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
-		break;
-	}
-	case WM_LBUTTONUP:
-	{
-		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_LBUTTON), KEY_STATE::UP };
-		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
-		break;
-	}
-	case WM_RBUTTONDOWN:
-	{
-		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_RBUTTON), KEY_STATE::DOWN };
-		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
-		break;
-	}
-	case WM_RBUTTONUP:
-	{
-		std::pair<int, KEY_STATE> data = { static_cast<int>(VK_RBUTTON), KEY_STATE::UP };
-		EventManager::GetInstance().ScheduleEvent("OnSetKeyState", std::any(data));
-		break;
-	}
-
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

@@ -15,6 +15,9 @@ public:
     void EntityImGui(uint32_t entitiyID);
     void TransformComponentImGui(Component* component);
     void ComponentImGui(Component* component);
+    std::string RemoveComponentSuffix(const std::string& className);
+
+
 	void MemberImGui(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_Vector2(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_Vector3(entt::meta_data memberMetaData, Component* component);
@@ -39,6 +42,9 @@ public:
 
 	void TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Component* component);
 	void TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component);
+
+    bool ShouldSkipComponent(entt::id_type metaTypeID);
+
 	std::weak_ptr<SceneManager> m_SceneManager;
 	std::weak_ptr<HierarchySystem> m_HierarchySystem;
 

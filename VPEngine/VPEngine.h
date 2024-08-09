@@ -15,11 +15,14 @@ class EventSubscriber;
 class VPEngine:public EventSubscriber
 {
 public:
+	HINSTANCE m_hinstance=nullptr;
+
 	HWND m_hWnd = nullptr;
 	VPEngine(HINSTANCE hInstance, std::string title, int width, int height);
 	~VPEngine();
 	void Loop();
-
+	int m_ScreenWidth {};
+	int m_ScreenHeight{};
 	static bool isResize;
 protected:
 	void Addsystem();

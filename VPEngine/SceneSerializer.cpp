@@ -105,6 +105,8 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 		// 엔티티 데이터 처리
 		if (sceneJson.contains("Entitys"))
 		{
+			auto count = sceneJson["Entitys"].size();
+
 			for (auto& entityJson : sceneJson["Entitys"])
 			{
 				EventManager::GetInstance().ImmediateEvent("OnDeSerializeEntity", entityJson);
