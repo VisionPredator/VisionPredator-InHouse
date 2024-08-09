@@ -34,7 +34,7 @@ class GraphicsEngine : public Graphics::Interface
 {
 public:
 	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
-	~GraphicsEngine();
+	~GraphicsEngine() = default;
 
 	bool Initialize() override;
 	void Update(double dt) override;

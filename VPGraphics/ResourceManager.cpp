@@ -12,7 +12,7 @@
 #include "ModelData.h"
 #include "Mesh.h"
 
-ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device), m_Camera(), m_DirectionalLight()
+ResourceManager::ResourceManager()
 {
 	m_OffScreenName[0] = L"Albedo";
 	m_OffScreenName[1] = L"Normal";
@@ -44,8 +44,10 @@ ResourceManager::~ResourceManager()
 
 }
 
-void ResourceManager::Initialize()
+void ResourceManager::Initialize(std::weak_ptr<Device> device)
 {
+	m_Device = device;
+
 	///Built in
 
 	// Depth Stencil State

@@ -38,7 +38,7 @@
 class ResourceManager
 {
 public:
-	ResourceManager(std::weak_ptr<Device> device);
+	ResourceManager();
 	~ResourceManager();
 
 	template<typename T, typename... Types>
@@ -53,7 +53,7 @@ public:
 	void Erase(const std::wstring path);
 
 
-	void Initialize();
+	void Initialize(std::weak_ptr<Device> device);
 	void OnResize(RECT& wndsize);
 
 private:
