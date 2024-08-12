@@ -17,11 +17,13 @@ enum class RenderTargetViewType
 class RenderTargetView : public Resource
 {
 public:
-	RenderTargetView(std::shared_ptr<Device> device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height);
+	RenderTargetView(const std::shared_ptr<Device>& device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height);
 	~RenderTargetView() = default;
 
 	ID3D11RenderTargetView* Get() const;
 	ID3D11RenderTargetView** GetAddress();
+
+	void OnResize(const std::shared_ptr<Device>& device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height);
 
 	virtual void Release() override;
 

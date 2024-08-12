@@ -240,7 +240,5 @@ void ResourceManager::OnResize(RECT& wndsize)
 		Create<DepthStencilView>(L"DSV_Main", texDesc);
 		Create<DepthStencilView>(L"DSV_Deferred", texDesc);
 	}
-	/*
-	*/
 
 }
