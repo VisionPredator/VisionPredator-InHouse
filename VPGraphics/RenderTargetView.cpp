@@ -5,49 +5,6 @@
 #include "Texture2D.h"
 
 
-RenderTargetView::RenderTargetView(std::shared_ptr<Device> device) : Resource(device)
-{
-	ID3D11Texture2D* backBuffer = nullptr;
-
-	HRESULT hr;
-	hr = m_Device.lock()->SwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
-	if (FAILED(hr))
-	{
-		MessageBox(0, L"SwapChain GetBuffer Failed", 0, 0);
-	}
-
-	if (backBuffer != 0)
-	{
-		hr = m_Device.lock()->Get()->CreateRenderTargetView(backBuffer, 0, &m_RTV);
-	}
-
-	if (FAILED(hr))
-	{
-		MessageBox(0, L"Device CreateRenderTargetView Failed", 0, 0);
-	}
-
-	backBuffer->Release();
-}
-
-RenderTargetView::RenderTargetView(std::shared_ptr<Device>device, std::weak_ptr<Texture2D> backbuffer) : Resource(device), m_tex(backbuffer)
-{
-	HRESULT hr;
-
-	hr = m_Device.lock()->Get()->CreateRenderTargetView(backbuffer.lock()->Get(), 0, &m_RTV);
-	m_tex = backbuffer;
-	if (FAILED(hr))
-	{
-		MessageBox(0, L"Device CreateRenderTargetView Failed", 0, 0);
-	}
-}
-
-RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> backbuffer, D3D11_RENDER_TARGET_VIEW_DESC desc) : Resource(device)
-{
-	m_Device.lock()->Get()->CreateRenderTargetView(backbuffer.lock()->Get(), &desc, &m_RTV);
-	m_tex = backbuffer;
-
-}
-
 RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height)
 {
 	switch (type)
@@ -91,24 +48,19 @@ RenderTargetView::RenderTargetView(std::shared_ptr<Device> device, const RenderT
 	}
 }
 
-RenderTargetView::~RenderTargetView()
-{
-
-}
-
 ID3D11RenderTargetView* RenderTargetView::Get() const
 {
-	return m_RTV;
+	return m_RTV.Get();
 }
 
 ID3D11RenderTargetView** RenderTargetView::GetAddress()
 {
-	return &m_RTV;
+	return m_RTV.GetAddressOf();
 }
 
 void RenderTargetView::Release()
 {
-	m_RTV->Release();
+	//m_RTV->Release();
 }
 
 std::weak_ptr<Texture2D> RenderTargetView::Texture()

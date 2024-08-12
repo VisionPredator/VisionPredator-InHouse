@@ -11,8 +11,8 @@ public:
 
 private:
 
-	void Light();
 	void Geometry();
+	void Light();
 
 private:
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
