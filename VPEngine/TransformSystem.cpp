@@ -11,44 +11,76 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
     EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
     EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData));
 }
+std::vector<TransformComponent*> TransformSystem::newupdatevector;
 
 void TransformSystem::Update(float deltaTime)
 {
-	std::vector<TransformComponent*> updateList;
-
-	// 최상단의 Entity 만 기억하기
-	for (TransformComponent& comp : COMPITER(TransformComponent))
-	{
-		if (!comp.HasComponent<Parent>())
-		{
-			updateList.push_back(&comp);
-		}
-	}
-	if (!updateList.empty())
-		for (TransformComponent* transformComp : updateList)
-		{
-			CalculateTransform_new(transformComp, false);
-		}
+    newUpdate();
+	//std::vector<TransformComponent*> updateList;
+	//// 최상단의 Entity 만 기억하기
+	//for (TransformComponent& comp : COMPITER(TransformComponent))
+	//{
+	//	if (!comp.HasComponent<Parent>())
+	//	{
+	//		updateList.push_back(&comp);
+	//	}
+	//}
+	//if (!updateList.empty())
+	//	for (TransformComponent* transformComp : updateList)
+	//	{
+	//		CalculateTransform_Parent(transformComp);
+	//	}
 }
+
+void TransformSystem::newUpdate()
+{
+    if (newupdatevector.empty())
+        return;
+
+    std::list<TransformComponent*> updateList;
+    for (size_t i = 0; i < newupdatevector.size(); i++)
+    {
+        bool HaveParentEntity = false;
+        for (size_t j = 0; j < newupdatevector.size(); j++)
+        {
+            if (i == j)
+                continue;
+
+            if (GetSceneManager()->CheckParent(newupdatevector[j]->GetEntityID(), newupdatevector[i]->GetEntityID()))
+            {
+                HaveParentEntity = true;
+                break;
+            }
+
+        }
+        if (!HaveParentEntity)
+        {
+            updateList.push_back(newupdatevector[i]);
+        }
+    }
+    for (TransformComponent* comp : updateList)
+    {
+        CalculateTransform_Parent(comp);
+    }
+    newupdatevector.clear();
+}
+
 void TransformSystem::OnSetParentAndChild(std::any parentChild)
 {
-    auto [parentID, childID] = std::any_cast<std::pair<uint32_t, uint32_t>>(parentChild);
+	auto [parentID, childID] = std::any_cast<std::pair<uint32_t, uint32_t>>(parentChild);
 
-    if (!GetSceneManager()->HasEntity(childID) || !GetSceneManager()->HasEntity(parentID))
-    {
-        return;
-    }
+	if (!GetSceneManager()->HasEntity(childID) || !GetSceneManager()->HasEntity(parentID))
+	{
+		return;
+	}
 
-    TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
-    TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(parentID);
+	TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
+	TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(parentID);
 
-    if (childTransform && parentTransform)
-    {
-        VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
-        newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
-    }
+	VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
+	newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
 
-    Update(0);
+	Update(0);
 }
 
 void TransformSystem::OnUpdateTransfomData(std::any data)
@@ -65,13 +97,12 @@ void TransformSystem::OnRelaseParentAndChild(std::any child)
     {
         childTransform->WorldTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
     }
-
     Update(0);
 }
 
 
 
-void TransformSystem::CalculateTransform_new(TransformComponent* transform, bool IsParentWorldChanged)
+void TransformSystem::CalculateTransform_Child(TransformComponent* transform, bool IsParentWorldChanged)
 {
     if (IsLocalTransformChanged(transform))
     {
@@ -102,7 +133,35 @@ void TransformSystem::CalculateTransform_new(TransformComponent* transform, bool
             TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
             if (childTransform)
             {
-                CalculateTransform_new(childTransform, IsParentWorldChanged);
+                CalculateTransform_Child(childTransform, IsParentWorldChanged);
+            }
+        }
+    }
+}
+
+void TransformSystem::CalculateTransform_Parent(TransformComponent* transform)
+{
+    bool IsParentWorldChanged = false;
+    if (IsLocalTransformChanged(transform))
+    {
+        CalculateTransformLocal(transform);
+        IsParentWorldChanged = true;
+    }
+    else if (IsWorldTransformChanged(transform))
+    {
+        CalculateTransformWorld(transform);
+        IsParentWorldChanged = true;
+    }
+
+    if (transform->HasComponent<Children>())
+    {
+        auto children = transform->GetComponent<Children>();
+        for (auto childID : children->ChildrenID)
+        {
+            TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
+            if (childTransform)
+            {
+                CalculateTransform_Child(childTransform, IsParentWorldChanged);
             }
         }
     }

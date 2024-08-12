@@ -57,13 +57,19 @@ std::pair<uint32_t, uint32_t>& SceneManager::findOrCreatePair(std::vector<std::p
 }
 bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
 {
+	if (!HasComponent<Parent>(child))
+		return false;
 	auto nextParent = GetComponent<Parent>(child);
 
 	while (nextParent != nullptr)
 	{
-		if (!GetComponent<Children>(nextParent->ParentID))
+		if (!HasComponent<Children>(nextParent->ParentID))
 		{
-			nextParent = GetComponent<Parent>(nextParent->ParentID);
+			if (HasComponent<Parent>(nextParent->ParentID))
+				nextParent = GetComponent<Parent>(nextParent->ParentID);
+			else
+				nextParent = nullptr;
+
 			continue;
 		}
 
@@ -71,7 +77,11 @@ bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
 		{
 			return true;
 		}
-		nextParent = GetComponent<Parent>(nextParent->ParentID);
+
+		if (HasComponent<Parent>(nextParent->ParentID))
+			nextParent = GetComponent<Parent>(nextParent->ParentID);
+		else
+			nextParent = nullptr;
 	}
 	return false;
 }
@@ -88,16 +98,18 @@ void SceneManager::OnAddChild(std::any data)
 	if (parent == child || CheckParent(parent, child))
 		return;
 
-	if (auto parentofchild = GetComponent<Parent>(child))
+
+	if (HasComponent<Parent>(child))
 	{
+		auto parentofchild = GetComponent<Parent>(child);
 		std::pair<uint32_t, uint32_t> newdata{ parentofchild->ParentID, child };
 		OnRemoveChild(newdata);
 	}
-
 	GetEntity(child)->AddComponent<Parent>(true)->ParentID = parent;
 
-	if (auto children = GetComponent<Children>(parent))
+	if (HasComponent<Children>(parent))
 	{
+		auto children = GetComponent<Children>(parent);
 		children->ChildrenID.push_back(child);
 	}
 	else
@@ -115,8 +127,9 @@ void SceneManager::OnAddChild(std::any data)
 
 void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 {
-	if (auto parent = GetComponent<Parent>(childID))
+	if (HasComponent<Parent>(childID))
 	{
+		auto parent = GetComponent<Parent>(childID);
 		std::pair<uint32_t, uint32_t> data{ parent->ParentID, childID };
 		if (Immediate)
 		{
@@ -679,7 +692,7 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 
 	std::ifstream inputFile(prefabData.prefabname);
 	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
-	uint32_t mainprefabID;
+	uint32_t mainprefabID{};
 	if (inputFile.is_open())
 	{
 		nlohmann::json prefabJson;

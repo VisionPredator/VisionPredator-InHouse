@@ -77,8 +77,6 @@ public:
 
 	Component* GetComponent(uint32_t entityID, entt::id_type compId)
 	{
-		if (!HasEntity(entityID))
-			return nullptr;
 		return GetEntity(entityID)->GetComponent(compId);
 	}
 	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
@@ -98,6 +96,8 @@ public:
 
 	void AddChild(uint32_t Parent, uint32_t Child);
 	void RemoveParent(uint32_t child, bool Immediate = false);
+	bool CheckParent(uint32_t parent, uint32_t child);
+
 protected:
 	friend class CompIter;
 private:
@@ -108,7 +108,6 @@ private:
 	void OpenNewScene();
 	void SceneSerialize(std::string FilePath);
 	void SceneDeSerialize(std::string FilePath);
-	bool CheckParent(uint32_t parent, uint32_t child);
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
 	void OnSpawnPrefab(std::any pair);
