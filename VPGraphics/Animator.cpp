@@ -55,6 +55,8 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 	//이건 애니메이션 데이터는 그대로 두고 각자의 시간과 애니메이션 따로 놀면된다
 	//여기서 터지면 loader에 데이터를 안읽어왔을 확률 높음
 
+	int index = 0;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
+
 	std::shared_ptr<ModelData> curOb = ob.lock();
 
 	if (curOb->m_Animations.empty())
@@ -64,16 +66,18 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
 	double time = dt; //현재 애니메이션 플레이시간
-	double speed = curOb->m_Animations[0]->m_TickFrame;
+	double speed = curOb->m_Animations[index]->m_TickFrame;
 	time = dt * speed;
 
-	if (time > curOb->m_Animations[0]->m_Duration)
+
+	//로직 변경 필요 2024.08.12 정확한 처리가 아님 재생시간에 맞게 하지 않음
+	if (time > curOb->m_Animations[index]->m_Duration)
 	{
-		time -= curOb->m_Animations[0]->m_Duration;
+		time -= curOb->m_Animations[index]->m_Duration;
 	}
 	else
 	{
-		for (auto& ani : curOb->m_Animations[0]->m_Channels)
+		for (auto& ani : curOb->m_Animations[index]->m_Channels)
 		{
 			int cur = 0;
 			for (int i = 0; i < ani->totals.size(); i++)

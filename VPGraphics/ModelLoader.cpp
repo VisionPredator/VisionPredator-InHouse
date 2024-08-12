@@ -124,8 +124,9 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 				aiProcess_GenUVCoords |		// UV 생성
 				aiProcess_CalcTangentSpace |  // 탄젠트 생성			
 				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
+				/*
 				aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
-				/*aiProcess_FlipUVs|
+				aiProcess_FlipUVs|
 				aiProcess_FlipWindingOrder|
 				*/
 				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
