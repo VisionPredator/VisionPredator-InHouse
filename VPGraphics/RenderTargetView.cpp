@@ -60,10 +60,5 @@ ID3D11RenderTargetView** RenderTargetView::GetAddress()
 
 void RenderTargetView::Release()
 {
-	//m_RTV->Release();
-}
-
-std::weak_ptr<Texture2D> RenderTargetView::Texture()
-{
-	return m_tex;
+	m_RTV.Reset();
 }

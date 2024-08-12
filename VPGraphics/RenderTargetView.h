@@ -25,10 +25,7 @@ public:
 
 	virtual void Release() override;
 
-	std::weak_ptr<Texture2D> Texture();
 private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RTV;
-	std::weak_ptr<Texture2D> m_tex;
-
 };
 
