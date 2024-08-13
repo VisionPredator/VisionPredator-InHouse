@@ -24,7 +24,7 @@ private:
 public:
 	ImageObject(const std::shared_ptr<class Device>& device, 
 		const std::shared_ptr<class ResourceManager>& resourceManager,
-		const ui::ImageInfo& info);
+		const ui::ImageInfo& info, const uint32_t& id);
 	~ImageObject() = default;
 
 	void Render();
@@ -53,6 +53,9 @@ private:
 
 	uint32_t m_PreviousPosX = -1;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
 	uint32_t m_PreviousPosY = -1;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
+
+	uint32_t m_PreviousWidth = -1;
+	uint32_t m_PreviousHeight = -1;
 
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<IndexBuffer> m_IndexBuffer;

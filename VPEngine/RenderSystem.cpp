@@ -70,7 +70,9 @@ void RenderSystem::OnAddedComponent(std::any data)
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
-	}	// Particle Object
+	}
+
+	// Particle Object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
 	{
 		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
@@ -82,10 +84,28 @@ void RenderSystem::OnAddedComponent(std::any data)
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
 	}
+
+	// UI Object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
+	{
+		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		ui::ImageInfo info;
+		info.ImagePath = component->TexturePath;
+		info.StartPosX = component->StartPosX;
+		info.StartPosY = component->StartPosY;
+		info.Width = component->Width;
+		info.Height = component->Height;
+		info.Layer = component->Layer;
+		info.Color = component->Color;
+
+		m_Graphics->CreateImageObject(component->GetEntityID(), info);
+	}
+
 }
 
 void RenderSystem::OnReleasedComponent(std::any data)
 {
+	// static mesh object
 	auto comp = std::any_cast<Component*>(data);
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<MeshComponent>())
 	{
@@ -95,7 +115,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 		return;
 	}
 
-	//Skinned
+	// skeletal mesh object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<SkinningMeshComponent>())
 	{
 		SkinningMeshComponent* meshComponent = static_cast<SkinningMeshComponent*>(comp);
@@ -115,8 +135,19 @@ void RenderSystem::OnReleasedComponent(std::any data)
 		return;
 	}
 
-}
+	// particle object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
+	{
+		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
+		m_Graphics->DeleteParticleObjectByID(component->GetEntityID());
+	}
 
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
+	{
+		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		m_Graphics->DeleteImageObject(component->GetEntityID());
+	}
+}
 
 
 void RenderSystem::RenderUpdate(float deltaTime)
@@ -136,6 +167,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	{
 		GeometryRender(geometryComp);
 	}
+
 	for (ParticleComponent& component : COMPITER(ParticleComponent))
 	{
 		effect::ParticleInfo info;
@@ -143,6 +175,20 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.MaxParticles = component.MaxParticle;
 
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+	}
+
+	for (Sprite2DComponent& component : COMPITER(Sprite2DComponent))
+	{
+		ui::ImageInfo info;
+		info.ImagePath = component.TexturePath;
+		info.StartPosX = component.StartPosX;
+		info.StartPosY = component.StartPosY;
+		info.Width = component.Width;
+		info.Height = component.Height;
+		info.Layer = component.Layer;
+		info.Color = component.Color;
+
+		m_Graphics->UpdateImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 }
 
@@ -156,8 +202,6 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 	renderdata->world = transform.WorldTransform;
 	renderdata->Filter = meshComp.FBXFilter;
 	m_Graphics->UpdateModel(meshComp.GetEntityID()); 
-
-
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)

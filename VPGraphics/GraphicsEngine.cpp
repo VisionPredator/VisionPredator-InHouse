@@ -49,10 +49,18 @@
 
 #include "Animation.h"
 GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
-	: m_TimeManager(timeManager), m_hWnd(hWnd), m_wndSize() {
-}
-
-GraphicsEngine::~GraphicsEngine()
+	: m_TimeManager(timeManager)
+	, m_hWnd(hWnd)
+	, m_wndSize()
+	, m_Device(std::make_shared<Device>())
+	, m_ResourceManager(std::make_shared<ResourceManager>())
+	, m_Loader(std::make_shared <ModelLoader>())
+	, m_LightManager(std::make_shared<LightManager>())
+	, m_Animator(std::make_shared <Animator>())
+	, m_DebugDrawManager(std::make_shared<DebugDrawManager>())
+	, m_ParticleManager(std::make_shared<ParticleManager>())
+	, m_UIManager(std::make_shared<UIManager>())
+	, m_PassManager(std::make_shared <PassManager>())
 {
 }
 
@@ -63,39 +71,17 @@ bool GraphicsEngine::Initialize()
 
 	GetClientRect(m_hWnd, &m_wndSize);
 
-	m_Device = std::make_shared<Device>(m_hWnd);
-
-	if (m_Device == nullptr)
-		return false;
-
-	m_Device->Initialize();
-
-	if (m_Device->SwapChain() == nullptr)
-		return false;
-
-	m_ResourceManager = std::make_shared<ResourceManager>(m_Device);
-	m_ResourceManager->Initialize();
-	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
-
-	m_Loader = std::make_shared <ModelLoader>(m_ResourceManager, m_Device);
-	m_Loader->Initialize();
-	m_LightManager = std::make_shared<LightManager>(m_ResourceManager);
-	m_Animator = std::make_shared <Animator>(m_ResourceManager);
-	m_DebugDrawManager = std::make_shared<DebugDrawManager>();
+	m_Device->Initialize(m_hWnd);
+	m_ResourceManager->Initialize(m_Device);
+	m_Loader->Initialize(m_ResourceManager, m_Device);
+	m_LightManager->Initialize(m_ResourceManager);
+	m_Animator->Initialize(m_ResourceManager);
 	m_DebugDrawManager->Initialize(m_Device);
-
-	m_ParticleManager = std::make_shared<ParticleManager>();
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
-
-	m_UIManager = std::make_shared<UIManager>();
 	m_UIManager->Initialize(m_Device, m_ResourceManager);
+	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager);
 
-	m_PassManager = std::make_shared <PassManager>(m_Device, m_ResourceManager,m_DebugDrawManager, m_ParticleManager, m_UIManager);
-	m_PassManager->Initialize();
-
-
-	/*
-	*/
+	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
 
 	OnResize(m_hWnd);
 
@@ -106,12 +92,8 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
-	/*
-	*/
 	m_Animator->Update(dt, m_RenderList);
-
 	m_PassManager->Update(m_RenderList);
-
 	m_LightManager->Update(m_Lights);
 }
 
@@ -127,7 +109,6 @@ bool GraphicsEngine::Finalize()
 	m_PassManager.reset();
 	m_ParticleManager.reset();
 	DestroyImGui();
-
 
 	return true;
 }
@@ -156,8 +137,6 @@ void GraphicsEngine::BeginRender()
 
 void GraphicsEngine::Render()
 {
-	/*
-	*/
 	m_PassManager->Render();
 	BeginImGui();
 }
@@ -165,7 +144,6 @@ void GraphicsEngine::Render()
 void GraphicsEngine::EndRender()
 {
 	EndImGui();
-
 	m_Device->EndRender();
 }
 
@@ -319,6 +297,21 @@ void GraphicsEngine::UpdateParticleObject(const uint32_t& entityID, const effect
 void GraphicsEngine::DeleteParticleObjectByID(const uint32_t& id)
 {
 	m_ParticleManager->DeleteParticleObjectByID(id);
+}
+
+void GraphicsEngine::CreateImageObject(const uint32_t& id, const ui::ImageInfo& info)
+{
+	m_UIManager->CreateImageObject(id, info);
+}
+
+void GraphicsEngine::UpdateImageObject(const uint32_t& id, const ui::ImageInfo& info)
+{
+	m_UIManager->UpdateImageObject(id, info);
+}
+
+void GraphicsEngine::DeleteImageObject(const uint32_t& id)
+{
+	m_UIManager->DeleteImageObject(id);
 }
 
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)

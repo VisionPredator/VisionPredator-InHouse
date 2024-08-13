@@ -124,7 +124,7 @@ void EditorCamera::CalculateCamera()
 	m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
-	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, m_nearZ, m_farZ);
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(1920.f, 1080.f, m_nearZ, m_farZ);	// TODO: Width Height 값 업데이트 정상화되면 상수값을 저걸로 교체해야함.
 
 }
 

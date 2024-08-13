@@ -14,7 +14,11 @@
 
 #include "Slot.h"
 
-Device::Device(HWND hWnd) : ableMSAA(false), m_Device(nullptr), m_Context(nullptr), m_FeatureLevel(), MSAAQuality(), m_hWnd(hWnd), m_SwapChain(nullptr), m_wndSize()
+Device::Device()
+	: ableMSAA(false)
+	, MSAAQuality()
+	, m_FeatureLevel()
+	, m_wndSize()
 {
 }
 
@@ -27,11 +31,12 @@ Device::~Device()
 	m_Device = nullptr;
 	m_Context = nullptr;
 	m_SwapChain = nullptr;
-
 }
 
-void Device::Initialize()
+void Device::Initialize(HWND hWnd)
 {
+	m_hWnd = hWnd;
+
 	HRESULT result;
 	uint32_t createDeviceFlags = 0;
 

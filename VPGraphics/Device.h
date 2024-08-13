@@ -16,10 +16,10 @@ class Mesh;
 class Device
 {
 public:
-	Device(HWND hWnd);
+	Device();
 	~Device();
 
-	void Initialize();
+	void Initialize(HWND hWnd);
 	void OnResize();
 
 	ID3D11DeviceContext* Context() const;
@@ -43,13 +43,13 @@ public:
 private:
 	bool CreateSwapChain();
 
-	ID3D11Device* m_Device;
-	ID3D11DeviceContext* m_Context;
+	ID3D11Device* m_Device = nullptr;
+	ID3D11DeviceContext* m_Context = nullptr;
 
 	D3D_FEATURE_LEVEL m_FeatureLevel;
 
-	IDXGISwapChain* m_SwapChain;
-	HWND m_hWnd;
+	IDXGISwapChain* m_SwapChain = nullptr;
+	HWND m_hWnd = nullptr;
 	RECT m_wndSize;
 };
 
