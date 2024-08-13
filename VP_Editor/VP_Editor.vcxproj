@@ -155,6 +155,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Macro\ReflectionMacro.h" />
+    <ClInclude Include="..\include\Macro\VisPredMacro.h" />
     <ClInclude Include="EditorCamera.h" />
     <ClInclude Include="FolderTool.h" />
     <ClInclude Include="framework.h" />

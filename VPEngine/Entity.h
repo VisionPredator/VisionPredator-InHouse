@@ -14,17 +14,33 @@ public:
     template<typename T>
     T* GetComponent() requires std::derived_from<T, Component>
     {
-        return std::static_pointer_cast<T>(m_OwnedComp[Reflection::GetTypeID<T>()]).get();
+        auto comp = std::static_pointer_cast<T>(m_OwnedComp[Reflection::GetTypeID<T>()]).get();
+        if (comp)
+            return comp;
+        else
+        {
+            VP_ASSERT(false, "GetComp를 잘못사용하였습니다.");
+            return nullptr;
+        }
 
-    }
 
-    Component* GetComponent(entt::id_type compID)
-    {
-        return m_OwnedComp[compID].get();
-    }
+	}
 
-    template<typename T>
-    bool HasComponent() const
+	Component* GetComponent(entt::id_type compID)
+	{
+		auto comp = m_OwnedComp[compID].get();
+		if (comp)
+
+			return comp;
+		else
+		{
+			VP_ASSERT(false, "GetComp를 잘못사용하였습니다.");
+			return nullptr;
+		}
+	}
+
+	template<typename T>
+	bool HasComponent() const
     {
         return m_OwnedComp.find(Reflection::GetTypeID<T>()) != m_OwnedComp.end();
     }

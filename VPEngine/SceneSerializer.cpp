@@ -116,7 +116,7 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 
 				try {
 					// Attempt to deserialize the entity
-					EventManager::GetInstance().ImmediateEvent("OnDeSerializeEntity", entityJson);
+					//EventManager::GetInstance().ImmediateEvent("OnDeSerializeEntity", entityJson);
 					GetSceneManager()->DeSerializeEntity(entityJson);
 				}
 				catch (const std::exception& e) {

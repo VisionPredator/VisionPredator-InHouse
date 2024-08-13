@@ -101,7 +101,7 @@ template<typename T> std::weak_ptr <T> ResourceManager::Get(const std::wstring p
 	}
 
 
-	return {};
+	return {};																																								
 }
 
 template<typename T> void ResourceManager::Add(const std::wstring path, std::shared_ptr<Resource> resource)

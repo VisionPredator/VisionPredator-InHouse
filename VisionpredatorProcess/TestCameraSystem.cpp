@@ -38,7 +38,7 @@ void TestCameraSystem::Update(float deltaTime)
 			moveDirection.y += 1;
 
 		moveDirection.Normalize();
-		cameraTransform->World_Location += moveSpeed * moveDirection * deltaTime;
+		cameraTransform->AddWorldLocation((moveSpeed * moveDirection * deltaTime));
 
 		if (INPUTKEY(MOUSEKEY::RBUTTON))
 		{

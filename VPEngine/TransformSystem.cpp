@@ -16,20 +16,25 @@ std::vector<TransformComponent*> TransformSystem::newupdatevector;
 void TransformSystem::Update(float deltaTime)
 {
     newUpdate();
-	//std::vector<TransformComponent*> updateList;
-	//// 최상단의 Entity 만 기억하기
-	//for (TransformComponent& comp : COMPITER(TransformComponent))
-	//{
-	//	if (!comp.HasComponent<Parent>())
-	//	{
-	//		updateList.push_back(&comp);
-	//	}
-	//}
-	//if (!updateList.empty())
-	//	for (TransformComponent* transformComp : updateList)
-	//	{
-	//		CalculateTransform_Parent(transformComp);
-	//	}
+}
+
+void TransformSystem::UpdateAllEntitys()
+{
+	// 최상단의 Entity 만 기억하기
+	std::vector<TransformComponent*> updateList;
+
+	for (TransformComponent& comp : COMPITER(TransformComponent))
+	{
+		if (!comp.HasComponent<Parent>())
+		{
+			updateList.push_back(&comp);
+		}
+	}
+	if (!updateList.empty())
+		for (TransformComponent* transformComp : updateList)
+		{
+			CalculateTransform_Parent(transformComp);
+		}
 }
 
 void TransformSystem::newUpdate()
@@ -58,7 +63,7 @@ void TransformSystem::newUpdate()
             updateList.push_back(newupdatevector[i]);
         }
     }
-    for (TransformComponent* comp : updateList)
+    for (TransformComponent* comp : newupdatevector)
     {
         CalculateTransform_Parent(comp);
     }
@@ -85,7 +90,7 @@ void TransformSystem::OnSetParentAndChild(std::any parentChild)
 
 void TransformSystem::OnUpdateTransfomData(std::any data)
 {
-    Update(0);
+    UpdateAllEntitys();
 }
 
 void TransformSystem::OnRelaseParentAndChild(std::any child)
@@ -101,6 +106,17 @@ void TransformSystem::OnRelaseParentAndChild(std::any child)
 }
 
 
+
+void TransformSystem::UpdateDirVector(TransformComponent* transform)
+{
+    transform->FrontVector = transform->WorldTransform.Forward_L();
+    transform->RightVector = transform->WorldTransform.Right_L();
+    transform->UpVector = transform->WorldTransform.Up_L();
+
+    transform->FrontVector.Normalize();
+    transform->RightVector.Normalize();
+    transform->UpVector.Normalize();
+}
 
 void TransformSystem::CalculateTransform_Child(TransformComponent* transform, bool IsParentWorldChanged)
 {
@@ -194,13 +210,7 @@ void TransformSystem::UpdateWorldTransform(TransformComponent* transform, const 
     transform->Previous_WorldQuaternion = transform->World_Quaternion;
     transform->Previous_WorldLocation = transform->World_Location;
 
-    transform->FrontVector = -transform->WorldTransform.Forward();
-    transform->RightVector = transform->WorldTransform.Right();
-    transform->UpVector = transform->WorldTransform.Up();
-
-    transform->FrontVector.Normalize();
-    transform->RightVector.Normalize();
-    transform->UpVector.Normalize();
+    UpdateDirVector(transform);
 }
 
 void TransformSystem::CalculateTransformDynamic(TransformComponent* transform)
@@ -228,7 +238,7 @@ void TransformSystem::CalculateTransformWorld(TransformComponent* transform)
         VPMath::Matrix::CreateTranslation(transform->World_Location);
 
     UpdatePreviousWorldTransform(transform);
-
+    UpdateDirVector(transform);
     if (transform->HasComponent<Parent>())
     {
         TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
@@ -270,20 +280,21 @@ void TransformSystem::CalculateTransformLocal(TransformComponent* transform)
 
     UpdatePreviousLocalTransform(transform);
 
-    if (transform->HasComponent<Parent>())
-    {
-        TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
-        if (parentTransform)
-        {
-            transform->WorldTransform = transform->LocalTransform * parentTransform->WorldTransform;
-        }
-    }
-    else
-    {
-        transform->WorldTransform = transform->LocalTransform;
-    }
+	if (transform->HasComponent<Parent>())
+	{
+		if (GetSceneManager()->HasComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID))
+		{
+			TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
+			transform->WorldTransform = transform->LocalTransform * parentTransform->WorldTransform;
+		}
+	}
+	else
+	{
+		transform->WorldTransform = transform->LocalTransform;
+	}
 
     UpdateWorldTransform(transform, transform->WorldTransform);
+
 }
 
 void TransformSystem::WrapAngle(VPMath::Vector3& rotation)
@@ -314,4 +325,23 @@ void TransformSystem::UpdatePreviousLocalTransform(TransformComponent* transform
     transform->Previous_Rotation = transform->Local_Rotation;
     transform->Previous_Quaternion = transform->Local_Quaternion;
     transform->Previous_Location = transform->Local_Location;
+}
+
+void TransformSystem::Initialize()
+{
+    UpdateAllEntitys();
+}
+
+void TransformSystem::Start(uint32_t gameObjectId)
+{
+
+}
+
+void TransformSystem::Finish(uint32_t gameObjectId)
+{
+}
+
+void TransformSystem::Finalize()
+{
+
 }

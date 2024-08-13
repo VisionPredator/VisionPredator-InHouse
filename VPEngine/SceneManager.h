@@ -147,7 +147,7 @@ private:
 	void OnDeSerializePrefab(std::any data);
 	//Entity를 Deserialize한다 : Map 전용.
 	std::shared_ptr<Entity> DeSerializeEntity(const nlohmann::json entityjson);
-	void OnDeSerializeEntity(std::any data);
+	//void OnDeSerializeEntity(std::any data);
 
 	template<typename T>
 	void ReleaseCompFromPool(std::shared_ptr<T> comp);

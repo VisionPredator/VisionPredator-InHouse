@@ -5,7 +5,7 @@
 
 struct TransformComponent;
 
-class TransformSystem : public System, public IUpdatable, public EventSubscriber
+class TransformSystem : public System, public IUpdatable, public EventSubscriber,public IStartable
 {
 public:
     TransformSystem(std::shared_ptr<SceneManager> entityManager);
@@ -13,11 +13,11 @@ public:
 
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
+    void UpdateAllEntitys();
     void newUpdate();
     void OnSetParentAndChild(std::any data);
     void OnUpdateTransfomData(std::any data);
     void OnRelaseParentAndChild(std::any data);
-
 	static void AddUpdateData(TransformComponent* newComponent)
 	{
 		// Check if the component is already in the vector
@@ -31,6 +31,7 @@ public:
 	}
 
 private:
+    void UpdateDirVector(TransformComponent* transform);
     static std::vector<TransformComponent*> newupdatevector;
     void CalculateTransform_Child(TransformComponent* transform, bool IsParentWorldChanged);
     void CalculateTransform_Parent(TransformComponent* transform);
@@ -43,5 +44,15 @@ private:
     void WrapAngle(VPMath::Vector3& rotation);
     void UpdatePreviousWorldTransform(TransformComponent* transform);
     void UpdatePreviousLocalTransform(TransformComponent* transform);
+
+
+    // IStartable을(를) 통해 상속됨
+    void Initialize() override;
+
+    void Start(uint32_t gameObjectId) override;
+
+    void Finish(uint32_t gameObjectId) override;
+
+    void Finalize() override;
 
 };
