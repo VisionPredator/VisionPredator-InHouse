@@ -12,16 +12,21 @@
 #include "Util.h"
 
 ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
-	const ui::ImageInfo& info)
+	const ui::ImageInfo& info, const uint32_t& id)
 		: m_Device(device), m_ResourceManager(resourceManager), m_Info(info)
 {
+	m_ID = id;
+
 	// 화면 크기 저장
 	m_ScreenWidth = m_Device->GetWndSize().right - m_Device->GetWndSize().left;
 	m_ScreenHeight = m_Device->GetWndSize().bottom - m_Device->GetWndSize().top;
 
 	// 모델의 텍스처 로드
 	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
+	{
 		m_Texture = m_ResourceManager->Get<ShaderResourceView>(L"DefaultUI").lock();
+		m_Info.ImagePath = "DefaultUI.png";
+	}
 	else
 		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
 
@@ -67,8 +72,24 @@ void ImageObject::Render()
 
 void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 {
-	m_Info = info;
-	m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
+	m_Info.StartPosX = info.StartPosX;
+	m_Info.StartPosY = info.StartPosY;
+	m_Info.Layer = info.Layer;
+	m_Info.ImagePath = info.ImagePath;
+
+	//m_Info = info;
+
+	// 모델의 텍스처 로드
+	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
+	{
+		m_Texture = m_ResourceManager->Get<ShaderResourceView>(L"DefaultUI").lock();
+		m_Info.ImagePath = "DefaultUI";
+	}
+	else
+		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
+
+	m_Info.Width = m_Texture->GetWidth();
+	m_Info.Height = m_Texture->GetHeight();
 }
 
 bool ImageObject::InitializeBuffers()
@@ -111,13 +132,16 @@ void ImageObject::UpdateBuffers()
 	ImageVertex* verticesPtr;
 	HRESULT result;
 
+
 	// 이미지의 위치가 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
-	if ((m_Info.StartPosX == m_PreviousPosX) && (m_Info.StartPosY == m_PreviousPosY))
+	if (((m_Info.StartPosX == m_PreviousPosX) && (m_Info.StartPosY == m_PreviousPosY)) && ((m_Info.Width == m_PreviousWidth) && (m_Info.Height == m_PreviousHeight)))
 		return;
 
-	// 렌더링 되는 위치를 업데이트한다.
+	// 렌더링 되는 위치와 크기를 업데이트한다.
 	m_PreviousPosX = m_Info.StartPosX;
 	m_PreviousPosY = m_Info.StartPosY;
+	m_PreviousWidth = m_Info.Width;
+	m_PreviousHeight = m_Info.Height;
 
 	// 비트맵의 좌표 계산
 	left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.StartPosX;

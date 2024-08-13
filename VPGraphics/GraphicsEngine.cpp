@@ -299,6 +299,21 @@ void GraphicsEngine::DeleteParticleObjectByID(const uint32_t& id)
 	m_ParticleManager->DeleteParticleObjectByID(id);
 }
 
+void GraphicsEngine::CreateImageObject(const uint32_t& id, const ui::ImageInfo& info)
+{
+	m_UIManager->CreateImageObject(id, info);
+}
+
+void GraphicsEngine::UpdateImageObject(const uint32_t& id, const ui::ImageInfo& info)
+{
+	m_UIManager->UpdateImageObject(id, info);
+}
+
+void GraphicsEngine::DeleteImageObject(const uint32_t& id)
+{
+	m_UIManager->DeleteImageObject(id);
+}
+
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
 {
 	m_DebugDrawManager->AddTask(info);

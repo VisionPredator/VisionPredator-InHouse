@@ -34,12 +34,11 @@ void ParticleManager::CreateParticleObject(const uint32_t& id, const effect::Par
 
 void ParticleManager::DeleteParticleObjectByID(const uint32_t& id)
 {
-	if (m_ParticleObjects.find(id) != m_ParticleObjects.end())
+	auto it = m_ParticleObjects.find(id);
+	if (it != m_ParticleObjects.end())
 	{
-		m_ParticleObjects.erase(id);
+		m_ParticleObjects.erase(it);
 	}
-
-	m_ParticleObjects.erase(id);
 }
 
 void ParticleManager::UpdateParticleInfoByID(const uint32_t& id, const effect::ParticleInfo& info)
