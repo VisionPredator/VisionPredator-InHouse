@@ -12,7 +12,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.tangent = input.tangent;
     output.bitangent = input.bitangent;
     output.tex = input.tex;
-           
+    output.lightuv = input.lightuv;
     /*
     */
     if (useNEO.x > 0)

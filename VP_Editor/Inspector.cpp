@@ -176,8 +176,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (metaType.is_enum())
 		TypeImGui_EnumClass(memberMetaData, component);
-	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
-		TypeImGui_Vector3(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector2>())
+		TypeImGui_Vector2(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector3>())
 		TypeImGui_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPMath::Vector4>())
