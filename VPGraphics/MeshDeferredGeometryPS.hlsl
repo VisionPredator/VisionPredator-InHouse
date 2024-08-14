@@ -28,8 +28,6 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     float d = input.pos.z / input.pos.w;
     d *= 10;
     output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
-        
-
     output.Albedo = input.color;
        
     if (AMRO.x > 0)
@@ -80,6 +78,10 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
        
+    output.LightMap.r = input.lightuv.x;
+    output.LightMap.g = input.lightuv.y;
+    output.LightMap.a = 1;
+    
     return output;
     
 }

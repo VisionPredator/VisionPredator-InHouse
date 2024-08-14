@@ -88,7 +88,6 @@ void DeferredPass::OnResize()
 	m_MetalicRoughnessRTV = manager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
 	m_AORTV = manager->Get<RenderTargetView>(L"AO").lock();
 	m_EmissiveRTV = manager->Get<RenderTargetView>(L"Emissive").lock();
-	m_OpacityRTV = manager->Get<RenderTargetView>(L"Opacity").lock();
 	m_LightMapRTV = manager->Get<RenderTargetView>(L"LightMap").lock();
 
 	m_StaticMeshVS = manager->Get<VertexShader>(L"Base").lock();
@@ -294,8 +293,7 @@ void DeferredPass::Light()
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, m_MetalicRoughness.lock()->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, m_AO.lock()->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, m_Emissive.lock()->GetAddress());
-
-		//Device->Context()->PSSetShaderResources(11, 1, resourcemanager->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, resourcemanager->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock()->GetAddress());
 
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 

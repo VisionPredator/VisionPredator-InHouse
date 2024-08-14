@@ -80,13 +80,13 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 
     }
     
-    //indirectlight = gLightMap.Sample(samLinear);
     indirectlight = float3(0,0,0);
+    indirectlight = gLightMap.Sample(samLinear, input.lightuv);
 
     //ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
 
-    directlight = ambient + directlight;
+    directlight = indirectlight + directlight;
  
     
     result = directlight + indirectlight;
