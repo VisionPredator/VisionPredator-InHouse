@@ -13,26 +13,8 @@ void PlayerSystem::Update(float deltaTime)
 
 		if (comp.HasComponent<ControllerComponent>())
 		{
-			ControllerComponent* controllercomp = comp.GetComponent<ControllerComponent>();
-			controllercomp->InputDir = {};
-			if (INPUTKEY(KEYBOARDKEY::W))
-			{
-				controllercomp->InputDir += TransformComp->FrontVector;
-			}
-			if (INPUTKEY(KEYBOARDKEY::S))
-			{
-				controllercomp->InputDir -= TransformComp->FrontVector;
-
-			}
-			if (INPUTKEY(KEYBOARDKEY::A))
-			{
-				controllercomp->InputDir -= TransformComp->RightVector;
-			}
-			if (INPUTKEY(KEYBOARDKEY::D))
-			{
-				controllercomp->InputDir += TransformComp->RightVector;
-			}
-
+			PlayerLocation(TransformComp);
+			PlayerRotation(TransformComp);
 		}
 
 		if (INPUTKEYDOWN(KEYBOARDKEY::SPACE))
@@ -53,4 +35,48 @@ void PlayerSystem::Update(float deltaTime)
 
 void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
+
+}
+
+void PlayerSystem::PlayerLocation(TransformComponent* comp)
+{
+	ControllerComponent* controllercomp = comp->GetComponent<ControllerComponent>();
+	controllercomp->InputDir = {};
+	if (INPUTKEY(KEYBOARDKEY::W))
+	{
+		controllercomp->InputDir += comp->FrontVector;
+	}
+	if (INPUTKEY(KEYBOARDKEY::S))
+	{
+		controllercomp->InputDir -= comp->FrontVector;
+
+	}
+	if (INPUTKEY(KEYBOARDKEY::A))
+	{
+		controllercomp->InputDir -= comp->RightVector;
+	}
+	if (INPUTKEY(KEYBOARDKEY::D))
+	{
+		controllercomp->InputDir += comp->RightVector;
+	}
+}
+
+void PlayerSystem::PlayerRotation(TransformComponent* comp)
+{
+	auto player = comp->GetComponent<PlayerComponent>();
+	if (InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
+	{
+		int deltaCurposx = InputManager::GetInstance().GetMouseDeltaX();
+		int deltaCurposy = InputManager::GetInstance().GetMouseDeltaY();
+		float yaw = deltaCurposx * player->Sencitive;
+		float pitch = deltaCurposy * player->Sencitive;
+		VPMath::Vector3 rotation = comp->World_Rotation;
+
+		rotation.x -= pitch;
+		rotation.y -= yaw;
+
+		rotation.x = std::clamp(rotation.x, -89.9f, 89.9f);
+		comp->SetWorldRotation(rotation);
+	}
+
 }

@@ -5,6 +5,7 @@
 #include "EventSubscriber.h"
 struct PrefabData
 {
+	uint32_t MainEntityID;
 	std::string prefabname;
 	VPMath::Vector3 pos;
 	VPMath::Vector3 direction;
@@ -29,7 +30,6 @@ public:
 	/// 해당 json를 Deserialize 한다.
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();
-	//std::shared_ptr<Entity> CreateEntity(uint32_t id);
 	uint32_t CreateRandomEntityID();
 
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
@@ -130,6 +130,7 @@ private:
 	void OnOpenScene(std::any data);
 	//현재씬에 Temp씬 데이터 덮어씌우기.
 	void OnOverwriteTempToCurrent(std::any data);
+
 	void OnSaveCurrentToTemp(std::any data);
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
@@ -138,6 +139,8 @@ private:
 
 	void RemoveEntity(std::shared_ptr<Entity> entity);
 	// 모든 Entity를 지운다.
+	void ClearAllEntity();
+
 	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
 	void OnRemoveComponent(std::any data);
@@ -176,6 +179,7 @@ private:
 	std::unordered_map<std::pair<uint32_t, entt::id_type>, Component*, pair_hash> m_ComponentCache;
 
 	friend class Toolbar;
+	friend class SceneSerializer;
 };
 
 

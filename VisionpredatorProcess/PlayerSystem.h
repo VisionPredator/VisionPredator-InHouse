@@ -13,5 +13,7 @@ public:
 
     // IPhysicable을(를) 통해 상속됨
     void PhysicsUpdate(float deltaTime) override;
+    void PlayerLocation(TransformComponent* comp);
+    void PlayerRotation(TransformComponent* comp);
 };
 

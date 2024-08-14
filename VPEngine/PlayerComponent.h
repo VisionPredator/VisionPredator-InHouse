@@ -6,6 +6,7 @@ struct PlayerComponent :
     PlayerComponent();
     VP_JSONBODY(PlayerComponent, HP, Maxspeed, Accel, JumpFoce, MaxJumpCount, AirControl)
 		uint32_t HP{};
+    float Sencitive=0.01f;
     float Speed{};
     float Accel{};
     float Maxspeed{};

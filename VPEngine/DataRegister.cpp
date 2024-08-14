@@ -69,11 +69,7 @@ void VPRegister::Register_VPMath()
 		.data<&Vector4::z>("z"_hs)
 		.data<&Vector4::w>("w"_hs);
 
-	entt::meta<Vector4>()
-		.data<&Vector4::x>("x"_hs)
-		.data<&Vector4::y>("y"_hs)
-		.data<&Vector4::z>("z"_hs)
-		.data<&Vector4::w>("w"_hs);
+
 	entt::meta<Matrix>()
 		.data<&Matrix::_11>("_11"_hs).data<&Matrix::_12>("_12"_hs).data<&Matrix::_13>("_13"_hs).data<&Matrix::_14>("_14"_hs)
 		.data<&Matrix::_21>("_21"_hs).data<&Matrix::_22>("_22"_hs).data<&Matrix::_23>("_23"_hs).data<&Matrix::_24>("_24"_hs)
@@ -119,7 +115,7 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
 	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX);
+	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX, MeshComponent::LightMapOffset, MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);

@@ -1,15 +1,18 @@
 #include "pch.h"
 #include "SystemManager.h"
+#include "SceneManager.h"
 #include "EventManager.h"
 #include "TransformSystem.h"
 #include "PhysicSystem.h"
 #include "CameraSystem.h"
-
+#include"Components.h"
 	SystemManager::SystemManager()
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnSetPhysicUpdateRate", CreateSubscriber(&SystemManager::OnSetPhysicUpdateRate));
+		EventManager::GetInstance().Subscribe("OnStart", CreateSubscriber(&SystemManager::OnStart));
+		EventManager::GetInstance().Subscribe("OnFinish", CreateSubscriber(&SystemManager::OnFinish));
 
 		m_FixedDeltatime = 1.f / m_FixedFrame;
 		m_PhysicDeltatime= 1.f / m_PhysicsFrame;
@@ -85,6 +88,32 @@
 	}
 
 
+	void SystemManager::Start_Parent(uint32_t entityid)
+	{
+		Start(entityid);
+		if (m_SceneManager.lock()->HasComponent<Children>(entityid))
+		{
+			auto children = m_SceneManager.lock()->GetComponent<Children>(entityid);
+			for (auto childID : children->ChildrenID)
+			{
+				Start_Parent(childID);
+			}
+		}
+	}
+
+	void SystemManager::Finish_Parent(uint32_t entityid)
+	{
+		Finish(entityid);
+		if (m_SceneManager.lock()->HasComponent<Children>(entityid))
+		{
+			auto children = m_SceneManager.lock()->GetComponent<Children>(entityid);
+			for (auto childID : children->ChildrenID)
+			{
+				Finish_Parent(childID);
+			}
+		}
+	}
+
 	void SystemManager::InitializeSystems()
 	{
 		for (auto startable:m_Startables)
@@ -95,6 +124,18 @@
 	{
 		for (auto startable : m_Startables)
 			startable->Finalize();
+	}
+
+	void SystemManager::OnStart(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		Start_Parent(entityID);
+	}
+
+	void SystemManager::OnFinish(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		Finish_Parent(entityID);
 	}
 
 	void SystemManager::OnSetPhysicUpdateRate(std::any rate)

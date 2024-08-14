@@ -138,11 +138,11 @@ void VPEngine::Loop()
 				tempTime -= (1/90.f);
 			}
 
-			// 사용자가 ESC키를 눌렀는지 확인 후 종료 처리함
-			if (InputManager::GetInstance().IsEscapePressed())
-			{
-				break;
-			}
+			//// 사용자가 ESC키를 눌렀는지 확인 후 종료 처리함
+			//if (InputManager::GetInstance().IsEscapePressed())
+			//{
+			//	break;
+			//}
 		}
 	}
 }

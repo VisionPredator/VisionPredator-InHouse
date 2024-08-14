@@ -302,6 +302,13 @@ void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
 		entityMap.erase(entityIter);
 	}
 }
+void SceneManager::ClearAllEntity(bool Immidiate)
+{
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnClearAllEntity");
+	else
+		OnClearAllEntity(0);
+}
 void SceneManager::OnClearAllEntity(std::any data)
 {
 	auto& entityMap = GetEntityMap();
@@ -320,7 +327,7 @@ void SceneManager::OnClearAllEntity(std::any data)
 }
 void SceneManager::OnNewScene(std::any data)
 {
-	EventManager::GetInstance().ImmediateEvent("OnClearAllEntity");
+	ClearAllEntity(true);
 	delete m_CurrentScene;
 	m_CurrentScene = nullptr;
 	m_CurrentScene = new Scene;
@@ -392,10 +399,10 @@ void SceneManager::OnEndScene(std::any data)
 void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 direction, VPMath::Vector3 scele)
 {
 	// Create scale matrix
-
-	PrefabData temp = { prefabname ,pos,direction,scele };
+	PrefabData temp = { CreateRandomEntityID(),prefabname ,pos,direction,scele };
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnSpawnPrefab", data);
+	
 }
 
 

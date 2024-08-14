@@ -15,4 +15,7 @@ public:
 
 	/// æ¿¿ª deserialize «’¥œ¥Ÿ.
 	void OnDeSerializeScene(std::any data);
+	void OnSerializePrefab(std::any data);
+	void OnSpawnPrefab(std::any data);
+	friend class SceneManager;
 };

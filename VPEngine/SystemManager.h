@@ -140,6 +140,8 @@
 				startable->Start(gameObjectId);
 			}
 		}
+		void Start_Parent(uint32_t entityid);
+		void Finish_Parent(uint32_t entityid);
 
 		void Finish(uint32_t gameObjectId)
 		{
@@ -152,7 +154,8 @@
 	private:
 		void InitializeSystems();
 		void FinalizeSystems();
-
+		void OnStart(std::any entityID);
+		void OnFinish(std::any entityID);
 		void OnSetPhysicUpdateRate(std::any rate);
 		void OnInitializeSystems(std::any data)
 		{
