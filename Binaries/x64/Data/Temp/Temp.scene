@@ -1,7 +1,7 @@
 {
     "Entitys": [
         {
-            "EntityID": 3712359134,
+            "EntityID": 2719807443,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -10,9 +10,9 @@
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": 3.116546869277954,
-                        "y": 0.12372411787509918,
-                        "z": -2.1737828254699707
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
@@ -40,8 +40,8 @@
                         "z": 1.0
                     },
                     "direction": {
-                        "x": 0.019252147525548935,
-                        "y": -0.9998146891593933,
+                        "x": 1.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "intensity": 1.0,
@@ -52,11 +52,11 @@
             ]
         },
         {
-            "EntityID": 2581360280,
+            "EntityID": 2772118413,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Pistol"
+                    "Name": "Gun"
                 },
                 {
                     "BoxInfo": {
@@ -104,14 +104,14 @@
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": -1.4021955728530884,
+                        "x": 0.0,
                         "y": 0.0,
-                        "z": 2.4099583625793457
+                        "z": 0.0
                     },
                     "Local_Quaternion": {
-                        "w": -0.7071064710617065,
+                        "w": 1.0,
                         "x": 0.0,
-                        "y": 0.7071070671081543,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "Local_Scale": {
@@ -136,7 +136,95 @@
                         98,
                         120
                     ],
-                    "FBXFilter": "Static"
+                    "FBXFilter": "Axis"
+                }
+            ]
+        },
+        {
+            "EntityID": 3938287525,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Color": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "ComponentID": 134294793,
+                    "Height": 1.0,
+                    "Layer": 1,
+                    "Scale": 1.0,
+                    "StartPosX": 0.0,
+                    "StartPosY": 0.0,
+                    "TexturePath": "",
+                    "Width": 1.0
+                }
+            ]
+        },
+        {
+            "EntityID": 2732219106,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity0"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Color": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "ComponentID": 134294793,
+                    "Height": 1.0,
+                    "Layer": 1,
+                    "Scale": 1.0,
+                    "StartPosX": 0.0,
+                    "StartPosY": 0.0,
+                    "TexturePath": "",
+                    "Width": 1.0
                 }
             ]
         }

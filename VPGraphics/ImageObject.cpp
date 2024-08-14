@@ -134,7 +134,8 @@ void ImageObject::UpdateBuffers()
 
 
 	// 이미지의 위치가 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
-	if (((m_Info.StartPosX == m_PreviousPosX) && (m_Info.StartPosY == m_PreviousPosY)) && ((m_Info.Width == m_PreviousWidth) && (m_Info.Height == m_PreviousHeight)))
+	if ((m_Info.StartPosX == m_PreviousPosX && m_Info.StartPosY == m_PreviousPosY) 
+		&& (m_Info.Width == m_PreviousWidth && m_Info.Height == m_PreviousHeight))
 		return;
 
 	// 렌더링 되는 위치와 크기를 업데이트한다.

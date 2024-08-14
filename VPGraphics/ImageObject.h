@@ -51,8 +51,8 @@ private:
 	uint32_t m_BitmapWidth = 0;		// 임시
 	uint32_t m_BitmapHeight = 0;	// 임시
 
-	uint32_t m_PreviousPosX = -1;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
-	uint32_t m_PreviousPosY = -1;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
+	float m_PreviousPosX = -1;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
+	float m_PreviousPosY = -1;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
 
 	uint32_t m_PreviousWidth = -1;
 	uint32_t m_PreviousHeight = -1;

@@ -25,6 +25,9 @@ BlendState::BlendState(const std::shared_ptr<Device>& device, const BlendStateTy
 		}
 	case BlendStateType::AlphaBlending:
 		{
+			desc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
+			desc.AlphaToCoverageEnable = false;
+			desc.IndependentBlendEnable = false;
 			desc.RenderTarget[0].BlendEnable = true;
 			desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 			desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;

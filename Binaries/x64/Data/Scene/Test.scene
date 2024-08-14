@@ -1,7 +1,7 @@
 {
     "Entitys": [
         {
-            "EntityID": 3712359134,
+            "EntityID": 2719807443,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -52,8 +52,12 @@
             ]
         },
         {
-            "EntityID": 2581360280,
+            "EntityID": 2772118413,
             "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun"
+                },
                 {
                     "BoxInfo": {
                         "Extent": {
@@ -98,8 +102,23 @@
                     }
                 },
                 {
-                    "ComponentID": 1365953231,
-                    "Name": "Pistol"
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
                 },
                 {
                     "ComponentID": 3774279003,
@@ -118,25 +137,6 @@
                         120
                     ],
                     "FBXFilter": "Static"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
                 }
             ]
         }

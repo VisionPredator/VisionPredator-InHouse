@@ -75,7 +75,7 @@ void PassManager::Render()
 	//m_Passes[PassState::Forward]->Render();		// 얘도 필요없습니다. 왜 쿼드로 두번 그리려고 하죠?
 													// 그리고 왜 GBuffer에 두 번 그리려고 하죠? 에디터에 전달해줄려고? 그건 미리 렌더해놓아서 한번 더 할 필요가 없습니다..
 
-	DrawGBuffer();		// 필요 없는 패스
+	//DrawGBuffer();		// 필요 없는 패스
 
 	m_ParticlePass->Render();
 	m_UIPass->Render();
