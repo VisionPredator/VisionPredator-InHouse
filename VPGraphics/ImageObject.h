@@ -18,11 +18,12 @@ private:
 
 	struct ColorCB
 	{
-		VPMath::Vector4 Color;	// rgba
+		VPMath::Color Color;	// rgba
 	};
+	static_assert(sizeof(ColorCB) % 16 == 0, "must be align");
 
 public:
-	ImageObject(const std::shared_ptr<class Device>& device, 
+	ImageObject(const std::shared_ptr<Device>& device, 
 		const std::shared_ptr<class ResourceManager>& resourceManager,
 		const ui::ImageInfo& info, const uint32_t& id);
 	~ImageObject() = default;

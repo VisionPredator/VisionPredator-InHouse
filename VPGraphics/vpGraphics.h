@@ -105,7 +105,7 @@ namespace ui
 		float Width = 1.f;	// 삭제
 		float Height = 1.f;	// 삭제
 		uint32_t Layer = 0;		// 이미지 깊이값
-		VPMath::Vector4 Color = { 0.f, 0.f, 0.f, 1.f };	// 이미지 색상. rgba
+		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
 	};
 
 	struct TextInfo

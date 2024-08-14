@@ -3,7 +3,11 @@
 
 struct Sprite2DComponent : Component
 {
-	Sprite2DComponent() = default;
+	Sprite2DComponent()
+		: Color(VPMath::Color{1.f, 1.f, 1.f, 1.f})
+	{
+		
+	}
 
 	VP_JSONBODY(Sprite2DComponent, TexturePath, StartPosX, StartPosY, Width, Height, Scale, Layer, Color);
 
@@ -14,6 +18,6 @@ struct Sprite2DComponent : Component
 	float Width = 1.f;
 	float Height = 1.f;
 	uint32_t Layer = 1;		// 이미지 깊이값. 높을 수록 위에 그려진다.
-	VPMath::Vector4 Color = { 0.f, 0.f, 0.f, 1.f };	// 이미지 색상. rgba
+	VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
 };
 

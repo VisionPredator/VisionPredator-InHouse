@@ -66,7 +66,7 @@ void ImageObject::Render()
 	m_Device->Context()->IASetVertexBuffers(0, 1, m_VertexBuffer->GetAddress(), &stride, &offset);
 	m_Device->Context()->IASetIndexBuffer(m_IndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 	m_Device->Context()->PSSetShaderResources(0, 1, m_Texture->GetAddress());
-	m_Device->Context()->VSSetConstantBuffers(1, 1, m_ColorCB->GetAddress());
+	m_Device->Context()->PSSetConstantBuffers(1, 1, m_ColorCB->GetAddress());
 	m_Device->Context()->DrawIndexed(m_indexCount, 0, 0);
 }
 
@@ -76,6 +76,7 @@ void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 	m_Info.StartPosY = info.StartPosY;
 	m_Info.Layer = info.Layer;
 	m_Info.ImagePath = info.ImagePath;
+	m_Info.Color = info.Color;
 
 	//m_Info = info;
 

@@ -1,7 +1,7 @@
 {
     "Entitys": [
         {
-            "EntityID": 2719807443,
+            "EntityID": 2648309160,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -52,54 +52,57 @@
             ]
         },
         {
-            "EntityID": 2772118413,
+            "EntityID": 1309670730,
             "Component": [
                 {
                     "ComponentID": 1365953231,
                     "Name": "Gun"
                 },
                 {
-                    "BoxInfo": {
-                        "Extent": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        }
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
-                    "CapsuleInfo": {
-                        "HalfHeight": 1.0,
-                        "Radius": 1.0
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
-                    "ColliderShape": 0,
-                    "ColliderType": 0,
-                    "ComponentID": 4217231799,
-                    "DefaultColliderInfo": {
-                        "AngleLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "Density": 1.0,
-                        "DynamicFriction": 1.0,
-                        "LinearLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "OffSet": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "PhysicsLayer": 0,
-                        "Restitution": 0.0,
-                        "StaticFriction": 1.0,
-                        "UseGravity": false
-                    },
-                    "IsDynamic": false,
-                    "SphereInfo": {
-                        "Radius": 1.0
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     }
+                }
+            ]
+        },
+        {
+            "EntityID": 1365988057,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Image"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -121,22 +124,20 @@
                     }
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": [
-                        99,
-                        101,
-                        114,
-                        98,
-                        101,
-                        114,
-                        117,
-                        115,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "FBXFilter": "Static"
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 134294793,
+                    "Height": 1.0,
+                    "Layer": 1,
+                    "Scale": 1.0,
+                    "StartPosX": 0.0,
+                    "StartPosY": 0.0,
+                    "TexturePath": "",
+                    "Width": 1.0
                 }
             ]
         }

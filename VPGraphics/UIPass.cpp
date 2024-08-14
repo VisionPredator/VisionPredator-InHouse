@@ -45,6 +45,7 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 
 void UIPass::Render()
 {
+	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
 	m_Device->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 알파 블랜딩 사용.
@@ -64,12 +65,11 @@ void UIPass::Render()
 
 	m_Device->Context()->IASetInputLayout(m_VertexShader->InputLayout());
 	m_Device->Context()->VSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
-	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
 	m_Device->Context()->VSSetShader(m_VertexShader->GetShader(), nullptr, 0);
+	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
 	m_Device->Context()->PSSetShader(m_PixelShader->GetShader(), nullptr, 0);
-
-	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
 	m_Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
 
 	// Execute Draw Call for all 2D Objects
 	m_UIManager->Render();
