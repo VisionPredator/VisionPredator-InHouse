@@ -95,6 +95,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.StartPosY = component->StartPosY;
 		info.Layer = component->Layer;
 		info.Color = component->Color;
+		info.Scale = component->Scale;
 
 		m_Graphics->CreateImageObject(component->GetEntityID(), info);
 	}
@@ -182,6 +183,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.StartPosY = component.StartPosY;
 		info.Layer = component.Layer;
 		info.Color = component.Color;
+		info.Scale = component.Scale;
 
 		m_Graphics->UpdateImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}

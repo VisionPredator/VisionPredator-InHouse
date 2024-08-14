@@ -72,16 +72,14 @@ void PassManager::Render()
 	m_Passes[PassState::Debug]->Render();
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
-	//m_Passes[PassState::Forward]->Render();		// 얘도 필요없습니다. 왜 쿼드로 두번 그리려고 하죠?
-													// 그리고 왜 GBuffer에 두 번 그리려고 하죠? 에디터에 전달해줄려고? 그건 미리 렌더해놓아서 한번 더 할 필요가 없습니다..
 
+	//m_Passes[PassState::Forward]->Render();		// 필요 없는 패스
 	//DrawGBuffer();		// 필요 없는 패스
 
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
-	// IMGUI 패스가 아니라 Final 패스 입니다~~~~~ 이름을 바꾸어야 겠죠?
-	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그리는 거에요~~
+	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
 	DrawIMGUI();
 }
 
