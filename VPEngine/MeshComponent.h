@@ -6,10 +6,10 @@ struct MeshComponent :
 {
 	MeshComponent() = default;
 	VP_JSONBODY(MeshComponent, FBX, FBXFilter, lightMapOffset, lightMapScale, lightMapIndex)
-		std::wstring FBX;
+		std::wstring FBX{};
 	MeshFilter FBXFilter = MeshFilter::Static;
-	std::shared_ptr<RenderData> Renderdata;
-	VPMath::Vector2 lightMapOffset;
-	float lightMapScale;
-	float lightMapIndex;
+	std::shared_ptr<RenderData> Renderdata{};
+	VPMath::Vector2 lightMapOffset{};
+	float lightMapScale{};
+	float lightMapIndex{};
 };
