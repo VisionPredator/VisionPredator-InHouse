@@ -101,7 +101,7 @@ namespace ui
 		std::string ImagePath;
 		float StartPosX = 0.f;
 		float StartPosY = 0.f;
-		float scale = 1.f;		
+		float Scale = 1.f;		
 		uint32_t Layer = 0;		// 이미지 깊이값
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
 	};

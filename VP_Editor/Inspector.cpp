@@ -374,8 +374,14 @@ void Inspector::TypeImGui_float(entt::meta_data memberMetaData, Component* compo
 	float tempfloat = memberMetaData.get(component->GetHandle()).cast<float>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat))
+	if (INPUTKEY(KEYBOARDKEY::LSHIFT))
+	{
+		if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat, 0.01f))
+			memberMetaData.set(component->GetHandle(), tempfloat);
+	}
+	else if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat, 0.001f))
 		memberMetaData.set(component->GetHandle(), tempfloat);
+
 	ImGui::PopID();
 }
 
