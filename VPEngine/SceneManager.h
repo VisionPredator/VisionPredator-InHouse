@@ -139,7 +139,7 @@ private:
 
 	void RemoveEntity(std::shared_ptr<Entity> entity);
 	// 모든 Entity를 지운다.
-	void ClearAllEntity();
+	void ClearAllEntity(bool Immidiate = false);
 
 	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
