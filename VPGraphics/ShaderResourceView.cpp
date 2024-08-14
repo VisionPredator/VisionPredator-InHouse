@@ -61,6 +61,13 @@ ShaderResourceView::ShaderResourceView(std::shared_ptr<Device>device, std::wstri
 	m_Height = metadata.height;
 
 	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, &m_view));
+
+	if (FAILED(hr))
+	{
+		std::wstring text = L"Create Failed this File : ";
+		text = text + filePath;
+		//MessageBox(0, text.c_str(), 0, 0);
+	}
 }
 
 ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc) : Resource(device)

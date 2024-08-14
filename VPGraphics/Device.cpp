@@ -180,19 +180,19 @@ void Device::BindMaterialSRV(std::shared_ptr<Material> curMaterial)
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
 	}
 
-	if (curMaterialData.useNEO.x > 0)
+	if (curMaterialData.useNEOL.x > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 	}
 
-	if (curMaterialData.useNEO.y > 0)
+	if (curMaterialData.useNEOL.y > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
 	}
 
-	if (curMaterialData.useNEO.z > 0)
+	if (curMaterialData.useNEOL.z > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Opacity), 1, curMaterial->m_OpacitySRV.lock()->GetAddress());
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Opacity), 1, curMaterial->m_OpacitySRV.lock()->GetAddress());

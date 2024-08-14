@@ -14,8 +14,8 @@ struct PS_OUTPUT
     float4 Normal : SV_Target1;
     float4 Position : SV_Target2;
     float4 Depth : SV_Target3;
-    float4 Metalic : SV_Target4;
-    float4 Roughness : SV_Target5;
+    float4 Metalic_Roughness : SV_Target4;
+    float4 LightMap : SV_Target5;
     float4 AO : SV_Target6;
     float4 Emissive : SV_Target7;
 };
@@ -37,17 +37,18 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         output.Albedo = gAlbedo.Sample(samLinear, input.tex);
     }
     
-    output.Metalic = 0.04f;
+    output.Metalic_Roughness = float4(0, 0, 0, 1);
+    output.Metalic_Roughness.r = 0.04f;
     if (AMRO.y >= 1)
     {
-        output.Metalic = gMetalic.Sample(samLinear, input.tex);        
+        output.Metalic_Roughness.r = gMetalic.Sample(samLinear, input.tex).r;
     }
     
-    output.Roughness = 1.f;
+    output.Metalic_Roughness.g = 1.f;
     
     if (AMRO.z >= 1)
     {
-        output.Roughness = gRoughness.Sample(samLinear, input.tex);
+        output.Metalic_Roughness.g = gRoughness.Sample(samLinear, input.tex).r;
     }
     
     output.AO = 0.f;
@@ -78,7 +79,7 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     {
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
-    
+       
     return output;
     
 }

@@ -25,18 +25,17 @@ private:
 	std::weak_ptr<RenderTargetView> m_NormalRTV;
 	std::weak_ptr<RenderTargetView> m_PositionRTV;
 	std::weak_ptr<RenderTargetView> m_DepthRTV;
-	std::weak_ptr<RenderTargetView> m_MetalicRTV;
-	std::weak_ptr<RenderTargetView> m_RoughnessRTV;
+	std::weak_ptr<RenderTargetView> m_MetalicRoughnessRTV;
 	std::weak_ptr<RenderTargetView> m_AORTV;
 	std::weak_ptr<RenderTargetView> m_EmissiveRTV;
+	std::weak_ptr<RenderTargetView> m_LightMapRTV;
 
 	//GBuffer Texture
 	std::weak_ptr<ShaderResourceView> m_Albedo;
 	std::weak_ptr<ShaderResourceView> m_Normal;
 	std::weak_ptr<ShaderResourceView> m_Position;
 	std::weak_ptr<ShaderResourceView> m_Depth;
-	std::weak_ptr<ShaderResourceView> m_Metalic;
-	std::weak_ptr<ShaderResourceView> m_Roughness;
+	std::weak_ptr<ShaderResourceView> m_MetalicRoughness;
 	std::weak_ptr<ShaderResourceView> m_AO;
 	std::weak_ptr<ShaderResourceView> m_Emissive;
 

@@ -18,13 +18,12 @@ ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device
 	m_OffScreenName[1] = L"Normal";
 	m_OffScreenName[2] = L"Position";
 	m_OffScreenName[3] = L"Depth";
-	m_OffScreenName[4] = L"Metalic";
-	m_OffScreenName[5] = L"Roughness";
+	m_OffScreenName[4] = L"Metalic_Roughness";
+	m_OffScreenName[5] = L"LightMap";
 	m_OffScreenName[6] = L"AO";
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
 	m_OffScreenName[9] = L"IMGUI";
-	m_OffScreenName[10] = L"Opacity";
 	//m_OffScreenName[9] = L"RTV_Main";
 }
 
@@ -178,6 +177,10 @@ void ResourceManager::Initialize()
 
 	}
 
+	//LightMap
+	{
+		Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
+	}
 }
 
 

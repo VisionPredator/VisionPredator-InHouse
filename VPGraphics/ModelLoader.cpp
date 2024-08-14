@@ -442,7 +442,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
-		newMaterial->m_Data.useNEO.x += true;
+		newMaterial->m_Data.useNEOL.x += true;
 
 		//m_pNormal = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::NORMAL;
@@ -471,7 +471,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->EmissivePath = finalPath;
-		newMaterial->m_Data.useNEO.y += true;
+		newMaterial->m_Data.useNEOL.y += true;
 	}
 
 	path = (textureProperties[aiTextureType_OPACITY].second);
@@ -480,7 +480,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		finalPath = basePath + path.filename().wstring();
 		newMaterial->m_OpacitySRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->OpacityPath = finalPath;
-		newMaterial->m_Data.useNEO.z += true;
+		newMaterial->m_Data.useNEOL.z += true;
 		//m_pOpacity = ResourceManager::Instance->CreateTextureResource(finalPath);
 		//m_MaterialMapFlags |= MaterialMapFlags::OPACITY;
 	}
