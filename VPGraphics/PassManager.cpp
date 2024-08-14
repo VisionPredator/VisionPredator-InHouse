@@ -75,7 +75,7 @@ void PassManager::Render()
 	//m_Passes[PassState::Forward]->Render();		// 얘도 필요없습니다. 왜 쿼드로 두번 그리려고 하죠?
 													// 그리고 왜 GBuffer에 두 번 그리려고 하죠? 에디터에 전달해줄려고? 그건 미리 렌더해놓아서 한번 더 할 필요가 없습니다..
 
-	DrawGBuffer();		// 필요 없는 패스
+	//DrawGBuffer();		// 필요 없는 패스
 
 	m_ParticlePass->Render();
 	m_UIPass->Render();
@@ -146,7 +146,7 @@ void PassManager::DrawIMGUI()
 	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
 	std::shared_ptr<VertexShader> vs = resourcemanager->Get<VertexShader>(L"Quad").lock();
-	std::shared_ptr<ShaderResourceView> gui = resourcemanager->Get<ShaderResourceView>(L"IMGUI").lock();
+	std::shared_ptr<ShaderResourceView> gui = resourcemanager->Get<ShaderResourceView>(L"GBuffer").lock();
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 

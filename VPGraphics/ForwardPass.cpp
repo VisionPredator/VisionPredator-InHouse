@@ -50,8 +50,6 @@ void ForwardPass::Render()
 	std::shared_ptr<BlendState> state = m_BlendState.lock();
 	std::shared_ptr<DepthStencilState> depth = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
 
-
-
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);

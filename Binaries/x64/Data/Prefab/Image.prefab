@@ -1,10 +1,10 @@
 [
     {
-        "EntityID": 1399913804,
+        "EntityID": 1365988057,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "Entity0"
+                "Name": "Image"
             },
             {
                 "ComponentID": 3400599862,
@@ -24,6 +24,22 @@
                     "y": 1.0,
                     "z": 1.0
                 }
+            },
+            {
+                "Color": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "ComponentID": 134294793,
+                "Height": 1.0,
+                "Layer": 1,
+                "Scale": 1.0,
+                "StartPosX": 0.0,
+                "StartPosY": 0.0,
+                "TexturePath": "",
+                "Width": 1.0
             }
         ]
     }

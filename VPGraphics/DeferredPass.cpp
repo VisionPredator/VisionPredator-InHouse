@@ -301,7 +301,4 @@ void DeferredPass::Light()
 
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
-
-	
 }
-
