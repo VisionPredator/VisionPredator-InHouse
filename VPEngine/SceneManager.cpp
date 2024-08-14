@@ -21,7 +21,6 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveChild", CreateSubscriber(&SceneManager::OnRemoveChild), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneManager::OnSerializePrefab), EventType::ADD_DELETE);
-	//EventManager::GetInstance().Subscribe("OnDeSerializeEntity", CreateSubscriber(&SceneManager::OnDeSerializeEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDeSerializePrefab", CreateSubscriber(&SceneManager::OnDeSerializePrefab), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnSpawnPrefab", CreateSubscriber(&SceneManager::OnSpawnPrefab), EventType::ADD_DELETE);
 }
@@ -98,7 +97,6 @@ void SceneManager::OnAddChild(std::any data)
 	if (parent == child || CheckParent(parent, child))
 		return;
 
-
 	if (HasComponent<Parent>(child))
 	{
 		auto parentofchild = GetComponent<Parent>(child);
@@ -140,20 +138,29 @@ void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 	}
 }
 
-void SceneManager::OpenNewScene()
+void SceneManager::OpenNewScene(bool Immidiate)
 {
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnOpenNewScene");
+	else
+		EventManager::GetInstance().ImmediateEvent("OnOpenNewScene");
 
-	EventManager::GetInstance().ScheduleEvent("OnOpenNewScene");
 }
 
-void SceneManager::SceneSerialize(std::string FilePath)
+void SceneManager::SceneSerialize(std::string FilePath, bool Immidiate)
 {
-	EventManager::GetInstance().ScheduleEvent("OnSerializeScene", FilePath);
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnSerializeScene", FilePath);
+	else
+		EventManager::GetInstance().ImmediateEvent("OnSerializeScene", FilePath);
 }
 
-void SceneManager::SceneDeSerialize(std::string FilePath)
+void SceneManager::SceneDeSerialize(std::string FilePath, bool Immidiate)
 {
-	EventManager::GetInstance().ScheduleEvent("OnDeSerializeScene", FilePath);
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnDeSerializeScene", FilePath);
+	else
+		EventManager::GetInstance().ImmediateEvent("OnDeSerializeScene", FilePath);
 }
 
 
@@ -517,7 +524,6 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 								Parent* parentComponet = static_cast<Parent*>(compPtr.get());
 								parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
 							}
-
 						}
 					}
 					else
@@ -718,49 +724,49 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 #pragma region Trash 
 
 #pragma region OnDeserializeEntity 
-/*
-void SceneManager::OnDeSerializeEntity(std::any data)
-{
-	try
-	{
-		const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
-		uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
-		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 
-		tempEntity->SetEntityID(entityID);
-		SetEntityMap(entityID, tempEntity);
+//void SceneManager::OnDeSerializeEntity(std::any data)
+//{
+//	try
+//	{
+//		const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
+//		uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
+//		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
+//
+//		tempEntity->SetEntityID(entityID);
+//		SetEntityMap(entityID, tempEntity);
+//
+//		for (auto& componentjson : entityjson["Component"])
+//		{
+//			entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
+//			auto metaType = entt::resolve(comp_id);
+//			if (metaType)
+//			{
+//				// 메타 타입으로부터 인스턴스를 생성합니다.
+//				auto instance = metaType.construct();
+//				// 특정 함수를 찾고 호출합니다.
+//				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+//				if (myFunctionMeta)
+//					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity.get());
+//				else
+//					VP_ASSERT(false, "Reflection 함수 실패!");
+//			}
+//		}
+//	}
+//	catch (const std::bad_any_cast& e)
+//	{
+//		VP_ASSERT(false, "std::any_cast 실패: {}", e.what());
+//	}
+//	catch (const nlohmann::json::exception& e)
+//	{
+//		VP_ASSERT(false, "JSON 구문 분석 실패: {}", e.what());
+//	}
+//	catch (const std::exception& e)
+//	{
+//		VP_ASSERT(false, "예기치 않은 오류 발생: {}", e.what());
+//	}
+//}
 
-		for (auto& componentjson : entityjson["Component"])
-		{
-			entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
-			auto metaType = entt::resolve(comp_id);
-			if (metaType)
-			{
-				// 메타 타입으로부터 인스턴스를 생성합니다.
-				auto instance = metaType.construct();
-				// 특정 함수를 찾고 호출합니다.
-				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
-				if (myFunctionMeta)
-					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity.get());
-				else
-					VP_ASSERT(false, "Reflection 함수 실패!");
-			}
-		}
-	}
-	catch (const std::bad_any_cast& e)
-	{
-		VP_ASSERT(false, "std::any_cast 실패: {}", e.what());
-	}
-	catch (const nlohmann::json::exception& e)
-	{
-		VP_ASSERT(false, "JSON 구문 분석 실패: {}", e.what());
-	}
-	catch (const std::exception& e)
-	{
-		VP_ASSERT(false, "예기치 않은 오류 발생: {}", e.what());
-	}
-}
-*/
 #pragma endregion
 
 #pragma endregion

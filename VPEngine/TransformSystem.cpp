@@ -9,7 +9,7 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
 {
     EventManager::GetInstance().Subscribe("OnSetParentAndChild", CreateSubscriber(&TransformSystem::OnSetParentAndChild));
     EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
-    EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData));
+    EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData), EventType::SCENE);
 }
 std::vector<TransformComponent*> TransformSystem::newupdatevector;
 
@@ -81,11 +81,9 @@ void TransformSystem::OnSetParentAndChild(std::any parentChild)
 
 	TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
 	TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(parentID);
-
 	VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
 	newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
-
-	Update(0);
+    AddUpdateData(parentTransform);
 }
 
 void TransformSystem::OnUpdateTransfomData(std::any data)
@@ -102,7 +100,7 @@ void TransformSystem::OnRelaseParentAndChild(std::any child)
     {
         childTransform->WorldTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
     }
-    Update(0);
+    AddUpdateData(childTransform);
 }
 
 

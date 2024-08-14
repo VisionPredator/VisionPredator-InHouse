@@ -1,11 +1,16 @@
 {
     "Entitys": [
         {
-            "EntityID": 1734148177,
+            "EntityID": 2327294874,
             "Component": [
                 {
                     "ComponentID": 1365953231,
                     "Name": "Entity0"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [],
+                    "FBXFilter": 3
                 },
                 {
                     "ComponentID": 3400599862,
@@ -24,6 +29,149 @@
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": ""
+                },
+                {
+                    "Accel": 0.0,
+                    "AirControl": 0.0,
+                    "ComponentID": 4183631247,
+                    "HP": 0,
+                    "JumpFoce": 0.0,
+                    "MaxJumpCount": 0,
+                    "Maxspeed": 0.0
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": []
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 1000.0,
+                    "IsMain": false,
+                    "NearZ": 1.0
+                },
+                {
+                    "ComponentID": 4257272042,
+                    "attenuation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "direction": {
+                        "x": 1.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "intensity": 1.0,
+                    "range": -1.0,
+                    "spot": -1.0,
+                    "type": 0
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "animationList": [],
+                    "curAnimation": [],
+                    "speed": 1.0
+                },
+                {
+                    "Acceleration": 1.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 0
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 0.10000000149011612,
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "radius": 0.05000000074505806,
+                        "slopeLimit": 0.30000001192092896,
+                        "stepOffset": 0.0
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 0
+                    },
+                    "DynamicFriction": 0.10000000149011612,
+                    "GravityWeight": 0.20000000298023224,
+                    "JumpSpeed": 0.05000000074505806,
+                    "JumpXZAcceleration": 10.0,
+                    "JumpXZDeceleration": 0.10000000149011612,
+                    "MaxSpeed": 0.02500000037252903,
+                    "StaticFriction": 0.4000000059604645
+                },
+                {
+                    "ComponentID": 1581768666,
+                    "MaxParticle": 0,
+                    "TexturePath": ""
+                },
+                {
+                    "ComponentID": 4075385036,
+                    "FBXFilter": 1,
+                    "TextureName": [],
+                    "UseTexture": false,
+                    "color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "pass": 16
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
                     }
                 }
             ]

@@ -126,6 +126,7 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 					throw;
 				}
 			}
+			EventManager::GetInstance().ScheduleEvent("OnUpdateTransfomData");;
 		}
 		GetSceneManager()->SetSceneName(SceneName);
 

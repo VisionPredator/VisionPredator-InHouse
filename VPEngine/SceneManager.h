@@ -105,9 +105,9 @@ private:
 	{
 		return m_CurrentScene->EntityMap;
 	}
-	void OpenNewScene();
-	void SceneSerialize(std::string FilePath);
-	void SceneDeSerialize(std::string FilePath);
+	void OpenNewScene(bool Immidiate = false);
+	void SceneSerialize(std::string FilePath, bool Immidiate = false);
+	void SceneDeSerialize(std::string FilePath, bool Immidiate = false);
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
 	void OnSpawnPrefab(std::any pair);
@@ -174,8 +174,6 @@ private:
 		}
 	};
 	std::unordered_map<std::pair<uint32_t, entt::id_type>, Component*, pair_hash> m_ComponentCache;
-
-
 
 	friend class Toolbar;
 };

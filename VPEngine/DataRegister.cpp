@@ -24,7 +24,7 @@ void VPRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(MeshFilter, MeshFilter::Axis, MeshFilter::Box, MeshFilter::Grid, MeshFilter::Static, MeshFilter::Circle);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
-	entt::meta<EPhysicsLayer>().prop(Reflection::Prop::Name, "EPhysicsLayer").conv<std::underlying_type_t<EPhysicsLayer>>().data<EPhysicsLayer::GROUND >("EPhysicsLayer::GROUND"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::GROUND").data<EPhysicsLayer::WALL >("EPhysicsLayer::WALL"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::WALL").data<EPhysicsLayer::TOP >("EPhysicsLayer::TOP"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TOP").data<EPhysicsLayer::PLAYER >("EPhysicsLayer::PLAYER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::PLAYER").data<EPhysicsLayer::OBJECT >("EPhysicsLayer::OBJECT"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::OBJECT").data<EPhysicsLayer::ENEMY >("EPhysicsLayer::ENEMY"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ENEMY").data<EPhysicsLayer::DOOR >("EPhysicsLayer::DOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::DOOR").data<EPhysicsLayer::ACTIVEDOOR >("EPhysicsLayer::ACTIVEDOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ACTIVEDOOR").data<EPhysicsLayer::TRIGGER >("EPhysicsLayer::TRIGGER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TRIGGER");
+	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
 	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
 	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::GeoMetry);
 
@@ -109,41 +109,8 @@ void VPRegister::Register_VPMath()
 		.data<&Viewport::height>("height"_hs)
 		.data<&Viewport::minDepth>("minDepth"_hs)
 		.data<&Viewport::maxDepth>("maxDepth"_hs);
-}
 
-NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
-{MeshFilter::Axis, "Axis"},
-{MeshFilter::Box, "Box"},
-{MeshFilter::Grid, "Grid"},
-{MeshFilter::Static, "Static"},
-{MeshFilter::Skinning, "Skinning"},
-{MeshFilter::Circle, "Circle"},
-{MeshFilter::None, "None"}	});
-NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
-{LightType::Direction, "Direction"},
-{LightType::Spot, "Spot"},
-{LightType::Point, "Point"},
-{LightType::End, "End"}	});
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
-{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
-{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
-{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
-{VPPhysics::EPhysicsLayer::WALL,"WALL" },
-{VPPhysics::EPhysicsLayer::TOP, "TOP" },
-{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
-{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
-{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
-{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
-{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
-{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
-{VPPhysics::EColliderShape::BOX,"BOX" },
-{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
-{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
-{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
-	
-	});
+}
 
 
 

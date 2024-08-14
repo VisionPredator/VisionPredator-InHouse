@@ -122,28 +122,28 @@ void RenderSystem::OnReleasedComponent(std::any data)
 void RenderSystem::RenderUpdate(float deltaTime)
 {
 	//THREAD_COMPONENTS(RenderSystem, MeshComponent, &RenderSystem::MeshCompRender);
-	//for (MeshComponent& meshcomp : COMPITER(MeshComponent))
-	//{
-	//	MeshCompRender(meshcomp);
-	//}
+	for (MeshComponent& meshcomp : COMPITER(MeshComponent))
+	{
+		MeshCompRender(meshcomp);
+	}
 
-	//for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
-	//{
-	//	SkincompRender(skinComp);
-	//}
+	for (SkinningMeshComponent& skinComp : COMPITER(SkinningMeshComponent))
+	{
+		SkincompRender(skinComp);
+	}
 
-	//for (GeometryComponent& geometryComp : COMPITER(GeometryComponent))
-	//{
-	//	GeometryRender(geometryComp);
-	//}
-	//for (ParticleComponent& component : COMPITER(ParticleComponent))
-	//{
-	//	effect::ParticleInfo info;
-	//	info.TexturePath = component.TexturePath;
-	//	info.MaxParticles = component.MaxParticle;
+	for (GeometryComponent& geometryComp : COMPITER(GeometryComponent))
+	{
+		GeometryRender(geometryComp);
+	}
+	for (ParticleComponent& component : COMPITER(ParticleComponent))
+	{
+		effect::ParticleInfo info;
+		info.TexturePath = component.TexturePath;
+		info.MaxParticles = component.MaxParticle;
 
-	//	m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
-	//}
+		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+	}
 }
 
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
