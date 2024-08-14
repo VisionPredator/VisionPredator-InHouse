@@ -35,7 +35,7 @@ void ModelLoader::Initialize()
 {
 	std::string path;
 #ifdef _DEBUG
-	path = "..\\..\\..\\Resource\\FBX\\" ;
+	path = "..\\..\\..\\Resource\\FBX\\";
 #else
 	path = "..\\Data\\FBX\\";
 #endif
@@ -106,31 +106,31 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 		case Filter::STATIC:
 			filePath = filePath + "STATIC\\";
 
-			importFlags = aiProcess_Triangulate | // 삼각형으로 변환
-				aiProcess_GenNormals |	// 노말 생성/
-				aiProcess_GenUVCoords |		// UV 생성
-				aiProcess_CalcTangentSpace |  // 탄젠트 생성			
-				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
-				aiProcess_PreTransformVertices | // 노드의 변환행렬을 적용한 버텍스 생성 /주의 이 단계에서는 애니메이션이 제거됩니다.
-				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
-				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
+			importFlags = aiProcess_Triangulate // 삼각형으로 변환
+				| aiProcess_GenNormals 	// 노말 생성/
+				| aiProcess_GenUVCoords 		// UV 생성
+				| aiProcess_CalcTangentSpace   // 탄젠트 생성			
+				| aiProcess_GenBoundingBoxes  // 바운딩 박스 생성
+				| aiProcess_PreTransformVertices  // 노드의 변환행렬을 적용한 버텍스 생성 /주의 이 단계에서는 애니메이션이 제거됩니다.
+				| aiProcess_GlobalScale 	//단위를 미터로 설정할 수 있습니다.
+				| aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
 
 			break;
 		case Filter::SKINNING:
 			filePath = filePath + "SKINNING\\";
 
-			importFlags = aiProcess_Triangulate | // 삼각형으로 변환
-				aiProcess_GenNormals |	// 노말 생성/
-				aiProcess_GenUVCoords |		// UV 생성
-				aiProcess_CalcTangentSpace |  // 탄젠트 생성			
-				aiProcess_GenBoundingBoxes | // 바운딩 박스 생성
-				/*
-				aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
-				aiProcess_FlipUVs|
-				aiProcess_FlipWindingOrder|
-				*/
-				aiProcess_GlobalScale |	//단위를 미터로 설정할 수 있습니다.
-				aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
+			importFlags = aiProcess_Triangulate  // 삼각형으로 변환
+				| aiProcess_GenNormals 	// 노말 생성/
+				| aiProcess_GenUVCoords 		// UV 생성
+				| aiProcess_CalcTangentSpace   // 탄젠트 생성			
+				| aiProcess_GenBoundingBoxes  // 바운딩 박스 생성
+				| aiProcess_GlobalScale 	//단위를 미터로 설정할 수 있습니다.
+				| aiProcess_ConvertToLeftHanded;	// 왼손 좌표계로 변환
+			/*
+			aiProcess_LimitBoneWeights | // 본에 영향을 받는 정점의 최대 개수를 4개로 제한 - 일부 메쉬는 이거에 영향을 받아 뒤틀린다.. 이거 처리가 필요하다
+			aiProcess_FlipUVs|
+			aiProcess_FlipWindingOrder|
+			*/
 			break;
 		case Filter::END:
 			break;

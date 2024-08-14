@@ -104,6 +104,7 @@ struct VS_INPUT
     float4 tangent : TANGENT;
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
+    float2 lightuv : LIGHTMAPUV;
  #ifdef SKINNING
     float4 boneindex[2] : BONEINDEX;
     float4 boneweight[2] : BONEWEIGHT;
@@ -119,6 +120,7 @@ struct VS_OUTPUT
     float4 tangent : TANGENT;
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
+    float2 lightuv : LIGHTMAPUV;
 };
 
 struct Quad
