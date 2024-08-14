@@ -33,12 +33,12 @@ Buffer::Buffer(std::shared_ptr<Device>device, D3D11_BUFFER_DESC desc) : Resource
 
 ID3D11Buffer* Buffer::Get() const
 {
-	return m_buffer;
+	return m_buffer.Get();
 }
 
 ID3D11Buffer** Buffer::GetAddress()
 {
-	return &m_buffer;
+	return m_buffer.GetAddressOf();
 }
 
 UINT Buffer::Count() const
@@ -48,5 +48,6 @@ UINT Buffer::Count() const
 
 void Buffer::Release()
 {
-	m_buffer->Release();
+	//m_buffer->Release();
+	m_buffer.Reset();
 }
