@@ -110,40 +110,40 @@ void VPRegister::Register_VPMath()
 		.data<&Viewport::minDepth>("minDepth"_hs)
 		.data<&Viewport::maxDepth>("maxDepth"_hs);
 }
-
-NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
-{MeshFilter::Axis, "Axis"},
-{MeshFilter::Box, "Box"},
-{MeshFilter::Grid, "Grid"},
-{MeshFilter::Static, "Static"},
-{MeshFilter::Skinning, "Skinning"},
-{MeshFilter::Circle, "Circle"},
-{MeshFilter::None, "None"}	});
-NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
-{LightType::Direction, "Direction"},
-{LightType::Spot, "Spot"},
-{LightType::Point, "Point"},
-{LightType::End, "End"}	});
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
-{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
-{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
-{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
-{VPPhysics::EPhysicsLayer::WALL,"WALL" },
-{VPPhysics::EPhysicsLayer::TOP, "TOP" },
-{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
-{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
-{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
-{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
-{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
-{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
-{VPPhysics::EColliderShape::BOX,"BOX" },
-{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
-{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
-{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
-	
-	});
+//
+//NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
+//{MeshFilter::Axis, "Axis"},
+//{MeshFilter::Box, "Box"},
+//{MeshFilter::Grid, "Grid"},
+//{MeshFilter::Static, "Static"},
+//{MeshFilter::Skinning, "Skinning"},
+//{MeshFilter::Circle, "Circle"},
+//{MeshFilter::None, "None"}	});
+//NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
+//{LightType::Direction, "Direction"},
+//{LightType::Spot, "Spot"},
+//{LightType::Point, "Point"},
+//{LightType::End, "End"}	});
+//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
+//{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
+//{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
+//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
+//{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
+//{VPPhysics::EPhysicsLayer::WALL,"WALL" },
+//{VPPhysics::EPhysicsLayer::TOP, "TOP" },
+//{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
+//{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
+//{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
+//{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
+//{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
+//{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
+//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
+//{VPPhysics::EColliderShape::BOX,"BOX" },
+//{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
+//{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
+//{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
+//	
+//	});
 
 
 
@@ -152,7 +152,7 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
 	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX);
+	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX,MeshComponent::lightMapOffset,MeshComponent::lightMapScale);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
