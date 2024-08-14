@@ -102,8 +102,6 @@ namespace ui
 		float StartPosX = 0.f;
 		float StartPosY = 0.f;
 		float scale = 1.f;		
-		float Width = 1.f;	// 삭제
-		float Height = 1.f;	// 삭제
 		uint32_t Layer = 0;		// 이미지 깊이값
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
 	};

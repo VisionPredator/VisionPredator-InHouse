@@ -110,39 +110,39 @@ void VPRegister::Register_VPMath()
 		.data<&Viewport::maxDepth>("maxDepth"_hs);
 }
 
-NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
-{MeshFilter::Axis, "Axis"},
-{MeshFilter::Box, "Box"},
-{MeshFilter::Grid, "Grid"},
-{MeshFilter::Static, "Static"},
-{MeshFilter::Skinning, "Skinning"},
-{MeshFilter::Circle, "Circle"},
-{MeshFilter::None, "None"}	});
-NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
-{LightType::Direction, "Direction"},
-{LightType::Spot, "Spot"},
-{LightType::Point, "Point"},
-{LightType::End, "End"}	});
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
-{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
-{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
-{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
-{VPPhysics::EPhysicsLayer::WALL,"WALL" },
-{VPPhysics::EPhysicsLayer::TOP, "TOP" },
-{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
-{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
-{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
-{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
-{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
-{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
-NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
-{VPPhysics::EColliderShape::BOX,"BOX" },
-{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
-{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
-{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
-	
-	});
+//NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
+//{MeshFilter::Axis, "Axis"},
+//{MeshFilter::Box, "Box"},
+//{MeshFilter::Grid, "Grid"},
+//{MeshFilter::Static, "Static"},
+//{MeshFilter::Skinning, "Skinning"},
+//{MeshFilter::Circle, "Circle"},
+//{MeshFilter::None, "None"}	});
+//NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
+//{LightType::Direction, "Direction"},
+//{LightType::Spot, "Spot"},
+//{LightType::Point, "Point"},
+//{LightType::End, "End"}	});
+//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
+//{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
+//{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
+//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
+//{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
+//{VPPhysics::EPhysicsLayer::WALL,"WALL" },
+//{VPPhysics::EPhysicsLayer::TOP, "TOP" },
+//{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
+//{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
+//{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
+//{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
+//{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
+//{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
+//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
+//{VPPhysics::EColliderShape::BOX,"BOX" },
+//{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
+//{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
+//{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
+//	
+//	});
 
 
 
@@ -165,6 +165,6 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(GeometryComponent, GeometryComponent::FBXFilter,GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_MEMBER(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
-	META_ADD_MEMBER(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::StartPosX, Sprite2DComponent::StartPosY, Sprite2DComponent::Width, Sprite2DComponent::Height, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
+	META_ADD_MEMBER(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::StartPosX, Sprite2DComponent::StartPosY, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
 }
 

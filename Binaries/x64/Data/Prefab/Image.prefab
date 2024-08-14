@@ -1,10 +1,10 @@
 [
     {
-        "EntityID": 2190127839,
+        "EntityID": 1365988057,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "Entity0"
+                "Name": "Image"
             },
             {
                 "ComponentID": 3400599862,
@@ -28,9 +28,9 @@
             {
                 "Color": {
                     "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "ComponentID": 134294793,
                 "Height": 1.0,

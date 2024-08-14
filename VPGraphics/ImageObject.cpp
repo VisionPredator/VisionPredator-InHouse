@@ -34,10 +34,6 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	m_BitmapWidth = m_Texture->GetWidth();
 	m_BitmapHeight = m_Texture->GetHeight();
 
-	// 텍스처 크기는 원본 사이즈로 초기화
-	m_Info.Width = (float)m_BitmapWidth;
-	m_Info.Height = (float)m_BitmapHeight;
-
 	// 이전 렌더링 위치를 음수로 초기화
 	m_PreviousPosX = -1;
 	m_PreviousPosY = -1;
@@ -66,7 +62,7 @@ void ImageObject::Render()
 	m_Device->Context()->IASetVertexBuffers(0, 1, m_VertexBuffer->GetAddress(), &stride, &offset);
 	m_Device->Context()->IASetIndexBuffer(m_IndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 	m_Device->Context()->PSSetShaderResources(0, 1, m_Texture->GetAddress());
-	m_Device->Context()->PSSetConstantBuffers(1, 1, m_ColorCB->GetAddress());
+	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ColorCB->GetAddress());
 	m_Device->Context()->DrawIndexed(m_indexCount, 0, 0);
 }
 
@@ -89,8 +85,8 @@ void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 	else
 		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
 
-	m_Info.Width = m_Texture->GetWidth();
-	m_Info.Height = m_Texture->GetHeight();
+	m_BitmapWidth = m_Texture->GetWidth();
+	m_BitmapHeight = m_Texture->GetHeight();
 }
 
 bool ImageObject::InitializeBuffers()
@@ -136,20 +132,20 @@ void ImageObject::UpdateBuffers()
 
 	// 이미지의 위치가 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
 	if ((m_Info.StartPosX == m_PreviousPosX && m_Info.StartPosY == m_PreviousPosY) 
-		&& (m_Info.Width == m_PreviousWidth && m_Info.Height == m_PreviousHeight))
+		&& (m_BitmapWidth == m_PreviousWidth && m_BitmapWidth == m_PreviousHeight))
 		return;
 
 	// 렌더링 되는 위치와 크기를 업데이트한다.
 	m_PreviousPosX = m_Info.StartPosX;
 	m_PreviousPosY = m_Info.StartPosY;
-	m_PreviousWidth = m_Info.Width;
-	m_PreviousHeight = m_Info.Height;
+	m_PreviousWidth = m_BitmapWidth;
+	m_PreviousHeight = m_BitmapWidth;
 
 	// 비트맵의 좌표 계산
 	left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.StartPosX;
-	right = left + m_Info.Width;
+	right = left + m_BitmapWidth;
 	top = (float)(m_ScreenHeight / 2) - m_Info.StartPosY;
-	bottom = top - m_Info.Height;
+	bottom = top - m_BitmapWidth;
 
 	vertices.resize(m_vertexCount);
 	if (vertices.empty())

@@ -93,14 +93,11 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.ImagePath = component->TexturePath;
 		info.StartPosX = component->StartPosX;
 		info.StartPosY = component->StartPosY;
-		info.Width = component->Width;
-		info.Height = component->Height;
 		info.Layer = component->Layer;
 		info.Color = component->Color;
 
 		m_Graphics->CreateImageObject(component->GetEntityID(), info);
 	}
-
 }
 
 void RenderSystem::OnReleasedComponent(std::any data)
@@ -183,8 +180,6 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.ImagePath = component.TexturePath;
 		info.StartPosX = component.StartPosX;
 		info.StartPosY = component.StartPosY;
-		info.Width = component.Width;
-		info.Height = component.Height;
 		info.Layer = component.Layer;
 		info.Color = component.Color;
 
