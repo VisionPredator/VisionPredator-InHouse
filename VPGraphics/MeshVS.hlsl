@@ -73,6 +73,6 @@ VS_OUTPUT main(VS_INPUT input)
     
     output.pos = mul(output.posWorld, gWorldViewProj);
 #endif     
-
+    
     return output;
 }

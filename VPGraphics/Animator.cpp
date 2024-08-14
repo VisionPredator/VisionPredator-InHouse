@@ -260,11 +260,8 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 		}
 	}
 
-
 	//mixamo 기준 hips가 pelvis 이거로 상하체구분을 해보자
 	std::shared_ptr<Node> pelvis = ob->m_RootNode->m_Childs[1]; //hips
 
 	//std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
-
-
 }
