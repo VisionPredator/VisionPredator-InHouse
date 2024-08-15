@@ -134,8 +134,8 @@ void DeferredPass::Geometry()
 		RTVs.push_back(m_DepthRTV.lock()->Get());
 		RTVs.push_back(m_MetalicRoughnessRTV.lock()->Get());
 		RTVs.push_back(m_AORTV.lock()->Get());
-		RTVs.push_back(m_EmissiveRTV.lock()->Get());
 		RTVs.push_back(m_LightMapRTV.lock()->Get());
+		RTVs.push_back(m_EmissiveRTV.lock()->Get());
 
 
 		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView.lock()->Get());
@@ -165,14 +165,18 @@ void DeferredPass::Geometry()
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 
-
-
+		
 	}
 
 	while (!m_RenderDataQueue.empty())
 	{
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+
+		//어떤 라이트맵을 쓸건지 오브젝트에따라 다를 수 있음 -인덱스로 추적해야할듯
+		//임시로 일단 하드코딩
+		std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
 
 		if (curModel != nullptr)
 		{
@@ -241,13 +245,18 @@ void DeferredPass::Geometry()
 				// 텍스처와 샘플러를 셰이더에 바인딩
 				if (!curModel->m_Materials.empty())
 				{
-					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 					std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
 
 					if (curMaterial != nullptr)
 					{
-						MaterialData curMaterialData = curMaterial->m_Data;
-						curData->Update(curMaterialData);
+						MaterialData data = curMaterial->m_Data;
+						data.lightmapdata.x = curData->lightmapindex;
+						data.lightmapdata.y = curData->offset.x;
+						data.lightmapdata.z = curData->offset.y;
+						data.lightmapdata.w = 1; //curData->scale;
+						data.lightmaptiling = curData->tiling;
+						curMaterialData->Update(data);
 
 						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 

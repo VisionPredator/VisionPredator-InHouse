@@ -28,7 +28,10 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->FBX = meshComponent->FBX;
 		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
-		
+		meshComponent->Renderdata->offset = meshComponent->LightMapOffset;
+		meshComponent->Renderdata->lightmapindex = meshComponent->LightMapIndex;
+		meshComponent->Renderdata->scale = meshComponent->LightMapScale;
+		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
 		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
 		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
 		/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
