@@ -699,9 +699,16 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 	vertex.bitangent.y = curMesh->mBitangents[index].y;
 	vertex.bitangent.z = curMesh->mBitangents[index].z;
 
+	//texture uv channel
 	vertex.TexCord.x = curMesh->mTextureCoords[0][index].x;
 	vertex.TexCord.y = curMesh->mTextureCoords[0][index].y;
 
+	//lightmap uv channel
+	if(curMesh->mTextureCoords[1] != nullptr)
+	{
+	vertex.LightMapUV.x = curMesh->mTextureCoords[1][index].x;
+	vertex.LightMapUV.y = curMesh->mTextureCoords[1][index].y;
+	}
 	buffer.push_back(vertex);
 }
 
