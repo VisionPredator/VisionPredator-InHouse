@@ -39,6 +39,8 @@ cbuffer Material : register(b2)
     float roughness;
     float ao; // Ambient Occlusion
     float pad; 
+    float4 lightmapdata; //index, offset(x,y),scale
+    float2 lightmaptiling; // x y
 };
 
 

@@ -93,4 +93,6 @@ struct MaterialData
 	float roughness;
 	float ao; // Ambient Occlusion
 	float pad;
+	DirectX::XMFLOAT4  lightmapdata; //index, offset(x,y),scale
+	DirectX::XMFLOAT2  lightmaptiling; //index, offset(x,y),scale
 };
