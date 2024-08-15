@@ -15,8 +15,8 @@ struct PS_OUTPUT
     float4 Position : SV_Target2;
     float4 Depth : SV_Target3;
     float4 Metalic_Roughness : SV_Target4;
-    float4 LightMap : SV_Target5;
-    float4 AO : SV_Target6;
+    float4 AO : SV_Target5;
+    float4 LightMap : SV_Target6;
     float4 Emissive : SV_Target7;
 };
 
@@ -78,9 +78,13 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
        
-    output.LightMap.r = input.lightuv.x;
-    output.LightMap.g = input.lightuv.y;
-    output.LightMap.a = 1;
+    
+    float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.y;
+    float y = (input.lightuv.y * lightmaptiling.y) + lightmapdata.z;
+
+    float2 uv = float2(x, y);
+    
+    output.LightMap = gLightMap.Sample(samLinear, uv);
     
     return output;
     

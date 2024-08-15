@@ -80,8 +80,10 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
 
     }
     
+    float2 uv = gLightMap.Sample(samLinear, input.tex).rg;
+    
     indirectlight = float3(0,0,0);
-    indirectlight = gLightMap.Sample(samLinear, input.lightuv);
+    indirectlight = gLightMap.Sample(samLinear,input.tex);
 
     //ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
