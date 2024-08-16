@@ -14,7 +14,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnOpenNewScene", CreateSubscriber(&SceneManager::OnOpenNewScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnSaveCurrentToTemp", CreateSubscriber(&SceneManager::OnSaveCurrentToTemp), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnOverwriteTempToCurrent", CreateSubscriber(&SceneManager::OnOverwriteTempToCurrent), EventType::SCENE);
-	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnDeleteEntity", CreateSubscriber(&SceneManager::OnDeleteEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddChild", CreateSubscriber(&SceneManager::OnAddChild), EventType::ADD_DELETE);
@@ -85,12 +85,14 @@ bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
 	return false;
 }
 
-void SceneManager::AddChild(uint32_t parent, uint32_t child)
+void SceneManager::AddChild(uint32_t parent, uint32_t child, bool Immidiate)
 {
 	std::pair<uint32_t, uint32_t> data{ parent ,child };
-	EventManager::GetInstance().ScheduleEvent("OnAddChild", data);
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnAddChild", data);
+	else
+		OnAddChild(data);
 }
-
 void SceneManager::OnAddChild(std::any data)
 {
 	auto [parent, child] = std::any_cast<std::pair<uint32_t, uint32_t>>(data);
@@ -103,6 +105,7 @@ void SceneManager::OnAddChild(std::any data)
 		std::pair<uint32_t, uint32_t> newdata{ parentofchild->ParentID, child };
 		OnRemoveChild(newdata);
 	}
+
 	GetEntity(child)->AddComponent<Parent>(true)->ParentID = parent;
 
 	if (HasComponent<Children>(parent))
@@ -129,15 +132,12 @@ void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 	{
 		auto parent = GetComponent<Parent>(childID);
 		std::pair<uint32_t, uint32_t> data{ parent->ParentID, childID };
-		if (Immediate)
-		{
-			EventManager::GetInstance().ImmediateEvent("OnRemoveChild", data);
-			return;
-		}
-		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
+		if (!Immediate)
+			EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
+		else
+			OnRemoveChild(data);
 	}
 }
-
 void SceneManager::OpenNewScene(bool Immidiate)
 {
 	if (!Immidiate)
@@ -201,6 +201,7 @@ void SceneManager::AddCompToPool(std::shared_ptr<Component> comp)
 	auto& pool = m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()];
 	pool.push_back(comp);
 }
+#pragma region Delete Entity - Editior
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
 	std::list<uint32_t> DeleteEntityIDs;
@@ -218,7 +219,7 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 	{
 		uint32_t DeleteEntityID = DeleteEntityIDs.front();
 
-		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", DeleteEntityID);
+		EventManager::GetInstance().ScheduleEvent("OnDeleteEntity", DeleteEntityID);
 		DeleteEntityIDs.pop_front();
 		auto entity = GetEntity(DeleteEntityID);
 
@@ -230,78 +231,42 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 		}
 	}
 }
-
-
-void SceneManager::OnDestroyEntity(std::any data)
+void SceneManager::OnDeleteEntity(std::any data)
 {
-	// EntityMap에서 해당 엔티티를 찾습니다.
 	uint32_t entityID = std::any_cast<uint32_t>(data);
-
 	auto& entityMap = GetEntityMap();
-	auto entityIter = entityMap.find(entityID);
-	if (entityIter != entityMap.end())
-	{
-		std::shared_ptr<Entity> entityToRemove = entityIter->second;
 
-		// m_ComponentPool에서 해당 엔티티에 해당하는 컴포넌트들을 제거합니다.
-		for (auto& compPair : m_CurrentScene->m_ComponentPool)
+	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
+	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+	{
+		auto& componentMap = m_CurrentScene->m_ComponentPool;
+
+		// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
+		if (auto compIter = componentMap.find(entityID); compIter != componentMap.end())
 		{
-			auto& components = compPair.second;
-			components.erase(std::remove_if(components.begin(), components.end(),
-				[&entityID](std::weak_ptr<Component>& weakComp)
+			for (auto& weakComp : compIter->second)
+			{
+				if (auto sharedComp = weakComp.lock())
 				{
-					if (auto sharedComp = weakComp.lock())
-					{
-						if (sharedComp->GetEntityID() == entityID)
-						{
-							EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-							return true;
-						}
-					}
-					return false;
-				}), components.end());
+					// 컴포넌트가 해제된다는 이벤트를 즉시 발생시킵니다.
+					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+				}
+			}
+			componentMap.erase(compIter); // 엔티티와 연관된 모든 컴포넌트를 제거합니다.
 		}
 
-		// EntityMap에서 해당 엔티티를 제거합니다.
+		// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
+		std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
+			return pair.first.first == entityID;
+			});
+
+		// 마지막으로, entityMap에서 엔티티를 제거합니다.
 		entityMap.erase(entityIter);
 	}
 }
 
-void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
-{
-	if (!entity)
-		return;
-
-	// 엔티티 ID를 가져옵니다.
-	uint32_t entityID = entity->GetEntityID();
-
-	auto& entityMap = GetEntityMap();
-	auto entityIter = entityMap.find(entityID);
-	if (entityIter != entityMap.end())
-	{
-		// 해당 엔티티에 연결된 컴포넌트들을 제거합니다.
-		for (auto& compPair : m_CurrentScene->m_ComponentPool)
-		{
-			auto& components = compPair.second;
-			components.erase(std::remove_if(components.begin(), components.end(),
-				[&entityID](std::weak_ptr<Component>& weakComp)
-				{
-					if (auto sharedComp = weakComp.lock())
-					{
-						if (sharedComp->GetEntityID() == entityID)
-						{
-							EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-							return true;
-						}
-					}
-					return false;
-				}), components.end());
-		}
-
-		// 엔티티 맵에서 해당 엔티티를 제거합니다.
-		entityMap.erase(entityIter);
-	}
-}
+#pragma endregion
+#pragma region Clear Entity
 void SceneManager::ClearAllEntity(bool Immidiate)
 {
 	if (!Immidiate)
@@ -320,11 +285,44 @@ void SceneManager::OnClearAllEntity(std::any data)
 	}
 
 	// Remove each entity using RemoveEntity
-	for (auto& entity : entitiesToRemove) {
-		RemoveEntity(entity);
+	for (auto& entity : entitiesToRemove) 
+	{
+		ClearEntity(entity);
 	}
 	ClearCache();
 }
+void SceneManager::ClearEntity(std::shared_ptr<Entity> entity)
+{
+	if (!entity)
+		return;
+
+	uint32_t entityID = entity->GetEntityID();
+	auto& entityMap = GetEntityMap();
+
+	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+	{
+		auto& componentMap = m_CurrentScene->m_ComponentPool;
+		auto compIter = componentMap.find(entityID);
+		if (compIter != componentMap.end())
+		{
+			for (auto& weakComp : compIter->second)
+			{
+				if (auto sharedComp = weakComp.lock())
+				{
+					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+				}
+			}
+			componentMap.erase(compIter); // 해당 엔티티의 컴포넌트들을 모두 제거
+		}
+		auto& componentCache = m_ComponentCache;
+		std::erase_if(componentCache, [entityID](const auto& pair) {
+			return pair.first.first == entityID;
+			});
+		entityMap.erase(entityIter);
+	}
+}
+#pragma endregion
+
 void SceneManager::OnNewScene(std::any data)
 {
 	ClearAllEntity(true);
@@ -338,7 +336,6 @@ void SceneManager::OnOpenNewScene(std::any null)
 	EventManager::GetInstance().ImmediateEvent("OnNewScene");
 	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
 }
-
 //씬 체인지 이벤트 인게임 도중 씬 체인지 작동용도!
 void SceneManager::OnChangeScene(std::any data)
 {
@@ -631,6 +628,17 @@ void SceneManager::OnAddCompToScene(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", comp.get());
 }
 
+void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
+{
+	if (!HasEntity(entityID))
+		return;
+
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", entityID);
+	else
+		OnDeleteEntity(entityID);
+}
+
 void SceneManager::OnRemoveComponent(std::any data)
 {
 	Component* comp = std::any_cast<Component*>(data);
@@ -660,7 +668,6 @@ void SceneManager::OnRemoveComponent(std::any data)
 void SceneManager::OnSpawnPrefab(std::any prefabdata)
 {
 	auto prefabData = std::any_cast<PrefabData> (prefabdata);
-
 
 	std::ifstream inputFile(prefabData.prefabname);
 	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};

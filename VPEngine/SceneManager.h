@@ -94,7 +94,7 @@ public:
 	template<typename T>
 	inline std::vector<std::reference_wrapper<T>> GetComponentPool();
 
-	void AddChild(uint32_t Parent, uint32_t Child);
+	void AddChild(uint32_t Parent, uint32_t Child, bool Immidiate=false);
 	void RemoveParent(uint32_t child, bool Immediate = false);
 	bool CheckParent(uint32_t parent, uint32_t child);
 
@@ -134,6 +134,9 @@ private:
 	void OnSaveCurrentToTemp(std::any data);
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
+
+	void DestroyEntity(uint32_t entityID, bool Immidiate = false);
+	void DestroyEntity(std::shared_ptr<Entity> entity, bool Immidiate = false);
 	// Entity를 삭제한다.
 	void OnDestroyEntity(std::any entityID);
 
