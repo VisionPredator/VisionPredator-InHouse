@@ -1,5 +1,5 @@
 #pragma once
-
+//상수버퍼는 16바이트의 배수
 
 struct TransformData
 {
@@ -95,4 +95,5 @@ struct MaterialData
 	float pad;
 	DirectX::XMFLOAT4  lightmapdata; //index, offset(x,y),scale
 	DirectX::XMFLOAT2  lightmaptiling; //index, offset(x,y),scale
+	DirectX::XMFLOAT2  pad2; 
 };
