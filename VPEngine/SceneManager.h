@@ -136,11 +136,10 @@ private:
 	void OnAddCompToScene(std::any data);
 
 	void DestroyEntity(uint32_t entityID, bool Immidiate = false);
-	void DestroyEntity(std::shared_ptr<Entity> entity, bool Immidiate = false);
 	// Entity를 삭제한다.
-	void OnDestroyEntity(std::any entityID);
+	void OnDeleteEntity(std::any entityID);
 
-	void RemoveEntity(std::shared_ptr<Entity> entity);
+	void ClearEntity(std::shared_ptr<Entity> entity);
 	// 모든 Entity를 지운다.
 	void ClearAllEntity(bool Immidiate = false);
 
