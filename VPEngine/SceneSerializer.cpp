@@ -142,7 +142,7 @@ void SceneSerializer::OnSerializePrefab(std::any data)
 {
 
 }
-
+/*
 void SceneSerializer::OnSpawnPrefab(std::any prefabdata)
 {
 	auto prefabData = std::any_cast<PrefabData> (prefabdata);
@@ -178,7 +178,7 @@ void SceneSerializer::OnSpawnPrefab(std::any prefabdata)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get());
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),true);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -212,3 +212,4 @@ void SceneSerializer::OnSpawnPrefab(std::any prefabdata)
 
 	}
 }
+*/

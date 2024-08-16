@@ -138,6 +138,7 @@ private:
 	void DestroyEntity(uint32_t entityID, bool Immidiate = false);
 	// Entity를 삭제한다.
 	void OnDeleteEntity(std::any entityID);
+	void OnDestroyEntity(std::any entityID);
 
 	void ClearEntity(std::shared_ptr<Entity> entity);
 	// 모든 Entity를 지운다.

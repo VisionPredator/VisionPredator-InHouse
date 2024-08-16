@@ -154,8 +154,10 @@
 	private:
 		void InitializeSystems();
 		void FinalizeSystems();
+		void OnStart_Parent(std::any entityID);
 		void OnStart(std::any entityID);
 		void OnFinish(std::any entityID);
+		void OnFinish_Parent(std::any data);
 		void OnSetPhysicUpdateRate(std::any rate);
 		void OnInitializeSystems(std::any data)
 		{

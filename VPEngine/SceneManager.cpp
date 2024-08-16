@@ -15,6 +15,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnSaveCurrentToTemp", CreateSubscriber(&SceneManager::OnSaveCurrentToTemp), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnOverwriteTempToCurrent", CreateSubscriber(&SceneManager::OnOverwriteTempToCurrent), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnDeleteEntity", CreateSubscriber(&SceneManager::OnDeleteEntity), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddChild", CreateSubscriber(&SceneManager::OnAddChild), EventType::ADD_DELETE);
@@ -265,6 +266,7 @@ void SceneManager::OnDeleteEntity(std::any data)
 	}
 }
 
+
 #pragma endregion
 #pragma region Clear Entity
 void SceneManager::ClearAllEntity(bool Immidiate)
@@ -399,7 +401,6 @@ void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMa
 	PrefabData temp = { CreateRandomEntityID(),prefabname ,pos,direction,scele };
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnSpawnPrefab", data);
-	
 }
 
 
@@ -407,7 +408,6 @@ void SceneManager::SerializePrefab(uint32_t entityID)
 {
 	EventManager::GetInstance().ScheduleEvent("OnSerializePrefab", entityID);
 }
-
 void SceneManager::OnSerializePrefab(std::any data)
 {
 	uint32_t entityID = std::any_cast<uint32_t>(data);
@@ -479,7 +479,6 @@ void SceneManager::OnSerializePrefab(std::any data)
 	ofsPrefabPath << SceneJson.dump(4);
 	ofsPrefabPath.close();
 }
-
 void SceneManager::DeSerializePrefab(std::string filePath)
 {
 	EventManager::GetInstance().ScheduleEvent("OnDeSerializePrefab", filePath);
@@ -516,7 +515,7 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get());
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),false);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -537,7 +536,6 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 		}
 	}
 }
-
 std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
 {
 	uint32_t entityID = entityjson["EntityID"];
@@ -556,7 +554,7 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 			// 특정 함수를 찾고 호출합니다.
 			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity.get());
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity.get(),false);
 			else
 				VP_ASSERT(false, "Reflection 함수 실패!");
 		}
@@ -564,7 +562,6 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 
 	return tempEntity;
 }
-
 std::shared_ptr<Entity> SceneManager::CreateEntity()
 {
 	// 난수 생성기를 사용하여 엔티티 ID를 생성합니다.
@@ -598,7 +595,6 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 
 	return tempEntity;
 }
-
 uint32_t SceneManager::CreateRandomEntityID()
 {
 	std::random_device rd;  // 난수 생성기
@@ -609,7 +605,6 @@ uint32_t SceneManager::CreateRandomEntityID()
 		id = dis(gen);
 	return id;
 }
-
 void SceneManager::SetScenePhysic(VPPhysics::PhysicsInfo physicInfo)
 {
 	m_CurrentScene->ScenePhysicInfo = physicInfo;
@@ -628,16 +623,6 @@ void SceneManager::OnAddCompToScene(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", comp.get());
 }
 
-void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
-{
-	if (!HasEntity(entityID))
-		return;
-
-	if (!Immidiate)
-		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", entityID);
-	else
-		OnDeleteEntity(entityID);
-}
 
 void SceneManager::OnRemoveComponent(std::any data)
 {
@@ -684,7 +669,6 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 			uint32_t renewEntityID = findOrCreatePair(entityResettingPair, oldEntityID).second;
 			std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 			tempEntity->SetEntityID(renewEntityID);
-
 			SetEntityMap(renewEntityID, tempEntity);
 			///메인 Entity인가?
 			bool IsMainEntity = true;
@@ -701,7 +685,7 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get());
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),true);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -725,62 +709,62 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 			{
 				mainprefabID = renewEntityID;
 			}
+			EventManager::GetInstance().ImmediateEvent("OnStart", renewEntityID);
+
 		}
 		auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
 		Transform->Local_Location = prefabData.pos;
 		Transform->Local_Scale = prefabData.scale;
 		VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
 		Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrix(rotationMatrix);
+	}
+}
+void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
+{
+	if (!HasEntity(entityID))
+		return;
 
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", entityID);
+	else
+		OnDestroyEntity(entityID);
+}
+void SceneManager::OnDestroyEntity(std::any data)
+{
+	uint32_t entityID = std::any_cast<uint32_t>(data);
+	auto& entityMap = GetEntityMap();
+
+	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
+	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+	{
+		auto& componentMap = m_CurrentScene->m_ComponentPool;
+
+		// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
+		if (auto compIter = componentMap.find(entityID); compIter != componentMap.end())
+		{
+			for (auto& weakComp : compIter->second)
+			{
+				if (auto sharedComp = weakComp.lock())
+				{
+					// 컴포넌트가 해제된다는 이벤트를 즉시 발생시킵니다.
+					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+				}
+			}
+			componentMap.erase(compIter); // 엔티티와 연관된 모든 컴포넌트를 제거합니다.
+		}
+
+		// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
+		std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
+			return pair.first.first == entityID;
+			});
+
+		// 마지막으로, entityMap에서 엔티티를 제거합니다.
+		entityMap.erase(entityIter);
 	}
 }
 
+
+
 #pragma region Trash 
-
-#pragma region OnDeserializeEntity 
-
-//void SceneManager::OnDeSerializeEntity(std::any data)
-//{
-//	try
-//	{
-//		const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
-//		uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
-//		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
-//
-//		tempEntity->SetEntityID(entityID);
-//		SetEntityMap(entityID, tempEntity);
-//
-//		for (auto& componentjson : entityjson["Component"])
-//		{
-//			entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
-//			auto metaType = entt::resolve(comp_id);
-//			if (metaType)
-//			{
-//				// 메타 타입으로부터 인스턴스를 생성합니다.
-//				auto instance = metaType.construct();
-//				// 특정 함수를 찾고 호출합니다.
-//				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
-//				if (myFunctionMeta)
-//					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity.get());
-//				else
-//					VP_ASSERT(false, "Reflection 함수 실패!");
-//			}
-//		}
-//	}
-//	catch (const std::bad_any_cast& e)
-//	{
-//		VP_ASSERT(false, "std::any_cast 실패: {}", e.what());
-//	}
-//	catch (const nlohmann::json::exception& e)
-//	{
-//		VP_ASSERT(false, "JSON 구문 분석 실패: {}", e.what());
-//	}
-//	catch (const std::exception& e)
-//	{
-//		VP_ASSERT(false, "예기치 않은 오류 발생: {}", e.what());
-//	}
-//}
-
-#pragma endregion
 
 #pragma endregion

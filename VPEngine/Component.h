@@ -10,7 +10,8 @@ struct Component
     }
 
     virtual void SerializeComponent(nlohmann::json& json) const {}
-    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity) const { return nullptr; }
+    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity, bool Immidiate = false) const { return nullptr; }
+
     virtual std::shared_ptr<Component> AddComponent(Entity* parentEntity) { return nullptr; }
 
     template <typename T>

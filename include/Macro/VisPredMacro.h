@@ -56,9 +56,9 @@
     {\
         to_json(json, *this);\
     }\
-    std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity*  parentEntity) const override\
+    std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity*  parentEntity,bool Immidiate=false) const override\
     {\
-        auto component = parentEntity->AddComponent<CLASSNAME>();\
+        auto component = parentEntity->AddComponent<CLASSNAME>(Immidiate);\
         *component = json.get<CLASSNAME>();\
         component->SetEntity(parentEntity);\
         return component;\

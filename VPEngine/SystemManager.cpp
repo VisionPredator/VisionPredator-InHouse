@@ -12,7 +12,9 @@
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnSetPhysicUpdateRate", CreateSubscriber(&SystemManager::OnSetPhysicUpdateRate));
 		EventManager::GetInstance().Subscribe("OnStart", CreateSubscriber(&SystemManager::OnStart));
+		EventManager::GetInstance().Subscribe("OnStart_Parent", CreateSubscriber(&SystemManager::OnStart_Parent));
 		EventManager::GetInstance().Subscribe("OnFinish", CreateSubscriber(&SystemManager::OnFinish));
+		EventManager::GetInstance().Subscribe("OnFinish_Parent", CreateSubscriber(&SystemManager::OnFinish_Parent));
 
 		m_FixedDeltatime = 1.f / m_FixedFrame;
 		m_PhysicDeltatime= 1.f / m_PhysicsFrame;
@@ -126,13 +128,25 @@
 			startable->Finalize();
 	}
 
-	void SystemManager::OnStart(std::any data)
+	void SystemManager::OnStart_Parent(std::any data)
 	{
 		uint32_t entityID = std::any_cast<uint32_t>(data);
 		Start_Parent(entityID);
 	}
 
+	void SystemManager::OnStart(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+			Start(entityID);
+	}
+
 	void SystemManager::OnFinish(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		Finish(entityID);
+	}
+
+	void SystemManager::OnFinish_Parent(std::any data)
 	{
 		uint32_t entityID = std::any_cast<uint32_t>(data);
 		Finish_Parent(entityID);

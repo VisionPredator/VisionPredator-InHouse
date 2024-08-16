@@ -129,6 +129,7 @@ void Inspector::TransformComponentImGui(Component* component)
 
 
 	ImGui::PushID("Local_Location");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (ImGui::DragFloat3("Local_Location", temp_Local_Location, .01f, -FLT_MAX, FLT_MAX))
 	{
 		VPMath::Vector3 tempVector{};
@@ -139,7 +140,7 @@ void Inspector::TransformComponentImGui(Component* component)
 	}
 	ImGui::PopID();
 	ImGui::PushID("Local_Rotation");
-
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (ImGui::DragFloat3("Local_Rotation", temp_Local_Rotation, .01f, -FLT_MAX, FLT_MAX))
 	{
 		VPMath::Vector3 tempVector{};
@@ -160,6 +161,7 @@ void Inspector::TransformComponentImGui(Component* component)
 		temp_Local_Quaternion[2] = VPMath::XMConvertToDegrees(euler.z);
 
 		ImGui::PushID("Local_Quaternion");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
 		if (ImGui::DragFloat3("Local_Quaternion", temp_Local_Quaternion, 1.f, -FLT_MAX, FLT_MAX))
 		{
 			euler.x = DirectX::XMConvertToRadians(temp_Local_Quaternion[0]);
@@ -173,6 +175,7 @@ void Inspector::TransformComponentImGui(Component* component)
 	}
 
 	ImGui::PushID("Local_Scale");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (ImGui::DragFloat3("Local_Scale", temp_Local_Scale, .01f, -FLT_MAX, FLT_MAX))
 	{
 		VPMath::Vector3 tempVector{};
@@ -184,6 +187,7 @@ void Inspector::TransformComponentImGui(Component* component)
 	}
 	ImGui::PopID();
 	ImGui::PushID("World_Location");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (ImGui::DragFloat3("World_Location", temp_World_Location, .01f, -FLT_MAX, FLT_MAX))
 	{
 		VPMath::Vector3 tempVector{};
@@ -196,6 +200,7 @@ void Inspector::TransformComponentImGui(Component* component)
 	}
 	ImGui::PopID();
 	ImGui::PushID("World_Rotation");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (ImGui::DragFloat3("World_Rotation", temp_World_Rotation, .01f, -FLT_MAX, FLT_MAX))
 	{
 		VPMath::Vector3 tempVector{};
@@ -215,6 +220,7 @@ void Inspector::TransformComponentImGui(Component* component)
 		temp_World_Quaternion[2] = VPMath::XMConvertToDegrees(euler.z);
 
 		ImGui::PushID("World_Quaternion");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
 		if (ImGui::DragFloat3("World_Quaternion", temp_Local_Quaternion, 1.f, -FLT_MAX, FLT_MAX))
 		{
 			euler.x = DirectX::XMConvertToRadians(temp_World_Quaternion[0]);
@@ -231,6 +237,7 @@ void Inspector::TransformComponentImGui(Component* component)
 
 	ImGui::PopID();
 	ImGui::PushID("World_Scale");
+	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (ImGui::DragFloat3("World_Scale", temp_World_Scale, .01f, -FLT_MAX, FLT_MAX))
 	{
 		VPMath::Vector3 tempVector{};
@@ -240,8 +247,7 @@ void Inspector::TransformComponentImGui(Component* component)
 		comp->SetWorldScale(tempVector);
 	}
 
-	for (auto [MemberID, memberMetaData] : compMetaHandle->type().data())
-		MemberImGui(memberMetaData, component);
+
 	ImGui::PopID();
 }
 
