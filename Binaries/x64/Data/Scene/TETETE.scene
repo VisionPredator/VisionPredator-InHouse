@@ -5,7 +5,7 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "Sun"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -55,8 +55,51 @@
             "EntityID": 3489870292,
             "Component": [
                 {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 0,
+                    "ColliderType": 0,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
                     "ComponentID": 1365953231,
-                    "Name": "Entity1"
+                    "Name": "Gun"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -102,7 +145,49 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Image"
+                    "Name": "HP"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -0.023269370198249817,
+                        "y": -0.1733340322971344,
+                        "z": 2.8000714778900146
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 134294793,
+                    "Layer": 1,
+                    "Scale": 1.0,
+                    "StartPosX": 103.58699798583984,
+                    "StartPosY": 33.5,
+                    "TexturePath": "HP 1.png"
+                }
+            ]
+        },
+        {
+            "EntityID": 3310046882,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "CrossHead"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -133,9 +218,51 @@
                     "ComponentID": 134294793,
                     "Layer": 1,
                     "Scale": 1.0,
-                    "StartPosX": 0.0,
-                    "StartPosY": 0.0,
-                    "TexturePath": ""
+                    "StartPosX": 910.0,
+                    "StartPosY": 504.0,
+                    "TexturePath": "GOSEGUI0900.png"
+                }
+            ]
+        },
+        {
+            "EntityID": 302202520,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "AMMO"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0019824951887130737,
+                        "z": 0.00031340494751930237
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 134294793,
+                    "Layer": 1,
+                    "Scale": 1.0,
+                    "StartPosX": 1577.800048828125,
+                    "StartPosY": 950.0,
+                    "TexturePath": "AMMO 1.png"
                 }
             ]
         }

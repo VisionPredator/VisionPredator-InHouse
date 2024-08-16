@@ -1,11 +1,11 @@
-ï»¿#pragma once
+#pragma once
 
 #include <SDKDDKVer.h>
 
-#define WIN32_LEAN_AND_MEAN             // ê±°ì˜ ì‚¬ìš©ë˜ì§€ ì•ŠëŠ” ë‚´ìš©ì„ Windows í—¤ë”ì—ì„œ ì œì™¸í•©ë‹ˆë‹¤.
-// Windows í—¤ë” íŒŒì¼
+#define WIN32_LEAN_AND_MEAN             // °ÅÀÇ »ç¿ëµÇÁö ¾Ê´Â ³»¿ëÀ» Windows Çì´õ¿¡¼­ Á¦¿ÜÇÕ´Ï´Ù.
+// Windows Çì´õ ÆÄÀÏ
 #include <windows.h>
-// C ëŸ°íƒ€ì„ í—¤ë” íŒŒì¼ì…ë‹ˆë‹¤.
+// C ·±Å¸ÀÓ Çì´õ ÆÄÀÏÀÔ´Ï´Ù.
 #include <stdlib.h>
 #include <memory>
 #include <vector>
@@ -30,3 +30,7 @@
 #include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
 using namespace entt::literals;
+
+#include "../include/Macro/ReflectionMacro.h"
+#include "../include/Macro/VisPredMacro.h"
+using namespace physx;

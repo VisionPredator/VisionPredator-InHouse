@@ -7,7 +7,7 @@
 #include "Defines.h"
 #include "Device.h"
 #include "Vertex.h"
-#pragma comment (lib, "D3DCompiler.lib")
+//#pragma comment (lib, "D3DCompiler.lib")
 
 PixelShader::PixelShader(std::wstring filename) : Shader(filename)
 {
