@@ -15,6 +15,20 @@ private:
 	void Geometry();
 
 private:
+	enum class Geo_Tex
+	{
+		Albedo = 0,
+		Normal,
+		Position,
+		Depth,
+		Metalic,
+		Roughness,
+		AO,
+		Emissive,
+		LightMap,
+
+	};
+private:
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 
 	//Geometry
@@ -38,6 +52,7 @@ private:
 	std::weak_ptr<ShaderResourceView> m_MetalicRoughness;
 	std::weak_ptr<ShaderResourceView> m_AO;
 	std::weak_ptr<ShaderResourceView> m_Emissive;
+	std::weak_ptr<ShaderResourceView> m_LightMap;
 
 	//Light - Quad
 	std::weak_ptr<VertexBuffer> m_QuadVB;

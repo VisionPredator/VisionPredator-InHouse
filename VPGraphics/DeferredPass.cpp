@@ -109,6 +109,7 @@ void DeferredPass::OnResize()
 	m_AO = manager->Get<ShaderResourceView>(L"AO").lock();
 	m_Emissive = manager->Get<ShaderResourceView>(L"Emissive").lock();
 	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_LightMap = manager->Get<ShaderResourceView>(L"LightMap").lock();
 
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
@@ -302,7 +303,7 @@ void DeferredPass::Light()
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, m_MetalicRoughness.lock()->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, m_AO.lock()->GetAddress());
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, m_Emissive.lock()->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, resourcemanager->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, m_LightMap.lock()->GetAddress());
 
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
