@@ -180,6 +180,7 @@ void ResourceManager::Initialize()
 	//LightMap
 	{
 		Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
+		Create<ShaderResourceView>(L"indirect_Lightmap-0_comp_light.png", L"indirect_Lightmap-0_comp_light.png");
 	}
 }
 
