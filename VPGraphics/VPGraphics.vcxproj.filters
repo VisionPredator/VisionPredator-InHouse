@@ -283,6 +283,9 @@
     <ClInclude Include="OutlineAddPass.h">
       <Filter>Pass\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectMaskPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -442,6 +445,9 @@
     <ClCompile Include="OutlineEdgeDetectPass.cpp">
       <Filter>Pass\PostProcess\Source</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectMaskPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -479,6 +485,30 @@
     </FxCompile>
     <FxCompile Include="Sprite2DVS.hlsl">
       <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineAddVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineAddPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskPS.hlsl">
+      <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

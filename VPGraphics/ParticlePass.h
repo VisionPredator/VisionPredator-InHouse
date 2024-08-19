@@ -1,7 +1,11 @@
 #pragma once
 
-class TimeManager;
+/*
+ *	Geometry Shader 를 사용해 Stream Output 기능을 이용하여
+ *	파티클을 생성하고 렌더하는 패스
+ */
 
+class TimeManager;
 class ParticlePass
 {
 public:

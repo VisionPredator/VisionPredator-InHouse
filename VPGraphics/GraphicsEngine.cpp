@@ -386,6 +386,8 @@ std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
 
 void GraphicsEngine::OnResize(HWND hwnd)
 {
+	/// TODO: 매니저들의 OnResize 함수 불러오기. 실제로 Resize 되도록 고치기.
+
 	m_hWnd = hwnd;
 	GetClientRect(m_hWnd, &m_wndSize);
 
