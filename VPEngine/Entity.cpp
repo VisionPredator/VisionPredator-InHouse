@@ -17,6 +17,14 @@ Entity::~Entity()
 }
 
 
+void Entity::DestorySelf(bool Immidiate)
+{
+    if (!Immidiate)
+        EventManager::GetInstance().ScheduleEvent("OnDestroyEntity",m_EntityID);
+    else
+        EventManager::GetInstance().ImmediateEvent("OnDestroyEntity", m_EntityID);
+}
+
 void Entity::AddComponentToMap(std::shared_ptr<Component> comp)
 {
     auto compID = comp->GetHandle()->type().id();

@@ -5,7 +5,7 @@
 
 struct TransformComponent;
 
-class TransformSystem : public System, public IUpdatable, public EventSubscriber,public IStartable
+class TransformSystem : public System, public IUpdatable, public EventSubscriber,public IStartable,public IRenderable
 {
 public:
     TransformSystem(std::shared_ptr<SceneManager> entityManager);
@@ -54,5 +54,9 @@ private:
     void Finish(uint32_t gameObjectId) override;
 
     void Finalize() override;
+
+
+    // IRenderable을(를) 통해 상속됨
+    void RenderUpdate(float deltaTime) override;
 
 };

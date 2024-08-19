@@ -199,10 +199,7 @@ bool InputManager::GetKey(KEYBOARDKEY inputkey)
 	int keyCode = static_cast<int>(inputkey);
 	bool result = (m_keyboardState[keyCode] & 0x80) && (m_previousKeyboardState[keyCode] & 0x80);
 #ifdef _DEBUG
-	if (result)
-	{
-		std::cout << "GetKeyHold";
-	}
+
 #endif
 	return result;
 }
@@ -241,10 +238,7 @@ bool InputManager::GetKey(MOUSEKEY inputkey)
 	bool result = (m_mouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80) &&
 		(m_previousMouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80);
 #ifdef _DEBUG
-	if (result)
-	{
-		std::cout << "GetKeyHold";
-	}
+
 #endif
 	return result;
 }
@@ -266,14 +260,14 @@ bool InputManager::ReadKeyboard()
 	if (FAILED(result))
 	{
 		// 실패한 경우 로그 기록 (디버깅 용도로만 사용)
-		std::cerr << "Failed to get keyboard state. HRESULT: " << result << std::endl;
+		//std::cerr << "Failed to get keyboard state. HRESULT: " << result << std::endl;
 
 		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
 		{
 			result = m_keyboard->Acquire();
 			if (FAILED(result))
 			{
-				std::cerr << "Failed to acquire keyboard. HRESULT: " << result << std::endl;
+				//std::cerr << "Failed to acquire keyboard. HRESULT: " << result << std::endl;
 				return false;
 			}
 		}
@@ -289,14 +283,14 @@ bool InputManager::ReadMouse()
 	if (FAILED(result))
 	{
 		// 실패한 경우 로그 기록 (디버깅 용도로만 사용)
-		std::cerr << "Failed to get mouse state. HRESULT: " << result << std::endl;
+		//std::cerr << "Failed to get mouse state. HRESULT: " << result << std::endl;
 
 		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
 		{
 			result = m_mouse->Acquire();
 			if (FAILED(result))
 			{
-				std::cerr << "Failed to acquire mouse. HRESULT: " << result << std::endl;
+				//std::cerr << "Failed to acquire mouse. HRESULT: " << result << std::endl;
 				return false;
 			}
 		}

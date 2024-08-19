@@ -21,13 +21,13 @@ public:
 	virtual entt::id_type GetTypeID() const { return Reflection::GetTypeID<Controller>(); }
 	inline uint32_t GetEntityID();
 	inline physx::PxControllerFilters* GetFilters();
-	uint32_t m_EntityID;
+	uint32_t m_EntityID{};
 	physx::PxController* m_Controller{};
 	VPPhysics::EPhysicsLayer m_LayerNum{};
 	physx::PxMaterial* m_Material{};
 	std::shared_ptr<PxFilterData> m_FilterData{};
 	std::shared_ptr<ControllerQueryFilterCallback> m_ControllerQueryFilterCallback{};
-	std::shared_ptr<PxControllerFilters> m_Filters;
+	std::shared_ptr<PxControllerFilters> m_Filters{};
 
 	physx::PxVec3 m_Velocity{};
 	bool m_IsFall{};

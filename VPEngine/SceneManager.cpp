@@ -3,6 +3,7 @@
 #include "Components.h"
 #include <fstream>
 #include <random>
+#include <queue>
 
 SceneManager::SceneManager()
 {
@@ -395,10 +396,10 @@ void SceneManager::OnEndScene(std::any data)
 
 }
 
-void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 direction, VPMath::Vector3 scele)
+void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scele)
 {
 	// Create scale matrix
-	PrefabData temp = { CreateRandomEntityID(),prefabname ,pos,direction,scele };
+	PrefabData temp = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnSpawnPrefab", data);
 }
@@ -653,7 +654,6 @@ void SceneManager::OnRemoveComponent(std::any data)
 void SceneManager::OnSpawnPrefab(std::any prefabdata)
 {
 	auto prefabData = std::any_cast<PrefabData> (prefabdata);
-
 	std::ifstream inputFile(prefabData.prefabname);
 	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
 	uint32_t mainprefabID{};
@@ -713,12 +713,51 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 
 		}
 		auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
-		Transform->Local_Location = prefabData.pos;
-		Transform->Local_Scale = prefabData.scale;
-		VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
-		Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrix(rotationMatrix);
+		Transform->SetLocalLocation(prefabData.pos);
+		Transform->SetLocalScale(prefabData.scale);
+		//prefabData.direction = -prefabData.direction;
+		Transform->SetLocalRotation(prefabData.rotation);
+		//VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
+		//VPMath::Quaternion newRotation = VPMath::Quaternion::CreateFromRotationMatrix(rotationMatrix);
+		//newRotation.y = -newRotation.y;
+		//newRotation.x = -newRotation.x;
+		//Transform->SetLocalQuaternion(newRotation);
+
+		//Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrixLH(rotationMatrix);
 	}
 }
+std::shared_ptr<Entity> SceneManager::GetChildEntityByName(uint32_t entityID, std::string name)
+{
+	uint32_t mainID = entityID;
+	std::queue<uint32_t> ChildrenIDs;
+	ChildrenIDs.push(mainID);
+
+	while (!ChildrenIDs.empty())
+	{
+		uint32_t childID = ChildrenIDs.front();
+		ChildrenIDs.pop();
+
+		// GetEntity 호출을 최소화
+		auto currentEntity = GetEntity(childID);
+		auto idComponent = currentEntity->GetComponent<IDComponent>();
+		if ( idComponent->Name == name)
+		{
+			return currentEntity;
+		}
+
+		// 자식 엔티티의 ID를 큐에 추가
+		if (currentEntity->HasComponent<Children>())
+		{
+			auto children = currentEntity->GetComponent<Children>();
+			for (const auto& child : children->ChildrenID)
+			{
+				ChildrenIDs.push(child);
+			}
+		}
+	}
+	return nullptr;
+}
+
 void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
 {
 	if (!HasEntity(entityID))
@@ -731,36 +770,67 @@ void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
 }
 void SceneManager::OnDestroyEntity(std::any data)
 {
-	uint32_t entityID = std::any_cast<uint32_t>(data);
+	uint32_t mainID = std::any_cast<uint32_t>(data);
 	auto& entityMap = GetEntityMap();
+	std::list<uint32_t> DeleteEntityIDs;
+	DeleteEntityIDs.push_back(mainID);
 
-	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
-	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+	std::vector <uint32_t> DeleteEntity;
+	// 엔티티가 부모 컴포넌트를 가지고 있는 경우, 부모와 자식 관계를 제거합니다.
+	if (HasComponent<Parent>(mainID))
 	{
-		auto& componentMap = m_CurrentScene->m_ComponentPool;
-
-		// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
-		if (auto compIter = componentMap.find(entityID); compIter != componentMap.end())
+		auto parentEntity = GetEntity(GetComponent<Parent>(mainID)->ParentID);
+		auto parentsChildren = parentEntity->GetComponent<Children>();
+		RemoveParent(mainID);
+	}
+	while (!DeleteEntityIDs.empty())
+	{
+		uint32_t DeleteEntityID = DeleteEntityIDs.front();
+		DeleteEntity.push_back(DeleteEntityID);
+		auto entity = GetEntity(DeleteEntityID);
+		DeleteEntityIDs.pop_front();
+		// 엔티티가 자식 컴포넌트를 가지고 있는 경우, 자식 엔티티도 삭제 리스트에 추가합니다.
+		if (entity->HasComponent<Children>())
 		{
-			for (auto& weakComp : compIter->second)
+			auto children = entity->GetComponent<Children>();
+			DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
+		}
+	}
+
+	for (auto entityid : DeleteEntity)
+	{
+		EventManager::GetInstance().ImmediateEvent("OnFinish", entityid);
+
+		// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
+		if (auto entityIter = entityMap.find(entityid); entityIter != entityMap.end())
+		{
+			auto& componentMap = m_CurrentScene->m_ComponentPool;
+
+			// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
+			if (auto compIter = componentMap.find(entityid); compIter != componentMap.end())
 			{
-				if (auto sharedComp = weakComp.lock())
+				for (auto& weakComp : compIter->second)
 				{
-					// 컴포넌트가 해제된다는 이벤트를 즉시 발생시킵니다.
-					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+					if (auto sharedComp = weakComp.lock())
+					{
+						// 컴포넌트가 해제된다는 이벤트를 즉시 발생시킵니다.
+
+						EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+					}
 				}
+				componentMap.erase(compIter); // 엔티티와 연관된 모든 컴포넌트를 제거합니다.
 			}
-			componentMap.erase(compIter); // 엔티티와 연관된 모든 컴포넌트를 제거합니다.
+			// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
+			std::erase_if(m_ComponentCache, [entityid](const auto& pair) {
+				return pair.first.first == entityid;
+				});
+			// 마지막으로, entityMap에서 엔티티를 제거합니다.
+			entityMap.erase(entityIter);
 		}
 
-		// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
-		std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
-			return pair.first.first == entityID;
-			});
-
-		// 마지막으로, entityMap에서 엔티티를 제거합니다.
-		entityMap.erase(entityIter);
 	}
+
+
 }
 
 

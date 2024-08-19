@@ -178,12 +178,14 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="DataRegister.h" />
     <ClInclude Include="GeometryComponent.h" />
+    <ClInclude Include="LifeTimeComponent.h" />
+    <ClInclude Include="LifeTimeSystem.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
+    <ClInclude Include="LogicSystems.h" />
     <ClInclude Include="ParticleComponent.h" />
     <ClInclude Include="PhysicSystem.h" />
     <ClInclude Include="RenderSystem.h" />
-    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="VPEngine.h" />
@@ -220,6 +222,8 @@
     <ClCompile Include="IDComponent.cpp" />
     <ClCompile Include="IdentityComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="LifeTimeComponent.cpp" />
+    <ClCompile Include="LifeTimeSystem.cpp" />
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
@@ -231,7 +235,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="RigidBodyComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />

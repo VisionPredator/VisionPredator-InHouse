@@ -44,7 +44,7 @@ public:
     {
         return m_OwnedComp.find(Reflection::GetTypeID<T>()) != m_OwnedComp.end();
     }
-
+    void DestorySelf(bool immidiate = false );
     bool HasComponent(entt::id_type compID) const
     {
         return m_OwnedComp.find(compID) != m_OwnedComp.end();

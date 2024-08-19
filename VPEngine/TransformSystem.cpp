@@ -108,8 +108,8 @@ void TransformSystem::OnRelaseParentAndChild(std::any child)
 void TransformSystem::UpdateDirVector(TransformComponent* transform)
 {
     transform->FrontVector = transform->WorldTransform.Forward_L();
-    transform->RightVector = transform->WorldTransform.Right_L();
-    transform->UpVector = transform->WorldTransform.Up_L();
+    transform->RightVector = transform->WorldTransform.Right();
+    transform->UpVector = transform->WorldTransform.Up();
 
     transform->FrontVector.Normalize();
     transform->RightVector.Normalize();
@@ -121,11 +121,15 @@ void TransformSystem::CalculateTransform_Child(TransformComponent* transform, bo
     if (IsLocalTransformChanged(transform))
     {
         CalculateTransformLocal(transform);
+        UpdateDirVector(transform);
+
         IsParentWorldChanged = true;
     }
     else if (IsWorldTransformChanged(transform))
     {
         CalculateTransformWorld(transform);
+        UpdateDirVector(transform);
+
         IsParentWorldChanged = true;
     }
 	else if (IsParentWorldChanged)
@@ -135,6 +139,8 @@ void TransformSystem::CalculateTransform_Child(TransformComponent* transform, bo
 		if (transform->WorldTransform != worldTransform)
 		{
 			UpdateWorldTransform(transform, worldTransform);
+            UpdateDirVector(transform);
+
 			IsParentWorldChanged = true;
 		}
 	}
@@ -159,11 +165,15 @@ void TransformSystem::CalculateTransform_Parent(TransformComponent* transform)
     if (IsLocalTransformChanged(transform))
     {
         CalculateTransformLocal(transform);
+        UpdateDirVector(transform);
+
         IsParentWorldChanged = true;
     }
     else if (IsWorldTransformChanged(transform))
     {
         CalculateTransformWorld(transform);
+        UpdateDirVector(transform);
+
         IsParentWorldChanged = true;
     }
 
@@ -176,6 +186,7 @@ void TransformSystem::CalculateTransform_Parent(TransformComponent* transform)
             if (childTransform)
             {
                 CalculateTransform_Child(childTransform, IsParentWorldChanged);
+
             }
         }
     }
@@ -208,7 +219,6 @@ void TransformSystem::UpdateWorldTransform(TransformComponent* transform, const 
     transform->Previous_WorldQuaternion = transform->World_Quaternion;
     transform->Previous_WorldLocation = transform->World_Location;
 
-    UpdateDirVector(transform);
 }
 
 void TransformSystem::CalculateTransformDynamic(TransformComponent* transform)
@@ -236,7 +246,6 @@ void TransformSystem::CalculateTransformWorld(TransformComponent* transform)
         VPMath::Matrix::CreateTranslation(transform->World_Location);
 
     UpdatePreviousWorldTransform(transform);
-    UpdateDirVector(transform);
     if (transform->HasComponent<Parent>())
     {
         TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(transform->GetComponent<Parent>()->ParentID);
@@ -342,4 +351,18 @@ void TransformSystem::Finish(uint32_t gameObjectId)
 void TransformSystem::Finalize()
 {
 
+}
+
+void TransformSystem::RenderUpdate(float deltaTime)
+{
+    for (TransformComponent&  comp : COMPITER(TransformComponent))
+    {
+        debug::OBBInfo obbinfo{};
+        obbinfo.OBB.Center = comp.World_Location;
+        obbinfo.OBB.Extents = {0.2f,0.2f ,0.2f };
+        obbinfo.xAxisAngle = comp.World_Rotation.x; 
+        obbinfo.yAxisAngle = comp.World_Rotation.y;
+        obbinfo.zAxisAngle = comp.World_Rotation.z;
+        m_Graphics->DrawOBB(obbinfo);
+    }
 }

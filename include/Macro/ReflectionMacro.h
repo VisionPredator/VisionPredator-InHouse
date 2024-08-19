@@ -8,8 +8,12 @@
  .data<& NAME >(#NAME##_hs)\
 		.prop(Reflection::Prop::Name,#NAME)
 #define MEMBER_EXPAND( x ) x
-#define MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10,_11,_12,_13, NAME,...) NAME
+#define MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10,_11,_12,_13,_14,_15,_16,_17, NAME,...) NAME
 #define MEMBER_PASTE(...) MEMBER_EXPAND(MEMBER_GET_MACRO(__VA_ARGS__, \
+        MEMBER_PASTE17, \
+        MEMBER_PASTE16, \
+        MEMBER_PASTE15, \
+        MEMBER_PASTE14, \
         MEMBER_PASTE13, \
         MEMBER_PASTE12, \
         MEMBER_PASTE11, \
@@ -35,9 +39,13 @@
 #define MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10) MEMBER_PASTE2(func, v1) MEMBER_PASTE10(func, v2, v3, v4, v5, v6, v7, v8, v9,v10)
 #define MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11) MEMBER_PASTE2(func, v1) MEMBER_PASTE11(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11)
 #define MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12)
+#define MEMBER_PASTE14(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13)
+#define MEMBER_PASTE15(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14)
+#define MEMBER_PASTE16(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15)
+#define MEMBER_PASTE17(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15,v16) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15,v16)
 #define  MEMBERS(...)  MEMBER_EXPAND( MEMBER_PASTE( MEMBER, __VA_ARGS__))
 
-#define META_ADD_MEMBER(CLASS,...)\
+#define META_ADD_COMP(CLASS,...)\
 entt::meta<CLASS>()\
 .base<Component>()\
 .type(#CLASS##_hs)\

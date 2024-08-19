@@ -114,8 +114,8 @@ void Inspector::TransformComponentImGui(Component* component)
 	entt::id_type compID = component->GetHandle()->type().id();
 	entt::meta_handle compMetaHandle = component->GetHandle();
 	std::string componentName = Reflection::GetName_Class(component->GetHandle()->type());
-
 	ImGui::PushID(componentName.c_str());
+
 	ImGui::Text("TransformComponent");
 	TransformComponent* comp = static_cast<TransformComponent*> (component);
 	float temp_Local_Location[3] =	{ comp->Local_Location .x,comp->Local_Location .y,comp->Local_Location .z};
@@ -126,32 +126,37 @@ void Inspector::TransformComponentImGui(Component* component)
 	float temp_World_Rotation[3] = { comp->World_Rotation.x,	comp->World_Rotation.y,		comp->World_Rotation.z };
 	float temp_World_Quaternion[3] = { comp->World_Quaternion.x,	comp->World_Quaternion.y,	comp->World_Quaternion.z };
 	float temp_World_Scale[3] = { comp->World_Scale.x,		comp->World_Scale.y,		comp->World_Scale.z };
+	float temp_FrontVector[3] = { comp->FrontVector.x,		comp->FrontVector.y,		comp->FrontVector.z };
+	float temp_RightVector[3] = { comp->RightVector.x,		comp->RightVector.y,		comp->RightVector.z };
 
 
-	ImGui::PushID("Local_Location");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::DragFloat3("Local_Location", temp_Local_Location, .01f, -FLT_MAX, FLT_MAX))
 	{
-		VPMath::Vector3 tempVector{};
-		tempVector.x = temp_Local_Location[0];
-		tempVector.y = temp_Local_Location[1];
-		tempVector.z = temp_Local_Location[2];
-		comp->SetLocalLocation(tempVector);
-	}
-	ImGui::PopID();
-	ImGui::PushID("Local_Rotation");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::DragFloat3("Local_Rotation", temp_Local_Rotation, .01f, -FLT_MAX, FLT_MAX))
-	{
-		VPMath::Vector3 tempVector{};
-		tempVector.x = temp_Local_Rotation[0];
-		tempVector.y = temp_Local_Rotation[1];
-		tempVector.z = temp_Local_Rotation[2];
-		comp->SetLocalRotation(tempVector);
-
+		ImGui::PushID("Local_Location");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::DragFloat3("Local_Location", temp_Local_Location, .01f, -FLT_MAX, FLT_MAX))
+		{
+			VPMath::Vector3 tempVector{};
+			tempVector.x = temp_Local_Location[0];
+			tempVector.y = temp_Local_Location[1];
+			tempVector.z = temp_Local_Location[2];
+			comp->SetLocalLocation(tempVector);
+		}
+		ImGui::PopID();
 	}
 
-	ImGui::PopID();
+	{
+		ImGui::PushID("Local_Rotation");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::DragFloat3("Local_Rotation", temp_Local_Rotation, .01f, -FLT_MAX, FLT_MAX))
+		{
+			VPMath::Vector3 tempVector{};
+			tempVector.x = temp_Local_Rotation[0];
+			tempVector.y = temp_Local_Rotation[1];
+			tempVector.z = temp_Local_Rotation[2];
+			comp->SetLocalRotation(tempVector);
+		}
+		ImGui::PopID();
+	}
 
 	{
 		VPMath::Vector3 euler = comp->Local_Quaternion.ToEuler();
@@ -159,7 +164,6 @@ void Inspector::TransformComponentImGui(Component* component)
 		temp_Local_Quaternion[0] = VPMath::XMConvertToDegrees(euler.x);
 		temp_Local_Quaternion[1] = VPMath::XMConvertToDegrees(euler.y);
 		temp_Local_Quaternion[2] = VPMath::XMConvertToDegrees(euler.z);
-
 		ImGui::PushID("Local_Quaternion");
 		ImGui::SetNextItemWidth(m_TypeBoxsize);
 		if (ImGui::DragFloat3("Local_Quaternion", temp_Local_Quaternion, 1.f, -FLT_MAX, FLT_MAX))
@@ -170,55 +174,58 @@ void Inspector::TransformComponentImGui(Component* component)
 			tempVector = VPMath::Quaternion::CreateFromYawPitchRoll(euler);
 			comp->SetLocalQuaternion(tempVector);
 		}
-
 		ImGui::PopID();
 	}
 
-	ImGui::PushID("Local_Scale");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::DragFloat3("Local_Scale", temp_Local_Scale, .01f, -FLT_MAX, FLT_MAX))
 	{
-		VPMath::Vector3 tempVector{};
-		tempVector.x = temp_Local_Scale[0];
-		tempVector.y = temp_Local_Scale[1];
-		tempVector.z = temp_Local_Scale[2];
-		comp->SetWorldScale(tempVector);
+		ImGui::PushID("Local_Scale");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::DragFloat3("Local_Scale", temp_Local_Scale, .01f, -FLT_MAX, FLT_MAX))
+		{
+			VPMath::Vector3 tempVector{};
+			tempVector.x = temp_Local_Scale[0];
+			tempVector.y = temp_Local_Scale[1];
+			tempVector.z = temp_Local_Scale[2];
+			comp->SetWorldScale(tempVector);
 
+		}
+		ImGui::PopID();
 	}
-	ImGui::PopID();
-	ImGui::PushID("World_Location");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::DragFloat3("World_Location", temp_World_Location, .01f, -FLT_MAX, FLT_MAX))
+
 	{
-		VPMath::Vector3 tempVector{};
-		tempVector.x = temp_World_Location[0];
-		tempVector.y = temp_World_Location[1];
-		tempVector.z = temp_World_Location[2];
-		comp->SetWorldLocation(tempVector);
-
-
+		ImGui::PushID("World_Location");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::DragFloat3("World_Location", temp_World_Location, .01f, -FLT_MAX, FLT_MAX))
+		{
+			VPMath::Vector3 tempVector{};
+			tempVector.x = temp_World_Location[0];
+			tempVector.y = temp_World_Location[1];
+			tempVector.z = temp_World_Location[2];
+			comp->SetWorldLocation(tempVector);
+		}
+		ImGui::PopID();
 	}
-	ImGui::PopID();
-	ImGui::PushID("World_Rotation");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::DragFloat3("World_Rotation", temp_World_Rotation, .01f, -FLT_MAX, FLT_MAX))
+
 	{
-		VPMath::Vector3 tempVector{};
-		tempVector.x = temp_World_Rotation[0];
-		tempVector.y = temp_World_Rotation[1];
-		tempVector.z = temp_World_Rotation[2];
-		comp->SetWorldRotation(tempVector);
-
-
+		ImGui::PushID("World_Rotation");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::DragFloat3("World_Rotation", temp_World_Rotation, .01f, -FLT_MAX, FLT_MAX))
+		{
+			VPMath::Vector3 tempVector{};
+			tempVector.x = temp_World_Rotation[0];
+			tempVector.y = temp_World_Rotation[1];
+			tempVector.z = temp_World_Rotation[2];
+			comp->SetWorldRotation(tempVector);
+		}
+		ImGui::PopID();
 	}
-	ImGui::PopID();
+
 	{
 		VPMath::Vector3 euler = comp->World_Quaternion.ToEuler();
 		VPMath::Quaternion tempVector{};
 		temp_World_Quaternion[0] = VPMath::XMConvertToDegrees(euler.x);
 		temp_World_Quaternion[1] = VPMath::XMConvertToDegrees(euler.y);
 		temp_World_Quaternion[2] = VPMath::XMConvertToDegrees(euler.z);
-
 		ImGui::PushID("World_Quaternion");
 		ImGui::SetNextItemWidth(m_TypeBoxsize);
 		if (ImGui::DragFloat3("World_Quaternion", temp_Local_Quaternion, 1.f, -FLT_MAX, FLT_MAX))
@@ -235,20 +242,44 @@ void Inspector::TransformComponentImGui(Component* component)
 
 
 
-	ImGui::PopID();
-	ImGui::PushID("World_Scale");
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::DragFloat3("World_Scale", temp_World_Scale, .01f, -FLT_MAX, FLT_MAX))
 	{
-		VPMath::Vector3 tempVector{};
-		tempVector.x = temp_World_Scale[0];
-		tempVector.y = temp_World_Scale[1];
-		tempVector.z = temp_World_Scale[2];
-		comp->SetWorldScale(tempVector);
+		ImGui::PushID("World_Scale");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::DragFloat3("World_Scale", temp_World_Scale, .01f, -FLT_MAX, FLT_MAX))
+		{
+			VPMath::Vector3 tempVector{};
+			tempVector.x = temp_World_Scale[0];
+			tempVector.y = temp_World_Scale[1];
+			tempVector.z = temp_World_Scale[2];
+			comp->SetWorldScale(tempVector);
+		}
+		ImGui::PopID();
 	}
 
+	{
+		ImGui::PushID("Front_Vector");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
 
+		ImGui::BeginDisabled();
+		ImGui::DragFloat3("Front_Vector", temp_FrontVector, .01f, -FLT_MAX, FLT_MAX);
+		ImGui::EndDisabled();
+
+		ImGui::PopID();
+	}
+	{
+		ImGui::PushID("RightVector");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+
+		ImGui::BeginDisabled();
+		ImGui::DragFloat3("Right_Vector", temp_RightVector, .01f, -FLT_MAX, FLT_MAX);
+		ImGui::EndDisabled();
+
+		ImGui::PopID();
+	}
 	ImGui::PopID();
+
+
+
 }
 
 void Inspector::ComponentImGui(Component* component)
@@ -282,8 +313,8 @@ void Inspector::ComponentImGui(Component* component)
 		}
 		ImGui::EndPopup();
 	}
-
 	ImGui::PopID();
+
 }
 
 std::string Inspector::RemoveComponentSuffix(const std::string& className)

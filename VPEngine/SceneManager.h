@@ -8,7 +8,7 @@ struct PrefabData
 	uint32_t MainEntityID;
 	std::string prefabname;
 	VPMath::Vector3 pos;
-	VPMath::Vector3 direction;
+	VPMath::Vector3 rotation;
 	VPMath::Vector3 scale;
 };
 
@@ -85,6 +85,11 @@ public:
 		return it != m_CurrentScene->EntityMap.end() ? it->second : nullptr;
 	}
 
+	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
+
+
+
+
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 
 
@@ -93,6 +98,7 @@ public:
 
 	template<typename T>
 	inline std::vector<std::reference_wrapper<T>> GetComponentPool();
+	void DestroyEntity(uint32_t entityID, bool Immidiate = false);
 
 	void AddChild(uint32_t Parent, uint32_t Child, bool Immidiate=false);
 	void RemoveParent(uint32_t child, bool Immediate = false);
@@ -135,7 +141,6 @@ private:
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
 
-	void DestroyEntity(uint32_t entityID, bool Immidiate = false);
 	// Entity를 삭제한다.
 	void OnDeleteEntity(std::any entityID);
 	void OnDestroyEntity(std::any entityID);

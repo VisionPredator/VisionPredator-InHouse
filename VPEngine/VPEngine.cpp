@@ -1,24 +1,17 @@
 ﻿#include "pch.h"
 #include "VPEngine.h"
 #include "Managers.h"
-#include "TransformSystem.h"
 #include <fcntl.h>
-#include <io.h>
-#include "SceneSerializer.h"
-#include "RenderSystem.h"
-#include "LightSystem.h"
-#include "DataRegister.h"
-#include "CameraSystem.h"
-#include "AnimationSystem.h"
-#include "ControllerMovementSystem.h"
-#include "../VPGraphics/GraphicsEngine.h"
 #include <imgui.h>
+#include <io.h>
+#include "LogicSystems.h"
+#include "DataRegister.h"
+#include "../VPGraphics/GraphicsEngine.h"
 #include "../PhysxEngine/PhysxEngine.h"
 #include "../PhysxEngine/IPhysx.h"
 #ifdef _DEBUG
-//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
-#include "PhysicSystem.h"
 
 bool VPEngine::isResize = false;
 
@@ -94,6 +87,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<AnimationSystem>();
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
+	m_SystemManager->AddSystem<LifeTimeSystem>();
 
 }
 void VPEngine::OnAddSystemLater(std::any)

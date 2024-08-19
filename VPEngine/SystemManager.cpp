@@ -12,6 +12,8 @@
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnSetPhysicUpdateRate", CreateSubscriber(&SystemManager::OnSetPhysicUpdateRate));
 		EventManager::GetInstance().Subscribe("OnStart", CreateSubscriber(&SystemManager::OnStart));
+		EventManager::GetInstance().Subscribe("OnCollisionEnter", CreateSubscriber(&SystemManager::OnCollisionEnter));
+		EventManager::GetInstance().Subscribe("OnCollisionExit", CreateSubscriber(&SystemManager::OnCollisionExit));
 		EventManager::GetInstance().Subscribe("OnStart_Parent", CreateSubscriber(&SystemManager::OnStart_Parent));
 		EventManager::GetInstance().Subscribe("OnFinish", CreateSubscriber(&SystemManager::OnFinish));
 		EventManager::GetInstance().Subscribe("OnFinish_Parent", CreateSubscriber(&SystemManager::OnFinish_Parent));
@@ -89,6 +91,24 @@
 		m_PhysicEngine = physicInterface;
 	}
 
+	void SystemManager::OnCollisionEnter(std::any pair)
+	{
+		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		for (auto contactable:m_Contactable)
+		{
+			contactable->EnterCollision(entitypair);
+		}
+	}
+
+	void SystemManager::OnCollisionExit(std::any pair)
+	{
+		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		for (auto contactable : m_Contactable)
+		{
+			contactable->ExitCollision(entitypair);
+		}
+	}
+
 
 	void SystemManager::Start_Parent(uint32_t entityid)
 	{
@@ -137,7 +157,7 @@
 	void SystemManager::OnStart(std::any data)
 	{
 		uint32_t entityID = std::any_cast<uint32_t>(data);
-			Start(entityID);
+		Start(entityID);
 	}
 
 	void SystemManager::OnFinish(std::any data)

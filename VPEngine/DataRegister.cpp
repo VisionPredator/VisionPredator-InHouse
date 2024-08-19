@@ -112,22 +112,21 @@ void VPRegister::Register_VPMath()
 
 void VPRegister::Register_Components()
 {
-	META_ADD_MEMBER(IDComponent, IDComponent::Name);
-	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
-	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX, MeshComponent::LightMapOffset, MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
-	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
-	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
-	META_ADD_MEMBER(Parent, Parent::ParentID);
-	META_ADD_MEMBER(Children, Children::ChildrenID);
-	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
-	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::animationList);
-	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP, PlayerComponent::Maxspeed, PlayerComponent::Speed, PlayerComponent::Accel,PlayerComponent::Maxspeed, PlayerComponent::JumpFoce, PlayerComponent::MaxJumpCount, PlayerComponent::Jumpcount, PlayerComponent::Isground);
-	META_ADD_MEMBER(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
-	META_ADD_MEMBER(GeometryComponent, GeometryComponent::FBXFilter,GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
-	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
-	META_ADD_MEMBER(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
+	META_ADD_COMP(IDComponent, IDComponent::Name);
+	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
+	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
+	META_ADD_COMP(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX, MeshComponent::LightMapOffset, MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
+	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
+	META_ADD_COMP(Parent, Parent::ParentID);
+	META_ADD_COMP(Children, Children::ChildrenID);
+	META_ADD_COMP(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
+	META_ADD_COMP(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::animationList);
+	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
+	META_ADD_COMP(GeometryComponent, GeometryComponent::FBXFilter,GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
+	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
+	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
+	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
 }
 

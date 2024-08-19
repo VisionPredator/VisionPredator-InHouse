@@ -19,6 +19,8 @@
 		void Update(float deltatime);
 		void Initialize(std::shared_ptr<SceneManager> sceneManger,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
 
+		void OnCollisionEnter(std::any pair);
+		void OnCollisionExit(std::any pair);
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
 		void LateUpdate(float deltatime);
@@ -43,21 +45,17 @@
 				return nullptr;
 			}
 			m_Systems.push_back(std::make_unique<T>(m_SceneManager.lock()));
-
-
 			auto* system = static_cast<T*>(m_Systems.back().get());
 			system->SetThread1(&m_JThread1);
 			system->SetThread2(&m_JThread2);
 			if constexpr (std::is_base_of_v<IUpdatable, T>)
 			{
 				m_Updatables.push_back(system);
-			}
-
+			}		
 			if constexpr (std::is_base_of_v<IFixedUpdatable, T>)
 			{
 				m_FixedUpdatables.push_back(system);
 			}
-
 			if constexpr (std::is_base_of_v<IRenderable, T>)
 			{
 				m_Renderables.push_back(system);
@@ -79,6 +77,10 @@
 				m_Startables.push_back(system);
 			}
 
+			if constexpr (std::is_base_of_v<IContactable, T>)
+			{
+				m_Contactable.push_back(system);
+			}
 
 			return static_cast<T*>(system);
 		}
@@ -124,6 +126,13 @@
 				auto it = std::find_if(m_PhysicUpdatable.begin(), m_PhysicUpdatable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
 				if (it != m_PhysicUpdatable.end())
 					m_PhysicUpdatable.erase(it);
+			}
+
+			if constexpr (std::is_base_of_v<IContactable, T>)
+			{
+				auto it = std::find_if(m_Contactable.begin(), m_Contactable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_Contactable.end())
+					m_Contactable.erase(it);
 			}
 
 
@@ -182,5 +191,6 @@
 		std::vector<IRenderable*> m_Renderables;
 		std::vector<IStartable*> m_Startables;
 		std::vector<ILateUpdatable*> m_LateUpdatable;
+		std::vector<IContactable*> m_Contactable;
 	};
 
