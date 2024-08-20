@@ -4,6 +4,7 @@
 #include <fstream>
 #include <random>
 #include <queue>
+#include "TransformSystem.h"
 
 SceneManager::SceneManager()
 {
@@ -15,6 +16,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnOpenNewScene", CreateSubscriber(&SceneManager::OnOpenNewScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnSaveCurrentToTemp", CreateSubscriber(&SceneManager::OnSaveCurrentToTemp), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnOverwriteTempToCurrent", CreateSubscriber(&SceneManager::OnOverwriteTempToCurrent), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnAddEntityComponentsToScene", CreateSubscriber(&SceneManager::OnAddEntityComponentsToScene), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDeleteEntity", CreateSubscriber(&SceneManager::OnDeleteEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
@@ -156,7 +158,6 @@ void SceneManager::SceneSerialize(std::string FilePath, bool Immidiate)
 	else
 		EventManager::GetInstance().ImmediateEvent("OnSerializeScene", FilePath);
 }
-
 void SceneManager::SceneDeSerialize(std::string FilePath, bool Immidiate)
 {
 	if (!Immidiate)
@@ -233,6 +234,14 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 		}
 	}
 }
+void SceneManager::ChangeScene(std::string FilePath,bool Immidiate)
+{
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnChangeScene", FilePath);
+	else
+		OnChangeScene(FilePath);
+
+}
 void SceneManager::OnDeleteEntity(std::any data)
 {
 	uint32_t entityID = std::any_cast<uint32_t>(data);
@@ -241,20 +250,12 @@ void SceneManager::OnDeleteEntity(std::any data)
 	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
 	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
 	{
-		auto& componentMap = m_CurrentScene->m_ComponentPool;
+		auto ownedComponents = entityIter->second->GetOwnedComponents();
 
 		// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
-		if (auto compIter = componentMap.find(entityID); compIter != componentMap.end())
+		for (auto& sharedComp : ownedComponents)
 		{
-			for (auto& weakComp : compIter->second)
-			{
-				if (auto sharedComp = weakComp.lock())
-				{
-					// 컴포넌트가 해제된다는 이벤트를 즉시 발생시킵니다.
-					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-				}
-			}
-			componentMap.erase(compIter); // 엔티티와 연관된 모든 컴포넌트를 제거합니다.
+			EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
 		}
 
 		// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
@@ -302,25 +303,29 @@ void SceneManager::ClearEntity(std::shared_ptr<Entity> entity)
 	uint32_t entityID = entity->GetEntityID();
 	auto& entityMap = GetEntityMap();
 
+	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
 	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
 	{
-		auto& componentMap = m_CurrentScene->m_ComponentPool;
-		auto compIter = componentMap.find(entityID);
-		if (compIter != componentMap.end())
+		// 엔티티가 소유한 모든 컴포넌트를 가져옵니다.
+		auto ownedComponents = entity->GetOwnedComponents();
+
+		// 각 컴포넌트에 대해 이벤트를 발생시킵니다.
+		for (auto& sharedComp : ownedComponents)
 		{
-			for (auto& weakComp : compIter->second)
-			{
-				if (auto sharedComp = weakComp.lock())
-				{
-					EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-				}
-			}
-			componentMap.erase(compIter); // 해당 엔티티의 컴포넌트들을 모두 제거
+			EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
 		}
+
+		// componentMap에서 해당 엔티티와 연관된 컴포넌트들을 제거합니다.
+		auto& componentMap = m_CurrentScene->m_ComponentPool;
+		componentMap.erase(entityID);
+
+		// componentCache에서 해당 엔티티와 연관된 항목들을 모두 제거합니다.
 		auto& componentCache = m_ComponentCache;
 		std::erase_if(componentCache, [entityID](const auto& pair) {
 			return pair.first.first == entityID;
 			});
+
+		// 마지막으로, entityMap에서 엔티티를 제거합니다.
 		entityMap.erase(entityIter);
 	}
 }
@@ -368,6 +373,15 @@ void SceneManager::OnOverwriteTempToCurrent(std::any Null)
 	SetSceneName(curName);
 
 }
+void SceneManager::OnAddEntityComponentsToScene(std::any entityID)
+{
+	uint32_t entityid = std::any_cast<uint32_t>(entityID);
+	auto entity = GetEntity(entityid);
+	for (auto component :entity->GetOwnedComponents())
+	{
+		OnAddCompToScene(component);
+	}
+}
 void SceneManager::OnSaveCurrentToTemp(std::any Null)
 {
 	std::string tempMapPath = "../Data/Temp/Temp.scene";
@@ -382,7 +396,7 @@ void SceneManager::OnStartScene(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
 
 	///TODO: 씬 시작시 설정할 Initialize
-	EventManager::GetInstance().ImmediateEvent("OnInitialize");
+	//EventManager::GetInstance().ImmediateEvent("OnInitialize");
 	///TODO: 씬 시작시 설정할 Initializesystem.
 	EventManager::GetInstance().ImmediateEvent("OnInitializeSystems");
 }
@@ -390,7 +404,7 @@ void SceneManager::OnStartScene(std::any data)
 void SceneManager::OnEndScene(std::any data)
 {
 	///TODO:씬 끝났을 때 처리할 Finalize?
-	EventManager::GetInstance().ImmediateEvent("OnFinalize");
+	//EventManager::GetInstance().ImmediateEvent("OnFinalize");
 	///TODO: 씬 끝났을 때 설정할 Initializesystem.
 	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystems");
 
@@ -516,7 +530,7 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),false);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),false,false);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -534,10 +548,11 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 						VP_ASSERT(false, "Reflection 함수 실패!");
 				}
 			}
+			EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", renewEntityID);
 		}
 	}
 }
-std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
+std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson, bool Immidate )
 {
 	uint32_t entityID = entityjson["EntityID"];
 	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
@@ -555,11 +570,13 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 			// 특정 함수를 찾고 호출합니다.
 			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity.get(),false);
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity.get(), Immidate, false);
 			else
 				VP_ASSERT(false, "Reflection 함수 실패!");
 		}
+
 	}
+		EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", entityID);
 
 	return tempEntity;
 }
@@ -685,7 +702,7 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),true);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),true, false);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -704,6 +721,7 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 						VP_ASSERT(false, "Reflection 함수 실패!");
 				}
 			}
+			EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", renewEntityID);
 
 			if (IsMainEntity)
 			{
@@ -788,22 +806,24 @@ void SceneManager::OnDestroyEntity(std::any data)
 		uint32_t DeleteEntityID = DeleteEntityIDs.front();
 		DeleteEntity.push_back(DeleteEntityID);
 		auto entity = GetEntity(DeleteEntityID);
+		
 		DeleteEntityIDs.pop_front();
 		// 엔티티가 자식 컴포넌트를 가지고 있는 경우, 자식 엔티티도 삭제 리스트에 추가합니다.
-		if (entity->HasComponent<Children>())
-		{
-			auto children = entity->GetComponent<Children>();
-			DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
-		}
+		if (entity)
+			if (entity->HasComponent<Children>())
+			{
+				auto children = entity->GetComponent<Children>();
+				DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
+			}
 	}
 
 	for (auto entityid : DeleteEntity)
 	{
-		EventManager::GetInstance().ImmediateEvent("OnFinish", entityid);
 
 		// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
 		if (auto entityIter = entityMap.find(entityid); entityIter != entityMap.end())
 		{
+			EventManager::GetInstance().ImmediateEvent("OnFinish", entityid);
 			auto& componentMap = m_CurrentScene->m_ComponentPool;
 
 			// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.

@@ -6,6 +6,7 @@
 #include "PhysicSystem.h"
 #include "CameraSystem.h"
 #include"Components.h"
+#include <iostream>
 	SystemManager::SystemManager()
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
@@ -163,6 +164,18 @@
 	void SystemManager::OnFinish(std::any data)
 	{
 		uint32_t entityID = std::any_cast<uint32_t>(data);
+#ifdef  _DEBUG
+		auto Entity = m_SceneManager.lock()->GetEntity(entityID);
+
+		if (Entity)
+		{
+			auto name = Entity->GetComponent<IDComponent>()->Name;
+			std::cout << name << "\n";
+		}
+
+
+#endif //  _DEBUG
+
 		Finish(entityID);
 	}
 

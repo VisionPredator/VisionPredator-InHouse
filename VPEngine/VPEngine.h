@@ -14,7 +14,7 @@ class SceneManager;
 class TransformSystem;
 class EventSubscriber;
 
-class VPEngine:public EventSubscriber
+class VPEngine :public EventSubscriber
 {
 public:
 	HINSTANCE m_hinstance=nullptr;

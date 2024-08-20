@@ -1,11 +1,7 @@
 [
     {
-        "EntityID": 4184558728,
+        "EntityID": 3736015197,
         "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "cube"
-            },
             {
                 "BoxInfo": {
                     "Extent": {
@@ -50,6 +46,10 @@
                 }
             },
             {
+                "ComponentID": 1365953231,
+                "Name": "cube"
+            },
+            {
                 "ComponentID": 3400599862,
                 "Local_Location": {
                     "x": 0.0,
@@ -70,8 +70,8 @@
             },
             {
                 "ComponentID": 1876878484,
-                "Damage": 0.0,
-                "Speed": 20.0
+                "Damage": 1.0,
+                "Speed": 50.0
             },
             {
                 "ComponentID": 195544957,

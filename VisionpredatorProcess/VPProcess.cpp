@@ -32,8 +32,6 @@ VPProcess::~VPProcess()
 void VPProcess::Update()
 {
 	VPEngine::Update();
-
-
 }
 
 void VPProcess::Render()

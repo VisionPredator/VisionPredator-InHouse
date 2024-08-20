@@ -10,7 +10,7 @@ class TransformSystem : public System, public IUpdatable, public EventSubscriber
 public:
     TransformSystem(std::shared_ptr<SceneManager> entityManager);
     ~TransformSystem() override = default;
-
+    void OnAddedComponent(std::any);
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
     void UpdateAllEntitys();

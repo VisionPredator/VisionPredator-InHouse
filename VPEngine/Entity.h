@@ -55,7 +55,7 @@ public:
     void AddComponentToMap(std::shared_ptr<Component> comp);
 
     template<typename T>
-    std::shared_ptr<T> AddComponent(bool Immediately = false)
+    std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene=true)
     {
         if (HasComponent<T>())
         {
@@ -64,15 +64,16 @@ public:
         }
         std::shared_ptr<T> newcomp = std::make_shared<T>();
         AddComponentToMap(newcomp);
-        newcomp->SetEntity(this); // Use shared_from_this to set the entity
-        if (!Immediately)
-            EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-        else
-            EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-        return newcomp;
-    }
+		newcomp->SetEntity(this); // Use shared_from_this to set the entity
+		if (UseAddCompToScene)
+			if (!Immediately)
+				EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+			else
+				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+		return newcomp;
+	}
 
-    std::shared_ptr<Component> AddComponent(entt::id_type compID);
+	std::shared_ptr<Component> AddComponent(entt::id_type compID);
 
     template<typename T>
     void RemoveComponent()

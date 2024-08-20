@@ -1,18 +1,18 @@
 {
     "Entitys": [
         {
-            "EntityID": 3769248591,
+            "EntityID": 3010232881,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "E"
+                    "Name": "Entity0"
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": -5.0
+                        "z": 0.0
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
@@ -25,164 +25,15 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "Acceleration": 1.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 5
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": -5.0
-                        },
-                        "radius": 1.0,
-                        "slopeLimit": 0.30000001192092896,
-                        "stepOffset": 0.0
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 5
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 1.0,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 10.0,
-                    "JumpXZDeceleration": 0.10000000149011612,
-                    "MaxSpeed": 0.02500000037252903,
-                    "StaticFriction": 0.4000000059604645
                 }
             ]
         },
         {
-            "EntityID": 1690086966,
+            "EntityID": 2851833200,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Player"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": -10.0,
-                        "y": 0.0,
-                        "z": -3.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 0.9999999403953552,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "Acceleration": 4.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 3
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.7999999523162842,
-                        "position": {
-                            "x": -10.0,
-                            "y": 0.0,
-                            "z": -3.0
-                        },
-                        "radius": 1.0,
-                        "slopeLimit": 0.30000001192092896,
-                        "stepOffset": 0.0
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 3
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 1.0,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 0.20000000298023224,
-                    "JumpXZDeceleration": 0.0,
-                    "MaxSpeed": 40.0,
-                    "StaticFriction": 0.4000000059604645
-                },
-                {
-                    "Accel": 0.0,
-                    "AirControl": 0.0,
-                    "ComponentID": 4183631247,
-                    "FirPosition": "FirePos",
-                    "HP": 0,
-                    "HasGun": true,
-                    "JumpFoce": 0.0,
-                    "MaxJumpCount": 0,
-                    "Maxspeed": 0.0,
-                    "Sencitive": 1.0
-                },
-                {
-                    "ChildrenID": [
-                        1093904350
-                    ],
-                    "ComponentID": 188567026
-                }
-            ]
-        },
-        {
-            "EntityID": 1093904350,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "PlayerCamera"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0000001192092896,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 1690086966
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 1000.0,
-                    "IsMain": true,
-                    "NearZ": 1.0
-                },
-                {
-                    "ChildrenID": [
-                        2297165894
-                    ],
-                    "ComponentID": 188567026
-                }
-            ]
-        },
-        {
-            "EntityID": 1555746463,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "E"
+                    "Name": "Entity1"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -207,299 +58,25 @@
                     "Acceleration": 1.0,
                     "CapsuleControllerinfo": {
                         "Info": {
-                            "LayerNumber": 5
+                            "LayerNumber": 0
                         },
                         "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
+                        "height": 0.10000000149011612,
                         "position": {
                             "x": 0.0,
                             "y": 0.0,
                             "z": 0.0
                         },
-                        "radius": 1.0,
+                        "radius": 0.05000000074505806,
                         "slopeLimit": 0.30000001192092896,
                         "stepOffset": 0.0
                     },
                     "ComponentID": 3341766812,
                     "Contollerinfo": {
-                        "LayerNumber": 5
+                        "LayerNumber": 0
                     },
                     "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 1.0,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 10.0,
-                    "JumpXZDeceleration": 0.10000000149011612,
-                    "MaxSpeed": 0.02500000037252903,
-                    "StaticFriction": 0.4000000059604645
-                }
-            ]
-        },
-        {
-            "EntityID": 2297165894,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "FirePos"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.8869552612304688,
-                        "y": -0.5673965215682983,
-                        "z": 0.485406756401062
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 1093904350
-                }
-            ]
-        },
-        {
-            "EntityID": 2357908415,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "E"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 8.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "Acceleration": 1.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 5
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
-                        "position": {
-                            "x": 8.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "radius": 1.0,
-                        "slopeLimit": 0.30000001192092896,
-                        "stepOffset": 0.0
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 5
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 1.0,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 10.0,
-                    "JumpXZDeceleration": 0.10000000149011612,
-                    "MaxSpeed": 0.02500000037252903,
-                    "StaticFriction": 0.4000000059604645
-                }
-            ]
-        },
-        {
-            "EntityID": 219007536,
-            "Component": [
-                {
-                    "BoxInfo": {
-                        "Extent": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        }
-                    },
-                    "CapsuleInfo": {
-                        "HalfHeight": 1.0,
-                        "Radius": 1.0
-                    },
-                    "ColliderShape": 0,
-                    "ColliderType": 1,
-                    "ComponentID": 4217231799,
-                    "DefaultColliderInfo": {
-                        "AngleLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "Density": 1.0,
-                        "DynamicFriction": 1.0,
-                        "LinearLock": [
-                            false,
-                            false,
-                            false
-                        ],
-                        "OffSet": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "PhysicsLayer": 0,
-                        "Restitution": 0.0,
-                        "StaticFriction": 1.0,
-                        "UseGravity": false
-                    },
-                    "IsDynamic": false,
-                    "SphereInfo": {
-                        "Radius": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Ground"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": -5.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 15.0,
-                        "y": 1.0,
-                        "z": 15.0
-                    }
-                }
-            ]
-        },
-        {
-            "EntityID": 3662523381,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "E"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 5.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "Acceleration": 1.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 5
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
-                        "position": {
-                            "x": 5.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "radius": 1.0,
-                        "slopeLimit": 0.30000001192092896,
-                        "stepOffset": 0.0
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 5
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 1.0,
-                    "JumpSpeed": 0.05000000074505806,
-                    "JumpXZAcceleration": 10.0,
-                    "JumpXZDeceleration": 0.10000000149011612,
-                    "MaxSpeed": 0.02500000037252903,
-                    "StaticFriction": 0.4000000059604645
-                }
-            ]
-        },
-        {
-            "EntityID": 3003695583,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "E"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 5.0,
-                        "y": 0.0,
-                        "z": -3.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "Acceleration": 1.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 5
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
-                        "position": {
-                            "x": 5.0,
-                            "y": 0.0,
-                            "z": -3.0
-                        },
-                        "radius": 1.0,
-                        "slopeLimit": 0.30000001192092896,
-                        "stepOffset": 0.0
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 5
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 1.0,
+                    "GravityWeight": 0.20000000298023224,
                     "JumpSpeed": 0.05000000074505806,
                     "JumpXZAcceleration": 10.0,
                     "JumpXZDeceleration": 0.10000000149011612,
@@ -511,12 +88,12 @@
     ],
     "PhysicsInfo": {
         "CollisionMatrix": [
-            57,
             0,
             0,
-            1,
-            33,
-            17,
+            0,
+            0,
+            0,
+            0,
             0,
             0,
             0

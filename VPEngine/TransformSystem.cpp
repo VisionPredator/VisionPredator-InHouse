@@ -10,6 +10,18 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
     EventManager::GetInstance().Subscribe("OnSetParentAndChild", CreateSubscriber(&TransformSystem::OnSetParentAndChild));
     EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
     EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData), EventType::SCENE);
+    EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&TransformSystem::OnAddedComponent));
+    
+}
+void TransformSystem::OnAddedComponent(std::any data)
+{
+    auto comp = std::any_cast<Component*>(data);
+    if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
+    {
+        TransformComponent* aniComp = static_cast<TransformComponent*>(comp);
+        AddUpdateData(aniComp);
+        return;
+    }
 }
 std::vector<TransformComponent*> TransformSystem::newupdatevector;
 
@@ -35,6 +47,7 @@ void TransformSystem::UpdateAllEntitys()
 		{
 			CalculateTransform_Parent(transformComp);
 		}
+    
 }
 
 void TransformSystem::newUpdate()
@@ -45,6 +58,7 @@ void TransformSystem::newUpdate()
     std::list<TransformComponent*> updateList;
     for (size_t i = 0; i < newupdatevector.size(); i++)
     {
+
         bool HaveParentEntity = false;
         for (size_t j = 0; j < newupdatevector.size(); j++)
         {
@@ -58,12 +72,12 @@ void TransformSystem::newUpdate()
             }
 
         }
-        if (!HaveParentEntity)
+        if (!HaveParentEntity&& newupdatevector[i]->GetEntity())
         {
             updateList.push_back(newupdatevector[i]);
         }
     }
-    for (TransformComponent* comp : newupdatevector)
+    for (TransformComponent* comp : updateList)
     {
         CalculateTransform_Parent(comp);
     }

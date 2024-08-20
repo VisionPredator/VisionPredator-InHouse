@@ -22,7 +22,7 @@ public:
 	void Finalize();
 	// 엔티티를 삭제한다.
 	void DeleteEntity(uint32_t entityID);
-
+	void ChangeScene(std::string FilePath, bool Immidiate=false);
 	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 direction = {0,0,1}, VPMath::Vector3 scele = { 1,1,1 });
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
@@ -136,7 +136,7 @@ private:
 	void OnOpenScene(std::any data);
 	//현재씬에 Temp씬 데이터 덮어씌우기.
 	void OnOverwriteTempToCurrent(std::any data);
-
+	void OnAddEntityComponentsToScene(std::any entityID);
 	void OnSaveCurrentToTemp(std::any data);
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
@@ -157,7 +157,7 @@ private:
 	// 해당 Prefab을 Deserialize한다.
 	void OnDeSerializePrefab(std::any data);
 	//Entity를 Deserialize한다 : Map 전용.
-	std::shared_ptr<Entity> DeSerializeEntity(const nlohmann::json entityjson);
+	std::shared_ptr<Entity> DeSerializeEntity(const nlohmann::json entityjson,bool Immidate=false);
 	//void OnDeSerializeEntity(std::any data);
 
 	template<typename T>

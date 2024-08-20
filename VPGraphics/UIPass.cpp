@@ -18,21 +18,21 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 	m_UIManager = uiManager;
 
 #pragma region TEST
-	ui::ImageInfo testInfo = {};
-	testInfo.Layer = 1;
-	m_UIManager->CreateImageObject(518, testInfo);
+	//ui::ImageInfo testInfo = {};
+	//testInfo.Layer = 1;
+	//m_UIManager->CreateImageObject(518, testInfo);
 
-	ui::ImageInfo testInfo2 = {};
-	testInfo2.ImagePath = "1112DefaultUI.png";
-	testInfo2.Layer = 2;
-	m_UIManager->CreateImageObject(519, testInfo2);
+	//ui::ImageInfo testInfo2 = {};
+	//testInfo2.ImagePath = "1112DefaultUI.png";
+	//testInfo2.Layer = 2;
+	//m_UIManager->CreateImageObject(519, testInfo2);
 
-	ui::ImageInfo testInfo3 = {};
-	testInfo3.ImagePath = "GOSEGUI0900.png";
-	testInfo3.StartPosX = 800.f;
-	testInfo3.StartPosY = 300.f;
-	testInfo3.Layer = 3;
-	m_UIManager->CreateImageObject(600, testInfo3);
+	//ui::ImageInfo testInfo3 = {};
+	//testInfo3.ImagePath = "GOSEGUI0900.png";
+	//testInfo3.StartPosX = 800.f;
+	//testInfo3.StartPosY = 300.f;
+	//testInfo3.Layer = 3;
+	//m_UIManager->CreateImageObject(600, testInfo3);
 #pragma endregion
 
 	m_ImageTransformCB = m_ResourceManager->Create<ConstantBuffer<ImageTransformCB>>(L"ImageTransformCB", BufferDESC::Constant::DefaultTransform).lock();

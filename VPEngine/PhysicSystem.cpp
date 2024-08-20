@@ -22,7 +22,6 @@ void PhysicSystem::Initialize()
 
 void PhysicSystem::Start(uint32_t EntityID)
 {
-
 	CreateRigidBody(EntityID);
 	CreateCapsuleController(EntityID);
 }

@@ -13,6 +13,10 @@ Entity::Entity(uint32_t entityID)
 
 Entity::~Entity()
 {
+    for (auto comp : m_OwnedComp)
+    {
+        comp.second.reset();
+    }
     m_OwnedComp.clear(); // shared_ptr의 소멸자가 자동으로 자원을 해제합니다.
 }
 

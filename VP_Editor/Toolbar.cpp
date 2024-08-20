@@ -44,7 +44,7 @@ void Toolbar::ImGuiRender()
 	{
 		if (ImGui::Button("Stop", ImVec2(60, 0)))
 		{
-			EventManager::GetInstance().ScheduleEvent("OnStopButton");
+			EventManager::GetInstance().ImmediateEvent("OnStopButton");
 			EventManager::GetInstance().ScheduleEvent("OnOverwriteTempToCurrent");
 			m_IsPlaying = false;
 		}
