@@ -60,16 +60,16 @@ void EditorViewPort::EditingImGui()
 		m_CurrentRenderMode = RENDERMODE::Position;
 	if (ImGui::RadioButton("Depth", m_CurrentRenderMode == RENDERMODE::Depth))
 		m_CurrentRenderMode = RENDERMODE::Depth;
-	if (ImGui::RadioButton("Metalic", m_CurrentRenderMode == RENDERMODE::Metalic))
-		m_CurrentRenderMode = RENDERMODE::Metalic;
-	if (ImGui::RadioButton("Roughness", m_CurrentRenderMode == RENDERMODE::Roughness))
-		m_CurrentRenderMode = RENDERMODE::Roughness;
+	if (ImGui::RadioButton("Metalic_Roughness", m_CurrentRenderMode == RENDERMODE::Metalic_Roughness))
+		m_CurrentRenderMode = RENDERMODE::Metalic_Roughness;
 	if (ImGui::RadioButton("Emissive", m_CurrentRenderMode == RENDERMODE::Emissive))
 		m_CurrentRenderMode = RENDERMODE::Emissive;
 	if (ImGui::RadioButton("GBuffer", m_CurrentRenderMode == RENDERMODE::GBuffer))
 		m_CurrentRenderMode = RENDERMODE::GBuffer;
 	if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
 		m_CurrentRenderMode = RENDERMODE::IMGUI;
+	if (ImGui::RadioButton("LightMap", m_CurrentRenderMode == RENDERMODE::LightMap))
+		m_CurrentRenderMode = RENDERMODE::LightMap;
 	ImGui::EndChild();
 	ImGui::PopStyleVar();
 }
@@ -228,16 +228,16 @@ std::wstring EditorViewPort::GetRenderModeString(RENDERMODE renderMode)
 		return L"Position";
 	case RENDERMODE::Depth:
 		return L"Depth";
-	case RENDERMODE::Metalic:
-		return L"Metalic";
-	case RENDERMODE::Roughness:
-		return L"Roughness";
+	case RENDERMODE::Metalic_Roughness:
+		return L"Metalic_Roughness";
 	case RENDERMODE::Emissive:
 		return L"Emissive";
 	case RENDERMODE::GBuffer:
 		return L"GBuffer";
 	case RENDERMODE::IMGUI:
 		return L"IMGUI";
+	case RENDERMODE::LightMap:
+		return L"LightMap";
 	default:
 		return L"Unknown";
 	}

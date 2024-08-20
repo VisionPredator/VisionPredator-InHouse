@@ -14,7 +14,11 @@
 
 #include "Slot.h"
 
-Device::Device(HWND hWnd) : ableMSAA(false), m_Device(nullptr), m_Context(nullptr), m_FeatureLevel(), MSAAQuality(), m_hWnd(hWnd), m_SwapChain(nullptr), m_wndSize()
+Device::Device()
+	: ableMSAA(false)
+	, MSAAQuality()
+	, m_FeatureLevel()
+	, m_wndSize()
 {
 }
 
@@ -24,10 +28,15 @@ Device::~Device()
 	m_Context->Release();
 	m_Device->Release();
 
+	m_Device = nullptr;
+	m_Context = nullptr;
+	m_SwapChain = nullptr;
 }
 
-void Device::Initialize()
+void Device::Initialize(HWND hWnd)
 {
+	m_hWnd = hWnd;
+
 	HRESULT result;
 	uint32_t createDeviceFlags = 0;
 
@@ -176,19 +185,19 @@ void Device::BindMaterialSRV(std::shared_ptr<Material> curMaterial)
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, curMaterial->m_AOSRV.lock()->GetAddress());
 	}
 
-	if (curMaterialData.useNEO.x > 0)
+	if (curMaterialData.useNEOL.x > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 	}
 
-	if (curMaterialData.useNEO.y > 0)
+	if (curMaterialData.useNEOL.y > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, curMaterial->m_EmissiveSRV.lock()->GetAddress());
 	}
 
-	if (curMaterialData.useNEO.z > 0)
+	if (curMaterialData.useNEOL.z > 0)
 	{
 		m_Context->PSSetShaderResources(static_cast<UINT>(Slot_T::Opacity), 1, curMaterial->m_OpacitySRV.lock()->GetAddress());
 		m_Context->VSSetShaderResources(static_cast<UINT>(Slot_T::Opacity), 1, curMaterial->m_OpacitySRV.lock()->GetAddress());

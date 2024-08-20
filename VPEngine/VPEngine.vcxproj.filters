@@ -183,7 +183,8 @@
     <ClInclude Include="ParticleComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
-    <ClInclude Include="LifeTimeComponent.h">
+    <ClInclude Include="Sprite2DComponent.h">
+      <Filter>자체 엔진\Entity\Component\Header</Filter>    <ClInclude Include="LifeTimeComponent.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="LifeTimeSystem.h">
@@ -191,8 +192,7 @@
     </ClInclude>
     <ClInclude Include="LogicSystems.h">
       <Filter>Header</Filter>
-    </ClInclude>
-  </ItemGroup>
+    </ClInclude>  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>

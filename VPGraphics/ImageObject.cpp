@@ -12,16 +12,21 @@
 #include "Util.h"
 
 ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
-	const ui::ImageInfo& info)
+	const ui::ImageInfo& info, const uint32_t& id)
 		: m_Device(device), m_ResourceManager(resourceManager), m_Info(info)
 {
+	m_ID = id;
+
 	// 화면 크기 저장
 	m_ScreenWidth = m_Device->GetWndSize().right - m_Device->GetWndSize().left;
 	m_ScreenHeight = m_Device->GetWndSize().bottom - m_Device->GetWndSize().top;
 
 	// 모델의 텍스처 로드
 	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
+	{
 		m_Texture = m_ResourceManager->Get<ShaderResourceView>(L"DefaultUI").lock();
+		m_Info.ImagePath = "DefaultUI.png";
+	}
 	else
 		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
 
@@ -29,13 +34,12 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	m_BitmapWidth = m_Texture->GetWidth();
 	m_BitmapHeight = m_Texture->GetHeight();
 
-	// 텍스처 크기는 원본 사이즈로 초기화
-	m_Info.Width = (float)m_BitmapWidth;
-	m_Info.Height = (float)m_BitmapHeight;
-
-	// 이전 렌더링 위치를 음수로 초기화
+	// 이전 렌더링 정보를 음수로 초기화
 	m_PreviousPosX = -1;
 	m_PreviousPosY = -1;
+	m_PreviousWidth = -1;
+	m_PreviousHeight = -1;
+	m_PreviousScale = -1;
 
 	// 정점 및 인덱스 버퍼 초기화
 	InitializeBuffers();
@@ -61,14 +65,30 @@ void ImageObject::Render()
 	m_Device->Context()->IASetVertexBuffers(0, 1, m_VertexBuffer->GetAddress(), &stride, &offset);
 	m_Device->Context()->IASetIndexBuffer(m_IndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 	m_Device->Context()->PSSetShaderResources(0, 1, m_Texture->GetAddress());
-	m_Device->Context()->VSSetConstantBuffers(1, 1, m_ColorCB->GetAddress());
+	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ColorCB->GetAddress());
 	m_Device->Context()->DrawIndexed(m_indexCount, 0, 0);
 }
 
 void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 {
-	m_Info = info;
-	m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
+	m_Info.StartPosX = info.StartPosX;
+	m_Info.StartPosY = info.StartPosY;
+	m_Info.Layer = info.Layer;
+	m_Info.ImagePath = info.ImagePath;
+	m_Info.Color = info.Color;
+	m_Info.Scale = info.Scale;
+
+	// 모델의 텍스처 로드
+	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
+	{
+		m_Texture = m_ResourceManager->Get<ShaderResourceView>(L"DefaultUI").lock();
+		m_Info.ImagePath = "DefaultUI";
+	}
+	else
+		m_Texture = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.ImagePath.c_str()), Util::ToWideChar(m_Info.ImagePath.c_str())).lock();
+
+	m_BitmapWidth = m_Texture->GetWidth();
+	m_BitmapHeight = m_Texture->GetHeight();
 }
 
 bool ImageObject::InitializeBuffers()
@@ -111,19 +131,28 @@ void ImageObject::UpdateBuffers()
 	ImageVertex* verticesPtr;
 	HRESULT result;
 
+
 	// 이미지의 위치가 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
-	if ((m_Info.StartPosX == m_PreviousPosX) && (m_Info.StartPosY == m_PreviousPosY))
+	if ((m_Info.StartPosX == m_PreviousPosX && m_Info.StartPosY == m_PreviousPosY) 
+		&& (m_BitmapWidth == m_PreviousWidth && m_BitmapWidth == m_PreviousHeight)
+		&& (m_Info.Scale == m_PreviousScale))
 		return;
 
-	// 렌더링 되는 위치를 업데이트한다.
+	// 렌더링 되는 위치와 크기를 업데이트한다.
 	m_PreviousPosX = m_Info.StartPosX;
 	m_PreviousPosY = m_Info.StartPosY;
+	m_PreviousWidth = m_BitmapWidth;
+	m_PreviousHeight = m_BitmapWidth;
+	m_PreviousScale = m_Info.Scale;
+
+	float scaledWidth = m_BitmapWidth * m_Info.Scale;
+	float scaledHeight = m_BitmapHeight * m_Info.Scale;
 
 	// 비트맵의 좌표 계산
 	left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.StartPosX;
-	right = left + m_Info.Width;
+	right = left + scaledWidth;
 	top = (float)(m_ScreenHeight / 2) - m_Info.StartPosY;
-	bottom = top - m_Info.Height;
+	bottom = top - scaledHeight;
 
 	vertices.resize(m_vertexCount);
 	if (vertices.empty())

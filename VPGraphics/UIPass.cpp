@@ -23,15 +23,17 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 	//m_UIManager->CreateImageObject(518, testInfo);
 
 	//ui::ImageInfo testInfo2 = {};
-	//testInfo2.ImagePath = "1112DefaultUI.png";
+	//testInfo2.ImagePath = "GOSEGUI0900.png";
 	//testInfo2.Layer = 2;
+	//testInfo2.Height = 200;
+	//testInfo2.Width = 200;
 	//m_UIManager->CreateImageObject(519, testInfo2);
 
 	//ui::ImageInfo testInfo3 = {};
 	//testInfo3.ImagePath = "GOSEGUI0900.png";
 	//testInfo3.StartPosX = 800.f;
 	//testInfo3.StartPosY = 300.f;
-	//testInfo3.Layer = 3;
+	//testInfo3.Layer = 1;
 	//m_UIManager->CreateImageObject(600, testInfo3);
 #pragma endregion
 
@@ -43,6 +45,7 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 
 void UIPass::Render()
 {
+	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
 	m_Device->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 알파 블랜딩 사용.
@@ -62,12 +65,11 @@ void UIPass::Render()
 
 	m_Device->Context()->IASetInputLayout(m_VertexShader->InputLayout());
 	m_Device->Context()->VSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
-	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
 	m_Device->Context()->VSSetShader(m_VertexShader->GetShader(), nullptr, 0);
+	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
 	m_Device->Context()->PSSetShader(m_PixelShader->GetShader(), nullptr, 0);
-
-	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
 	m_Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
 
 	// Execute Draw Call for all 2D Objects
 	m_UIManager->Render();

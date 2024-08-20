@@ -10,5 +10,7 @@
 #include "RigidBodyComponent.h"
 #include "ParticleComponent.h"
 #include "ControllerComponent.h"
-#include "GeometryComponent.h"
+#include "ParticleComponent.h"
+#include "Sprite2DComponent.h"
 #include "LifeTimeComponent.h"
+#include "GeometryComponent.h"

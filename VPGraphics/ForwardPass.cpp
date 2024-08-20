@@ -50,8 +50,6 @@ void ForwardPass::Render()
 	std::shared_ptr<BlendState> state = m_BlendState.lock();
 	std::shared_ptr<DepthStencilState> depth = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
 
-
-
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
@@ -116,7 +114,7 @@ void ForwardPass::Render()
 					MaterialData curMaterialData = curMaterial->m_Data;
 					curData->Update(curMaterialData);
 
-					if (curData->m_struct.useNEO.z > 0)
+					if (curData->m_struct.useNEOL.z > 0)
 					{
 						Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
 						Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);

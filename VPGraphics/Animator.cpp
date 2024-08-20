@@ -7,14 +7,9 @@
 #include "Mesh.h"
 #include "ResourceManager.h"
 
-Animator::Animator(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager)
+void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 {
-
-}
-
-Animator::~Animator()
-{
-
+	m_ResourceManager = manager;
 }
 
 void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
@@ -55,6 +50,8 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 	//이건 애니메이션 데이터는 그대로 두고 각자의 시간과 애니메이션 따로 놀면된다
 	//여기서 터지면 loader에 데이터를 안읽어왔을 확률 높음
 
+	int index = 0;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
+
 	std::shared_ptr<ModelData> curOb = ob.lock();
 
 	if (curOb->m_Animations.empty())
@@ -64,16 +61,18 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 
 	//double& time = ob->playTime; //현재 애니메이션 플레이시간
 	double time = dt; //현재 애니메이션 플레이시간
-	double speed = curOb->m_Animations[0]->m_TickFrame;
+	double speed = curOb->m_Animations[index]->m_TickFrame;
 	time = dt * speed;
 
-	if (time > curOb->m_Animations[0]->m_Duration)
+
+	//로직 변경 필요 2024.08.12 정확한 처리가 아님 재생시간에 맞게 하지 않음
+	if (time > curOb->m_Animations[index]->m_Duration)
 	{
-		time -= curOb->m_Animations[0]->m_Duration;
+		time -= curOb->m_Animations[index]->m_Duration;
 	}
 	else
 	{
-		for (auto& ani : curOb->m_Animations[0]->m_Channels)
+		for (auto& ani : curOb->m_Animations[index]->m_Channels)
 		{
 			int cur = 0;
 			for (int i = 0; i < ani->totals.size(); i++)
@@ -94,7 +93,7 @@ void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
 			float t = time - cur;
 
 			std::shared_ptr<Node> curAni = ani->node.lock();
-			curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur], ani->totals[next], t).Transpose();
+			curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur].second, ani->totals[next].second, t).Transpose();
 		}
 	}
 
@@ -130,7 +129,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 					cur = i;
 				}
 
-				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, ani->totals[cur]));
+				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, ani->totals[cur].second));
 			}
 
 
@@ -156,7 +155,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				float t = curOb->duration - cur;
 
 				std::shared_ptr<Node> curAni = ani->node.lock();
-				curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur], preAni[ani->nodename], t).Transpose();
+				curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur].second, preAni[ani->nodename], t).Transpose();
 			}
 
 		}
@@ -256,11 +255,8 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 		}
 	}
 
-
 	//mixamo 기준 hips가 pelvis 이거로 상하체구분을 해보자
 	std::shared_ptr<Node> pelvis = ob->m_RootNode->m_Childs[1]; //hips
 
-	std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
-
-
+	//std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
 }

@@ -12,21 +12,21 @@
 #include "ModelData.h"
 #include "Mesh.h"
 
-ResourceManager::ResourceManager(std::weak_ptr<Device> device) : m_Device(device), m_Camera(), m_DirectionalLight()
+ResourceManager::ResourceManager()
 {
 	m_OffScreenName[0] = L"Albedo";
 	m_OffScreenName[1] = L"Normal";
 	m_OffScreenName[2] = L"Position";
 	m_OffScreenName[3] = L"Depth";
-	m_OffScreenName[4] = L"Metalic";
-	m_OffScreenName[5] = L"Roughness";
+	m_OffScreenName[4] = L"Metalic_Roughness";
+	m_OffScreenName[5] = L"LightMap";
 	m_OffScreenName[6] = L"AO";
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
 	m_OffScreenName[9] = L"IMGUI";
-	m_OffScreenName[10] = L"Opacity";
 	//m_OffScreenName[9] = L"RTV_Main";
 }
+
 
 ResourceManager::~ResourceManager()
 {
@@ -44,8 +44,13 @@ ResourceManager::~ResourceManager()
 
 }
 
-void ResourceManager::Initialize()
+
+void ResourceManager::Initialize(std::weak_ptr<Device> device)
 {
+	m_Device = device;
+	UINT width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
+	UINT height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+
 	///Built in
 
 	// Depth Stencil State
@@ -125,34 +130,29 @@ void ResourceManager::Initialize()
 	//RTV
 	{
 		//출력용 backbuffer
-		Create<RenderTargetView>(L"RTV_Main");
-
-		D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
-		texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
-		texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+		Create<RenderTargetView>(L"RTV_Main", RenderTargetViewType::Default, width, height);
 
 		//Deferred용
 		for (int i = 0; i < m_OffScreenName.size(); i++)
 		{
-			std::weak_ptr<Texture2D> offscreenTex = Create<Texture2D>(m_OffScreenName[i], texDesc);
-			Create<RenderTargetView>(m_OffScreenName[i], offscreenTex);
+			Create<RenderTargetView>(m_OffScreenName[i], RenderTargetViewType::OffScreen, width, height);
 		}
 
 	}
 
-	//DSV
+	// DSV
 	{
 		//출력용
 		D3D11_TEXTURE2D_DESC dsd = TextureDESC::DSVDesc;
-		dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
-		dsd.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+		dsd.Width = width;
+		dsd.Height = height;
 		Create<DepthStencilView>(L"DSV_Main", dsd);
 
 		//포스트프로세싱용으로 텍스처를 저장하려고 쓸거
 		Create<DepthStencilView>(L"DSV_Deferred", dsd);
 	}
 
-	//CB
+	// CB
 	{
 		m_Camera = Create<ConstantBuffer<CameraData>>(L"Camera", BufferDESC::Constant::DefaultCamera);
 		m_Transform = Create<ConstantBuffer<TransformData>>(L"Transform", BufferDESC::Constant::DefaultTransform);
@@ -162,103 +162,88 @@ void ResourceManager::Initialize()
 
 		//Bind CB only Once
 		m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, (m_Camera.lock()->GetAddress()));
-		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, (m_Camera.lock()->GetAddress()));
-
 		m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
-		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
-
-		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, m_UsingMaterial.lock()->GetAddress());
-
-		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
-
 		m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, m_Pallete.lock()->GetAddress());
 
+		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, (m_Camera.lock()->GetAddress()));
+		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
+		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, m_UsingMaterial.lock()->GetAddress());
+		m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
+
 		Create<ConstantBuffer<DirectX::XMFLOAT4>>(L"Color", BufferDESC::Constant::DefaultFloat4);
-
-
 	}
 
+	//LightMap
+	{
+		Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
+		Create<ShaderResourceView>(L"indirect_Lightmap-0_comp_light.png", L"indirect_Lightmap-0_comp_light.png");
+	}
 }
 
 
 void ResourceManager::OnResize(RECT& wndsize)
 {
+	UINT width = wndsize.right - wndsize.left;
+	UINT height = wndsize.bottom - wndsize.top;
 
 	Erase<ViewPort>(L"Main");
 	Create<ViewPort>(L"Main", wndsize);
 
-	auto& OffScreenMap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<Texture2D>())];
-	for (auto& tex : OffScreenMap)
+	/*for (auto tex : m_OffScreenName)
 	{
-		tex.second->Release();
-	}
-	OffScreenMap.clear();
+		Erase<Texture2D>(tex);
+	}*/
 
-	auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
-	int numRTV = static_cast<int>(RTVmap.size());
+	Erase<RenderTargetView>(L"RTV_Main");
 
-	for (auto& rtv : RTVmap)
+	for (auto tex : m_OffScreenName)
 	{
-		rtv.second->Release();
+		Erase<RenderTargetView>(tex);
 	}
-	RTVmap.clear();
 
-	D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
-	texDesc.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
-	texDesc.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+	//	/*
+	//	auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
+	//	int numRTV = static_cast<int>(RTVmap.size());
 
-	//출력용 backbuffer
-	Create<RenderTargetView>(L"RTV_Main");
+	//	for (auto& rtv : RTVmap)
+	//	{
+	//		rtv.second->Release();
+	//	}
+	//	RTVmap.clear();
+	//	*/
+
+	//	//출력용 backbuffer
+	Create<RenderTargetView>(L"RTV_Main", RenderTargetViewType::Default, width, height);
 
 	//디퍼드용
 	//이름 바꿔야할듯
 	//배열에 담아놓고 쓰던가
-
 	for (int i = 0; i < m_OffScreenName.size(); i++)
 	{
-		// 렌더 타겟 뷰의 설명을 설정합니다.
-		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-		renderTargetViewDesc.Format = texDesc.Format;
-		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-		renderTargetViewDesc.Texture2D.MipSlice = 0;
-
-		std::weak_ptr <Texture2D> offscreenTex = Create<Texture2D>(m_OffScreenName[i], texDesc);
-		std::weak_ptr <RenderTargetView> newRTV = Create<RenderTargetView>(m_OffScreenName[i], offscreenTex, renderTargetViewDesc);
-
-
-		// 셰이더 리소스 뷰의 설명을 설정합니다.
-		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-		shaderResourceViewDesc.Format = texDesc.Format;
-		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-		shaderResourceViewDesc.Texture2D.MipLevels = 1;
-
 		//기존에 있으면 지우고
 		Erase<ShaderResourceView>(m_OffScreenName[i]);
+		Erase<Texture2D>(m_OffScreenName[i]);
 
-		/*
-#pragma region SUMIN
-		if (m_OffScreenName[i] == L"IMGUI")
-		{
-			Create<ShaderResourceView>(m_OffScreenName[i], Get<RenderTargetView>(L"RTV_Main").lock());
-			continue;
-		}
-#pragma endregion SUMIN
-		 */
-
-		// 셰이더 리소스 뷰를 만듭니다.
-		Create<ShaderResourceView>(m_OffScreenName[i], newRTV, shaderResourceViewDesc);
+		std::weak_ptr <RenderTargetView> newRTV = Create<RenderTargetView>(m_OffScreenName[i], RenderTargetViewType::OffScreen, width, height);
+		Create<ShaderResourceView>(m_OffScreenName[i], newRTV.lock());
 	}
 
-	auto& DSVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<DepthStencilView>())];
-	int numDSV = static_cast<int>(DSVmap.size());
-
-	for (auto& dsv : DSVmap)
 	{
-		dsv.second->Release();
-	}
-	DSVmap.clear();
+		D3D11_TEXTURE2D_DESC texDesc = TextureDESC::OffScreen;
+		texDesc.Width = width;
+		texDesc.Height = height;
 
-	Create<DepthStencilView>(L"DSV_Main", texDesc);
-	Create<DepthStencilView>(L"DSV_Deferred", texDesc);
+		auto& DSVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<DepthStencilView>())];
+		int numDSV = static_cast<int>(DSVmap.size());
+
+		for (auto& dsv : DSVmap)
+		{
+			dsv.second->Release();
+		}
+		DSVmap.clear();
+
+		Create<DepthStencilView>(L"DSV_Main", texDesc);
+		Create<DepthStencilView>(L"DSV_Deferred", texDesc);
+	}
+
 }

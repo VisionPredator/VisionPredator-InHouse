@@ -28,10 +28,10 @@ enum class Filter
 class ModelLoader
 {
 public:
-	ModelLoader(std::shared_ptr<ResourceManager> manager, std::shared_ptr<Device> device);
-	~ModelLoader();
+	ModelLoader() = default;
+	~ModelLoader() = default;
 
-	void Initialize();
+	void Initialize(const std::shared_ptr<ResourceManager>& manager, const std::shared_ptr<Device>& device);
 	bool LoadModel(std::string filename, Filter filter);
 	void ProcessSceneData(std::string name, const aiScene* scene, Filter filter);
 

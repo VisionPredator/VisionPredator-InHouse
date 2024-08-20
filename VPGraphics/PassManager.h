@@ -20,11 +20,11 @@ class UIManager;
 class PassManager
 {
 public:
-	PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager);
+	PassManager();
 	~PassManager();
 
-	void Initialize();
+	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
+		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager);
 	void Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList);
 
 	void Render();

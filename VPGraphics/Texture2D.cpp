@@ -8,6 +8,11 @@ Texture2D::Texture2D(std::shared_ptr<Device> device, D3D11_TEXTURE2D_DESC desc) 
 	m_Device.lock()->Get()->CreateTexture2D(&m_desc, 0, &m_tex);
 }
 
+Texture2D::Texture2D(std::shared_ptr<Device> device) : m_tex(),m_desc()
+{
+
+}
+
 Texture2D::~Texture2D()
 {
 

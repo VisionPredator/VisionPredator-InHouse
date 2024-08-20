@@ -78,7 +78,7 @@ void LightSystem::RenderUpdate(float deltaTime)
 
 
 		m_Graphics->DrawSphere(sphereInfo);
-		m_Graphics->DrawSphere(sphereInfo2);
+		//m_Graphics->DrawSphere(sphereInfo2);
 		m_Graphics->DrawRay(ray);
 
 	}

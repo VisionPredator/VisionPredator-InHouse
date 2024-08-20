@@ -115,7 +115,7 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(IDComponent, IDComponent::Name);
 	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
-	META_ADD_COMP(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX, MeshComponent::LightMapOffset, MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
+META_ADD_COMP(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_COMP(Parent, Parent::ParentID);
@@ -128,5 +128,5 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
-}
+	META_ADD_MEMBER(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::StartPosX, Sprite2DComponent::StartPosY, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);}
 
