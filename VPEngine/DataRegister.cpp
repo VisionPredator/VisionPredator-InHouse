@@ -128,5 +128,5 @@ META_ADD_COMP(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX,MeshCo
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
-	META_ADD_MEMBER(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::StartPosX, Sprite2DComponent::StartPosY, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);}
+	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::StartPosX, Sprite2DComponent::StartPosY, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);}
 
