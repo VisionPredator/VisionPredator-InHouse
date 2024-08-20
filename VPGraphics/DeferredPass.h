@@ -11,8 +11,8 @@ public:
 
 private:
 
-	void Light();
 	void Geometry();
+	void Light();
 
 private:
 	enum class Geo_Tex

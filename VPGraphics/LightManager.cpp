@@ -3,17 +3,10 @@
 #include "ResourceManager.h"
 #include "Desc.h"
 
-LightManager::LightManager(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager), m_BufferStruct()
+void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 {
-
+	m_ResourceManager = manager;
 }
-
-LightManager::~LightManager()
-{
-
-}
-
-
 
 void LightManager::EraseData(uint32_t EntityID, LightType type)
 {

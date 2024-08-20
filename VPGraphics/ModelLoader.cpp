@@ -22,17 +22,11 @@
 #include <iostream>
 #include <filesystem>
 
-ModelLoader::ModelLoader(std::shared_ptr<ResourceManager> manager, std::shared_ptr<Device> device) : m_Device(device), m_ResourceManager(manager)
+void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, const std::shared_ptr<Device>& device)
 {
+	m_ResourceManager = manager;
+	m_Device = device;
 
-}
-
-ModelLoader::~ModelLoader()
-{
-}
-
-void ModelLoader::Initialize()
-{
 	std::string path;
 #ifdef _DEBUG
 	path = "..\\..\\..\\Resource\\FBX\\";

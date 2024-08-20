@@ -27,8 +27,10 @@ class ConstantBuffer;
 class LightManager
 {
 public:
-	LightManager(std::weak_ptr<ResourceManager> manager);
-	~LightManager();
+	LightManager() = default;
+	~LightManager() = default;
+
+	void Initialize(std::weak_ptr<ResourceManager> manager);
 
 	//void AddData(uint32_t EntityID, LightType kind, LightData data);
 	void EraseData(uint32_t EntityID, LightType type);

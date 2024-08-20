@@ -34,7 +34,7 @@ class GraphicsEngine : public Graphics::Interface
 {
 public:
 	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
-	~GraphicsEngine();
+	~GraphicsEngine() = default;
 
 	bool Initialize() override;
 	void Update(double dt) override;
@@ -57,6 +57,11 @@ public:
 	void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
 	void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
 	void DeleteParticleObjectByID(const uint32_t& id) override;
+
+	/// UI
+	void CreateImageObject(const uint32_t& id, const ui::ImageInfo& info) override;
+	void UpdateImageObject(const uint32_t& id, const ui::ImageInfo& info) override;
+	void DeleteImageObject(const uint32_t& id) override;
 
 	/// Light
 	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;

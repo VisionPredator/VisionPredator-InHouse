@@ -308,12 +308,8 @@ void DeferredPass::Light()
 
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
-		//Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
-
-	
 }
-

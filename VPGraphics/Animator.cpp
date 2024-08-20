@@ -7,14 +7,9 @@
 #include "Mesh.h"
 #include "ResourceManager.h"
 
-Animator::Animator(std::weak_ptr<ResourceManager> manager) : m_ResourceManager(manager)
+void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 {
-
-}
-
-Animator::~Animator()
-{
-
+	m_ResourceManager = manager;
 }
 
 void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)

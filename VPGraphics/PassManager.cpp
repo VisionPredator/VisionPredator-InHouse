@@ -20,12 +20,10 @@
 #include "StaticData.h"
 #include "Slot.h"
 
-PassManager::PassManager(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> resource, std::shared_ptr<DebugDrawManager> debug,
-	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager)
-	: m_Device(device), m_ResourceManager(resource), m_DebugDrawManager(debug), m_ParticleManager(particleManager), m_UIManager(uiManager)
+PassManager::PassManager()
+	: m_ParticlePass(std::make_shared<ParticlePass>())
+	, m_UIPass(std::make_shared<UIPass>())
 {
-	m_ParticlePass = std::make_shared<ParticlePass>();
-	m_UIPass = std::make_shared<UIPass>();
 }
 
 PassManager::~PassManager()
@@ -38,8 +36,15 @@ PassManager::~PassManager()
 	m_Passes.clear();
 }
 
-void PassManager::Initialize()
+void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
+	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager)
 {
+	m_Device = device;
+	m_ResourceManager = resource;
+	m_DebugDrawManager = debug;
+	m_ParticleManager = particleManager;
+	m_UIManager = uiManager;
+
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Forward, std::make_shared<ForwardPass>(m_Device.lock(), m_ResourceManager.lock())));
@@ -47,8 +52,6 @@ void PassManager::Initialize()
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
-	/*
-	*/
 }
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
@@ -62,31 +65,27 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 		CheckPassState(curModel, PassState::Debug);
 		CheckPassState(curModel, PassState::GeoMetry);
 	}
-	/*
-	*/
 }
 
 void PassManager::Render()
 {
-
-	//deferred
 	m_Passes[PassState::Debug]->Render();
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
-	m_Passes[PassState::Forward]->Render();
 
-	DrawGBuffer();
+	//m_Passes[PassState::Forward]->Render();		// 필요 없는 패스
+	//DrawGBuffer();		// 필요 없는 패스
 
 	m_ParticlePass->Render();
 	m_UIPass->Render();
+
+	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
 	DrawIMGUI();
-	/*
-	*/
 }
 
 void PassManager::OnResize()
 {
-	for (auto& pass : m_Passes)	
+	for (auto& pass : m_Passes)
 	{
 		pass.second->OnResize();
 	}
@@ -145,7 +144,7 @@ void PassManager::DrawIMGUI()
 	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
 	std::shared_ptr<VertexShader> vs = resourcemanager->Get<VertexShader>(L"Quad").lock();
-	std::shared_ptr<ShaderResourceView> gui = resourcemanager->Get<ShaderResourceView>(L"IMGUI").lock();
+	std::shared_ptr<ShaderResourceView> gui = resourcemanager->Get<ShaderResourceView>(L"GBuffer").lock();
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 

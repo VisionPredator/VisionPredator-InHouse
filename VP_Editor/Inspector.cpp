@@ -254,7 +254,7 @@ void Inspector::TypeImGui_Vector4(entt::meta_data memberMetaData, Component* com
 	auto memberName = Reflection::GetName(memberMetaData);
 	float tempFloat[4]{ tempVector.x,tempVector.y,tempVector.z,tempVector.w };
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::DragFloat3(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
+	if (ImGui::DragFloat4(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
 	{
 		tempVector.x = tempFloat[0];
 		tempVector.y = tempFloat[1];
@@ -374,8 +374,14 @@ void Inspector::TypeImGui_float(entt::meta_data memberMetaData, Component* compo
 	float tempfloat = memberMetaData.get(component->GetHandle()).cast<float>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat))
+	if (INPUTKEY(KEYBOARDKEY::LSHIFT))
+	{
+		if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat, 0.01f))
+			memberMetaData.set(component->GetHandle(), tempfloat);
+	}
+	else if (ImGui::DragScalar(memberName.c_str(), ImGuiDataType_Float, &tempfloat, 0.001f))
 		memberMetaData.set(component->GetHandle(), tempfloat);
+
 	ImGui::PopID();
 }
 

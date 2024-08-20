@@ -27,15 +27,13 @@ public:
 
 	ID3D11Buffer* Get() const;
 	ID3D11Buffer** GetAddress();
-	//Microsoft::WRL::ComPtr<ID3D11Buffer> GetComPtr() { return m_buffer; }
 	UINT Count() const;
 
 	virtual void Update() abstract;
 	virtual void Release() override;
 
 protected:
-	//Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
-	ID3D11Buffer* m_buffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
 
 	UINT m_count = 0;
 	D3D11_BUFFER_DESC m_Desc = {};

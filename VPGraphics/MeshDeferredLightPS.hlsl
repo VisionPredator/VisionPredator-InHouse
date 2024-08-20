@@ -30,9 +30,9 @@ float4 calcindirect()
 }
 
 
-PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
+float4 main(VS_OUTPUT input) : SV_TARGET
 {
-    PS_OUTPUT output;
+    //PS_OUTPUT output;
     
     float opacity = 1.0f;
     if (useNEO.z >= 1)
@@ -99,8 +99,9 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     // gamma correct
     result = pow(result, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
     
-    output.Gbuffer = float4(result, 1);
+    //output.Gbuffer = float4(result, 1);
     
-    return output;
+    //return output;
+    return float4(result, 1);
     //return float4(albedoColor, 1);
 }

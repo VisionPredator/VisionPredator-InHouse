@@ -10,12 +10,10 @@ class ConstantBuffer :
 	public Buffer
 {
 public:
-	ConstantBuffer();
+	ConstantBuffer() = default;
 	ConstantBuffer(std::shared_ptr<Device> device);
 	ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc);
 	ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data);
-
-	//ConstantBuffer(const std::shared_ptr<Device>& device, )
 
 	~ConstantBuffer();
 
@@ -42,9 +40,7 @@ ConstantBuffer<T>::ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data
 template<typename T>
 void ConstantBuffer<T>::Release()
 {
-	if (m_buffer == nullptr)
-		return;
-	m_buffer->Release();
+	m_buffer.Reset();
 }
 
 template<typename T>
@@ -58,13 +54,6 @@ ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_D
 		MessageBox(0,text.c_str() ,0,0);
 	}
 }
-
-template<typename T>
-ConstantBuffer<T>::ConstantBuffer() : Buffer()
-{
-
-}
-
 
 template<typename T>
 ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device>device) : Buffer(device), m_struct()
@@ -81,7 +70,7 @@ ConstantBuffer<T>::~ConstantBuffer()
 template<typename T>
 void ConstantBuffer<T>::Update()
 {
-	m_Device.lock()->Context()->UpdateSubresource(m_buffer, 0, nullptr, &m_struct, 0, 0);
+	m_Device.lock()->Context()->UpdateSubresource(m_buffer.Get(), 0, nullptr, &m_struct, 0, 0);
 }
 
 template<typename T>
@@ -89,5 +78,5 @@ void ConstantBuffer<T>::Update(T cbstruct)
 {
 	m_struct = cbstruct;
 
-	m_Device.lock()->Context()->UpdateSubresource(m_buffer, 0, nullptr, &m_struct, 0, 0);
+	m_Device.lock()->Context()->UpdateSubresource(m_buffer.Get(), 0, nullptr, &m_struct, 0, 0);
 }

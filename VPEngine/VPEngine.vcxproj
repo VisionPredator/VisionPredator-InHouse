@@ -186,6 +186,7 @@
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource1.h" />
     <ClInclude Include="RigidBodyComponent.h" />
+    <ClInclude Include="Sprite2DComponent.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />

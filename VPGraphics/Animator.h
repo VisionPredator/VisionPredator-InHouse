@@ -12,9 +12,12 @@ class ResourceManager;
 class Animator
 {
 public:
-	Animator(std::weak_ptr<ResourceManager> manager);
-	~Animator();
+	Animator() = default;
+	~Animator() = default;
+
 	std::vector<std::shared_ptr<ModelData>> m_AnimationModel;
+
+	void Initialize(std::weak_ptr<ResourceManager> manager);
 
 	void Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist);
 
