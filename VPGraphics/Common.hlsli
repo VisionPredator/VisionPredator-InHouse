@@ -39,6 +39,8 @@ cbuffer Material : register(b2)
     float roughness;
     float ao; // Ambient Occlusion
     float pad; 
+    float4 lightmapdata; //index, offset(x,y),scale
+    float2 lightmaptiling; // x y
 };
 
 
@@ -86,6 +88,7 @@ Texture2D gEmissive : register(t7);
 Texture2D gGBuffer : register(t8);
 Texture2D gIMGUI : register(t9);
 Texture2D gOpacity : register(t10);
+Texture2D gLightMap : register(t11);
 
 //***********************************************
 // Sampler States                               *
@@ -104,6 +107,7 @@ struct VS_INPUT
     float4 tangent : TANGENT;
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
+    float2 lightuv : LIGHTMAPUV;
  #ifdef SKINNING
     float4 boneindex[2] : BONEINDEX;
     float4 boneweight[2] : BONEWEIGHT;
@@ -119,6 +123,7 @@ struct VS_OUTPUT
     float4 tangent : TANGENT;
     float4 bitangent : BITANGENT;
     float2 tex : TEXCOORD;
+    float2 lightuv : LIGHTMAPUV;
 };
 
 struct Quad

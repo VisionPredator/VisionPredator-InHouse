@@ -29,6 +29,7 @@ enum class Slot_T
 	GBuffer,
 	End,
 	Opacity,
+	LightMap,
 };
 
 

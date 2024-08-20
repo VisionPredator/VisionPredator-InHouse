@@ -402,8 +402,8 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Normal"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Position"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Depth"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Metalic"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Roughness"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Metalic_Roughness"));
+	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"LightMap"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"AO"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Emissive"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"GBuffer"));

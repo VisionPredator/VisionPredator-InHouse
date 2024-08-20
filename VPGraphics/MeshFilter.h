@@ -80,6 +80,12 @@ public:
 	DirectX::XMFLOAT4 color;
 	bool useTexture;
 	std::wstring textureName;
+
+	//라이트맵 데이터
+	VPMath::Vector2 offset;
+	VPMath::Vector2 tiling;
+	int lightmapindex;
+	float scale;
 };
 
 

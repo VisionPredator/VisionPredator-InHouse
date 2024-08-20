@@ -46,9 +46,13 @@ void ConstantBuffer<T>::Release()
 template<typename T>
 ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc) : Buffer(device, Desc)
 {
-	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
-
 	m_struct = T();
+	HRESULT hr = m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
+	if (FAILED(hr))
+	{
+		std::wstring text = L"Create Failed CB";
+		MessageBox(0,text.c_str() ,0,0);
+	}
 }
 
 template<typename T>

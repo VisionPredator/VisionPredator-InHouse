@@ -109,7 +109,7 @@ void VPRegister::Register_VPMath()
 		.data<&Viewport::minDepth>("minDepth"_hs)
 		.data<&Viewport::maxDepth>("maxDepth"_hs);
 }
-
+//
 //NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
 //{MeshFilter::Axis, "Axis"},
 //{MeshFilter::Box, "Box"},
@@ -151,7 +151,7 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
 	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX);
+	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
