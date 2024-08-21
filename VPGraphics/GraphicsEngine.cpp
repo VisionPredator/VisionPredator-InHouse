@@ -228,10 +228,32 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID)
 				//m_RenderList[EntityID]->Pass = PassState::Forward;
 				//m_RenderList[EntityID]->Pass = PassState::Forward;
 
+				/*
+				std::shared_ptr<ModelData> curModel = m_ResourceManager->Get<ModelData>(m_RenderList[EntityID]->FBX).lock();
+				if (curModel != nullptr)
+				{
+					for (auto material : curModel->m_Materials)
+					{
+						if (material->m_Data.useNEOL.z > 0)
+						{
+							m_RenderList[EntityID]->Pass = PassState::Forward;
+							break;
+						}
+					}
+				}
+				*/
+
+
 				if (m_RenderList[EntityID]->FBX == L"cctv_lens_low.fbx")
 				{
 					m_RenderList[EntityID]->Pass = PassState::Forward;
 				}
+
+				if (m_RenderList[EntityID]->FBX == L"wall3_window_low.fbx")
+				{
+					m_RenderList[EntityID]->Pass = PassState::Forward;
+				}
+
 			}
 			break;
 
