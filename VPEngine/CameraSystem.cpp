@@ -63,7 +63,6 @@ void CameraSystem::OnSetMainCamera(std::any data)
 		for (CameraComponent& cameracomp : COMPITER(CameraComponent))
 		{
 			cameracomp.IsMain = false;
-
 			if (cameracomp.GetComponent<IDComponent>()->Name != entityName)
 				continue;
 			mainCameraCount++;

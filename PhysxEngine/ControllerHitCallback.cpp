@@ -13,7 +13,7 @@ ControllerHitCallback::~ControllerHitCallback()
 void ControllerHitCallback::onShapeHit(const PxControllerShapeHit& hit)
 {
 	// 충돌 시 실행할 코드 작성
-	std::cout << "ShapeHit" << std::endl;
+	//std::cout << "ShapeHit" << std::endl;
 }
 
 void ControllerHitCallback::onControllerHit(const PxControllersHit& hit)

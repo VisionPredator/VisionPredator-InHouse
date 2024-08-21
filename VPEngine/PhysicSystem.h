@@ -18,9 +18,6 @@ public:
 	PhysicSystem(std::shared_ptr<SceneManager> sceneManager);
 	~PhysicSystem() = default;
 
-	void OnCollisionExit(std::any pair);
-	void OnCollisionContact(std::any pair);
-	void OnCollisionEnter(std::any pair);
 
 	void Initialize() override;
 	void Start(uint32_t EntityID) override;

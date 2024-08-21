@@ -3,6 +3,8 @@
 #include "Components.h"
 #include <fstream>
 #include <random>
+#include <queue>
+#include "TransformSystem.h"
 
 SceneManager::SceneManager()
 {
@@ -14,6 +16,8 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnOpenNewScene", CreateSubscriber(&SceneManager::OnOpenNewScene), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnSaveCurrentToTemp", CreateSubscriber(&SceneManager::OnSaveCurrentToTemp), EventType::SCENE);
 	EventManager::GetInstance().Subscribe("OnOverwriteTempToCurrent", CreateSubscriber(&SceneManager::OnOverwriteTempToCurrent), EventType::SCENE);
+	EventManager::GetInstance().Subscribe("OnAddEntityComponentsToScene", CreateSubscriber(&SceneManager::OnAddEntityComponentsToScene), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnDeleteEntity", CreateSubscriber(&SceneManager::OnDeleteEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
@@ -21,7 +25,6 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveChild", CreateSubscriber(&SceneManager::OnRemoveChild), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnSerializePrefab", CreateSubscriber(&SceneManager::OnSerializePrefab), EventType::ADD_DELETE);
-	EventManager::GetInstance().Subscribe("OnDeSerializeEntity", CreateSubscriber(&SceneManager::OnDeSerializeEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDeSerializePrefab", CreateSubscriber(&SceneManager::OnDeSerializePrefab), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnSpawnPrefab", CreateSubscriber(&SceneManager::OnSpawnPrefab), EventType::ADD_DELETE);
 }
@@ -57,13 +60,19 @@ std::pair<uint32_t, uint32_t>& SceneManager::findOrCreatePair(std::vector<std::p
 }
 bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
 {
+	if (!HasComponent<Parent>(child))
+		return false;
 	auto nextParent = GetComponent<Parent>(child);
 
 	while (nextParent != nullptr)
 	{
-		if (!GetComponent<Children>(nextParent->ParentID))
+		if (!HasComponent<Children>(nextParent->ParentID))
 		{
-			nextParent = GetComponent<Parent>(nextParent->ParentID);
+			if (HasComponent<Parent>(nextParent->ParentID))
+				nextParent = GetComponent<Parent>(nextParent->ParentID);
+			else
+				nextParent = nullptr;
+
 			continue;
 		}
 
@@ -71,33 +80,41 @@ bool SceneManager::CheckParent(uint32_t parent, uint32_t child)
 		{
 			return true;
 		}
-		nextParent = GetComponent<Parent>(nextParent->ParentID);
+
+		if (HasComponent<Parent>(nextParent->ParentID))
+			nextParent = GetComponent<Parent>(nextParent->ParentID);
+		else
+			nextParent = nullptr;
 	}
 	return false;
 }
 
-void SceneManager::AddChild(uint32_t parent, uint32_t child)
+void SceneManager::AddChild(uint32_t parent, uint32_t child, bool Immidiate)
 {
 	std::pair<uint32_t, uint32_t> data{ parent ,child };
-	EventManager::GetInstance().ScheduleEvent("OnAddChild", data);
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnAddChild", data);
+	else
+		OnAddChild(data);
 }
-
 void SceneManager::OnAddChild(std::any data)
 {
 	auto [parent, child] = std::any_cast<std::pair<uint32_t, uint32_t>>(data);
 	if (parent == child || CheckParent(parent, child))
 		return;
 
-	if (auto parentofchild = GetComponent<Parent>(child))
+	if (HasComponent<Parent>(child))
 	{
+		auto parentofchild = GetComponent<Parent>(child);
 		std::pair<uint32_t, uint32_t> newdata{ parentofchild->ParentID, child };
 		OnRemoveChild(newdata);
 	}
 
 	GetEntity(child)->AddComponent<Parent>(true)->ParentID = parent;
 
-	if (auto children = GetComponent<Children>(parent))
+	if (HasComponent<Children>(parent))
 	{
+		auto children = GetComponent<Children>(parent);
 		children->ChildrenID.push_back(child);
 	}
 	else
@@ -115,32 +132,38 @@ void SceneManager::OnAddChild(std::any data)
 
 void SceneManager::RemoveParent(uint32_t childID, bool Immediate)
 {
-	if (auto parent = GetComponent<Parent>(childID))
+	if (HasComponent<Parent>(childID))
 	{
+		auto parent = GetComponent<Parent>(childID);
 		std::pair<uint32_t, uint32_t> data{ parent->ParentID, childID };
-		if (Immediate)
-		{
-			EventManager::GetInstance().ImmediateEvent("OnRemoveChild", data);
-			return;
-		}
-		EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
+		if (!Immediate)
+			EventManager::GetInstance().ScheduleEvent("OnRemoveChild", data);
+		else
+			OnRemoveChild(data);
 	}
 }
-
-void SceneManager::OpenNewScene()
+void SceneManager::OpenNewScene(bool Immidiate)
 {
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnOpenNewScene");
+	else
+		EventManager::GetInstance().ImmediateEvent("OnOpenNewScene");
 
-	EventManager::GetInstance().ScheduleEvent("OnOpenNewScene");
 }
 
-void SceneManager::SceneSerialize(std::string FilePath)
+void SceneManager::SceneSerialize(std::string FilePath, bool Immidiate)
 {
-	EventManager::GetInstance().ScheduleEvent("OnSerializeScene", FilePath);
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnSerializeScene", FilePath);
+	else
+		EventManager::GetInstance().ImmediateEvent("OnSerializeScene", FilePath);
 }
-
-void SceneManager::SceneDeSerialize(std::string FilePath)
+void SceneManager::SceneDeSerialize(std::string FilePath, bool Immidiate)
 {
-	EventManager::GetInstance().ScheduleEvent("OnDeSerializeScene", FilePath);
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnDeSerializeScene", FilePath);
+	else
+		EventManager::GetInstance().ImmediateEvent("OnDeSerializeScene", FilePath);
 }
 
 
@@ -151,18 +174,22 @@ void SceneManager::OnRemoveChild(std::any data)
 	if (!CheckParent(parent, child))
 		return;
 
-	if (auto parentOfChild = GetComponent<Parent>(child))
+	if (HasComponent<Parent>(child))
 	{
+		auto parentOfChild = GetComponent<Parent>(child);
 		if (parentOfChild->ParentID == parent)
 		{
-			auto children = GetComponent<Children>(parent);
-			if (children)
+			if (HasComponent<Children>(parent))
 			{
-				children->ChildrenID.remove(child);
-
-				if (children->ChildrenID.empty())
+				auto children = GetComponent<Children>(parent);
+				if (children)
 				{
-					OnRemoveComponent(GetEntity(parent)->GetComponent(Reflection::GetTypeID<Children>()));
+					children->ChildrenID.remove(child);
+
+					if (children->ChildrenID.empty())
+					{
+						OnRemoveComponent(GetEntity(parent)->GetComponent(Reflection::GetTypeID<Children>()));
+					}
 				}
 			}
 			OnRemoveComponent(GetEntity(child)->GetComponent(Reflection::GetTypeID<Parent>()));
@@ -170,12 +197,14 @@ void SceneManager::OnRemoveChild(std::any data)
 		}
 	}
 }
+
 void SceneManager::AddCompToPool(std::shared_ptr<Component> comp)
 {
 	// 컴포넌트 풀에 컴포넌트를 추가합니다.
 	auto& pool = m_CurrentScene->m_ComponentPool[comp->GetHandle()->type().id()];
 	pool.push_back(comp);
 }
+#pragma region Delete Entity - Editior
 void SceneManager::DeleteEntity(uint32_t entityID)
 {
 	std::list<uint32_t> DeleteEntityIDs;
@@ -193,7 +222,7 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 	{
 		uint32_t DeleteEntityID = DeleteEntityIDs.front();
 
-		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", DeleteEntityID);
+		EventManager::GetInstance().ScheduleEvent("OnDeleteEntity", DeleteEntityID);
 		DeleteEntityIDs.pop_front();
 		auto entity = GetEntity(DeleteEntityID);
 
@@ -205,77 +234,49 @@ void SceneManager::DeleteEntity(uint32_t entityID)
 		}
 	}
 }
-
-
-void SceneManager::OnDestroyEntity(std::any data)
+void SceneManager::ChangeScene(std::string FilePath,bool Immidiate)
 {
-	// EntityMap에서 해당 엔티티를 찾습니다.
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnChangeScene", FilePath);
+	else
+		OnChangeScene(FilePath);
+
+}
+void SceneManager::OnDeleteEntity(std::any data)
+{
 	uint32_t entityID = std::any_cast<uint32_t>(data);
-
 	auto& entityMap = GetEntityMap();
-	auto entityIter = entityMap.find(entityID);
-	if (entityIter != entityMap.end())
-	{
-		std::shared_ptr<Entity> entityToRemove = entityIter->second;
 
-		// m_ComponentPool에서 해당 엔티티에 해당하는 컴포넌트들을 제거합니다.
-		for (auto& compPair : m_CurrentScene->m_ComponentPool)
+	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
+	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+	{
+		auto ownedComponents = entityIter->second->GetOwnedComponents();
+
+		// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
+		for (auto& sharedComp : ownedComponents)
 		{
-			auto& components = compPair.second;
-			components.erase(std::remove_if(components.begin(), components.end(),
-				[&entityID](std::weak_ptr<Component>& weakComp)
-				{
-					if (auto sharedComp = weakComp.lock())
-					{
-						if (sharedComp->GetEntityID() == entityID)
-						{
-							EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-							return true;
-						}
-					}
-					return false;
-				}), components.end());
+			EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
 		}
 
-		// EntityMap에서 해당 엔티티를 제거합니다.
+		// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
+		std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
+			return pair.first.first == entityID;
+			});
+
+		// 마지막으로, entityMap에서 엔티티를 제거합니다.
 		entityMap.erase(entityIter);
 	}
 }
 
-void SceneManager::RemoveEntity(std::shared_ptr<Entity> entity)
+
+#pragma endregion
+#pragma region Clear Entity
+void SceneManager::ClearAllEntity(bool Immidiate)
 {
-	if (!entity)
-		return;
-
-	// 엔티티 ID를 가져옵니다.
-	uint32_t entityID = entity->GetEntityID();
-
-	auto& entityMap = GetEntityMap();
-	auto entityIter = entityMap.find(entityID);
-	if (entityIter != entityMap.end())
-	{
-		// 해당 엔티티에 연결된 컴포넌트들을 제거합니다.
-		for (auto& compPair : m_CurrentScene->m_ComponentPool)
-		{
-			auto& components = compPair.second;
-			components.erase(std::remove_if(components.begin(), components.end(),
-				[&entityID](std::weak_ptr<Component>& weakComp)
-				{
-					if (auto sharedComp = weakComp.lock())
-					{
-						if (sharedComp->GetEntityID() == entityID)
-						{
-							EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-							return true;
-						}
-					}
-					return false;
-				}), components.end());
-		}
-
-		// 엔티티 맵에서 해당 엔티티를 제거합니다.
-		entityMap.erase(entityIter);
-	}
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnClearAllEntity");
+	else
+		OnClearAllEntity(0);
 }
 void SceneManager::OnClearAllEntity(std::any data)
 {
@@ -288,14 +289,51 @@ void SceneManager::OnClearAllEntity(std::any data)
 	}
 
 	// Remove each entity using RemoveEntity
-	for (auto& entity : entitiesToRemove) {
-		RemoveEntity(entity);
+	for (auto& entity : entitiesToRemove) 
+	{
+		ClearEntity(entity);
 	}
 	ClearCache();
 }
+void SceneManager::ClearEntity(std::shared_ptr<Entity> entity)
+{
+	if (!entity)
+		return;
+
+	uint32_t entityID = entity->GetEntityID();
+	auto& entityMap = GetEntityMap();
+
+	// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
+	if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+	{
+		// 엔티티가 소유한 모든 컴포넌트를 가져옵니다.
+		auto ownedComponents = entity->GetOwnedComponents();
+
+		// 각 컴포넌트에 대해 이벤트를 발생시킵니다.
+		for (auto& sharedComp : ownedComponents)
+		{
+			EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+		}
+
+		// componentMap에서 해당 엔티티와 연관된 컴포넌트들을 제거합니다.
+		auto& componentMap = m_CurrentScene->m_ComponentPool;
+		componentMap.erase(entityID);
+
+		// componentCache에서 해당 엔티티와 연관된 항목들을 모두 제거합니다.
+		auto& componentCache = m_ComponentCache;
+		std::erase_if(componentCache, [entityID](const auto& pair) {
+			return pair.first.first == entityID;
+			});
+
+		// 마지막으로, entityMap에서 엔티티를 제거합니다.
+		entityMap.erase(entityIter);
+	}
+}
+#pragma endregion
+
 void SceneManager::OnNewScene(std::any data)
 {
-	EventManager::GetInstance().ImmediateEvent("OnClearAllEntity");
+	ClearAllEntity(true);
 	delete m_CurrentScene;
 	m_CurrentScene = nullptr;
 	m_CurrentScene = new Scene;
@@ -306,7 +344,6 @@ void SceneManager::OnOpenNewScene(std::any null)
 	EventManager::GetInstance().ImmediateEvent("OnNewScene");
 	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
 }
-
 //씬 체인지 이벤트 인게임 도중 씬 체인지 작동용도!
 void SceneManager::OnChangeScene(std::any data)
 {
@@ -336,6 +373,15 @@ void SceneManager::OnOverwriteTempToCurrent(std::any Null)
 	SetSceneName(curName);
 
 }
+void SceneManager::OnAddEntityComponentsToScene(std::any entityID)
+{
+	uint32_t entityid = std::any_cast<uint32_t>(entityID);
+	auto entity = GetEntity(entityid);
+	for (auto component :entity->GetOwnedComponents())
+	{
+		OnAddCompToScene(component);
+	}
+}
 void SceneManager::OnSaveCurrentToTemp(std::any Null)
 {
 	std::string tempMapPath = "../Data/Temp/Temp.scene";
@@ -350,7 +396,7 @@ void SceneManager::OnStartScene(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnSetPhysicInfo", GetScenePhysic());
 
 	///TODO: 씬 시작시 설정할 Initialize
-	EventManager::GetInstance().ImmediateEvent("OnInitialize");
+	//EventManager::GetInstance().ImmediateEvent("OnInitialize");
 	///TODO: 씬 시작시 설정할 Initializesystem.
 	EventManager::GetInstance().ImmediateEvent("OnInitializeSystems");
 }
@@ -358,17 +404,16 @@ void SceneManager::OnStartScene(std::any data)
 void SceneManager::OnEndScene(std::any data)
 {
 	///TODO:씬 끝났을 때 처리할 Finalize?
-	EventManager::GetInstance().ImmediateEvent("OnFinalize");
+	//EventManager::GetInstance().ImmediateEvent("OnFinalize");
 	///TODO: 씬 끝났을 때 설정할 Initializesystem.
 	EventManager::GetInstance().ImmediateEvent("OnFinalizeSystems");
 
 }
 
-void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 direction, VPMath::Vector3 scele)
+void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scele)
 {
 	// Create scale matrix
-
-	PrefabData temp = { prefabname ,pos,direction,scele };
+	PrefabData temp = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnSpawnPrefab", data);
 }
@@ -378,7 +423,6 @@ void SceneManager::SerializePrefab(uint32_t entityID)
 {
 	EventManager::GetInstance().ScheduleEvent("OnSerializePrefab", entityID);
 }
-
 void SceneManager::OnSerializePrefab(std::any data)
 {
 	uint32_t entityID = std::any_cast<uint32_t>(data);
@@ -450,7 +494,6 @@ void SceneManager::OnSerializePrefab(std::any data)
 	ofsPrefabPath << SceneJson.dump(4);
 	ofsPrefabPath.close();
 }
-
 void SceneManager::DeSerializePrefab(std::string filePath)
 {
 	EventManager::GetInstance().ScheduleEvent("OnDeSerializePrefab", filePath);
@@ -487,7 +530,7 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),false,false);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
@@ -499,18 +542,17 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 								Parent* parentComponet = static_cast<Parent*>(compPtr.get());
 								parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
 							}
-
 						}
 					}
 					else
 						VP_ASSERT(false, "Reflection 함수 실패!");
 				}
 			}
+			EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", renewEntityID);
 		}
 	}
 }
-
-std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson)
+std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson, bool Immidate )
 {
 	uint32_t entityID = entityjson["EntityID"];
 	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
@@ -528,55 +570,15 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 			// 특정 함수를 찾고 호출합니다.
 			auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 			if (myFunctionMeta)
-				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity);
+				myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, tempEntity.get(), Immidate, false);
 			else
 				VP_ASSERT(false, "Reflection 함수 실패!");
 		}
+
 	}
+		EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", entityID);
 
 	return tempEntity;
-}
-
-void SceneManager::OnDeSerializeEntity(std::any data)
-{
-	try
-	{
-		const nlohmann::json entityjson = std::any_cast<const nlohmann::json>(data);
-		uint32_t entityID = entityjson["EntityID"].get<uint32_t>();
-		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
-
-		tempEntity->SetEntityID(entityID);
-		SetEntityMap(entityID, tempEntity);
-
-		for (auto& componentjson : entityjson["Component"])
-		{
-			entt::id_type comp_id = (entt::id_type)componentjson["ComponentID"];
-			auto metaType = entt::resolve(comp_id);
-			if (metaType)
-			{
-				// 메타 타입으로부터 인스턴스를 생성합니다.
-				auto instance = metaType.construct();
-				// 특정 함수를 찾고 호출합니다.
-				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
-				if (myFunctionMeta)
-					myFunctionMeta.invoke(instance, (nlohmann::json&)componentjson, (SceneManager*)this, tempEntity);
-				else
-					VP_ASSERT(false, "Reflection 함수 실패!");
-			}
-		}
-	}
-	catch (const std::bad_any_cast& e)
-	{
-		VP_ASSERT(false, "std::any_cast 실패: {}", e.what());
-	}
-	catch (const nlohmann::json::exception& e)
-	{
-		VP_ASSERT(false, "JSON 구문 분석 실패: {}", e.what());
-	}
-	catch (const std::exception& e)
-	{
-		VP_ASSERT(false, "예기치 않은 오류 발생: {}", e.what());
-	}
 }
 std::shared_ptr<Entity> SceneManager::CreateEntity()
 {
@@ -611,7 +613,6 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 
 	return tempEntity;
 }
-
 uint32_t SceneManager::CreateRandomEntityID()
 {
 	std::random_device rd;  // 난수 생성기
@@ -622,7 +623,6 @@ uint32_t SceneManager::CreateRandomEntityID()
 		id = dis(gen);
 	return id;
 }
-
 void SceneManager::SetScenePhysic(VPPhysics::PhysicsInfo physicInfo)
 {
 	m_CurrentScene->ScenePhysicInfo = physicInfo;
@@ -640,6 +640,7 @@ void SceneManager::OnAddCompToScene(std::any data)
 	AddCompToPool(comp);
 	EventManager::GetInstance().ImmediateEvent("OnAddedComponent", comp.get());
 }
+
 
 void SceneManager::OnRemoveComponent(std::any data)
 {
@@ -670,11 +671,9 @@ void SceneManager::OnRemoveComponent(std::any data)
 void SceneManager::OnSpawnPrefab(std::any prefabdata)
 {
 	auto prefabData = std::any_cast<PrefabData> (prefabdata);
-
-
 	std::ifstream inputFile(prefabData.prefabname);
 	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
-	uint32_t mainprefabID;
+	uint32_t mainprefabID{};
 	if (inputFile.is_open())
 	{
 		nlohmann::json prefabJson;
@@ -687,7 +686,6 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 			uint32_t renewEntityID = findOrCreatePair(entityResettingPair, oldEntityID).second;
 			std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 			tempEntity->SetEntityID(renewEntityID);
-
 			SetEntityMap(renewEntityID, tempEntity);
 			///메인 Entity인가?
 			bool IsMainEntity = true;
@@ -704,11 +702,11 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),true, false);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
-							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
+							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>()) 
 								for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
 									childID = findOrCreatePair(entityResettingPair, childID).second;
 							else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
@@ -723,20 +721,134 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 						VP_ASSERT(false, "Reflection 함수 실패!");
 				}
 			}
+			EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", renewEntityID);
 
 			if (IsMainEntity)
 			{
 				mainprefabID = renewEntityID;
 			}
+			EventManager::GetInstance().ImmediateEvent("OnStart", renewEntityID);
+
 		}
 		auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
-		Transform->Local_Location = prefabData.pos;
-		Transform->Local_Scale = prefabData.scale;
-		VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
-		Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrix(rotationMatrix);
+		Transform->SetLocalLocation(prefabData.pos);
+		Transform->SetLocalScale(prefabData.scale);
+		//prefabData.direction = -prefabData.direction;
+		Transform->SetLocalRotation(prefabData.rotation);
+		//VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
+		//VPMath::Quaternion newRotation = VPMath::Quaternion::CreateFromRotationMatrix(rotationMatrix);
+		//newRotation.y = -newRotation.y;
+		//newRotation.x = -newRotation.x;
+		//Transform->SetLocalQuaternion(newRotation);
+
+		//Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrixLH(rotationMatrix);
+	}
+}
+std::shared_ptr<Entity> SceneManager::GetChildEntityByName(uint32_t entityID, std::string name)
+{
+	uint32_t mainID = entityID;
+	std::queue<uint32_t> ChildrenIDs;
+	ChildrenIDs.push(mainID);
+
+	while (!ChildrenIDs.empty())
+	{
+		uint32_t childID = ChildrenIDs.front();
+		ChildrenIDs.pop();
+
+		// GetEntity 호출을 최소화
+		auto currentEntity = GetEntity(childID);
+		auto idComponent = currentEntity->GetComponent<IDComponent>();
+		if ( idComponent->Name == name)
+		{
+			return currentEntity;
+		}
+
+		// 자식 엔티티의 ID를 큐에 추가
+		if (currentEntity->HasComponent<Children>())
+		{
+			auto children = currentEntity->GetComponent<Children>();
+			for (const auto& child : children->ChildrenID)
+			{
+				ChildrenIDs.push(child);
+			}
+		}
+	}
+	return nullptr;
+}
+
+void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
+{
+	if (!HasEntity(entityID))
+		return;
+
+	if (!Immidiate)
+		EventManager::GetInstance().ScheduleEvent("OnDestroyEntity", entityID);
+	else
+		OnDestroyEntity(entityID);
+}
+void SceneManager::OnDestroyEntity(std::any data)
+{
+	uint32_t mainID = std::any_cast<uint32_t>(data);
+	auto& entityMap = GetEntityMap();
+	std::list<uint32_t> DeleteEntityIDs;
+	DeleteEntityIDs.push_back(mainID);
+
+	std::vector <uint32_t> DeleteEntity;
+	// 엔티티가 부모 컴포넌트를 가지고 있는 경우, 부모와 자식 관계를 제거합니다.
+	if (HasComponent<Parent>(mainID))
+	{
+		auto parentEntity = GetEntity(GetComponent<Parent>(mainID)->ParentID);
+		auto parentsChildren = parentEntity->GetComponent<Children>();
+		RemoveParent(mainID);
+	}
+	while (!DeleteEntityIDs.empty())
+	{
+		uint32_t DeleteEntityID = DeleteEntityIDs.front();
+		DeleteEntity.push_back(DeleteEntityID);
+		auto entity = GetEntity(DeleteEntityID);
+		
+		DeleteEntityIDs.pop_front();
+		// 엔티티가 자식 컴포넌트를 가지고 있는 경우, 자식 엔티티도 삭제 리스트에 추가합니다.
+		if (entity)
+			if (entity->HasComponent<Children>())
+			{
+				auto children = entity->GetComponent<Children>();
+				DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
+			}
+	}
+
+	for (auto entityID : DeleteEntity)
+	{
+
+		// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
+		if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
+		{
+			EventManager::GetInstance().ImmediateEvent("OnFinish", entityID);
+			auto componentMap = entityIter->second->GetOwnedComponents();
+
+			// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
+			for (auto& sharedComp : componentMap)
+			{
+				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
+			}
+
+			// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
+			std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
+				return pair.first.first == entityID;
+				});
+
+			// 마지막으로, entityMap에서 엔티티를 제거합니다.
+			entityMap.erase(entityIter);
+
+		}
 
 	}
+
+
 }
 
 
 
+#pragma region Trash 
+
+#pragma endregion

@@ -1,0 +1,154 @@
+[
+    {
+        "EntityID": 161885233,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Player"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 165.89999389648438,
+                    "y": 13.099998474121094,
+                    "z": -577.7000122070313
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 0.9999999403953552,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Acceleration": 160.0,
+                "CapsuleControllerinfo": {
+                    "Info": {
+                        "LayerNumber": 3
+                    },
+                    "contactOffset": 0.0010000000474974513,
+                    "height": 10.0,
+                    "position": {
+                        "x": 165.89999389648438,
+                        "y": 13.099998474121094,
+                        "z": -577.7000122070313
+                    },
+                    "radius": 3.0,
+                    "slopeLimit": 0.30000001192092896,
+                    "stepOffset": 0.0
+                },
+                "ComponentID": 3341766812,
+                "Contollerinfo": {
+                    "LayerNumber": 3
+                },
+                "DynamicFriction": 1.0,
+                "GravityWeight": 9.8100004196167,
+                "JumpSpeed": 0.05000000074505806,
+                "JumpXZAcceleration": 0.20000000298023224,
+                "JumpXZDeceleration": 0.0,
+                "MaxSpeed": 40.0,
+                "StaticFriction": 20.0
+            },
+            {
+                "Accel": 0.0,
+                "AirControl": 0.0,
+                "ComponentID": 4183631247,
+                "FirPosition": "FirePos",
+                "HP": 0,
+                "HasGun": true,
+                "JumpFoce": 0.0,
+                "MaxJumpCount": 0,
+                "Maxspeed": 0.0,
+                "Sencitive": 0.20000000298023224
+            },
+            {
+                "ChildrenID": [
+                    2543192297
+                ],
+                "ComponentID": 188567026
+            }
+        ]
+    },
+    {
+        "EntityID": 2543192297,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "PlayerCamera"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 4.999999046325684,
+                    "z": 2.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 161885233
+            },
+            {
+                "ComponentID": 3575595261,
+                "FOV": 0.7850000262260437,
+                "FarZ": 1000.0,
+                "IsMain": true,
+                "NearZ": 1.0
+            },
+            {
+                "ChildrenID": [
+                    1106937618
+                ],
+                "ComponentID": 188567026
+            }
+        ]
+    },
+    {
+        "EntityID": 1106937618,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "FirePos"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 6.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2543192297
+            }
+        ]
+    }
+]

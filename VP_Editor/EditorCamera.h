@@ -14,7 +14,7 @@ public:
 	void CalculateCamera();
 	void CalculateCameraTransform();
 	void DoubleClicked(float deltatime);
-	void OnReSize(std::any hwnd);
+	void OnResize(std::any hwnd);
 
 	// IImGui을(를) 통해 상속됨
 	void ImGuiRender() override;

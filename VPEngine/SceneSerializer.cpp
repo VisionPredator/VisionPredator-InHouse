@@ -26,10 +26,6 @@ void SceneSerializer::OnSerializeScene(std::any data)
 	///Set FilePath
 	std::string folderName = "../Data/Scene";
 	std::string folderName2 = "../Data/Temp";
-	//std::string sceneName = m_SceneManager->GetSceneName();
-	//std::string fileExtension = ".json";
-	//std::string filePath = folderName + sceneName + fileExtension;
-	// Ensure directory exists before creating the file
 	std::filesystem::create_directories(folderName);
 	std::filesystem::create_directories(folderName2);
 	///엔티티들을 담을 공간!
@@ -105,15 +101,28 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 		// 엔티티 데이터 처리
 		if (sceneJson.contains("Entitys"))
 		{
-			auto count = sceneJson["Entitys"].size();
-
 			for (auto& entityJson : sceneJson["Entitys"])
 			{
-				EventManager::GetInstance().ImmediateEvent("OnDeSerializeEntity", entityJson);
-				GetSceneManager()->DeSerializeEntity(entityJson);
+				// Initialize entityID to an invalid state or default value
+				uint32_t entityID = static_cast<uint32_t>(-1);
+				if (entityJson.contains("EntityID")) {
+					entityID = entityJson["EntityID"].get<uint32_t>();
+				}
+
+				try {
+					// Attempt to deserialize the entity
+					GetSceneManager()->DeSerializeEntity(entityJson,true);
+				}
+				catch (const std::exception& e) 
+				{
+					VP_ASSERT(false, "EntityID: " + std::to_string(entityID) + " - JSON 처리 중 오류가 발생했습니다: " + std::string(e.what()));
+					throw;
+				}
 			}
+			EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 		}
 		GetSceneManager()->SetSceneName(SceneName);
+
 		// Deserialize and set physics information
 		if (sceneJson.contains("PhysicsInfo"))
 		{
@@ -122,10 +131,10 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 			GetSceneManager()->SetScenePhysic(ScenePhysicInfo);
 		}
 	}
-	catch (const std::exception&)
+	catch (const std::exception& e)
 	{
-		VP_ASSERT(false, "JSON 처리 중 오류가 발생했습니다: ");
+		VP_ASSERT(false, "전체 JSON 처리 중 오류가 발생했습니다: " + std::string(e.what()));
 	}
-	inputFile.close();
-}
+
+	}
 

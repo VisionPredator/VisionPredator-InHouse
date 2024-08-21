@@ -23,56 +23,76 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 
 	// Direct Input 인터페이스를 초기화 합니다.
 	HRESULT result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
+	//if (FAILED(result))
+	//{
+	//	return false;
+	//}
+	bool returnbool = true;
 	// 키보드의 Direct Input 인터페이스를 생성합니다
 	result = m_directInput->CreateDevice(GUID_SysKeyboard, &m_keyboard, NULL);
 	if (FAILED(result))
-		return false;
+	{
+		VP_ASSERT(false, "m_directInput->CreateDevice");
+		
+		returnbool = false;
+	}
+
 
 	// 데이터 형식을 설정하십시오. 이 경우 키보드이므로 사전 정의된 데이터 형식을 사용할 수 있습니다.
 	result = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
 	if (FAILED(result))
-		return false;
-
+	{
+		VP_ASSERT(false, "m_keyboard->SetDataFormat");
+		returnbool = false;
+	}
 	// 다른 프로그램과 공유하지 않도록 키보드의 협조 수준을 설정합니다
 	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
-		return false;
+	{
+		VP_ASSERT(false, "m_keyboard->SetCooperativeLevel");
+		returnbool = false;
+	}
 
-	// 키보드를 할당받는다
-	result = m_keyboard->Acquire();
-	if (FAILED(result))
-		return false;
 
 	// 마우스 Direct Input 인터페이스를 생성합니다.
 	result = m_directInput->CreateDevice(GUID_SysMouse, &m_mouse, NULL);
 	if (FAILED(result))
-		return false;
+	{
+		VP_ASSERT(false, " m_directInput->CreateDevice");
+		returnbool = false;
+	}
 
 	// 미리 정의 된 마우스 데이터 형식을 사용하여 마우스의 데이터 형식을 설정합니다.
 	result = m_mouse->SetDataFormat(&c_dfDIMouse);
 	if (FAILED(result))
-		return false;
-
+	{
+		VP_ASSERT(false, " m_mouse->SetDataFormat");
+		returnbool = false;
+	}
 	// 다른 프로그램과 공유 할 수 있도록 마우스의 협력 수준을 설정합니다.
 	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
 	{
-		return false;
+		VP_ASSERT(false, " m_mouse->SetCooperativeLevel");
+		returnbool = false;
 	}
 
+	// 키보드를 할당받는다
+	result = m_keyboard->Acquire();
+	if (FAILED(result))
+	{
+		VP_ASSERT(false, "m_keyboard->Acquire()");
+		returnbool = false;
+	}
 	// 마우스를 할당받는다
 	result = m_mouse->Acquire();
 	if (FAILED(result))
 	{
-		return false;
+		VP_ASSERT(false, "m_mouse->Acquire()");
+		returnbool = false;
 	}
 
-	return true;
+	return returnbool;
 }
 
 bool InputManager::Update()
@@ -135,35 +155,42 @@ void InputManager::ProcessMouseInput()
 
 void InputManager::CopyKeyStateToPrevious()
 {
-	memcpy(m_previousKeyboardState, m_keyboardState, sizeof(m_keyboardState));
+	std::copy(std::begin(m_keyboardState), std::end(m_keyboardState), std::begin(m_previousKeyboardState));
 }
 
 void InputManager::CopyMouseStateToPrevious()
 {
-	m_previousMouseState = m_mouseState;
+	m_previousMouseState = m_mouseState; // 이 경우는 동일합니다.
 }
 
-bool InputManager::GetKeyDown(KEYBOARDKEY inputkey) 
+
+bool InputManager::GetKeyDown(KEYBOARDKEY inputkey)
 {
 	int keyCode = static_cast<int>(inputkey);
 	bool result = (m_keyboardState[keyCode] & 0x80) && !(m_previousKeyboardState[keyCode] & 0x80);
+#ifdef _DEBUG
 	if (result)
 	{
-		std::cout << "GetKeyDown";
-
+		std::cout << "GetKeyDown" << std::endl;
 	}
+#endif
 	return result;
 }
+
+// 동일한 방법으로 다른 GetKey* 메서드도 수정
+
 
 bool InputManager::GetKeyUp(KEYBOARDKEY inputkey) 
 {
 	int keyCode = static_cast<int>(inputkey);
 	bool result = !(m_keyboardState[keyCode] & 0x80) && (m_previousKeyboardState[keyCode] & 0x80);
+#ifdef _DEBUG
 	if (result)
 	{
 		std::cout << "GetKeyUp";
 
 	}
+#endif
 	return result;
 }
 
@@ -171,10 +198,9 @@ bool InputManager::GetKey(KEYBOARDKEY inputkey)
 {
 	int keyCode = static_cast<int>(inputkey);
 	bool result = (m_keyboardState[keyCode] & 0x80) && (m_previousKeyboardState[keyCode] & 0x80);
-	if (result)
-	{
-		std::cout << "GetKeyHold";
-	}
+#ifdef _DEBUG
+
+#endif
 	return result;
 }
 
@@ -183,10 +209,12 @@ bool InputManager::GetKeyDown(MOUSEKEY inputkey)
 	// 마우스 버튼이 현재 눌려 있고, 이전 프레임에서는 눌려 있지 않다면 true 반환
 	bool result = (m_mouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80) &&
 		!(m_previousMouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80);
+#ifdef _DEBUG
 	if (result)
 	{
 		std::cout << "GetKeyDown";
 	}
+#endif
 	return result;
 }
 
@@ -195,10 +223,12 @@ bool InputManager::GetKeyUp(MOUSEKEY inputkey)
 	// 마우스 버튼이 현재 눌려 있지 않고, 이전 프레임에서는 눌려 있었다면 true 반환
 	bool result = !(m_mouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80) &&
 		(m_previousMouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80);
+#ifdef _DEBUG
 	if (result)
 	{
 		std::cout << "GetKeyUp";
 	}
+#endif
 	return result;
 }
 
@@ -207,10 +237,9 @@ bool InputManager::GetKey(MOUSEKEY inputkey)
 	// 마우스 버튼이 현재와 이전 프레임 모두에서 눌려 있다면 true 반환
 	bool result = (m_mouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80) &&
 		(m_previousMouseState.rgbButtons[static_cast<int>(inputkey)] & 0x80);
-	if (result)
-	{
-		std::cout << "GetKeyHold";
-	}
+#ifdef _DEBUG
+
+#endif
 	return result;
 }
 
@@ -224,43 +253,50 @@ bool InputManager::IsEscapePressed()
 
 	return false;
 }
+
 bool InputManager::ReadKeyboard()
 {
-	// 키보드 디바이스를 얻는다.
 	HRESULT result = m_keyboard->GetDeviceState(sizeof(m_keyboardState), (LPVOID)&m_keyboardState);
 	if (FAILED(result))
 	{
-		// 키보드가 포커스를 잃었거나 획득되지 않은 경우 컨트롤을 다시 가져 온다
-		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
+		// 실패한 경우 로그 기록 (디버깅 용도로만 사용)
+		//std::cerr << "Failed to get keyboard state. HRESULT: " << result << std::endl;
+
+		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
 		{
-			m_keyboard->Acquire();
+			result = m_keyboard->Acquire();
+			if (FAILED(result))
+			{
+				//std::cerr << "Failed to acquire keyboard. HRESULT: " << result << std::endl;
+				return false;
+			}
 		}
 		else
-		{
 			return false;
-		}
 	}
-
 	return true;
 }
 
 bool InputManager::ReadMouse()
 {
-	// 마우스 디바이스를 얻는다.
 	HRESULT result = m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
 	if (FAILED(result))
 	{
-		// 마우스가 포커스를 잃었거나 획득되지 않은 경우 컨트롤을 다시 가져 온다
-		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
+		// 실패한 경우 로그 기록 (디버깅 용도로만 사용)
+		//std::cerr << "Failed to get mouse state. HRESULT: " << result << std::endl;
+
+		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
 		{
-			m_mouse->Acquire();
+			result = m_mouse->Acquire();
+			if (FAILED(result))
+			{
+				//std::cerr << "Failed to acquire mouse. HRESULT: " << result << std::endl;
+				return false;
+			}
 		}
 		else
-		{
 			return false;
-		}
 	}
-
 	return true;
 }
 

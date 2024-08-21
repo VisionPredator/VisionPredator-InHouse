@@ -17,6 +17,7 @@ float WrapAngle(float angle)
 
 EditorCamera::EditorCamera(std::shared_ptr<SceneManager> sceneManager) :m_SceneManager{ sceneManager }
 {
+	EventManager::GetInstance().Subscribe("OnResize", CreateSubscriber(&EditorCamera::OnResize));
 	Initialize();
 }
 
@@ -88,8 +89,8 @@ void EditorCamera::CameraRotation()
 		float yaw = deltaCurposx * m_sensitivity;
 		float pitch = deltaCurposy * m_sensitivity;
 
-		m_Rotation.y += yaw;
 		m_Rotation.x += pitch;
+		m_Rotation.y += yaw;
 
 		m_Rotation.x = std::clamp(m_Rotation.x, -m_maxPitch, m_maxPitch);
 	}
@@ -152,9 +153,12 @@ void EditorCamera::CalculateCameraTransform()
 		VPMath::Matrix::CreateFromQuaternion(m_Quaternion) *
 		VPMath::Matrix::CreateTranslation(m_Location);
 
-	m_FrontVector = -m_Transform.Forward();
+	m_FrontVector = m_Transform.Forward_L();
+	m_FrontVector.Normalize();
 	m_RightVector = m_Transform.Right();
+	m_RightVector.Normalize();
 	m_UpVector = m_Transform.Up();
+	m_UpVector.Normalize();
 
 }
 
@@ -184,7 +188,7 @@ void EditorCamera::DoubleClicked(float deltatime)
 	}
 }
 
-void EditorCamera::OnReSize(std::any hwnd)
+void EditorCamera::OnResize(std::any hwnd)
 {
 	auto tempHwnd = std::any_cast<HWND>(hwnd);
 	RECT tempsize{};

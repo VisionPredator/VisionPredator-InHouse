@@ -11,7 +11,7 @@
 #define COMPITER(ClassName) CompIter<ClassName>(m_SceneManager.lock())
 
 #define COMPLOOP(ClassName)\
-for(auto& comp : COMPITER(ClassName))
+for(ClassName& comp : COMPITER(ClassName))
 
 ///쓰레드를 위한 매크로
 #define THREAD_COMPONENTS(System_Name, ComponentType, Function)                                                                   \
