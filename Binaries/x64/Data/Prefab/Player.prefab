@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 2083831538,
+        "EntityID": 161885233,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -9,9 +9,9 @@
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": 0.0,
-                    "y": 5.163610458374023,
-                    "z": 0.0
+                    "x": 165.89999389648438,
+                    "y": 13.099998474121094,
+                    "z": -577.7000122070313
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
@@ -26,19 +26,19 @@
                 }
             },
             {
-                "Acceleration": 100.0,
+                "Acceleration": 160.0,
                 "CapsuleControllerinfo": {
                     "Info": {
                         "LayerNumber": 3
                     },
                     "contactOffset": 0.0010000000474974513,
-                    "height": 4.0,
+                    "height": 10.0,
                     "position": {
-                        "x": 0.0,
-                        "y": 5.163610458374023,
-                        "z": 0.0
+                        "x": 165.89999389648438,
+                        "y": 13.099998474121094,
+                        "z": -577.7000122070313
                     },
-                    "radius": 2.0,
+                    "radius": 3.0,
                     "slopeLimit": 0.30000001192092896,
                     "stepOffset": 0.0
                 },
@@ -47,12 +47,12 @@
                     "LayerNumber": 3
                 },
                 "DynamicFriction": 1.0,
-                "GravityWeight": 2.0,
+                "GravityWeight": 9.8100004196167,
                 "JumpSpeed": 0.05000000074505806,
                 "JumpXZAcceleration": 0.20000000298023224,
                 "JumpXZDeceleration": 0.0,
-                "MaxSpeed": 20.0,
-                "StaticFriction": 10.0
+                "MaxSpeed": 40.0,
+                "StaticFriction": 20.0
             },
             {
                 "Accel": 0.0,
@@ -64,18 +64,18 @@
                 "JumpFoce": 0.0,
                 "MaxJumpCount": 0,
                 "Maxspeed": 0.0,
-                "Sencitive": 0.10000000149011612
+                "Sencitive": 0.20000000298023224
             },
             {
                 "ChildrenID": [
-                    940613800
+                    2543192297
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 940613800,
+        "EntityID": 2543192297,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -85,7 +85,7 @@
                 "ComponentID": 3400599862,
                 "Local_Location": {
                     "x": 0.0,
-                    "y": 2.0,
+                    "y": 4.999999046325684,
                     "z": 2.0
                 },
                 "Local_Quaternion": {
@@ -102,7 +102,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 2083831538
+                "ParentID": 161885233
             },
             {
                 "ComponentID": 3575595261,
@@ -113,14 +113,14 @@
             },
             {
                 "ChildrenID": [
-                    785002603
+                    1106937618
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 785002603,
+        "EntityID": 1106937618,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -131,7 +131,7 @@
                 "Local_Location": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 1.0
+                    "z": 6.0
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
@@ -147,7 +147,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 940613800
+                "ParentID": 2543192297
             }
         ]
     }

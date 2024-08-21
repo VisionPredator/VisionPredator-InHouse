@@ -154,8 +154,11 @@ void EditorCamera::CalculateCameraTransform()
 		VPMath::Matrix::CreateTranslation(m_Location);
 
 	m_FrontVector = m_Transform.Forward_L();
+	m_FrontVector.Normalize();
 	m_RightVector = m_Transform.Right();
+	m_RightVector.Normalize();
 	m_UpVector = m_Transform.Up();
+	m_UpVector.Normalize();
 
 }
 

@@ -1,17 +1,32 @@
 [
     {
-        "EntityID": 49147512,
+        "EntityID": 154418620,
         "Component": [
             {
                 "ComponentID": 1365953231,
                 "Name": "E"
             },
             {
+                "ComponentID": 3774279003,
+                "FBX": [],
+                "FBXFilter": 3,
+                "LightMapIndex": 0.0,
+                "LightMapOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "LightMapScale": 0.0,
+                "LightMapTiling": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": -21.0,
-                    "y": 11.342098236083984,
-                    "z": 0.0
+                    "x": 165.89999389648438,
+                    "y": 13.100000381469727,
+                    "z": -577.7000122070313
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
@@ -29,16 +44,16 @@
                 "Acceleration": 1.0,
                 "CapsuleControllerinfo": {
                     "Info": {
-                        "LayerNumber": 5
+                        "LayerNumber": 0
                     },
                     "contactOffset": 0.0010000000474974513,
-                    "height": 4.0,
+                    "height": 10.0,
                     "position": {
-                        "x": -21.0,
-                        "y": 11.342098236083984,
+                        "x": 0.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
-                    "radius": 2.0,
+                    "radius": 3.0,
                     "slopeLimit": 0.30000001192092896,
                     "stepOffset": 0.0
                 },
@@ -47,71 +62,12 @@
                     "LayerNumber": 5
                 },
                 "DynamicFriction": 0.10000000149011612,
-                "GravityWeight": 9.8100004196167,
+                "GravityWeight": 0.20000000298023224,
                 "JumpSpeed": 0.05000000074505806,
                 "JumpXZAcceleration": 10.0,
                 "JumpXZDeceleration": 0.10000000149011612,
                 "MaxSpeed": 0.02500000037252903,
                 "StaticFriction": 0.4000000059604645
-            },
-            {
-                "ChildrenID": [
-                    1182063779
-                ],
-                "ComponentID": 188567026
-            }
-        ]
-    },
-    {
-        "EntityID": 1182063779,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Mesh"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": -4.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 5.0,
-                    "y": 5.0,
-                    "z": 5.0
-                }
-            },
-            {
-                "ComponentID": 3774279003,
-                "FBX": [
-                    70,
-                    108,
-                    97,
-                    105,
-                    114,
-                    46,
-                    102,
-                    98,
-                    120
-                ],
-                "FBXFilter": 3,
-                "LightMapIndex": 0.0,
-                "LightMapOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "LightMapScale": 0.0
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 49147512
             }
         ]
     }

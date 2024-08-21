@@ -817,35 +817,29 @@ void SceneManager::OnDestroyEntity(std::any data)
 			}
 	}
 
-	for (auto entityid : DeleteEntity)
+	for (auto entityID : DeleteEntity)
 	{
 
 		// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
-		if (auto entityIter = entityMap.find(entityid); entityIter != entityMap.end())
+		if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
 		{
-			EventManager::GetInstance().ImmediateEvent("OnFinish", entityid);
-			auto& componentMap = m_CurrentScene->m_ComponentPool;
+			EventManager::GetInstance().ImmediateEvent("OnFinish", entityID);
+			auto componentMap = entityIter->second->GetOwnedComponents();
 
 			// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
-			if (auto compIter = componentMap.find(entityid); compIter != componentMap.end())
+			for (auto& sharedComp : componentMap)
 			{
-				for (auto& weakComp : compIter->second)
-				{
-					if (auto sharedComp = weakComp.lock())
-					{
-						// 컴포넌트가 해제된다는 이벤트를 즉시 발생시킵니다.
-
-						EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
-					}
-				}
-				componentMap.erase(compIter); // 엔티티와 연관된 모든 컴포넌트를 제거합니다.
+				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
 			}
+
 			// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
-			std::erase_if(m_ComponentCache, [entityid](const auto& pair) {
-				return pair.first.first == entityid;
+			std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
+				return pair.first.first == entityID;
 				});
+
 			// 마지막으로, entityMap에서 엔티티를 제거합니다.
 			entityMap.erase(entityIter);
+
 		}
 
 	}

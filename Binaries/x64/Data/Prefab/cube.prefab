@@ -1,11 +1,7 @@
 [
     {
-        "EntityID": 55154212,
+        "EntityID": 1420969507,
         "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "cube"
-            },
             {
                 "BoxInfo": {
                     "Extent": {
@@ -50,6 +46,10 @@
                 }
             },
             {
+                "ComponentID": 1365953231,
+                "Name": "cube"
+            },
+            {
                 "ComponentID": 3400599862,
                 "Local_Location": {
                     "x": 0.0,
@@ -76,6 +76,19 @@
             {
                 "ComponentID": 195544957,
                 "LifeTime": 2.0
+            },
+            {
+                "ComponentID": 4075385036,
+                "FBXFilter": 1,
+                "TextureName": [],
+                "UseTexture": false,
+                "color": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "pass": 16
             }
         ]
     }
