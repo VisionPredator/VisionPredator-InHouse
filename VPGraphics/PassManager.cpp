@@ -73,7 +73,7 @@ void PassManager::Render()
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
 
-	//m_Passes[PassState::Forward]->Render();		// 필요 없는 패스
+	m_Passes[PassState::Forward]->Render();		// 필요 없는 패스
 	//DrawGBuffer();		// 필요 없는 패스
 
 	m_ParticlePass->Render();
