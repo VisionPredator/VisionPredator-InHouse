@@ -258,12 +258,15 @@ void DeferredPass::Geometry()
 						data.lightmapdata.z = curData->offset.y;
 						data.lightmapdata.w = 1; //curData->scale;
 						data.lightmaptiling = curData->tiling;
+						if (data.lightmaptiling.x != 0 || data.lightmaptiling.y != 0)
+						{
+							data.useNEOL.w = 1;
+						}
 						curMaterialData->Update(data);
 
-						/*
-						std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>().lock();
-						Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
-						*/
+						std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
+						Device->Context()->VSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
+						
 
 
 						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());

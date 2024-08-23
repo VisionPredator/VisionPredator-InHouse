@@ -33,7 +33,7 @@ cbuffer Transform : register(b1)
 cbuffer Material : register(b2)
 {
     float4 AMRO;
-    float4 useNEO;
+    float4 useNEOL; //normal, Emissive, opacity, LightMap
     float4 albedo;
     float metalness;
     float roughness;
