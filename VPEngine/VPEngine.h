@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "../VPGraphics/IGraphics.h"
 #include "EventSubscriber.h"
+#include "../SoundEngine/ISound.h"
 
 namespace Physic
 {
@@ -35,7 +36,7 @@ protected:
 	TimeManager* m_TimeManager;
 	std::shared_ptr<SystemManager> m_SystemManager;
 	std::shared_ptr<SceneManager> m_SceneManager;
-	
+	std::shared_ptr<Sound::ISound> m_SoundEngine;
 	float m_DeltaTime;
 
 	Physic::IPhysx* m_PhysicEngine;

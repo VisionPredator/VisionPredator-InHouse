@@ -184,7 +184,9 @@
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="Sprite2DComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>    <ClInclude Include="LifeTimeComponent.h">
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeTimeComponent.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="LifeTimeSystem.h">
@@ -192,7 +194,11 @@
     </ClInclude>
     <ClInclude Include="LogicSystems.h">
       <Filter>Header</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
@@ -293,13 +299,13 @@
     <ClCompile Include="LifeTimeSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
       <Filter>자체 엔진\리소스 파일</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

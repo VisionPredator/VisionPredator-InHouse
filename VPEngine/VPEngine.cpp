@@ -9,6 +9,8 @@
 #include "../VPGraphics/GraphicsEngine.h"
 #include "../PhysxEngine/PhysxEngine.h"
 #include "../PhysxEngine/IPhysx.h"
+#include "../SoundEngine/SoundEngine.h"
+#include "../SoundEngine/ISound.h"
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
@@ -56,7 +58,10 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_PhysicEngine = new PhysxEngine;
 	m_SceneManager =std::make_shared< SceneManager>();
 	m_SystemManager = std::make_shared<SystemManager>();
+	m_SoundEngine = std::make_shared<SoundEngine>();
 	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+	m_SoundEngine->Initialize();
+	m_SoundEngine->LoadAllSound();
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();

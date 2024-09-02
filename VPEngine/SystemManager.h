@@ -25,6 +25,7 @@
 		void RenderUpdate(float deltatime);
 		void LateUpdate(float deltatime);
 		void PhysicUpdatable(float deltatime);
+		void SoundUpdate(float deltatime);
 		template <typename T>
 		bool IsSystemAdded() const
 		{
@@ -81,6 +82,12 @@
 			{
 				m_Contactable.push_back(system);
 			}
+			if constexpr (std::is_base_of_v<ISoundable, T>)
+			{
+				m_Soundable.push_back(system);
+				system->SetSoundEngine(m_SoundEngine);
+
+			}
 
 			return static_cast<T*>(system);
 		}
@@ -134,6 +141,12 @@
 				if (it != m_Contactable.end())
 					m_Contactable.erase(it);
 			}
+			if constexpr (std::is_base_of_v<ISoundable, T>)
+			{
+				auto it = std::find_if(m_Soundable.begin(), m_Soundable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_Soundable.end())
+					m_Soundable.erase(it);
+			}
 
 
 			// Optional: Delete system object
@@ -183,6 +196,7 @@
 		std::weak_ptr<SceneManager>m_SceneManager;
 		Physic::IPhysx* m_PhysicEngine=nullptr;
 		Graphics::Interface* m_Graphics = nullptr;
+		Sound::ISound* m_SoundEngine = nullptr;
 
 		std::vector<std::unique_ptr<System>> m_Systems;
 		std::vector<IPhysicable*> m_PhysicUpdatable;
@@ -192,5 +206,6 @@
 		std::vector<IStartable*> m_Startables;
 		std::vector<ILateUpdatable*> m_LateUpdatable;
 		std::vector<IContactable*> m_Contactable;
+		std::vector<ISoundable*> m_Soundable;
 	};
 
