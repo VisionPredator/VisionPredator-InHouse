@@ -194,7 +194,7 @@
     <ClInclude Include="FinalPass.h" />
     <ClInclude Include="GeoMetryPass.h" />
     <ClInclude Include="GeometryShader.h" />
-    <ClInclude Include="ForwardPass.h" />
+    <ClInclude Include="TransparencyPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
     <ClInclude Include="ImageObject.h" />
@@ -261,7 +261,7 @@
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="FinalPass.cpp" />
-    <ClCompile Include="ForwardPass.cpp" />
+    <ClCompile Include="TransparencyPass.cpp" />
     <ClCompile Include="GeoMetryPass.cpp" />
     <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />

@@ -1,10 +1,12 @@
 #pragma once
 #include "RenderPass.h"
 
+class LightManager;
+
 class DeferredPass : public RenderPass
 {
 public:
-	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
+	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager);
 	~DeferredPass();
 	virtual void Render() override;
 	void OnResize() override;
@@ -28,6 +30,8 @@ private:
 		LightMap,
 
 	};
+private:
+	std::weak_ptr<LightManager> m_LightManager;
 private:
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 

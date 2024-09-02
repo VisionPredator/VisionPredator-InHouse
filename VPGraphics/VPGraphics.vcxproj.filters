@@ -204,7 +204,7 @@
     <ClInclude Include="BlendState.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardPass.h">
+    <ClInclude Include="TransparencyPass.h">
       <Filter>Pass\Forward</Filter>
     </ClInclude>
     <ClInclude Include="DebugPass.h">
@@ -339,7 +339,7 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPass.cpp">
+    <ClCompile Include="TransparencyPass.cpp">
       <Filter>Pass\Forward</Filter>
     </ClCompile>
     <ClCompile Include="BlendState.cpp">

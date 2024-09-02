@@ -13,10 +13,13 @@
 #include "Slot.h"
 #include "StaticData.h"
 #include "DebugDrawManager.h"
+#include "LightManager.h"
 
 
-DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
+DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager) : RenderPass(device, manager)
 {
+	m_LightManager = lightmanager;
+
 	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
 	m_AlbedoRTV = manager->Get<RenderTargetView>(L"Albedo").lock();
@@ -176,9 +179,8 @@ void DeferredPass::Geometry()
 
 		//어떤 라이트맵을 쓸건지 오브젝트에따라 다를 수 있음 -인덱스로 추적해야할듯
 		//임시로 일단 하드코딩
-		std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
-		//std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"indirect_Lightmap-0_comp_light.png").lock();
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
+		//std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
+		
 
 		if (curModel != nullptr)
 		{
@@ -264,10 +266,8 @@ void DeferredPass::Geometry()
 						}
 						curMaterialData->Update(data);
 
-						std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
-						Device->Context()->VSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
-						
-
+						std::shared_ptr<ShaderResourceView> lightmap = m_LightManager.lock()->GetLightMap(curData->lightmapindex).lock();
+						Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
 
 						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 

@@ -6,6 +6,7 @@
 void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 {
 	m_ResourceManager = manager;
+	m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png"));
 }
 
 void LightManager::EraseData(uint32_t EntityID, LightType type)
@@ -145,4 +146,15 @@ void LightManager::Update(std::unordered_map<uint32_t, LightData>& usinglight)
 
 	std::shared_ptr<ConstantBuffer<LightArray>> cbuffer = m_ResourceManager.lock()->Get<ConstantBuffer<LightArray>>(L"LightArray").lock();
 	cbuffer->Update(m_BufferStruct);
+}
+
+std::weak_ptr<ShaderResourceView> LightManager::GetLightMap(int index)
+{
+
+	if (m_LightMap[index].lock() != nullptr)
+	{
+		return m_LightMap[index];
+	}
+
+	return {};
 }

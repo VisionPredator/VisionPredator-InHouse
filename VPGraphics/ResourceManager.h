@@ -52,7 +52,6 @@ public:
 	template<typename T>
 	void Erase(const std::wstring path);
 
-
 	void Initialize(std::weak_ptr<Device> device);
 	void OnResize(RECT& wndsize);
 

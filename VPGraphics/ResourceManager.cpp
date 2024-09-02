@@ -176,7 +176,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	//LightMap
 	{
 		Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
-		Create<ShaderResourceView>(L"indirect_Lightmap-0_comp_light.png", L"indirect_Lightmap-0_comp_light.png");
 	}
 }
 

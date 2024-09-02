@@ -37,7 +37,7 @@ PassManager::~PassManager()
 }
 
 void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
-	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager)
+	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager)
 {
 	m_Device = device;
 	m_ResourceManager = resource;
@@ -46,8 +46,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIManager = uiManager;
 
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Forward, std::make_shared<ForwardPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock(),lightmanager)));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Forward, std::make_shared<TransparencyPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::GeoMetry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
@@ -73,7 +73,7 @@ void PassManager::Render()
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
 
-	m_Passes[PassState::Forward]->Render();		// 필요 없는 패스
+	m_Passes[PassState::Forward]->Render();		//반투명 처리 패스
 	//DrawGBuffer();		// 필요 없는 패스
 
 	m_ParticlePass->Render();
