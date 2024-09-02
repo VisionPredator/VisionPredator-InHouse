@@ -177,11 +177,6 @@ void DeferredPass::Geometry()
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
-		//어떤 라이트맵을 쓸건지 오브젝트에따라 다를 수 있음 -인덱스로 추적해야할듯
-		//임시로 일단 하드코딩
-		//std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
-		
-
 		if (curModel != nullptr)
 		{
 			for (const auto& mesh : curModel->m_Meshes)
@@ -189,7 +184,6 @@ void DeferredPass::Geometry()
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				//if (!mesh->IsSkinned())
 				if (curData->Filter == MeshFilter::Static)
 				{
 

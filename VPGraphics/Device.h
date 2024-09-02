@@ -36,7 +36,6 @@ public:
 	void BindMeshBuffer(std::shared_ptr<Mesh> mesh);
 	void BindVS(std::shared_ptr<VertexShader> vs);
 
-
 	bool ableMSAA;
 	UINT MSAAQuality;
 
