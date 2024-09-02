@@ -15,9 +15,9 @@ public:
 	virtual void Update() = 0;
 	virtual void LoadAllSound() = 0;
 
-	virtual void Load2DSound(const std::string& path, const std::string& key, SoundType type) = 0;
+	//virtual void Load2DSound(const std::string& path, const std::string& key, SoundType type) = 0;
 
-	virtual void Load3DSound(const std::string& path, const std::string& key, SoundType type) = 0;
+	//virtual void Load3DSound(const std::string& path, const std::string& key, SoundType type) = 0;
 
 	virtual void Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose = {}) = 0;
 

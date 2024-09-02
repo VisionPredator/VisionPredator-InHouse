@@ -8,10 +8,11 @@ public:
     // ISound을(를) 통해 상속됨
     void Initialize() override;
     void Update() override;
+    void LoadAllSound() override;
     void All3DSound();
     void All2DSound();
-    void Load2DSound(const std::string& path, const std::string& key, SoundType type) override;
-    void Load3DSound(const std::string& path, const std::string& key, SoundType type) override;
+    void Load2DSound(const std::string& path, const std::string& key, SoundType type);
+    void Load3DSound(const std::string& path, const std::string& key, SoundType type);
     void Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose) override;
     void Stop(const uint32_t& id, const std::string& soundKey) override;
     void SetListenerPosition(VPMath::Vector3 pos , VPMath::Vector3 Up, VPMath::Vector3 Forward) override;
@@ -31,7 +32,5 @@ private:
     FMOD_VECTOR m_ListenerUp = { 0.0f, 1.0f, 0.0f };
     bool IsMusicLoaded = false;
 
-    // ISound을(를) 통해 상속됨
-    void LoadAllSound() override;
 };
 
