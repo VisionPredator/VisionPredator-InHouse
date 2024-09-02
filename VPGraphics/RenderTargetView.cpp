@@ -61,6 +61,32 @@ void RenderTargetView::OnResize(const std::shared_ptr<Device>& device, const Ren
 
 			break;
 		}
+		case RenderTargetViewType::ObjectMask:
+		{
+			D3D11_TEXTURE2D_DESC textureDesc = {};
+			textureDesc.Width = width;
+			textureDesc.Height = height;
+			textureDesc.MipLevels = 1;
+			textureDesc.ArraySize = 1;
+			textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			textureDesc.SampleDesc.Count = 1;
+			textureDesc.SampleDesc.Quality = 0;
+			textureDesc.Usage = D3D11_USAGE_DEFAULT;
+			textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+			textureDesc.CPUAccessFlags = 0;
+			textureDesc.MiscFlags = 0;
+
+			Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+			HR_CHECK(device->Get()->CreateTexture2D(&textureDesc, nullptr, &texture));
+
+			D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+			rtvDesc.Format = textureDesc.Format;
+			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+			rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
+			HR_CHECK(device->Get()->CreateRenderTargetView(texture.Get(), &rtvDesc, m_RTV.GetAddressOf()));
+
+			break;
+		}
 		default:
 			break;
 	}

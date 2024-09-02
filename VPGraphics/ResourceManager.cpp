@@ -80,12 +80,25 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 		Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
 	}
 
+#pragma region TODAY
 	//VS
 	{
-		Create<VertexShader>(L"Base", VERTEXFILTER::STATIC, L"Mesh");
-		Create<VertexShader>(L"Skinning", VERTEXFILTER::SKINNING, L"Mesh");
-		Create<VertexShader>(L"Quad", VERTEXFILTER::QUAD, L"Quad");
+		D3D_SHADER_MACRO macro[] =
+		{
+			{"SKINNING",""}, // 매크로 이름과 값을 설정
+			{nullptr, nullptr}    // 배열의 끝을 나타내기 위해 nullptr로 끝낸다.
+		};
+
+		Create<VertexShader>(L"Base", L"MeshVS", "main");
+		//Create<VertexShader>(L"Base", VERTEXFILTER::STATIC, L"Mesh");
+
+		Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
+		//Create<VertexShader>(L"Skinning", VERTEXFILTER::SKINNING, L"Mesh");
+
+		Create<VertexShader>(L"Quad", L"QuadVS", "main");
+		//Create<VertexShader>(L"Quad", VERTEXFILTER::QUAD, L"Quad");
 	}
+#pragma endregion TODAY
 
 	//PS
 	{

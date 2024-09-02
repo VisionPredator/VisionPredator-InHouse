@@ -8,7 +8,7 @@ enum class RenderTargetViewType
 {
 	Default,	// backbuffer
 	OffScreen,	// for deferred rendering
-
+	ObjectMask,
 
 	// 이후 HDR 용 RTV도 필요할 것이다.
 

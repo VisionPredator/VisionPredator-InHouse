@@ -36,6 +36,8 @@ public:
 	void BindMeshBuffer(std::shared_ptr<Mesh> mesh);
 	void BindVS(std::shared_ptr<VertexShader> vs);
 
+	uint32_t GetWndWidth() const { return m_wndSize.right - m_wndSize.left;	}
+	uint32_t GetWndHeight() const { return m_wndSize.bottom - m_wndSize.top; }
 
 	bool ableMSAA;
 	UINT MSAAQuality;
