@@ -70,6 +70,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater",CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
+	m_SoundEngine->Play(0, "MainTitle_BGM", 1, {});
 }
 
 VPEngine::~VPEngine()
@@ -93,6 +94,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<RenderSystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
 	m_SystemManager->AddSystem<LifeTimeSystem>();
+	m_SystemManager->AddSystem<SoundSystem>();
 
 }
 void VPEngine::OnAddSystemLater(std::any)
@@ -162,6 +164,7 @@ void VPEngine::Update()
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
+	m_SystemManager->SoundUpdate(m_DeltaTime);
 
 	if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
 	{

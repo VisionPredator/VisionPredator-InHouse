@@ -5,3 +5,6 @@
 #include <unordered_map>
 
 #include <filesystem>
+
+#include "VisPredMath.h"
+namespace VPMath = VisPred::SimpleMath;

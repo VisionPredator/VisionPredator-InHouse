@@ -12,16 +12,16 @@ public:
     void All2DSound();
     void Load2DSound(const std::string& path, const std::string& key, SoundType type) override;
     void Load3DSound(const std::string& path, const std::string& key, SoundType type) override;
-    void Play(const uint32_t& id, const std::string& key, float volume) override;
+    void Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose) override;
     void Stop(const uint32_t& id, const std::string& soundKey) override;
-    void SetListenerPosition(float* pos, float* vel) override;
+    void SetListenerPosition(VPMath::Vector3 pos , VPMath::Vector3 Up, VPMath::Vector3 Forward) override;
     void CleanChannel() override;
 private:
     std::string m_SoundPath;
 
     FMOD::System* m_System;
     std::unordered_map<std::string, FMOD::Sound*> m_SoundMap;
-    std::unordered_map<uint32_t, FMOD::Channel*> m_ChannelMap;
+    std::unordered_map<uint32_t, FMOD::Channel*> m_EntityChannels;
 
     float m_MasterVolume;
 

@@ -20,4 +20,5 @@
 
 #include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
+
 using namespace entt::literals;

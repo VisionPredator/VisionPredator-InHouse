@@ -19,10 +19,10 @@ public:
 
 	virtual void Load3DSound(const std::string& path, const std::string& key, SoundType type) = 0;
 
-	virtual void Play(const uint32_t& id, const std::string& key, float volume = 1.0f) = 0;
+	virtual void Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose = {}) = 0;
 
 	virtual void Stop(const uint32_t& id, const std::string& soundKey) = 0;
-	virtual void SetListenerPosition(float* pos, float* vel) = 0;
+	virtual void SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, VPMath::Vector3 Forward) = 0;
 	virtual void CleanChannel() = 0;
 
 

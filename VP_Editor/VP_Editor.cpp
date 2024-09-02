@@ -55,13 +55,13 @@ void VP_Editor::Update()
         //EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
-
         if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
         {
             std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
             SetWindowTextW(m_hWnd, newname.c_str());
         }
-
+        m_SoundEngine->SetListenerPosition(m_editorcamera->GetPose(), m_editorcamera->GetUp(), m_editorcamera->GetForward());
+        m_SoundEngine->Update();
 	}
 	else
 	{

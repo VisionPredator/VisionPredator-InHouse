@@ -21,6 +21,8 @@ void CameraSystem::LateUpdate(float deltaTime)
 
 		CameraCalculation(cameracomp);
 		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
+		const TransformComponent& transformcomp=  *cameracomp.GetComponent<TransformComponent>();
+		m_SoundEngine->SetListenerPosition(transformcomp.World_Location,transformcomp.UpVector,transformcomp.FrontVector);
 
 		///그런다음 for문 종료하기!
 		break;
@@ -43,6 +45,11 @@ void CameraSystem::OnResize(std::any hwnd)
 
 	m_Width = tempsize.right- tempsize.left;
 	m_Height = tempsize.bottom- tempsize.top;
+}
+
+void CameraSystem::SoundUpdate(float deltaTime)
+{
+
 }
 
 

@@ -5,8 +5,8 @@
 void SoundEngine::Initialize()
 {
 	// 사운드 파일 경로 설정
-	m_SoundPath = std::filesystem::current_path().parent_path().string();
-	m_SoundPath += "/Data/Sound/";
+	//m_SoundPath = std::filesystem::current_path().parent_path().string();
+	//m_SoundPath += "/Data/Sound/";
 
 	// FMOD 시스템 생성
 	FMOD::System_Create(&m_System);
@@ -31,6 +31,8 @@ void SoundEngine::Initialize()
 }
 void SoundEngine::Update()
 {
+	m_System->update();
+
 }
 
 
@@ -102,7 +104,7 @@ void SoundEngine::Load2DSound(const std::string& path, const std::string& key, S
 	switch (type)
 	{
 	case SoundType::BGM:
-		m_System->createStream(path.c_str(), FMOD_LOOP_NORMAL, nullptr, &sound);
+		m_System->createStream(path.c_str(), FMOD_LOOP_NORMAL | FMOD_3D, nullptr, &sound);
 		break;
 	case SoundType::EFFECT:
 		m_System->createSound(path.c_str(), FMOD_DEFAULT, nullptr, &sound);
@@ -119,39 +121,105 @@ void SoundEngine::Load3DSound(const std::string& path, const std::string& key, S
 		return;
 
 	FMOD::Sound* sound = nullptr;
-
-	std::string fullPath = m_SoundPath + path;
-
 	/// TODO : 이것도 모드 바꿔서 들고올수 있는데 고민하기
 	switch (type)
 	{
 	case SoundType::BGM:
-		m_System->createStream(fullPath.c_str(), FMOD_LOOP_NORMAL | FMOD_3D, nullptr, &sound);
+		m_System->createStream(path.c_str(), FMOD_LOOP_NORMAL | FMOD_3D, nullptr, &sound);
 		break;
 	case SoundType::EFFECT:
-		m_System->createSound(fullPath.c_str(), FMOD_DEFAULT | FMOD_3D, nullptr, &sound);
+		m_System->createSound(path.c_str(), FMOD_DEFAULT | FMOD_3D, nullptr, &sound);
 		break;
 	}
 
 	m_SoundMap.insert(std::make_pair(key, sound));
 }
 
-void SoundEngine::Play(const uint32_t& id, const std::string& key, float volume)
+void SoundEngine::Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose)
 {
 	// 사운드 맵에서 사운드를 찾습니다.
 	auto soundIter = m_SoundMap.find(key);
 	if (soundIter == m_SoundMap.end())
 		return;
-	FMOD::Sound* sound = soundIter->second;
-}
 
+	FMOD::Sound* sound = soundIter->second;
+
+	// 해당 엔티티의 채널이 이미 존재하는지 확인합니다.
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end())
+	{
+		FMOD::Channel* existingChannel = channelIter->second;
+		existingChannel->stop();  // 기존 채널을 정지합니다.
+	}
+
+	// 새로운 채널을 생성하고 사운드를 재생합니다.
+	FMOD::Channel* channel = nullptr;
+	m_System->playSound(sound, nullptr, true, &channel);
+
+	// 사운드의 반복 여부를 설정합니다.
+	FMOD_MODE mode;
+	if (sound->getMode(&mode) == FMOD_OK)
+	{
+		if ((mode & FMOD_LOOP_NORMAL) != 0) {
+			channel->setMode(FMOD_LOOP_NORMAL); // 반복 모드 설정
+		}
+		else {
+			channel->setMode(FMOD_LOOP_OFF); // 반복 없음
+		}
+	}
+
+	// 볼륨 설정
+	channel->setVolume(volume);
+
+	// 3D 사운드일 경우 위치를 설정합니다.
+	if (mode & FMOD_3D)
+	{
+		FMOD_VECTOR fmodPos = { pose.x, pose.y, pose.z };
+		FMOD_VECTOR fmodVel = { 0.0f, 0.0f, 0.0f }; // 속도 벡터를 0으로 설정 (정지 상태 가정)
+
+		channel->set3DAttributes(&fmodPos, &fmodVel);
+	}
+
+	// 새로운 채널을 엔티티에 할당합니다.
+	m_EntityChannels[id] = channel;
+	channel->setPaused(false); // 재생을 시작합니다.
+
+}
 void SoundEngine::Stop(const uint32_t& id, const std::string& soundKey)
 {
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end()) {
+		FMOD::Channel* channel = channelIter->second;
 
+		if (channel != nullptr)
+		{
+			// 채널의 사운드가 해당 키와 일치하는지 확인
+			FMOD::Sound* currentSound = nullptr;
+			channel->getCurrentSound(&currentSound);
+
+			if (currentSound != nullptr)
+			{
+				char currentKey[256];
+				currentSound->getName(currentKey, sizeof(currentKey));
+
+				// 사운드 키가 일치할 경우 채널 정지
+				if (soundKey == std::string(currentKey))
+				{
+					channel->stop();
+					m_EntityChannels.erase(channelIter); // 맵에서 채널 제거
+				}
+			}
+		}
+	}
 }
 
-void SoundEngine::SetListenerPosition(float* pos, float* vel)
+void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, VPMath::Vector3 Forward)
 {
+	m_ListenerPos = { pos.x,pos.y,pos.z };
+	m_ListenerForward = { Forward.x,Forward.y,Forward.z };
+	m_ListenerUp = { Up.x,Up.y,Up.z };
+	m_System->set3DListenerAttributes(0, &m_ListenerPos, &m_ListenerVel, &m_ListenerForward, &m_ListenerUp);
+
 }
 
 void SoundEngine::CleanChannel()
