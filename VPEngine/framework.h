@@ -18,6 +18,12 @@
 #include <d3d11.h>
 #include <PxPhysicsAPI.h>
 
+///Nav Mesh
+#include "../recastnavigation/Detour/DetourNavMesh.h"
+#include "../recastnavigation/Detour/DetourNavMeshBuilder.h"
+#include "../recastnavigation/Detour/DetourNavMeshQuery.h"
+#include "../recastnavigation/DetourCrowd/DetourCrowd.h"
+#include "../recastnavigation/Recast/Recast.h"
 
 
 #include "VisPredMath.h"
