@@ -149,13 +149,24 @@ void GraphicsEngine::EndRender()
 
 bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 {
-	std::wstring id = std::to_wstring(data->EntityID);
-	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+	if (m_RenderList.find(data->EntityID) != m_RenderList.end())
 	{
-		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+		m_RenderList[data->EntityID] = data;
 	}
+	else
+	{
+		if (data->isSkinned)
+		{
+			std::wstring id = std::to_wstring(data->EntityID);
 
-	m_RenderList[data->EntityID] = data;
+			if (m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+			{
+				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+			}
+		}
+
+		m_RenderList[data->EntityID] = data;
+	}
 
 	return true;
 }
@@ -181,6 +192,11 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
+	//절두체 평면
+	//XMVECTOR v = XMVectorSet(m_ViewProj.r[0].m128_f32[0], m_ViewProj.r[1].m128_f32[0], m_ViewProj.r[2].m128_f32[0], m_ViewProj.r[3].m128_f32[0]);
+	//m_Frustum[0] = XMFLOAT4(XMVectorGetX(v), XMVectorGetY(v), XMVectorGetZ(v), XMVectorGetW(v));
+
+
 	//상수 버퍼는 계산 순서때문에 전치한다
 	cb_worldviewproj = m_ViewProj.Transpose();
 	cb_view = m_View.Transpose();
@@ -204,66 +220,7 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 
 void GraphicsEngine::UpdateModel(uint32_t EntityID)
 {
-	if (m_RenderList.find(EntityID) != m_RenderList.end())
-	{
-		switch (m_RenderList[EntityID]->Filter)
-		{
-			case MeshFilter::Axis:
-			case MeshFilter::Grid:
-			{
-				m_RenderList[EntityID]->Pass = PassState::Debug;
 
-			}
-			break;
-
-			case MeshFilter::Box:
-			{
-				m_RenderList[EntityID]->Pass = PassState::GeoMetry;
-			}
-			break;
-			case MeshFilter::Static:
-			case MeshFilter::Skinning:
-			{
-				//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
-				//m_RenderList[EntityID]->Pass = PassState::Forward;
-				//m_RenderList[EntityID]->Pass = PassState::Forward;
-
-				/*
-				std::shared_ptr<ModelData> curModel = m_ResourceManager->Get<ModelData>(m_RenderList[EntityID]->FBX).lock();
-				if (curModel != nullptr)
-				{
-					for (auto material : curModel->m_Materials)
-					{
-						if (material->m_Data.useNEOL.z > 0)
-						{
-							m_RenderList[EntityID]->Pass = PassState::Forward;
-							break;
-						}
-					}
-				}
-				*/
-
-
-				if (m_RenderList[EntityID]->FBX == L"cctv_lens_low.fbx")
-				{
-					m_RenderList[EntityID]->Pass = PassState::Forward;
-				}
-
-				if (m_RenderList[EntityID]->FBX == L"wall3_window_low.fbx")
-				{
-					m_RenderList[EntityID]->Pass = PassState::Forward;
-				}
-
-			}
-			break;
-
-			case MeshFilter::None:
-				break;
-
-			default:
-				break;
-		}
-	}
 }
 
 void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)

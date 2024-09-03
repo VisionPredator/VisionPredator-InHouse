@@ -26,12 +26,13 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 		meshComponent->Renderdata->FBX = meshComponent->FBX;
-		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->offset = meshComponent->LightMapOffset;
 		meshComponent->Renderdata->lightmapindex = meshComponent->LightMapIndex;
 		meshComponent->Renderdata->scale = meshComponent->LightMapScale;
 		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
+		meshComponent->Renderdata->Pass = meshComponent->pass;
+
 		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
 		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
 		/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
@@ -49,9 +50,10 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 
 		meshComponent->Renderdata->FBX= meshComponent->FBX;
-		meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
+		//meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->duration = 0;
+		meshComponent->Renderdata->isSkinned = true;
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
@@ -70,7 +72,6 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->useTexture = meshComponent->UseTexture;
 		meshComponent->Renderdata->color = meshComponent->color;
 		meshComponent->Renderdata->textureName = meshComponent->TextureName;
-
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
 	}
@@ -200,7 +201,8 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 
 	renderdata->FBX = meshComp.FBX;
 	renderdata->world = transform.WorldTransform;
-	renderdata->Filter = meshComp.FBXFilter;
+	renderdata->Pass = meshComp.pass;
+
 	m_Graphics->UpdateModel(meshComp.GetEntityID()); 
 }
 
@@ -210,7 +212,6 @@ void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 	auto renderdata = skinComp.Renderdata;
 	renderdata->FBX = skinComp.FBX;
 	renderdata->world = transform.WorldTransform;
-	renderdata->Filter = skinComp.FBXFilter;
 	renderdata->duration = 0;
 	if (skinComp.HasComponent<AnimationComponent>())
 	{

@@ -71,7 +71,7 @@ void DebugPass::Render()
 
 		switch (curData->Filter)
 		{
-			case MeshFilter::Grid:
+			case GeoMetryFilter::Grid:
 			{
 				debug::GridInfo gridInfo;
 				gridInfo.Origin = VPMath::Vector3{ 0, 0, 0 };
@@ -85,7 +85,7 @@ void DebugPass::Render()
 			}
 				break;
 
-			case MeshFilter::Axis:
+			case GeoMetryFilter::Axis:
 			{
 				float distance = 10;
 
@@ -116,9 +116,60 @@ void DebugPass::Render()
 			}
 				break;
 
+			case GeoMetryFilter::Frustum:
+			{
+				
+				debug::FrustumInfo frustumInfo;
+
+				frustumInfo.Frustum.Origin = { curData->world._41,curData->world._42,curData->world._43 };
+				frustumInfo.Frustum.Orientation = { 0, 0, 0, 1 };
+				frustumInfo.Frustum.Near = 1.f;
+				frustumInfo.Frustum.Far = 1000.f;
+				frustumInfo.Frustum.LeftSlope = -0.736355f;
+				frustumInfo.Frustum.RightSlope = 0.736355f;
+				frustumInfo.Frustum.TopSlope = 0.4142f;
+				frustumInfo.Frustum.BottomSlope = -0.4142;
+				frustumInfo.Color = VPMath::Color{ 1, 1, 0, 1 };
+				
+				debugManager->AddTask(frustumInfo);
+
+			}
+				break;
+
 			default:
 				break;
 		}
+
+		//bounding box
+		{
+			std::shared_ptr<ModelData> curFBX = resourceManager->Get<ModelData>(curData->FBX).lock();
+			if (curFBX != nullptr)
+			{
+				for (auto& mesh : curFBX->m_Meshes)
+				{
+					float distanceX = mesh->MaxBounding.x - mesh->MinBounding.x;
+					float distanceY = mesh->MaxBounding.y - mesh->MinBounding.y;
+					float distanceZ = mesh->MaxBounding.z - mesh->MinBounding.z;
+
+					float x = mesh->MinBounding.x + distanceX / 2;
+					float y = mesh->MinBounding.y + distanceY / 2;
+					float z = mesh->MinBounding.z + distanceZ / 2;
+
+					float WorldX = curData->world._41;
+					float WorldY = curData->world._42;
+					float WorldZ = curData->world._43;
+
+					debug::AABBInfo boxInfo;
+					boxInfo.AABB.Center = { WorldX + x, WorldY + y,WorldZ + z };
+					boxInfo.AABB.Extents = { distanceX / 2, distanceY / 2, distanceZ / 2 };
+					boxInfo.Color = VPMath::Color{ 0, 1, 0, 1 };
+					debugManager->AddTask(boxInfo);
+				}
+
+			}
+
+		}
+
 
 		m_RenderDataQueue.pop();
 	}

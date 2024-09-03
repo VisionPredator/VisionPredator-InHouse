@@ -32,7 +32,7 @@ void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>
 				curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX);
 			}
 
-			if (curModel.lock() != nullptr && curData->Filter == MeshFilter::Skinning)
+			if (curModel.lock() != nullptr)
 			{
 				//UpdateWorld(curData->duration, curModel);
 				UpdateWorld(curData);

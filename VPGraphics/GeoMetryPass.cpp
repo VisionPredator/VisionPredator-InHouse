@@ -28,7 +28,7 @@ void GeoMetryPass::Render()
 	{
 		std::shared_ptr<RenderData> curOb = m_RenderDataQueue.front().lock();
 
-		if (curOb->Filter == MeshFilter::Box)
+		if (curOb->Filter == GeoMetryFilter::Box)
 		{
 
 			std::shared_ptr<VertexBuffer> vb = m_ResourceManager.lock()->Get<VertexBuffer>(L"TextureBox_VB").lock();

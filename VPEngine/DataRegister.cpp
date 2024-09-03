@@ -20,12 +20,12 @@ void VPRegister::Register_Metadata()
 
 void VPRegister::Register_EnumClass()
 {
-	META_ADD_ENUMCLASS(MeshFilter, MeshFilter::Axis, MeshFilter::Box, MeshFilter::Grid, MeshFilter::Static, MeshFilter::Frustum);
+	META_ADD_ENUMCLASS(GeoMetryFilter,GeoMetryFilter::Axis, GeoMetryFilter::Box,GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
 	entt::meta<EPhysicsLayer>().prop(Reflection::Prop::Name, "EPhysicsLayer").conv<std::underlying_type_t<EPhysicsLayer>>().data<EPhysicsLayer::GROUND >("EPhysicsLayer::GROUND"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::GROUND").data<EPhysicsLayer::WALL >("EPhysicsLayer::WALL"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::WALL").data<EPhysicsLayer::TOP >("EPhysicsLayer::TOP"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TOP").data<EPhysicsLayer::PLAYER >("EPhysicsLayer::PLAYER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::PLAYER").data<EPhysicsLayer::OBJECT >("EPhysicsLayer::OBJECT"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::OBJECT").data<EPhysicsLayer::ENEMY >("EPhysicsLayer::ENEMY"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ENEMY").data<EPhysicsLayer::DOOR >("EPhysicsLayer::DOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::DOOR").data<EPhysicsLayer::ACTIVEDOOR >("EPhysicsLayer::ACTIVEDOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ACTIVEDOOR").data<EPhysicsLayer::TRIGGER >("EPhysicsLayer::TRIGGER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TRIGGER");
 	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
-	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::GeoMetry);
+	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::Transparency,PassState::BoundingDeferred,PassState::GeoMetry);
 
 }
 
@@ -151,7 +151,7 @@ void VPRegister::Register_Components()
 	META_ADD_MEMBER(IDComponent, IDComponent::Name);
 	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
+	META_ADD_MEMBER(MeshComponent, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::pass);
 	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
 	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);

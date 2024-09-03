@@ -170,7 +170,7 @@ void DeferredPass::PreDepth()
 					Device->BindMeshBuffer(mesh);
 
 					// Static Mesh Data Update & Bind
-					if (curData->Filter == MeshFilter::Static)
+					if (!mesh->IsSkinned())
 					{
 
 						Device->BindVS(m_StaticMeshVS.lock());
@@ -185,9 +185,7 @@ void DeferredPass::PreDepth()
 						XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
 						position->Update(renew);	// == Bind
 					}
-
-					// Skeletal Mesh Update & Bind
-					if (curData->Filter == MeshFilter::Skinning)
+					else
 					{
 						Device->BindVS(m_SkeletalMeshVS.lock());
 
@@ -236,7 +234,7 @@ void DeferredPass::PreDepth()
 
 	//Down Sampling
 	{
-		
+
 	}
 
 
@@ -291,7 +289,7 @@ void DeferredPass::Geometry()
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 
-		
+
 	}
 
 	while (!m_RenderDataQueue.empty())
@@ -306,7 +304,7 @@ void DeferredPass::Geometry()
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				if (curData->Filter == MeshFilter::Static)
+				if (!mesh->IsSkinned())
 				{
 
 					Device->BindVS(m_StaticMeshVS.lock());
@@ -321,9 +319,7 @@ void DeferredPass::Geometry()
 					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
 					position->Update(renew);	// == Bind
 				}
-
-				// Skeletal Mesh Update & Bind
-				if (curData->Filter == MeshFilter::Skinning)
+				else
 				{
 					Device->BindVS(m_SkeletalMeshVS.lock());
 
@@ -379,11 +375,11 @@ void DeferredPass::Geometry()
 						if (data.lightmaptiling.x != 0 || data.lightmaptiling.y != 0)
 						{
 							data.useNEOL.w = 1;
+
+							std::shared_ptr<ShaderResourceView> lightmap = m_LightManager.lock()->GetLightMap(curData->lightmapindex).lock();
+							Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
 						}
 						curMaterialData->Update(data);
-
-						std::shared_ptr<ShaderResourceView> lightmap = m_LightManager.lock()->GetLightMap(curData->lightmapindex).lock();
-						Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
 
 						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
