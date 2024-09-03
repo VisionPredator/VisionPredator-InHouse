@@ -9,6 +9,7 @@
 #include "../VPGraphics/GraphicsEngine.h"
 #include "../PhysxEngine/PhysxEngine.h"
 #include "../PhysxEngine/IPhysx.h"
+
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
@@ -82,6 +83,7 @@ void VPEngine::Addsystem()
 {
 	m_SystemManager->AddSystem<ControllerMovementSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
+	m_SystemManager->AddSystem<NavMeshBakerSystem>();
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<AnimationSystem>();

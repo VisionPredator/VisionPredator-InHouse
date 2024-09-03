@@ -2,6 +2,7 @@
 
 struct BuildSettings
 {
+    bool UseNavMesh = true;
     // 길찾기 주체들의 최대 개체수
     int maxCrowdNumber{ 1024 };
     // 길찾기 주체들의 최대 충돌반경

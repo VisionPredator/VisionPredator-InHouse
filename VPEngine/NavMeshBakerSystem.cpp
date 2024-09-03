@@ -11,10 +11,11 @@ NavMeshBakerSystem::NavMeshBakerSystem(std::shared_ptr<SceneManager> sceneManage
 
 void NavMeshBakerSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 {
+
 	if (m_NavMeshData != nullptr)
-	{
 		delete m_NavMeshData;
-	}
+	if (!buildSettrings.UseNavMesh)
+		return;
 	m_NavMeshData = new NavMeshData(this);
 
 	std::vector<VPMath::Vector3> worldVertices;
@@ -211,8 +212,7 @@ void NavMeshBakerSystem::PhysicsUpdate(float deltaTime)
 
 void NavMeshBakerSystem::Initialize()
 {
-	BuildSettings buildSettrings;
-	MakeNavigationMesh(buildSettrings);
+	MakeNavigationMesh(GetSceneManager()->GetSceneBuildSettrings());
 }
 
 void NavMeshBakerSystem::Start(uint32_t gameObjectId)

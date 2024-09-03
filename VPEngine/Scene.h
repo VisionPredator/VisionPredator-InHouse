@@ -15,7 +15,5 @@ public:
 	std::unordered_map<uint32_t, std::shared_ptr<Entity>> EntityMap;
 	std::unordered_map<entt::id_type, std::vector<std::weak_ptr<Component>>> m_ComponentPool;
 	VPPhysics::PhysicsInfo ScenePhysicInfo;
-	BuildSettings buildSettrings;
-	bool UseNavMesh = true;
-	
+	BuildSettings NavBuildSetting;
 };

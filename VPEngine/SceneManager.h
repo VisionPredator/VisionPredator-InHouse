@@ -91,10 +91,11 @@ public:
 
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
-
+	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
 
 
 	void SetSceneName(const std::string& sceneName) { m_CurrentScene->SceneName = sceneName; }
+	void SetSceneBuildSettrings(BuildSettings navbuildsetting) { m_CurrentScene->NavBuildSetting = navbuildsetting; }
 
 	template<typename T>
 	inline std::vector<std::reference_wrapper<T>> GetComponentPool();

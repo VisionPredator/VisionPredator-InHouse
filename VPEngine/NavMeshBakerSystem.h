@@ -22,8 +22,6 @@ private:
     }
 
 
-private:
-    NavMeshData* m_NavMeshData{ nullptr };
 
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
@@ -37,6 +35,8 @@ private:
     void Finish(uint32_t gameObjectId) override;
     void Finalize() override;
     //friend NavigationAgent;
+private:
+    NavMeshData* m_NavMeshData{ nullptr };
 };
 class NavMeshBakerSystem::NavMeshData
 {

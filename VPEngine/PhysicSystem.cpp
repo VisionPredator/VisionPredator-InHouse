@@ -12,6 +12,9 @@ PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 
 void PhysicSystem::Initialize()
 {
+	auto physicInfo = GetSceneManager()->GetScenePhysic();
+	m_PhysicsEngine->SetPhysicsInfo(physicInfo);
+	EventManager::GetInstance().ImmediateEvent("OnSetPhysicUpdateRate", physicInfo.FrameRate);
 	m_PhysicsEngine->ApplyPhysicEngineInfo();
 	for (TransformComponent& Transform : COMPITER(TransformComponent))
 	{
