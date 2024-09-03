@@ -93,6 +93,13 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 		Create<PixelShader>(L"MeshDeferredLight", L"MeshDeferredLight");
 		Create<PixelShader>(L"MeshDeferredGeometry", L"MeshDeferredGeometry");
 		Create<PixelShader>(L"Quad", L"Quad");
+		Create<PixelShader>(L"PreDepth", L"PreDepth");
+	}
+
+	//CS
+	{
+		//Create<ComputeShader>(L"IsOccluded", L"IsOccluded");
+
 	}
 
 	//VB

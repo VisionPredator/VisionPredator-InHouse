@@ -15,6 +15,7 @@
 #include "ConstantBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "ComputeShader.h"
 #include "ShaderResourceView.h"
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"

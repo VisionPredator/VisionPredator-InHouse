@@ -12,24 +12,10 @@ public:
 	void OnResize() override;
 
 private:
-
+	void PreDepth();
 	void Geometry();
 	void Light();
 
-private:
-	enum class Geo_Tex
-	{
-		Albedo = 0,
-		Normal,
-		Position,
-		Depth,
-		Metalic,
-		Roughness,
-		AO,
-		Emissive,
-		LightMap,
-
-	};
 private:
 	std::weak_ptr<LightManager> m_LightManager;
 private:

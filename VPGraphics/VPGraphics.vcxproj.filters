@@ -277,6 +277,7 @@
     <ClInclude Include="UIPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
+    <ClInclude Include="ComputeShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -430,6 +431,7 @@
     <ClCompile Include="UIPass.cpp">
       <Filter>Pass\Common</Filter>
     </ClCompile>
+    <ClCompile Include="ComputeShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -467,6 +469,12 @@
     </FxCompile>
     <FxCompile Include="Sprite2DVS.hlsl">
       <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="IsOccluded.hlsl">
+      <Filter>HLSL\CS</Filter>
+    </FxCompile>
+    <FxCompile Include="PreDepthPS.hlsl">
+      <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
