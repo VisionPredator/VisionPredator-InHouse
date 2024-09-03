@@ -45,6 +45,10 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 
 void UIPass::Render()
 {
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"GBuffer").lock();
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+
 	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
 	m_Device->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -69,7 +73,6 @@ void UIPass::Render()
 	m_Device->Context()->PSSetConstantBuffers(0, 1, m_ImageTransformCB->GetAddress());
 	m_Device->Context()->PSSetShader(m_PixelShader->GetShader(), nullptr, 0);
 	m_Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
-
 
 	// Execute Draw Call for all 2D Objects
 	m_UIManager->Render();

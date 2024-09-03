@@ -1,3 +1,8 @@
+cbuffer ColorBuffer : register(b5)
+{
+	float4 gColor;
+}
+
 struct VertexOut
 {
 	float4 PosWorld : SV_POSITION;
@@ -6,5 +11,6 @@ struct VertexOut
 
 float4 main(VertexOut input) : SV_TARGET
 {
-	return input.Color;
+	return gColor;
+	//return input.Color;
 }

@@ -14,6 +14,7 @@
 #pragma endregion 
 
 #include <memory>
+#include <memory>
 
 #include "ParticlePass.h"
 #include "GeoMetryPass.h"
@@ -86,7 +87,7 @@ void PassManager::Render()
 	m_Passes[PassState::Debug]->Render();
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
-	m_Passes[PassState::Forward]->Render();
+	//m_Passes[PassState::Forward]->Render();
 	m_Passes[PassState::ObjectMask]->Render();
 	m_ParticlePass->Render();
 	m_UIPass->Render();
@@ -160,6 +161,9 @@ void PassManager::DrawIMGUI()
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
 
+	//std::shared_ptr<RenderTargetView> testRTV = resourcemanager->Get<RenderTargetView>(L"ObjectMaskRTV").lock();
+	//std::shared_ptr<ShaderResourceView> testSRV = std::make_shared<ShaderResourceView>(m_Device.lock(), testRTV);
+
 	Device->UnBindSRV();
 
 	Device->Context()->IASetInputLayout(vs->InputLayout());
@@ -174,6 +178,10 @@ void PassManager::DrawIMGUI()
 	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::GBuffer), 1, gui->GetAddress());
+
+#pragma region TEST
+	//Device->Context()->PSSetShaderResources(10, 1, testSRV->GetAddress());
+#pragma endregion TEST
 
 	Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 

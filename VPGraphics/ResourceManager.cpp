@@ -80,7 +80,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 		Create<RenderState>(L"Wire", RenderStateDESC::Wire::Desc);
 	}
 
-#pragma region TODAY
 	//VS
 	{
 		D3D_SHADER_MACRO macro[] =
@@ -98,7 +97,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 		Create<VertexShader>(L"Quad", L"QuadVS", "main");
 		//Create<VertexShader>(L"Quad", VERTEXFILTER::QUAD, L"Quad");
 	}
-#pragma endregion TODAY
 
 	//PS
 	{

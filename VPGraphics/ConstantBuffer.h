@@ -46,6 +46,12 @@ void ConstantBuffer<T>::Release()
 template<typename T>
 ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc) : Buffer(device, Desc)
 {
+#pragma region TEST
+	// 추가..
+	// 이걸 안해줘서 자꾸 상수 버퍼 값이 이상하게 바뀌나?
+	m_Desc.ByteWidth = sizeof(T);
+#pragma endregion TEST
+
 	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
 
 	m_struct = T();
