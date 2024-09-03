@@ -7,7 +7,7 @@ enum class MeshFilter
 	Grid,
 	Static,
 	Skinning,
-	Circle,
+	Frustum,
 
 	None
 };
