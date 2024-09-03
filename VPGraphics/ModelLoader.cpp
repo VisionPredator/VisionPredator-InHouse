@@ -206,6 +206,9 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			break;
 	}
 
+	newMesh->MinBounding = { mesh->mAABB.mMin.x, mesh->mAABB.mMin.y,mesh->mAABB.mMin.z};
+	newMesh->MaxBounding = { mesh->mAABB.mMax.x, mesh->mAABB.mMax.y,mesh->mAABB.mMax.z};
+
 	newMesh->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	newMesh->m_material = mesh->mMaterialIndex;
 

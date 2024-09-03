@@ -49,6 +49,8 @@ public:
 
 	virtual bool IsSkinned() abstract;
 
+	VPMath::XMFLOAT3 MinBounding;
+	VPMath::XMFLOAT3 MaxBounding;
 };
 
 class StaticMesh : public Mesh
