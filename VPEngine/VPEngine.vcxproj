@@ -123,7 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -183,6 +183,7 @@
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="LogicSystems.h" />
+    <ClInclude Include="NavMeshBakerSystem.h" />
     <ClInclude Include="ParticleComponent.h" />
     <ClInclude Include="PhysicSystem.h" />
     <ClInclude Include="RenderSystem.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="TransformSystem.h" />
     <ClInclude Include="Managers.h" />
+    <ClInclude Include="NavStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
@@ -228,6 +230,7 @@
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
+    <ClCompile Include="NavMeshBakerSystem.cpp" />
     <ClCompile Include="PhysicSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="pch.cpp">
@@ -251,9 +254,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PhysxEngine\PhysxEngine.vcxproj">

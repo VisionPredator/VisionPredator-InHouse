@@ -383,6 +383,128 @@ bool RigidBodyManager::HasRigidBody(uint32_t entityID)
     return m_RigidBodyMap.count(entityID) > 0;
 }
 
+void RigidBodyManager::ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+{
+    if (!scene)
+        return;
+
+    // Retrieve only static rigid actors from the scene
+    PxU32 actorCount = scene->getNbActors(physx::PxActorTypeFlag::eRIGID_STATIC);
+    std::vector<PxRigidStatic*> actors(actorCount);
+    scene->getActors(physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<PxActor**>(actors.data()), actorCount);
+
+    // Iterate over all static actors
+    for (PxRigidStatic* actor : actors)
+    {
+        if (!actor)
+            continue;
+
+        // Retrieve shapes from the PxRigidStatic actor
+        PxU32 shapeCount = actor->getNbShapes();
+        std::vector<PxShape*> shapes(shapeCount);
+        actor->getShapes(shapes.data(), shapeCount);
+
+        for (PxShape* shape : shapes)
+        {
+            // Check if the shape is a simulation shape and not a trigger shape
+            if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
+            {
+                // Check the shape's filter data for the layer
+                PxFilterData filterData = shape->getSimulationFilterData();
+                if (filterData.word0 == static_cast<PxU32>(layer))
+                {
+                    // Use the existing function to extract vertices and faces for this actor
+                    RigidBodyManager::ExtractVerticesAndFaces(actor, outVertices, outIndices);
+                    break; // No need to check other shapes if we've processed the actor
+                }
+            }
+        }
+    }
+}
+
+void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+{
+    if (!HasRigidBody(entityID))
+        return;
+
+    auto rigidBody = GetRigidBody(entityID);
+    auto staticBody = dynamic_cast<StaticRigidBody*>(rigidBody.get());
+    if (!staticBody)
+        return;
+
+    physx::PxRigidStatic* pxRigidStatic = staticBody->GetPxStaticRigid();
+    if (!pxRigidStatic)
+        return;
+
+    // Use the previously implemented function to extract vertices and faces
+    ExtractVerticesAndFaces(pxRigidStatic, outVertices, outIndices);
+}
+
+void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+{
+    if (!actor)
+        return;
+
+    // Retrieve shapes from the PxRigidStatic actor
+    PxU32 shapeCount = actor->getNbShapes();
+    std::vector<PxShape*> shapes(shapeCount);
+    actor->getShapes(shapes.data(), shapeCount);
+
+    for (PxShape* shape : shapes)
+    {
+        // Only process shapes that are marked as SIMULATION_SHAPE (i.e., COLLISION)
+        if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
+        {
+            // Get the geometry from the shape
+            PxGeometryHolder geometryHolder = shape->getGeometry();
+
+            if (geometryHolder.getType() == PxGeometryType::eCONVEXMESH)
+            {
+                // Access the convex mesh geometry
+                PxConvexMeshGeometry convexGeometry = geometryHolder.convexMesh();
+                PxConvexMesh* convexMesh = convexGeometry.convexMesh;
+
+                // Extract vertices from the PxConvexMesh
+                const PxVec3* meshVertices = convexMesh->getVertices();
+                PxU32 vertexCount = convexMesh->getNbVertices();
+
+                // Store the start index for this batch of vertices
+                int baseIndex = static_cast<int>(outVertices.size());
+
+                // Convert and append vertices to outVertices
+                for (PxU32 i = 0; i < vertexCount; ++i)
+                {
+                    outVertices.emplace_back(meshVertices[i].x, meshVertices[i].y, meshVertices[i].z);
+                }
+
+                // Extract indices (the index buffer refers to the vertex buffer)
+                const PxU8* indexBuffer = convexMesh->getIndexBuffer();
+                PxU32 polygonCount = convexMesh->getNbPolygons();
+
+                for (PxU32 i = 0; i < polygonCount; ++i)
+                {
+                    PxHullPolygon polygon;
+                    convexMesh->getPolygonData(i, polygon);
+
+                    // Extract the vertex indices for the polygon
+                    for (PxU32 j = 0; j < polygon.mNbVerts; ++j)
+                    {
+                        PxU32 vertexIndex = indexBuffer[polygon.mIndexBase + j];
+                        outIndices.push_back(baseIndex + static_cast<int>(vertexIndex));
+                    }
+
+                    // If the polygon has more than 3 vertices, triangulate it:
+                    for (PxU32 j = 2; j < polygon.mNbVerts; ++j)
+                    {
+                        outIndices.push_back(baseIndex + static_cast<int>(indexBuffer[polygon.mIndexBase]));
+                        outIndices.push_back(baseIndex + static_cast<int>(indexBuffer[polygon.mIndexBase + j - 1]));
+                        outIndices.push_back(baseIndex + static_cast<int>(indexBuffer[polygon.mIndexBase + j]));
+                    }
+                }
+            }
+        }
+    }
+}
 void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q)
 {
     auto temp = GetRigidBody(entityID);

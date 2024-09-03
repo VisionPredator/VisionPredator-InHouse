@@ -113,6 +113,9 @@ void Toolbar::ImGuiRender()
 	}
 	// PhysicEngineImGui 함수 호출
 	PhysicEngineImGui();
+	NavMeshImGui();
+
+
 }
 
 void Toolbar::Menu()
@@ -273,4 +276,8 @@ void Toolbar::PhysicEngineImGui()
 	}
 	ImGui::End();
 	ImGui::PopID();
+}
+
+void Toolbar::NavMeshImGui()
+{
 }

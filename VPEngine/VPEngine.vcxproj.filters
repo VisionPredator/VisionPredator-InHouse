@@ -67,6 +67,9 @@
     <Filter Include="VisPredMath">
       <UniqueIdentifier>{c9967b03-29c5-484d-a7bf-51de3ed1ab3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NavMesh">
+      <UniqueIdentifier>{20e9601b-fb0f-45c9-84dc-cc77584a0e5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -184,7 +187,9 @@
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="Sprite2DComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>    <ClInclude Include="LifeTimeComponent.h">
+      <Filter>자체 엔진\Entity\Component\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeTimeComponent.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="LifeTimeSystem.h">
@@ -192,7 +197,14 @@
     </ClInclude>
     <ClInclude Include="LogicSystems.h">
       <Filter>Header</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="NavMeshBakerSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavStructs.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
@@ -293,13 +305,13 @@
     <ClCompile Include="LifeTimeSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="NavMeshBakerSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
       <Filter>자체 엔진\리소스 파일</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
