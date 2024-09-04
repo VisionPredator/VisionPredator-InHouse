@@ -47,11 +47,11 @@ void GeoMetryPass::Render()
 			}
 
 
-			std::shared_ptr<ConstantBuffer<CameraData>> camera = m_ResourceManager.lock()->Create<ConstantBuffer<CameraData>>(L"Camera").lock();
+			std::shared_ptr<ConstantBuffer<CameraData>> camera = m_ResourceManager.lock()->Create<ConstantBuffer<CameraData>>(L"Camera", ConstantBufferType::Default).lock();
 
 			Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, camera->GetAddress());
 
-			std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+			std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
 			TransformData renew;
 			XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curOb->world));
 			XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curOb->world));
@@ -74,7 +74,7 @@ void GeoMetryPass::Render()
 			Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
 
-			std::shared_ptr<ConstantBuffer<DirectX::XMFLOAT4>> color = m_ResourceManager.lock()->Create<ConstantBuffer<DirectX::XMFLOAT4>>(L"Color").lock();
+			std::shared_ptr<ConstantBuffer<DirectX::XMFLOAT4>> color = m_ResourceManager.lock()->Create<ConstantBuffer<DirectX::XMFLOAT4>>(L"Color", ConstantBufferType::Default).lock();
 			Device->Context()->PSSetConstantBuffers(2, 1, color->GetAddress());
 			color->Update(curOb->color);
 

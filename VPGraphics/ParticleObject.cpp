@@ -46,9 +46,9 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_DrawVB));			// 
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_StreamOutVB));
 
-		m_FrameCB = m_ResourceManager->Create<ConstantBuffer<PerFrame>>(L"FrameCB").lock();
+		m_FrameCB = m_ResourceManager->Create<ConstantBuffer<PerFrame>>(L"FrameCB", ConstantBufferType::Default).lock();
 
-		D3D11_BUFFER_DESC cbd;
+		/*D3D11_BUFFER_DESC cbd;
 		cbd.Usage = D3D11_USAGE_DEFAULT;
 		static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
 		cbd.ByteWidth = sizeof(PerFrame);
@@ -56,7 +56,7 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		cbd.CPUAccessFlags = 0;
 		cbd.MiscFlags = 0;
 
-		HR_CHECK(device->Get()->CreateBuffer(&cbd, NULL, m_FrameCB->GetAddress()));
+		HR_CHECK(device->Get()->CreateBuffer(&cbd, NULL, m_FrameCB->GetAddress()));*/
 	}
 
 	// Create Shaders
@@ -166,6 +166,8 @@ void ParticleObject::Draw()
 		m_StreamOutVB.GetAddressOf(),	// 출력용 버퍼
 		&offset);						// 정점 버퍼마다 기록하기 시작할 위치를 나타낸다. 현재 0
 
+	context->OMSetRenderTargets(0, nullptr, nullptr);	// 정점을 생성하는 것이기 때문에 실제로 화면에 그릴 필요가 없다.
+
 	if (m_FirstRun)
 	{
 		context->Draw(1, 0);
@@ -182,6 +184,11 @@ void ParticleObject::Draw()
 
 	context->SOSetTargets(1, bufferArray, &offset);	// 출력 단계를 비워준다.
 	std::swap(m_DrawVB, m_StreamOutVB);	// 핑퐁을 위해 swap 한다.
+
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"GBuffer").lock();
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
+	//m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 	// 화면 렌더링
 	context->VSSetShader(m_DrawVS->GetShader(), nullptr, 0);

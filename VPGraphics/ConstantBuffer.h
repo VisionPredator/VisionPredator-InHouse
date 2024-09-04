@@ -18,9 +18,7 @@ class ConstantBuffer :
 {
 public:
 	ConstantBuffer(std::shared_ptr<Device> device);
-	ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc);
-	//ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data);
-
+	//ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc);
 	ConstantBuffer(const std::shared_ptr<Device>& device, const ConstantBufferType& type);
 
 	~ConstantBuffer();
@@ -32,18 +30,8 @@ public:
 	void Update(T cbstruct);
 
 	T m_struct;
-
-private:
-
 };
 
-//template<typename T>
-//ConstantBuffer<T>::ConstantBuffer(Device* device, D3D11_BUFFER_DESC Desc, T data)
-//{
-//	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
-//
-//	m_struct = data;
-//}
 
 template<typename T>
 void ConstantBuffer<T>::Release()
@@ -51,14 +39,14 @@ void ConstantBuffer<T>::Release()
 	m_buffer.Reset();
 }
 
-template<typename T>
-ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc)
-	: Buffer(device, Desc)
-{
-	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
-
-	m_struct = T();
-}
+//template<typename T>
+//ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc)
+//	: Buffer(device, Desc)
+//{
+//	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
+//
+//	m_struct = T();
+//}
 
 template <typename T>
 ConstantBuffer<T>::ConstantBuffer(const std::shared_ptr<Device>& device, const ConstantBufferType& type)
