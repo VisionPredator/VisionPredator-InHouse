@@ -1,22 +1,28 @@
 #pragma once
+#include <wrl/client.h>
+
 #include "Resource.h"
 
+enum class SamplerStateType
+{
+	LinearClamp,
+	LinearWrap,
+	PointClamp,
+};
 
 class Sampler : public Resource
 {
 public:
 	Sampler(std::shared_ptr<Device>device, D3D11_SAMPLER_DESC desc);
-	~Sampler();
+	Sampler(const std::shared_ptr<Device>& device, const SamplerStateType& type);
 
+	~Sampler() override;
 
 	ID3D11SamplerState* Get() const;
 	ID3D11SamplerState** GetAddress();
 
-	virtual void Release() override;
+	void Release() override;
 
 private:
-
-	ID3D11SamplerState* m_samplerState;
-
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_SamplerState;
 };
-

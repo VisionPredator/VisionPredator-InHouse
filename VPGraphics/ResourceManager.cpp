@@ -70,8 +70,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 
 	//Sampler
 	{
-		Create<Sampler>(L"Linear", SamplerDESC::Linear);
-		Create<Sampler>(L"Point", SamplerDESC::Point);
+		Create<Sampler>(L"LinearWrap", SamplerStateType::LinearWrap);
+		Create<Sampler>(L"PointClamp", SamplerStateType::PointClamp);
+		Create<Sampler>(L"LinearClamp", SamplerStateType::LinearClamp);
 	}
 
 	//RS

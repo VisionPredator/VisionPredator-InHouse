@@ -46,7 +46,7 @@ void ForwardPass::Render()
 
 	std::shared_ptr<DepthStencilView> DSV = m_DSV.lock();
 	std::shared_ptr<RenderTargetView> RTV = m_RTV.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<BlendState> state = m_BlendState.lock();
 	std::shared_ptr<DepthStencilState> depth = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
 

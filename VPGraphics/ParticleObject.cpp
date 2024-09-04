@@ -67,7 +67,7 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		m_DrawGS = std::make_shared<GeometryShader>(device, L"ParticleGS", "DrawGS", "gs_5_0");
 		m_DrawPS = std::make_shared<PixelShader>(device, L"ParticlePS", "DrawPS");
 
-		m_SamLinear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
+		m_SamLinear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
 	}
 
 	// TODO: SRV 이용하는 걸로 바꿔야 한다.

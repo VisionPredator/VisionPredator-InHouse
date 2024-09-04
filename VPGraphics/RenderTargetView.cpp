@@ -61,6 +61,7 @@ void RenderTargetView::OnResize(const std::shared_ptr<Device>& device, const Ren
 
 			break;
 		}
+		case RenderTargetViewType::OutlineEdgeDetect:
 		case RenderTargetViewType::ObjectMask:
 		{
 			D3D11_TEXTURE2D_DESC textureDesc = {};

@@ -19,8 +19,8 @@ class ObjectMaskPass : public RenderPass
 public:
 	ObjectMaskPass(const std::shared_ptr<Device>& device,
 		const std::shared_ptr<ResourceManager>& resourceManager);
-	void OnResize();
-	void Render();
+	void Render() override;
+	void OnResize() override;
 
 private:
 	std::shared_ptr<RenderTargetView> m_ObjectMaskRTV;

@@ -120,7 +120,7 @@ void DeferredPass::OnResize()
 void DeferredPass::Geometry()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
 	// Bind Common Resources
 	{
@@ -266,7 +266,7 @@ void DeferredPass::Light()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
 	std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
 

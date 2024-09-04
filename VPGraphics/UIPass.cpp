@@ -49,7 +49,7 @@ void UIPass::Render()
 	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
 	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 
-	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
 	m_Device->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 알파 블랜딩 사용.

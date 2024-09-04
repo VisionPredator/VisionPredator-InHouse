@@ -18,8 +18,7 @@ ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device,
 	const uint32_t width = m_Device.lock()->GetWndWidth();
 	const uint32_t height = m_Device.lock()->GetWndHeight();
 
-	// TEST 로 OffScreen 타입으로 하였음
-	m_ObjectMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"ObjectMaskRTV", RenderTargetViewType::OffScreen, width, height).lock();
+	m_ObjectMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"ObjectMaskRTV", RenderTargetViewType::ObjectMask, width, height).lock();
 	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 	m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
 
@@ -33,11 +32,6 @@ ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device,
 	m_ObjectMaskPS = m_ResourceManager.lock()->Create<PixelShader>(L"ObjectMask", L"ObjectMask").lock();
 
 	m_MaskColorCB = std::make_shared<ConstantBuffer<MaskColorCB>>(device, BufferDESC::Constant::DefaultFloat4);
-}
-
-void ObjectMaskPass::OnResize()
-{
-
 }
 
 void ObjectMaskPass::Render()
@@ -59,7 +53,7 @@ void ObjectMaskPass::Render()
 		maskColor.Color = VPMath::Color(0, 0, 1, 1);
 		m_MaskColorCB->Update(maskColor);
 		Device->Context()->PSSetConstantBuffers(5, 1, m_MaskColorCB->GetAddress());
-
+		
 		std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 		std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 		std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
@@ -78,7 +72,7 @@ void ObjectMaskPass::Render()
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 	}
-
+	
 	Device->Context()->PSSetShader(m_ObjectMaskPS->GetShader(), nullptr, 0);
 
 	while(!m_RenderDataQueue.empty())
@@ -153,4 +147,10 @@ void ObjectMaskPass::Render()
 		}
 		m_RenderDataQueue.pop();
 	}
+}
+
+void ObjectMaskPass::OnResize()
+{
+	//m_ObjectMaskRTV
+	//m_DefaultDSV
 }

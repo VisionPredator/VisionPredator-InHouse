@@ -19,7 +19,7 @@ void GeoMetryPass::Render()
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<DepthStencilView> DSV = m_DSV.lock();
 	std::shared_ptr<RenderTargetView> RTV = m_RTV.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());

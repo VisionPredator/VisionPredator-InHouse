@@ -27,6 +27,9 @@
 PassManager::PassManager()
 	: m_ParticlePass(std::make_shared<ParticlePass>())
 	, m_UIPass(std::make_shared<UIPass>())
+	, m_OutlineEdgeDetectPass(std::make_shared<OutlineEdgeDetectPass>())
+	, m_OutlineBlurPass(std::make_shared<OutlineBlurPass>())
+	, m_OutlineAddPass(std::make_shared<OutlineAddPass>())
 {
 }
 
@@ -66,6 +69,11 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device,
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
+
+	// TODO: Outline Pass Initialize
+	m_OutlineEdgeDetectPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
+	//m_OutlineBlurPass->Initialize();
+	//m_OutlineAddPass->Initialize();
 }
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
@@ -87,8 +95,14 @@ void PassManager::Render()
 	m_Passes[PassState::Debug]->Render();
 	m_Passes[PassState::GeoMetry]->Render();
 	m_Passes[PassState::Deferred]->Render();
-	//m_Passes[PassState::Forward]->Render();
+	m_Passes[PassState::Forward]->Render();
 	m_Passes[PassState::ObjectMask]->Render();
+
+	// TODO: Outline Pass Render
+	m_OutlineEdgeDetectPass->Render();
+	//m_OutlineBlurPass->Render();
+	//m_OutlineAddPass->Render();
+
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
@@ -118,7 +132,7 @@ void PassManager::DrawGBuffer()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
 	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
@@ -152,7 +166,7 @@ void PassManager::DrawIMGUI()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
 	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
@@ -160,9 +174,6 @@ void PassManager::DrawIMGUI()
 	std::shared_ptr<ShaderResourceView> gui = resourcemanager->Get<ShaderResourceView>(L"GBuffer").lock();
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
 	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
-
-	//std::shared_ptr<RenderTargetView> testRTV = resourcemanager->Get<RenderTargetView>(L"ObjectMaskRTV").lock();
-	//std::shared_ptr<ShaderResourceView> testSRV = std::make_shared<ShaderResourceView>(m_Device.lock(), testRTV);
 
 	Device->UnBindSRV();
 
@@ -178,10 +189,6 @@ void PassManager::DrawIMGUI()
 	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::GBuffer), 1, gui->GetAddress());
-
-#pragma region TEST
-	//Device->Context()->PSSetShaderResources(10, 1, testSRV->GetAddress());
-#pragma endregion TEST
 
 	Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
