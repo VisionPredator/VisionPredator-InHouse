@@ -441,11 +441,13 @@ void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VP
 	// Use the previously implemented function to extract vertices and faces
 	ExtractVerticesAndFaces(pxRigidStatic, outVertices, outIndices);
 }
-
 void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!actor)
 		return;
+
+	// Get the actor's global pose (world transformation)
+	PxTransform globalPose = actor->getGlobalPose();
 
 	// Retrieve shapes from the PxRigidStatic actor
 	PxU32 shapeCount = actor->getNbShapes();
@@ -473,10 +475,14 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 				// Store the start index for this batch of vertices
 				int baseIndex = static_cast<int>(outVertices.size());
 
-				// Convert and append vertices to outVertices
+				// Convert and append vertices to outVertices (in world space)
 				for (PxU32 i = 0; i < vertexCount; ++i)
 				{
-					outVertices.emplace_back(meshVertices[i].x, meshVertices[i].y, meshVertices[i].z);
+					// Transform the vertex to world space using the actor's global pose
+					PxVec3 worldVertex = globalPose.transform(meshVertices[i]);
+
+					// Add the transformed vertex to the output vector
+					outVertices.emplace_back(worldVertex.x, worldVertex.y, worldVertex.z);
 				}
 
 				// Extract indices (the index buffer refers to the vertex buffer)
@@ -507,15 +513,15 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 						}
 					}
 
-					// Log for debugging
+					// Debugging output
 					std::cout << "Polygon " << i << " has " << polygon.mNbVerts << " vertices.\n";
 					std::cout << "Indices so far: " << outIndices.size() << "\n";
 				}
-
 			}
 		}
 	}
 }
+
 void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q)
 {
 	auto temp = GetRigidBody(entityID);

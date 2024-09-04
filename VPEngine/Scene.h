@@ -1,7 +1,7 @@
 #pragma once
 #include "../PhysxEngine/VPPhysicsStructs.h"
 #include "NavStructs.h"
-
+class NavMeshData;
 class Entity;
 struct Component;
 class Scene
@@ -16,4 +16,5 @@ public:
 	std::unordered_map<entt::id_type, std::vector<std::weak_ptr<Component>>> m_ComponentPool;
 	VPPhysics::PhysicsInfo ScenePhysicInfo;
 	BuildSettings NavBuildSetting;
+	std::weak_ptr<NavMeshData> SceneNavData;
 };

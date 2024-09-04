@@ -181,6 +181,8 @@
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="LogicSystems.h" />
+    <ClInclude Include="NavMeshData.h" />
+    <ClInclude Include="NavStructs.h" />
     <ClInclude Include="NavMeshBakerSystem.h" />
     <ClInclude Include="ParticleComponent.h" />
     <ClInclude Include="PhysicSystem.h" />
@@ -207,7 +209,6 @@
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="TransformSystem.h" />
     <ClInclude Include="Managers.h" />
-    <ClInclude Include="NavStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
@@ -228,6 +229,8 @@
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
+    <ClCompile Include="NavMeshData.cpp" />
+    <ClCompile Include="NavStructs.cpp" />
     <ClCompile Include="NavMeshBakerSystem.cpp" />
     <ClCompile Include="PhysicSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />

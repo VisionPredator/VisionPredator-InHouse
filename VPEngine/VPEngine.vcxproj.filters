@@ -204,6 +204,9 @@
     <ClInclude Include="NavStructs.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="NavMeshData.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -306,6 +309,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="NavMeshBakerSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavStructs.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshData.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,27 +3,28 @@
 
 NavMeshBakerSystem::NavMeshBakerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
-	if (m_NavMeshData != nullptr)
+	/*if (m_NavMeshData != nullptr)
 	{
 		delete m_NavMeshData;
-	}
+	}*/
+	m_NavMeshData.reset();
 }
 
 void NavMeshBakerSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 {
 
-	if (m_NavMeshData != nullptr)
+	/*if (m_NavMeshData != nullptr)
 		delete m_NavMeshData;
-	if (!buildSettrings.UseNavMesh)
-		return;
-	m_NavMeshData = new NavMeshData(this);
-
+	m_NavMeshData = new NavMeshData();*/
+	m_NavMeshData = std::make_shared<NavMeshData>();
 	std::vector<VPMath::Vector3> worldVertices;
 	std::vector<int> worldFaces;
 
 	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::GROUND, worldVertices, worldFaces);
 	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::WALL, worldVertices, worldFaces);
 	AbleTest(worldVertices, worldFaces, GetSceneManager()->GetSceneBuildSettrings());
+	m_NavMeshData->m_worldVertices = worldVertices;
+
 }
 
 void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)
@@ -226,6 +227,37 @@ void NavMeshBakerSystem::Finish(uint32_t gameObjectId)
 
 void NavMeshBakerSystem::Finalize()
 {
+	//if (m_NavMeshData != nullptr)
+	//	delete m_NavMeshData;
+	//m_NavMeshData = nullptr;
+	m_NavMeshData.reset();
+}
+
+void NavMeshBakerSystem::RenderUpdate(float deltaTime)
+{
+	if (!m_NavMeshData)
+		return;
+
+	// Assuming m_NavMeshData->m_worldVertices is a vector of VPMath::Vector3
+	for (size_t i = 0; i < m_NavMeshData->m_worldVertices.size() - 1; ++i)
+	{
+		// Current and next vertex
+		VPMath::Vector3 currentVertex = m_NavMeshData->m_worldVertices[i];
+		VPMath::Vector3 nextVertex = m_NavMeshData->m_worldVertices[i + 1];
+
+		// Calculate direction as the difference between the next and current vertex
+		VPMath::Vector3 direction = nextVertex - currentVertex;
+		// Create the ray for the current vertex
+		debug::RayInfo rayInfo{};
+		rayInfo.Color = { 1, 1, 0, 1 }; // Blue color for the ray
+		rayInfo.Origin = currentVertex;  // Set the origin to the current vertex
+		rayInfo.Direction = direction;   // Set the direction to point to the next vertex
+		rayInfo.Normalize = false;        // Ensure the direction is normalized
+
+		// Draw the ray using your graphics system
+		m_Graphics->DrawRay(rayInfo);
+	}
+
 }
 
 
