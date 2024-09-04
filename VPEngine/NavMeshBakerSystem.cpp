@@ -21,8 +21,9 @@ void NavMeshBakerSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 	std::vector<VPMath::Vector3> worldVertices;
 	std::vector<int> worldFaces;
 
-	m_PhysicsEngine->ExtractVerticesAndFaces(static_cast<int>(VPPhysics::EPhysicsLayer::GROUND), worldVertices, worldFaces);
-	m_PhysicsEngine->ExtractVerticesAndFaces(static_cast<int>(VPPhysics::EPhysicsLayer::WALL), worldVertices, worldFaces);
+	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::GROUND, worldVertices, worldFaces);
+	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::WALL, worldVertices, worldFaces);
+	AbleTest(worldVertices, worldFaces, GetSceneManager()->GetSceneBuildSettrings());
 }
 
 void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)

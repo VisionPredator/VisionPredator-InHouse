@@ -42,7 +42,7 @@ public:
 
 
 private:
-	void OnAddBodyScene(std::any data);
+	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);
 	void OnReleaseBodyScene(std::any data);
 	void AddBodyScene(std::shared_ptr<RigidBody> body);
 
