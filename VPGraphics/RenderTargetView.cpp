@@ -27,7 +27,7 @@ void RenderTargetView::OnResize(const std::shared_ptr<Device>& device, const Ren
 
 	switch (type)
 	{
-		case RenderTargetViewType::Default:
+		case RenderTargetViewType::BackBuffer:
 		{
 			Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 			const Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain = device->SwapChain();

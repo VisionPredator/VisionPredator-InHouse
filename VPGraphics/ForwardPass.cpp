@@ -25,7 +25,7 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
-	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 
 	m_state = PassState::Forward;
 	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
@@ -145,5 +145,5 @@ void ForwardPass::OnResize()
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
-	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 }

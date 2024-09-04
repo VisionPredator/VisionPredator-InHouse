@@ -37,7 +37,7 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 	//m_UIManager->CreateImageObject(600, testInfo3);
 #pragma endregion
 
-	m_ImageTransformCB = m_ResourceManager->Create<ConstantBuffer<ImageTransformCB>>(L"ImageTransformCB", BufferDESC::Constant::DefaultTransform).lock();
+	m_ImageTransformCB = m_ResourceManager->Create<ConstantBuffer<ImageTransformCB>>(L"ImageTransformCB", ConstantBufferType::Default).lock();
 
 	m_VertexShader = std::make_shared<VertexShader>(m_Device, L"Sprite2DVS", "main");
 	m_PixelShader = std::make_shared<PixelShader>(m_Device, L"Sprite2DPS", "main");

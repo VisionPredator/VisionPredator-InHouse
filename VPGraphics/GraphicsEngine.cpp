@@ -152,7 +152,7 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 	std::wstring id = std::to_wstring(data->EntityID);
 	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
 	{
-		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, ConstantBufferType::Default);
 	}
 
 	m_RenderList[data->EntityID] = data;

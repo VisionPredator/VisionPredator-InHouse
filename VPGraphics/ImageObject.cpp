@@ -45,7 +45,7 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	InitializeBuffers();
 
 	// Initialize Constant Buffers
-	m_ColorCB = m_ResourceManager->Create<ConstantBuffer<ColorCB>>(L"ImageColorCB", BufferDESC::Constant::DefaultTransform).lock();
+	m_ColorCB = m_ResourceManager->Create<ConstantBuffer<ColorCB>>(L"ImageColorCB", ConstantBufferType::Default).lock();
 }
 
 void ImageObject::Render()

@@ -22,7 +22,7 @@ DebugPass::DebugPass(std::shared_ptr<Device> device,
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
-	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Debug;
 
@@ -135,6 +135,6 @@ void DebugPass::OnResize()
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
-	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 }

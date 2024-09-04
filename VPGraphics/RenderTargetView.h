@@ -6,7 +6,7 @@ class Texture2D;
 
 enum class RenderTargetViewType
 {
-	Default,	// backbuffer
+	BackBuffer,	// backbuffer
 	OffScreen,	// for deferred rendering
 	ObjectMask,
 	OutlineEdgeDetect,
@@ -30,4 +30,3 @@ public:
 private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RTV;
 };
-
