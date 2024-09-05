@@ -18,7 +18,7 @@ enum class PassState : unsigned int
 	Deferred = 1 << 3,
 	Geometry = 1 << 4,
 	BoundingDeferred = (Debug | Deferred),
-	GeoMetry = (Geometry | Debug),
+	Debug_Geometry = (Geometry | Debug),
 	End = 99999
 };
 
@@ -67,8 +67,10 @@ public:
 	std::wstring Name;
 	std::wstring FBX;
 	PassState Pass;
+
 	GeoMetryFilter Filter;
 	bool isSkinned = false;
+	bool isVisible = true;
 
 	VPMath::Matrix world; //게임 세상의 위치
 	VPMath::Matrix local; //캐릭터 자체 로컬

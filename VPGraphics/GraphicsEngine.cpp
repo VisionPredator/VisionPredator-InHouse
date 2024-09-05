@@ -92,9 +92,17 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
+	/*
 	m_Animator->Update(dt, m_RenderList);
 	m_PassManager->Update(m_RenderList);
 	m_LightManager->Update(m_Lights);
+	*/
+	Culling();
+	m_Animator->Update(dt, m_AfterCulling);
+	m_PassManager->Update(m_AfterCulling);
+	m_LightManager->Update(m_Lights);
+
+	m_AfterCulling.clear();
 }
 
 bool GraphicsEngine::Finalize()
@@ -192,21 +200,38 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
-	//절두체 평면
-	//XMVECTOR v = XMVectorSet(m_ViewProj.r[0].m128_f32[0], m_ViewProj.r[1].m128_f32[0], m_ViewProj.r[2].m128_f32[0], m_ViewProj.r[3].m128_f32[0]);
-	//m_Frustum[0] = XMFLOAT4(XMVectorGetX(v), XMVectorGetY(v), XMVectorGetZ(v), XMVectorGetW(v));
-
-
+	VPMath::Matrix viewInverse = view.Invert();
 	//상수 버퍼는 계산 순서때문에 전치한다
 	cb_worldviewproj = m_ViewProj.Transpose();
 	cb_view = m_View.Transpose();
 	cb_proj = m_Proj.Transpose();
 
-	VPMath::Matrix viewInverse = view.Invert();
 	cb_viewInverse = viewInverse.Transpose();
-
 	VPMath::Matrix projInverse = proj.Invert();
 	cb_projInverse = projInverse.Transpose();
+
+
+	//절두체
+	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum,m_Proj);
+
+
+
+	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
+	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
+	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
+	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+
+	//카메라위치
+	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
+	
+	debug::FrustumInfo temp;
+	temp.Frustum = m_Frustum;
+	temp.Color = { 1,1,0,1 };
+	DrawFrustum(temp);
+
+	
+
+	
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -399,6 +424,46 @@ void GraphicsEngine::OnResize(HWND hwnd)
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
+}
+
+void GraphicsEngine::Culling()
+{
+	for (auto& object : m_RenderList)
+	{
+		std::wstring fbx = object.second->FBX;
+		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
+
+		if (curFBX != nullptr)
+		{
+			for (auto& mesh : curFBX->m_Meshes)
+			{
+				float distanceX = mesh->MaxBounding.x - mesh->MinBounding.x;
+				float distanceY = mesh->MaxBounding.y - mesh->MinBounding.y;
+				float distanceZ = mesh->MaxBounding.z - mesh->MinBounding.z;
+
+				float x = mesh->MinBounding.x + distanceX / 2;
+				float y = mesh->MinBounding.y + distanceY / 2;
+				float z = mesh->MinBounding.z + distanceZ / 2;
+
+				float WorldX = object.second->world._41;
+				float WorldY = object.second->world._42;
+				float WorldZ = object.second->world._43;
+
+				DirectX::BoundingBox box;
+				box.Center = { WorldX + x, WorldY + y,WorldZ + z };
+				box.Extents = { distanceX / 2, distanceY / 2, distanceZ / 2 };
+				
+				DirectX::ContainmentType a = m_Frustum.Contains(box);
+				object.second->isVisible = m_Frustum.Contains(box);
+			}
+		}
+
+		if (object.second->isVisible 
+			|| object.second->Pass == (object.second->Pass  & PassState::Debug_Geometry ))
+		{
+			m_AfterCulling.insert(object);
+		}
+	}
 }
 
 /// Editor

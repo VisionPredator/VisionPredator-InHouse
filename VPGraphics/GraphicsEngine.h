@@ -2,6 +2,8 @@
 #include "IGraphics.h"
 #include "MeshFilter.h"
 
+
+
 #pragma region DX
 class ViewPort;
 class Device;
@@ -91,6 +93,7 @@ protected:
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
+	std::map<uint32_t, std::shared_ptr<RenderData>> m_AfterCulling;
 	std::unordered_map<uint32_t, LightData> m_Lights;
 
 private:
@@ -115,10 +118,13 @@ private:
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;
 	VPMath::Matrix m_ViewProj;
+	DirectX::BoundingFrustum m_Frustum;
 
 	// Pipeline
 	std::shared_ptr<PassManager> m_PassManager;
 	
+private:
+	void Culling();
 
 ///editor
 private:
