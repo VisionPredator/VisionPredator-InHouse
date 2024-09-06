@@ -302,31 +302,31 @@ void Toolbar::NavMeshImGui()
 		// maxCrowdNumber
 		ImGui::Text("Crowd Settings");
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::InputInt("Max Crowd Number", &m_NavBuildSetteing_ImGui.maxCrowdNumber);
+		ImGui::InputInt("Max Crowd Number", &m_NavBuildSetteing_ImGui.MaxCrowdNumber);
 
 		// maxAgentRadius
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat("Max Agent Radius", &m_NavBuildSetteing_ImGui.maxAgentRadius, 0.01f, 0.1f, 10.0f, "%.2f");
+		ImGui::DragFloat("Max Agent Radius", &m_NavBuildSetteing_ImGui.MaxAgentRadius, 0.01f, 0.1f, 10.0f, "%.2f");
 
 		// walkableSlopeAngle
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat("Walkable Slope Angle", &m_NavBuildSetteing_ImGui.walkableSlopeAngle, 1.0f, 0.0f, 90.0f, "%.0f");
+		ImGui::DragFloat("Walkable Slope Angle", &m_NavBuildSetteing_ImGui.WalkableSlopeAngle, 1.0f, 0.0f, 90.0f, "%.0f");
 
 		// walkableClimb
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat("Walkable Climb", &m_NavBuildSetteing_ImGui.walkableClimb, 0.01f, 0.0f, 10.0f, "%.2f");
+		ImGui::DragFloat("Walkable Climb", &m_NavBuildSetteing_ImGui.WalkableClimb, 0.01f, 0.0f, 10.0f, "%.2f");
 
 		// walkableHeight
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat("Walkable Height", &m_NavBuildSetteing_ImGui.walkableHeight, 0.01f, 0.1f, 10.0f, "%.2f");
+		ImGui::DragFloat("Walkable Height", &m_NavBuildSetteing_ImGui.WalkableHeight, 0.01f, 0.1f, 10.0f, "%.2f");
 
 		// divisionSizeXZ
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat("Division Size XZ", &m_NavBuildSetteing_ImGui.divisionSizeXZ, 0.01f, 0.01f, 10.0f, "%.2f");
+		ImGui::DragFloat("Division Size XZ", &m_NavBuildSetteing_ImGui.DivisionSizeXZ, 0.01f, 0.01f, 10.0f, "%.2f");
 
 		// divisionSizeY
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat("Division Size Y", &m_NavBuildSetteing_ImGui.divisionSizeY, 0.01f, 0.01f, 10.0f, "%.2f");
+		ImGui::DragFloat("Division Size Y", &m_NavBuildSetteing_ImGui.DivisionSizeY, 0.01f, 0.01f, 10.0f, "%.2f");
 
 		// Apply button
 		if (ImGui::Button("Apply"))

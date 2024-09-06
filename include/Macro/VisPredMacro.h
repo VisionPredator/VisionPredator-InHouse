@@ -46,7 +46,7 @@
 /// \param CLASSNAME : Class
 /// \param 추가 매개변수 : 가지고있는 멤버변수 순서 맞춰서 기입해주세요.
 #define VP_JSONBODY(CLASSNAME,...)\
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(CLASSNAME, __VA_ARGS__)\
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CLASSNAME, __VA_ARGS__)\
     std::shared_ptr<Component> AddComponent(Entity*  parentEntity) override\
     {\
         auto component = parentEntity->AddComponent<CLASSNAME>();\
@@ -67,3 +67,5 @@
     {\
         return *this;\
     }
+
+//

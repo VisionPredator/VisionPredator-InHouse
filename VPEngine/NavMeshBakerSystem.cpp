@@ -3,32 +3,28 @@
 
 NavMeshBakerSystem::NavMeshBakerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
-	/*if (m_NavMeshData != nullptr)
-	{
-		delete m_NavMeshData;
-	}*/
-	m_NavMeshData.reset();
+	GetSceneManager()->ResetNavMeshData();
+	//m_NavMeshData.reset();
 }
 
 void NavMeshBakerSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 {
-
-	/*if (m_NavMeshData != nullptr)
-		delete m_NavMeshData;
-	m_NavMeshData = new NavMeshData();*/
-	m_NavMeshData = std::make_shared<NavMeshData>();
+	//if (m_NavMeshData != nullptr)
+	//	delete m_NavMeshData;
+	//m_NavMeshData = new NavMeshData();
+	auto navMeshData= std::make_shared<NavMeshData>();
+	GetSceneManager()->SetSceneNavMeshData(navMeshData);
 	std::vector<VPMath::Vector3> worldVertices;
 	std::vector<int> worldFaces;
-
 	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::GROUND, worldVertices, worldFaces);
 	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::WALL, worldVertices, worldFaces);
 	AbleTest(worldVertices, worldFaces, GetSceneManager()->GetSceneBuildSettrings());
-	m_NavMeshData->m_worldVertices = worldVertices;
-
+	GetSceneManager()->GetSceneNavMeshData()->m_worldVertices = worldVertices;
 }
 
 void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)
 {
+	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	float bmin[3]{ FLT_MAX, FLT_MAX, FLT_MAX };
 	float bmax[3]{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
 
@@ -49,14 +45,14 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 		if (bmax[2] < worldVertices[i * 3 + 2])
 			bmax[2] = worldVertices[i * 3 + 2];
 	}
-	auto& config{ m_NavMeshData->config };
+	auto& config{ navMeshdata->config };
 	memset(&config, 0, sizeof(rcConfig));
 
-	config.cs = buildSettings.divisionSizeXZ;
-	config.ch = buildSettings.divisionSizeY;
-	config.walkableSlopeAngle = buildSettings.walkableSlopeAngle;
-	config.walkableHeight = (int)ceilf(buildSettings.walkableHeight / config.ch);
-	config.walkableClimb = (int)floorf(buildSettings.walkableClimb / config.ch);
+	config.cs = buildSettings.DivisionSizeXZ;
+	config.ch = buildSettings.DivisionSizeY;
+	config.walkableSlopeAngle = buildSettings.WalkableSlopeAngle;
+	config.walkableHeight = (int)ceilf(buildSettings.WalkableHeight / config.ch);
+	config.walkableClimb = (int)floorf(buildSettings.WalkableClimb / config.ch);
 	config.walkableRadius = (int)ceilf(config.cs * 2 / config.cs);
 	config.maxEdgeLen = (int)(config.cs * 40 / config.cs);
 	config.maxSimplificationError = 1.3f;
@@ -71,7 +67,7 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	rcCalcGridSize(config.bmin, config.bmax, config.cs, &config.width, &config.height);
 
 	// 작업 맥락을 저장할 context 객체 생성, 작업의 성패여부를 저장할 processResult 선언
-	auto* context = m_NavMeshData->context.get();
+	auto* context = navMeshdata->context.get();
 	bool processResult{ false };
 	// 복셀 높이필드 공간 할당
 	rcHeightfield* heightField{ rcAllocHeightfield() };
@@ -80,8 +76,7 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	processResult = rcCreateHeightfield(context, *heightField, config.width, config.height, config.bmin, config.bmax, config.cs, config.ch);
 	assert(processResult == true);
 
-	std::vector<unsigned char> triareas;
-	triareas.resize(facesNum);
+	std::vector<unsigned char> triareas(facesNum);
 	//unsigned char * triareas = new unsigned char[facesNum];
 	//memset(triareas, 0, facesNum*sizeof(unsigned char));
 
@@ -99,7 +94,8 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	assert(compactHeightField != nullptr);
 
 	processResult = rcBuildCompactHeightfield(context, config.walkableHeight, config.walkableClimb, *heightField, *compactHeightField);
-	//rcFreeHeightField(heightField);
+	rcFreeHeightField(heightField);
+
 	assert(processResult == true);
 
 	//processResult = rcErodeWalkableArea(context, config.walkableRadius, *compactHeightField);
@@ -108,7 +104,7 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	processResult = rcBuildDistanceField(context, *compactHeightField);
 	assert(processResult == true);
 
-	rcBuildRegions(context, *compactHeightField, 0, config.minRegionArea, config.mergeRegionArea);
+	processResult = rcBuildRegions(context, *compactHeightField, 0, config.minRegionArea, config.mergeRegionArea);
 	assert(processResult == true);
 
 	// 윤곽선 만들기
@@ -119,21 +115,22 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	assert(processResult == true);
 
 	// 윤곽선으로부터 폴리곤 생성
-	rcPolyMesh*& polyMesh{ m_NavMeshData->polyMesh = rcAllocPolyMesh() };
+	rcPolyMesh*& polyMesh{ navMeshdata->polyMesh = rcAllocPolyMesh() };
 	assert(polyMesh != nullptr);
 
 	processResult = rcBuildPolyMesh(context, *contourSet, config.maxVertsPerPoly, *polyMesh);
 	assert(processResult == true);
 
 	// 디테일 메시 생성
-	auto& detailMesh{ m_NavMeshData->polyMeshDetail = rcAllocPolyMeshDetail() };
+	auto& detailMesh{ navMeshdata->polyMeshDetail = rcAllocPolyMeshDetail() };
 	assert(detailMesh != nullptr);
 
 	processResult = rcBuildPolyMeshDetail(context, *polyMesh, *compactHeightField, config.detailSampleDist, config.detailSampleMaxError, *detailMesh);
 	assert(processResult == true);
 
-	//rcFreeCompactHeightfield(compactHeightField);
-	//rcFreeContourSet(contourSet);
+	// Free compact heightfield and contour set
+	rcFreeCompactHeightfield(compactHeightField);
+	rcFreeContourSet(contourSet);
 
 	// detour 데이터 생성
 	unsigned char* navData{ nullptr };
@@ -183,28 +180,32 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	processResult = dtCreateNavMeshData(&params, &navData, &navDataSize);
 	assert(processResult == true);
 
-	dtNavMesh* navMesh{ m_NavMeshData->navMesh = dtAllocNavMesh() };
+	dtNavMesh* navMesh{ navMeshdata->navMesh = dtAllocNavMesh() };
 	assert(navMesh != nullptr);
 
 	dtStatus status;
 	status = navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
-	//dtFree(navData);
 	assert(dtStatusFailed(status) == false);
 
-	dtNavMeshQuery* navQuery{ m_NavMeshData->navQuery };
+	dtNavMeshQuery* navQuery{ navMeshdata->navQuery };
 	status = navQuery->init(navMesh, 2048);
 	assert(dtStatusFailed(status) == false);
+	// 오류생김.
+	//dtFree(navData);
+	navMeshdata->crowd->init(1024, buildSettings.MaxAgentRadius, navMesh);
 
-	m_NavMeshData->crowd->init(1024, buildSettings.maxAgentRadius, navMesh);
 }
 
 void NavMeshBakerSystem::Update(float deltaTime)
 {
-	if (m_NavMeshData->crowd == nullptr)
+	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
+	if (!navMeshdata)
 		return;
-	if (m_NavMeshData->crowd->getAgentCount() != 0)
+	if (navMeshdata->crowd == nullptr)
+		return;
+	if (navMeshdata->crowd->getAgentCount() != 0)
 	{
-		m_NavMeshData->crowd->update(deltaTime, nullptr);
+		navMeshdata->crowd->update(deltaTime, nullptr);
 	}
 }
 
@@ -214,7 +215,10 @@ void NavMeshBakerSystem::PhysicsUpdate(float deltaTime)
 
 void NavMeshBakerSystem::Initialize()
 {
+	if (GetSceneManager()->GetSceneBuildSettrings().UseNavMesh)
+	{
 	MakeNavigationMesh(GetSceneManager()->GetSceneBuildSettrings());
+	}
 }
 
 void NavMeshBakerSystem::Start(uint32_t gameObjectId)
@@ -230,20 +234,23 @@ void NavMeshBakerSystem::Finalize()
 	//if (m_NavMeshData != nullptr)
 	//	delete m_NavMeshData;
 	//m_NavMeshData = nullptr;
-	m_NavMeshData.reset();
+	GetSceneManager()->ResetNavMeshData();
+	//m_NavMeshData.reset();
 }
 
 void NavMeshBakerSystem::RenderUpdate(float deltaTime)
 {
-	if (!m_NavMeshData)
+	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
+	if (!navMeshdata)
 		return;
-
 	// Assuming m_NavMeshData->m_worldVertices is a vector of VPMath::Vector3
-	for (size_t i = 0; i < m_NavMeshData->m_worldVertices.size() - 1; ++i)
+	if (navMeshdata->m_worldVertices.empty())
+		return;
+	for (size_t i = 0; i < navMeshdata->m_worldVertices.size() - 1; ++i)
 	{
 		// Current and next vertex
-		VPMath::Vector3 currentVertex = m_NavMeshData->m_worldVertices[i];
-		VPMath::Vector3 nextVertex = m_NavMeshData->m_worldVertices[i + 1];
+		VPMath::Vector3 currentVertex = navMeshdata->m_worldVertices[i];
+		VPMath::Vector3 nextVertex = navMeshdata->m_worldVertices[i + 1];
 
 		// Calculate direction as the difference between the next and current vertex
 		VPMath::Vector3 direction = nextVertex - currentVertex;

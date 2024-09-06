@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Components.h"
 #include "EventSubscriber.h"
+#include "NavMeshData.h"
 struct PrefabData
 {
 	uint32_t MainEntityID;
@@ -79,6 +80,7 @@ public:
 	{
 		return GetEntity(entityID)->GetComponent(compId);
 	}
+
 	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
 	{
 		auto it = m_CurrentScene->EntityMap.find(entityID);
@@ -108,6 +110,9 @@ public:
 protected:
 	friend class CompIter;
 private:
+	std::shared_ptr<NavMeshData> GetSceneNavMeshData() { return m_CurrentScene->SceneNavData; }
+	void SetSceneNavMeshData(std::shared_ptr<NavMeshData> navMeshdata) { m_CurrentScene->SceneNavData = navMeshdata; }
+	void ResetNavMeshData() { m_CurrentScene->SceneNavData.reset(); }
 	std::unordered_map<uint32_t, std::shared_ptr<Entity>>& GetEntityMap()
 	{
 		return m_CurrentScene->EntityMap;
@@ -189,6 +194,7 @@ private:
 
 	friend class Toolbar;
 	friend class SceneSerializer;
+	friend class NavMeshBakerSystem;
 };
 
 

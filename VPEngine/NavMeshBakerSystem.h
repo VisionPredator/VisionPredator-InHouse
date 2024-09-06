@@ -32,8 +32,6 @@ public:
     void Finalize() override;
     
     //friend NavigationAgent;
-    std::shared_ptr<NavMeshData>m_NavMeshData;
-    //NavMeshData* m_NavMeshData;
 private:
     friend NavMeshData;
     // IRenderable을(를) 통해 상속됨
