@@ -6,7 +6,20 @@
 void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 {
 	m_ResourceManager = manager;
-	m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png"));
+	//m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png"));
+
+
+	for (int i = 0; i < 4; i++)
+	{
+		std::wstring index = std::to_wstring(i);
+		std::wstring text = L"Lightmap-";
+		text = text + index;
+		text = text + L"_comp_light.png";
+
+		m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(text));
+
+	}
+
 }
 
 void LightManager::EraseData(uint32_t EntityID, LightType type)
@@ -86,14 +99,14 @@ void LightManager::Update(std::unordered_map<uint32_t, LightData>& usinglight)
 std::weak_ptr<ShaderResourceView> LightManager::GetLightMap(int index)
 {
 
-	if (m_LightMap[index].lock() != nullptr)
+	if (m_LightMap.size() > index)
 	{
 		return m_LightMap[index];
 	}
 	else
 	{
-		std::wstring text = L"LightMap Index not exist";
-		MessageBox(0, text.c_str(), 0, 0);
+		//std::wstring text = L"LightMap Index not exist";
+		//MessageBox(0, text.c_str(), 0, 0);
 	}
 
 	return {};

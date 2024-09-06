@@ -31,7 +31,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->lightmapindex = meshComponent->LightMapIndex;
 		meshComponent->Renderdata->scale = meshComponent->LightMapScale;
 		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
-		meshComponent->Renderdata->Pass = meshComponent->pass;
+		meshComponent->Renderdata->Pass = meshComponent->Pass;
 
 		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
 		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
@@ -201,9 +201,9 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 
 	renderdata->FBX = meshComp.FBX;
 	renderdata->world = transform.WorldTransform;
-	renderdata->Pass = meshComp.pass;
+	renderdata->Pass = meshComp.Pass;
+	renderdata->rotation = transform.World_Rotation;
 
-	m_Graphics->UpdateModel(meshComp.GetEntityID()); 
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
@@ -228,10 +228,6 @@ void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 			renderdata->preAnimation = anicomp->preAnimation;
 		}
 	}
-	m_Graphics->UpdateModel(skinComp.GetEntityID());
-
-	
-
 }
 
 void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
@@ -247,8 +243,6 @@ void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
 	renderdata->world = transform.WorldTransform;
 	renderdata->useTexture = geometryComp.UseTexture;
 	renderdata->textureName = geometryComp.TextureName;
-	m_Graphics->UpdateModel(geometryComp.GetEntityID()); 
-
 }
 
 

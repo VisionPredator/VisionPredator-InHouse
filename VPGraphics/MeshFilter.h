@@ -75,6 +75,9 @@ public:
 	VPMath::Matrix world; //게임 세상의 위치
 	VPMath::Matrix local; //캐릭터 자체 로컬
 
+	VPMath::Vector3 rotation;
+
+
 	//특정 컴포넌트에 대응하기 위한 변수
 	float duration;
 	float preDuration;

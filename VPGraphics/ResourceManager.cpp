@@ -182,7 +182,18 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 
 	//LightMap
 	{
-		Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
+		for (int i = 0; i < 4; i++)
+		{
+			std::wstring index = std::to_wstring(i);
+			std::wstring text = L"Lightmap-";
+			text = text + index;
+			text = text + L"_comp_light.png";
+
+
+			//Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
+			Create<ShaderResourceView>(text,text);
+		}
+
 	}
 }
 

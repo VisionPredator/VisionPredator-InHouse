@@ -83,7 +83,7 @@ void DebugPass::Render()
 				gridInfo.Color = VPMath::Color{ 1,1,1, 1 };
 				debugManager->AddTask(gridInfo);
 			}
-				break;
+			break;
 
 			case GeoMetryFilter::Axis:
 			{
@@ -114,11 +114,11 @@ void DebugPass::Render()
 				debugManager->AddTask(z);
 
 			}
-				break;
+			break;
 
 			case GeoMetryFilter::Frustum:
 			{
-				
+
 				debug::FrustumInfo frustumInfo;
 
 				frustumInfo.Frustum.Origin = { curData->world._41,curData->world._42,curData->world._43 };
@@ -130,11 +130,11 @@ void DebugPass::Render()
 				frustumInfo.Frustum.TopSlope = 0.4142f;
 				frustumInfo.Frustum.BottomSlope = -0.4142;
 				frustumInfo.Color = VPMath::Color{ 1, 1, 0, 1 };
-				
+
 				debugManager->AddTask(frustumInfo);
 
 			}
-				break;
+			break;
 
 			default:
 				break;
@@ -145,25 +145,36 @@ void DebugPass::Render()
 			std::shared_ptr<ModelData> curFBX = resourceManager->Get<ModelData>(curData->FBX).lock();
 			if (curFBX != nullptr)
 			{
+
+				VPMath::Vector3 s;
+				VPMath::Quaternion r;
+				VPMath::Vector3 t;
+				curData->world.Decompose(s, r, t);
+
+				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
+				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
+
 				for (auto& mesh : curFBX->m_Meshes)
 				{
-					float distanceX = mesh->MaxBounding.x - mesh->MinBounding.x;
-					float distanceY = mesh->MaxBounding.y - mesh->MinBounding.y;
-					float distanceZ = mesh->MaxBounding.z - mesh->MinBounding.z;
+					//S
+					VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+					VPMath::Vector3 afterMin = mesh->MinBounding * s;
 
-					float x = mesh->MinBounding.x + distanceX / 2;
-					float y = mesh->MinBounding.y + distanceY / 2;
-					float z = mesh->MinBounding.z + distanceZ / 2;
+					VPMath::Vector3 distance = afterMax - afterMin;
+					VPMath::Vector3 half = distance / 2;
 
-					float WorldX = curData->world._41;
-					float WorldY = curData->world._42;
-					float WorldZ = curData->world._43;
 
-					debug::AABBInfo boxInfo;
-					boxInfo.AABB.Center = { WorldX + x, WorldY + y,WorldZ + z };
-					boxInfo.AABB.Extents = { distanceX / 2, distanceY / 2, distanceZ / 2 };
-					boxInfo.Color = VPMath::Color{ 0, 1, 0, 1 };
-					debugManager->AddTask(boxInfo);
+
+					debug::OBBInfo obbInfo;
+					obbInfo.OBB.Center = t + afterMin + half;
+					obbInfo.OBB.Extents = half;
+					obbInfo.xAxisAngle = curData->rotation.x;
+					obbInfo.yAxisAngle = curData->rotation.y;
+					obbInfo.zAxisAngle = curData->rotation.z;
+
+					obbInfo.Color = { 1,0,0,1 };
+					debugManager->AddTask(obbInfo);
+
 				}
 
 			}

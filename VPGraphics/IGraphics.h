@@ -53,6 +53,8 @@ namespace Graphics
 		
 		//카메라의 상태 업데이트
 		virtual void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) abstract;
+		//컬링용 카메라 가시성 보려고 만듦
+		virtual void testCulling(VPMath::Matrix view, VPMath::Matrix proj) abstract;
 
 		//렌더링
 		virtual bool AddRenderModel(std::shared_ptr<RenderData> data) abstract;
@@ -92,5 +94,4 @@ namespace Graphics
 		///물리 전용
 		virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) abstract;
 	};
-
 }

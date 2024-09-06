@@ -210,7 +210,6 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	VPMath::Matrix projInverse = proj.Invert();
 	cb_projInverse = projInverse.Transpose();
 
-
 	//절두체
 	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum,m_Proj);
 
@@ -219,19 +218,12 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
 	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
 	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
-	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
 
+
+	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+		
 	//카메라위치
 	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
-	
-	debug::FrustumInfo temp;
-	temp.Frustum = m_Frustum;
-	temp.Color = { 1,1,0,1 };
-	DrawFrustum(temp);
-
-	
-
-	
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -241,6 +233,25 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	Camera.lock()->m_struct.worldviewproj = cb_worldviewproj;
 	Camera.lock()->m_struct.orthoProj = orthoProj;
 	Camera.lock()->Update();
+}
+
+void GraphicsEngine::testCulling(VPMath::Matrix view, VPMath::Matrix proj)
+{
+	VPMath::Matrix viewInverse = view.Invert();
+
+	//절두체
+	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
+
+	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
+	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
+	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
+
+
+	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+
+	//카메라위치
+	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
+
 }
 
 void GraphicsEngine::UpdateModel(uint32_t EntityID)
@@ -435,26 +446,31 @@ void GraphicsEngine::Culling()
 
 		if (curFBX != nullptr)
 		{
+			VPMath::Vector3 s;
+			VPMath::Quaternion r;
+			VPMath::Vector3 t;
+			object.second->world.Decompose(s, r, t);
+
+			VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
+			VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
+
 			for (auto& mesh : curFBX->m_Meshes)
 			{
-				float distanceX = mesh->MaxBounding.x - mesh->MinBounding.x;
-				float distanceY = mesh->MaxBounding.y - mesh->MinBounding.y;
-				float distanceZ = mesh->MaxBounding.z - mesh->MinBounding.z;
+				//S
+				VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+				VPMath::Vector3 afterMin = mesh->MinBounding * s;
 
-				float x = mesh->MinBounding.x + distanceX / 2;
-				float y = mesh->MinBounding.y + distanceY / 2;
-				float z = mesh->MinBounding.z + distanceZ / 2;
+				VPMath::Vector3 distance = afterMax - afterMin;
+				VPMath::Vector3 half = distance / 2;
 
-				float WorldX = object.second->world._41;
-				float WorldY = object.second->world._42;
-				float WorldZ = object.second->world._43;
-
-				DirectX::BoundingBox box;
-				box.Center = { WorldX + x, WorldY + y,WorldZ + z };
-				box.Extents = { distanceX / 2, distanceY / 2, distanceZ / 2 };
+				DirectX::BoundingOrientedBox obbInfo;
 				
-				DirectX::ContainmentType a = m_Frustum.Contains(box);
-				object.second->isVisible = m_Frustum.Contains(box);
+				obbInfo.Center = t + afterMin + half;
+				obbInfo.Extents = half;
+				obbInfo.Orientation = r;
+				
+				DirectX::ContainmentType a = m_Frustum.Contains(obbInfo);
+				object.second->isVisible = m_Frustum.Contains(obbInfo);
 			}
 		}
 

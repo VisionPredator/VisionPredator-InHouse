@@ -377,7 +377,10 @@ void DeferredPass::Geometry()
 							data.useNEOL.w = 1;
 
 							std::shared_ptr<ShaderResourceView> lightmap = m_LightManager.lock()->GetLightMap(curData->lightmapindex).lock();
-							Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
+							if (lightmap != nullptr)
+							{
+								Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
+							}
 						}
 						curMaterialData->Update(data);
 

@@ -48,7 +48,7 @@ public:
 	void OnResize(HWND hwnd) override;
 
 	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
-
+	void testCulling(VPMath::Matrix view, VPMath::Matrix proj) override;
 	/// Model
 	bool AddRenderModel(std::shared_ptr<RenderData> data)override;
 	void EraseObject(uint32_t EntityID) override;
