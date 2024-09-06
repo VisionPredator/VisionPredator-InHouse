@@ -6,42 +6,37 @@ struct Component
     Component() = default;
     virtual ~Component()
     {
-        OwnedEntity.reset(); // Reset the weak pointer for safety
+        OwnedEntity=nullptr; // Reset the weak pointer for safety
     }
 
     virtual void SerializeComponent(nlohmann::json& json) const {}
-    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, std::shared_ptr<Entity> parentEntity) const { return nullptr; }
-    virtual std::shared_ptr<Component> AddComponent(std::shared_ptr<Entity> parentEntity) { return nullptr; }
+    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity, bool Immidiate = false,bool UseAddCompToScene=true) const { return nullptr; }
+
+    virtual std::shared_ptr<Component> AddComponent(Entity* parentEntity) { return nullptr; }
 
     template <typename T>
-    T* GetComponent()
+	T* GetComponent()
+	{
+		return OwnedEntity->GetComponent<T>();
+	}
+
+	template <typename T>
+	bool HasComponent()
+	{
+		return OwnedEntity->HasComponent<T>();
+	}
+
+	uint32_t GetEntityID()
+	{
+		return OwnedEntity->GetEntityID();
+	}
+
+    Entity* GetEntity()
     {
-        auto sharedEntity = OwnedEntity.lock();
-        return sharedEntity ? sharedEntity->GetComponent<T>() : nullptr;
+        return OwnedEntity;
     }
 
-    template <typename T>
-    bool HasComponent()
-    {
-        if (auto sharedEntity = OwnedEntity.lock())
-        {
-            return sharedEntity->HasComponent<T>();
-        }
-        return false;
-    }
-
-    uint32_t GetEntityID()
-    {
-        auto sharedEntity = OwnedEntity.lock();
-        return sharedEntity ? sharedEntity->GetEntityID() : 0;
-    }
-
-    std::shared_ptr<Entity> GetEntity()
-    {
-        return OwnedEntity.lock();
-    }
-
-    void SetEntity(std::shared_ptr<Entity> entity)
+    void SetEntity(Entity* entity)
     {
         OwnedEntity = entity;
     }
@@ -49,6 +44,6 @@ struct Component
     virtual entt::meta_handle GetHandle() = 0;
 
 protected:
-    std::weak_ptr<Entity> OwnedEntity;
+    Entity* OwnedEntity;
     friend class SceneManager;
 };

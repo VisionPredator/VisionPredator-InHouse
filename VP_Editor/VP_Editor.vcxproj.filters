@@ -78,6 +78,12 @@
     <ClInclude Include="EditorViewPort.h">
       <Filter>ImGuiBar</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Macro\ReflectionMacro.h">
+      <Filter>Macro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Macro\VisPredMacro.h">
+      <Filter>Macro</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VPMain.cpp">

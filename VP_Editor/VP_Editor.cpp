@@ -39,7 +39,8 @@ VP_Editor::~VP_Editor()
         ImGui.reset();
 	}
 	m_ImGuis.clear();
-    
+    ImGuiFileDialog::Instance()->ClearFilesStyle();
+
     m_HierarchySystem.reset();
 }
 
@@ -50,16 +51,15 @@ void VP_Editor::Update()
         m_TimeManager->Update();
         m_DeltaTime = m_TimeManager->GetDeltaTime();
         EventManager::GetInstance().Update(m_DeltaTime);
-        EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
+        m_TransformSystem->Update(m_DeltaTime);
+        //EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
 
-		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
-
-        if (m_TimeManager->GetPrevFPS()!= m_TimeManager->GetFPS())
+        if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
         {
-        std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
-        SetWindowTextW(m_hWnd, newname.c_str());
+            std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
+            SetWindowTextW(m_hWnd, newname.c_str());
         }
 
 	}
@@ -72,6 +72,13 @@ void VP_Editor::Update()
 
 void VP_Editor::Render()
 {
+    if (m_IsEditorMode)
+    {
+        m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
+
+    }
+
+
 	VPEngine::Render();
 
 	// Create a window called "Hello, world!" and append into it.

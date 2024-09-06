@@ -67,7 +67,13 @@ ConstantBuffer<T>::ConstantBuffer(const std::shared_ptr<Device>& device, const C
 		}
 	}
 
-	HR_CHECK(device->Get()->CreateBuffer(&desc, nullptr, m_buffer.GetAddressOf()));
+	//HR_CHECK(device->Get()->CreateBuffer(&desc, nullptr, m_buffer.GetAddressOf()));
+	HRESULT hr = m_Device.lock()->Get()->CreateBuffer(&desc, nullptr, m_buffer.GetAddressOf());
+	if (FAILED(hr))
+	{
+		std::wstring text = L"Create Failed CB";
+		MessageBox(0,text.c_str() ,0,0);
+	}
 }
 
 //template<typename T>

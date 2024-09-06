@@ -52,9 +52,13 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 	m_Width = metadata.width;
 	m_Height = metadata.height;
 
+	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, &m_SRV));
+
 	if (FAILED(hr))
 	{
-		MessageBox(0, L"텍스처 로드 실패! 지원되지 않는 텍스처 포맷이거나 텍스처를 찾을 수 없습니다.", 0, 0);
+		std::wstring text = L"Create Failed this File : ";
+		text = text + filePath;
+		MessageBox(0, text.c_str(), 0, 0);
 	}
 
 	// TODO: 텍스처를 찾지 못했을 때의 대처가 필요.

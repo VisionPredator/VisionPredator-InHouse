@@ -41,7 +41,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
   
     if (AMRO.x > 0)
     {
-        albedoColor = gAlbedo.Sample(samLinear, input.tex).rgb;
+        albedoColor = pow(gAlbedo.Sample(samLinear, input.tex), gamma).rgb;
     }
     else
     {
@@ -61,7 +61,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
     if (AMRO.z > 0)
     {
-        roughnessValue = gRoughness.Sample(samLinear, input.tex).r;
+        roughnessValue = gMetalic.Sample(samLinear, input.tex).g;
     }
     else
     {
@@ -87,7 +87,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         emissive = 0;
     }
     
-    if (useNEO.y > 0)
+    if (useNEO.z > 0)
     {
         opacity = gOpacity.Sample(samLinear, input.tex);    
     }

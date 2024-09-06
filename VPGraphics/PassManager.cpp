@@ -98,6 +98,7 @@ void PassManager::Render()
 	m_Passes[PassState::Forward]->Render();
 	m_Passes[PassState::ObjectMask]->Render();
 
+	//DrawGBuffer();		// 필요 없는 패스
 	// TODO: Outline Pass Render
 	m_OutlineEdgeDetectPass->Render();
 	//m_OutlineBlurPass->Render();

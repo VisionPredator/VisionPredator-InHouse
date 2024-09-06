@@ -15,7 +15,7 @@
 #include <string_view>
 #include <entt/entt.hpp>
 #include <d3d11.h>
-#include <PxPhysicsAPI.h>
+//#include <PxPhysicsAPI.h>
 
 #include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;

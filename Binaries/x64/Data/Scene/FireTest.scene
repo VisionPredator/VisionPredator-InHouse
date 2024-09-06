@@ -1,0 +1,1037 @@
+{
+    "Entitys": [
+        {
+            "EntityID": 937316167,
+            "Component": [
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor3_low"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        51,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2729991094,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor1-1_low"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 15.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        49,
+                        45,
+                        49,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 785002603,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "FirePos"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 1.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 940613800
+                }
+            ]
+        },
+        {
+            "EntityID": 3944066448,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor1-1_low"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -15.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        49,
+                        45,
+                        49,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 882328027,
+            "Component": [
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor3_low"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        51,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -30.0,
+                        "y": 0.0,
+                        "z": 15.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2100147112,
+            "Component": [
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor3_low"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        51,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -15.0,
+                        "y": 0.0,
+                        "z": 15.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 3036384233,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor3_low"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -30.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        51,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 2225935069,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor1-1_low"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        49,
+                        45,
+                        49,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 2892208747,
+            "Component": [
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "floor3_low"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        51,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "FBXFilter": 3,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 30.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2083831538,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Player"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 5.163610458374023,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999999403953552,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Accel": 0.0,
+                    "AirControl": 0.0,
+                    "ComponentID": 4183631247,
+                    "FirPosition": "FirePos",
+                    "HP": 0,
+                    "HasGun": true,
+                    "JumpFoce": 0.0,
+                    "MaxJumpCount": 0,
+                    "Maxspeed": 0.0,
+                    "Sencitive": 0.10000000149011612
+                },
+                {
+                    "Acceleration": 1000.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 3
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 4.0,
+                        "position": {
+                            "x": 0.0,
+                            "y": 5.163610458374023,
+                            "z": 0.0
+                        },
+                        "radius": 2.0,
+                        "slopeLimit": 0.30000001192092896,
+                        "stepOffset": 0.0
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 3
+                    },
+                    "DynamicFriction": 0.0,
+                    "GravityWeight": 2.0,
+                    "JumpSpeed": 0.05000000074505806,
+                    "JumpXZAcceleration": 0.20000000298023224,
+                    "JumpXZDeceleration": 0.0,
+                    "MaxSpeed": 40.0,
+                    "StaticFriction": 40.0
+                },
+                {
+                    "ChildrenID": [
+                        940613800
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 940613800,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerCamera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 2.0,
+                        "z": 2.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0000001192092896,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2083831538
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 1000.0,
+                    "IsMain": true,
+                    "NearZ": 1.0
+                },
+                {
+                    "ChildrenID": [
+                        785002603
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 3736015197,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "cube"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 1,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 4,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": true
+                    },
+                    "IsDynamic": true,
+                    "SphereInfo": {
+                        "Radius": 0.4000000059604645
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1876878484,
+                    "Damage": 1.0,
+                    "Speed": 50.0
+                },
+                {
+                    "ComponentID": 195544957,
+                    "LifeTime": 2.0
+                }
+            ]
+        }
+    ],
+    "PhysicsInfo": {
+        "CollisionMatrix": [
+            59,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+        ],
+        "FrameRate": 60,
+        "Gravity": {
+            "x": 0.0,
+            "y": -9.8100004196167,
+            "z": 0.0
+        }
+    }
+}

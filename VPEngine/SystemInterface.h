@@ -54,8 +54,10 @@ public:
 	virtual void Finalize() = 0;
 };
 
-class ICollisionalbe
+
+class IContactable
 {
+public:
 	virtual void EnterCollision(std::pair<uint32_t,uint32_t> entitypair) = 0;
 	virtual void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) = 0;
 

@@ -14,20 +14,37 @@ public:
     template<typename T>
     T* GetComponent() requires std::derived_from<T, Component>
     {
-        return FindComponent<T>();
-    }
+        auto comp = std::static_pointer_cast<T>(m_OwnedComp[Reflection::GetTypeID<T>()]).get();
+        if (comp)
+            return comp;
+        else
+        {
+            VP_ASSERT(false, "GetComp를 잘못사용하였습니다.");
+            return nullptr;
+        }
 
-    Component* GetComponent(entt::id_type compID)
-    {
-        return FindComponent(compID);
-    }
 
-    template<typename T>
-    bool HasComponent() const
+	}
+
+	Component* GetComponent(entt::id_type compID)
+	{
+		auto comp = m_OwnedComp[compID].get();
+		if (comp)
+
+			return comp;
+		else
+		{
+			VP_ASSERT(false, "GetComp를 잘못사용하였습니다.");
+			return nullptr;
+		}
+	}
+
+	template<typename T>
+	bool HasComponent() const
     {
         return m_OwnedComp.find(Reflection::GetTypeID<T>()) != m_OwnedComp.end();
     }
-
+    void DestorySelf(bool immidiate = false );
     bool HasComponent(entt::id_type compID) const
     {
         return m_OwnedComp.find(compID) != m_OwnedComp.end();
@@ -38,7 +55,7 @@ public:
     void AddComponentToMap(std::shared_ptr<Component> comp);
 
     template<typename T>
-    std::shared_ptr<T> AddComponent(bool Immediately = false)
+    std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene=true)
     {
         if (HasComponent<T>())
         {
@@ -47,15 +64,16 @@ public:
         }
         std::shared_ptr<T> newcomp = std::make_shared<T>();
         AddComponentToMap(newcomp);
-        newcomp->SetEntity(shared_from_this()); // Use shared_from_this to set the entity
-        if (!Immediately)
-            EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-        else
-            EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-        return newcomp;
-    }
+		newcomp->SetEntity(this); // Use shared_from_this to set the entity
+		if (UseAddCompToScene)
+			if (!Immediately)
+				EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+			else
+				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+		return newcomp;
+	}
 
-    std::shared_ptr<Component> AddComponent(entt::id_type compID);
+	std::shared_ptr<Component> AddComponent(entt::id_type compID);
 
     template<typename T>
     void RemoveComponent()
@@ -82,23 +100,7 @@ private:
 
     void SetEntityID(uint32_t entityid) { m_EntityID = entityid; }
 
-    template<typename T>
-    T* FindComponent()
-    {
-        auto it = m_OwnedComp.find(Reflection::GetTypeID<T>());
-        return (it != m_OwnedComp.end()) ? std::static_pointer_cast<T>(it->second).get() : nullptr;
-    }
 
-    Component* FindComponent(entt::id_type compID)
-    {
-        auto it = m_OwnedComp.find(compID);
-        if (it == m_OwnedComp.end())
-        {
-            VP_ASSERT(false, "Component not found in m_OwnedComp");
-            return nullptr;
-        }
-        return it->second.get();
-    }
 
     void ReleaseComponent(std::shared_ptr<Component> comp);
     void ReleaseComponent(Component* comp);

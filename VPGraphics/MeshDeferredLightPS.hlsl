@@ -53,7 +53,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     //texture sampling
     float3 albedoColor = pow(gAlbedo.Sample(samLinear, input.tex).rgb, float3(gamma, gamma, gamma)); //Gamma Correction 여기서도 해주자
     float metallicValue = gMetalic.Sample(samLinear, input.tex).r; //quad에 텍스처를 샘플링해서 이상하게 나오는거였음
-    float roughnessValue = gRoughness.Sample(samLinear, input.tex).r;
+    float roughnessValue = gMetalic.Sample(samLinear, input.tex).g;
     float aoValue = gAO.Sample(samLinear, input.tex).r;
     float3 EmissiveValue = pow(gEmissive.Sample(samLinear, input.tex).rgb, float3(gamma, gamma, gamma));
     float4 depthTemp = gDepth.Sample(samLinear, input.tex);
@@ -81,12 +81,15 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 
     }
     
-    //indirectlight = albedoColor; //* lightmapvalue;
+    float2 uv = gLightMap.Sample(samLinear, input.tex).rg;
+    
+    indirectlight = float3(0,0,0);
+    indirectlight = gLightMap.Sample(samLinear,input.tex);
 
     //ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
 
-    directlight = ambient + directlight;
+    directlight = indirectlight + directlight;
  
     
     result = directlight + indirectlight;

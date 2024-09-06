@@ -4,9 +4,9 @@ EventManager* EventManager::instance = nullptr;
 void EventManager::Update(float deltatime)
 {
 	// m_ScheduledEvents에 있는 이벤트를 m_SchedulingEvents로 옮기기
-	for (const auto& event : m_ScheduledBasicEvents)
-		m_ScheduledEvents.push_back(event);
 	for (const auto& event : m_ScheduledSpawnEvents)
+		m_ScheduledEvents.push_back(event);
+	for (const auto& event : m_ScheduledBasicEvents)
 		m_ScheduledEvents.push_back(event);
 	for (const auto& event : m_ScheduledSceneEvents)
 		m_ScheduledEvents.push_back(event);

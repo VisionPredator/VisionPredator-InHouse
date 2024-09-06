@@ -13,9 +13,10 @@ void TestCameraSystem::Update(float deltaTime)
 
 		if (!Camera.IsMain)
 			continue;
-		if (!Camera.GetComponent<IdentityComponent>())
+		if (!Camera.HasComponent<IdentityComponent>())
 			continue;
-		if (Camera.GetComponent<IdentityComponent>()->UUID != "TestCamera")
+		if (Camera.HasComponent<IdentityComponent>())
+			if (Camera.GetComponent<IdentityComponent>()->UUID != "TestCamera")
 			continue;
 
 		TransformComponent* cameraTransform = Camera.GetComponent<TransformComponent>();
@@ -37,7 +38,7 @@ void TestCameraSystem::Update(float deltaTime)
 			moveDirection.y += 1;
 
 		moveDirection.Normalize();
-		cameraTransform->World_Location += moveSpeed * moveDirection * deltaTime;
+		cameraTransform->AddWorldLocation((moveSpeed * moveDirection * deltaTime));
 
 		if (INPUTKEY(MOUSEKEY::RBUTTON))
 		{

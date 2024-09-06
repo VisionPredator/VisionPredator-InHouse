@@ -114,7 +114,7 @@ void ForwardPass::Render()
 					MaterialData curMaterialData = curMaterial->m_Data;
 					curData->Update(curMaterialData);
 
-					if (curData->m_struct.useNEO.z > 0)
+					if (curData->m_struct.useNEOL.z > 0)
 					{
 						Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
 						Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);

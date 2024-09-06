@@ -1,5 +1,5 @@
 #pragma once
-#include "VPEngine.h"
+#include "../VPEngine/VPEngine.h"
 #include "../VisionpredatorProcess/VPProcess.h"
 #include "EventSubscriber.h"
 class EditorCamera;
