@@ -152,7 +152,7 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 	std::wstring id = std::to_wstring(data->EntityID);
 	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
 	{
-		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, ConstantBufferType::Default);
 	}
 
 	m_RenderList[data->EntityID] = data;
@@ -224,7 +224,7 @@ void GraphicsEngine::UpdateModel(uint32_t EntityID)
 			case MeshFilter::Static:
 			case MeshFilter::Skinning:
 			{
-				//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
+				m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward | PassState::ObjectMask;
 				//m_RenderList[EntityID]->Pass = PassState::Forward;
 				//m_RenderList[EntityID]->Pass = PassState::Forward;
 
@@ -408,6 +408,8 @@ std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
 
 void GraphicsEngine::OnResize(HWND hwnd)
 {
+	/// TODO: 매니저들의 OnResize 함수 불러오기. 실제로 Resize 되도록 고치기.
+
 	m_hWnd = hwnd;
 	GetClientRect(m_hWnd, &m_wndSize);
 

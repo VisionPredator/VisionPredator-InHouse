@@ -7,7 +7,7 @@ enum class DepthStencilStateType
 	Default,
 	DisableDepth,
 	NoDepthWrites,
-	//etc..
+	LessEqual,//etc..
 
 	End
 };

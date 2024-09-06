@@ -99,8 +99,8 @@ namespace ui
 	struct ImageInfo
 	{
 		std::string ImagePath;
-		float StartPosX = 0.f;
-		float StartPosY = 0.f;
+		float PosXPercent = 0.f;
+		float PosYPercent = 0.f;
 		float Scale = 1.f;		
 		uint32_t Layer = 0;		// 이미지 깊이값
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba

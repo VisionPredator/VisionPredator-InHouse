@@ -19,6 +19,7 @@ enum class PassState : unsigned int
 	Debug = 1 << 2,
 	Deferred = 1 << 3,
 	GeoMetry = 1 << 4,
+	ObjectMask = 1 << 5,
 
 	End = 99999
 };

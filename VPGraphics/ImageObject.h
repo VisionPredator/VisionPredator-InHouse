@@ -52,12 +52,13 @@ private:
 	uint32_t m_BitmapWidth = 0;		// 임시
 	uint32_t m_BitmapHeight = 0;	// 임시
 
-	float m_PreviousPosX = -1;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
-	float m_PreviousPosY = -1;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
+	float m_PreviousPosXPercent = 0.f;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
+	float m_PreviousPosYPercent = 0.f;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
 	uint32_t m_PreviousWidth = -1;
 	uint32_t m_PreviousHeight = -1;
 	float m_PreviousScale = -1;
-
+	uint32_t m_PreviousScreenWidth = 0;
+	uint32_t m_PreviousScreenHeight = 0;
 
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<IndexBuffer> m_IndexBuffer;
@@ -68,4 +69,9 @@ private:
 	
 	int m_vertexCount = 0;
 	int m_indexCount = 0;
+
+	float m_ImageCenterPosX = 0;
+	float m_ImageCenterPosY = 0;
+	float m_ImagePosX = 0;
+	float m_ImagePosY = 0;
 };

@@ -111,7 +111,6 @@ void DeferredPass::OnResize()
 	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
 	m_LightMap = manager->Get<ShaderResourceView>(L"LightMap").lock();
 
-
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
@@ -120,7 +119,7 @@ void DeferredPass::OnResize()
 void DeferredPass::Geometry()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
 	// Bind Common Resources
 	{
@@ -190,7 +189,6 @@ void DeferredPass::Geometry()
 				//if (!mesh->IsSkinned())
 				if (curData->Filter == MeshFilter::Static)
 				{
-
 					Device->BindVS(m_StaticMeshVS.lock());
 
 					// CB Update
@@ -285,7 +283,7 @@ void DeferredPass::Light()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
 	std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
 

@@ -144,18 +144,27 @@ VertexShader::VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_v
 	}
 }
 
-VertexShader::VertexShader(const std::shared_ptr<Device>& device, const std::wstring& filename, const std::string& entryPoint, const D3D_SHADER_MACRO* macro)
+VertexShader::VertexShader(const std::shared_ptr<Device>& device, 
+	const std::wstring& filename, 
+	const std::string& entryPoint, 
+	const D3D_SHADER_MACRO* macro
+)
+	: Shader(device, filename)
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
+	std::wstring basePath;
 #ifdef _DEBUG
 	shaderFlag |= D3DCOMPILE_DEBUG;
 	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
+	basePath = L"..\\..\\..\\VPGraphics\\";
+#else
+	basePath = L"..\\Data\\HLSL\\";
 #endif
-	const std::string& shaderModel = "vs_5_0";
 
-	const std::wstring hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
+	const std::string& shaderModel = "vs_5_0";
+	const std::wstring hlslFileBasePath = basePath;
 	const std::wstring hlslFileExtension = L".hlsl";
 	const std::wstring binaryFileExtension = L".cso";
 

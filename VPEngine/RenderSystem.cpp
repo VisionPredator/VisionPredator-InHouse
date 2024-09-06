@@ -94,8 +94,8 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
 		ui::ImageInfo info;
 		info.ImagePath = component->TexturePath;
-		info.StartPosX = component->StartPosX;
-		info.StartPosY = component->StartPosY;
+		info.PosXPercent = component->PosXPercent;
+		info.PosYPercent = component->PosYPercent;
 		info.Layer = component->Layer;
 		info.Color = component->Color;
 		info.Scale = component->Scale;
@@ -182,8 +182,8 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	{
 		ui::ImageInfo info;
 		info.ImagePath = component.TexturePath;
-		info.StartPosX = component.StartPosX;
-		info.StartPosY = component.StartPosY;
+		info.PosXPercent = component.PosXPercent;
+		info.PosYPercent = component.PosYPercent;
 		info.Layer = component.Layer;
 		info.Color = component.Color;
 		info.Scale = component.Scale;
