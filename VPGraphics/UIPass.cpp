@@ -31,8 +31,8 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 
 	//ui::ImageInfo testInfo3 = {};
 	//testInfo3.ImagePath = "GOSEGUI0900.png";
-	//testInfo3.StartPosX = 800.f;
-	//testInfo3.StartPosY = 300.f;
+	//testInfo3.PosXPercent = 800.f;
+	//testInfo3.PosYPercent = 300.f;
 	//testInfo3.Layer = 1;
 	//m_UIManager->CreateImageObject(600, testInfo3);
 #pragma endregion

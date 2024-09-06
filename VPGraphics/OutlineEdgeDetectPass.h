@@ -39,8 +39,11 @@ private:
 	std::shared_ptr<VertexShader> m_OutlineEdgeDetectVS;
 	std::shared_ptr<PixelShader> m_OutlineEdgeDetectPS;
 
+	std::shared_ptr<Sampler> m_LinearClampSS;
+
 	std::shared_ptr<VertexBuffer> m_QuadVB;
 	std::shared_ptr<IndexBuffer> m_QuadIB;
 	std::shared_ptr<ConstantBuffer<ScreenSizeCB>> m_ScreenSizeCB;
+	ScreenSizeCB m_ScreenSize = {};
 };
 

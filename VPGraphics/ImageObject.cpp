@@ -35,8 +35,6 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	m_BitmapHeight = m_Texture->GetHeight();
 
 	// 이전 렌더링 정보를 음수로 초기화
-	m_PreviousPosX = -1;
-	m_PreviousPosY = -1;
 	m_PreviousWidth = -1;
 	m_PreviousHeight = -1;
 	m_PreviousScale = -1;
@@ -71,8 +69,8 @@ void ImageObject::Render()
 
 void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 {
-	m_Info.StartPosX = info.StartPosX;
-	m_Info.StartPosY = info.StartPosY;
+	m_Info.PosXPercent = info.PosXPercent;
+	m_Info.PosYPercent = info.PosYPercent;
 	m_Info.Layer = info.Layer;
 	m_Info.ImagePath = info.ImagePath;
 	m_Info.Color = info.Color;
@@ -125,34 +123,56 @@ bool ImageObject::InitializeBuffers()
 
 void ImageObject::UpdateBuffers()
 {
-	float left, right, top, bottom;
 	std::vector<ImageVertex> vertices;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ImageVertex* verticesPtr;
-	HRESULT result;
 
+	m_ScreenWidth = m_Device->GetWndWidth();
+	m_ScreenHeight = m_Device->GetWndHeight();
 
 	// 이미지의 위치가 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
-	if ((m_Info.StartPosX == m_PreviousPosX && m_Info.StartPosY == m_PreviousPosY) 
-		&& (m_BitmapWidth == m_PreviousWidth && m_BitmapWidth == m_PreviousHeight)
-		&& (m_Info.Scale == m_PreviousScale))
+	if ((m_Info.PosXPercent == m_PreviousPosXPercent && m_Info.PosYPercent == m_PreviousPosYPercent)
+		&& (m_BitmapWidth == m_PreviousWidth && m_BitmapHeight == m_PreviousHeight)
+		&& (m_Info.Scale == m_PreviousScale)
+		&& (m_ScreenWidth == m_PreviousScreenWidth) && (m_ScreenHeight == m_PreviousScreenHeight))
 		return;
 
-	// 렌더링 되는 위치와 크기를 업데이트한다.
-	m_PreviousPosX = m_Info.StartPosX;
-	m_PreviousPosY = m_Info.StartPosY;
-	m_PreviousWidth = m_BitmapWidth;
-	m_PreviousHeight = m_BitmapWidth;
-	m_PreviousScale = m_Info.Scale;
+	// 퍼센트 기반의 값을 비율로 변환 (0.0 ~ 1.0)
+	float relPosX = m_Info.PosXPercent / 100.0f;  // 1%는 0.01로 변환
+	float relPosY = m_Info.PosYPercent / 100.0f;  // 1%는 0.01로 변환
 
+	// 새로운 해상도에 맞춰 이미지 중심의 위치를 계산합니다.
+	float centerX = relPosX * m_ScreenWidth;  // 이미지 중심의 X 위치
+	float centerY = relPosY * m_ScreenHeight; // 이미지 중심의 Y 위치
+	m_ImageCenterPosX = centerX;
+	m_ImageCenterPosY = centerY;
+
+	// 이미지의 스케일링된 크기 계산
 	float scaledWidth = m_BitmapWidth * m_Info.Scale;
 	float scaledHeight = m_BitmapHeight * m_Info.Scale;
 
+	// 이미지 중심 기준으로 좌측 상단 좌표를 계산
+	float calculatedPosX = centerX - (scaledWidth / 2.0f);
+	float calculatedPosY = centerY - (scaledHeight / 2.0f);
+	m_ImagePosX = calculatedPosX;
+	m_ImagePosY = calculatedPosY;
+
+	// 렌더링 되는 위치와 크기를 업데이트한다.
+	m_PreviousPosXPercent = m_Info.PosXPercent;
+	m_PreviousPosYPercent = m_Info.PosYPercent;
+	m_PreviousWidth = m_BitmapWidth;
+	m_PreviousHeight = m_BitmapHeight;
+	m_PreviousScale = m_Info.Scale;
+	m_PreviousScreenWidth = m_ScreenWidth;
+	m_PreviousScreenHeight = m_ScreenHeight;
+
 	// 비트맵의 좌표 계산
-	left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.StartPosX;
-	right = left + scaledWidth;
-	top = (float)(m_ScreenHeight / 2) - m_Info.StartPosY;
-	bottom = top - scaledHeight;
+	//const float left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.PosXPercent;
+	//const float left = static_cast<float>((m_ScreenWidth / 2) * (-1)) + calculatedPosX;
+	const float left = static_cast<float>((m_ScreenWidth / 2) * (-1)) + calculatedPosX;
+	const float right = left + scaledWidth;
+	//const float top = (float)(m_ScreenHeight / 2) - m_Info.PosYPercent;
+	const float top = static_cast<float>(m_ScreenHeight / 2) - calculatedPosY;
+	const float bottom = top - scaledHeight;
 
 	vertices.resize(m_vertexCount);
 	if (vertices.empty())
@@ -160,27 +180,27 @@ void ImageObject::UpdateBuffers()
 
 	// 동적 정점 배열에 데이터를 로드한다.
 	// 첫 번째 삼각형
-	vertices[0].Position = DirectX::XMFLOAT4(left, top, 0.0f, 1.0f);	// Top left.
+	vertices[0].Position = DirectX::XMFLOAT4(left, top, 0.0f, 1.0f);		// Top left.
 	vertices[0].TexCoord = DirectX::XMFLOAT2(0.0f, 0.0f);
 	vertices[1].Position = DirectX::XMFLOAT4(right, bottom, 0.0f, 1.0f);	// Bottom right.
 	vertices[1].TexCoord = DirectX::XMFLOAT2(1.0f, 1.0f);
-	vertices[2].Position = DirectX::XMFLOAT4(left, bottom, 0.0f, 1.0f);	// Bottom left.
+	vertices[2].Position = DirectX::XMFLOAT4(left, bottom, 0.0f, 1.0f);		// Bottom left.
 	vertices[2].TexCoord = DirectX::XMFLOAT2(0.0f, 1.0f);
 	// 두 번째 삼각형
-	vertices[3].Position = DirectX::XMFLOAT4(left, top, 0.0f, 1.0f);	// Top left.
+	vertices[3].Position = DirectX::XMFLOAT4(left, top, 0.0f, 1.0f);		// Top left.
 	vertices[3].TexCoord = DirectX::XMFLOAT2(0.0f, 0.0f);
-	vertices[4].Position = DirectX::XMFLOAT4(right, top, 0.0f, 1.0f);	// Top right.
+	vertices[4].Position = DirectX::XMFLOAT4(right, top, 0.0f, 1.0f);		// Top right.
 	vertices[4].TexCoord = DirectX::XMFLOAT2(1.0f, 0.0f);
 	vertices[5].Position = DirectX::XMFLOAT4(right, bottom, 0.0f, 1.0f);	// Bottom right.
 	vertices[5].TexCoord = DirectX::XMFLOAT2(1.0f, 1.0f);
 
 	// 버텍스 버퍼를 쓸 수 있도록 잠근다.
-	result = m_Device->Context()->Map(m_VertexBuffer->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	const HRESULT result = m_Device->Context()->Map(m_VertexBuffer->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 		return;
 
 	// 정점 버퍼의 데이터를 가리키는 포인터를 얻는다.
-	verticesPtr = (ImageVertex*)mappedResource.pData;
+	ImageVertex* verticesPtr = static_cast<ImageVertex*>(mappedResource.pData);
 
 	// 데이터를 정점 버퍼에 복사한다.
 	memcpy(verticesPtr, vertices.data(), sizeof(ImageVertex) * m_vertexCount);

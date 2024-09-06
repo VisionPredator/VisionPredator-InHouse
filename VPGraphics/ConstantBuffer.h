@@ -17,16 +17,14 @@ class ConstantBuffer :
 	public Buffer
 {
 public:
-	ConstantBuffer(std::shared_ptr<Device> device);
-	//ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc);
+	//ConstantBuffer(std::shared_ptr<Device> device);
+
+	// 단일생성자
 	ConstantBuffer(const std::shared_ptr<Device>& device, const ConstantBufferType& type);
+	~ConstantBuffer() override;
 
-	~ConstantBuffer();
-
-	virtual void Release() override;
-
+	void Release() override;
 	void Update();
-
 	void Update(T cbstruct);
 
 	T m_struct;
@@ -39,14 +37,6 @@ void ConstantBuffer<T>::Release()
 	m_buffer.Reset();
 }
 
-//template<typename T>
-//ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC Desc)
-//	: Buffer(device, Desc)
-//{
-//	m_Device.lock()->Get()->CreateBuffer(&m_Desc, nullptr, &m_buffer);
-//
-//	m_struct = T();
-//}
 
 template <typename T>
 ConstantBuffer<T>::ConstantBuffer(const std::shared_ptr<Device>& device, const ConstantBufferType& type)
@@ -80,12 +70,12 @@ ConstantBuffer<T>::ConstantBuffer(const std::shared_ptr<Device>& device, const C
 	HR_CHECK(device->Get()->CreateBuffer(&desc, nullptr, m_buffer.GetAddressOf()));
 }
 
-template<typename T>
-ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device)
-	: Buffer(device), m_struct()
-{
-
-}
+//template<typename T>
+//ConstantBuffer<T>::ConstantBuffer(std::shared_ptr<Device> device)
+//	: Buffer(device), m_struct()
+//{
+//
+//}
 
 template<typename T>
 ConstantBuffer<T>::~ConstantBuffer()
