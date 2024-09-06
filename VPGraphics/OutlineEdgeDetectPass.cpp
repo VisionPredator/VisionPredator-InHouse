@@ -12,8 +12,8 @@ void OutlineEdgeDetectPass::Initialize(const std::shared_ptr<Device>& device,
 	m_Device = device;
 	m_ResourceManager = resourceManager;
 
-	uint32_t width = m_Device->GetWndWidth();
-	uint32_t height = m_Device->GetWndHeight();
+	const uint32_t width = m_Device->GetWndWidth();
+	const uint32_t height = m_Device->GetWndHeight();
 
 	m_OutlineEdgeDetectRTV = m_ResourceManager->Create<RenderTargetView>(L"OutlineEdgeDetectRTV", RenderTargetViewType::OutlineEdgeDetect, width, height).lock();
 

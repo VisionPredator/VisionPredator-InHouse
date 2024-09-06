@@ -33,9 +33,7 @@ void EditorCamera::Initialize()
 	m_nearZ = 1.f;
 	m_farZ = 1000;
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
-
-	// SUMIN_
-	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, m_nearZ, m_farZ);
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(static_cast<float>(m_Width), static_cast<float>(m_Height), m_nearZ, m_farZ);
 }
 
 void EditorCamera::Update(float deltatime)
@@ -125,7 +123,6 @@ void EditorCamera::CalculateCamera()
 	m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
-	// TODO m_Width와 Height 값좀 업데이트 해주세요. 자꾸 16 이랑 9로만 고정되어있음
 	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, m_nearZ, m_farZ);
 }
 
