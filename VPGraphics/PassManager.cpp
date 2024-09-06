@@ -48,7 +48,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock(),lightmanager)));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Transparency, std::make_shared<TransparencyPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::GeoMetry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug_Geometry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
@@ -63,14 +63,14 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 		CheckPassState(curModel, PassState::Deferred);
 		CheckPassState(curModel, PassState::Transparency);
 		CheckPassState(curModel, PassState::Debug);
-		CheckPassState(curModel, PassState::GeoMetry);
+		CheckPassState(curModel, PassState::Debug_Geometry);
 	}
 }
 
 void PassManager::Render()
 {
 	m_Passes[PassState::Debug]->Render();
-	m_Passes[PassState::GeoMetry]->Render();
+	m_Passes[PassState::Debug_Geometry]->Render();
 	m_Passes[PassState::Deferred]->Render();
 
 	m_Passes[PassState::Transparency]->Render();		//반투명 처리 패스
