@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "../VPGraphics/IGraphics.h"
 #include "EventSubscriber.h"
+
 namespace Physic
 {
 class IPhysx;
@@ -10,9 +11,10 @@ class IPhysx;
 class TimeManager;
 class SystemManager;
 class SceneManager;
+class TransformSystem;
 class EventSubscriber;
 
-class VPEngine:public EventSubscriber
+class VPEngine :public EventSubscriber
 {
 public:
 	HINSTANCE m_hinstance=nullptr;
@@ -38,7 +40,7 @@ protected:
 
 	Physic::IPhysx* m_PhysicEngine;
 	Graphics::Interface* m_Graphics;
-
+	TransformSystem* m_TransformSystem;
 
 };
 

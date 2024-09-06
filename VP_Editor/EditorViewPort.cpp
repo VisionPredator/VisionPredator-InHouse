@@ -131,17 +131,18 @@ void EditorViewPort::ImGuizmoRender()
 	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 	ImGui::BeginChild("Setting", ImVec2{ 120, 0 }, child_flags, window_flags);
-	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE))
+
+	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE)||(INPUTKEY(KEYBOARDKEY::Q)&& !INPUTKEY(MOUSEKEY::RBUTTON ) && true))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
 		m_CurrentModeSnap = &m_TranslationSnapValue;
 	}
-	if (ImGui::RadioButton("Rotate", m_ImGuizmoMode == ImGuizmo::ROTATE))
+	if (ImGui::RadioButton("Rotate", m_ImGuizmoMode == ImGuizmo::ROTATE) || (INPUTKEY(KEYBOARDKEY::W) && !INPUTKEY(MOUSEKEY::RBUTTON ) && true))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::ROTATE;
 		m_CurrentModeSnap = &m_RotationSnapValue;
 	}
-	if (ImGui::RadioButton("Scale", m_ImGuizmoMode == ImGuizmo::SCALE))
+	if (ImGui::RadioButton("Scale", m_ImGuizmoMode == ImGuizmo::SCALE)|| (INPUTKEY(KEYBOARDKEY::E) && !INPUTKEY(MOUSEKEY::RBUTTON ) && true))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::SCALE;
 		m_CurrentModeSnap = &m_ScaleSnapValue;
@@ -172,8 +173,9 @@ void EditorViewPort::ImGuizmoRender()
 	{
 		TransformComponent* selectedTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 
-		if (Parent* parent = m_SceneManager.lock()->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID); parent)
+		if ( m_SceneManager.lock()->HasComponent<Parent>(HierarchySystem::m_SelectedEntityID) )
 		{
+			Parent* parent = m_SceneManager.lock()->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID);
 			TransformComponent* parentTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(parent->ParentID);
 			// 부모 변환과 ImGuizmoMatrix 결합
 			ImGuizmoMatrix = ImGuizmoMatrix * parentTransform->WorldTransform.Invert();
@@ -186,15 +188,15 @@ void EditorViewPort::ImGuizmoRender()
 		switch (m_ImGuizmoMode)
 		{
 		case ImGuizmo::OPERATION::TRANSLATE:
-			selectedTransform->Local_Location = translation;
+			selectedTransform->SetLocalLocation(translation);
 			break;
 
 		case ImGuizmo::OPERATION::ROTATE:
-			selectedTransform->Local_Quaternion = rotation;
+			selectedTransform->SetLocalQuaternion(rotation);
 			break;
 
 		case ImGuizmo::OPERATION::SCALE:
-			selectedTransform->Local_Scale = scale;
+			selectedTransform->SetLocalScale(scale);
 			break;
 
 		default:

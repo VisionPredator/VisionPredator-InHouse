@@ -216,7 +216,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 	std::vector<BaseVertex> TextureVertices;
 	std::vector<SkinningVertex> SkinningVertices;
 
-	D3D11_BUFFER_DESC desc = BufferDESC::Vertex::Default;
+	D3D11_BUFFER_DESC desc = Vertex::Default;
 	D3D11_SUBRESOURCE_DATA data;
 
 	std::vector<UINT> indexbuffer;
@@ -225,7 +225,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 		ProcessIndexBuffer(indexbuffer, curMesh->mFaces + i);
 	}
 
-	D3D11_BUFFER_DESC idesc = BufferDESC::Index::Default;
+	D3D11_BUFFER_DESC idesc = Index::Default;
 	idesc.ByteWidth = sizeof(UINT) * curMesh->mNumFaces * 3;
 
 	D3D11_SUBRESOURCE_DATA idata;

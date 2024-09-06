@@ -1,18 +1,15 @@
 #include "pch.h"
-
 #include "PixelShader.h"
 #include <d3d11.h>
 #include <d3dcompiler.h>
-
 #include "Defines.h"
 #include "Device.h"
 #include "Vertex.h"
-#pragma comment (lib, "D3DCompiler.lib")
 
-PixelShader::PixelShader(std::wstring filename) : Shader(filename)
-{
-
-}
+//PixelShader::PixelShader(std::wstring filename) : Shader(filename)
+//{
+//
+//}
 
 PixelShader::PixelShader(std::shared_ptr<Device> device, std::wstring filename) : Shader(device, filename)
 {
@@ -21,7 +18,6 @@ PixelShader::PixelShader(std::shared_ptr<Device> device, std::wstring filename) 
 	// 하드코딩으로 상세 폴더 경로를 지정해 줄 필요 없음.
 	//m_filename = L"../x64/Debug/" + m_filename + L"PS.cso";
 	m_filename = m_filename + L"PS.cso";
-
 
 	ID3DBlob* PSBlob = nullptr;
 
@@ -56,13 +52,17 @@ PixelShader::PixelShader(const std::shared_ptr<Device>& device, const std::wstri
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
+	std::wstring basePath;
 #ifdef _DEBUG
 	shaderFlag |= D3DCOMPILE_DEBUG;
 	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
+	basePath = L"..\\..\\..\\VPGraphics\\";
+#else
+	basePath = L"..\\Data\\HLSL\\";
 #endif
-	const std::string& shaderModel = "ps_5_0";
 
-	const std::wstring hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
+	const std::string& shaderModel = "ps_5_0";
+	const std::wstring hlslFileBasePath = basePath;
 	const std::wstring hlslFileExtension = L".hlsl";
 	const std::wstring binaryFileExtension = L".cso";
 
@@ -96,5 +96,5 @@ PixelShader::PixelShader(const std::shared_ptr<Device>& device, const std::wstri
 
 void PixelShader::Release()
 {
-	//m_PS->Release();
+	m_PS.Reset();
 }

@@ -69,7 +69,7 @@ struct PS_OUTPUT
     float4 Emissive : SV_Target7;
 };
 
-PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
+PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고 있으므로 한번 더 지정해줄 필요는 없다.
 {
     PS_OUTPUT output;
     output.Position = input.posWorld;

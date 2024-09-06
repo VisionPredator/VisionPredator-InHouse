@@ -4,6 +4,9 @@
 #include "TransparencyPass.h"
 #include "DebugPass.h"
 #include "DeferredPass.h"
+#include "OutlineAddPass.h"
+#include "OutlineBlurPass.h"
+#include "OutlineEdgeDetectPass.h"
 
 /// <summary>
 ///	모든 패스들을 관리하는 매니저.
@@ -38,9 +41,11 @@ private:
 private:
 	std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;
 
-	// 임시
 	std::shared_ptr<ParticlePass> m_ParticlePass;
 	std::shared_ptr<class UIPass> m_UIPass;
+	std::shared_ptr<OutlineEdgeDetectPass> m_OutlineEdgeDetectPass;
+	std::shared_ptr<OutlineBlurPass> m_OutlineBlurPass;
+	std::shared_ptr<OutlineAddPass> m_OutlineAddPass;
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;

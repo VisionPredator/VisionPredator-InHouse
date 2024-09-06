@@ -13,9 +13,13 @@
 #include "UIManager.h"
 #pragma endregion 
 
+#include <memory>
+#include <memory>
+
 #include "ParticlePass.h"
 #include "GeoMetryPass.h"
 #include "UIPass.h"
+#include "ObjectMaskPass.h"
 
 #include "StaticData.h"
 #include "Slot.h"
@@ -23,6 +27,9 @@
 PassManager::PassManager()
 	: m_ParticlePass(std::make_shared<ParticlePass>())
 	, m_UIPass(std::make_shared<UIPass>())
+	, m_OutlineEdgeDetectPass(std::make_shared<OutlineEdgeDetectPass>())
+	, m_OutlineBlurPass(std::make_shared<OutlineBlurPass>())
+	, m_OutlineAddPass(std::make_shared<OutlineAddPass>())
 {
 }
 
@@ -45,13 +52,25 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_ParticleManager = particleManager;
 	m_UIManager = uiManager;
 
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock(),lightmanager)));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Transparency, std::make_shared<TransparencyPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug_Geometry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(
+		PassState::Debug, std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(),
+			m_DebugDrawManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(
+		PassState::Deferred, std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock(),lightmanager)));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(
+		PassState::Transparency, std::make_shared<TransparencyPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(
+		PassState::Geometry, std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(
+		PassState::ObjectMask, std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
+
+	// TODO: Outline Pass Initialize
+	m_OutlineEdgeDetectPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
+	//m_OutlineBlurPass->Initialize();
+	//m_OutlineAddPass->Initialize();
 }
 
 void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
@@ -63,18 +82,24 @@ void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& Render
 		CheckPassState(curModel, PassState::Deferred);
 		CheckPassState(curModel, PassState::Transparency);
 		CheckPassState(curModel, PassState::Debug);
-		CheckPassState(curModel, PassState::Debug_Geometry);
+		CheckPassState(curModel, PassState::Geometry);
+		CheckPassState(curModel, PassState::ObjectMask);
 	}
 }
 
 void PassManager::Render()
 {
 	m_Passes[PassState::Debug]->Render();
-	m_Passes[PassState::Debug_Geometry]->Render();
+	m_Passes[PassState::Geometry]->Render();
 	m_Passes[PassState::Deferred]->Render();
+	m_Passes[PassState::Transparency]->Render();
+	m_Passes[PassState::ObjectMask]->Render();
 
-	m_Passes[PassState::Transparency]->Render();		//반투명 처리 패스
 	//DrawGBuffer();		// 필요 없는 패스
+	// TODO: Outline Pass Render
+	m_OutlineEdgeDetectPass->Render();
+	//m_OutlineBlurPass->Render();
+	//m_OutlineAddPass->Render();
 
 	m_ParticlePass->Render();
 	m_UIPass->Render();
@@ -105,7 +130,7 @@ void PassManager::DrawGBuffer()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
 	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
@@ -139,7 +164,7 @@ void PassManager::DrawIMGUI()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
 	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
 	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();

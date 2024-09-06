@@ -46,7 +46,7 @@ void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)
 	Device->Context()->VSSetShader(m_StaticMeshVS.lock()->GetVS(), nullptr, 0);
 	Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
-	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
 
 	TransformData renew;
 	XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curModel->world));
@@ -65,7 +65,7 @@ void RenderPass::BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_
 	Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
 	std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
-	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
 
 	TransformData renew;
 	XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curModel->world));

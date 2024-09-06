@@ -28,7 +28,7 @@ physx::PxConvexMesh* PhysicModelLoader::CookConvexMesh(physx::PxPhysics* physics
     physx::PxDefaultMemoryOutputStream buf;
     physx::PxConvexMeshCookingResult::Enum result;
     bool status = PxCookConvexMesh(params, convexdesc, buf, &result);
-    assert(status && result == physx::PxConvexMeshCookingResult::eSUCCESS);
+    //assert(status && result == physx::PxConvexMeshCookingResult::eSUCCESS);
 
     // Create the convex mesh from the cooked data
     physx::PxDefaultMemoryInputData input(buf.getData(), buf.getSize());

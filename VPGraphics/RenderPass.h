@@ -70,7 +70,7 @@ class RenderPass
 {
 public:
 	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger);
-	~RenderPass();
+	virtual ~RenderPass();
 
 	virtual void Render() abstract;
 	void AddModelData(std::shared_ptr<RenderData> model);
@@ -80,23 +80,17 @@ protected:
 	void BindStatic(std::shared_ptr<RenderData> curModel);
 	void BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_ptr<Mesh> mesh);
 
+	std::weak_ptr<Device> m_Device;
+	std::weak_ptr<ResourceManager> m_ResourceManager;
 
 	std::queue<std::weak_ptr<RenderData>> m_RenderDataQueue;
 
-	std::weak_ptr<Device> m_Device;
-
 	std::weak_ptr<PixelShader> m_DebugPS;
-
+	std::weak_ptr<PixelShader> m_MeshPS;
 	std::weak_ptr<VertexShader> m_SkeletalMeshVS;
 	std::weak_ptr<VertexShader> m_StaticMeshVS;
-	std::weak_ptr<PixelShader> m_MeshPS;
-
-
-	std::weak_ptr<ResourceManager> m_ResourceManager;
-
 	std::weak_ptr<RenderTargetView> m_RTV;
 	std::weak_ptr<DepthStencilView> m_DSV;
-
 
 	PassState m_state = PassState::None;
 };

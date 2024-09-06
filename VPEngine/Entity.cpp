@@ -13,9 +13,21 @@ Entity::Entity(uint32_t entityID)
 
 Entity::~Entity()
 {
+    for (auto comp : m_OwnedComp)
+    {
+        comp.second.reset();
+    }
     m_OwnedComp.clear(); // shared_ptr의 소멸자가 자동으로 자원을 해제합니다.
 }
 
+
+void Entity::DestorySelf(bool Immidiate)
+{
+    if (!Immidiate)
+        EventManager::GetInstance().ScheduleEvent("OnDestroyEntity",m_EntityID);
+    else
+        EventManager::GetInstance().ImmediateEvent("OnDestroyEntity", m_EntityID);
+}
 
 void Entity::AddComponentToMap(std::shared_ptr<Component> comp)
 {
@@ -50,8 +62,8 @@ std::shared_ptr<Component> Entity::AddComponent(entt::id_type compID)
         return nullptr;
     }
 
-    auto sharedThis = shared_from_this();
-    auto result = myFunctionMeta.invoke(instance, sharedThis);
+    //auto sharedThis = shared_from_this();
+    auto result = myFunctionMeta.invoke(instance, this);
     if (auto componentPtr = result.try_cast<std::shared_ptr<Component>>())
     {
         return *componentPtr;

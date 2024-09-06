@@ -31,8 +31,6 @@ public:
 	~VertexShader() override = default;
 
 	ID3D11PixelShader* GetPS() = delete;
-
-	// TODO: Get Shader 는 ComPtr 하나만 반환하는 걸로 줄이면 좋을 듯 합니다..
 	ID3D11VertexShader* GetShader() { return m_VS.Get(); }
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> GetComPtr() { return m_VS; }
 

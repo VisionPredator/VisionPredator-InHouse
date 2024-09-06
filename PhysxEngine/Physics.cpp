@@ -13,10 +13,21 @@ Physics::Physics()
 
 Physics::~Physics()
 {
+#ifdef _DEBUG
+	// Release PVD Transport in debug mode
+	if (m_pTransport)
+	{
+		m_pTransport->release();
+		m_pTransport = nullptr;
+	}
+#endif
+
 	// Release Dispatcher
 	PX_RELEASE(m_Dispatcher);
+
 	// Release Physics
 	PX_RELEASE(m_Physics);
+
 	// Release PVD
 	if (m_Pvd)
 	{
@@ -24,11 +35,9 @@ Physics::~Physics()
 		m_Pvd->release();
 		m_Pvd = nullptr;
 	}
+
 	// Release Foundation
 	PX_RELEASE(m_Foundation);
-
-
-
 }
 
 void Physics::Initialize()
@@ -56,7 +65,7 @@ void Physics::Initialize()
 
 	// 물리 시뮬레이션의 허용 오차 스케일을 설정합니다.
 	m_ToleranceScale.length = 1.00; // 길이 허용 오차 스케일을 설정합니다.
-	m_ToleranceScale.speed = 9.81; // 속도 허용 오차 스케일을 설정합니다.
+	m_ToleranceScale.speed = static_cast<PxReal>(9.81); // 속도 허용 오차 스케일을 설정합니다.
 
 	// PhysX Physics를 생성하고 초기화합니다.
 	m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, m_ToleranceScale, true, m_Pvd); // Physics를 생성합니다.

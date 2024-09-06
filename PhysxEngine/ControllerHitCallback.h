@@ -1,4 +1,6 @@
 #pragma once
+#include "CommonInclude.h"
+
 class ControllerHitCallback :public physx::PxUserControllerHitReport
 {
 public:

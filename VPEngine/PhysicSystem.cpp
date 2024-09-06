@@ -6,58 +6,8 @@
 PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
-	EventManager::GetInstance().Subscribe("OnCollisionExit",CreateSubscriber(&PhysicSystem::OnCollisionExit));
-	EventManager::GetInstance().Subscribe("OnCollisionContact",CreateSubscriber(&PhysicSystem::OnCollisionContact));
-	EventManager::GetInstance().Subscribe("OnCollisionEnter",CreateSubscriber(&PhysicSystem::OnCollisionEnter));
 }
 
-void PhysicSystem::OnCollisionExit(std::any pair)
-{
-	auto [pairid1, pairid2] = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
-	auto entity1 = GetSceneManager()->GetEntity(pairid1).get();
-	auto entity2 = GetSceneManager()->GetEntity(pairid2).get();
-
-	if (entity1->HasComponent<GeometryComponent>())
-	{
-		auto geoComp = entity1->GetComponent<GeometryComponent>();
-		geoComp->color = { 0,1,0 };
-	}
-	if (entity2->HasComponent<GeometryComponent>())
-	{
-		auto geoComp = entity2->GetComponent<GeometryComponent>();
-		geoComp->color = { 0,1,0 };
-
-	}
-
-
-}
-
-void PhysicSystem::OnCollisionContact(std::any pair)
-{
-	//auto [pairid1, pairid2] = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
-	//auto entity1 =GetSceneManager()->GetEntity(pairid1).get();
-	//auto entity2 =GetSceneManager()->GetEntity(pairid2).get();
-
-}
-
-void PhysicSystem::OnCollisionEnter(std::any pair)
-{
-	auto [pairid1, pairid2] = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
-	auto entity1 = GetSceneManager()->GetEntity(pairid1).get();
-	auto entity2 = GetSceneManager()->GetEntity(pairid2).get();
-
-	if (entity1->HasComponent<GeometryComponent>())
-	{
-		auto geoComp = entity1->GetComponent<GeometryComponent>();
-		geoComp->color = { 1,0,0 };
-	}
-	if (entity2->HasComponent<GeometryComponent>())
-	{
-		auto geoComp = entity2->GetComponent<GeometryComponent>();
-		geoComp->color = { 1,0,0 };
-
-	}
-}
 
 
 void PhysicSystem::Initialize()
@@ -72,7 +22,6 @@ void PhysicSystem::Initialize()
 
 void PhysicSystem::Start(uint32_t EntityID)
 {
-
 	CreateRigidBody(EntityID);
 	CreateCapsuleController(EntityID);
 }
@@ -96,9 +45,9 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 {
 	
 	auto entity = GetSceneManager()->GetEntity(EntityID);
-	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
-	if (!rigidComp)
+	if (!entity->HasComponent<RigidBodyComponent>())
 		return;
+	auto rigidComp = entity->GetComponent<RigidBodyComponent>();
 	const TransformComponent& rigidtransform = *rigidComp->GetComponent<TransformComponent>();
 	rigidComp->DefaultColliderInfo.EntityID = EntityID;
 	rigidComp->DefaultColliderInfo.WorldLocation = rigidtransform.World_Location;
@@ -227,9 +176,9 @@ void PhysicSystem::CreateDynamic(RigidBodyComponent* dynamicBody)
 void PhysicSystem::CreateCapsuleController(uint32_t EntityID)
 {
 	auto entity = GetSceneManager()->GetEntity(EntityID);
-	auto controllercomp = entity->GetComponent<ControllerComponent>();
-	if (!controllercomp)
+	if (!entity->HasComponent<ControllerComponent>())
 		return;
+	auto controllercomp = entity->GetComponent<ControllerComponent>();
 	controllercomp->Contollerinfo.EntityId = entity->GetEntityID();
 	controllercomp->CapsuleControllerinfo.position = entity->GetComponent<TransformComponent>()->World_Location;
 	controllercomp->CapsuleControllerinfo.Info = controllercomp->Contollerinfo;
@@ -263,6 +212,13 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		//RightVector
+		debug::RayInfo frontInfo{};
+		frontInfo.Color = { 0,0,1,1 };
+		frontInfo.Origin = rigidTransform->World_Location;
+		frontInfo.Direction = 10 * rigidTransform->FrontVector;
+		frontInfo.Normalize = false;
+		m_Graphics->DrawRay(frontInfo);
 
 		switch (rigidBodyComponent.ColliderShape)
 		{
@@ -307,6 +263,25 @@ void PhysicSystem::RenderUpdate(float deltaTime)
 		obbInfo.yAxisAngle = ControllerTransform->World_Rotation.y;
 		obbInfo.zAxisAngle = ControllerTransform->World_Rotation.z;
 		m_Graphics->DrawOBB(obbInfo);
+
+
+		//FrontVector
+		debug::RayInfo frontinfo{};
+		frontinfo.Color={ 0,0,1,1 };
+		frontinfo.Origin = ControllerTransform->World_Location;
+		frontinfo.Direction = 10*ControllerTransform->FrontVector;
+		frontinfo.Normalize = false;
+
+		m_Graphics->DrawRay(frontinfo);
+
+		//RightVector
+		debug::RayInfo rightinfo{};
+		rightinfo.Color = { 1,0,0,1 };
+		rightinfo.Origin = ControllerTransform->World_Location;
+		rightinfo.Direction = 10 * ControllerTransform->RightVector;
+		rightinfo.Normalize = false;
+		m_Graphics->DrawRay(rightinfo);
+
 
 
 	}

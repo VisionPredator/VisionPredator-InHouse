@@ -56,7 +56,8 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float roughnessValue = gMetalic.Sample(samLinear, input.tex).g;
     float aoValue = gAO.Sample(samLinear, input.tex).r;
     float3 EmissiveValue = pow(gEmissive.Sample(samLinear, input.tex).rgb, float3(gamma, gamma, gamma));
-    float3 Depth = gDepth.Sample(samLinear, input.tex);
+    float4 depthTemp = gDepth.Sample(samLinear, input.tex);
+    float3 Depth = float3(depthTemp.x, depthTemp.y, depthTemp.z);
     
         
      //수직 입사 시의 반사율 - 비금속이면 0.04 금속이면 metalic RGB 언리얼4는 이렇게 쓴다

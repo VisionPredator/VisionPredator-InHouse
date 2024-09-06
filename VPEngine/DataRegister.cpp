@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DataRegister.h"
 #include "Components.h"
+#include "ParticleComponent.h"
 #include "../VPGraphics/MeshFilter.h"
 #include "../VPGraphics/CBuffer.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
@@ -23,7 +24,7 @@ void VPRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(GeoMetryFilter,GeoMetryFilter::Axis, GeoMetryFilter::Box,GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
-	entt::meta<EPhysicsLayer>().prop(Reflection::Prop::Name, "EPhysicsLayer").conv<std::underlying_type_t<EPhysicsLayer>>().data<EPhysicsLayer::GROUND >("EPhysicsLayer::GROUND"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::GROUND").data<EPhysicsLayer::WALL >("EPhysicsLayer::WALL"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::WALL").data<EPhysicsLayer::TOP >("EPhysicsLayer::TOP"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TOP").data<EPhysicsLayer::PLAYER >("EPhysicsLayer::PLAYER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::PLAYER").data<EPhysicsLayer::OBJECT >("EPhysicsLayer::OBJECT"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::OBJECT").data<EPhysicsLayer::ENEMY >("EPhysicsLayer::ENEMY"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ENEMY").data<EPhysicsLayer::DOOR >("EPhysicsLayer::DOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::DOOR").data<EPhysicsLayer::ACTIVEDOOR >("EPhysicsLayer::ACTIVEDOOR"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::ACTIVEDOOR").data<EPhysicsLayer::TRIGGER >("EPhysicsLayer::TRIGGER"_hs).prop(Reflection::Prop::Name, "EPhysicsLayer::TRIGGER");
+	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
 	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
 	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::Transparency,PassState::BoundingDeferred,PassState::Debug_Geometry);
 
@@ -68,11 +69,7 @@ void VPRegister::Register_VPMath()
 		.data<&Vector4::z>("z"_hs)
 		.data<&Vector4::w>("w"_hs);
 
-	entt::meta<Vector4>()
-		.data<&Vector4::x>("x"_hs)
-		.data<&Vector4::y>("y"_hs)
-		.data<&Vector4::z>("z"_hs)
-		.data<&Vector4::w>("w"_hs);
+
 	entt::meta<Matrix>()
 		.data<&Matrix::_11>("_11"_hs).data<&Matrix::_12>("_12"_hs).data<&Matrix::_13>("_13"_hs).data<&Matrix::_14>("_14"_hs)
 		.data<&Matrix::_21>("_21"_hs).data<&Matrix::_22>("_22"_hs).data<&Matrix::_23>("_23"_hs).data<&Matrix::_24>("_24"_hs)
@@ -108,63 +105,28 @@ void VPRegister::Register_VPMath()
 		.data<&Viewport::height>("height"_hs)
 		.data<&Viewport::minDepth>("minDepth"_hs)
 		.data<&Viewport::maxDepth>("maxDepth"_hs);
+
 }
-//
-//NLOHMANN_JSON_SERIALIZE_ENUM(MeshFilter, {
-//{MeshFilter::Axis, "Axis"},
-//{MeshFilter::Box, "Box"},
-//{MeshFilter::Grid, "Grid"},
-//{MeshFilter::Static, "Static"},
-//{MeshFilter::Skinning, "Skinning"},
-//{MeshFilter::Circle, "Circle"},
-//{MeshFilter::None, "None"}	});
-//NLOHMANN_JSON_SERIALIZE_ENUM(LightType, {
-//{LightType::Direction, "Direction"},
-//{LightType::Spot, "Spot"},
-//{LightType::Point, "Point"},
-//{LightType::End, "End"}	});
-//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderType, {
-//{VPPhysics::EColliderType::TRIGGER,"TRIGGER"},
-//{VPPhysics::EColliderType::COLLISION,"COLLISION"} });
-//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EPhysicsLayer, {
-//{VPPhysics::EPhysicsLayer::GROUND,"GROUND" },
-//{VPPhysics::EPhysicsLayer::WALL,"WALL" },
-//{VPPhysics::EPhysicsLayer::TOP, "TOP" },
-//{VPPhysics::EPhysicsLayer::PLAYER,"PLAYER" },
-//{VPPhysics::EPhysicsLayer::OBJECT,"OBJECT" },
-//{VPPhysics::EPhysicsLayer::ENEMY,"ENEMY" },
-//{VPPhysics::EPhysicsLayer::DOOR,"DOOR" },
-//{VPPhysics::EPhysicsLayer::ACTIVEDOOR,"ACTIVEDOOR"},
-//{VPPhysics::EPhysicsLayer::TRIGGER ,"TRIGGER"} });
-//NLOHMANN_JSON_SERIALIZE_ENUM(VPPhysics::EColliderShape, {
-//{VPPhysics::EColliderShape::BOX,"BOX" },
-//{VPPhysics::EColliderShape::SPHERE,"SPHERE" },
-//{VPPhysics::EColliderShape::CAPSULE, "CAPSULE" },
-//{VPPhysics::EColliderShape::CONVEX, "CONVEX" }
-//	
-//	});
 
 
 
 void VPRegister::Register_Components()
 {
-	META_ADD_MEMBER(IDComponent, IDComponent::Name);
-	META_ADD_MEMBER(IdentityComponent, IdentityComponent::UUID);
-	META_ADD_MEMBER(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation,TransformComponent::World_Quaternion, TransformComponent::World_Scale);
-	META_ADD_MEMBER(MeshComponent, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::Pass);
-	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP);
-	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
-	META_ADD_MEMBER(Parent, Parent::ParentID);
-	META_ADD_MEMBER(Children, Children::ChildrenID);
-	META_ADD_MEMBER(CameraComponent,CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
-	META_ADD_MEMBER(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::animationList);
-	META_ADD_MEMBER(SkinningMeshComponent, SkinningMeshComponent::FBX);
-	META_ADD_MEMBER(PlayerComponent, PlayerComponent::HP, PlayerComponent::Maxspeed, PlayerComponent::Speed, PlayerComponent::Accel,PlayerComponent::Maxspeed, PlayerComponent::JumpFoce, PlayerComponent::MaxJumpCount, PlayerComponent::Jumpcount, PlayerComponent::Isground);
-	META_ADD_MEMBER(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
-	META_ADD_MEMBER(GeometryComponent, GeometryComponent::FBXFilter,GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
-	META_ADD_MEMBER(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
-	META_ADD_MEMBER(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
-	META_ADD_MEMBER(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::StartPosX, Sprite2DComponent::StartPosY, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
+	META_ADD_COMP(IDComponent, IDComponent::Name);
+	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
+	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation, TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
+	META_ADD_COMP(MeshComponent, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::Pass);
+	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
+	META_ADD_COMP(Parent, Parent::ParentID);
+	META_ADD_COMP(Children, Children::ChildrenID);
+	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
+	META_ADD_COMP(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::animationList);
+	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
+	META_ADD_COMP(GeometryComponent, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
+	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
+	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
+	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
+	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
 }
-

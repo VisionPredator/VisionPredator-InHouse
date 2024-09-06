@@ -6,10 +6,10 @@ class Texture2D;
 
 enum class RenderTargetViewType
 {
-	Default,	// backbuffer
+	BackBuffer,	// backbuffer
 	OffScreen,	// for deferred rendering
-
-
+	ObjectMask,
+	OutlineEdgeDetect,
 	// 이후 HDR 용 RTV도 필요할 것이다.
 
 };
@@ -30,4 +30,3 @@ public:
 private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RTV;
 };
-

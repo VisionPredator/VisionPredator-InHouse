@@ -122,14 +122,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)VPCommon;$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VPCommon;$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)include\physx</AdditionalLibraryDirectories>
-      <AdditionalDependencies>imguid.lib;imguizmo.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>imguid.lib;imguizmo.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,7 +142,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)VPCommon;$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)include\physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VPCommon;$(SolutionDir)VPEngine;$(SolutionDir)include;$(SolutionDir)Library\$(Platform)\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -150,11 +150,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)include\physx</AdditionalLibraryDirectories>
-      <AdditionalDependencies>imgui.lib;imguizmo.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>imgui.lib;imguizmo.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Macro\ReflectionMacro.h" />
+    <ClInclude Include="..\include\Macro\VisPredMacro.h" />
     <ClInclude Include="EditorCamera.h" />
     <ClInclude Include="FolderTool.h" />
     <ClInclude Include="framework.h" />

@@ -1,15 +1,23 @@
 #include "pch.h"
 #include "SystemManager.h"
+#include "SceneManager.h"
 #include "EventManager.h"
 #include "TransformSystem.h"
 #include "PhysicSystem.h"
 #include "CameraSystem.h"
-
+#include"Components.h"
+#include <iostream>
 	SystemManager::SystemManager()
 	{
 		EventManager::GetInstance().Subscribe("OnInitializeSystems", CreateSubscriber(&SystemManager::OnInitializeSystems));
 		EventManager::GetInstance().Subscribe("OnFinalizeSystems",CreateSubscriber(&SystemManager::OnFinalizeSystems));
 		EventManager::GetInstance().Subscribe("OnSetPhysicUpdateRate", CreateSubscriber(&SystemManager::OnSetPhysicUpdateRate));
+		EventManager::GetInstance().Subscribe("OnStart", CreateSubscriber(&SystemManager::OnStart));
+		EventManager::GetInstance().Subscribe("OnCollisionEnter", CreateSubscriber(&SystemManager::OnCollisionEnter));
+		EventManager::GetInstance().Subscribe("OnCollisionExit", CreateSubscriber(&SystemManager::OnCollisionExit));
+		EventManager::GetInstance().Subscribe("OnStart_Parent", CreateSubscriber(&SystemManager::OnStart_Parent));
+		EventManager::GetInstance().Subscribe("OnFinish", CreateSubscriber(&SystemManager::OnFinish));
+		EventManager::GetInstance().Subscribe("OnFinish_Parent", CreateSubscriber(&SystemManager::OnFinish_Parent));
 
 		m_FixedDeltatime = 1.f / m_FixedFrame;
 		m_PhysicDeltatime= 1.f / m_PhysicsFrame;
@@ -84,6 +92,50 @@
 		m_PhysicEngine = physicInterface;
 	}
 
+	void SystemManager::OnCollisionEnter(std::any pair)
+	{
+		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		for (auto contactable:m_Contactable)
+		{
+			contactable->EnterCollision(entitypair);
+		}
+	}
+
+	void SystemManager::OnCollisionExit(std::any pair)
+	{
+		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		for (auto contactable : m_Contactable)
+		{
+			contactable->ExitCollision(entitypair);
+		}
+	}
+
+
+	void SystemManager::Start_Parent(uint32_t entityid)
+	{
+		Start(entityid);
+		if (m_SceneManager.lock()->HasComponent<Children>(entityid))
+		{
+			auto children = m_SceneManager.lock()->GetComponent<Children>(entityid);
+			for (auto childID : children->ChildrenID)
+			{
+				Start_Parent(childID);
+			}
+		}
+	}
+
+	void SystemManager::Finish_Parent(uint32_t entityid)
+	{
+		Finish(entityid);
+		if (m_SceneManager.lock()->HasComponent<Children>(entityid))
+		{
+			auto children = m_SceneManager.lock()->GetComponent<Children>(entityid);
+			for (auto childID : children->ChildrenID)
+			{
+				Finish_Parent(childID);
+			}
+		}
+	}
 
 	void SystemManager::InitializeSystems()
 	{
@@ -95,6 +147,42 @@
 	{
 		for (auto startable : m_Startables)
 			startable->Finalize();
+	}
+
+	void SystemManager::OnStart_Parent(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		Start_Parent(entityID);
+	}
+
+	void SystemManager::OnStart(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		Start(entityID);
+	}
+
+	void SystemManager::OnFinish(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+#ifdef  _DEBUG
+		auto Entity = m_SceneManager.lock()->GetEntity(entityID);
+
+		if (Entity)
+		{
+			auto name = Entity->GetComponent<IDComponent>()->Name;
+			std::cout << name << "\n";
+		}
+
+
+#endif //  _DEBUG
+
+		Finish(entityID);
+	}
+
+	void SystemManager::OnFinish_Parent(std::any data)
+	{
+		uint32_t entityID = std::any_cast<uint32_t>(data);
+		Finish_Parent(entityID);
 	}
 
 	void SystemManager::OnSetPhysicUpdateRate(std::any rate)

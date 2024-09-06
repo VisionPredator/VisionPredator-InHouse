@@ -3229,7 +3229,17 @@ inline Quaternion Quaternion::CreateFromRotationMatrix(const Matrix& M) noexcept
     XMStoreFloat4(&R, XMQuaternionRotationMatrix(M0));
     return R;
 }
+inline Quaternion Quaternion::CreateFromRotationMatrix_LH(const Matrix& M) noexcept {
+    using namespace DirectX;
+    XMMATRIX M0 = XMLoadFloat4x4(&M);
 
+    // Z축을 반전하여 왼손 좌표계로 변환
+    M0.r[2] = XMVectorNegate(M0.r[2]);
+
+    Quaternion R;
+    XMStoreFloat4(&R, XMQuaternionRotationMatrix(M0));
+    return R;
+}
 inline void Quaternion::Lerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept
 {
     using namespace DirectX;

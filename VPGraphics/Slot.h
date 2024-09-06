@@ -26,9 +26,9 @@ enum class Slot_T
 	Roughness, 
 	AO, 
 	Emissive, 
-	GBuffer,
 	Opacity,
 	LightMap,
+	GBuffer,
 	End,
 };
 

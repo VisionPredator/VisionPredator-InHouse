@@ -1,7 +1,9 @@
 #pragma once
 
-// 백버퍼에 렌더해 두었던 SRV 를 읽어와
-// 최종 화면에 출력될 렌더타겟에 렌더하는 패스
+/*
+ *	이전까지 오프스크린에 렌더했던 결과물을
+ *	스왑체인과 연결된 RTV에 렌더하여 마무리하는 패스
+ */
 
 class Device;
 class ResourceManager;

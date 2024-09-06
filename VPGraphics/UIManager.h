@@ -1,9 +1,12 @@
 #pragma once
 #include "vpGraphics.h"
+
 /*
  * 게임 UI에 쓰일
  * Image 와 Font를 관리하는 매니저
  */
+
+// TODO: 글자 렌더링 기능을 마저 구현하자.
 
 class ImageObject;	// 비트맵 목록에서 텍스처 리소스 이름으로 파일을 찾아온다.
 // class TextObject;

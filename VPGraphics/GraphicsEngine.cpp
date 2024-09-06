@@ -169,7 +169,7 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 
 			if (m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
 			{
-				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
+				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, ConstantBufferType::Default);
 			}
 		}
 
@@ -241,11 +241,6 @@ void GraphicsEngine::testCulling(VPMath::Matrix view, VPMath::Matrix proj)
 
 	//절두체
 	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
-
-	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
-	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
-	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
-
 
 	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
 
@@ -401,6 +396,8 @@ std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
 
 void GraphicsEngine::OnResize(HWND hwnd)
 {
+	/// TODO: 매니저들의 OnResize 함수 불러오기. 실제로 Resize 되도록 고치기.
+
 	m_hWnd = hwnd;
 	GetClientRect(m_hWnd, &m_wndSize);
 

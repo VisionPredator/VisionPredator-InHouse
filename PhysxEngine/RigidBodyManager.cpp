@@ -428,8 +428,9 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
     }
     else
     {
-        assert(false);
+		assert(false);
     }
+    return {};
 }
 
 void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V)

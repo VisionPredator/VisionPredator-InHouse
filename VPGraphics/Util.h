@@ -38,5 +38,11 @@ public:
 		return strTo;
 	}
 
+	// 16바이트 배수로 크기 정렬
+	constexpr UINT AlignTo16(UINT size)
+	{
+		return (size + 15) & ~15;
+	}
+
 };
 

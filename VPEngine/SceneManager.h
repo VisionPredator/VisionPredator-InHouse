@@ -5,9 +5,10 @@
 #include "EventSubscriber.h"
 struct PrefabData
 {
+	uint32_t MainEntityID;
 	std::string prefabname;
 	VPMath::Vector3 pos;
-	VPMath::Vector3 direction;
+	VPMath::Vector3 rotation;
 	VPMath::Vector3 scale;
 };
 
@@ -21,7 +22,7 @@ public:
 	void Finalize();
 	// 엔티티를 삭제한다.
 	void DeleteEntity(uint32_t entityID);
-
+	void ChangeScene(std::string FilePath, bool Immidiate=false);
 	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 direction = {0,0,1}, VPMath::Vector3 scele = { 1,1,1 });
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
@@ -29,13 +30,12 @@ public:
 	/// 해당 json를 Deserialize 한다.
 	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();
-	//std::shared_ptr<Entity> CreateEntity(uint32_t id);
 	uint32_t CreateRandomEntityID();
 
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
 
-	std::vector<std::shared_ptr<Component>> GetOwnedComponents(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponents(); }
+	//std::vector<std::shared_ptr<Component>> GetOwnedComponents(uint32_t EntityID) { return GetEntity(EntityID)->GetOwnedComponents(); }
 
 
 	template<typename T>
@@ -55,8 +55,10 @@ public:
 	template<typename T>
 	T* GetComponent(uint32_t EntityID)
 	{
+		//return GetEntity(EntityID)->GetComponent<T>();
+
 		// 캐시된 컴포넌트 ID를 저장하여 반복 호출을 줄임
-			static const auto componentTypeID = Reflection::GetTypeID<T>();
+		static const auto componentTypeID = Reflection::GetTypeID<T>();
 
 		// 캐시를 먼저 확인
 		auto cachedComponent = m_ComponentCache.find({ EntityID, componentTypeID });
@@ -67,25 +69,14 @@ public:
 
 		// 엔티티를 가져옴
 		auto entity = GetEntity(EntityID);
-		if (!entity)
-		{
-			return nullptr;
-		}
-
 		// 엔티티에서 컴포넌트를 가져옴
 		T* component = entity->GetComponent<T>();
-		if (component)
-		{
-			// 캐시에 저장
-			m_ComponentCache[{EntityID, componentTypeID}] = component;
-		}
+		m_ComponentCache[{EntityID, componentTypeID}] = component;
 		return component;
 	}
 
 	Component* GetComponent(uint32_t entityID, entt::id_type compId)
 	{
-		if (!HasEntity(entityID))
-			return nullptr;
 		return GetEntity(entityID)->GetComponent(compId);
 	}
 	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
@@ -93,6 +84,11 @@ public:
 		auto it = m_CurrentScene->EntityMap.find(entityID);
 		return it != m_CurrentScene->EntityMap.end() ? it->second : nullptr;
 	}
+
+	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
+
+
+
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 
@@ -102,9 +98,12 @@ public:
 
 	template<typename T>
 	inline std::vector<std::reference_wrapper<T>> GetComponentPool();
+	void DestroyEntity(uint32_t entityID, bool Immidiate = false);
 
-	void AddChild(uint32_t Parent, uint32_t Child);
+	void AddChild(uint32_t Parent, uint32_t Child, bool Immidiate=false);
 	void RemoveParent(uint32_t child, bool Immediate = false);
+	bool CheckParent(uint32_t parent, uint32_t child);
+
 protected:
 	friend class CompIter;
 private:
@@ -112,10 +111,9 @@ private:
 	{
 		return m_CurrentScene->EntityMap;
 	}
-	void OpenNewScene();
-	void SceneSerialize(std::string FilePath);
-	void SceneDeSerialize(std::string FilePath);
-	bool CheckParent(uint32_t parent, uint32_t child);
+	void OpenNewScene(bool Immidiate = false);
+	void SceneSerialize(std::string FilePath, bool Immidiate = false);
+	void SceneDeSerialize(std::string FilePath, bool Immidiate = false);
 	void OnAddChild(std::any data);
 	void OnRemoveChild(std::any data);
 	void OnSpawnPrefab(std::any pair);
@@ -138,14 +136,19 @@ private:
 	void OnOpenScene(std::any data);
 	//현재씬에 Temp씬 데이터 덮어씌우기.
 	void OnOverwriteTempToCurrent(std::any data);
+	void OnAddEntityComponentsToScene(std::any entityID);
 	void OnSaveCurrentToTemp(std::any data);
 	// 모든 Entity를 지운다.
 	void OnAddCompToScene(std::any data);
+
 	// Entity를 삭제한다.
+	void OnDeleteEntity(std::any entityID);
 	void OnDestroyEntity(std::any entityID);
 
-	void RemoveEntity(std::shared_ptr<Entity> entity);
+	void ClearEntity(std::shared_ptr<Entity> entity);
 	// 모든 Entity를 지운다.
+	void ClearAllEntity(bool Immidiate = false);
+
 	void OnClearAllEntity(std::any data);
 	// 해당 Component 삭제한다.
 	void OnRemoveComponent(std::any data);
@@ -154,8 +157,8 @@ private:
 	// 해당 Prefab을 Deserialize한다.
 	void OnDeSerializePrefab(std::any data);
 	//Entity를 Deserialize한다 : Map 전용.
-	std::shared_ptr<Entity> DeSerializeEntity(const nlohmann::json entityjson);
-	void OnDeSerializeEntity(std::any data);
+	std::shared_ptr<Entity> DeSerializeEntity(const nlohmann::json entityjson,bool Immidate=false);
+	//void OnDeSerializeEntity(std::any data);
 
 	template<typename T>
 	void ReleaseCompFromPool(std::shared_ptr<T> comp);
@@ -183,9 +186,8 @@ private:
 	};
 	std::unordered_map<std::pair<uint32_t, entt::id_type>, Component*, pair_hash> m_ComponentCache;
 
-
-
 	friend class Toolbar;
+	friend class SceneSerializer;
 };
 
 
@@ -197,6 +199,8 @@ inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 	auto it = m_CurrentScene->m_ComponentPool.find(Reflection::GetTypeID<T>());
 	if (it != m_CurrentScene->m_ComponentPool.end())
 	{
+		result.reserve(it->second.size()); // 메모리 할당 최적화
+
 		for (auto& weakComp : it->second)
 		{
 			if (auto sharedComp = weakComp.lock())
@@ -206,7 +210,7 @@ inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 		}
 	}
 
-	return result;
+	return result; // RVO (Return Value Optimization) 또는 std::move가 적용될 수 있음
 }
 
 template<typename T>

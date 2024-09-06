@@ -5,7 +5,7 @@
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#pragma comment (lib, "D3DCompiler.lib")
+//#pragma comment (lib, "D3DCompiler.lib")
 
 #include "Device.h"
 
@@ -75,7 +75,7 @@ template<typename T, typename...Types>
 std::weak_ptr <T> ResourceManager::Create(const std::wstring path, Types...args)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
-	std::unordered_map<std::wstring, std::shared_ptr<Resource>> curMap = m_ResourceArray[index];
+	std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[index];
 
 	if (curMap.find(path) != curMap.end())
 	{
@@ -101,7 +101,7 @@ template<typename T> std::weak_ptr <T> ResourceManager::Get(const std::wstring p
 	}
 
 
-	return {};
+	return {};																																								
 }
 
 template<typename T> void ResourceManager::Add(const std::wstring path, std::shared_ptr<Resource> resource)

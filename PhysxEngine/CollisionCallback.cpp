@@ -28,7 +28,7 @@ void CollisionCallback::onSleep(PxActor** actors, PxU32 count)
 
 void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
-	for (int i = 0; i < nbPairs; i++)
+	for (PxU32 i = 0; i < nbPairs; i++)
 	{
 		if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
 		{
@@ -58,7 +58,7 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
 
 void CollisionCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 {
-	for (int i = 0; i < count; i++)
+	for (PxU32 i = 0; i < count; i++)
 	{
 		/// ENTER_OVERLAP 충돌 이벤트 실행
 		if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
