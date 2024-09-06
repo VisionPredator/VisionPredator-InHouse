@@ -198,7 +198,7 @@
     <ClInclude Include="BlendState.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardPass.h">
+    <ClInclude Include="TransparencyPass.h">
       <Filter>Pass\Forward</Filter>
     </ClInclude>
     <ClInclude Include="DeferredPass.h">
@@ -268,6 +268,7 @@
     <ClInclude Include="UIPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
+    <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="DebugPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
@@ -327,7 +328,7 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPass.cpp">
+    <ClCompile Include="TransparencyPass.cpp">
       <Filter>Pass\Forward</Filter>
     </ClCompile>
     <ClCompile Include="BlendState.cpp">
@@ -433,6 +434,7 @@
     <ClCompile Include="UIPass.cpp">
       <Filter>Pass\Common\Source</Filter>
     </ClCompile>
+    <ClCompile Include="ComputeShader.cpp" />
     <ClCompile Include="MotionBlurPass.cpp">
       <Filter>Pass\PostProcess\Source</Filter>
     </ClCompile>
@@ -508,6 +510,12 @@
       <Filter>HLSL\VS</Filter>
     </FxCompile>
     <FxCompile Include="ObjectMaskPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="IsOccluded.hlsl">
+      <Filter>HLSL\CS</Filter>
+    </FxCompile>
+    <FxCompile Include="PreDepthPS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>

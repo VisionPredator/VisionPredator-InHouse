@@ -2,12 +2,12 @@
 #include "RenderPass.h"
 #include "BlendState.h"
 
-class ForwardPass :
+class TransparencyPass :
     public RenderPass
 {
 public:
-	ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
-	~ForwardPass();
+	TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
+	~TransparencyPass();
 
 	virtual void Render() override;
 	virtual void OnResize() override;

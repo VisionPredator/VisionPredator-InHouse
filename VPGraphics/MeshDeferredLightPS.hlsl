@@ -35,7 +35,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     //PS_OUTPUT output;
     
     float opacity = 1.0f;
-    if (useNEO.z >= 1)
+    if (useNEOL.z >= 1)
     {
         opacity = gOpacity.Sample(samLinear, input.tex).r;
     }
@@ -89,9 +89,8 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     //ambient lighting (constant factor for simplicity)
     float3 ambient = aoValue * albedoColor;
 
-    directlight = indirectlight + directlight;
+    // directlight = indirectlight + directlight;
  
-    
     result = directlight + indirectlight;
     
     // HDR tonemapping

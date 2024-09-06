@@ -33,7 +33,7 @@ cbuffer Transform : register(b1)
 cbuffer Material : register(b2)
 {
     float4 AMRO;
-    float4 useNEO;
+    float4 useNEOL; //normal, Emissive, opacity, LightMap
     float4 albedo;
     float metalness;
     float roughness;
@@ -85,10 +85,10 @@ Texture2D gRoughness : register(t5);
 Texture2D gAO : register(t6);
 Texture2D gEmissive : register(t7);
 
-Texture2D gGBuffer : register(t8);
-Texture2D gIMGUI : register(t9);
-Texture2D gOpacity : register(t10);
-Texture2D gLightMap : register(t11);
+Texture2D gOpacity : register(t8);
+Texture2D gLightMap : register(t9);
+Texture2D gGBuffer : register(t10);
+Texture2D gIMGUI : register(t11);
 
 //***********************************************
 // Sampler States                               *

@@ -6,12 +6,12 @@ struct GeometryComponent :
 {
 	GeometryComponent();
 	VP_JSONBODY(GeometryComponent, FBXFilter,pass,color,UseTexture, TextureName)
-	MeshFilter FBXFilter = MeshFilter::Box;
-	PassState pass = PassState::GeoMetry;
+	GeoMetryFilter FBXFilter = GeoMetryFilter::Box;
+	PassState pass = PassState::Debug_Geometry;
 	VPMath::Color color{ 1,1,1};
 	bool UseTexture = false;
 	std::wstring  TextureName;
-	std::shared_ptr<RenderData> Renderdata;
+	std::shared_ptr<RenderData> Renderdata{};
 
 };
 

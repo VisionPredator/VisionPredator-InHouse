@@ -126,7 +126,7 @@ void EditorCamera::CalculateCamera()
 
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
 	// TODO m_Width와 Height 값좀 업데이트 해주세요. 자꾸 16 이랑 9로만 고정되어있음
-	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(1920.f, 1080.f, m_nearZ, m_farZ);
+	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, m_nearZ, m_farZ);
 }
 
 

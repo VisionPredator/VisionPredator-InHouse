@@ -15,6 +15,7 @@
 #include "ConstantBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "ComputeShader.h"
 #include "ShaderResourceView.h"
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
@@ -52,7 +53,6 @@ public:
 	template<typename T>
 	void Erase(const std::wstring path);
 
-
 	void Initialize(std::weak_ptr<Device> device);
 	void OnResize(RECT& wndsize);
 
@@ -75,7 +75,7 @@ template<typename T, typename...Types>
 std::weak_ptr <T> ResourceManager::Create(const std::wstring path, Types...args)
 {
 	int index = static_cast<int>(Resource::GetResourceType<T>());
-	std::unordered_map<std::wstring, std::shared_ptr<Resource>> curMap = m_ResourceArray[index];
+	std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[index];
 
 	if (curMap.find(path) != curMap.end())
 	{
