@@ -9,7 +9,7 @@ enum class RenderTargetViewType
 	BackBuffer,	// backbuffer
 	OffScreen,	// for deferred rendering
 	ObjectMask,
-	OutlineEdgeDetect,
+	Outline,
 	// 이후 HDR 용 RTV도 필요할 것이다.
 
 };

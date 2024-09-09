@@ -1,6 +1,9 @@
 #pragma once
 #include <d3d11.h>
 
+// TODO 삭제
+// 쉐이더 리플렉션을 사용하기 때문에 굳이 정의해놓을 필요가 없어졌다.
+
 #pragma region BaseVertex
 struct BaseVertex
 {
