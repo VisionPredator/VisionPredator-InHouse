@@ -14,3 +14,4 @@
 #include "Sprite2DComponent.h"
 #include "LifeTimeComponent.h"
 #include "GeometryComponent.h"
+#include "NavAgentComponent.h"

@@ -181,6 +181,7 @@
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="LogicSystems.h" />
+    <ClInclude Include="NavAgentComponent.h" />
     <ClInclude Include="NavAgentSystem.h" />
     <ClInclude Include="NavMeshData.h" />
     <ClInclude Include="NavStructs.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
+    <ClCompile Include="NavAgentComponent.cpp" />
     <ClCompile Include="NavAgentSystem.cpp" />
     <ClCompile Include="NavMeshData.cpp" />
     <ClCompile Include="NavStructs.cpp" />

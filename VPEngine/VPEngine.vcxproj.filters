@@ -210,6 +210,9 @@
     <ClInclude Include="NavAgentSystem.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="NavAgentComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -321,6 +324,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="NavAgentSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavAgentComponent.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 #include "System.h"
 #include "NavMeshData.h"
-class NavAgentSystem :public System
+class NavAgentSystem :public System,public IStartable
 {
 public:
     NavAgentSystem(std::shared_ptr<SceneManager> sceneManager);
