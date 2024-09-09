@@ -76,7 +76,7 @@ public:
     uint32_t EntityID=0;
     dtCrowd* crowd{ nullptr };
     dtPolyRef targetRef;
-    VPMath::Vector3 targetPos;
+    float targetPos[3];
     dtCrowdAgentParams agentParams
     {
         .radius = 1.f,
