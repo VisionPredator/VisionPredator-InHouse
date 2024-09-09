@@ -57,5 +57,38 @@ private:
     class dtNavMeshQuery* navQuery{};
     class dtCrowd* crowd{};
     std::vector<VPMath::Vector3> m_worldVertices{};
-    friend class NavMeshBakerSystem;
+    friend class NavMeshSystem;
+    friend class NavAgentSystem;
+};
+
+class NavAgentData
+{
+public:
+    NavAgentData()
+    {
+    }
+    virtual ~NavAgentData()
+    {
+        if (crowd != nullptr && EntityID != 0)
+            crowd->removeAgent(EntityID);
+    }
+public:
+    uint32_t EntityID=0;
+    dtCrowd* crowd{ nullptr };
+    dtPolyRef targetRef;
+    float targetPos[3];
+    dtCrowdAgentParams agentParams
+    {
+        .radius = 1.f,
+        .height = 0.3f,
+        .maxAcceleration = FLT_MAX,
+        .maxSpeed = 5.f,
+        .collisionQueryRange = 12.f,
+        .pathOptimizationRange = 30.f,
+        .separationWeight = 2.f,
+        .updateFlags = DT_CROWD_ANTICIPATE_TURNS |
+        DT_CROWD_OPTIMIZE_VIS |
+        DT_CROWD_OBSTACLE_AVOIDANCE,
+        .obstacleAvoidanceType = (unsigned char)3,
+    };
 };

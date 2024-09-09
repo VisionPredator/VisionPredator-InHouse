@@ -2,6 +2,7 @@
 
 #include"EventSubscriber.h" 
 ///Input
+#define DIRECTINPUT_VERSION 0x0800 // DirectInput 8.0À» »ç¿ë
 #include <dinput.h>
 #include <d3dcompiler.h>
 #include <directxmath.h>

@@ -568,6 +568,7 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 	else
 	{
 		assert(false);
+		return {};
 	}
 }
 

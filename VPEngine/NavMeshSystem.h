@@ -2,11 +2,11 @@
 #include "System.h"
 #include "NavStructs.h"
 #include "NavMeshData.h"
-class NavMeshBakerSystem : public System, public IUpdatable,public IPhysicable,public IStartable,public IRenderable
+class NavMeshSystem : public System, public IUpdatable,public IPhysicable,public IStartable,public IRenderable
 {
 public:
-    NavMeshBakerSystem(std::shared_ptr<SceneManager> sceneManager);
-    ~NavMeshBakerSystem() = default;
+    NavMeshSystem(std::shared_ptr<SceneManager> sceneManager);
+    ~NavMeshSystem() = default;
     void MakeNavigationMesh(BuildSettings buildSettrings);
 public:
 
@@ -31,7 +31,6 @@ public:
     void Finish(uint32_t gameObjectId) override;
     void Finalize() override;
     
-    //friend NavigationAgent;
 private:
     friend NavMeshData;
     // IRenderable을(를) 통해 상속됨

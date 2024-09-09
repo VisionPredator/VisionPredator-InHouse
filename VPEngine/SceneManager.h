@@ -172,6 +172,7 @@ private:
 	inline void ReleaseCompFromPool(entt::id_type compID, Component* comp);
 
 	friend class SceneSerializer;
+	friend class NavAgentSystem;
 
 	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
@@ -194,7 +195,7 @@ private:
 
 	friend class Toolbar;
 	friend class SceneSerializer;
-	friend class NavMeshBakerSystem;
+	friend class NavMeshSystem;
 };
 
 

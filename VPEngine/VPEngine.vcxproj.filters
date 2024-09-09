@@ -198,13 +198,16 @@
     <ClInclude Include="LogicSystems.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="NavMeshBakerSystem.h">
+    <ClInclude Include="NavMeshSystem.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="NavStructs.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="NavMeshData.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavAgentSystem.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
@@ -308,13 +311,16 @@
     <ClCompile Include="LifeTimeSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="NavMeshBakerSystem.cpp">
+    <ClCompile Include="NavMeshSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="NavStructs.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="NavMeshData.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavAgentSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

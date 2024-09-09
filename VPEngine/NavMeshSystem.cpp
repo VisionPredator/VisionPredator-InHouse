@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "NavMeshBakerSystem.h"
+#include "NavMeshSystem.h"
 
-NavMeshBakerSystem::NavMeshBakerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
+NavMeshSystem::NavMeshSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 	GetSceneManager()->ResetNavMeshData();
 	//m_NavMeshData.reset();
 }
 
-void NavMeshBakerSystem::MakeNavigationMesh(BuildSettings buildSettrings)
+void NavMeshSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 {
 	//if (m_NavMeshData != nullptr)
 	//	delete m_NavMeshData;
@@ -22,7 +22,7 @@ void NavMeshBakerSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 	GetSceneManager()->GetSceneNavMeshData()->m_worldVertices = worldVertices;
 }
 
-void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)
+void NavMeshSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	float bmin[3]{ FLT_MAX, FLT_MAX, FLT_MAX };
@@ -80,8 +80,8 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	//unsigned char * triareas = new unsigned char[facesNum];
 	//memset(triareas, 0, facesNum*sizeof(unsigned char));
 
-	rcMarkWalkableTriangles(context, config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
-	processResult = rcRasterizeTriangles(context, worldVertices, verticesNum, faces, triareas.data(), facesNum, *heightField, config.walkableClimb);
+	rcMarkWalkableTriangles(context, config.walkableSlopeAngle, worldVertices, static_cast<int> (verticesNum), faces, static_cast<int>(facesNum), triareas.data());
+	processResult = rcRasterizeTriangles(context, worldVertices, static_cast<int>(verticesNum), faces, triareas.data(), static_cast<int>(facesNum), *heightField, config.walkableClimb);
 	assert(processResult == true);
 
 	// 필요없는 부분 필터링
@@ -168,9 +168,9 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 	params.offMeshConFlags = 0;
 	params.offMeshConUserID = 0;
 	params.offMeshConCount = 0;
-	params.walkableHeight = config.walkableHeight;
-	params.walkableRadius = config.walkableRadius;
-	params.walkableClimb = config.walkableClimb;
+	params.walkableHeight = static_cast<float>(config.walkableHeight);
+	params.walkableRadius = static_cast<float>(config.walkableRadius);
+	params.walkableClimb = static_cast<float>(config.walkableClimb);
 	rcVcopy(params.bmin, polyMesh->bmin);
 	rcVcopy(params.bmax, polyMesh->bmax);
 	params.cs = config.cs;
@@ -196,7 +196,7 @@ void NavMeshBakerSystem::makeNavMesh(const float* worldVertices, size_t vertices
 
 }
 
-void NavMeshBakerSystem::Update(float deltaTime)
+void NavMeshSystem::Update(float deltaTime)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	if (!navMeshdata)
@@ -209,11 +209,11 @@ void NavMeshBakerSystem::Update(float deltaTime)
 	}
 }
 
-void NavMeshBakerSystem::PhysicsUpdate(float deltaTime)
+void NavMeshSystem::PhysicsUpdate(float deltaTime)
 {
 }
 
-void NavMeshBakerSystem::Initialize()
+void NavMeshSystem::Initialize()
 {
 	if (GetSceneManager()->GetSceneBuildSettrings().UseNavMesh)
 	{
@@ -221,15 +221,15 @@ void NavMeshBakerSystem::Initialize()
 	}
 }
 
-void NavMeshBakerSystem::Start(uint32_t gameObjectId)
+void NavMeshSystem::Start(uint32_t gameObjectId)
 {
 }
 
-void NavMeshBakerSystem::Finish(uint32_t gameObjectId)
+void NavMeshSystem::Finish(uint32_t gameObjectId)
 {
 }
 
-void NavMeshBakerSystem::Finalize()
+void NavMeshSystem::Finalize()
 {
 	//if (m_NavMeshData != nullptr)
 	//	delete m_NavMeshData;
@@ -238,7 +238,7 @@ void NavMeshBakerSystem::Finalize()
 	//m_NavMeshData.reset();
 }
 
-void NavMeshBakerSystem::RenderUpdate(float deltaTime)
+void NavMeshSystem::RenderUpdate(float deltaTime)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	if (!navMeshdata)

@@ -130,6 +130,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>imguid.lib;imguizmo.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,6 +153,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories);$(SolutionDir)Library\$(Platform)\$(Configuration);$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>imgui.lib;imguizmo.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

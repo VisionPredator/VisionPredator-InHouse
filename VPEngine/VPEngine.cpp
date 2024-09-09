@@ -83,7 +83,7 @@ void VPEngine::Addsystem()
 {
 	m_SystemManager->AddSystem<ControllerMovementSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
-	m_SystemManager->AddSystem<NavMeshBakerSystem>();
+	m_SystemManager->AddSystem<NavMeshSystem>();
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<LightSystem>();
 	m_SystemManager->AddSystem<AnimationSystem>();
