@@ -151,6 +151,6 @@ void ObjectMaskPass::Render()
 
 void ObjectMaskPass::OnResize()
 {
-	//m_ObjectMaskRTV
-	//m_DefaultDSV
+	m_ObjectMaskRTV->OnResize();
+	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 }

@@ -10,7 +10,7 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_TEXTURE
 {
 	D3D11_TEXTURE2D_DESC dsd{};
 	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
-	dsd.Height = m_Device.lock() ->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
+	dsd.Height = m_Device.lock()->GetWndSize().bottom - m_Device.lock()->GetWndSize().top;
 	dsd.MipLevels = 1;
 	dsd.ArraySize = 1;
 	dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -51,7 +51,7 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_TEXTURE
 		MessageBox(0, L"Device CreateDepthStencilView Failed", 0, 0);
 	}
 
-	DSBuffer->Release();
+	SAFE_RELEASE_COM(DSBuffer);
 }
 
 DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture) : Resource(device)
@@ -66,10 +66,45 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_S
 	}
 }
 
-DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, DepthStencilViewType type, const uint32_t& width,
-	const uint32_t& height)
+DepthStencilView::DepthStencilView(const std::shared_ptr<Device>& device, const DepthStencilViewType& type)
+	: Resource(device)
+	, m_Type(type)
 {
-	Microsoft::WRL::ComPtr<ID3D11Device> d3dDevice = device->Get();
+	OnResize();
+}
+
+DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
+{
+	/*HRESULT hr;
+	hr = m_Device->Get()->CreateDepthStencilView(DSBuffer, 0, &m_DSV);
+
+
+	if (FAILED(hr))
+	{
+		MessageBox(0, L"Device CreateDepthStencilView Failed", 0, 0);
+	}
+
+	DSBuffer->Release();*/
+}
+
+ID3D11DepthStencilView* DepthStencilView::Get() const
+{
+	return m_DSV.Get();
+}
+
+ID3D11DepthStencilView** DepthStencilView::GetAddress()
+{
+	return &m_DSV;
+}
+
+void DepthStencilView::OnResize()
+{
+	Release();
+
+	Microsoft::WRL::ComPtr<ID3D11Device> d3dDevice = m_Device.lock()->Get();
+
+	const uint32_t width = m_Device.lock()->GetWndWidth();
+	const uint32_t height = m_Device.lock()->GetWndHeight();
 
 	D3D11_TEXTURE2D_DESC textureDesc = {};
 	textureDesc.Width = width;
@@ -87,18 +122,18 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, DepthStencilV
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	switch (type)
+	switch (m_Type)
 	{
-	case DepthStencilViewType::Default:
+		case DepthStencilViewType::Default:
 		{
-		textureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+			textureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		}
 		break;
-	default:
-		break;
+		default:
+			break;
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> buffer;
@@ -106,36 +141,7 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, DepthStencilV
 	HR_CHECK(d3dDevice->CreateDepthStencilView(buffer.Get(), &depthStencilViewDesc, m_DSV.GetAddressOf()));
 }
 
-DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
-{
-	/*HRESULT hr;
-	hr = m_Device->Get()->CreateDepthStencilView(DSBuffer, 0, &m_DSV);
-
-
-	if (FAILED(hr))
-	{
-		MessageBox(0, L"Device CreateDepthStencilView Failed", 0, 0);
-	}
-
-	DSBuffer->Release();*/
-}
-
-DepthStencilView::~DepthStencilView()
-{
-
-}
-
-ID3D11DepthStencilView* DepthStencilView::Get() const
-{
-	return m_DSV.Get();
-}
-
-ID3D11DepthStencilView** DepthStencilView::GetAddress()
-{
-	return &m_DSV;
-}
-
 void DepthStencilView::Release()
 {
-	//m_DSV->Release();
+	m_DSV.Reset();
 }

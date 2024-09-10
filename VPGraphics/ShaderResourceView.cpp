@@ -86,6 +86,22 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(rtvTexture.Get(), &srvDesc, m_SRV.GetAddressOf()));
 }
 
+ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<Texture2D>& texture2D)
+	: Resource(device)
+{
+	D3D11_TEXTURE2D_DESC textureDesc = {};
+	texture2D->Get()->GetDesc(&textureDesc);
+
+	m_Width = textureDesc.Width;
+	m_Height = textureDesc.Height;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = textureDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+
+	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(texture2D->Get(), &srvDesc, m_SRV.GetAddressOf()));
+}
+
 
 //
 //ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device, std::weak_ptr<Texture2D> texture, D3D11_SHADER_RESOURCE_VIEW_DESC desc) : Resource(device)

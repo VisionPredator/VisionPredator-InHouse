@@ -86,7 +86,7 @@ ConstantBuffer<T>::ConstantBuffer(const std::shared_ptr<Device>& device, const C
 template<typename T>
 ConstantBuffer<T>::~ConstantBuffer()
 {
-	//Release();
+	ConstantBuffer<T>::Release();
 }
 
 template<typename T>

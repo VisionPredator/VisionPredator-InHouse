@@ -106,4 +106,6 @@ GeometryShader::GeometryShader(const std::shared_ptr<Device>& device, const std:
 		, rasterizerStream
 		, nullptr
 		, &m_Shader));
+
+	SAFE_RELEASE_COM(pReflector);
 }

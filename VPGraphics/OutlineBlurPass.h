@@ -33,7 +33,7 @@ private:
 	std::shared_ptr<VertexShader> m_OutlineBlurVS;
 	std::shared_ptr<PixelShader> m_OutlineBlurPS;
 
-	std::shared_ptr<Sampler> m_LinearClampSS;
+	std::shared_ptr<Sampler> m_DefaultSS;
 
 	std::shared_ptr<VertexBuffer> m_QuadVB;
 	std::shared_ptr<IndexBuffer> m_QuadIB;

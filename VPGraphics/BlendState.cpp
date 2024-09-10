@@ -56,3 +56,8 @@ BlendState::BlendState(const std::shared_ptr<Device>& device, const BlendStateTy
 
 	HR_CHECK(device->Get()->CreateBlendState(&desc, m_State.GetAddressOf()));
 }
+
+void BlendState::Release()
+{
+	m_State.Reset();
+}

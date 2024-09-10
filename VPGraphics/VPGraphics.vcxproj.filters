@@ -286,6 +286,15 @@
     <ClInclude Include="ObjectMaskPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
+    <ClInclude Include="ComputeShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="UnorderedAccessView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -448,6 +457,15 @@
     <ClCompile Include="ObjectMaskPass.cpp">
       <Filter>Pass\Common\Source</Filter>
     </ClCompile>
+    <ClCompile Include="ComputeShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnorderedAccessView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -509,6 +527,9 @@
     </FxCompile>
     <FxCompile Include="ObjectMaskPS.hlsl">
       <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurCS.hlsl">
+      <Filter>HLSL\CS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

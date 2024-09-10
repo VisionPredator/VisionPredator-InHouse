@@ -4,9 +4,7 @@
 #include "ForwardPass.h"
 #include "DebugPass.h"
 #include "DeferredPass.h"
-#include "OutlineAddPass.h"
-#include "OutlineBlurPass.h"
-#include "OutlineEdgeDetectPass.h"
+
 
 /// <summary>
 ///	모든 패스들을 관리하는 매니저.
@@ -14,6 +12,9 @@
 /// </summary>
 
 class ParticlePass;
+class OutlineEdgeDetectPass;
+class OutlineBlurPass;
+class OutlineAddPass;
 class TimeManager;
 class ParticleManager;
 class ModelData;

@@ -6,8 +6,10 @@
 
 
 RenderTargetView::RenderTargetView(const std::shared_ptr<Device>& device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height)
+	: Resource(device)
+	, m_Type(type)
 {
-	OnResize(device, type, width, height);
+	OnResize();
 }
 
 ID3D11RenderTargetView* RenderTargetView::Get() const
@@ -20,20 +22,22 @@ ID3D11RenderTargetView** RenderTargetView::GetAddress()
 	return m_RTV.GetAddressOf();
 }
 
-void RenderTargetView::OnResize(const std::shared_ptr<Device>& device, const RenderTargetViewType& type,
-	const uint32_t& width, const uint32_t& height)
+void RenderTargetView::OnResize()
 {
 	Release();
 
-	switch (type)
+	const uint32_t width = m_Device.lock()->GetWndWidth();
+	const uint32_t height = m_Device.lock()->GetWndHeight();
+
+	switch (m_Type)
 	{
 		case RenderTargetViewType::BackBuffer:
 		{
 			Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-			const Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain = device->SwapChain();
+			const Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain = m_Device.lock()->SwapChain();
 
 			HR_CHECK(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer));
-			HR_CHECK(device->Get()->CreateRenderTargetView(backBuffer.Get(), 0, &m_RTV));
+			HR_CHECK(m_Device.lock()->Get()->CreateRenderTargetView(backBuffer.Get(), 0, &m_RTV));
 		}
 		break;
 		case RenderTargetViewType::OffScreen:
@@ -51,13 +55,13 @@ void RenderTargetView::OnResize(const std::shared_ptr<Device>& device, const Ren
 			textureDesc.MiscFlags = 0;
 
 			Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-			HR_CHECK(device->Get()->CreateTexture2D(&textureDesc, nullptr, &texture));
+			HR_CHECK(m_Device.lock()->Get()->CreateTexture2D(&textureDesc, nullptr, &texture));
 
 			D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 			rtvDesc.Format = textureDesc.Format;
 			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
-			HR_CHECK(device->Get()->CreateRenderTargetView(texture.Get(), &rtvDesc, &m_RTV));
+			HR_CHECK(m_Device.lock()->Get()->CreateRenderTargetView(texture.Get(), &rtvDesc, &m_RTV));
 
 			break;
 		}
@@ -78,13 +82,13 @@ void RenderTargetView::OnResize(const std::shared_ptr<Device>& device, const Ren
 			textureDesc.MiscFlags = 0;
 
 			Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-			HR_CHECK(device->Get()->CreateTexture2D(&textureDesc, nullptr, &texture));
+			HR_CHECK(m_Device.lock()->Get()->CreateTexture2D(&textureDesc, nullptr, &texture));
 
 			D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 			rtvDesc.Format = textureDesc.Format;
 			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
-			HR_CHECK(device->Get()->CreateRenderTargetView(texture.Get(), &rtvDesc, m_RTV.GetAddressOf()));
+			HR_CHECK(m_Device.lock()->Get()->CreateRenderTargetView(texture.Get(), &rtvDesc, m_RTV.GetAddressOf()));
 
 			break;
 		}
