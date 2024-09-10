@@ -207,6 +207,17 @@ void NavMeshSystem::Update(float deltaTime)
 	{
 		navMeshdata->crowd->update(deltaTime, nullptr);
 	}
+
+	COMPLOOP(NavAgentComponent, agentcomp)
+	{
+		auto Transform = agentcomp.GetComponent<TransformComponent>();
+		if (!navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID))
+			continue;
+		auto [x,y,z]=navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID)->npos;
+		Transform->SetWorldLocationX( x);
+		Transform->SetWorldLocationZ( z);
+	}
+
 }
 
 void NavMeshSystem::PhysicsUpdate(float deltaTime)

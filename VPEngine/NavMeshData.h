@@ -64,19 +64,17 @@ private:
 class NavAgentData
 {
 public:
-    NavAgentData()
-    {
-    }
+    NavAgentData() {}
     virtual ~NavAgentData()
     {
-        if (crowd != nullptr && EntityID != 0)
-            crowd->removeAgent(EntityID);
+        //if (crowd != nullptr && EntityID != 0)
+        //    crowd->removeAgent(EntityID);
     }
 public:
-    uint32_t EntityID=0;
-    dtCrowd* crowd{ nullptr };
-    dtPolyRef targetRef;
-    float targetPos[3];
+    int AgentID=-1;
+    dtPolyRef targetRef{};
+    float targetPos[3] = {2,-12.000,2};
+    
     dtCrowdAgentParams agentParams
     {
         .radius = 1.f,
@@ -91,4 +89,5 @@ public:
         DT_CROWD_OBSTACLE_AVOIDANCE,
         .obstacleAvoidanceType = (unsigned char)3,
     };
+    bool IsStop{};
 };

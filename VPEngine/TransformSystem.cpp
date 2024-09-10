@@ -348,24 +348,24 @@ void TransformSystem::UpdatePreviousLocalTransform(TransformComponent* transform
     transform->Previous_Location = transform->Local_Location;
 }
 
-void TransformSystem::Initialize()
-{
-    UpdateAllEntitys();
-}
-
-void TransformSystem::Start(uint32_t gameObjectId)
-{
-
-}
-
-void TransformSystem::Finish(uint32_t gameObjectId)
-{
-}
-
-void TransformSystem::Finalize()
-{
-
-}
+////void TransformSystem::Initialize()
+////{
+////    UpdateAllEntitys();
+////}
+//
+//void TransformSystem::Start(uint32_t gameObjectId)
+//{
+//
+//}
+//
+//void TransformSystem::Finish(uint32_t gameObjectId)
+//{
+//}
+//
+//void TransformSystem::Finalize()
+//{
+//
+//}
 
 void TransformSystem::RenderUpdate(float deltaTime)
 {

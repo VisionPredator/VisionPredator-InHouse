@@ -8,7 +8,7 @@ BulletSystem::BulletSystem(std::shared_ptr<SceneManager> sceneManager): System(s
 
 void BulletSystem::FixedUpdate(float deltaTime)
 {
-	COMPLOOP(BulletComponent)
+	COMPLOOP(BulletComponent, comp)
 	{
 		auto transform = comp.GetComponent <TransformComponent >();
 		VPMath::Vector3 addlocation{};

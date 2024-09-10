@@ -7,7 +7,7 @@ EnemySystem::EnemySystem(std::shared_ptr<SceneManager> SceneMagener):System(Scen
 
 void EnemySystem::FixedUpdate(float deltaTime)
 {
-	COMPLOOP(EnemyComponent)
+	COMPLOOP(EnemyComponent, comp)
 	{
 		if (comp.HP < 0)
 			comp.GetEntity()->DestorySelf();
