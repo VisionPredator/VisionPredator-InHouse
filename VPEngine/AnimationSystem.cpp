@@ -5,6 +5,7 @@ AnimationSystem::AnimationSystem(std::shared_ptr<SceneManager> sceneManager) : S
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&AnimationSystem::OnAddedComponent));
 	EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&AnimationSystem::OnReleasedComponent));
+	EventManager::GetInstance().Subscribe("OnChangeAnimation", CreateSubscriber(&AnimationSystem::OnChangeAnimation));
 }
 
 void AnimationSystem::OnAddedComponent(std::any data)
@@ -35,41 +36,74 @@ void AnimationSystem::RenderUpdate(float deltaTime)
 
 void AnimationSystem::Update(float deltaTime)
 {
+
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
 		aniComp.isPlay = true;
-		aniComp.isChange = false;
 
-
-		if (aniComp.duration > m_Graphics->GetDuration(aniComp.curAnimation))
+		if (!aniComp.FBX.empty())
 		{
-			aniComp.duration -= m_Graphics->GetDuration(aniComp.curAnimation);
-			//if (aniComp.duration < 0)
+			aniComp.duration += deltaTime * aniComp.speed;
+
+			//애니메이션 계속 재생
+			if (aniComp.preAni == aniComp.curAni)
 			{
-				static int index = 0;
-				index++;
-				index = index % aniComp.animationList.size();
-
-				//aniComp.curAnimation = aniComp.animationList[index];
-
+				double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
+				if (aniComp.duration > curDuration)
+				{
+					aniComp.duration -= curDuration;
+				}
+			}
+			else
+			{
+				//애니메이션 블렌딩
+				if (aniComp.duration > aniComp.transitionDuration)
+				{
+					std::pair<uint32_t, int> temp = { aniComp.GetEntityID(),aniComp.curAni };
+					EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", temp);
+				}
 			}
 		}
 
-		if (aniComp.preAnimation != aniComp.curAnimation)
+
+		if (aniComp.GetComponent<IDComponent>()->Name == "TestAnimation")
 		{
-			aniComp.preAnimation = aniComp.curAnimation;
-			aniComp.preDuration = aniComp.duration;
-			aniComp.duration = 0;
-			
-			aniComp.isChange = true;
+			if (INPUTKEYDOWN(KEYBOARDKEY::G))
+			{
+				static int index = 0;
+				index = index % 2;
+				std::pair<uint32_t, int> temp = { aniComp.GetEntityID(),index };
+				EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", temp);
+				index++;
+			}
 		}
 
-		
-
-
-		if (!aniComp.curAnimation.empty())
+		auto ent = aniComp.GetEntity();
+		if (ent->HasComponent<SkinningMeshComponent>())
 		{
-			aniComp.duration += deltaTime * aniComp.speed;
+			auto skinned = ent->GetComponent<SkinningMeshComponent>();
+			skinned->Renderdata->curAni = aniComp.curAni;
+			skinned->Renderdata->preAni = aniComp.preAni;
+			skinned->Renderdata->isPlay = aniComp.isPlay;
+			skinned->Renderdata->preDuration = aniComp.preDuration;
+			skinned->Renderdata->duration = aniComp.duration;
+			skinned->Renderdata->transitionDuration = aniComp.transitionDuration;
 		}
+	}
+}
+
+
+void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
+{
+	auto [entityid, index] = std::any_cast<std::pair<uint32_t, int>>(pairdata_entityid_AniIndex);
+
+	if (GetSceneManager()->HasComponent<AnimationComponent>(entityid))
+	{
+		auto aniComp = GetSceneManager()->GetComponent<AnimationComponent>(entityid);
+		aniComp->preAni = aniComp->curAni;
+		aniComp->preDuration = aniComp->duration;
+
+		aniComp->curAni = index;
+		aniComp->duration = 0.0f;
 	}
 }

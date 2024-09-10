@@ -267,7 +267,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			v = newMesh->MaxBounding;
 			v = XMVector3Transform(v, test);
 			newMesh->MaxBounding = { v.x,v.y,v.z };
-			
+
 			v = newMesh->MinBounding;
 			v = XMVector3Transform(v, test);
 			newMesh->MinBounding = { v.x,v.y,v.z };
@@ -705,6 +705,8 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 
 	//유니티랑 x축 90 차이나서 의도적으로 회전시킴
 	//왼손좌표계라 기존 회전방향을 반대로 곱해준다
+	/*
+	*/
 	VPMath::Matrix test;
 	VPMath::Vector3 v = { vertex.pos.x,vertex.pos.y,vertex.pos.z};
 

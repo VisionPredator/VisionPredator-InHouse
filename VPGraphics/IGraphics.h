@@ -59,7 +59,7 @@ namespace Graphics
 		//·»´õ¸µ
 		virtual bool AddRenderModel(std::shared_ptr<RenderData> data) abstract;
 
-		virtual const double GetDuration(std::wstring name) abstract;
+		virtual const double GetDuration(std::wstring name, int index) abstract;
 
 		/// Effect
 		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;

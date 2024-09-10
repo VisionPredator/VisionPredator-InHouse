@@ -53,7 +53,7 @@ public:
 	bool AddRenderModel(std::shared_ptr<RenderData> data)override;
 	void EraseObject(uint32_t EntityID) override;
 	void UpdateModel(uint32_t EntityID)override;
-	const double GetDuration(std::wstring name) override;
+	const double GetDuration(std::wstring name, int index) override;
 
 	/// Particle
 	void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;

@@ -49,7 +49,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 
-		meshComponent->Renderdata->FBX= meshComponent->FBX;
+		meshComponent->Renderdata->FBX = meshComponent->FBX;
 		//meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->duration = 0;
@@ -196,7 +196,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
 	const TransformComponent& transform = *meshComp.GetComponent<TransformComponent>();
-	bool IsChanged=false;
+	bool IsChanged = false;
 	auto renderdata = meshComp.Renderdata;
 
 	renderdata->FBX = meshComp.FBX;
@@ -216,17 +216,11 @@ void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 	if (skinComp.HasComponent<AnimationComponent>())
 	{
 		auto anicomp = skinComp.GetComponent<AnimationComponent>();
+		anicomp->FBX = skinComp.FBX;
 
-		renderdata->curAnimation = anicomp->curAnimation;
-		if (!renderdata->curAnimation.empty())
-		{
-			renderdata->FBX = renderdata->curAnimation;
-			renderdata->duration = anicomp->duration;
-			renderdata->isPlay = anicomp->isPlay;
-			renderdata->isChange = anicomp->isChange;
-			renderdata->preDuration = anicomp->preDuration;
-			renderdata->preAnimation = anicomp->preAnimation;
-		}
+		renderdata->duration = anicomp->duration;
+		renderdata->isPlay = anicomp->isPlay;
+		renderdata->preDuration = anicomp->preDuration;
 	}
 }
 

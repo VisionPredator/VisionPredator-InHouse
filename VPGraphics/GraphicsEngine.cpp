@@ -211,7 +211,7 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	cb_projInverse = projInverse.Transpose();
 
 	//절두체
-	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum,m_Proj);
+	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
 
 
 
@@ -221,7 +221,7 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 
 
 	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
-		
+
 	//카메라위치
 	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
 
@@ -281,13 +281,17 @@ void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightDat
 	}
 }
 
-const double GraphicsEngine::GetDuration(std::wstring name)
+const double GraphicsEngine::GetDuration(std::wstring name, int index)
 {
 
-	std::weak_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name);
-	if (curAni.lock() != nullptr)
+	std::shared_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name).lock();
+	if (curAni != nullptr)
 	{
-		return curAni.lock()->m_Animations[0]->m_Duration / curAni.lock()->m_Animations[0]->m_TickFrame;
+		if (!curAni->m_Animations.empty())
+		{
+			//전체 tick / 초당 틱 == 애니메이션 재생시간
+			return curAni->m_Animations[index]->m_Duration / curAni->m_Animations[index]->m_TickFrame;
+		}
 	}
 
 
@@ -443,36 +447,46 @@ void GraphicsEngine::Culling()
 
 		if (curFBX != nullptr)
 		{
-			VPMath::Vector3 s;
-			VPMath::Quaternion r;
-			VPMath::Vector3 t;
-			object.second->world.Decompose(s, r, t);
-
-			VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
-			VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
-
-			for (auto& mesh : curFBX->m_Meshes)
+			//if (!object.second->isSkinned)
 			{
-				//S
-				VPMath::Vector3 afterMax = mesh->MaxBounding * s;
-				VPMath::Vector3 afterMin = mesh->MinBounding * s;
+				VPMath::Vector3 s;
+				VPMath::Quaternion r;
+				VPMath::Vector3 t;
+				object.second->world.Decompose(s, r, t);
 
-				VPMath::Vector3 distance = afterMax - afterMin;
-				VPMath::Vector3 half = distance / 2;
+				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
+				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
 
-				DirectX::BoundingOrientedBox obbInfo;
-				
-				obbInfo.Center = t + afterMin + half;
-				obbInfo.Extents = half;
-				obbInfo.Orientation = r;
-				
-				DirectX::ContainmentType a = m_Frustum.Contains(obbInfo);
-				object.second->isVisible = m_Frustum.Contains(obbInfo);
+				VPMath::Vector3 Max;
+				VPMath::Vector3 Min;
+
+				for (auto& mesh : curFBX->m_Meshes)
+				{
+					//S
+					VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+					VPMath::Vector3 afterMin = mesh->MinBounding * s;
+
+					VPMath::Vector3 distance = afterMax - afterMin;
+					VPMath::Vector3 half = distance / 2;
+
+					DirectX::BoundingOrientedBox obbInfo;
+
+					obbInfo.Center = t + afterMin + half;
+					obbInfo.Extents = half;
+					obbInfo.Orientation = r;
+
+					DirectX::ContainmentType a = m_Frustum.Contains(obbInfo);
+					object.second->isVisible = m_Frustum.Contains(obbInfo);
+				}
 			}
+			/*else
+			{
+				object.second->isVisible = true;
+			}*/
 		}
 
-		if (object.second->isVisible 
-			|| object.second->Pass == (object.second->Pass  & PassState::Debug_Geometry ))
+		if (object.second->isVisible
+			|| object.second->Pass == (object.second->Pass & PassState::Debug_Geometry))
 		{
 			m_AfterCulling.insert(object);
 		}

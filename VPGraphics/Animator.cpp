@@ -1,4 +1,5 @@
 #include "pch.h"	
+#include <algorithm>
 
 #include "Animator.h"
 #include "ModelData.h"
@@ -22,148 +23,111 @@ void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>
 
 		if (data.second->isPlay)
 		{
-
-			if (!curData->curAnimation.empty())
-			{
-				curModel = m_ResourceManager.lock()->Get<ModelData>(curData->curAnimation);
-			}
-			else
-			{
-				curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX);
-			}
-
-			if (curModel.lock() != nullptr)
-			{
-				//UpdateWorld(curData->duration, curModel);
-				UpdateWorld(curData);
-				UpdateMatrixPallete(curData);
-			}
+			UpdateWorld(curData);
+			UpdateMatrixPallete(curData);
 		}
 	}
 }
 
-void Animator::UpdateWorld(double dt, std::weak_ptr<ModelData> ob)
+
+void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 {
-	//오브젝트마다 애니메이션의 길이 시간등등이 다른데 시간을 어떻게 처리할까???
-	//같은 데이터의 포인터를 사용하니까 같은 애니메이션 쓰는 애들은 시간이 두배가되서 속도가 2배 빨라져
-	//같은 데이터를 쓰지만 각자가 가지고 있는 고유의 데이터야하는 아이러니?
-	//이건 애니메이션 데이터는 그대로 두고 각자의 시간과 애니메이션 따로 놀면된다
-	//여기서 터지면 loader에 데이터를 안읽어왔을 확률 높음
+	std::shared_ptr<RenderData> curOb = ob.lock();
+	std::shared_ptr<ModelData> curModel;
+	curModel = m_ResourceManager.lock()->Get<ModelData>(curOb->FBX).lock();	//하나의 fbx안에 여러개의 애니메이션
 
-	int index = 0;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
+	//애니메이션 데이터가 유효한가?
 
-	std::shared_ptr<ModelData> curOb = ob.lock();
-
-	if (curOb->m_Animations.empty())
+	if (curModel == nullptr || curModel->m_Animations.empty())
 	{
 		return;
 	}
 
-	//double& time = ob->playTime; //현재 애니메이션 플레이시간
-	double time = dt; //현재 애니메이션 플레이시간
-	double speed = curOb->m_Animations[index]->m_TickFrame;
-	time = dt * speed;
+	int curindex = curOb->curAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
+	int preindex = curOb->preAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
 
+	//현재 tick
+	double curtick = curOb->duration * curModel->m_Animations[curindex]->m_TickFrame;
+	double pretick = curOb->preDuration * curModel->m_Animations[preindex]->m_TickFrame;
 
-	//로직 변경 필요 2024.08.12 정확한 처리가 아님 재생시간에 맞게 하지 않음
-	if (time > curOb->m_Animations[index]->m_Duration)
+	//이전 애니메이션과 현재 애니메이션이 같으면
+	if (curindex == preindex)
 	{
-		time -= curOb->m_Animations[index]->m_Duration;
+		//그대로 연속 재생
+		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
+		{
+			//가지고 있는 애니메이션 정보 순회
+			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
+			{
+				//현재 애니메이션 위치 찾고 보간
+				if (curtick < tick->first)
+				{
+					//현재 프레임이 최종 프레임보다 클 경우 다시 시작 점으로
+					//end()가 끝이 아닌 마지막 + 1
+					if (tick == ani->totals.end() - 1)
+					{
+						auto next = ani->totals.begin();
+						float t = abs(curtick - tick->first) / abs(next->first - tick->first);
+
+						std::shared_ptr<Node> curAni = ani->node.lock();
+						curAni->m_Local = VPMath::Matrix::Lerp(tick->second, next->second, t).Transpose();
+						break;
+					}
+
+					//일반적인 보간
+					auto next = tick++;
+					float t = abs(curtick - tick->first) / abs(next->first - tick->first);
+
+					std::shared_ptr<Node> curAni = ani->node.lock();
+					curAni->m_Local = VPMath::Matrix::Lerp(tick->second, next->second, t).Transpose();
+					break;
+				}
+			}
+		}
+
+		CalcWorld(curModel->m_RootNode);
 	}
 	else
 	{
-		for (auto& ani : curOb->m_Animations[index]->m_Channels)
+
+		float transitionDuration = curOb->transitionDuration; //  n초 동안 전환
+		float transitionTime = curOb->duration; // 경과 시간
+		float t = (transitionTime / transitionDuration);
+		t = std::min<float>(t, 1.0f);
+		//다른 애니메이션과 blending
+		    
+		//이전 애니메이션 저장 공간
+		std::map<std::wstring, VPMath::Matrix> preAni;
+
+		//이전 애니메이션의 키프레임 값 가져오기
+		for (auto& ani : curModel->m_Animations[preindex]->m_Channels)
 		{
-			int cur = 0;
-			for (int i = 0; i < ani->totals.size(); i++)
+			//가지고 있는 애니메이션 정보 순회
+			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
 			{
-				if (i >= time)
+				if (pretick < tick->first)
 				{
-					break;
+					preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, tick->second));
 				}
-				cur = i;
 			}
-
-			int next = cur + 1;
-			if (next >= ani->totals.size())
-			{
-				next = 0;
-			}
-
-			float t = time - cur;
-
-			std::shared_ptr<Node> curAni = ani->node.lock();
-			curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur].second, ani->totals[next].second, t).Transpose();
 		}
-	}
 
-	CalcWorld(curOb->m_RootNode);
-}
+		//현재 애니메이션
 
-//test
-void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
-{
-	std::shared_ptr<RenderData> curOb = ob.lock();
-	std::weak_ptr<ModelData> curModel;
-	std::weak_ptr<ModelData> preModel;
-	curModel = m_ResourceManager.lock()->Get<ModelData>(curOb->curAnimation);
-	preModel = m_ResourceManager.lock()->Get<ModelData>(curOb->preAnimation);
-
-	if (preModel.lock() != nullptr && curModel.lock() != nullptr)
-	{
-		//이전 애니메이션이랑 지금 애니메이션이 유효한가
-		if (curOb->isChange)
+		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
 		{
-
-			std::map<std::wstring, VPMath::Matrix> preAni;
-
-			for (auto& ani : preModel.lock()->m_Animations[0]->m_Channels)
+			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
 			{
-				int cur = 0;
-				for (int i = 0; i < ani->totals.size(); i++)
+				if (curtick < tick->first)
 				{
-					if (i >= curOb->preDuration)
-					{
-						break;
-					}
-					cur = i;
+					//현재꺼랑 공유하는 이전 애니메이션 노드 보간
+					std::shared_ptr<Node> curAni = ani->node.lock();
+					curAni->m_Local = VPMath::Matrix::Lerp(tick->second, preAni[ani->nodename], t).Transpose();
 				}
-
-				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, ani->totals[cur].second));
 			}
-
-
-
-			for (auto& ani : curModel.lock()->m_Animations[0]->m_Channels)
-			{
-				int cur = 0;
-				for (int i = 0; i < ani->totals.size(); i++)
-				{
-					if (i >= curOb->duration)
-					{
-						break;
-					}
-					cur = i;
-				}
-
-				int next = cur + 1;
-				if (next >= ani->totals.size())
-				{
-					next = 0;
-				}
-
-				float t = curOb->duration - cur;
-
-				std::shared_ptr<Node> curAni = ani->node.lock();
-				curAni->m_Local = VPMath::Matrix::Lerp(ani->totals[cur].second, preAni[ani->nodename], t).Transpose();
-			}
-
 		}
-		else
-		{
-			UpdateWorld(curOb->duration, curModel);
 
-		}
+		CalcWorld(curModel->m_RootNode);
 	}
 }
 
@@ -234,6 +198,8 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 {
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
 	std::shared_ptr<ModelData> ob = resourcemanager->Get<ModelData>(curData->FBX).lock();
+	std::wstring id = std::to_wstring(curData->EntityID);
+	MatrixPallete& pallete = resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct;
 
 	for (auto& mesh : ob->m_Meshes)
 	{
@@ -248,8 +214,7 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 
 				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
 				{
-					std::wstring id = std::to_wstring(curData->EntityID);
-					resourcemanager->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct.offset[i] = (nodeworld * offset);
+					pallete.offset[i] = (nodeworld * offset);
 				}
 			}
 		}

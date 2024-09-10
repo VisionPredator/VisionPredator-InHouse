@@ -87,7 +87,7 @@ void TransparencyPass::Render()
 					position->Update(renew);
 
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
-					if (!curData->curAnimation.empty() && curData->isPlay)
+					if (!curData->FBX.empty() && curData->isPlay)
 					{
 						std::wstring id = std::to_wstring(curData->EntityID);
 						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
