@@ -34,7 +34,6 @@ Sampler::Sampler(const std::shared_ptr<Device>& device, const SamplerStateType& 
 			desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 			desc.MinLOD = -FLT_MAX;
 			desc.MaxLOD = FLT_MAX;
-
 		break;
 		}
 		case SamplerStateType::LinearClamp:
@@ -47,7 +46,6 @@ Sampler::Sampler(const std::shared_ptr<Device>& device, const SamplerStateType& 
 		}
 		case SamplerStateType::LinearWrap:
 		{
-			desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// 선형 필터링 사용
 			desc.BorderColor[0] = 1.f;
 			desc.BorderColor[1] = 1.f;
 			desc.BorderColor[2] = 1.f;

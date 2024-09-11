@@ -40,4 +40,3 @@ private:
 	std::shared_ptr<VertexBuffer> m_QuadVB;
 	std::shared_ptr<IndexBuffer> m_QuadIB;
 };
-

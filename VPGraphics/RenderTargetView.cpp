@@ -5,11 +5,44 @@
 #include "Texture2D.h"
 
 
+RenderTargetView::RenderTargetView(const std::shared_ptr<Device>& device)
+	: Resource(device)
+{
+}
+
 RenderTargetView::RenderTargetView(const std::shared_ptr<Device>& device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height)
 	: Resource(device)
 	, m_Type(type)
 {
 	OnResize();
+}
+
+void RenderTargetView::CreateDownsampledView(const unsigned& scaleRatio)
+{
+	Release();
+
+	const uint32_t width = m_Device.lock()->GetWndWidth();
+	const uint32_t height = m_Device.lock()->GetWndHeight();
+
+	D3D11_TEXTURE2D_DESC textureDesc = {};
+	textureDesc.Width = width / scaleRatio;  // 绵家等 气
+	textureDesc.Height = height / scaleRatio;  // 绵家等 臭捞
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> downscaledTexture;
+	m_Device.lock()->Get()->CreateTexture2D(&textureDesc, nullptr, downscaledTexture.GetAddressOf());
+
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	rtvDesc.Format = textureDesc.Format;
+	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
+
+	m_Device.lock()->Get()->CreateRenderTargetView(downscaledTexture.Get(), &rtvDesc, m_RTV.GetAddressOf());
 }
 
 ID3D11RenderTargetView* RenderTargetView::Get() const

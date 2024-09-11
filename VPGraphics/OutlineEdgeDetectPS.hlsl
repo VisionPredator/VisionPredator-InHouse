@@ -25,9 +25,12 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 	float4 color = float4(0, 0, 0, 1);  // 초기 색상 (검정 배경)
 	const float coord[3] = { -1, 0, 1 };
 
+	// 샘플링 범위를 확장하여 더 두꺼운 엣지를 얻음
+	const float scale = 5.0; // 범위를 두 배로 확장
+
 	for (int i = 0; i < 9; i++)
 	{
-		const float2 offset = float2(coord[i % 3] / Width, coord[i / 3] / Height);
+		const float2 offset = float2(coord[i % 3] * scale / Width, coord[i / 3] * scale / Height);
 		const float4 sampleColor = ObjectMask.Sample(LinearClamp, input.TexCoord + offset);
 
 		// 필터 결과 누적

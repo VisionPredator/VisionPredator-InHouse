@@ -2,6 +2,7 @@
 #include "OutlineAddPass.h"
 #include "Device.h"
 #include "ResourceManager.h"
+#include "BlendState.h"
 
 void OutlineAddPass::Initialize(const std::shared_ptr<Device>& device,
 	const std::shared_ptr<ResourceManager>& resourceManager)
@@ -13,6 +14,7 @@ void OutlineAddPass::Initialize(const std::shared_ptr<Device>& device,
 	const uint32_t height = m_Device->GetWndHeight();
 
 	m_OffScreenRTV = m_ResourceManager->Get<RenderTargetView>(L"GBuffer").lock();
+
 	auto outlineBlurRTV = m_ResourceManager->Get<RenderTargetView>(L"OutlineBlurRTV").lock();
 	m_OutlineBlurSRV = std::make_shared<ShaderResourceView>(m_Device, outlineBlurRTV);
 

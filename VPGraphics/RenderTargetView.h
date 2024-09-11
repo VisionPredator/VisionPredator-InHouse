@@ -17,15 +17,17 @@ enum class RenderTargetViewType
 class RenderTargetView : public Resource
 {
 public:
+	RenderTargetView(const std::shared_ptr<Device>& device);
 	RenderTargetView(const std::shared_ptr<Device>& device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height);
-	~RenderTargetView() = default;
+	~RenderTargetView() override = default ;
+
+	void CreateDownsampledView(const unsigned int& scaleRatio);
 
 	ID3D11RenderTargetView* Get() const;
 	ID3D11RenderTargetView** GetAddress();
 
 	void OnResize();
-
-	virtual void Release() override;
+	void Release() override;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RTV;
