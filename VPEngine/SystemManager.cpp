@@ -139,7 +139,6 @@
 
 	void SystemManager::InitializeSystems()
 	{
-		EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 		for (auto startable:m_Startables)
 			startable->Initialize();
 	}
