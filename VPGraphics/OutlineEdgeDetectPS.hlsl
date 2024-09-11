@@ -26,7 +26,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 	const float coord[3] = { -1, 0, 1 };
 
 	// 샘플링 범위를 확장하여 더 두꺼운 엣지를 얻음
-	const float scale = 5.0; // 범위를 두 배로 확장
+	const float scale = 5.0;
 
 	for (int i = 0; i < 9; i++)
 	{

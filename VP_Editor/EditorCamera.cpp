@@ -99,8 +99,8 @@ void EditorCamera::CameraRotation()
 
 void EditorCamera::CalculateCamera()
 {
-	if (m_nearZ < 1.0f)
-		m_nearZ = 1.0f;
+	if (m_nearZ < 0.01f)
+		m_nearZ = 0.01f;
 
 	if (m_farZ < m_nearZ + 1.0f)
 		m_farZ = m_nearZ + 1.0f;
@@ -213,7 +213,7 @@ void EditorCamera::ImGuiRender()
 		ImGui::DragFloat("FOV", &m_FOV, .001f, -FLT_MAX, FLT_MAX);
 
 		ImGui::SetNextItemWidth(dragBoxWidth);
-		ImGui::DragFloat("NearZ", &m_nearZ, 1.0f, 1, FLT_MAX);
+		ImGui::DragFloat("NearZ", &m_nearZ, 0.1f, 0, FLT_MAX);
 
 		ImGui::SetNextItemWidth(dragBoxWidth);
 		ImGui::DragFloat("FarZ", &m_farZ, 1.0f, 1, FLT_MAX);
