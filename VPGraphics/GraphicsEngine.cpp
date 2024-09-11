@@ -447,7 +447,6 @@ void GraphicsEngine::Culling()
 
 		if (curFBX != nullptr)
 		{
-			//if (!object.second->isSkinned)
 			{
 				VPMath::Vector3 s;
 				VPMath::Quaternion r;
@@ -458,6 +457,7 @@ void GraphicsEngine::Culling()
 				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
 
 				VPMath::Vector3 Max;
+
 				VPMath::Vector3 Min;
 
 				for (auto& mesh : curFBX->m_Meshes)
@@ -479,10 +479,6 @@ void GraphicsEngine::Culling()
 					object.second->isVisible = m_Frustum.Contains(obbInfo);
 				}
 			}
-			/*else
-			{
-				object.second->isVisible = true;
-			}*/
 		}
 
 		if (object.second->isVisible
