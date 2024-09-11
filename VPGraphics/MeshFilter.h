@@ -12,18 +12,20 @@ enum class GeoMetryFilter : unsigned int
 
 enum class PassState : unsigned int
 {
-	None = 0,
-	Transparency = 1 << 1,
-	Debug = 1 << 2,
-	Deferred = 1 << 3,
-	Geometry = 1 << 4,
-	ObjectMask = 1 << 5,
+	None = 0,					// 유지	
+	Transparency = 1 << 1,		// 삭제
+	Debug = 1 << 2,				// 삭제
+	Deferred = 1 << 3,			// 삭제
+	Geometry = 1 << 4,			// 삭제?
+	ObjectMask = 1 << 5,		// 유지
 
 	BoundingDeferred = (Debug | Deferred),
 	Debug_Geometry = (Geometry | Debug),
 	End = 99999
 };
-
+// TODO: 삭제할 PassState.
+// Deferred, Transparency, Debug, Geometry
+// 그리고 토글이 아니라 체크로 변경.
 
 //지금 다 섞여있는데 data를 쓰는 기능에따라 나눠서 entity id로 접근해야할듯 덩치가 너무 큼
 struct RenderData
