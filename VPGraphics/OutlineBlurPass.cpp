@@ -20,7 +20,7 @@ void OutlineBlurPass::Initialize(const std::shared_ptr<Device>& device,
 	const uint32_t height = m_Device->GetWndHeight();
 
 	m_DownScaledRTV = m_ResourceManager->Create<RenderTargetView>(L"DownScaledRTV").lock();
-	m_DownScaledRTV->CreateDownsampledView(2);
+	m_DownScaledRTV->CreateDownscaledView(2);
 
 	m_OutlineBlurRTV = m_ResourceManager->Create<RenderTargetView>(L"OutlineBlurRTV", RenderTargetViewType::Outline, width, height).lock();
 
@@ -38,6 +38,8 @@ void OutlineBlurPass::Initialize(const std::shared_ptr<Device>& device,
 
 void OutlineBlurPass::Render()
 {
+	// BLUR PASS 1
+	// 아웃라인에 블러 효과를 주어 픽셀 계단현상을 줄인다.
 	FLOAT black[4]{ 0.f, 0.f, 0.f, 1.f };
 	m_Device->Context()->ClearRenderTargetView(m_DownScaledRTV->Get(), black);
 
@@ -73,6 +75,8 @@ void OutlineBlurPass::Render()
 	viewport.Height = static_cast<float>(height);
 	m_Device->Context()->RSSetViewports(1, &viewport);
 
+	// BLUR PASS 2
+	// 블러 처리한 아웃라인을 게임 화면과 합성
 	m_Device->Context()->OMSetRenderTargets(1, m_OutlineBlurRTV->GetAddress(), nullptr);
 	m_Device->Context()->PSSetShader(m_OutlineAddPS->GetShader(), nullptr, 0);
 	auto srv = std::make_shared<ShaderResourceView>(m_Device, m_DownScaledRTV);
@@ -85,7 +89,7 @@ void OutlineBlurPass::Render()
 void OutlineBlurPass::OnResize()
 {
 	m_DownScaledRTV = m_ResourceManager->Create<RenderTargetView>(L"DownScaledRTV").lock();
-	m_DownScaledRTV->CreateDownsampledView(2);
+	m_DownScaledRTV->CreateDownscaledView(2);
 	m_OutlineBlurRTV->OnResize();
 
 	auto outlineEdgeDetectRTV = m_ResourceManager->Get<RenderTargetView>(L"OutlineEdgeDetectRTV").lock();

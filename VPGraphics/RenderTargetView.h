@@ -21,7 +21,7 @@ public:
 	RenderTargetView(const std::shared_ptr<Device>& device, const RenderTargetViewType& type, const uint32_t& width, const uint32_t& height);
 	~RenderTargetView() override = default ;
 
-	void CreateDownsampledView(const unsigned int& scaleRatio);
+	void CreateDownscaledView(const unsigned int& scaleRatio);
 
 	ID3D11RenderTargetView* Get() const;
 	ID3D11RenderTargetView** GetAddress();
