@@ -38,13 +38,19 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 
 	//애니메이션 데이터가 유효한가?
 
-	if (curModel == nullptr || curModel->m_Animations.empty())
-	{
-		return;
-	}
 
 	int curindex = curOb->curAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
 	int preindex = curOb->preAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
+
+	if (curModel == nullptr 
+		|| curModel->m_Animations.empty() 
+		|| curModel->m_Animations.size() <= curindex
+		|| curModel->m_Animations.size() <= preindex
+		|| curindex < 0
+		|| preindex < 0)
+	{
+		return;
+	}
 
 	//현재 tick
 	double curtick = curOb->duration * curModel->m_Animations[curindex]->m_TickFrame;
@@ -105,11 +111,11 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 		float transitionDuration = curOb->transitionDuration; //  n초 동안 전환
 		float transitionTime = curOb->duration; // 경과 시간
 		float t = (transitionTime / transitionDuration);
-		t = std::min<float>(t, 1.0f);
+		t =  1 - std::min<float>(t, 1.0f);
 		//다른 애니메이션과 blending
 		    
 		//이전 애니메이션 저장 공간
-		std::map<std::wstring, VPMath::Matrix> preAni;
+		std::unordered_map<std::wstring, VPMath::Matrix> preAni;
 
 		//이전 애니메이션의 키프레임 값 가져오기
 		for (auto& ani : curModel->m_Animations[preindex]->m_Channels)
@@ -124,19 +130,14 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			}
 		}
 
-		//현재 애니메이션
-
+		//현재 애니메이션 - 시작까지 사이 보간
 		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
 		{
-			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
-			{
-				if (curtick < tick->first)
-				{
-					//현재꺼랑 공유하는 이전 애니메이션 노드 보간
-					std::shared_ptr<Node> curAni = ani->node.lock();
-					curAni->m_Local = VPMath::Matrix::Lerp(tick->second, preAni[ani->nodename], t).Transpose();
-				}
-			}
+			auto start = ani->totals.begin();
+
+			//현재꺼랑 공유하는 이전 애니메이션 노드 보간
+			std::shared_ptr<Node> curAni = ani->node.lock();
+			curAni->m_Local = VPMath::Matrix::Lerp(start->second, preAni[ani->nodename], t).Transpose();
 		}
 
 		CalcWorld(curModel->m_RootNode);
