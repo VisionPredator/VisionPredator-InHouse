@@ -14,8 +14,8 @@ public:
 
 	~IndexBuffer() override = default;
 
-	virtual void Update() override;
-
+	void Update() override;
+	void Release() override;
 
 private:
 };

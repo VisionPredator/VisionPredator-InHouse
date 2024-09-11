@@ -26,7 +26,7 @@ void VPRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
 	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
 	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
-	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::Transparency,PassState::BoundingDeferred,PassState::Debug_Geometry);
+	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::Transparency,PassState::BoundingDeferred,PassState::Debug_Geometry, PassState::ObjectMask);
 
 }
 

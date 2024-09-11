@@ -1,11 +1,11 @@
 {
     "Entitys": [
         {
-            "EntityID": 879617678,
+            "EntityID": 2163935968,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "UI1"
+                    "Name": "Entity1"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -27,27 +27,64 @@
                     }
                 },
                 {
-                    "Color": {
+                    "ComponentID": 4257272042,
+                    "attenuation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "color": {
                         "w": 1.0,
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "ComponentID": 134294793,
-                    "Layer": 1,
-                    "PosXPercent": 90.0,
-                    "PosYPercent": 90.0,
-                    "Scale": 1.0,
-                    "TexturePath": "AMMO 1.png"
+                    "direction": {
+                        "x": 1.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "intensity": 1.0,
+                    "range": -1.0,
+                    "spot": -1.0,
+                    "type": 0
                 }
             ]
         },
         {
-            "EntityID": 2278226235,
+            "EntityID": 1989114808,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Camera"
+                    "Name": "Entity2"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Pass": 8
                 },
                 {
                     "ComponentID": 3400599862,
@@ -67,13 +104,6 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 1000.0,
-                    "IsMain": true,
-                    "NearZ": 1.0
                 }
             ]
         }

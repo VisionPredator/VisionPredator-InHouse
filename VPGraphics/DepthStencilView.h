@@ -9,7 +9,6 @@ enum class DepthStencilViewType
 {
 	Default,
 
-	// 이후 HDR 용 RTV도 필요할 것이다.
 };
 
 class DepthStencilView : public Resource
@@ -19,14 +18,18 @@ public:
 	DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc);
 	DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture);
 
-	DepthStencilView(std::shared_ptr<Device> device, DepthStencilViewType type, const uint32_t& width, const uint32_t& height);
-	~DepthStencilView();
+	DepthStencilView(const std::shared_ptr<Device>& device, const DepthStencilViewType& type);
+	~DepthStencilView() override = default;
 
 	ID3D11DepthStencilView* Get() const;
 	ID3D11DepthStencilView** GetAddress();
 
-	virtual void Release() override;
+	void OnResize();
+	void Release() override;
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_DSV;
+
+	DepthStencilViewType m_Type;
 };
 

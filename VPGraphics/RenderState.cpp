@@ -15,10 +15,10 @@ RenderState::~RenderState()
 
 void RenderState::Release()
 {
-	m_RS->Release();
+	m_RS.Reset();
 }
 
 ID3D11RasterizerState* RenderState::Get() const
 {
-	return m_RS;
+	return m_RS.Get();
 }

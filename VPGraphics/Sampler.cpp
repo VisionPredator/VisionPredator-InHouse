@@ -27,26 +27,30 @@ Sampler::Sampler(const std::shared_ptr<Device>& device, const SamplerStateType& 
 
 	switch (type)
 	{
+	case SamplerStateType::Default:
+		{
+			desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+			desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+			desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+			desc.MinLOD = -FLT_MAX;
+			desc.MaxLOD = FLT_MAX;
+		break;
+		}
 		case SamplerStateType::LinearClamp:
 		{
 			desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;	// 텍스처 좌표를 클램핑
 			desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 			desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-			HR_CHECK(device->Get()->CreateSamplerState(&desc, m_SamplerState.GetAddressOf()));
-			break;
-
 			break;
 		}
 		case SamplerStateType::LinearWrap:
 		{
-			desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// 선형 필터링 사용
 			desc.BorderColor[0] = 1.f;
 			desc.BorderColor[1] = 1.f;
 			desc.BorderColor[2] = 1.f;
 			desc.BorderColor[3] = 1.f;
 
-			HR_CHECK(device->Get()->CreateSamplerState(&desc, m_SamplerState.GetAddressOf()));
 			break;
 		}
 		case SamplerStateType::PointClamp:
@@ -60,12 +64,13 @@ Sampler::Sampler(const std::shared_ptr<Device>& device, const SamplerStateType& 
 			desc.BorderColor[2] = 1.f;
 			desc.BorderColor[3] = 1.f;
 
-			HR_CHECK(device->Get()->CreateSamplerState(&desc, m_SamplerState.GetAddressOf()));
 			break;
 		}
 		default:
 			break;
 	}
+
+	HR_CHECK(device->Get()->CreateSamplerState(&desc, m_SamplerState.GetAddressOf()));
 }
 
 Sampler::~Sampler()

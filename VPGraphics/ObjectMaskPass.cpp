@@ -87,7 +87,7 @@ void ObjectMaskPass::Render()
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				if (curData->isSkinned)
+				if (!mesh->IsSkinned())
 				{
 					Device->BindVS(m_ObjectMaskStaticMeshVS);
 
@@ -145,10 +145,12 @@ void ObjectMaskPass::Render()
 		}
 		m_RenderDataQueue.pop();
 	}
+
+	Device->Context()->OMSetDepthStencilState(nullptr, 0);
 }
 
 void ObjectMaskPass::OnResize()
 {
-	//m_ObjectMaskRTV
-	//m_DefaultDSV
+	m_ObjectMaskRTV->OnResize();
+	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 }

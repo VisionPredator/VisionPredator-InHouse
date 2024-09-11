@@ -129,7 +129,7 @@ void ImageObject::UpdateBuffers()
 	m_ScreenWidth = m_Device->GetWndWidth();
 	m_ScreenHeight = m_Device->GetWndHeight();
 
-	// 이미지의 위치가 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
+	// 이미지의 정보를 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
 	if ((m_Info.PosXPercent == m_PreviousPosXPercent && m_Info.PosYPercent == m_PreviousPosYPercent)
 		&& (m_BitmapWidth == m_PreviousWidth && m_BitmapHeight == m_PreviousHeight)
 		&& (m_Info.Scale == m_PreviousScale)
@@ -137,24 +137,20 @@ void ImageObject::UpdateBuffers()
 		return;
 
 	// 퍼센트 기반의 값을 비율로 변환 (0.0 ~ 1.0)
-	float relPosX = m_Info.PosXPercent / 100.0f;  // 1%는 0.01로 변환
-	float relPosY = m_Info.PosYPercent / 100.0f;  // 1%는 0.01로 변환
+	const float relPosX = m_Info.PosXPercent / 100.0f;  // 1%는 0.01로 변환
+	const float relPosY = m_Info.PosYPercent / 100.0f;  // 1%는 0.01로 변환
 
-	// 새로운 해상도에 맞춰 이미지 중심의 위치를 계산합니다.
-	float centerX = relPosX * m_ScreenWidth;  // 이미지 중심의 X 위치
-	float centerY = relPosY * m_ScreenHeight; // 이미지 중심의 Y 위치
-	m_ImageCenterPosX = centerX;
-	m_ImageCenterPosY = centerY;
+	// 새로운 해상도에 맞춰 이미지 중심의 위치를 계산한다.
+	m_ImageCenterPosX = relPosX * static_cast<float>(m_ScreenWidth);  // 이미지 중심의 X 위치
+	m_ImageCenterPosY = relPosY * static_cast<float>(m_ScreenHeight); // 이미지 중심의 Y 위치
 
 	// 이미지의 스케일링된 크기 계산
-	float scaledWidth = m_BitmapWidth * m_Info.Scale;
-	float scaledHeight = m_BitmapHeight * m_Info.Scale;
+	const float scaledWidth = static_cast<float>(m_BitmapWidth) * m_Info.Scale;
+	const float scaledHeight = static_cast<float>(m_BitmapHeight) * m_Info.Scale;
 
 	// 이미지 중심 기준으로 좌측 상단 좌표를 계산
-	float calculatedPosX = centerX - (scaledWidth / 2.0f);
-	float calculatedPosY = centerY - (scaledHeight / 2.0f);
-	m_ImagePosX = calculatedPosX;
-	m_ImagePosY = calculatedPosY;
+	m_ImagePosX = m_ImageCenterPosX - (scaledWidth / 2.0f);
+	m_ImagePosY = m_ImageCenterPosY - (scaledHeight / 2.0f);
 
 	// 렌더링 되는 위치와 크기를 업데이트한다.
 	m_PreviousPosXPercent = m_Info.PosXPercent;
@@ -166,12 +162,9 @@ void ImageObject::UpdateBuffers()
 	m_PreviousScreenHeight = m_ScreenHeight;
 
 	// 비트맵의 좌표 계산
-	//const float left = (float)((m_ScreenWidth / 2) * (-1)) + m_Info.PosXPercent;
-	//const float left = static_cast<float>((m_ScreenWidth / 2) * (-1)) + calculatedPosX;
-	const float left = static_cast<float>((m_ScreenWidth / 2) * (-1)) + calculatedPosX;
+	const float left = static_cast<float>((m_ScreenWidth / 2) * (-1)) + m_ImagePosX;
 	const float right = left + scaledWidth;
-	//const float top = (float)(m_ScreenHeight / 2) - m_Info.PosYPercent;
-	const float top = static_cast<float>(m_ScreenHeight / 2) - calculatedPosY;
+	const float top = static_cast<float>(m_ScreenHeight / 2) - m_ImagePosY;
 	const float bottom = top - scaledHeight;
 
 	vertices.resize(m_vertexCount);
