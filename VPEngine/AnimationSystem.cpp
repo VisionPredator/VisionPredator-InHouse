@@ -56,25 +56,12 @@ void AnimationSystem::Update(float deltaTime)
 			}
 			else
 			{
-				//애니메이션 블렌딩
+				//각각 애니메이션 사이 보간
 				if (aniComp.duration > aniComp.transitionDuration)
 				{
 					aniComp.preAni = aniComp.curAni;
 					aniComp.duration = 0;
 				}
-			}
-		}
-
-
-		if (aniComp.GetComponent<IDComponent>()->Name == "TestAnimation")
-		{
-			if (INPUTKEYDOWN(KEYBOARDKEY::G))
-			{
-				static int index = 0;
-				index = index % 3;
-				std::pair<uint32_t, int> temp = { aniComp.GetEntityID(),index };
-				EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", temp);
-				index++;
 			}
 		}
 
