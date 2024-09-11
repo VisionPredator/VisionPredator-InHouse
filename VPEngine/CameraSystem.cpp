@@ -26,6 +26,7 @@ void CameraSystem::LateUpdate(float deltaTime)
 		break;
 	}
 
+
 	if (!IsMainCameraExist)
 	{
 		///존재하지 않는다면, 0,0,0에 해당하는 카메라 정보값을 건네주기!
@@ -105,5 +106,25 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 
 void CameraSystem::RenderUpdate(float deltaTime)
 {
+	
+	/* 컬링용 카메라 프러스텀 보기
+	for (CameraComponent& cameracomp : COMPITER(CameraComponent))
+	{
+		CameraCalculation(cameracomp);
+
+		m_Graphics->testCulling(cameracomp.View, cameracomp.Proj);
+
+		DirectX::BoundingFrustum frustum;
+		DirectX::BoundingFrustum::CreateFromMatrix(frustum, cameracomp.Proj);
+		frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(cameracomp.View.Invert());
+		frustum.Origin = { cameracomp.View.Invert()._41,cameracomp.View.Invert()._42,cameracomp.View.Invert()._43 };
+
+		debug::FrustumInfo temp;
+		temp.Frustum = frustum;
+		temp.Color = { 1,1,0,1 };
+
+		m_Graphics->DrawFrustum(temp);
+	}
+	*/
 }
 

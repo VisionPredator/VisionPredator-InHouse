@@ -2,6 +2,8 @@
 #include "IGraphics.h"
 #include "MeshFilter.h"
 
+
+
 #pragma region DX
 class ViewPort;
 class Device;
@@ -46,12 +48,12 @@ public:
 	void OnResize(HWND hwnd) override;
 
 	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
-
+	void testCulling(VPMath::Matrix view, VPMath::Matrix proj) override;
 	/// Model
 	bool AddRenderModel(std::shared_ptr<RenderData> data)override;
 	void EraseObject(uint32_t EntityID) override;
 	void UpdateModel(uint32_t EntityID)override;
-	const double GetDuration(std::wstring name) override;
+	const double GetDuration(std::wstring name, int index) override;
 
 	/// Particle
 	void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
@@ -91,6 +93,7 @@ protected:
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
+	std::map<uint32_t, std::shared_ptr<RenderData>> m_AfterCulling;
 	std::unordered_map<uint32_t, LightData> m_Lights;
 
 private:
@@ -115,10 +118,13 @@ private:
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;
 	VPMath::Matrix m_ViewProj;
+	DirectX::BoundingFrustum m_Frustum;
 
 	// Pipeline
 	std::shared_ptr<PassManager> m_PassManager;
 	
+private:
+	void Culling();
 
 ///editor
 private:

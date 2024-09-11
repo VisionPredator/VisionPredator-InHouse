@@ -21,12 +21,12 @@ void VPRegister::Register_Metadata()
 
 void VPRegister::Register_EnumClass()
 {
-	META_ADD_ENUMCLASS(MeshFilter, MeshFilter::Axis, MeshFilter::Box, MeshFilter::Grid, MeshFilter::Static, MeshFilter::Circle);
+	META_ADD_ENUMCLASS(GeoMetryFilter,GeoMetryFilter::Axis, GeoMetryFilter::Box,GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
 	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
 	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
-	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::GeoMetry);
+	META_ADD_ENUMCLASS(PassState, PassState::Debug, PassState::Deferred, PassState::Transparency,PassState::BoundingDeferred,PassState::Debug_Geometry, PassState::ObjectMask);
 
 }
 
@@ -115,13 +115,13 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(IDComponent, IDComponent::Name);
 	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation, TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
-	META_ADD_COMP(MeshComponent, MeshComponent::FBXFilter, MeshComponent::FBX, MeshComponent::LightMapOffset, MeshComponent::LightMapTiling, MeshComponent::LightMapScale, MeshComponent::LightMapIndex);
+	META_ADD_COMP(MeshComponent, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::Pass);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_COMP(Parent, Parent::ParentID);
 	META_ADD_COMP(Children, Children::ChildrenID);
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
-	META_ADD_COMP(AnimationComponent, AnimationComponent::curAnimation, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::animationList);
+	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
 	META_ADD_COMP(GeometryComponent, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);

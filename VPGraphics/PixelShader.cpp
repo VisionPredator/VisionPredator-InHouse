@@ -28,12 +28,14 @@ PixelShader::PixelShader(std::shared_ptr<Device> device, std::wstring filename) 
 	{
 		MessageBox(0, L"PS Load Fail", 0, 0);
 	}
-
-	hr = m_Device.lock()->Get()->CreatePixelShader(PSBlob->GetBufferPointer(), PSBlob->GetBufferSize(), nullptr, &m_PS);
-	if (FAILED(hr))
+	else
 	{
-		PSBlob->Release();
-		MessageBox(0, L"CreatePS Fail", 0, 0);
+		hr = m_Device.lock()->Get()->CreatePixelShader(PSBlob->GetBufferPointer(), PSBlob->GetBufferSize(), nullptr, &m_PS);
+		if (FAILED(hr))
+		{
+			PSBlob->Release();
+			MessageBox(0, L"CreatePS Fail", 0, 0);
+		}
 	}
 }
 
@@ -68,15 +70,15 @@ PixelShader::PixelShader(const std::shared_ptr<Device>& device, const std::wstri
 
 	// 컴파일 된 것이 있다면 그걸 쓴다.
 	if (FAILED(D3DCompileFromFile(
-			filePath.c_str(),
-			macro,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			entryPoint.c_str(),
-			shaderModel.c_str(),
-			shaderFlag,
-			0,
-			&blob,
-			&blob)))
+		filePath.c_str(),
+		macro,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		entryPoint.c_str(),
+		shaderModel.c_str(),
+		shaderFlag,
+		0,
+		&blob,
+		&blob)))
 	{
 		filePath = filename + binaryFileExtension;
 		hr = D3DReadFileToBlob(filePath.c_str(), &blob);

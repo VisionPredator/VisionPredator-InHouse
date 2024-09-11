@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ForwardPass.h"
+#include "TransparencyPass.h"
 #include "ResourceManager.h"
 #include "ShaderResourceView.h"
 #include "RenderTargetView.h"
@@ -15,7 +15,7 @@
 #include "DebugDrawManager.h"
 #include "DepthStencilState.h"
 
-ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
+TransparencyPass::TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
 {
 	//deferred와 같이 쓰려면 deferred를 연산한 곳에 같이 그려야지
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
@@ -27,17 +27,17 @@ ForwardPass::ForwardPass(std::shared_ptr<Device> device, std::shared_ptr<Resourc
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 
-	m_state = PassState::Forward;
+	m_state = PassState::Transparency;
 	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
 }
 
-ForwardPass::~ForwardPass()
+TransparencyPass::~TransparencyPass()
 {
 	m_RTV.reset();
 	m_DSV.reset();
 }
 
-void ForwardPass::Render()
+void TransparencyPass::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	//뭔가 rtv가 달라짐 그래서 다시 받아왔음 왜그러지?
@@ -87,7 +87,7 @@ void ForwardPass::Render()
 					position->Update(renew);
 
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
-					if (!curData->curAnimation.empty() && curData->isPlay)
+					if (!curData->FBX.empty() && curData->isPlay)
 					{
 						std::wstring id = std::to_wstring(curData->EntityID);
 						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
@@ -136,7 +136,7 @@ void ForwardPass::Render()
 	}
 }
 
-void ForwardPass::OnResize()
+void TransparencyPass::OnResize()
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"RTV_Main");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main");

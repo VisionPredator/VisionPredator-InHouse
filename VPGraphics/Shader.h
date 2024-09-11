@@ -33,6 +33,7 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PS;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VS;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> m_CS;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
 
 	D3D11_INPUT_ELEMENT_DESC m_Desc = {};//???

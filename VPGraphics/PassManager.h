@@ -1,7 +1,7 @@
 #pragma once
 #include "MeshFilter.h"
 
-#include "ForwardPass.h"
+#include "TransparencyPass.h"
 #include "DebugPass.h"
 #include "DeferredPass.h"
 
@@ -28,7 +28,7 @@ public:
 	~PassManager();
 
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
-		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager);
+		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager);
 	void Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList);
 
 	void Render();
@@ -54,6 +54,7 @@ private:
 	std::shared_ptr<ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager = nullptr;
 	std::shared_ptr<UIManager> m_UIManager;
+	std::shared_ptr<LightManager> m_LightManager;
 
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;

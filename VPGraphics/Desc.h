@@ -2,7 +2,8 @@
 #include <d3d11.h>
 #include "CBuffer.h"
 
-namespace BufferDESC
+namespace 
+
 {
 	namespace Index
 	{

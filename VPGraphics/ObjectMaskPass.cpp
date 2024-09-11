@@ -87,7 +87,7 @@ void ObjectMaskPass::Render()
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				if (curData->Filter == MeshFilter::Static)
+				if (!mesh->IsSkinned())
 				{
 					Device->BindVS(m_ObjectMaskStaticMeshVS);
 
@@ -101,9 +101,7 @@ void ObjectMaskPass::Render()
 					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
 					position->Update(renew);	// == Bind
 				}
-
-				// Skeletal Mesh Update & Bind
-				if (curData->Filter == MeshFilter::Skinning)
+				else
 				{
 					Device->BindVS(m_ObjectMaskSkeletalMeshVS);
 
@@ -129,7 +127,7 @@ void ObjectMaskPass::Render()
 
 					position->Update(renew);
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
-					if (!curData->curAnimation.empty() && curData->isPlay)
+					if (!curData->FBX.empty() && curData->isPlay)
 					{
 						std::wstring id = std::to_wstring(curData->EntityID);
 						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();

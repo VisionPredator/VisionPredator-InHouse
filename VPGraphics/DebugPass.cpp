@@ -14,15 +14,11 @@
 #include "StaticData.h"
 #include "DebugDrawManager.h"
 
-DebugPass::DebugPass(std::shared_ptr<Device> device,
-	std::shared_ptr<ResourceManager> manager,
-	std::shared_ptr<DebugDrawManager> debug)
-	: RenderPass(device, manager)
-	, m_DebugDrawManager(debug)
+DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug) : RenderPass(device, manager), m_DebugDrawManager(debug)
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
-	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_state = PassState::Debug;
 
@@ -75,7 +71,7 @@ void DebugPass::Render()
 
 		switch (curData->Filter)
 		{
-			case MeshFilter::Grid:
+			case GeoMetryFilter::Grid:
 			{
 				debug::GridInfo gridInfo;
 				gridInfo.Origin = VPMath::Vector3{ 0, 0, 0 };
@@ -89,7 +85,7 @@ void DebugPass::Render()
 			}
 			break;
 
-			case MeshFilter::Axis:
+			case GeoMetryFilter::Axis:
 			{
 				float distance = 10;
 
@@ -120,9 +116,71 @@ void DebugPass::Render()
 			}
 			break;
 
+			case GeoMetryFilter::Frustum:
+			{
+
+				debug::FrustumInfo frustumInfo;
+
+				frustumInfo.Frustum.Origin = { curData->world._41,curData->world._42,curData->world._43 };
+				frustumInfo.Frustum.Orientation = { 0, 0, 0, 1 };
+				frustumInfo.Frustum.Near = 1.f;
+				frustumInfo.Frustum.Far = 1000.f;
+				frustumInfo.Frustum.LeftSlope = -0.736355f;
+				frustumInfo.Frustum.RightSlope = 0.736355f;
+				frustumInfo.Frustum.TopSlope = 0.4142f;
+				frustumInfo.Frustum.BottomSlope = -0.4142;
+				frustumInfo.Color = VPMath::Color{ 1, 1, 0, 1 };
+
+				debugManager->AddTask(frustumInfo);
+
+			}
+			break;
+
 			default:
 				break;
 		}
+
+		//bounding box
+		{
+			std::shared_ptr<ModelData> curFBX = resourceManager->Get<ModelData>(curData->FBX).lock();
+			if (curFBX != nullptr)
+			{
+
+				VPMath::Vector3 s;
+				VPMath::Quaternion r;
+				VPMath::Vector3 t;
+				curData->world.Decompose(s, r, t);
+
+				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
+				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
+
+				for (auto& mesh : curFBX->m_Meshes)
+				{
+					//S
+					VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+					VPMath::Vector3 afterMin = mesh->MinBounding * s;
+
+					VPMath::Vector3 distance = afterMax - afterMin;
+					VPMath::Vector3 half = distance / 2;
+
+
+
+					debug::OBBInfo obbInfo;
+					obbInfo.OBB.Center = t + afterMin + half;
+					obbInfo.OBB.Extents = half;
+					obbInfo.xAxisAngle = curData->rotation.x;
+					obbInfo.yAxisAngle = curData->rotation.y;
+					obbInfo.zAxisAngle = curData->rotation.z;
+
+					obbInfo.Color = { 1,0,0,1 };
+					debugManager->AddTask(obbInfo);
+
+				}
+
+			}
+
+		}
+
 
 		m_RenderDataQueue.pop();
 	}
@@ -135,6 +193,6 @@ void DebugPass::OnResize()
 {
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
-	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 }

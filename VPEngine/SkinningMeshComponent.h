@@ -7,7 +7,6 @@ struct SkinningMeshComponent :
 	SkinningMeshComponent() = default;
 	VP_JSONBODY(SkinningMeshComponent, FBX)
 		std::wstring FBX;
-	MeshFilter FBXFilter = MeshFilter::Skinning;
 	std::shared_ptr<RenderData> Renderdata;
 
 };

@@ -1,33 +1,23 @@
 #pragma once
 #include "RenderPass.h"
 
+class LightManager;
+
 class DeferredPass : public RenderPass
 {
 public:
-	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
+	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager);
 	~DeferredPass();
 	virtual void Render() override;
 	void OnResize() override;
 
 private:
-
+	void PreDepth();
 	void Geometry();
 	void Light();
 
 private:
-	enum class Geo_Tex
-	{
-		Albedo = 0,
-		Normal,
-		Position,
-		Depth,
-		Metalic,
-		Roughness,
-		AO,
-		Emissive,
-		LightMap,
-
-	};
+	std::weak_ptr<LightManager> m_LightManager;
 private:
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 

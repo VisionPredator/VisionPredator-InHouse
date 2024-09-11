@@ -62,7 +62,6 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 	}
 
 	// TODO: 텍스처를 찾지 못했을 때의 대처가 필요.
-	hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, m_SRV.GetAddressOf());
 }
 
 
