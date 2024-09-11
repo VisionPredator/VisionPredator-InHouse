@@ -59,8 +59,8 @@ void AnimationSystem::Update(float deltaTime)
 				//애니메이션 블렌딩
 				if (aniComp.duration > aniComp.transitionDuration)
 				{
-					std::pair<uint32_t, int> temp = { aniComp.GetEntityID(),aniComp.curAni };
-					EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", temp);
+					aniComp.preAni = aniComp.curAni;
+					aniComp.duration = 0;
 				}
 			}
 		}
@@ -71,7 +71,7 @@ void AnimationSystem::Update(float deltaTime)
 			if (INPUTKEYDOWN(KEYBOARDKEY::G))
 			{
 				static int index = 0;
-				index = index % 2;
+				index = index % 3;
 				std::pair<uint32_t, int> temp = { aniComp.GetEntityID(),index };
 				EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", temp);
 				index++;
