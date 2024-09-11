@@ -52,7 +52,6 @@ void VP_Editor::Update()
         m_DeltaTime = m_TimeManager->GetDeltaTime();
         EventManager::GetInstance().Update(m_DeltaTime);
         m_TransformSystem->Update(m_DeltaTime);
-        //EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "System.h"
 #include "NavMeshData.h"
-class NavAgentSystem :public System,public IStartable,public IUpdatable
+class NavAgentSystem :public System,public IStartable,public IFixedUpdatable
 {
 public:
     NavAgentSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -21,14 +21,8 @@ public:
     void MoveTo(NavAgentComponent* comp,VPMath::Vector3 destination);
     void Stop(NavAgentComponent* comp);
     // IUpdatable을(를) 통해 상속됨
-    void Update(float deltaTime) override;
-    void AssignToNavigationField(NavAgentComponent* comp);
-    int AddAgentToCrowd(NavAgentComponent* comp);
-
-private:
-
-    friend class SceneManager;
-
+    void FixedUpdate(float deltaTime) override;
+    void AddAgentToCrowd(NavAgentComponent* comp);
 
 
     // IStartable을(를) 통해 상속됨
@@ -39,6 +33,16 @@ private:
     void Finish(uint32_t gameObjectId) override;
 
     void Finalize() override;
+
+
+private:
+
+    friend class SceneManager;
+
+
+
+
+
 
 };
 

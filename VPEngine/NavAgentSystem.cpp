@@ -56,6 +56,7 @@ void NavAgentSystem::SetAcceleration(NavAgentComponent* comp, float accel)
 void NavAgentSystem::SetRadius(NavAgentComponent* comp, float radius)
 {
 	comp->NavAgent->agentParams.radius = radius;
+	comp->NavAgent->agentParams.collisionQueryRange = radius*2+1;
 	if (!GetSceneManager()->GetSceneNavMeshData())
 		return;
 	auto SceneNavMeshData = GetSceneManager()->GetSceneNavMeshData();
@@ -76,46 +77,46 @@ void NavAgentSystem::SetHegiht(NavAgentComponent* comp, float height)
 
 void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination)
 {
+	if (comp->TargetLocation == destination)
+		return; 
+	comp->TargetLocation = destination;
+
 	auto SceneNavMeshData = GetSceneManager()->GetSceneNavMeshData();
 	const dtQueryFilter* filter = SceneNavMeshData->crowd->getFilter(0);
 	const dtCrowdAgent* agent = SceneNavMeshData->crowd->getAgent(comp->NavAgent->AgentID);  // 오타 수정
 	const float* halfExtents = SceneNavMeshData->crowd->getQueryExtents();
 
-	// destination이 VPMath::Vector3에서 안전하게 float*로 변환되는지 확인
-	dtPolyRef nearestPoly;
-	dtStatus status = SceneNavMeshData->navQuery->findNearestPoly(reinterpret_cast<float*>(&destination), halfExtents, filter, &comp->NavAgent->targetRef, comp->NavAgent->targetPos);
+	SceneNavMeshData->navQuery->findNearestPoly(reinterpret_cast<float*>(&destination), halfExtents, filter, &comp->NavAgent->targetRef, comp->NavAgent->targetPos);
 
-	//if (dtStatusFailed(status)) {
-	//	std::cerr << "Failed to find nearest poly for destination: " << destination.x << ", " << destination.y << ", " << destination.z << std::endl;
-	//	return;
-	//}
-
-	//std::cout << "Target Pos after: " << comp->NavAgent->targetPos[0] << ", " << comp->NavAgent->targetPos[1] << ", " << comp->NavAgent->targetPos[2] << std::endl;
-
-	bool check = SceneNavMeshData->crowd->requestMoveTarget(comp->NavAgent->AgentID, comp->NavAgent->targetRef, comp->NavAgent->targetPos);
-
-	//// requestMoveTarget의 반환값 처리
-	//if (!check) {
-	//	// 오류 처리 또는 경고 로그 추가
-	//	std::cerr << "Move target request failed for agent ID: " << comp->NavAgent->AgentID << std::endl;
-	//	return;  // 실패 시 함수 종료
-	//}
+	SceneNavMeshData->crowd->requestMoveTarget(comp->NavAgent->AgentID, comp->NavAgent->targetRef, comp->NavAgent->targetPos);
 
 	comp->NavAgent->IsStop = false;
 }
 
 void NavAgentSystem::Stop(NavAgentComponent* comp)
 {
-	auto navmeshdata= GetSceneManager()->GetSceneNavMeshData();
-	navmeshdata->crowd->resetMoveTarget(comp->GetEntityID());
-	comp->NavAgent->IsStop= true;
+	auto navmeshdata = GetSceneManager()->GetSceneNavMeshData();
+	navmeshdata->crowd->resetMoveTarget(comp->NavAgent->AgentID);
+	comp->TargetLocation = {};
+
+	comp->NavAgent->IsStop = true;
 }
-void NavAgentSystem::Update(float deltaTime)
+void NavAgentSystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(NavAgentComponent, navcomp)
 	{
-		if (!navcomp.IsChase)
+		if (!navcomp.NavAgent)
 			continue;
+
+		if (!navcomp.IsChase)
+		{
+			if (!navcomp.NavAgent->IsStop)
+				Stop(&navcomp);
+
+
+			continue;
+		}
+
 
 		COMPLOOP(IdentityComponent, identitycomp)
 		{
@@ -125,24 +126,20 @@ void NavAgentSystem::Update(float deltaTime)
 				MoveTo(&navcomp, transform->World_Location);
 				break;
 			}
+
 		}
-		
+
 	}
 
 }
 
-void NavAgentSystem::AssignToNavigationField(NavAgentComponent* comp)
-{
-	//comp->NavAgnet->AgentID= Get
-	comp->NavAgent->AgentID=this->AddAgentToCrowd(comp);
-}
 
-int NavAgentSystem::AddAgentToCrowd(NavAgentComponent* comp)
+void NavAgentSystem::AddAgentToCrowd(NavAgentComponent* comp)
 {
 	auto transform = comp->GetComponent<TransformComponent>();
 
 	const float posf[3] = { transform->World_Location.x, transform->World_Location.y, transform->World_Location.z };
-	return GetSceneManager()->GetSceneNavMeshData()->crowd->addAgent(posf, &comp->NavAgent->agentParams);
+	comp->NavAgent->AgentID = GetSceneManager()->GetSceneNavMeshData()->crowd->addAgent(posf, &comp->NavAgent->agentParams);
 }
 
 void NavAgentSystem::Initialize()
@@ -162,12 +159,12 @@ void NavAgentSystem::Start(uint32_t gameObjectId)
 	{
 		const auto& controller = GetSceneManager()->GetComponent<ControllerComponent>(gameObjectId);
 		auto agentcomp = controller->GetComponent<NavAgentComponent>();
-		agentcomp->NavAgent = new NavAgentData();
+		agentcomp->NavAgent = std::make_shared<NavAgentData>();
 		this->SetAcceleration(agentcomp, controller->Acceleration);
 		this->SetRadius(agentcomp, controller->CapsuleControllerinfo.radius);
 		this->SetSpeed(agentcomp, controller->MaxSpeed);
 		SetHegiht(agentcomp, (controller->CapsuleControllerinfo.height + controller->CapsuleControllerinfo.radius));
-		this->AssignToNavigationField(agentcomp);
+		this->AddAgentToCrowd(agentcomp);
 		return;
 
 	}
@@ -176,19 +173,15 @@ void NavAgentSystem::Start(uint32_t gameObjectId)
 
 		const auto& transformcomp = GetSceneManager()->GetComponent<TransformComponent>(gameObjectId);
 		auto agentcomp = transformcomp->GetComponent<NavAgentComponent>();
-		agentcomp->NavAgent = new NavAgentData();
-		this->SetAcceleration(agentcomp, 10 );
+		agentcomp->NavAgent = std::make_shared<NavAgentData>();
+		this->SetAcceleration(agentcomp, 20 );
 		this->SetRadius(agentcomp, 2);
 		this->SetHegiht(agentcomp, 3);
-		this->SetSpeed(agentcomp,7);
-		this->AssignToNavigationField(agentcomp);
+		this->SetSpeed(agentcomp,10);
+		this->AddAgentToCrowd(agentcomp);
 		return;
 
 	}
-
-
-
-
 }
 
 void NavAgentSystem::Finish(uint32_t gameObjectId)
@@ -199,7 +192,7 @@ void NavAgentSystem::Finish(uint32_t gameObjectId)
 	auto navmeshdata = GetSceneManager()->GetSceneNavMeshData();
 	if (navmeshdata)
 		navmeshdata->crowd->removeAgent(agentcomp->NavAgent->AgentID);
-	delete agentcomp->NavAgent;
+	agentcomp->NavAgent.reset();
 }
 
 void NavAgentSystem::Finalize()

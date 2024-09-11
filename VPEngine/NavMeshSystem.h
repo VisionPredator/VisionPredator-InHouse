@@ -2,7 +2,7 @@
 #include "System.h"
 #include "NavStructs.h"
 #include "NavMeshData.h"
-class NavMeshSystem : public System, public IUpdatable,public IPhysicable,public IStartable,public IRenderable
+class NavMeshSystem : public System,public IPhysicable,public IStartable,public IRenderable,public IFixedUpdatable
 {
 public:
     NavMeshSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -19,8 +19,7 @@ public:
         makeNavMesh(reinterpret_cast<float*>(&worldVertices[0]), worldVertices.size(), &faces[0], faces.size() / 3, buildSettings);
     }
 
-    // IUpdatable을(를) 통해 상속됨
-    void Update(float deltaTime) override;
+    void FixedUpdate(float deltaTime) override;
 
     // IPhysicable을(를) 통해 상속됨
     void PhysicsUpdate(float deltaTime) override;

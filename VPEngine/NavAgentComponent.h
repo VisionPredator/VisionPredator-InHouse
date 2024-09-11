@@ -4,10 +4,12 @@
 struct NavAgentComponent :
     public Component
 {
-    VP_JSONBODY(NavAgentComponent, TargetName)
+    VP_JSONBODY(NavAgentComponent, IsChase, Distance, TargetName)
         ~NavAgentComponent();
     std::string TargetName{};
+    VPMath::Vector3 TargetLocation{};
     bool IsChase{};
-    NavAgentData* NavAgent{};
+    float Distance{};
+    std::shared_ptr<NavAgentData> NavAgent{};
 };
 

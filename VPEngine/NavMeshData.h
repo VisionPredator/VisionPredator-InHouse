@@ -73,7 +73,7 @@ public:
 public:
     int AgentID=-1;
     dtPolyRef targetRef{};
-    float targetPos[3] = {2,-12.000,2};
+    float targetPos[3] = {};
     
     dtCrowdAgentParams agentParams
     {
@@ -81,10 +81,10 @@ public:
         .height = 0.3f,
         .maxAcceleration = FLT_MAX,
         .maxSpeed = 5.f,
-        .collisionQueryRange = 12.f,
+        .collisionQueryRange = 10.f,
         .pathOptimizationRange = 30.f,
         .separationWeight = 2.f,
-        .updateFlags = DT_CROWD_ANTICIPATE_TURNS |
+        .updateFlags = DT_CROWD_ANTICIPATE_TURNS |  DT_CROWD_SEPARATION| DT_CROWD_OPTIMIZE_TOPO|
         DT_CROWD_OPTIMIZE_VIS |
         DT_CROWD_OBSTACLE_AVOIDANCE,
         .obstacleAvoidanceType = (unsigned char)3,

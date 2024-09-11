@@ -190,13 +190,11 @@ void NavMeshSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, 
 	dtNavMeshQuery* navQuery{ navMeshdata->navQuery };
 	status = navQuery->init(navMesh, 2048);
 	assert(dtStatusFailed(status) == false);
-	// ¿À·ù»ý±è.
-	//dtFree(navData);
-	navMeshdata->crowd->init(1024, buildSettings.MaxAgentRadius, navMesh);
+	navMeshdata->crowd->init(buildSettings.MaxCrowdNumber, buildSettings.MaxAgentRadius, navMesh);
 
 }
 
-void NavMeshSystem::Update(float deltaTime)
+void NavMeshSystem::FixedUpdate(float deltaTime)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	if (!navMeshdata)
@@ -215,6 +213,7 @@ void NavMeshSystem::Update(float deltaTime)
 			continue;
 		auto [x,y,z]=navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID)->npos;
 		Transform->SetWorldLocationX( x);
+		Transform->SetWorldLocationY( y);
 		Transform->SetWorldLocationZ( z);
 	}
 

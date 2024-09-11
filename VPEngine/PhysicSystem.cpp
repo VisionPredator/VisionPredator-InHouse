@@ -347,8 +347,9 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		if (!m_PhysicsEngine->HasRigidBody(entityID))
 			continue;
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-		rigidBodyTransform->World_Location = m_PhysicsEngine->GetGobalLocation(rigidBodyComponent.GetEntityID());
-		rigidBodyTransform->World_Quaternion = m_PhysicsEngine->GetGobalQuaternion(rigidBodyComponent.GetEntityID());
+
+		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
+		rigidBodyTransform->SetLocalQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
 	}
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
@@ -356,8 +357,8 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		uint32_t entityID = controllerComponent.GetEntityID();
 
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
-		controllerTransform->World_Location = m_PhysicsEngine->GetControllerGobalPose(entityID);
+		controllerTransform->SetWorldLocation(m_PhysicsEngine->GetControllerGobalPose(entityID));
+		TransformSystem::AddUpdateData(controllerTransform);
 	}
-	EventManager::GetInstance().ImmediateEvent("OnUpdateTransfomData");
 
 }
