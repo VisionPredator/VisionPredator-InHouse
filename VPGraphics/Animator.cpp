@@ -62,24 +62,36 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				//현재 애니메이션 위치 찾고 보간
 				if (curtick < tick->first)
 				{
+					//tick이 curtick의 다음 애니메이션이다
+					//그래서 현재 재생되고 있는 애니메이션은 tick - 1
+					std::vector<std::pair<float,VPMath::Matrix>>::iterator cur;
+					if (tick == ani->totals.begin())
+					{
+						cur = tick;
+					}
+					else
+					{
+						cur = tick - 1;
+					}
+
 					//현재 프레임이 최종 프레임보다 클 경우 다시 시작 점으로
 					//end()가 끝이 아닌 마지막 + 1
-					if (tick == ani->totals.end() - 1)
+					if (cur == ani->totals.end() - 1)
 					{
 						auto next = ani->totals.begin();
-						float t = abs(curtick - tick->first) / abs(next->first - tick->first);
+						float t = abs(curtick - cur->first) / abs(next->first - cur->first);
 
 						std::shared_ptr<Node> curAni = ani->node.lock();
-						curAni->m_Local = VPMath::Matrix::Lerp(tick->second, next->second, t).Transpose();
+						curAni->m_Local = VPMath::Matrix::Lerp(cur->second, next->second, t).Transpose();
 						break;
 					}
 
 					//일반적인 보간
-					auto next = tick++;
-					float t = abs(curtick - tick->first) / abs(next->first - tick->first);
+					auto next = tick;
+					float t = abs(curtick - cur->first) / abs(next->first - cur->first);
 
 					std::shared_ptr<Node> curAni = ani->node.lock();
-					curAni->m_Local = VPMath::Matrix::Lerp(tick->second, next->second, t).Transpose();
+					curAni->m_Local = VPMath::Matrix::Lerp(cur->second, next->second, t).Transpose();
 					break;
 				}
 			}
@@ -107,7 +119,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			{
 				if (pretick < tick->first)
 				{
-					preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, tick->second));
+					preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (tick-1)->second));
 				}
 			}
 		}
