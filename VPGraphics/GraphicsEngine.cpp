@@ -298,6 +298,13 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 	return 0;
 }
 
+const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
+{
+
+
+	return VPMath::Matrix::Identity;
+}
+
 void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
 {
 	m_ParticleManager->CreateParticleObject(entityID, info);

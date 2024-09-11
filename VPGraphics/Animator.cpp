@@ -29,7 +29,6 @@ void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>
 	}
 }
 
-
 void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 {
 	std::shared_ptr<RenderData> curOb = ob.lock();
@@ -163,50 +162,6 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 	}
 }
 
-VPMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
-{
-	std::shared_ptr<Key> cur = channel[0];
-	std::shared_ptr<Key> next;
-
-	for (auto& key : channel)
-	{
-		if (key->time > time)
-		{
-			next = key;
-			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
-			VPMath::Vector3 afterLerp = VPMath::Vector3::Lerp((next)->value, (cur)->value, t);
-
-			return VPMath::Matrix::CreateTranslation(afterLerp);
-		}
-
-		cur = key;
-	}
-
-
-}
-
-VPMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
-{
-
-	std::shared_ptr<Key> cur = rotationKey[0];
-	std::shared_ptr<Key> next;
-
-	for (auto& key : rotationKey)
-	{
-		if (key->time > time)
-		{
-			next = key;
-			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
-			VPMath::Quaternion afterLerp = VPMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
-			return VPMath::Matrix::CreateFromQuaternion(afterLerp);
-		}
-
-		cur = key;
-	}
-
-
-}
-
 void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 {
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
@@ -237,4 +192,9 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 	std::shared_ptr<Node> pelvis = ob->m_RootNode->m_Childs[1]; //hips
 
 	//std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
+}
+
+const VPMath::Matrix Animator::Attachment(std::shared_ptr<RenderData>& curData)
+{
+	return VPMath::Matrix::Identity;
 }
