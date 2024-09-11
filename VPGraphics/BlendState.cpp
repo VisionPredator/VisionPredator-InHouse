@@ -59,5 +59,6 @@ BlendState::BlendState(const std::shared_ptr<Device>& device, const BlendStateTy
 
 void BlendState::Release()
 {
-	m_State.Reset();
+	ULONG refCount = m_State.Reset();
+	assert(refCount == 0);
 }

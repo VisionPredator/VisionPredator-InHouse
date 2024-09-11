@@ -29,10 +29,22 @@ Device::~Device()
 	Microsoft::WRL::ComPtr<ID3D11Debug> debugDevice;
 	device.As(&debugDevice);
 #endif
+	m_Context->ClearState();
+	m_Context->Flush();
 
 	m_SwapChain.Reset();
 	m_Context.Reset();
 	m_Device.Reset();
+
+	ULONG refCount = m_Device.Reset();
+	assert(refCount == 0);
+
+	refCount = m_Context.Reset();
+	assert(refCount == 0);
+
+	refCount = m_SwapChain.Reset();
+	assert(refCount == 0);
+
 
 #ifdef _DEBUG
 	debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);

@@ -109,3 +109,9 @@ GeometryShader::GeometryShader(const std::shared_ptr<Device>& device, const std:
 
 	SAFE_RELEASE_COM(pReflector);
 }
+
+void GeometryShader::Release()
+{
+	const ULONG refCount = m_Shader.Reset();
+	assert(refCount == 0);
+}

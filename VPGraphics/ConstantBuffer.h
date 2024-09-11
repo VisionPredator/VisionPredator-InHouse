@@ -34,7 +34,8 @@ public:
 template<typename T>
 void ConstantBuffer<T>::Release()
 {
-	m_buffer.Reset();
+	const ULONG refCount = m_buffer.Reset();
+	assert(refCount == 0);
 }
 
 

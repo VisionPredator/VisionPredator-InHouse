@@ -143,5 +143,6 @@ void DepthStencilView::OnResize()
 
 void DepthStencilView::Release()
 {
-	m_DSV.Reset();
+	const ULONG refCount = m_DSV.Reset();
+	assert(refCount == 0);
 }

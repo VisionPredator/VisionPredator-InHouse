@@ -147,6 +147,8 @@ void ObjectMaskPass::Render()
 		}
 		m_RenderDataQueue.pop();
 	}
+
+	Device->Context()->OMSetDepthStencilState(nullptr, 0);
 }
 
 void ObjectMaskPass::OnResize()
