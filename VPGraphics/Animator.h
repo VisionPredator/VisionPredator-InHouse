@@ -23,7 +23,6 @@ public:
 
 private:
 
-	void UpdateWorld(double dt, std::weak_ptr<ModelData> ob);
 
 	//test
 	void UpdateWorld(std::weak_ptr<RenderData> ob);

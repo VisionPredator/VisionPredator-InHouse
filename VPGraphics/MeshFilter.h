@@ -31,7 +31,7 @@ struct RenderData
 public:
 	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
 		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
-		, duration(0.f), preDuration(0.f), curAnimation(L""), preAnimation(L""), isPlay(false), isChange(false)
+		, duration(0.f), preDuration(0.f), isPlay(false)
 		, color(), useTexture(false), textureName(L"")
 	{
 
@@ -55,12 +55,9 @@ public:
 
 		this->duration = other.duration;
 		this->preDuration = other.preDuration;
+		this->transitionDuration = other.transitionDuration;
 
-		this->isChange = other.isChange;
 		this->isPlay = other.isPlay;
-
-		this->curAnimation = std::move(other.curAnimation);
-		this->preAnimation = std::move(other.preAnimation);
 	}
 
 	//필수
@@ -80,13 +77,13 @@ public:
 	VPMath::Vector3 rotation;
 
 
-	//특정 컴포넌트에 대응하기 위한 변수
+	//애니메이션
 	float duration;
 	float preDuration;
-	std::wstring curAnimation;
-	std::wstring preAnimation;
 	bool isPlay;
-	bool isChange;
+	int curAni;
+	int preAni;
+	float transitionDuration;
 
 	//디버그박스용
 	DirectX::XMFLOAT4 color;

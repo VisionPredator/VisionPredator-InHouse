@@ -5,6 +5,7 @@ AnimationSystem::AnimationSystem(std::shared_ptr<SceneManager> sceneManager) : S
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&AnimationSystem::OnAddedComponent));
 	EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&AnimationSystem::OnReleasedComponent));
+	EventManager::GetInstance().Subscribe("OnChangeAnimation", CreateSubscriber(&AnimationSystem::OnChangeAnimation));
 }
 
 void AnimationSystem::OnAddedComponent(std::any data)
@@ -35,41 +36,61 @@ void AnimationSystem::RenderUpdate(float deltaTime)
 
 void AnimationSystem::Update(float deltaTime)
 {
+
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
 		aniComp.isPlay = true;
-		aniComp.isChange = false;
 
-
-		if (aniComp.duration > m_Graphics->GetDuration(aniComp.curAnimation))
+		if (!aniComp.FBX.empty())
 		{
-			aniComp.duration -= m_Graphics->GetDuration(aniComp.curAnimation);
-			//if (aniComp.duration < 0)
+			aniComp.duration += deltaTime * aniComp.speed;
+
+			//애니메이션 계속 재생
+			if (aniComp.preAni == aniComp.curAni)
 			{
-				static int index = 0;
-				index++;
-				index = index % aniComp.animationList.size();
-
-				//aniComp.curAnimation = aniComp.animationList[index];
-
+				double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
+				if (aniComp.duration > curDuration)
+				{
+					aniComp.duration -= curDuration;
+				}
+			}
+			else
+			{
+				//각각 애니메이션 사이 보간
+				if (aniComp.duration > aniComp.transitionDuration)
+				{
+					aniComp.preAni = aniComp.curAni;
+					aniComp.duration = 0;
+				}
 			}
 		}
 
-		if (aniComp.preAnimation != aniComp.curAnimation)
+		auto ent = aniComp.GetEntity();
+		if (ent->HasComponent<SkinningMeshComponent>())
 		{
-			aniComp.preAnimation = aniComp.curAnimation;
-			aniComp.preDuration = aniComp.duration;
-			aniComp.duration = 0;
-			
-			aniComp.isChange = true;
+			auto skinned = ent->GetComponent<SkinningMeshComponent>();
+			skinned->Renderdata->curAni = aniComp.curAni;
+			skinned->Renderdata->preAni = aniComp.preAni;
+			skinned->Renderdata->isPlay = aniComp.isPlay;
+			skinned->Renderdata->preDuration = aniComp.preDuration;
+			skinned->Renderdata->duration = aniComp.duration;
+			skinned->Renderdata->transitionDuration = aniComp.transitionDuration;
 		}
+	}
+}
 
-		
 
+void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
+{
+	auto [entityid, index] = std::any_cast<std::pair<uint32_t, int>>(pairdata_entityid_AniIndex);
 
-		if (!aniComp.curAnimation.empty())
-		{
-			aniComp.duration += deltaTime * aniComp.speed;
-		}
+	if (GetSceneManager()->HasComponent<AnimationComponent>(entityid))
+	{
+		auto aniComp = GetSceneManager()->GetComponent<AnimationComponent>(entityid);
+		aniComp->preAni = aniComp->curAni;
+		aniComp->preDuration = aniComp->duration;
+
+		aniComp->curAni = index;
+		aniComp->duration = 0.0f;
 	}
 }

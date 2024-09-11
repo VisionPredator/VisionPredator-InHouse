@@ -206,8 +206,8 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			break;
 	}
 
-	newMesh->MinBounding = { mesh->mAABB.mMin.x, mesh->mAABB.mMin.y,mesh->mAABB.mMin.z};
-	newMesh->MaxBounding = { mesh->mAABB.mMax.x, mesh->mAABB.mMax.y,mesh->mAABB.mMax.z};
+	newMesh->MinBounding = { mesh->mAABB.mMin.x, mesh->mAABB.mMin.y,mesh->mAABB.mMin.z };
+	newMesh->MaxBounding = { mesh->mAABB.mMax.x, mesh->mAABB.mMax.y,mesh->mAABB.mMax.z };
 
 	newMesh->m_primitive = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	newMesh->m_material = mesh->mMaterialIndex;
@@ -237,6 +237,8 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 	switch (filter)
 	{
 		case Filter::STATIC:
+		{
+
 			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
 			{
 				ProcessVertexBuffer(TextureVertices, curMesh, i);
@@ -244,13 +246,33 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				VPMath::Vector3 curPos;
 				curPos.x = TextureVertices.back().pos.x;
 				curPos.y = TextureVertices.back().pos.y;
-				curPos.z = TextureVertices.back().pos.z;
+				curPos.z = -TextureVertices.back().pos.z;
+
+
 
 				Model->vertices.push_back(curPos);
 			}
 			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
 			data.pSysMem = &(TextureVertices[0]);
 			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
+
+			//유니티랑 기준을 맞추려고 회전했으므로 바운딩볼륨도 회전시켜놔야지
+			VPMath::Matrix test;
+			VPMath::Vector3 v;
+
+			test._11 = 1; test._12 = 0; test._13 = 0;
+			test._21 = 0; test._22 = 0; test._23 = 1;
+			test._31 = 0; test._32 = -1; test._33 = 0;
+
+			v = newMesh->MaxBounding;
+			v = XMVector3Transform(v, test);
+			newMesh->MaxBounding = { v.x,v.y,v.z };
+
+			v = newMesh->MinBounding;
+			v = XMVector3Transform(v, test);
+			newMesh->MinBounding = { v.x,v.y,v.z };
+
+		}
 			break;
 
 		case Filter::SKINNING:
@@ -452,7 +474,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 
 	}
 
-	path = (textureProperties[aiTextureType_SPECULAR].second);
+	path = (textureProperties[aiTextureType_SPECULAR].second); 
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
@@ -490,7 +512,6 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 		newMaterial->MetalicPath = finalPath;
 		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.y += 1;
-
 	}
 
 	///Roughness
@@ -682,6 +703,20 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 	vertex.pos.z = curMesh->mVertices[index].z;
 	vertex.pos.w = 1;
 
+	//유니티랑 x축 90 차이나서 의도적으로 회전시킴
+	//왼손좌표계라 기존 회전방향을 반대로 곱해준다
+	/*
+	*/
+	VPMath::Matrix test;
+	VPMath::Vector3 v = { vertex.pos.x,vertex.pos.y,vertex.pos.z};
+
+	test._11 = 1; test._12 = 0; test._13 = 0;
+	test._21 = 0; test._22 = 0; test._23 = 1;
+	test._31 = 0; test._32 = -1; test._33 = 0;
+
+	v = XMVector3Transform(v, test);
+	vertex.pos = { v.x,v.y,v.z,1};
+
 	vertex.color = { 0.7f,0.7f, 0.7f, 1.0f };
 
 	vertex.normal.x = curMesh->mNormals[index].x;
@@ -701,10 +736,10 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 	vertex.TexCord.y = curMesh->mTextureCoords[0][index].y;
 
 	//lightmap uv channel
-	if(curMesh->mTextureCoords[1] != nullptr)
+	if (curMesh->mTextureCoords[1] != nullptr)
 	{
-	vertex.LightMapUV.x = curMesh->mTextureCoords[1][index].x;
-	vertex.LightMapUV.y = curMesh->mTextureCoords[1][index].y;
+		vertex.LightMapUV.x = curMesh->mTextureCoords[1][index].x;
+		vertex.LightMapUV.y = curMesh->mTextureCoords[1][index].y;
 	}
 	buffer.push_back(vertex);
 }
@@ -859,7 +894,7 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 		}
 
 	}
-	int a = 3;
+ 	int a = 3;
 }
 
 std::shared_ptr<Node> ModelLoader::FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode)
