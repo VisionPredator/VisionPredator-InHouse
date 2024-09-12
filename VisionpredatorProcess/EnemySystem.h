@@ -1,6 +1,6 @@
 #pragma once
 #include "../VPEngine/System.h"
-class EnemyComponent;
+struct EnemyComponent;
 class EnemySystem :
 	public System,public IFixedUpdatable,public IUpdatable
 {

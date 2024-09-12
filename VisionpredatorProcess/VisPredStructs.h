@@ -18,6 +18,7 @@ namespace VisPred
 		{
 			IDLE,
 			MOVE,
+			JUMP,
 			CHARGE,
 			ATTACK,
 			DIE,

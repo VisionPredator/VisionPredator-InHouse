@@ -148,6 +148,7 @@ void EnemySystem::Shoot_Style(EnemyComponent& enemycomp)
 
 void EnemySystem::Shoot_Pistol(EnemyComponent& enemycomp)
 {
+
 }
 
 void EnemySystem::Shoot_ShotGun(EnemyComponent& enemycomp)

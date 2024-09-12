@@ -70,9 +70,13 @@ void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 
 void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 {
-	if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D,KEYBOARDKEY::SPACE))
+	if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 	{
 		playercomp.CurrentFSM = VisPred::Game::EFSM::MOVE;
+	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 	}
 }
 
@@ -86,9 +90,13 @@ void PlayerSystem::Calculate_Attack(PlayerComponent& playercomp)
 
 void PlayerSystem::Calculate_Move(PlayerComponent& playercomp)
 {
-	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D, KEYBOARDKEY::SPACE))
+	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 	{
 		playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 	}
 }
 
