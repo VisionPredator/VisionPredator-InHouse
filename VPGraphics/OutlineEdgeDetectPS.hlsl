@@ -22,7 +22,7 @@ static const float gMask[9] =
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
-	float4 color = float4(0, 0, 0, 1);  // 초기 색상 (검정 배경)
+	float4 color = float4(0, 0, 0, 0);
 	const float coord[3] = { -1, 0, 1 };
 
 	// 샘플링 범위를 확장하여 더 두꺼운 엣지를 얻음
