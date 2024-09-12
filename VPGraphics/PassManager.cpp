@@ -62,17 +62,14 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIManager = uiManager;
 	m_LightManager = lightmanager;
 
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
-		std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, 
-		std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock(), m_LightManager)));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Transparency, 
-		std::make_shared<TransparencyPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
-		std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
+	//	std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
+	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
+	//	std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::ObjectMask, 
 		std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock())));
 
+	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_TransparencyPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
@@ -83,35 +80,37 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 }
 
-void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
+void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList, 
+	const std::vector<std::shared_ptr<RenderData>>& renderList)
 {
-	
+	m_DeferredPass->SetRenderQueue(renderList);
+	m_TransparencyPass->SetRenderQueue(renderList);
 
-	//비트 연산으로 해보자
+	// 일단 ObjectMask 빼고 모두 삭제.
 	for (auto& model : RenderList)
 	{
 		std::shared_ptr<RenderData> curModel = model.second;
-		CheckPassState(curModel, PassState::Deferred);
-		CheckPassState(curModel, PassState::Transparency);
-		CheckPassState(curModel, PassState::Debug);
-		CheckPassState(curModel, PassState::Geometry);
+		//CheckPassState(curModel, PassState::Debug);
+		//CheckPassState(curModel, PassState::Geometry);
 		CheckPassState(curModel, PassState::ObjectMask);
-
 	}
 }
 
 void PassManager::Render()
 {
-	m_Passes[PassState::Debug]->Render();
-	m_Passes[PassState::Geometry]->Render();
-	m_Passes[PassState::Deferred]->Render();
-	m_Passes[PassState::Transparency]->Render();
+	//m_Passes[PassState::Debug]->Render();
+	//m_Passes[PassState::Geometry]->Render();
+	//m_ObjectMaskPass->Render();
+
+	m_DebugPass->Render();
+	m_DeferredPass->Render();
+	m_TransparencyPass->Render();
+
 	m_Passes[PassState::ObjectMask]->Render();
 
 	m_OutlineEdgeDetectPass->Render();
 	m_OutlineBlurPass->Render();
 	m_OutlineAddPass->Render();
-
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
@@ -122,10 +121,15 @@ void PassManager::Render()
 
 void PassManager::OnResize()
 {
+	m_DebugPass->OnResize();
+	m_DeferredPass->OnResize();
+	m_TransparencyPass->OnResize();
+
 	for (auto& pass : m_Passes)
 	{
 		pass.second->OnResize();
 	}
+	//m_ObjectMaskPass->OnResize();
 
 	m_OutlineEdgeDetectPass->OnResize();
 	m_OutlineBlurPass->OnResize();

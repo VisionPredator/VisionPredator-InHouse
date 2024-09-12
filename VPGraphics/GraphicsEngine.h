@@ -97,6 +97,9 @@ protected:
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_AfterCulling;
 
 	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
+
+	std::vector<std::shared_ptr<RenderData>> m_RenderVector;
+
 #pragma endregion RenderList ¿ÃªÁ¡ﬂ
 
 

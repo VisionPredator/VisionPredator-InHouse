@@ -198,9 +198,9 @@ void DeferredPass::PreDepth()
 		Device->Context()->PSSetShader(predepth->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-		while (!m_RenderDataQueue.empty())
+		while (!m_RenderQueue.empty())
 		{
-			std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+			std::shared_ptr<RenderData> curData = m_RenderQueue.front();
 			std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 			if (curModel != nullptr)
@@ -268,7 +268,7 @@ void DeferredPass::PreDepth()
 					Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 				}
 			}
-			m_RenderDataQueue.pop();
+			m_RenderQueue.pop();
 		}
 	}
 
@@ -332,9 +332,8 @@ void DeferredPass::Geometry()
 
 	}
 
-	while (!m_RenderDataQueue.empty())
+	for (const auto& curData : m_RenderList)
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
@@ -432,8 +431,8 @@ void DeferredPass::Geometry()
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
 		}
-		m_RenderDataQueue.pop();
 	}
+
 	//·»´õÅ¸°Ù ÇØÁ¦ÇØÁà¾ßÁö srvµµ ÇØÁ¦
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 }

@@ -17,7 +17,12 @@ static_assert(sizeof(MaskColorCB) % 16 == 0, "must be align");
 class ObjectMaskPass : public RenderPass
 {
 public:
+	ObjectMaskPass() = default;
+
 	ObjectMaskPass(const std::shared_ptr<Device>& device,
+		const std::shared_ptr<ResourceManager>& resourceManager);
+
+	void Initialize(const std::shared_ptr<Device>& device,
 		const std::shared_ptr<ResourceManager>& resourceManager);
 	void Render() override;
 	void OnResize() override;

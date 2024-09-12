@@ -77,9 +77,9 @@ void TransparencyPass::Render()
 	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	Device->Context()->OMSetDepthStencilState(nullptr, 1);
 
-	while (!m_RenderDataQueue.empty())
+	while (!m_RenderQueue.empty())
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+		std::shared_ptr<RenderData> curData = m_RenderQueue.front();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 		if (curModel != nullptr)
 		{
@@ -154,7 +154,7 @@ void TransparencyPass::Render()
 			}
 
 		}
-		m_RenderDataQueue.pop();
+		m_RenderQueue.pop();
 	}
 }
 
