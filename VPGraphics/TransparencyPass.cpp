@@ -15,8 +15,11 @@
 #include "DebugDrawManager.h"
 #include "DepthStencilState.h"
 
-TransparencyPass::TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
+TransparencyPass::TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager)
 {
+	m_Device = device;
+	m_ResourceManager = manager;
+
 	//deferred와 같이 쓰려면 deferred를 연산한 곳에 같이 그려야지
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
@@ -37,6 +40,25 @@ TransparencyPass::~TransparencyPass()
 	m_DSV.reset();
 }
 
+void TransparencyPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
+{
+	m_Device = device;
+	m_ResourceManager = resourceManager;
+
+	//deferred와 같이 쓰려면 deferred를 연산한 곳에 같이 그려야지
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
+
+	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
+	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
+
+	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
+
+	m_state = PassState::Transparency;
+	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
+}
+
 void TransparencyPass::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
@@ -55,9 +77,9 @@ void TransparencyPass::Render()
 	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	Device->Context()->OMSetDepthStencilState(nullptr, 1);
 
-	while (!m_RenderDataQueue.empty())
+	while (!m_RenderQueue.empty())
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+		std::shared_ptr<RenderData> curData = m_RenderQueue.front();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 		if (curModel != nullptr)
 		{
@@ -132,7 +154,7 @@ void TransparencyPass::Render()
 			}
 
 		}
-		m_RenderDataQueue.pop();
+		m_RenderQueue.pop();
 	}
 }
 

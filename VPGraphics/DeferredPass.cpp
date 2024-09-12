@@ -16,8 +16,11 @@
 #include "LightManager.h"
 
 
-DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager) : RenderPass(device, manager)
+
+DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager)
 {
+	m_Device = device;
+	m_ResourceManager = manager;
 	m_LightManager = lightmanager;
 
 	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
@@ -62,6 +65,49 @@ DeferredPass::~DeferredPass()
 	{
 		int a = 3;
 	}
+}
+
+void DeferredPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
+	std::shared_ptr<LightManager>& lightManager)
+{
+	m_Device = device;
+	m_ResourceManager = resourceManager;
+	m_LightManager = lightManager;
+
+	m_DepthStencilView = resourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+
+	m_AlbedoRTV = resourceManager->Get<RenderTargetView>(L"Albedo").lock();
+	m_NormalRTV = resourceManager->Get<RenderTargetView>(L"Normal").lock();
+	m_PositionRTV = resourceManager->Get<RenderTargetView>(L"Position").lock();
+	m_DepthRTV = resourceManager->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRoughnessRTV = resourceManager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
+	m_AORTV = resourceManager->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = resourceManager->Get<RenderTargetView>(L"Emissive").lock();
+	m_LightMapRTV = resourceManager->Get<RenderTargetView>(L"LightMap").lock();
+
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base").lock();
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Skinning").lock();
+	m_GeometryPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
+
+	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quad_VB");
+	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
+	m_QuadVS = resourceManager->Get<VertexShader>(L"Quad");
+	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
+
+	m_Deferred = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
+
+	m_Albedo = resourceManager->Get<ShaderResourceView>(L"Albedo").lock();
+	m_Normal = resourceManager->Get<ShaderResourceView>(L"Normal").lock();
+	m_Position = resourceManager->Get<ShaderResourceView>(L"Position").lock();
+	m_Depth = resourceManager->Get<ShaderResourceView>(L"Depth").lock();
+	m_MetalicRoughness = resourceManager->Get<ShaderResourceView>(L"Metalic_Roughness").lock();
+	m_AO = resourceManager->Get<ShaderResourceView>(L"AO").lock();
+	m_Emissive = resourceManager->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBuffer = resourceManager->Get<ShaderResourceView>(L"GBuffer").lock();
+
+	m_SkeletalMeshVS = resourceManager->Get<VertexShader>(L"Skinning");
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base");
+	m_MeshPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry");
 }
 
 void DeferredPass::Render()
@@ -152,9 +198,9 @@ void DeferredPass::PreDepth()
 		Device->Context()->PSSetShader(predepth->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-		while (!m_RenderDataQueue.empty())
+		while (!m_RenderQueue.empty())
 		{
-			std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
+			std::shared_ptr<RenderData> curData = m_RenderQueue.front();
 			std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 			if (curModel != nullptr)
@@ -222,7 +268,7 @@ void DeferredPass::PreDepth()
 					Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 				}
 			}
-			m_RenderDataQueue.pop();
+			m_RenderQueue.pop();
 		}
 	}
 
@@ -286,9 +332,8 @@ void DeferredPass::Geometry()
 
 	}
 
-	while (!m_RenderDataQueue.empty())
+	for (const auto& curData : m_RenderList)
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
@@ -386,8 +431,8 @@ void DeferredPass::Geometry()
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
 		}
-		m_RenderDataQueue.pop();
 	}
+
 	//·»´õÅ¸°Ù ÇØÁ¦ÇØÁà¾ßÁö srvµµ ÇØÁ¦
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 }

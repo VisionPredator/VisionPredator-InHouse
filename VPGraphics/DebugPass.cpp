@@ -14,8 +14,12 @@
 #include "StaticData.h"
 #include "DebugDrawManager.h"
 
-DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug) : RenderPass(device, manager), m_DebugDrawManager(debug)
+DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug)
 {
+	m_Device = device;
+	m_ResourceManager = manager;
+	m_DebugDrawManager = debug;
+
 	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
@@ -29,6 +33,23 @@ DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceMan
 DebugPass::~DebugPass()
 {
 
+}
+
+void DebugPass::Initialize(const std::shared_ptr<Device>& device,
+	const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DebugDrawManager>& debugDrawManager)
+{
+	m_Device = device;
+	m_ResourceManager = resourceManager;
+	m_DebugDrawManager = debugDrawManager;
+
+	m_RTV = m_ResourceManager.lock()->Get<RenderTargetView>(L"Emissive");
+	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
+	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
+	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
+	m_state = PassState::Debug;
+
+	m_View = VPMath::Matrix::Identity;
+	m_Proj = VPMath::Matrix::Identity;
 }
 
 void DebugPass::Render()
@@ -46,18 +67,15 @@ void DebugPass::Render()
 	std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Get<ConstantBuffer<LightArray>>(L"LightArray").lock();
 
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
-	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
-
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
-	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
-
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
-	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
-
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
-	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
-
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
 	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 
 	XMStoreFloat4x4(&m_View, XMMatrixTranspose(CameraCB->m_struct.view));
@@ -66,7 +84,6 @@ void DebugPass::Render()
 
 	while (!m_RenderDataQueue.empty())
 	{
-
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 
 		switch (curData->Filter)

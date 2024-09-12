@@ -31,7 +31,10 @@
 #include "Slot.h"
 
 PassManager::PassManager()
-	: m_ParticlePass(std::make_shared<ParticlePass>())
+	: m_DeferredPass(std::make_shared<DeferredPass>())
+	, m_TransparencyPass(std::make_shared<TransparencyPass>())
+	, m_DebugPass(std::make_shared<DebugPass>())
+	, m_ParticlePass(std::make_shared<ParticlePass>())
 	, m_UIPass(std::make_shared<UIPass>())
 	, m_OutlineEdgeDetectPass(std::make_shared<OutlineEdgeDetectPass>())
 	, m_OutlineBlurPass(std::make_shared<OutlineBlurPass>())
@@ -59,65 +62,74 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIManager = uiManager;
 	m_LightManager = lightmanager;
 
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
-		std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Deferred, 
-		std::make_shared<DeferredPass>(m_Device.lock(), m_ResourceManager.lock(), m_LightManager)));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Transparency, 
-		std::make_shared<TransparencyPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
-		std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
+	//	std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
+	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
+	//	std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::ObjectMask, 
 		std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock())));
 
+	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
+	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
+	m_TransparencyPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
+	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_OutlineEdgeDetectPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineBlurPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineAddPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
-
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 }
 
-void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList)
+void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList, 
+	const std::vector<std::shared_ptr<RenderData>>& renderList)
 {
-	//비트 연산으로 해보자
+	m_DeferredPass->SetRenderQueue(renderList);
+	m_TransparencyPass->SetRenderQueue(renderList);
+
+	// 일단 ObjectMask 빼고 모두 삭제.
 	for (auto& model : RenderList)
 	{
 		std::shared_ptr<RenderData> curModel = model.second;
-		CheckPassState(curModel, PassState::Deferred);
-		CheckPassState(curModel, PassState::Transparency);
-		CheckPassState(curModel, PassState::Debug);
-		CheckPassState(curModel, PassState::Geometry);
+		//CheckPassState(curModel, PassState::Debug);
+		//CheckPassState(curModel, PassState::Geometry);
 		CheckPassState(curModel, PassState::ObjectMask);
-
 	}
 }
 
 void PassManager::Render()
 {
-	m_Passes[PassState::Debug]->Render();
-	m_Passes[PassState::Geometry]->Render();
-	m_Passes[PassState::Deferred]->Render();
-	m_Passes[PassState::Transparency]->Render();
+	//m_Passes[PassState::Debug]->Render();
+	//m_Passes[PassState::Geometry]->Render();
+	//m_ObjectMaskPass->Render();
+
+	m_DebugPass->Render();
+	m_DeferredPass->Render();
+	m_TransparencyPass->Render();
+
 	m_Passes[PassState::ObjectMask]->Render();
 
 	m_OutlineEdgeDetectPass->Render();
 	m_OutlineBlurPass->Render();
 	m_OutlineAddPass->Render();
-
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
-	DrawIMGUI();
+	// DrawIMGUI 이렇게 함수로 두지 말고 FinalPass 클래스로 이식하자.
+	DrawIMGUI();	// 함수 이름이 애매모호하다.
 }
 
 void PassManager::OnResize()
 {
+	m_DebugPass->OnResize();
+	m_DeferredPass->OnResize();
+	m_TransparencyPass->OnResize();
+
 	for (auto& pass : m_Passes)
 	{
 		pass.second->OnResize();
 	}
+	//m_ObjectMaskPass->OnResize();
 
 	m_OutlineEdgeDetectPass->OnResize();
 	m_OutlineBlurPass->OnResize();
@@ -132,40 +144,6 @@ void PassManager::CheckPassState(std::shared_ptr<RenderData>& model, PassState p
 	{
 		m_Passes[pass]->AddModelData(model);
 	}
-}
-
-void PassManager::DrawGBuffer()
-{
-	std::shared_ptr<Device> Device = m_Device.lock();
-	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = resourcemanager->Get<Sampler>(L"LinearWrap").lock();
-	std::shared_ptr<VertexBuffer> vb = resourcemanager->Get<VertexBuffer>(L"Quad_VB").lock();
-	std::shared_ptr<IndexBuffer> ib = resourcemanager->Get<IndexBuffer>(L"Quad_IB").lock();
-	std::shared_ptr<PixelShader> ps = resourcemanager->Get<PixelShader>(L"Quad").lock();
-	std::shared_ptr<VertexShader> vs = resourcemanager->Get<VertexShader>(L"Quad").lock();
-	std::shared_ptr<ShaderResourceView> gBuffer = resourcemanager->Get<ShaderResourceView>(L"GBuffer").lock();
-
-	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
-	//std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
-
-	Device->UnBindSRV();
-	Device->BindVS(vs);
-	Device->Context()->PSSetShader(ps->GetPS(), nullptr, 0);
-
-	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
-
-	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-	m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-
-	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::GBuffer), 1, gBuffer->GetAddress());
-
-	Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
-
-	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
-	Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-
 }
 
 void PassManager::DrawIMGUI()

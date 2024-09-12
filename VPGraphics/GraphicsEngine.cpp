@@ -99,9 +99,10 @@ void GraphicsEngine::Update(double dt)
 	*/
 	Culling();
 	m_Animator->Update(dt, m_AfterCulling);
-	m_PassManager->Update(m_AfterCulling);
+	m_PassManager->Update(m_AfterCulling, m_RenderVector);
 	m_LightManager->Update(m_Lights);
 
+	m_RenderVector.clear();
 	m_AfterCulling.clear();
 }
 
@@ -484,6 +485,10 @@ void GraphicsEngine::Culling()
 			|| object.second->Pass == (object.second->Pass & PassState::Debug_Geometry))
 		{
 			m_AfterCulling.insert(object);
+
+			//m_RenderQueue.push(object.second);
+
+			m_RenderVector.push_back(object.second);
 		}
 	}
 }
