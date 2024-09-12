@@ -97,10 +97,13 @@ void GraphicsEngine::Update(double dt)
 	m_PassManager->Update(m_RenderList);
 	m_LightManager->Update(m_Lights);
 	*/
+
 	Culling();
 	m_Animator->Update(dt, m_AfterCulling);
 	m_PassManager->Update(m_AfterCulling);
 	m_LightManager->Update(m_Lights);
+
+	Attachment(1668669130);
 
 	m_AfterCulling.clear();
 }
@@ -300,7 +303,19 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 
 const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 {
+	if (m_RenderList.find(entityID) != m_RenderList.end())
+	{
+		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");
+		VPMath::Matrix a =test *  m_RenderList[entityID]->world;
 
+		debug::SphereInfo temp;
+		temp.Sphere.Center = { a._41,a._42,a._43 };
+		temp.Sphere.Radius = 0.1;
+		temp.Color = { 0,1,0,1 };
+		DrawSphere(temp);
+		
+		return a;
+	}
 
 	return VPMath::Matrix::Identity;
 }

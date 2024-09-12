@@ -20,7 +20,7 @@ public:
 	void Initialize(std::weak_ptr<ResourceManager> manager);
 
 	void Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist);
-	const VPMath::Matrix Attachment(std::shared_ptr<RenderData>& curData);
+	const VPMath::Matrix Attachment(std::wstring region);
 
 private:
 
@@ -36,6 +36,8 @@ private:
 	//calc nodes
 	std::vector<std::shared_ptr<Node>> m_Nodes;
 
+
+	VPMath::Matrix socket;
 
 };
 
