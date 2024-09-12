@@ -126,20 +126,8 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
     {
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
-    //반대로 저장되어있어서 일단 이거쓰자
-    //float x = (input.lightuv.x * lightmapdata.y) + lightmaptiling.x;
-    //float y = ((1 - input.lightuv.y) * lightmapdata.z) +lightmaptiling.y;
-    
-    //float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.y;
-    //float y = ((1 - input.lightuv.y) * lightmaptiling.y) + lightmapdata.z;
-    
-    
-    ////Unity light map은 좌하단이 0,0 dx11 좌상단이 0,0
-    ////y 반전 필요
-    //float2 uv = float2(x, 1 - y);    
-    
-    output.LightMap = pow(gLightMap.Sample(samLinear, input.lightuv), float4(gamma, gamma, gamma,1));
-    //output.LightMap = (gLightMap.Sample(samLinear, uv));
+        
+    output.LightMap = pow(gLightMap.Sample(samLinear, input.lightuv), float4(1 / gamma, 1 / gamma, 1 / gamma, 1 / gamma));
     
     return output;
     
