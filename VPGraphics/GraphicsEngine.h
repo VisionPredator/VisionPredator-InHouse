@@ -92,8 +92,14 @@ protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
+#pragma region RenderList 이사중
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
 	std::map<uint32_t, std::shared_ptr<RenderData>> m_AfterCulling;
+
+	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
+#pragma endregion RenderList 이사중
+
+
 	std::unordered_map<uint32_t, LightData> m_Lights;
 
 private:

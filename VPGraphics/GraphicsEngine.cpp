@@ -484,6 +484,8 @@ void GraphicsEngine::Culling()
 			|| object.second->Pass == (object.second->Pass & PassState::Debug_Geometry))
 		{
 			m_AfterCulling.insert(object);
+
+			m_RenderQueue.push(object.second);
 		}
 	}
 }

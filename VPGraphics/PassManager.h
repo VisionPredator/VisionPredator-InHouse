@@ -36,12 +36,15 @@ public:
 
 private:
 	void CheckPassState(std::shared_ptr<RenderData>& model, PassState pass);
-	void DrawGBuffer();
 	void DrawIMGUI();
 
 private:
 	std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;
 
+	std::shared_ptr<DeferredPass> m_DeferredPass;
+	std::shared_ptr<TransparencyPass> m_TransparencyPass;
+	std::shared_ptr<DebugPass> m_DebugPass;
+	// TODO: ObjectMaskPass
 	std::shared_ptr<ParticlePass> m_ParticlePass;
 	std::shared_ptr<class UIPass> m_UIPass;
 	std::shared_ptr<OutlineEdgeDetectPass> m_OutlineEdgeDetectPass;

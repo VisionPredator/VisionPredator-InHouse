@@ -11,10 +11,11 @@
 #include "Material.h"
 #include "Slot.h"
 
-ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device,
-	const std::shared_ptr<ResourceManager>& resourceManager)
-	: RenderPass(device, resourceManager)
+ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
+	m_Device = device;
+	m_ResourceManager = resourceManager;
+
 	const uint32_t width = m_Device.lock()->GetWndWidth();
 	const uint32_t height = m_Device.lock()->GetWndHeight();
 
