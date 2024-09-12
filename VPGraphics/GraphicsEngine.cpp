@@ -423,7 +423,6 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"AO"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Emissive"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"GBuffer"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"IMGUI"));
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));

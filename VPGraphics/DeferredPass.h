@@ -53,7 +53,5 @@ private:
 
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBuffer;
-
-	std::unique_ptr<DirectX::DX11::CommonStates> m_States;
 };
 

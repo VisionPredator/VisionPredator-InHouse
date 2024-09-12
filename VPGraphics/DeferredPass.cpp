@@ -51,13 +51,9 @@ DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 	m_Emissive = manager->Get<ShaderResourceView>(L"Emissive").lock();
 	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
 
-
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
-
-	//??
-	m_States = std::make_unique<CommonStates>(device->Get());
 }
 
 DeferredPass::~DeferredPass()
@@ -119,7 +115,6 @@ void DeferredPass::OnResize()
 
 void DeferredPass::PreDepth()
 {
-
 	//가시성 판단을 위한 Depth 그리기
 
 	std::shared_ptr<Device> Device = m_Device.lock();
