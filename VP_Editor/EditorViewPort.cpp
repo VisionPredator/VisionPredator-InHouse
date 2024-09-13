@@ -66,8 +66,6 @@ void EditorViewPort::EditingImGui()
 		m_CurrentRenderMode = RENDERMODE::Emissive;
 	if (ImGui::RadioButton("GBuffer", m_CurrentRenderMode == RENDERMODE::GBuffer))
 		m_CurrentRenderMode = RENDERMODE::GBuffer;
-	if (ImGui::RadioButton("IMGUI", m_CurrentRenderMode == RENDERMODE::IMGUI))
-		m_CurrentRenderMode = RENDERMODE::IMGUI;
 	if (ImGui::RadioButton("LightMap", m_CurrentRenderMode == RENDERMODE::LightMap))
 		m_CurrentRenderMode = RENDERMODE::LightMap;
 	ImGui::EndChild();
@@ -234,8 +232,6 @@ std::wstring EditorViewPort::GetRenderModeString(RENDERMODE renderMode)
 		return L"Emissive";
 	case RENDERMODE::GBuffer:
 		return L"GBuffer";
-	case RENDERMODE::IMGUI:
-		return L"IMGUI";
 	case RENDERMODE::LightMap:
 		return L"LightMap";
 	default:

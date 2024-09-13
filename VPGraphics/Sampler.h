@@ -5,6 +5,7 @@
 
 enum class SamplerStateType
 {
+	Default,
 	LinearClamp,
 	LinearWrap,
 	PointClamp,

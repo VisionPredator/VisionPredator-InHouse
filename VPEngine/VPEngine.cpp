@@ -54,16 +54,16 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 
 	m_TimeManager = new TimeManager;
 	m_PhysicEngine = new PhysxEngine;
-	m_SceneManager =std::make_shared< SceneManager>();
+	m_SceneManager = std::make_shared< SceneManager>();
 	m_SystemManager = std::make_shared<SystemManager>();
 	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
-	m_SystemManager->Initialize(m_SceneManager,m_Graphics,m_PhysicEngine);
+	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine);
 	/// 다 초기화 되고 윈도우 만들기
 	this->Addsystem();
-	EventManager::GetInstance().Subscribe("OnAddSystemLater",CreateSubscriber(&VPEngine::OnAddSystemLater));
+	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 }
 
@@ -92,7 +92,7 @@ void VPEngine::Addsystem()
 }
 void VPEngine::OnAddSystemLater(std::any)
 {
-	m_TransformSystem =m_SystemManager->AddSystem<TransformSystem>();
+	m_TransformSystem = m_SystemManager->AddSystem<TransformSystem>();
 }
 void VPEngine::Loop()
 {
@@ -123,13 +123,13 @@ void VPEngine::Loop()
 			Update();
 			static float tempTime = 0;
 			tempTime += m_DeltaTime;
-			while (tempTime > (1/90.f))
+			while (tempTime > (1 / 90.f))
 			{
 				m_SystemManager->RenderUpdate(m_DeltaTime);
 				m_Graphics->Update(m_DeltaTime);
 				Render();
 				EndRender();
-				tempTime -= (1/90.f);
+				tempTime -= (1 / 90.f);
 			}
 
 			//// 사용자가 ESC키를 눌렀는지 확인 후 종료 처리함
@@ -171,8 +171,8 @@ void VPEngine::Render()
 {
 	m_Graphics->BeginRender();
 	m_Graphics->Render();
-
 }
+
 
 void VPEngine::EndRender()
 {
@@ -188,38 +188,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	switch (message)
 	{
-	case WM_SIZE:
-	{
-		int wmId = LOWORD(wParam);
-
-
-		// 메뉴 선택을 구문 분석합니다:
-		switch (wmId)
+		case WM_SIZE:
 		{
+			int wmId = LOWORD(wParam);
 
-		case SIZE_RESTORED:
-		case SIZE_MAXIMIZED:
-			VPEngine::isResize = true;
-				break;
 
-		case IDM_ABOUT:
+			// 메뉴 선택을 구문 분석합니다:
+			switch (wmId)
+			{
 
+				case SIZE_RESTORED:
+				case SIZE_MAXIMIZED:
+					VPEngine::isResize = true;
+					break;
+
+				case IDM_ABOUT:
+
+					break;
+				case IDM_EXIT:
+					DestroyWindow(hWnd);
+					break;
+				default:
+					return DefWindowProc(hWnd, message, wParam, lParam);
+			}
+
+		}
+		break;
+		case WM_DESTROY:
+			PostQuitMessage(0);
 			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
+
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-
-	}
-	break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
 }

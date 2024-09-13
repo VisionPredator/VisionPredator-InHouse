@@ -7,7 +7,7 @@ public:
 	GeoMetryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger);
 	~GeoMetryPass();
 
-	virtual void Render() override;
-	virtual void OnResize() override;
+	void Render() override;
+	void OnResize() override;
 };
 

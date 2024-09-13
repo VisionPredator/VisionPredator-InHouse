@@ -13,18 +13,15 @@ void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 	m_ResourceManager = manager;
 }
 
-void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
+void Animator::Update(double dt, std::vector<std::shared_ptr<RenderData>>& renderlist)
 {
 
 	for (auto& data : renderlist)
 	{
-		std::shared_ptr<RenderData> curData = data.second;
-		std::weak_ptr<ModelData> curModel;
-
-		if (data.second->isPlay)
+		if (data->isPlay)
 		{
-			UpdateWorld(curData);
-			UpdateMatrixPallete(curData);
+			UpdateWorld(data);
+			UpdateMatrixPallete(data);
 		}
 	}
 }

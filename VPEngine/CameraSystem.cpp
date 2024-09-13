@@ -82,9 +82,9 @@ void CameraSystem::OnSetMainCamera(std::any data)
 void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 {
 	float ratio = m_Width / m_Height;
-	if (mainCamera.NearZ < 1)
+	if (mainCamera.NearZ < 0.01)
 	{
-		mainCamera.NearZ = 1;
+		mainCamera.NearZ = 0.01;
 	}
 	if (mainCamera.FarZ <= mainCamera.NearZ)
 	{

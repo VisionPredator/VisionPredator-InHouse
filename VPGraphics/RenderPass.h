@@ -65,26 +65,33 @@ struct D3D11_VIEWPORT;
 /// </summary>
 
 
-
 class RenderPass
 {
 public:
-	RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger);
+	RenderPass() = default;
 	virtual ~RenderPass();
 
 	virtual void Render() abstract;
-	void AddModelData(std::shared_ptr<RenderData> model);
 	virtual void OnResize() abstract;
 
+	void SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue) { m_RenderList = renderQueue; }
+
+	// 삭제 예정
+	void AddModelData(std::shared_ptr<RenderData> model);
+
 protected:
-	void BindStatic(std::shared_ptr<RenderData> curModel);
-	void BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_ptr<Mesh> mesh);
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;
 
+	// 둘 중 하나만 남겨두기
 	std::queue<std::weak_ptr<RenderData>> m_RenderDataQueue;
+	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
+	std::vector<std::shared_ptr<RenderData>> m_RenderList;
 
+	// 공유하지 않을 데이터 및 함수 === 삭제
+	void BindStatic(std::shared_ptr<RenderData> curModel);
+	void BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_ptr<Mesh> mesh);
 	std::weak_ptr<PixelShader> m_DebugPS;
 	std::weak_ptr<PixelShader> m_MeshPS;
 	std::weak_ptr<VertexShader> m_SkeletalMeshVS;
@@ -92,6 +99,6 @@ protected:
 	std::weak_ptr<RenderTargetView> m_RTV;
 	std::weak_ptr<DepthStencilView> m_DSV;
 
+	// 곧 사라질 변수
 	PassState m_state = PassState::None;
 };
-

@@ -21,7 +21,6 @@ class EditorViewPort :public IImGui, public EventSubscriber
 		LightMap,
 		Emissive,
 		GBuffer,
-		IMGUI,
 		END
 	};
 public:
@@ -38,7 +37,7 @@ public:
 
 
 private:
-	RENDERMODE m_CurrentRenderMode = RENDERMODE::IMGUI;
+	RENDERMODE m_CurrentRenderMode = RENDERMODE::GBuffer;
 	Vector3 m_TranslationSnapValue = Vector3(1.0f);
 	Vector3 m_RotationSnapValue = Vector3(15.0f);
 	Vector3 m_ScaleSnapValue = Vector3(0.1f);

@@ -46,6 +46,5 @@ UINT Buffer::Count() const
 
 void Buffer::Release()
 {
-	//m_buffer->Release();
 	m_buffer.Reset();
 }

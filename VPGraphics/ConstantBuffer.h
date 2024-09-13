@@ -34,7 +34,8 @@ public:
 template<typename T>
 void ConstantBuffer<T>::Release()
 {
-	m_buffer.Reset();
+	const ULONG refCount = m_buffer.Reset();
+	assert(refCount == 0);
 }
 
 
@@ -86,7 +87,7 @@ ConstantBuffer<T>::ConstantBuffer(const std::shared_ptr<Device>& device, const C
 template<typename T>
 ConstantBuffer<T>::~ConstantBuffer()
 {
-	//Release();
+	ConstantBuffer<T>::Release();
 }
 
 template<typename T>

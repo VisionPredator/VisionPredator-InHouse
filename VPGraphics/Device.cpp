@@ -24,9 +24,31 @@ Device::Device()
 
 Device::~Device()
 {
-	m_SwapChain->Release();
-	m_Context->Release();
-	m_Device->Release();
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11Device> device(m_Device);
+	Microsoft::WRL::ComPtr<ID3D11Debug> debugDevice;
+	device.As(&debugDevice);
+#endif
+	m_Context->ClearState();
+	m_Context->Flush();
+
+	m_SwapChain.Reset();
+	m_Context.Reset();
+	m_Device.Reset();
+
+	ULONG refCount = m_Device.Reset();
+	assert(refCount == 0);
+
+	refCount = m_Context.Reset();
+	assert(refCount == 0);
+
+	refCount = m_SwapChain.Reset();
+	assert(refCount == 0);
+
+
+#ifdef _DEBUG
+	debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+#endif
 
 	m_Device = nullptr;
 	m_Context = nullptr;
@@ -111,17 +133,17 @@ void Device::OnResize()
 
 ID3D11DeviceContext* Device::Context() const
 {
-	return m_Context;
+	return m_Context.Get();
 }
 
 ID3D11Device* Device::Get() const
 {
-	return m_Device;
+	return m_Device.Get();
 }
 
 IDXGISwapChain* Device::SwapChain() const
 {
-	return m_SwapChain;
+	return m_SwapChain.Get();
 }
 
 RECT Device::GetWndSize() const
@@ -138,7 +160,6 @@ void Device::BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DS
 void Device::EndRender()
 {
 	m_SwapChain->Present(0, 0);
-	//m_Context->RSSetState(0);
 }
 
 void Device::UnBindSRV()
@@ -277,7 +298,7 @@ bool Device::CreateSwapChain()
 		return false;
 	}
 
-	hr = dxgiFactory->CreateSwapChain(m_Device, &sd, &m_SwapChain);
+	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &sd, &m_SwapChain);
 	if (FAILED(hr))
 	{
 		MessageBox(0, L"Factory CreateSwapChain Failed", 0, 0);

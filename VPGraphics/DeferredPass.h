@@ -6,9 +6,16 @@ class LightManager;
 class DeferredPass : public RenderPass
 {
 public:
+	// 일단 임시. 아래 생성자 없애면 이것도 삭제 해야한다.
+	DeferredPass() = default;
+
 	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager);
 	~DeferredPass();
-	virtual void Render() override;
+
+	void Initialize(const std::shared_ptr<Device>& device,
+		const std::shared_ptr<ResourceManager>& resourceManager,
+		std::shared_ptr<LightManager>& lightManager);
+	void Render() override;
 	void OnResize() override;
 
 private:
@@ -53,7 +60,5 @@ private:
 
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBuffer;
-
-	std::unique_ptr<DirectX::DX11::CommonStates> m_States;
 };
 

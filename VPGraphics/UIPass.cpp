@@ -78,5 +78,6 @@ void UIPass::Render()
 	m_UIManager->Render();
 
 	// TODO: 2D 렌더링이 완료되었으므로 다시 Z 버퍼 키기
-	m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);
+	m_Device->Context()->OMSetDepthStencilState(nullptr, 0);
+	//m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);
 }

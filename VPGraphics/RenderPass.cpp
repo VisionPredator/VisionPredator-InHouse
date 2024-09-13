@@ -14,10 +14,7 @@
 #include "StaticData.h"
 #include "DebugDrawManager.h"
 
-RenderPass::RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger) : m_Device(device), m_ResourceManager(manger), m_SkeletalMeshVS(), m_DebugPS()
-{
 
-}
 
 RenderPass::~RenderPass()
 {
@@ -34,7 +31,6 @@ RenderPass::~RenderPass()
 
 void RenderPass::AddModelData(std::shared_ptr<RenderData> model)
 {
-
 	m_RenderDataQueue.push(model);
 }
 

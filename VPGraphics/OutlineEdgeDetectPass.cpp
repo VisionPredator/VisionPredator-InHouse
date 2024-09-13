@@ -12,13 +12,10 @@ void OutlineEdgeDetectPass::Initialize(const std::shared_ptr<Device>& device,
 	m_Device = device;
 	m_ResourceManager = resourceManager;
 
-	uint32_t width = m_Device->GetWndWidth();
-	uint32_t height = m_Device->GetWndHeight();
+	const uint32_t width = m_Device->GetWndWidth();
+	const uint32_t height = m_Device->GetWndHeight();
 
-	m_OutlineEdgeDetectRTV = m_ResourceManager->Create<RenderTargetView>(L"OutlineEdgeDetectRTV", RenderTargetViewType::OutlineEdgeDetect, width, height).lock();
-
-	auto ObjectMaskRTV = m_ResourceManager->Get<RenderTargetView>(L"ObjectMaskRTV").lock();
-	m_ObjectMaskSRV = std::make_shared<ShaderResourceView>(device, ObjectMaskRTV);
+	m_OutlineEdgeDetectRTV = m_ResourceManager->Create<RenderTargetView>(L"OutlineEdgeDetectRTV", RenderTargetViewType::Outline, width, height).lock();
 
 	m_LinearClampSS = m_ResourceManager->Get<Sampler>(L"LinearClamp").lock();
 	m_OutlineEdgeDetectVS = m_ResourceManager->Create<VertexShader>(L"OutlineEdgeDetectVS", L"OutlineEdgeDetectVS", "main").lock();
@@ -31,6 +28,9 @@ void OutlineEdgeDetectPass::Initialize(const std::shared_ptr<Device>& device,
 
 void OutlineEdgeDetectPass::Render()
 {
+	auto ObjectMaskRTV = m_ResourceManager->Get<RenderTargetView>(L"ObjectMaskRTV").lock();
+	m_ObjectMaskSRV = std::make_shared<ShaderResourceView>(m_Device, ObjectMaskRTV);
+
 	m_ScreenSize.Width = m_Device->GetWndWidth();
 	m_ScreenSize.Height = m_Device->GetWndHeight();
 	m_ScreenSizeCB->Update(m_ScreenSize);
@@ -55,5 +55,5 @@ void OutlineEdgeDetectPass::Render()
 
 void OutlineEdgeDetectPass::OnResize()
 {
-	// TODO OutlineEdgeDetectPass Reszie
+	m_OutlineEdgeDetectRTV->OnResize();
 }

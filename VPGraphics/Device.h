@@ -2,6 +2,7 @@
 
 #include <d3d11.h>
 #include <vector>
+#include <wrl/client.h>
 #pragma comment(lib, "d3d11.lib")
 
 
@@ -45,12 +46,12 @@ public:
 private:
 	bool CreateSwapChain();
 
-	ID3D11Device* m_Device = nullptr;
-	ID3D11DeviceContext* m_Context = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device> m_Device = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_Context = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain = nullptr;
 
 	D3D_FEATURE_LEVEL m_FeatureLevel;
 
-	IDXGISwapChain* m_SwapChain = nullptr;
 	HWND m_hWnd = nullptr;
 	RECT m_wndSize;
 };

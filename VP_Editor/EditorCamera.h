@@ -20,7 +20,7 @@ public:
 	void ImGuiRender() override;
 	VPMath::Matrix GetView() const { return m_view; }
 	VPMath::Matrix GetProj() const { return m_proj; }
-	VPMath::Matrix GetOrthoProj() const { return m_orthoProj; }	// SUMIN_
+	VPMath::Matrix GetOrthoProj() const { return m_orthoProj; }
 
 private:
 	float m_sensitivity= 0.1f;
@@ -30,7 +30,7 @@ private:
 	float m_farZ = 0.f;
 	VPMath::Matrix m_view;
 	VPMath::Matrix m_proj;
-	VPMath::Matrix m_orthoProj;		// SUMIN_
+	VPMath::Matrix m_orthoProj;
 	const float m_maxPitch = 89.f; // Convert degrees to radians
 
 	float m_FOV = 0.f;

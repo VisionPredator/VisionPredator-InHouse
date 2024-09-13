@@ -20,6 +20,7 @@
 #include <iostream>
 #include <algorithm>
 #include "VisPredMath.h"
+#include <d3d11.h>
 
 #ifdef _DEBUG
 #pragma comment(lib, "assimp-vc143-mtd.lib")

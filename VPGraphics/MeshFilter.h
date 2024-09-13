@@ -12,24 +12,20 @@ enum class GeoMetryFilter : unsigned int
 
 enum class PassState : unsigned int
 {
-	None = 0,
-	Transparency = 1 << 1,
-	Debug = 1 << 2,
-	Deferred = 1 << 3,
-	Geometry = 1 << 4,
-	ObjectMask = 1 << 5,
-
-	BoundingDeferred = (Debug | Deferred),
-	Debug_Geometry = (Geometry | Debug),
+	None = 0,					// 유지	
+	Geometry = 1 << 4,			// 삭제?
+	ObjectMask = 1 << 5,		// 유지
 	End = 99999
 };
-
+// TODO: 삭제할 PassState.
+// Deferred, Transparency, Debug, Geometry
+// 그리고 토글이 아니라 체크로 변경.
 
 //지금 다 섞여있는데 data를 쓰는 기능에따라 나눠서 entity id로 접근해야할듯 덩치가 너무 큼
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
+	RenderData() :EntityID(0), Name(L""), FBX(L"")
 		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
 		, duration(0.f), preDuration(0.f), isPlay(false)
 		, color(), useTexture(false), textureName(L"")
@@ -65,7 +61,7 @@ public:
 	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;
-	PassState Pass;
+	PassState Pass; 
 
 	GeoMetryFilter Filter;
 	bool isSkinned = false;

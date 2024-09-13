@@ -23,8 +23,6 @@ ResourceManager::ResourceManager()
 	m_OffScreenName[6] = L"AO";
 	m_OffScreenName[7] = L"Emissive";
 	m_OffScreenName[8] = L"GBuffer";
-	m_OffScreenName[9] = L"IMGUI";
-	//m_OffScreenName[9] = L"RTV_Main";
 }
 
 
@@ -75,6 +73,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<Sampler>(L"LinearWrap", SamplerStateType::LinearWrap);
 	Create<Sampler>(L"PointClamp", SamplerStateType::PointClamp);
 	Create<Sampler>(L"LinearClamp", SamplerStateType::LinearClamp);
+	Create<Sampler>(L"Default", SamplerStateType::Default);
 
 
 	// ----------------------------------------------------------------------------------------
@@ -156,7 +155,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	D3D11_TEXTURE2D_DESC dsd = TextureDESC::DSVDesc;
 	dsd.Width = width;
 	dsd.Height = height;
-	Create<DepthStencilView>(L"DSV_Main", dsd);
+	Create<DepthStencilView>(L"DSV_Main", DepthStencilViewType::Default);
 	//포스트프로세싱용으로 텍스처를 저장하려고 쓸거
 	Create<DepthStencilView>(L"DSV_Deferred", dsd);
 
@@ -259,7 +258,8 @@ void ResourceManager::OnResize(RECT& wndsize)
 		}
 		DSVmap.clear();
 
-		Create<DepthStencilView>(L"DSV_Main", texDesc);
+		//Create<DepthStencilView>(L"DSV_Main", texDesc);
+		Create<DepthStencilView>(L"DSV_Main", DepthStencilViewType::Default);
 		Create<DepthStencilView>(L"DSV_Deferred", texDesc);
 	}
 }
