@@ -2,14 +2,14 @@
 #include "RenderSystem.h"
 #include "Components.h"
 #include "EventManager.h"
+
+
 RenderSystem::RenderSystem(std::shared_ptr<SceneManager> sceneManager)
 	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&RenderSystem::OnAddedComponent));
 	EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&RenderSystem::OnReleasedComponent));
-
 }
-
 
 void RenderSystem::OnAddedComponent(std::any data)
 {
@@ -21,7 +21,6 @@ void RenderSystem::OnAddedComponent(std::any data)
 		MeshComponent* meshComponent = static_cast<MeshComponent*>(comp);
 		const TransformComponent& Transform = *meshComponent->GetComponent<TransformComponent>();
 
-
 		///Graphic에 RenderModel 만들 때 std::share_ptr<RenderData> 받기
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
@@ -31,6 +30,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->lightmapindex = meshComponent->LightMapIndex;
 		meshComponent->Renderdata->scale = meshComponent->LightMapScale;
 		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
+		meshComponent->Renderdata->MaskingColor = meshComponent->MaskColor;
 
 		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
 		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
@@ -201,7 +201,7 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 	renderdata->FBX = meshComp.FBX;
 	renderdata->world = transform.WorldTransform;
 	renderdata->rotation = transform.World_Rotation;
-
+	renderdata->MaskingColor = meshComp.MaskColor;
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)

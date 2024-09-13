@@ -31,7 +31,7 @@ RenderPass::~RenderPass()
 
 void RenderPass::AddModelData(std::shared_ptr<RenderData> model)
 {
-	m_RenderDataQueue.push(model);
+	m_RenderList.push_back(model);
 }
 
 void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)

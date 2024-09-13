@@ -85,8 +85,6 @@ protected:
 	std::weak_ptr<ResourceManager> m_ResourceManager;
 
 	// 둘 중 하나만 남겨두기
-	std::queue<std::weak_ptr<RenderData>> m_RenderDataQueue;
-	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
 	std::vector<std::shared_ptr<RenderData>> m_RenderList;
 
 	// 공유하지 않을 데이터 및 함수 === 삭제

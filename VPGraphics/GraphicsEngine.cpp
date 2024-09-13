@@ -327,7 +327,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 		debug::SphereInfo temp;
 		temp.Sphere.Center = { a._41,a._42,a._43 };
 		temp.Sphere.Radius = 0.1;
-		temp.Color = { 0,1,0,1 };
+		temp.Color = VPMath::Color{ 0,1,0,1 };
 		DrawSphere(temp);
 
 		return a;

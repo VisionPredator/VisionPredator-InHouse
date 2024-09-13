@@ -198,9 +198,8 @@ void DeferredPass::PreDepth()
 		Device->Context()->PSSetShader(predepth->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-		while (!m_RenderQueue.empty())
+		for (const auto& curData : m_RenderList)
 		{
-			std::shared_ptr<RenderData> curData = m_RenderQueue.front();
 			std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 			if (curModel != nullptr)
@@ -268,7 +267,6 @@ void DeferredPass::PreDepth()
 					Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 				}
 			}
-			m_RenderQueue.pop();
 		}
 	}
 
