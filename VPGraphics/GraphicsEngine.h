@@ -56,14 +56,14 @@ public:
 	const double GetDuration(std::wstring name, int index) override;
 
 	/// Particle
-	void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
-	void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) override;
-	void DeleteParticleObjectByID(const uint32_t& id) override;
+	void CreateParticleObject(uint32_t entityID, const effect::ParticleInfo& info) override;
+	void UpdateParticleObject(uint32_t entityID, const effect::ParticleInfo& info) override;
+	void DeleteParticleObjectByID(uint32_t id) override;
 
 	/// UI
-	void CreateImageObject(const uint32_t& id, const ui::ImageInfo& info) override;
-	void UpdateImageObject(const uint32_t& id, const ui::ImageInfo& info) override;
-	void DeleteImageObject(const uint32_t& id) override;
+	void CreateImageObject(uint32_t id, const ui::ImageInfo& info) override;
+	void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) override;
+	void DeleteImageObject(uint32_t id) override;
 
 	/// Light
 	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;

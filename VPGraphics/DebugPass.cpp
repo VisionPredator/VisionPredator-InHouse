@@ -14,7 +14,7 @@
 #include "StaticData.h"
 #include "DebugDrawManager.h"
 
-DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug)
+DebugPass::DebugPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug)
 {
 	m_Device = device;
 	m_ResourceManager = manager;

@@ -1,5 +1,5 @@
 #pragma once
-#include <directxtk/CommonStates.h>
+//#include <directxtk/CommonStates.h>
 
 #include <queue>
 #include <vector>

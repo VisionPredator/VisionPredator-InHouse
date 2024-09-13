@@ -78,7 +78,6 @@ public:
 
 	VPMath::Vector3 rotation;
 
-
 	//애니메이션
 	float duration;
 	float preDuration;
@@ -97,6 +96,9 @@ public:
 	VPMath::Vector2 tiling;
 	int lightmapindex;
 	float scale;
+
+	// 아웃라인 관련 변수
+	VPMath::Color OutlineColor;
 };
 
 

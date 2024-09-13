@@ -13,8 +13,8 @@ class VertexBuffer :
 {
 public:
 	VertexBuffer() = default;
-	VertexBuffer(std::shared_ptr<Device> device, UINT count = 0);
-	VertexBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, UINT sizeT);
+	VertexBuffer(const std::shared_ptr<Device>& device, UINT count = 0);
+	VertexBuffer(const std::shared_ptr<Device>& device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, UINT sizeT);
 
 	template <typename T>
 	VertexBuffer(const std::shared_ptr<Device>& device, const std::vector<T>& vertices, const bool& isUseCPUWrite = false);

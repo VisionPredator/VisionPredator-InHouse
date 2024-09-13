@@ -9,7 +9,7 @@ public:
 	// 일단 임시. 아래 생성자 없애면 이것도 삭제 해야한다.
 	DeferredPass() = default;
 
-	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager);
+	DeferredPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager);
 	~DeferredPass();
 
 	void Initialize(const std::shared_ptr<Device>& device,

@@ -15,7 +15,7 @@
 #include "DebugDrawManager.h"
 #include "DepthStencilState.h"
 
-TransparencyPass::TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager)
+TransparencyPass::TransparencyPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager)
 {
 	m_Device = device;
 	m_ResourceManager = manager;

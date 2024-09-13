@@ -17,7 +17,7 @@
 
 
 
-DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager)
+DeferredPass::DeferredPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager)
 {
 	m_Device = device;
 	m_ResourceManager = manager;
@@ -133,16 +133,16 @@ void DeferredPass::OnResize()
 	m_EmissiveRTV = manager->Get<RenderTargetView>(L"Emissive").lock();
 	m_LightMapRTV = manager->Get<RenderTargetView>(L"LightMap").lock();
 
-	m_StaticMeshVS = manager->Get<VertexShader>(L"Base").lock();
-	m_StaticMeshVS = manager->Get<VertexShader>(L"Skinning").lock();
-	m_GeometryPS = manager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
+	//m_StaticMeshVS = manager->Get<VertexShader>(L"Base").lock();
+	//m_StaticMeshVS = manager->Get<VertexShader>(L"Skinning").lock();
+	//m_GeometryPS = manager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
 
-	m_QuadVB = manager->Get<VertexBuffer>(L"Quad_VB");
-	m_QuadIB = manager->Get<IndexBuffer>(L"Quad_IB");
-	m_QuadVS = manager->Get<VertexShader>(L"Quad");
-	m_QuadPS = manager->Get<PixelShader>(L"Quad");
+	//m_QuadVB = manager->Get<VertexBuffer>(L"Quad_VB");
+	//m_QuadIB = manager->Get<IndexBuffer>(L"Quad_IB");
+	//m_QuadVS = manager->Get<VertexShader>(L"Quad");
+	//m_QuadPS = manager->Get<PixelShader>(L"Quad");
 
-	m_Deferred = manager->Get<PixelShader>(L"MeshDeferredLight");
+	//m_Deferred = manager->Get<PixelShader>(L"MeshDeferredLight");
 
 	m_Albedo = manager->Get<ShaderResourceView>(L"Albedo").lock();
 	m_Normal = manager->Get<ShaderResourceView>(L"Normal").lock();
@@ -154,9 +154,9 @@ void DeferredPass::OnResize()
 	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
 	m_LightMap = manager->Get<ShaderResourceView>(L"LightMap").lock();
 
-	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
-	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
-	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
+	//m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
+	//m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
+	//m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
 }
 
 void DeferredPass::PreDepth()

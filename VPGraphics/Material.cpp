@@ -3,7 +3,7 @@
 #include "Device.h"
 #include "CBuffer.h"
 
-Material::Material(std::shared_ptr<Device> device) : m_Device(device), m_AlbedoSRV(), m_NormalSRV(), m_MetalicSRV(), m_RoughnessSRV(), m_AOSRV(),m_Data()
+Material::Material(const std::shared_ptr<Device>& device) : m_Device(device), m_AlbedoSRV(), m_NormalSRV(), m_MetalicSRV(), m_RoughnessSRV(), m_AOSRV(),m_Data()
 {
 }
 

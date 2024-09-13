@@ -4,7 +4,7 @@
 #include "StaticData.h"
 #include "Slot.h"
 
-GeoMetryPass::GeoMetryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger)
+GeoMetryPass::GeoMetryPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manger)
 {
 	m_Device = device;
 	m_ResourceManager = manger;

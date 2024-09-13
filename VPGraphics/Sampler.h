@@ -14,7 +14,7 @@ enum class SamplerStateType
 class Sampler : public Resource
 {
 public:
-	Sampler(std::shared_ptr<Device>device, D3D11_SAMPLER_DESC desc);
+	Sampler(const std::shared_ptr<Device>& device, D3D11_SAMPLER_DESC desc);
 	Sampler(const std::shared_ptr<Device>& device, const SamplerStateType& type);
 
 	~Sampler() override;
