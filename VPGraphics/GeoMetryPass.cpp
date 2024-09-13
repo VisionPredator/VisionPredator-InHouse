@@ -25,10 +25,8 @@ void GeoMetryPass::Render()
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
 
-	while (!m_RenderDataQueue.empty())
+	for (auto& curOb : m_RenderList)
 	{
-		std::shared_ptr<RenderData> curOb = m_RenderDataQueue.front().lock();
-
 		if (curOb->Filter == GeoMetryFilter::Box)
 		{
 
@@ -82,8 +80,6 @@ void GeoMetryPass::Render()
 			Device->Context()->DrawIndexed(TextureBox::Index::count, 0, 0);
 
 		}
-
-		m_RenderDataQueue.pop();
 	}
 }
 

@@ -100,9 +100,9 @@ void ObjectMaskPass::Render()
 	
 	Device->Context()->PSSetShader(m_ObjectMaskPS->GetShader(), nullptr, 0);
 
-	while(!m_RenderDataQueue.empty())
+
+	for (auto& curData : m_RenderList)
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
@@ -168,7 +168,6 @@ void ObjectMaskPass::Render()
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
 		}
-		m_RenderDataQueue.pop();
 	}
 
 	Device->Context()->OMSetDepthStencilState(nullptr, 0);

@@ -28,10 +28,10 @@ RenderPass::~RenderPass()
 	m_ResourceManager.reset();
 }
 
-
-void RenderPass::AddModelData(std::shared_ptr<RenderData> model)
+void RenderPass::SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue)
 {
-	m_RenderDataQueue.push(model);
+
+	m_RenderList = renderQueue;
 }
 
 void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)

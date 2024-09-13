@@ -28,7 +28,7 @@ class LightManager
 {
 public:
 	LightManager() = default;
-	~LightManager() = default;
+	~LightManager();
 
 	void Initialize(std::weak_ptr<ResourceManager> manager);
 

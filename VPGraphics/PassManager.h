@@ -36,7 +36,6 @@ public:
 	void OnResize();
 
 private:
-	void CheckPassState(std::shared_ptr<RenderData>& model, PassState pass);
 	void DrawIMGUI();
 
 private:

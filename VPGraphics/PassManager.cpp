@@ -84,14 +84,7 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 {
 	m_DeferredPass->SetRenderQueue(afterCulling);
 	m_TransparencyPass->SetRenderQueue(afterCulling);
-
-	// 일단 ObjectMask 빼고 모두 삭제.
-	for (auto& model : afterCulling)
-	{
-		std::shared_ptr<RenderData> curModel = model;
-		CheckPassState(curModel, PassState::ObjectMask);
-		CheckPassState(curModel, PassState::Geometry);
-	}
+	m_Passes[PassState::Geometry]->SetRenderQueue(afterCulling);
 }
 
 void PassManager::Render()
@@ -104,7 +97,7 @@ void PassManager::Render()
 	m_DeferredPass->Render();
 	m_TransparencyPass->Render();
 
-	m_Passes[PassState::ObjectMask]->Render();
+	//m_Passes[PassState::ObjectMask]->Render();
 
 	m_OutlineEdgeDetectPass->Render();
 	m_OutlineBlurPass->Render();
@@ -132,16 +125,6 @@ void PassManager::OnResize()
 	m_OutlineEdgeDetectPass->OnResize();
 	m_OutlineBlurPass->OnResize();
 	m_OutlineAddPass->OnResize();
-}
-
-void PassManager::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
-{
-	PassState temp = model->Pass;
-	temp &= pass;
-	if (temp == pass)
-	{
-		m_Passes[pass]->AddModelData(model);
-	}
 }
 
 void PassManager::DrawIMGUI()

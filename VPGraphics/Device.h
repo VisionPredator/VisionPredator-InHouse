@@ -46,9 +46,9 @@ public:
 private:
 	bool CreateSwapChain();
 
-	Microsoft::WRL::ComPtr<ID3D11Device> m_Device = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_Context = nullptr;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain = nullptr;
+	ID3D11Device* m_Device = nullptr;
+	ID3D11DeviceContext* m_Context = nullptr;
+	IDXGISwapChain* m_SwapChain = nullptr;
 
 	D3D_FEATURE_LEVEL m_FeatureLevel;
 
