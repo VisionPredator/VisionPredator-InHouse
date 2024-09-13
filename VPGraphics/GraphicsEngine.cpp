@@ -97,26 +97,37 @@ void GraphicsEngine::Update(double dt)
 	m_PassManager->Update(m_RenderList);
 	m_LightManager->Update(m_Lights);
 	*/
+
 	Culling();
 	m_Animator->Update(dt, m_AfterCulling);
-	m_PassManager->Update(m_AfterCulling, m_RenderVector);
+	m_PassManager->Update(m_AfterCulling);
 	m_LightManager->Update(m_Lights);
 
-	m_RenderVector.clear();
 	m_AfterCulling.clear();
 }
 
 bool GraphicsEngine::Finalize()
 {
+	if (!m_AfterCulling.empty())
+	{
+		m_AfterCulling.clear();
+	}
+
+	if (!m_RenderVector.empty())
+	{
+		m_RenderVector.clear();
+	}
+
 	m_CurViewPort.reset();
 
-	m_Device.reset();
-	m_ResourceManager.reset();
-	m_UIManager.reset();
 	m_Loader.reset();
 	m_Animator.reset();
 	m_PassManager.reset();
+	m_DebugDrawManager.reset();
+	m_UIManager.reset();
 	m_ParticleManager.reset();
+	m_ResourceManager.reset();
+	m_Device.reset();
 	DestroyImGui();
 
 	return true;
@@ -158,9 +169,12 @@ void GraphicsEngine::EndRender()
 
 bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 {
-	if (m_RenderList.find(data->EntityID) != m_RenderList.end())
+	auto find = FindEntity(data->EntityID);
+	if (find != m_RenderVector.end())
 	{
-		m_RenderList[data->EntityID] = data;
+		
+
+		(*find) = data;
 	}
 	else
 	{
@@ -174,7 +188,7 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 			}
 		}
 
-		m_RenderList[data->EntityID] = data;
+		m_RenderVector.push_back(data);
 	}
 
 	return true;
@@ -182,9 +196,10 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 
 void GraphicsEngine::EraseObject(uint32_t EntityID)
 {
-	if (m_RenderList.find(EntityID) != m_RenderList.end())
+	auto find = FindEntity(EntityID);
+	if (find != m_RenderVector.end())
 	{
-		m_RenderList.erase(EntityID);
+		m_RenderVector.erase(find);
 	}
 }
 
@@ -297,6 +312,28 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 
 
 	return 0;
+}
+
+const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
+{
+
+	auto find = FindEntity(entityID);
+
+	if (find != m_RenderVector.end())
+	{
+		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");
+		VPMath::Matrix a = test * (*find)->world;
+
+		debug::SphereInfo temp;
+		temp.Sphere.Center = { a._41,a._42,a._43 };
+		temp.Sphere.Radius = 0.1;
+		temp.Color = { 0,1,0,1 };
+		DrawSphere(temp);
+
+		return a;
+	}
+
+	return VPMath::Matrix::Identity;
 }
 
 void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
@@ -440,9 +477,9 @@ void GraphicsEngine::OnResize(HWND hwnd)
 
 void GraphicsEngine::Culling()
 {
-	for (auto& object : m_RenderList)
+	for (auto& object : m_RenderVector)
 	{
-		std::wstring fbx = object.second->FBX;
+		std::wstring& fbx = object->FBX;
 		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
 
 		if (curFBX != nullptr)
@@ -451,7 +488,7 @@ void GraphicsEngine::Culling()
 				VPMath::Vector3 s;
 				VPMath::Quaternion r;
 				VPMath::Vector3 t;
-				object.second->world.Decompose(s, r, t);
+				object->world.Decompose(s, r, t);
 
 				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
 				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
@@ -475,22 +512,32 @@ void GraphicsEngine::Culling()
 					obbInfo.Extents = half;
 					obbInfo.Orientation = r;
 
-					DirectX::ContainmentType a = m_Frustum.Contains(obbInfo);
-					object.second->isVisible = m_Frustum.Contains(obbInfo);
+					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+					if (contains)
+					{
+						object->isVisible = true;
+						break;
+					}
 				}
 			}
 		}
 
-		if (object.second->isVisible
-			|| object.second->Pass == (object.second->Pass & PassState::Debug_Geometry))
+		m_AfterCulling.push_back(object);
+	}
+}
+
+std::vector<std::shared_ptr<RenderData>>::iterator GraphicsEngine::FindEntity(uint32_t id)
+{
+	for (auto start = m_RenderVector.begin(); start != m_RenderVector.end(); start++)
+	{
+		auto entity = *start;
+		if (entity->EntityID == id)
 		{
-			m_AfterCulling.insert(object);
-
-			//m_RenderQueue.push(object.second);
-
-			m_RenderVector.push_back(object.second);
+			return start;
 		}
 	}
+
+	return m_RenderVector.end();	
 }
 
 /// Editor

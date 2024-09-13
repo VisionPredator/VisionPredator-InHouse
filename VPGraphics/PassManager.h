@@ -30,7 +30,7 @@ public:
 
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
 		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager);
-	void Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList, const std::vector<std::shared_ptr<RenderData>>& renderList);
+	void Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling);
 
 	void Render();
 	void OnResize();

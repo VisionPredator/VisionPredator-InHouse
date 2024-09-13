@@ -30,7 +30,6 @@ TransparencyPass::TransparencyPass(std::shared_ptr<Device> device, std::shared_p
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 
-	m_state = PassState::Transparency;
 	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
 }
 
@@ -55,7 +54,6 @@ void TransparencyPass::Initialize(const std::shared_ptr<Device>& device, const s
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"Mesh");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"BasePS");
 
-	m_state = PassState::Transparency;
 	m_BlendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlending");
 }
 

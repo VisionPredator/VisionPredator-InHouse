@@ -1,3 +1,4 @@
+
 #include "Common.hlsli"
 
 
@@ -12,10 +13,10 @@ VS_OUTPUT main(VS_INPUT input)
     output.tangent = input.tangent;
     output.bitangent = input.bitangent;
     output.tex = input.tex;
-           
+    output.lightuv = input.lightuv;
     /*
     */
-    if (useNE.x > 0)
+    if (useNEOL.x > 0) 
     {
         float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
         
@@ -30,8 +31,19 @@ VS_OUTPUT main(VS_INPUT input)
         output.bitangent = float4(vBitangent.xyz, 0);        
     }
     
-   
+    if(useNEOL.w > 0)
+    {
+        float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.y;
+        float y = ((1 - input.lightuv.y) * lightmaptiling.y) + lightmapdata.z;
     
+    
+        //Unity light map은 좌하단이 0,0 dx11 좌상단이 0,0
+        //y 반전 필요
+        float2 uv = float2(x, 1 - y);
+    
+        output.lightuv = uv;
+        //output.LightMap = (gLightMap.Sample(samLinear, uv));
+    }
     
     
 #ifdef SKINNING
@@ -75,6 +87,6 @@ VS_OUTPUT main(VS_INPUT input)
     
     output.pos = mul(output.posWorld, gWorldViewProj);
 #endif     
-
+    
     return output;
 }

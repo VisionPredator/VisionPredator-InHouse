@@ -405,9 +405,9 @@ void DeferredPass::Geometry()
 					if (curMaterial != nullptr)
 					{
 						MaterialData data = curMaterial->m_Data;
-						data.lightmapdata.x = curData->lightmapindex;
-						data.lightmapdata.y = curData->offset.x;
-						data.lightmapdata.z = curData->offset.y;
+						data.lightmapdata.x = curData->offset.x;
+						data.lightmapdata.y = curData->offset.y;
+						data.lightmapdata.z = curData->lightmapindex;
 						data.lightmapdata.w = 1; //curData->scale;
 						data.lightmaptiling = curData->tiling;
 						if (data.lightmaptiling.x != 0 || data.lightmaptiling.y != 0)

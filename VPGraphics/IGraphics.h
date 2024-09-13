@@ -59,7 +59,11 @@ namespace Graphics
 		//렌더링
 		virtual bool AddRenderModel(std::shared_ptr<RenderData> data) abstract;
 
+		//애니메이션의 재생시간
 		virtual const double GetDuration(std::wstring name, int index) abstract;
+
+		//소켓 - 본의 위치를 받는다
+		virtual const VPMath::Matrix Attachment(const uint32_t entityID) abstract;
 
 		/// Effect
 		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;

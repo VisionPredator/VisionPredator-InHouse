@@ -13,14 +13,8 @@ enum class GeoMetryFilter : unsigned int
 enum class PassState : unsigned int
 {
 	None = 0,					// 유지	
-	Transparency = 1 << 1,		// 삭제
-	Debug = 1 << 2,				// 삭제
-	Deferred = 1 << 3,			// 삭제
 	Geometry = 1 << 4,			// 삭제?
 	ObjectMask = 1 << 5,		// 유지
-
-	BoundingDeferred = (Debug | Deferred),
-	Debug_Geometry = (Geometry | Debug),
 	End = 99999
 };
 // TODO: 삭제할 PassState.
@@ -31,7 +25,7 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L""), FBX(L""), Pass(PassState::Deferred)
+	RenderData() :EntityID(0), Name(L""), FBX(L"")
 		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
 		, duration(0.f), preDuration(0.f), isPlay(false)
 		, color(), useTexture(false), textureName(L"")
@@ -67,7 +61,7 @@ public:
 	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;
-	PassState Pass;
+	PassState Pass; 
 
 	GeoMetryFilter Filter;
 	bool isSkinned = false;

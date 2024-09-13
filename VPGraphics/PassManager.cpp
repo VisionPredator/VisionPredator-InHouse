@@ -64,8 +64,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 
 	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
 	//	std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
-	//	std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
+		std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::ObjectMask, 
 		std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock())));
 
@@ -80,26 +80,24 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 }
 
-void PassManager::Update(std::map<uint32_t, std::shared_ptr<RenderData>>& RenderList, 
-	const std::vector<std::shared_ptr<RenderData>>& renderList)
+void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling)
 {
-	m_DeferredPass->SetRenderQueue(renderList);
-	m_TransparencyPass->SetRenderQueue(renderList);
+	m_DeferredPass->SetRenderQueue(afterCulling);
+	m_TransparencyPass->SetRenderQueue(afterCulling);
 
 	// 일단 ObjectMask 빼고 모두 삭제.
-	for (auto& model : RenderList)
+	for (auto& model : afterCulling)
 	{
-		std::shared_ptr<RenderData> curModel = model.second;
-		//CheckPassState(curModel, PassState::Debug);
-		//CheckPassState(curModel, PassState::Geometry);
+		std::shared_ptr<RenderData> curModel = model;
 		CheckPassState(curModel, PassState::ObjectMask);
+		CheckPassState(curModel, PassState::Geometry);
 	}
 }
 
 void PassManager::Render()
 {
 	//m_Passes[PassState::Debug]->Render();
-	//m_Passes[PassState::Geometry]->Render();
+	m_Passes[PassState::Geometry]->Render();
 	//m_ObjectMaskPass->Render();
 
 	m_DebugPass->Render();
