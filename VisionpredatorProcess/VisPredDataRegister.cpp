@@ -14,14 +14,14 @@ void VisPredRegister::Register_Metadata()
 void VisPredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, PlayerComponent::CurrentFSM, PlayerComponent::Sencitive, PlayerComponent::HP, PlayerComponent::Maxspeed, PlayerComponent::Accel, PlayerComponent::JumpFoce, PlayerComponent::MaxJumpCount, PlayerComponent::Jumpcount, PlayerComponent::Isground, PlayerComponent::HasGun,PlayerComponent::FirPosition);
+	META_ADD_COMP(PlayerComponent, PlayerComponent::HP, PlayerComponent::Sencitive, PlayerComponent::StaticFriction, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::Accel, PlayerComponent::CurrentFSM, PlayerComponent::AirControlPercent, PlayerComponent::FirPosition, PlayerComponent::GravityPower, PlayerComponent::HasGun);
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
 }
 
 void VisPredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
-	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::CHARGE, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::MOVE, EFSM::NONE, EFSM::END);
+	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::CHARGE, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 }
 

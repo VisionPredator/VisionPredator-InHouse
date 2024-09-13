@@ -24,7 +24,7 @@ void EnemySystem::Calculate_FSM(EnemyComponent& enemycomp)
 	case VisPred::Game::EFSM::IDLE:
 		Calculate_Idle(enemycomp);
 		break;
-	case VisPred::Game::EFSM::MOVE:
+	case VisPred::Game::EFSM::WALK:
 		Calculate_Move(enemycomp);
 		break;
 	case VisPred::Game::EFSM::ATTACK:
@@ -48,7 +48,7 @@ void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 	else if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EFSM::ATTACK;
 	else if (1 == 2)
-		enemycomp.CurrentFSM = VisPred::Game::EFSM::MOVE;
+		enemycomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 }
 void EnemySystem::Calculate_Die(EnemyComponent& enemycomp)
 {
@@ -62,7 +62,7 @@ void EnemySystem::Calculate_Attack(EnemyComponent& enemycomp)
 	if (enemycomp.HP <= 0)
 		enemycomp.CurrentFSM = VisPred::Game::EFSM::DIE;
 	else if (1 == 2)
-		enemycomp.CurrentFSM = VisPred::Game::EFSM::MOVE;
+		enemycomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 }
 void EnemySystem::Calculate_Move(EnemyComponent& enemycomp)
 {
@@ -86,7 +86,7 @@ void EnemySystem::Action_FSM(EnemyComponent& enemycomp)
 	case VisPred::Game::EFSM::IDLE:
 		Action_Idle(enemycomp);
 		break;
-	case VisPred::Game::EFSM::MOVE:
+	case VisPred::Game::EFSM::WALK:
 		Action_Move(enemycomp);
 		break;
 	case VisPred::Game::EFSM::ATTACK:

@@ -17,7 +17,10 @@ namespace VisPred
 		enum class EFSM
 		{
 			IDLE,
-			MOVE,
+			WALK,
+			RUN,
+			CROUCH,
+			SLIDE,
 			JUMP,
 			CHARGE,
 			ATTACK,
