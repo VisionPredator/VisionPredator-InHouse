@@ -30,7 +30,6 @@ RenderPass::~RenderPass()
 
 void RenderPass::SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue)
 {
-
 	m_RenderList = renderQueue;
 }
 

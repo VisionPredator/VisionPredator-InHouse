@@ -2,12 +2,20 @@
 #include "DebugDrawManager.h"
 #include "Device.h"
 #include "Defines.h"
+#include "ResourceManager.h"
+#include "BlendState.h"
+#include "DepthStencilState.h"
+#include "RenderState.h"
 
 using namespace VPMath;
 
-void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
+void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
-    m_States = std::make_unique<CommonStates>(device->Get());
+    m_AlphaBlendBS = resourceManager->Get<BlendState>(L"AlphaBlending").lock();
+    m_DefaultDSS = resourceManager->Get<DepthStencilState>(L"DefaultDSS").lock();
+    m_CullNoneRS = std::make_shared<RenderState>(device, RasterizerStateType::CullNone);
+
+    //m_States = std::make_unique<CommonStates>(device->Get());
     m_Batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(device->Context());
     m_BatchEffect = std::make_unique<BasicEffect>(device->Get());
     m_BatchEffect->SetVertexColorEnabled(true);
@@ -25,9 +33,12 @@ void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device)
 
 void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view, const VPMath::Matrix proj)
 {
-    device->Context()->OMSetBlendState(m_States->AlphaBlend(), nullptr, 0xFFFFFFFF);
-	device->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
-	device->Context()->RSSetState(m_States->CullNone());
+    //device->Context()->OMSetBlendState(m_States->AlphaBlend(), nullptr, 0xFFFFFFFF);
+	//device->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
+	//device->Context()->RSSetState(m_States->CullNone());
+    device->Context()->OMSetBlendState(m_AlphaBlendBS->GetState().Get(), nullptr, 0xFFFFFFFF);
+	device->Context()->OMSetDepthStencilState(m_DefaultDSS->GetState().Get(), 0);
+	device->Context()->RSSetState(m_CullNoneRS->Get());
     
     m_BatchEffect->SetView(view);
     m_BatchEffect->SetProjection(proj);

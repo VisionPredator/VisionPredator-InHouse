@@ -9,7 +9,7 @@
 #include "Vertex.h"
 #pragma comment (lib, "D3DCompiler.lib")
 
-ComputeShader::ComputeShader(std::shared_ptr<Device> device, std::wstring filename /*= L"need name"*/) : Shader(device,filename)
+ComputeShader::ComputeShader(const std::shared_ptr<Device>& device, std::wstring filename /*= L"need name"*/) : Shader(device,filename)
 {
 	m_filename = m_filename + L".cso";
 

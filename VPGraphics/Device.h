@@ -50,6 +50,10 @@ private:
 	ID3D11DeviceContext* m_Context = nullptr;
 	IDXGISwapChain* m_SwapChain = nullptr;
 
+	//Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
+	//Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_Context;
+	//Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
+
 	D3D_FEATURE_LEVEL m_FeatureLevel;
 
 	HWND m_hWnd = nullptr;

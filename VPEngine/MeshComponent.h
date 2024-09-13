@@ -5,7 +5,7 @@ struct MeshComponent :
 	public Component
 {
 	MeshComponent() = default;
-	VP_JSONBODY(MeshComponent, FBX, LightMapOffset,LightMapTiling, LightMapScale, LightMapIndex)
+	VP_JSONBODY(MeshComponent, FBX, LightMapOffset, LightMapTiling, LightMapScale, LightMapIndex, MaskColor);
 
 	std::shared_ptr<RenderData> Renderdata{};
 
@@ -15,4 +15,5 @@ struct MeshComponent :
 	VPMath::Vector2 LightMapTiling{};
 	float LightMapScale{};
 	float LightMapIndex{};
+	VPMath::Color MaskColor;
 };

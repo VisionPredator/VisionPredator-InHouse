@@ -17,9 +17,6 @@ enum class PassState : unsigned int
 	ObjectMask = 1 << 5,		// 유지
 	End = 99999
 };
-// TODO: 삭제할 PassState.
-// Deferred, Transparency, Debug, Geometry
-// 그리고 토글이 아니라 체크로 변경.
 
 //지금 다 섞여있는데 data를 쓰는 기능에따라 나눠서 entity id로 접근해야할듯 덩치가 너무 큼
 struct RenderData
@@ -72,7 +69,6 @@ public:
 
 	VPMath::Vector3 rotation;
 
-
 	//애니메이션
 	float duration;
 	float preDuration;
@@ -91,6 +87,9 @@ public:
 	VPMath::Vector2 tiling;
 	int lightmapindex;
 	float scale;
+
+	// 아웃라인 관련 변수
+	VPMath::Color MaskingColor = VPMath::Color{ 0, 0, 0, 0 };
 };
 
 

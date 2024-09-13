@@ -14,9 +14,9 @@ enum class DepthStencilViewType
 class DepthStencilView : public Resource
 {
 public:
-	DepthStencilView(std::shared_ptr<Device> device, D3D11_TEXTURE2D_DESC desc);
-	DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc);
-	DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture);
+	DepthStencilView(const std::shared_ptr<Device>& device, D3D11_TEXTURE2D_DESC desc);
+	DepthStencilView(const std::shared_ptr<Device>& device, D3D11_DEPTH_STENCIL_VIEW_DESC desc);
+	DepthStencilView(const std::shared_ptr<Device>& device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture);
 
 	DepthStencilView(const std::shared_ptr<Device>& device, const DepthStencilViewType& type);
 	~DepthStencilView() override = default;

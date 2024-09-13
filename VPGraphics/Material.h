@@ -10,7 +10,7 @@ class Device;
 class Material
 {
 public:
-	Material(std::shared_ptr<Device> device);
+	Material(const std::shared_ptr<Device>& device);
 	~Material();
 
 	std::wstring AlbeoPath;

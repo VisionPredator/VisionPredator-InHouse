@@ -73,12 +73,6 @@ void ObjectMaskPass::Render()
 
 	// CB Update
 	{
-		// 일단 고정 색상으로 둔다.
-		MaskColorCB maskColor;
-		maskColor.Color = VPMath::Color(0, 0, 1, 1);
-		m_MaskColorCB->Update(maskColor);
-		Device->Context()->PSSetConstantBuffers(5, 1, m_MaskColorCB->GetAddress());
-		
 		std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 		std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 		std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
@@ -96,13 +90,26 @@ void ObjectMaskPass::Render()
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(5, 1, m_MaskColorCB->GetAddress());
 	}
 	
 	Device->Context()->PSSetShader(m_ObjectMaskPS->GetShader(), nullptr, 0);
 
-
-	for (auto& curData : m_RenderList)
+	for (const auto& curData : m_RenderList)
 	{
+		// 마스킹 색상을 가지고 있는 오브젝트만 마스킹한다.
+		if (curData->MaskingColor.A() == 255)
+			continue;
+
+		if (curData->MaskingColor.R() == 0 && 
+			curData->MaskingColor.G() == 0 &&
+			curData->MaskingColor.B() == 0)
+			continue;
+
+		MaskColorCB maskColor;
+		maskColor.Color = curData->MaskingColor;
+		m_MaskColorCB->Update(maskColor);
+
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)

@@ -66,9 +66,9 @@ namespace Graphics
 		virtual const VPMath::Matrix Attachment(const uint32_t entityID) abstract;
 
 		/// Effect
-		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
-		virtual void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
-		virtual void DeleteParticleObjectByID(const uint32_t& id) abstract;
+		virtual void CreateParticleObject(uint32_t entityID, const effect::ParticleInfo& info) abstract;
+		virtual void UpdateParticleObject(uint32_t entityID, const effect::ParticleInfo& info) abstract;
+		virtual void DeleteParticleObjectByID(uint32_t id) abstract;
 
 		/// Light
 		virtual void AddLight(uint32_t EntityID,LightType kind, LightData data) abstract;
@@ -87,9 +87,9 @@ namespace Graphics
 		virtual void DrawRay(const debug::RayInfo& info) abstract;
 
 		/// UI
-		virtual void CreateImageObject(const uint32_t& id, const ui::ImageInfo& info) abstract;
-		virtual void UpdateImageObject(const uint32_t& id, const ui::ImageInfo& info) abstract;
-		virtual void DeleteImageObject(const uint32_t& id) abstract;
+		virtual void CreateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
+		virtual void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
+		virtual void DeleteImageObject(uint32_t id) abstract;
 
 		///Editor Àü¿ë
 		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;

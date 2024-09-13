@@ -6,7 +6,7 @@
 #include "Texture2D.h"
 #include "Desc.h"
 
-DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_TEXTURE2D_DESC desc) : Resource(device)
+DepthStencilView::DepthStencilView(const std::shared_ptr<Device>& device, D3D11_TEXTURE2D_DESC desc) : Resource(device)
 {
 	D3D11_TEXTURE2D_DESC dsd{};
 	dsd.Width = m_Device.lock()->GetWndSize().right - m_Device.lock()->GetWndSize().left;
@@ -54,7 +54,7 @@ DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_TEXTURE
 	SAFE_RELEASE_COM(DSBuffer);
 }
 
-DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture) : Resource(device)
+DepthStencilView::DepthStencilView(const std::shared_ptr<Device>& device, D3D11_DEPTH_STENCIL_VIEW_DESC desc, Texture2D* texture) : Resource(device)
 {
 
 	HRESULT hr;
@@ -73,7 +73,7 @@ DepthStencilView::DepthStencilView(const std::shared_ptr<Device>& device, const 
 	OnResize();
 }
 
-DepthStencilView::DepthStencilView(std::shared_ptr<Device> device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
+DepthStencilView::DepthStencilView(const std::shared_ptr<Device>& device, D3D11_DEPTH_STENCIL_VIEW_DESC desc) : Resource(device)
 {
 	/*HRESULT hr;
 	hr = m_Device->Get()->CreateDepthStencilView(DSBuffer, 0, &m_DSV);

@@ -12,7 +12,7 @@
 class ShaderResourceView : public Resource
 {
 public:
-	ShaderResourceView(std::shared_ptr<Device>device);		// TODO: 삭제.
+	ShaderResourceView(const std::shared_ptr<Device>& device);		// TODO: 삭제.
 
 	ShaderResourceView(const std::shared_ptr<Device>& device, const std::wstring& filename);
 	ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<RenderTargetView>& rtv);
