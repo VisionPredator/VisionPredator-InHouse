@@ -330,12 +330,30 @@ void DeferredPass::Geometry()
 
 	}
 
+	bool isTranparency = false;
 	for (const auto& curData : m_RenderList)
 	{
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
 		{
+			if (!curModel->m_Materials.empty())
+			{
+				for (auto material : curModel->m_Materials)
+				{
+					if (material->m_OpacitySRV.lock() != nullptr)
+					{
+						isTranparency = true;
+						break;
+					}
+				}
+			}
+
+			if (isTranparency)
+			{
+				break;
+			}
+
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);
