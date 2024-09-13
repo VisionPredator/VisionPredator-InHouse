@@ -198,9 +198,8 @@ void DeferredPass::PreDepth()
 		Device->Context()->PSSetShader(predepth->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-		while (!m_RenderQueue.empty())
+		for (auto& curData : m_RenderList)
 		{
-			std::shared_ptr<RenderData> curData = m_RenderQueue.front();
 			std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 			if (curModel != nullptr)
@@ -268,7 +267,6 @@ void DeferredPass::PreDepth()
 					Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 				}
 			}
-			m_RenderQueue.pop();
 		}
 	}
 
@@ -332,12 +330,30 @@ void DeferredPass::Geometry()
 
 	}
 
+	bool isTranparency = false;
 	for (const auto& curData : m_RenderList)
 	{
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
 		{
+			if (!curModel->m_Materials.empty())
+			{
+				for (auto material : curModel->m_Materials)
+				{
+					if (material->m_OpacitySRV.lock() != nullptr)
+					{
+						isTranparency = true;
+						break;
+					}
+				}
+			}
+
+			if (isTranparency)
+			{
+				break;
+			}
+
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);

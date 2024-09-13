@@ -80,10 +80,8 @@ void DebugPass::Render()
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(CameraCB->m_struct.proj));
 	Device->Context()->OMSetRenderTargets(1, m_RTV.lock()->GetAddress(), DSV->Get());
 
-	while (!m_RenderDataQueue.empty())
+	for (auto& curData : m_RenderList)
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
-
 		//bounding box
 		{
 			std::shared_ptr<ModelData> curFBX = resourceManager->Get<ModelData>(curData->FBX).lock();
@@ -124,9 +122,6 @@ void DebugPass::Render()
 			}
 
 		}
-
-
-		m_RenderDataQueue.pop();
 	}
 
 	debugManager->Execute(Device, m_View, m_Proj);

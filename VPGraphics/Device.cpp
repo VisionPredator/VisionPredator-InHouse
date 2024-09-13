@@ -32,19 +32,9 @@ Device::~Device()
 	m_Context->ClearState();
 	m_Context->Flush();
 
-	m_SwapChain.Reset();
-	m_Context.Reset();
-	m_Device.Reset();
-
-	ULONG refCount = m_Device.Reset();
-	assert(refCount == 0);
-
-	refCount = m_Context.Reset();
-	assert(refCount == 0);
-
-	refCount = m_SwapChain.Reset();
-	assert(refCount == 0);
-
+	m_SwapChain->Release();
+	m_Context->Release();
+	m_Device->Release();
 
 #ifdef _DEBUG
 	debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
@@ -133,17 +123,17 @@ void Device::OnResize()
 
 ID3D11DeviceContext* Device::Context() const
 {
-	return m_Context.Get();
+	return m_Context;
 }
 
 ID3D11Device* Device::Get() const
 {
-	return m_Device.Get();
+	return m_Device;
 }
 
 IDXGISwapChain* Device::SwapChain() const
 {
-	return m_SwapChain.Get();
+	return m_SwapChain;
 }
 
 RECT Device::GetWndSize() const
@@ -298,7 +288,7 @@ bool Device::CreateSwapChain()
 		return false;
 	}
 
-	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &sd, &m_SwapChain);
+	hr = dxgiFactory->CreateSwapChain(m_Device, &sd, &m_SwapChain);
 	if (FAILED(hr))
 	{
 		MessageBox(0, L"Factory CreateSwapChain Failed", 0, 0);
