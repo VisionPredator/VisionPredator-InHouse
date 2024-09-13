@@ -13,22 +13,18 @@ void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 	m_ResourceManager = manager;
 }
 
-void Animator::Update(double dt, std::map<uint32_t, std::shared_ptr<RenderData>>& renderlist)
+void Animator::Update(double dt, std::vector<std::shared_ptr<RenderData>>& renderlist)
 {
 
 	for (auto& data : renderlist)
 	{
-		std::shared_ptr<RenderData> curData = data.second;
-		std::weak_ptr<ModelData> curModel;
-
-		if (data.second->isPlay)
+		if (data->isPlay)
 		{
-			UpdateWorld(curData);
-			UpdateMatrixPallete(curData);
+			UpdateWorld(data);
+			UpdateMatrixPallete(data);
 		}
 	}
 }
-
 
 void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 {
@@ -157,54 +153,15 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 		RootNode->m_WorldInverse = RootNode->m_World.Invert();
 	}
 
+	if (RootNode->name == L"mixamorig:LeftFoot")
+	{
+		socket = RootNode->m_World;
+	}
+
 	for (auto& node : RootNode->m_Childs)
 	{
 		CalcWorld(node);
 	}
-}
-
-VPMath::Matrix Animator::CalcMatrix(double time, std::vector<std::shared_ptr<Key>> channel)
-{
-	std::shared_ptr<Key> cur = channel[0];
-	std::shared_ptr<Key> next;
-
-	for (auto& key : channel)
-	{
-		if (key->time > time)
-		{
-			next = key;
-			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
-			VPMath::Vector3 afterLerp = VPMath::Vector3::Lerp((next)->value, (cur)->value, t);
-
-			return VPMath::Matrix::CreateTranslation(afterLerp);
-		}
-
-		cur = key;
-	}
-
-
-}
-
-VPMath::Matrix Animator::CalcRotation(double time, std::vector<std::shared_ptr<Key>> rotationKey)
-{
-
-	std::shared_ptr<Key> cur = rotationKey[0];
-	std::shared_ptr<Key> next;
-
-	for (auto& key : rotationKey)
-	{
-		if (key->time > time)
-		{
-			next = key;
-			float t = static_cast<float>(abs(time - (next)->time) / abs((cur)->time - (next)->time));
-			VPMath::Quaternion afterLerp = VPMath::Quaternion::Slerp((next)->rotation, (cur)->rotation, t);
-			return VPMath::Matrix::CreateFromQuaternion(afterLerp);
-		}
-
-		cur = key;
-	}
-
-
 }
 
 void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
@@ -233,8 +190,12 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 		}
 	}
 
-	//mixamo 기준 hips가 pelvis 이거로 상하체구분을 해보자
-	std::shared_ptr<Node> pelvis = ob->m_RootNode->m_Childs[1]; //hips
+	//Attachment(curData);
+}
 
-	//std::shared_ptr<Node> upBody = pelvis->m_Childs[0];
+const VPMath::Matrix Animator::Attachment(std::wstring region)
+{
+	return socket.Transpose();
+
+	//return VPMath::Matrix::Identity;
 }

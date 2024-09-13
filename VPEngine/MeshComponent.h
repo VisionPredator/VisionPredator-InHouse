@@ -5,10 +5,9 @@ struct MeshComponent :
 	public Component
 {
 	MeshComponent() = default;
-	VP_JSONBODY(MeshComponent,Pass, FBX, LightMapOffset,LightMapTiling, LightMapScale, LightMapIndex)
+	VP_JSONBODY(MeshComponent, FBX, LightMapOffset,LightMapTiling, LightMapScale, LightMapIndex)
 
 	std::shared_ptr<RenderData> Renderdata{};
-	PassState Pass = PassState::Deferred;
 
 	//serialize
 	std::wstring FBX{};

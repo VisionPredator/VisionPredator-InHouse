@@ -24,7 +24,6 @@ DebugPass::DebugPass(const std::shared_ptr<Device>& device, std::shared_ptr<Reso
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
-	m_state = PassState::Debug;
 
 	m_View = VPMath::Matrix::Identity;
 	m_Proj = VPMath::Matrix::Identity;
@@ -46,7 +45,6 @@ void DebugPass::Initialize(const std::shared_ptr<Device>& device,
 	m_DSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred");
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
-	m_state = PassState::Debug;
 
 	m_View = VPMath::Matrix::Identity;
 	m_Proj = VPMath::Matrix::Identity;
@@ -85,77 +83,6 @@ void DebugPass::Render()
 	while (!m_RenderDataQueue.empty())
 	{
 		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
-
-		switch (curData->Filter)
-		{
-			case GeoMetryFilter::Grid:
-			{
-				debug::GridInfo gridInfo;
-				gridInfo.Origin = VPMath::Vector3{ 0, 0, 0 };
-				gridInfo.XAsix = VPMath::Vector3{ 1, 0, 0 };
-				gridInfo.YAsix = VPMath::Vector3{ 0, 0, 1 };
-				gridInfo.XDivs = 200;
-				gridInfo.YDivs = 200;
-				gridInfo.GridSize = 200.f;
-				gridInfo.Color = VPMath::Color{ 1,1,1, 1 };
-				debugManager->AddTask(gridInfo);
-			}
-			break;
-
-			case GeoMetryFilter::Axis:
-			{
-				float distance = 10;
-
-				//x
-				debug::RayInfo x;
-				x.Origin = VPMath::Vector3{ 0, 0, 0 };
-				x.Direction = VPMath::Vector3{ distance, 0, 0 };
-				x.Normalize = false;
-				x.Color = VPMath::Color{ 1, 0, 0, 1 };
-				debugManager->AddTask(x);
-
-				//y
-				debug::RayInfo y;
-				y.Origin = VPMath::Vector3{ 0, 0, 0 };
-				y.Direction = VPMath::Vector3{ 0, distance, 0 };
-				y.Normalize = false;
-				y.Color = VPMath::Color{ 0, 1, 0, 1 };
-				debugManager->AddTask(y);
-
-				//z
-				debug::RayInfo z;
-				z.Origin = VPMath::Vector3{ 0, 0, 0 };
-				z.Direction = VPMath::Vector3{ 0, 0, distance };
-				z.Normalize = false;
-				z.Color = VPMath::Color{ 0, 0, 1, 1 };
-				debugManager->AddTask(z);
-
-			}
-			break;
-
-			case GeoMetryFilter::Frustum:
-			{
-
-				debug::FrustumInfo frustumInfo;
-
-				frustumInfo.Frustum.Origin = { curData->world._41,curData->world._42,curData->world._43 };
-				frustumInfo.Frustum.Orientation = { 0, 0, 0, 1 };
-				frustumInfo.Frustum.Near = 1.f;
-				frustumInfo.Frustum.Far = 1000.f;
-				frustumInfo.Frustum.LeftSlope = -0.736355f;
-				frustumInfo.Frustum.RightSlope = 0.736355f;
-				frustumInfo.Frustum.TopSlope = 0.4142f;
-				frustumInfo.Frustum.BottomSlope = -0.4142;
-				frustumInfo.Color = VPMath::Color{ 1, 1, 0, 1 };
-
-				debugManager->AddTask(frustumInfo);
-
-			}
-			break;
-
-			default:
-				break;
-		}
 
 		//bounding box
 		{

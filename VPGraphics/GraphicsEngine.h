@@ -54,6 +54,7 @@ public:
 	void EraseObject(uint32_t EntityID) override;
 	void UpdateModel(uint32_t EntityID)override;
 	const double GetDuration(std::wstring name, int index) override;
+	virtual const VPMath::Matrix Attachment(const uint32_t entityID) override;
 
 	/// Particle
 	void CreateParticleObject(uint32_t entityID, const effect::ParticleInfo& info) override;
@@ -92,16 +93,8 @@ protected:
 	std::vector<std::weak_ptr<RenderTargetView>> m_RTVs;
 	std::vector<std::weak_ptr<DepthStencilView>> m_DSVs;
 
-#pragma region RenderList 이사중
-	std::map<uint32_t, std::shared_ptr<RenderData>> m_RenderList;
-	std::map<uint32_t, std::shared_ptr<RenderData>> m_AfterCulling;
-
-	std::queue<std::shared_ptr<RenderData>> m_RenderQueue;
-
-	std::vector<std::shared_ptr<RenderData>> m_RenderVector;
-
-#pragma endregion RenderList 이사중
-
+	std::vector<std::shared_ptr<RenderData>> m_RenderVector;	//프레임워크쪽에서 준 데이터들
+	std::vector<std::shared_ptr<RenderData>> m_AfterCulling; //컬링해서 그려낼 최종 친구들
 
 	std::unordered_map<uint32_t, LightData> m_Lights;
 
@@ -134,6 +127,7 @@ private:
 	
 private:
 	void Culling();
+	std::vector<std::shared_ptr<RenderData>>::iterator FindEntity(uint32_t id);
 
 ///editor
 private:
