@@ -42,3 +42,9 @@ DepthStencilState::DepthStencilState(const std::shared_ptr<Device>& device, cons
 
 	HR_CHECK(device->Get()->CreateDepthStencilState(&desc, m_State.GetAddressOf()));
 }
+
+void DepthStencilState::Release()
+{
+	const ULONG refCount = m_State.Reset();
+	//assert(refCount == 0);
+}

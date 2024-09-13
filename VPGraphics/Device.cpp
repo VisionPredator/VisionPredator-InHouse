@@ -24,9 +24,21 @@ Device::Device()
 
 Device::~Device()
 {
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11Device> device(m_Device);
+	Microsoft::WRL::ComPtr<ID3D11Debug> debugDevice;
+	device.As(&debugDevice);
+#endif
+	m_Context->ClearState();
+	m_Context->Flush();
+
 	m_SwapChain->Release();
 	m_Context->Release();
 	m_Device->Release();
+
+#ifdef _DEBUG
+	debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+#endif
 
 	m_Device = nullptr;
 	m_Context = nullptr;
@@ -138,7 +150,6 @@ void Device::BeginRender(ID3D11RenderTargetView* RTV, ID3D11DepthStencilView* DS
 void Device::EndRender()
 {
 	m_SwapChain->Present(0, 0);
-	//m_Context->RSSetState(0);
 }
 
 void Device::UnBindSRV()

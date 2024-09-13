@@ -47,7 +47,7 @@ class Resource
 {
 public:
 	Resource();
-	Resource(std::shared_ptr<Device> device);
+	Resource(const std::shared_ptr<Device>& device);
 	virtual ~Resource();
 
 	virtual void Release() abstract;

@@ -45,3 +45,9 @@ void IndexBuffer::Update()
 {
 
 }
+
+void IndexBuffer::Release()
+{
+	const ULONG refCount = m_buffer.Reset();
+	assert(refCount == 0);
+}

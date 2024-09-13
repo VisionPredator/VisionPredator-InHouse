@@ -30,7 +30,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	VPRegister::Register_Metadata();
 	VP_Launcher* Process;
 	Process = new VP_Launcher(hInstance, "VisionPredator", 1920, 1080);
-	Process->SetStartScene("../Data/Scene/Magent.scene");
+	Process->SetStartScene("../Data/Scene/ImageTest.scene");
 	Process->Loop();
 	delete Process;
 	EventManager::GetInstance().Release();

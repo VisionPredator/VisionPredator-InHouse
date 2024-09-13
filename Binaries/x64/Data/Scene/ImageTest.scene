@@ -1,0 +1,100 @@
+{
+    "Entitys": [
+        {
+            "EntityID": 879617678,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "UI1"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 134294793,
+                    "Layer": 1,
+                    "PosXPercent": 90.0,
+                    "PosYPercent": 90.0,
+                    "Scale": 1.0,
+                    "TexturePath": "AMMO 1.png"
+                }
+            ]
+        },
+        {
+            "EntityID": 2278226235,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Camera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 1000.0,
+                    "IsMain": true,
+                    "NearZ": 1.0
+                }
+            ]
+        }
+    ],
+    "PhysicsInfo": {
+        "CollisionMatrix": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "FrameRate": 60,
+        "Gravity": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+}

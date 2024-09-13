@@ -13,10 +13,16 @@
 #include "Slot.h"
 #include "StaticData.h"
 #include "DebugDrawManager.h"
+#include "LightManager.h"
 
 
-DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass(device, manager)
+
+DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager)
 {
+	m_Device = device;
+	m_ResourceManager = manager;
+	m_LightManager = lightmanager;
+
 	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
 	m_AlbedoRTV = manager->Get<RenderTargetView>(L"Albedo").lock();
@@ -48,13 +54,9 @@ DeferredPass::DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 	m_Emissive = manager->Get<ShaderResourceView>(L"Emissive").lock();
 	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
 
-
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
-
-	//??
-	m_States = std::make_unique<CommonStates>(device->Get());
 }
 
 DeferredPass::~DeferredPass()
@@ -65,11 +67,52 @@ DeferredPass::~DeferredPass()
 	}
 }
 
+void DeferredPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
+	std::shared_ptr<LightManager>& lightManager)
+{
+	m_Device = device;
+	m_ResourceManager = resourceManager;
+	m_LightManager = lightManager;
+
+	m_DepthStencilView = resourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+
+	m_AlbedoRTV = resourceManager->Get<RenderTargetView>(L"Albedo").lock();
+	m_NormalRTV = resourceManager->Get<RenderTargetView>(L"Normal").lock();
+	m_PositionRTV = resourceManager->Get<RenderTargetView>(L"Position").lock();
+	m_DepthRTV = resourceManager->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRoughnessRTV = resourceManager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
+	m_AORTV = resourceManager->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = resourceManager->Get<RenderTargetView>(L"Emissive").lock();
+	m_LightMapRTV = resourceManager->Get<RenderTargetView>(L"LightMap").lock();
+
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base").lock();
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Skinning").lock();
+	m_GeometryPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
+
+	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quad_VB");
+	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
+	m_QuadVS = resourceManager->Get<VertexShader>(L"Quad");
+	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
+
+	m_Deferred = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
+
+	m_Albedo = resourceManager->Get<ShaderResourceView>(L"Albedo").lock();
+	m_Normal = resourceManager->Get<ShaderResourceView>(L"Normal").lock();
+	m_Position = resourceManager->Get<ShaderResourceView>(L"Position").lock();
+	m_Depth = resourceManager->Get<ShaderResourceView>(L"Depth").lock();
+	m_MetalicRoughness = resourceManager->Get<ShaderResourceView>(L"Metalic_Roughness").lock();
+	m_AO = resourceManager->Get<ShaderResourceView>(L"AO").lock();
+	m_Emissive = resourceManager->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBuffer = resourceManager->Get<ShaderResourceView>(L"GBuffer").lock();
+
+	m_SkeletalMeshVS = resourceManager->Get<VertexShader>(L"Skinning");
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base");
+	m_MeshPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry");
+}
+
 void DeferredPass::Render()
 {
-	//m_Device.lock()->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
-	//m_Device.lock() ->Context()->RSSetState(m_States->CullNone());
-
+	//PreDepth();
 	Geometry();
 	Light();
 }
@@ -111,16 +154,134 @@ void DeferredPass::OnResize()
 	m_GBuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
 	m_LightMap = manager->Get<ShaderResourceView>(L"LightMap").lock();
 
-
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 	m_MeshPS = m_ResourceManager.lock()->Get<PixelShader>(L"MeshDeferredGeometry");
 }
 
+void DeferredPass::PreDepth()
+{
+	//가시성 판단을 위한 Depth 그리기
+
+	std::shared_ptr<Device> Device = m_Device.lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+
+	//Depth 0 
+	{
+		Device->UnBindSRV();
+		Device->Context()->OMSetRenderTargets(1, m_DepthRTV.lock()->GetAddress(), m_DepthStencilView.lock()->Get());
+
+		std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+		std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+		std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+		std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+		std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Get<ConstantBuffer<LightArray>>(L"LightArray").lock();
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
+
+		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+
+		std::shared_ptr<PixelShader> predepth = m_ResourceManager.lock()->Get<PixelShader>(L"PreDepth").lock();
+
+		Device->Context()->PSSetShader(predepth->GetPS(), nullptr, 0);
+		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+		for (auto& curData : m_RenderList)
+		{
+			std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+
+			if (curModel != nullptr)
+			{
+				for (const auto& mesh : curModel->m_Meshes)
+				{
+					Device->BindMeshBuffer(mesh);
+
+					// Static Mesh Data Update & Bind
+					if (!mesh->IsSkinned())
+					{
+
+						Device->BindVS(m_StaticMeshVS.lock());
+
+						// CB Update
+						std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+
+						TransformData renew;
+						XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
+						XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+						XMStoreFloat4x4(&renew.localInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
+						XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
+						position->Update(renew);	// == Bind
+					}
+					else
+					{
+						Device->BindVS(m_SkeletalMeshVS.lock());
+
+						std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+
+						// CB Update
+						std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+
+						TransformData renew;
+						XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+
+						if (curMesh->m_node.lock() != nullptr)
+						{
+							renew.local = curMesh->m_node.lock()->m_World;
+						}
+						else
+						{
+							renew.local = VPMath::Matrix::Identity;
+						}
+
+						XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));
+						XMStoreFloat4x4(&renew.worldInverse, (renew.world.Invert()));
+
+						position->Update(renew);
+						std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
+						if (!curData->FBX.empty() && curData->isPlay)
+						{
+							std::wstring id = std::to_wstring(curData->EntityID);
+							pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+						}
+						else
+						{
+							pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+						}
+						pallete->Update();
+						Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
+					}
+
+
+					Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+				}
+			}
+		}
+	}
+
+	//Down Sampling
+	{
+
+	}
+
+
+}
+
 void DeferredPass::Geometry()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
 	// Bind Common Resources
 	{
@@ -166,31 +327,40 @@ void DeferredPass::Geometry()
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 
-		
+
 	}
 
-	while (!m_RenderDataQueue.empty())
+	bool isTranparency = false;
+	for (const auto& curData : m_RenderList)
 	{
-		std::shared_ptr<RenderData> curData = m_RenderDataQueue.front().lock();
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
-
-		//어떤 라이트맵을 쓸건지 오브젝트에따라 다를 수 있음 -인덱스로 추적해야할듯
-		//임시로 일단 하드코딩
-		std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png").lock();
-		//std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>(L"indirect_Lightmap-0_comp_light.png").lock();
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
 
 		if (curModel != nullptr)
 		{
+			if (!curModel->m_Materials.empty())
+			{
+				for (auto material : curModel->m_Materials)
+				{
+					if (material->m_OpacitySRV.lock() != nullptr)
+					{
+						isTranparency = true;
+						break;
+					}
+				}
+			}
+
+			if (isTranparency)
+			{
+				break;
+			}
+
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);
 
 				// Static Mesh Data Update & Bind
-				//if (!mesh->IsSkinned())
-				if (curData->Filter == MeshFilter::Static)
+				if (!mesh->IsSkinned())
 				{
-
 					Device->BindVS(m_StaticMeshVS.lock());
 
 					// CB Update
@@ -203,9 +373,7 @@ void DeferredPass::Geometry()
 					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
 					position->Update(renew);	// == Bind
 				}
-
-				// Skeletal Mesh Update & Bind
-				if (curData->Filter == MeshFilter::Skinning)
+				else
 				{
 					Device->BindVS(m_SkeletalMeshVS.lock());
 
@@ -231,7 +399,7 @@ void DeferredPass::Geometry()
 
 					position->Update(renew);
 					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
-					if (!curData->curAnimation.empty() && curData->isPlay)
+					if (!curData->FBX.empty() && curData->isPlay)
 					{
 						std::wstring id = std::to_wstring(curData->EntityID);
 						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
@@ -253,18 +421,22 @@ void DeferredPass::Geometry()
 					if (curMaterial != nullptr)
 					{
 						MaterialData data = curMaterial->m_Data;
-						data.lightmapdata.x = curData->lightmapindex;
-						data.lightmapdata.y = curData->offset.x;
-						data.lightmapdata.z = curData->offset.y;
+						data.lightmapdata.x = curData->offset.x;
+						data.lightmapdata.y = curData->offset.y;
+						data.lightmapdata.z = curData->lightmapindex;
 						data.lightmapdata.w = 1; //curData->scale;
 						data.lightmaptiling = curData->tiling;
+						if (data.lightmaptiling.x != 0 || data.lightmaptiling.y != 0)
+						{
+							data.useNEOL.w = 1;
+
+							std::shared_ptr<ShaderResourceView> lightmap = m_LightManager.lock()->GetLightMap(curData->lightmapindex).lock();
+							if (lightmap != nullptr)
+							{
+								Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
+							}
+						}
 						curMaterialData->Update(data);
-
-						/*
-						std::shared_ptr<ShaderResourceView> lightmap = m_ResourceManager.lock()->Get<ShaderResourceView>().lock();
-						Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
-						*/
-
 
 						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
@@ -275,17 +447,18 @@ void DeferredPass::Geometry()
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
 		}
-		m_RenderDataQueue.pop();
 	}
+
 	//렌더타겟 해제해줘야지 srv도 해제
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 void DeferredPass::Light()
 {
+
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
 	std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
 

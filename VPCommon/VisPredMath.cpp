@@ -152,7 +152,7 @@ Vector3 Quaternion::ToYawPitchRoll() const noexcept
 	// Pitch (around x axis)
 	float sinp = 2.0f * (w * y - z * x);
 	if (fabs(sinp) >= 1)
-		pitch = copysign(3.14159265358979323846 / 2, sinp); // use 90 degrees if out of range
+		pitch = static_cast<float>(copysign(3.14159265358979323846 / 2, sinp)); // use 90 degrees if out of range
 	else
 		 pitch = asin(sinp);
 

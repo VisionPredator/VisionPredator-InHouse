@@ -20,6 +20,18 @@
 #include <iostream>
 #include <algorithm>
 #include "VisPredMath.h"
+#include <d3d11.h>
+
+#ifdef _DEBUG
+#pragma comment(lib, "assimp-vc143-mtd.lib")
+#else
+#pragma comment(lib, "assimp-vc143-mt.lib")
+#endif
+
+#pragma comment(lib, "DirectXTK.lib")
+#pragma comment(lib, "DirectXTex.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "dxguid.lib")
 
 namespace VPMath = VisPred::SimpleMath;
 

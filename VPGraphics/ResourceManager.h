@@ -5,7 +5,7 @@
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#pragma comment (lib, "D3DCompiler.lib")
+//#pragma comment (lib, "D3DCompiler.lib")
 
 #include "Device.h"
 
@@ -15,6 +15,7 @@
 #include "ConstantBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "ComputeShader.h"
 #include "ShaderResourceView.h"
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
@@ -51,7 +52,6 @@ public:
 
 	template<typename T>
 	void Erase(const std::wstring path);
-
 
 	void Initialize(std::weak_ptr<Device> device);
 	void OnResize(RECT& wndsize);

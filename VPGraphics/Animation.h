@@ -43,7 +43,7 @@ public:
 	double m_TickFrame;
 
 	std::vector<std::shared_ptr<Channel>> m_Channels;
-	std::vector<std::map<std::wstring, std::vector<std::shared_ptr<Key>>>> Animationkey;
+	//std::vector<std::map<std::wstring, std::vector<std::shared_ptr<Key>>>> Animationkey;
 
 };
 

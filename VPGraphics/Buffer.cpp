@@ -1,17 +1,15 @@
 #include "pch.h"
-
 #include "Buffer.h"
 
-Buffer::Buffer() : Resource()
-{
-}
 
-Buffer::Buffer(std::shared_ptr<Device>device, UINT count) : Resource(device), m_count(count), m_buffer(nullptr)
+Buffer::Buffer(std::shared_ptr<Device>device, UINT count)
+	: Resource(device), m_count(count), m_buffer(nullptr)
 {
 
 }
 
-Buffer::Buffer(std::shared_ptr<Device>device) : Resource(device), m_count(0), m_buffer(nullptr)
+Buffer::Buffer(std::shared_ptr<Device> device)
+	: Resource(device)
 {
 
 }
@@ -48,6 +46,5 @@ UINT Buffer::Count() const
 
 void Buffer::Release()
 {
-	//m_buffer->Release();
 	m_buffer.Reset();
 }

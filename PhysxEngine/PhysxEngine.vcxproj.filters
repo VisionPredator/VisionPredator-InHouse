@@ -119,6 +119,9 @@
     <ClInclude Include="PhysicModelLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CommonInclude.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VPPhysicsStructs.cpp">

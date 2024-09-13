@@ -14,10 +14,7 @@
 #include "StaticData.h"
 #include "DebugDrawManager.h"
 
-RenderPass::RenderPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger) : m_Device(device), m_ResourceManager(manger), m_SkeletalMeshVS(), m_DebugPS()
-{
 
-}
 
 RenderPass::~RenderPass()
 {
@@ -31,11 +28,10 @@ RenderPass::~RenderPass()
 	m_ResourceManager.reset();
 }
 
-
-void RenderPass::AddModelData(std::shared_ptr<RenderData> model)
+void RenderPass::SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue)
 {
 
-	m_RenderDataQueue.push(model);
+	m_RenderList = renderQueue;
 }
 
 void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)
@@ -46,7 +42,7 @@ void RenderPass::BindStatic(std::shared_ptr<RenderData> curModel)
 	Device->Context()->VSSetShader(m_StaticMeshVS.lock()->GetVS(), nullptr, 0);
 	Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
-	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
 
 	TransformData renew;
 	XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curModel->world));
@@ -65,7 +61,7 @@ void RenderPass::BindSkeletal(std::shared_ptr<RenderData> curModel, std::shared_
 	Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
 	std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
-	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform").lock();
+	std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
 
 	TransformData renew;
 	XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curModel->world));

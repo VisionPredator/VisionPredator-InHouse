@@ -22,13 +22,13 @@ class ConstantBuffer;
 /// 
 /// </summary>
 
-
+class ShaderResourceView;
 
 class LightManager
 {
 public:
 	LightManager() = default;
-	~LightManager() = default;
+	~LightManager();
 
 	void Initialize(std::weak_ptr<ResourceManager> manager);
 
@@ -36,6 +36,7 @@ public:
 	void EraseData(uint32_t EntityID, LightType type);
 	void Update(std::unordered_map<uint32_t, LightData>& usinglight);
 
+	std::weak_ptr<ShaderResourceView> GetLightMap(int index);
 
 private:
 	std::weak_ptr<ResourceManager> m_ResourceManager;
@@ -48,6 +49,6 @@ private:
 	LightArray m_BufferStruct;
 
 	std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)> m_LightList;
-
+	std::vector<std::weak_ptr<ShaderResourceView>> m_LightMap;
 };
 

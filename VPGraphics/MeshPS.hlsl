@@ -77,7 +77,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         aoValue = 0;
     }
         
-    if (useNEO.y > 0)
+    if (useNEOL.y > 0)
     {
      emissive = gEmissive.Sample(samLinear, input.tex);    
         
@@ -87,7 +87,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         emissive = 0;
     }
     
-    if (useNEO.z > 0)
+    if (useNEOL.z > 0)
     {
         opacity = gOpacity.Sample(samLinear, input.tex);    
     }

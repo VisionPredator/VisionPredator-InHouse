@@ -70,7 +70,6 @@
                         98,
                         120
                     ],
-                    "FBXFilter": 3,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -131,16 +130,20 @@
                 },
                 {
                     "Accel": 5.0,
-                    "AirControl": 0.0,
+                    "AirControlPercent": 0.0,
                     "ComponentID": 4183631247,
                     "CurrentFSM": 0,
+                    "DynamicFriction": 0.0,
                     "FirPosition": "",
+                    "GravityPower": 1.0,
                     "HP": 0,
                     "HasGun": false,
                     "JumpFoce": 0.0,
-                    "MaxJumpCount": 0,
-                    "Maxspeed": 5.0,
-                    "Sencitive": 0.10000000149011612
+                    "RunSpeed": 0.0,
+                    "Sencitive": 0.10000000149011612,
+                    "SlideDisTance": 0.0,
+                    "StaticFriction": 0.0,
+                    "WalkSpeed": 0.0
                 },
                 {
                     "Acceleration": 30.0,

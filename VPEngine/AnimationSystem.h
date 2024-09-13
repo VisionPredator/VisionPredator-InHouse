@@ -16,5 +16,7 @@ public:
 
 	// IUpdatable을(를) 통해 상속됨
 	void Update(float deltaTime) override;
+
+	void OnChangeAnimation(std::any pairdata_entityid_AniIndex);
 };
 

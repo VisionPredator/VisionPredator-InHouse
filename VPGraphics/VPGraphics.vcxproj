@@ -135,7 +135,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTK.lib;DirectXTex.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /y /r /d "$(SolutionDir)Library\$(Platform)\$(Configuration)\*.dll" "$(TargetDir)"</Command>
@@ -166,7 +166,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -181,6 +181,7 @@
     <ClInclude Include="BlendState.h" />
     <ClInclude Include="CBuffer.h" />
     <ClInclude Include="CommonInclude.h" />
+    <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="D3DUtill.h" />
     <ClInclude Include="DebugDrawManager.h" />
@@ -194,7 +195,7 @@
     <ClInclude Include="FinalPass.h" />
     <ClInclude Include="GeoMetryPass.h" />
     <ClInclude Include="GeometryShader.h" />
-    <ClInclude Include="ForwardPass.h" />
+    <ClInclude Include="TransparencyPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
     <ClInclude Include="ImageObject.h" />
@@ -204,10 +205,12 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshFilter.h" />
     <ClInclude Include="ModelData.h" />
-    <ClInclude Include="MotionBlurPass.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="ObjectMaskPass.h" />
+    <ClInclude Include="OutlineAddPass.h" />
+    <ClInclude Include="OutlineBlurPass.h" />
+    <ClInclude Include="OutlineEdgeDetectPass.h" />
     <ClInclude Include="PassManager.h" />
-    <ClInclude Include="OutlinePass.h" />
     <ClInclude Include="ParticleManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -221,6 +224,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="RenderState.h" />
     <ClInclude Include="RenderTargetView.h" />
@@ -240,6 +244,7 @@
     <ClInclude Include="TransparentPass.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UIPass.h" />
+    <ClInclude Include="UnorderedAccessView.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexData.h" />
@@ -252,6 +257,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BlendState.cpp" />
+    <ClCompile Include="ComputeShader.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="D3DUtill.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />
@@ -261,7 +267,7 @@
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="FinalPass.cpp" />
-    <ClCompile Include="ForwardPass.cpp" />
+    <ClCompile Include="TransparencyPass.cpp" />
     <ClCompile Include="GeoMetryPass.cpp" />
     <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
@@ -271,10 +277,12 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModelData.cpp" />
-    <ClCompile Include="MotionBlurPass.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="ObjectMaskPass.cpp" />
+    <ClCompile Include="OutlineAddPass.cpp" />
+    <ClCompile Include="OutlineBlurPass.cpp" />
+    <ClCompile Include="OutlineEdgeDetectPass.cpp" />
     <ClCompile Include="PassManager.cpp" />
-    <ClCompile Include="OutlinePass.cpp" />
     <ClCompile Include="ParticleManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -288,6 +296,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="RenderState.cpp" />
     <ClCompile Include="RenderTargetView.cpp" />
@@ -310,6 +319,7 @@
     <ClCompile Include="TransparentPass.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UIPass.cpp" />
+    <ClCompile Include="UnorderedAccessView.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Buffer.cpp" />
@@ -322,6 +332,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="BlurCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="IsOccluded.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="MeshDeferredGeometryPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -346,6 +376,54 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="MeshVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlineAddPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlineAddVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -380,6 +458,12 @@
       </EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </EntryPointName>
+    </FxCompile>
+    <FxCompile Include="PreDepthPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="QuadPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

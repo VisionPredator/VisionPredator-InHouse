@@ -1,0 +1,58 @@
+[
+    {
+        "EntityID": 4058744940,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Gun1"
+            },
+            {
+                "ComponentID": 3774279003,
+                "FBX": [
+                    99,
+                    101,
+                    114,
+                    98,
+                    101,
+                    114,
+                    117,
+                    115,
+                    46,
+                    102,
+                    98,
+                    120
+                ],
+                "FBXFilter": 3,
+                "LightMapIndex": 0.0,
+                "LightMapOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "LightMapScale": 0.0,
+                "LightMapTiling": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 0.9659258127212524,
+                    "x": -0.25881925225257874,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    }
+]

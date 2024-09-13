@@ -49,12 +49,6 @@
     <Filter Include="Pass\Common">
       <UniqueIdentifier>{d5002172-4996-4d87-89b0-062e69ac76cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pass\DeferredShadingPipeline">
-      <UniqueIdentifier>{91383f44-82c6-4f68-b914-c9cb25866cf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pass\DeferredShadingPipeline\PostProcessing">
-      <UniqueIdentifier>{f24fb4c7-af03-4dea-94f5-b3db89dc1390}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GraphicsEngine\Common">
       <UniqueIdentifier>{50d90ac0-98ae-4fa5-8425-f9e4847a21e5}</UniqueIdentifier>
     </Filter>
@@ -69,9 +63,6 @@
     </Filter>
     <Filter Include="Pass\Forward">
       <UniqueIdentifier>{d8c8d760-b0e3-40bd-979f-4568e2c9989d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pass\Debug">
-      <UniqueIdentifier>{4fd51da6-aab1-4bcd-9103-2d15680f6f66}</UniqueIdentifier>
     </Filter>
     <Filter Include="Pass\Deferred">
       <UniqueIdentifier>{0fbcd319-41e0-40a5-b224-f118e303742f}</UniqueIdentifier>
@@ -93,6 +84,15 @@
     </Filter>
     <Filter Include="Utils\Source">
       <UniqueIdentifier>{389af529-35c7-44c0-853a-5f833afa4644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\PostProcess">
+      <UniqueIdentifier>{9c8c86ab-3eb0-4211-bb63-2a5710b06c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Common\Source">
+      <UniqueIdentifier>{159eceed-1dc6-422b-b854-912b08452e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\PostProcess\Source">
+      <UniqueIdentifier>{fe364d7b-d9a6-4863-a77a-b256f3ae2f37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +126,6 @@
     <ClInclude Include="Device.h">
       <Filter>GraphicsEngine</Filter>
     </ClInclude>
-    <ClInclude Include="OutlinePass.h">
-      <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
-    </ClInclude>
     <ClInclude Include="ShadowPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
@@ -137,9 +134,6 @@
     </ClInclude>
     <ClInclude Include="ParticlePass.h">
       <Filter>Pass\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionBlurPass.h">
-      <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Resource\Object</Filter>
@@ -204,11 +198,8 @@
     <ClInclude Include="BlendState.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardPass.h">
+    <ClInclude Include="TransparencyPass.h">
       <Filter>Pass\Forward</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugPass.h">
-      <Filter>Pass\Debug</Filter>
     </ClInclude>
     <ClInclude Include="DeferredPass.h">
       <Filter>Pass\Deferred</Filter>
@@ -277,6 +268,31 @@
     <ClInclude Include="UIPass.h">
       <Filter>Pass\Common</Filter>
     </ClInclude>
+    <ClInclude Include="ComputeShader.h" />
+    <ClInclude Include="DebugPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="OutlineEdgeDetectPass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="OutlineBlurPass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="OutlineAddPass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMaskPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="UnorderedAccessView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -294,32 +310,11 @@
     <ClCompile Include="RenderPass.cpp">
       <Filter>Pass</Filter>
     </ClCompile>
-    <ClCompile Include="MotionBlurPass.cpp">
-      <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
-    </ClCompile>
-    <ClCompile Include="OutlinePass.cpp">
-      <Filter>Pass\DeferredShadingPipeline\PostProcessing</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowPass.cpp">
-      <Filter>Pass\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticlePass.cpp">
-      <Filter>Pass\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="TransparentPass.cpp">
-      <Filter>Pass\Common</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>GraphicsEngine\Common</Filter>
     </ClCompile>
-    <ClCompile Include="FinalPass.cpp">
-      <Filter>Pass\Common</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleObject.cpp">
       <Filter>GraphicsEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugPass.cpp">
-      <Filter>Pass\Debug</Filter>
     </ClCompile>
     <ClCompile Include="DeferredPass.cpp">
       <Filter>Pass\Deferred</Filter>
@@ -339,7 +334,7 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPass.cpp">
+    <ClCompile Include="TransparencyPass.cpp">
       <Filter>Pass\Forward</Filter>
     </ClCompile>
     <ClCompile Include="BlendState.cpp">
@@ -427,8 +422,44 @@
     <ClCompile Include="UIManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
+    <ClCompile Include="DebugPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FinalPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticlePass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparentPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
     <ClCompile Include="UIPass.cpp">
-      <Filter>Pass\Common</Filter>
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutlineAddPass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutlineBlurPass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutlineEdgeDetectPass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectMaskPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnorderedAccessView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessManager.cpp">
+      <Filter>Manager\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -467,6 +498,39 @@
     </FxCompile>
     <FxCompile Include="Sprite2DVS.hlsl">
       <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineAddVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineAddPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurCS.hlsl">
+      <Filter>HLSL\CS</Filter>
+    </FxCompile>
+    <FxCompile Include="IsOccluded.hlsl">
+      <Filter>HLSL\CS</Filter>
+    </FxCompile>
+    <FxCompile Include="PreDepthPS.hlsl">
+      <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

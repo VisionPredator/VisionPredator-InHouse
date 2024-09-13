@@ -26,12 +26,12 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 		meshComponent->Renderdata->FBX = meshComponent->FBX;
-		meshComponent->Renderdata->Filter = meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->offset = meshComponent->LightMapOffset;
 		meshComponent->Renderdata->lightmapindex = meshComponent->LightMapIndex;
 		meshComponent->Renderdata->scale = meshComponent->LightMapScale;
 		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
+
 		///인터페이스 수정해주세요!!+ RenderData 필요없는 데이터 정리 필요! 
 		/// EntityID Name 정보는 필요없을 듯합니다. 어차피 unordered_Map<uint32t >로 연결하고있으니.
 		/// m_Graphics->AddRenderModel(uint32_t, std::shared_ptr<RenderData>) 형식의 인터페이스!
@@ -48,10 +48,11 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata = std::make_shared<RenderData>();
 		meshComponent->Renderdata->EntityID = meshComponent->GetEntityID();
 
-		meshComponent->Renderdata->FBX= meshComponent->FBX;
-		meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
+		meshComponent->Renderdata->FBX = meshComponent->FBX;
+		//meshComponent->Renderdata->Filter= meshComponent->FBXFilter;
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->duration = 0;
+		meshComponent->Renderdata->isSkinned = true;
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
@@ -70,7 +71,6 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->useTexture = meshComponent->UseTexture;
 		meshComponent->Renderdata->color = meshComponent->color;
 		meshComponent->Renderdata->textureName = meshComponent->TextureName;
-
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
 	}
@@ -94,8 +94,8 @@ void RenderSystem::OnAddedComponent(std::any data)
 		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
 		ui::ImageInfo info;
 		info.ImagePath = component->TexturePath;
-		info.StartPosX = component->StartPosX;
-		info.StartPosY = component->StartPosY;
+		info.PosXPercent = component->PosXPercent;
+		info.PosYPercent = component->PosYPercent;
 		info.Layer = component->Layer;
 		info.Color = component->Color;
 		info.Scale = component->Scale;
@@ -182,8 +182,8 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	{
 		ui::ImageInfo info;
 		info.ImagePath = component.TexturePath;
-		info.StartPosX = component.StartPosX;
-		info.StartPosY = component.StartPosY;
+		info.PosXPercent = component.PosXPercent;
+		info.PosYPercent = component.PosYPercent;
 		info.Layer = component.Layer;
 		info.Color = component.Color;
 		info.Scale = component.Scale;
@@ -195,13 +195,13 @@ void RenderSystem::RenderUpdate(float deltaTime)
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
 	const TransformComponent& transform = *meshComp.GetComponent<TransformComponent>();
-	bool IsChanged=false;
+	bool IsChanged = false;
 	auto renderdata = meshComp.Renderdata;
 
 	renderdata->FBX = meshComp.FBX;
 	renderdata->world = transform.WorldTransform;
-	renderdata->Filter = meshComp.FBXFilter;
-	m_Graphics->UpdateModel(meshComp.GetEntityID()); 
+	renderdata->rotation = transform.World_Rotation;
+
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
@@ -210,27 +210,16 @@ void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)
 	auto renderdata = skinComp.Renderdata;
 	renderdata->FBX = skinComp.FBX;
 	renderdata->world = transform.WorldTransform;
-	renderdata->Filter = skinComp.FBXFilter;
 	renderdata->duration = 0;
 	if (skinComp.HasComponent<AnimationComponent>())
 	{
 		auto anicomp = skinComp.GetComponent<AnimationComponent>();
+		anicomp->FBX = skinComp.FBX;
 
-		renderdata->curAnimation = anicomp->curAnimation;
-		if (!renderdata->curAnimation.empty())
-		{
-			renderdata->FBX = renderdata->curAnimation;
-			renderdata->duration = anicomp->duration;
-			renderdata->isPlay = anicomp->isPlay;
-			renderdata->isChange = anicomp->isChange;
-			renderdata->preDuration = anicomp->preDuration;
-			renderdata->preAnimation = anicomp->preAnimation;
-		}
+		renderdata->duration = anicomp->duration;
+		renderdata->isPlay = anicomp->isPlay;
+		renderdata->preDuration = anicomp->preDuration;
 	}
-	m_Graphics->UpdateModel(skinComp.GetEntityID());
-
-	
-
 }
 
 void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
@@ -241,12 +230,83 @@ void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
 	renderdata->color = geometryComp.color;
 	renderdata->color.w = geometryComp.UseTexture;	//shader에서 color의 w값으로 텍스처있는지 판단함
 	renderdata->useTexture = geometryComp.UseTexture;
-	renderdata->Pass = geometryComp.pass;
 	renderdata->Filter = geometryComp.FBXFilter;
 	renderdata->world = transform.WorldTransform;
 	renderdata->useTexture = geometryComp.UseTexture;
 	renderdata->textureName = geometryComp.TextureName;
-	m_Graphics->UpdateModel(geometryComp.GetEntityID()); 
+	renderdata->Pass = geometryComp.pass;
+
+
+	switch (geometryComp.FBXFilter)
+	{
+		case GeoMetryFilter::Grid:
+		{
+			debug::GridInfo gridInfo;
+			gridInfo.Origin = VPMath::Vector3{ 0, 0, 0 };
+			gridInfo.XAsix = VPMath::Vector3{ 1, 0, 0 };
+			gridInfo.YAsix = VPMath::Vector3{ 0, 0, 1 };
+			gridInfo.XDivs = 200;
+			gridInfo.YDivs = 200;
+			gridInfo.GridSize = 200.f;
+			gridInfo.Color = VPMath::Color{ 1,1,1, 1 };
+			m_Graphics->DrawGrid(gridInfo);
+		}
+		break;
+
+		case GeoMetryFilter::Axis:
+		{
+			float distance = 10;
+
+			//x
+			debug::RayInfo x;
+			x.Origin = VPMath::Vector3{ 0, 0, 0 };
+			x.Direction = VPMath::Vector3{ distance, 0, 0 };
+			x.Normalize = false;
+			x.Color = VPMath::Color{ 1, 0, 0, 1 };
+			m_Graphics->DrawRay(x);
+
+			//y
+			debug::RayInfo y;
+			y.Origin = VPMath::Vector3{ 0, 0, 0 };
+			y.Direction = VPMath::Vector3{ 0, distance, 0 };
+			y.Normalize = false;
+			y.Color = VPMath::Color{ 0, 1, 0, 1 };
+			m_Graphics->DrawRay(y);
+
+			//z
+			debug::RayInfo z;
+			z.Origin = VPMath::Vector3{ 0, 0, 0 };
+			z.Direction = VPMath::Vector3{ 0, 0, distance };
+			z.Normalize = false;
+			z.Color = VPMath::Color{ 0, 0, 1, 1 };
+			m_Graphics->DrawRay(z);
+
+		}
+		break;
+
+		case GeoMetryFilter::Frustum:
+		{
+
+			debug::FrustumInfo frustumInfo;
+
+			frustumInfo.Frustum.Origin = { renderdata->world._41,renderdata->world._42,renderdata->world._43 };
+			frustumInfo.Frustum.Orientation = { 0, 0, 0, 1 };
+			frustumInfo.Frustum.Near = 1.f;
+			frustumInfo.Frustum.Far = 1000.f;
+			frustumInfo.Frustum.LeftSlope = -0.736355f;
+			frustumInfo.Frustum.RightSlope = 0.736355f;
+			frustumInfo.Frustum.TopSlope = 0.4142f;
+			frustumInfo.Frustum.BottomSlope = -0.4142;
+			frustumInfo.Color = VPMath::Color{ 1, 1, 0, 1 };
+
+			m_Graphics->DrawFrustum(frustumInfo);
+
+		}
+		break;
+
+		default:
+			break;
+	}
 
 }
 

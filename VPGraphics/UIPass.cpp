@@ -31,13 +31,13 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 
 	//ui::ImageInfo testInfo3 = {};
 	//testInfo3.ImagePath = "GOSEGUI0900.png";
-	//testInfo3.StartPosX = 800.f;
-	//testInfo3.StartPosY = 300.f;
+	//testInfo3.PosXPercent = 800.f;
+	//testInfo3.PosYPercent = 300.f;
 	//testInfo3.Layer = 1;
 	//m_UIManager->CreateImageObject(600, testInfo3);
 #pragma endregion
 
-	m_ImageTransformCB = m_ResourceManager->Create<ConstantBuffer<ImageTransformCB>>(L"ImageTransformCB", BufferDESC::Constant::DefaultTransform).lock();
+	m_ImageTransformCB = m_ResourceManager->Create<ConstantBuffer<ImageTransformCB>>(L"ImageTransformCB", ConstantBufferType::Default).lock();
 
 	m_VertexShader = std::make_shared<VertexShader>(m_Device, L"Sprite2DVS", "main");
 	m_PixelShader = std::make_shared<PixelShader>(m_Device, L"Sprite2DPS", "main");
@@ -45,7 +45,11 @@ void UIPass::Initialize(const std::shared_ptr<Device>& device, const std::shared
 
 void UIPass::Render()
 {
-	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"GBuffer").lock();
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+
+	std::shared_ptr<Sampler> linear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
 	m_Device->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 알파 블랜딩 사용.
@@ -70,10 +74,10 @@ void UIPass::Render()
 	m_Device->Context()->PSSetShader(m_PixelShader->GetShader(), nullptr, 0);
 	m_Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-
 	// Execute Draw Call for all 2D Objects
 	m_UIManager->Render();
 
 	// TODO: 2D 렌더링이 완료되었으므로 다시 Z 버퍼 키기
-	m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);
+	m_Device->Context()->OMSetDepthStencilState(nullptr, 0);
+	//m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);
 }

@@ -79,7 +79,7 @@ bool GraphicsEngine::Initialize()
 	m_DebugDrawManager->Initialize(m_Device);
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 	m_UIManager->Initialize(m_Device, m_ResourceManager);
-	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager);
+	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager, m_LightManager);
 
 	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
 
@@ -92,23 +92,46 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Update(double dt)
 {
+	/*
 	m_Animator->Update(dt, m_RenderList);
 	m_PassManager->Update(m_RenderList);
 	m_LightManager->Update(m_Lights);
+	*/
+
+	Culling();
+	m_Animator->Update(dt, m_AfterCulling);
+	m_PassManager->Update(m_AfterCulling);
+	m_LightManager->Update(m_Lights);
+
+	m_AfterCulling.clear();
 }
 
 bool GraphicsEngine::Finalize()
 {
-	m_CurViewPort.reset();
+	if (!m_AfterCulling.empty())
+	{
+		m_AfterCulling.clear();
+	}
 
+	if (!m_RenderVector.empty())
+	{
+		m_RenderVector.clear();
+	}
+
+	m_CurViewPort.reset();
 	m_Device.reset();
-	m_ResourceManager.reset();
-	m_UIManager.reset();
+
 	m_Loader.reset();
 	m_Animator.reset();
 	m_PassManager.reset();
+	m_DebugDrawManager.reset();
+	m_UIManager.reset();
 	m_ParticleManager.reset();
+	m_ResourceManager.reset();
+	m_LightManager.reset();
 	DestroyImGui();
+
+
 
 	return true;
 }
@@ -149,22 +172,37 @@ void GraphicsEngine::EndRender()
 
 bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 {
-	std::wstring id = std::to_wstring(data->EntityID);
-	if (data->Filter == MeshFilter::Skinning && m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+	auto find = FindEntity(data->EntityID);
+	if (find != m_RenderVector.end())
 	{
-		m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, BufferDESC::Constant::DefaultMatrixPallete);
-	}
+		
 
-	m_RenderList[data->EntityID] = data;
+		(*find) = data;
+	}
+	else
+	{
+		if (data->isSkinned)
+		{
+			std::wstring id = std::to_wstring(data->EntityID);
+
+			if (m_ResourceManager->Get<ConstantBuffer<MatrixPallete>>(id).lock() == nullptr)
+			{
+				m_ResourceManager->Create<ConstantBuffer<MatrixPallete>>(id, ConstantBufferType::Default);
+			}
+		}
+
+		m_RenderVector.push_back(data);
+	}
 
 	return true;
 }
 
 void GraphicsEngine::EraseObject(uint32_t EntityID)
 {
-	if (m_RenderList.find(EntityID) != m_RenderList.end())
+	auto find = FindEntity(EntityID);
+	if (find != m_RenderVector.end())
 	{
-		m_RenderList.erase(EntityID);
+		m_RenderVector.erase(find);
 	}
 }
 
@@ -181,16 +219,30 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
+	VPMath::Matrix viewInverse = view.Invert();
 	//상수 버퍼는 계산 순서때문에 전치한다
 	cb_worldviewproj = m_ViewProj.Transpose();
 	cb_view = m_View.Transpose();
 	cb_proj = m_Proj.Transpose();
 
-	VPMath::Matrix viewInverse = view.Invert();
 	cb_viewInverse = viewInverse.Transpose();
-
 	VPMath::Matrix projInverse = proj.Invert();
 	cb_projInverse = projInverse.Transpose();
+
+	//절두체
+	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
+
+
+
+	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
+	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
+	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
+
+
+	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+
+	//카메라위치
+	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -202,68 +254,23 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	Camera.lock()->Update();
 }
 
+void GraphicsEngine::testCulling(VPMath::Matrix view, VPMath::Matrix proj)
+{
+	VPMath::Matrix viewInverse = view.Invert();
+
+	//절두체
+	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
+
+	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+
+	//카메라위치
+	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
+
+}
+
 void GraphicsEngine::UpdateModel(uint32_t EntityID)
 {
-	if (m_RenderList.find(EntityID) != m_RenderList.end())
-	{
-		switch (m_RenderList[EntityID]->Filter)
-		{
-			case MeshFilter::Axis:
-			case MeshFilter::Grid:
-			{
-				m_RenderList[EntityID]->Pass = PassState::Debug;
 
-			}
-			break;
-
-			case MeshFilter::Box:
-			{
-				m_RenderList[EntityID]->Pass = PassState::GeoMetry;
-			}
-			break;
-			case MeshFilter::Static:
-			case MeshFilter::Skinning:
-			{
-				//m_RenderList[EntityID]->Pass = PassState::Deferred | PassState::Forward;
-				//m_RenderList[EntityID]->Pass = PassState::Forward;
-				//m_RenderList[EntityID]->Pass = PassState::Forward;
-
-				/*
-				std::shared_ptr<ModelData> curModel = m_ResourceManager->Get<ModelData>(m_RenderList[EntityID]->FBX).lock();
-				if (curModel != nullptr)
-				{
-					for (auto material : curModel->m_Materials)
-					{
-						if (material->m_Data.useNEOL.z > 0)
-						{
-							m_RenderList[EntityID]->Pass = PassState::Forward;
-							break;
-						}
-					}
-				}
-				*/
-
-
-				if (m_RenderList[EntityID]->FBX == L"cctv_lens_low.fbx")
-				{
-					m_RenderList[EntityID]->Pass = PassState::Forward;
-				}
-
-				if (m_RenderList[EntityID]->FBX == L"wall3_window_low.fbx")
-				{
-					m_RenderList[EntityID]->Pass = PassState::Forward;
-				}
-
-			}
-			break;
-
-			case MeshFilter::None:
-				break;
-
-			default:
-				break;
-		}
-	}
 }
 
 void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)
@@ -293,17 +300,43 @@ void GraphicsEngine::UpdateLightData(uint32_t EntityID, LightType kind, LightDat
 	}
 }
 
-const double GraphicsEngine::GetDuration(std::wstring name)
+const double GraphicsEngine::GetDuration(std::wstring name, int index)
 {
 
-	std::weak_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name);
-	if (curAni.lock() != nullptr)
+	std::shared_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name).lock();
+	if (curAni != nullptr)
 	{
-		return curAni.lock()->m_Animations[0]->m_Duration / curAni.lock()->m_Animations[0]->m_TickFrame;
+		if (!curAni->m_Animations.empty())
+		{
+			//전체 tick / 초당 틱 == 애니메이션 재생시간
+			return curAni->m_Animations[index]->m_Duration / curAni->m_Animations[index]->m_TickFrame;
+		}
 	}
 
 
 	return 0;
+}
+
+const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
+{
+
+	auto find = FindEntity(entityID);
+
+	if (find != m_RenderVector.end())
+	{
+		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");
+		VPMath::Matrix a = test * (*find)->world;
+
+		debug::SphereInfo temp;
+		temp.Sphere.Center = { a._41,a._42,a._43 };
+		temp.Sphere.Radius = 0.1;
+		temp.Color = { 0,1,0,1 };
+		DrawSphere(temp);
+
+		return a;
+	}
+
+	return VPMath::Matrix::Identity;
 }
 
 void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
@@ -408,6 +441,8 @@ std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
 
 void GraphicsEngine::OnResize(HWND hwnd)
 {
+	/// TODO: 매니저들의 OnResize 함수 불러오기. 실제로 Resize 되도록 고치기.
+
 	m_hWnd = hwnd;
 	GetClientRect(m_hWnd, &m_wndSize);
 
@@ -429,7 +464,6 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"AO"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"Emissive"));
 	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"GBuffer"));
-	m_RTVs.push_back(m_ResourceManager->Get<RenderTargetView>(L"IMGUI"));
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));
@@ -442,6 +476,71 @@ void GraphicsEngine::OnResize(HWND hwnd)
 
 	m_Device->Context()->OMSetRenderTargets(1, m_RTVs[0].lock()->GetAddress(), m_DSVs[0].lock()->Get());
 	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
+}
+
+void GraphicsEngine::Culling()
+{
+	for (auto& object : m_RenderVector)
+	{
+		std::wstring& fbx = object->FBX;
+		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
+
+		if (curFBX != nullptr)
+		{
+			{
+				VPMath::Vector3 s;
+				VPMath::Quaternion r;
+				VPMath::Vector3 t;
+				object->world.Decompose(s, r, t);
+
+				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
+				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
+
+				VPMath::Vector3 Max;
+
+				VPMath::Vector3 Min;
+
+				for (auto& mesh : curFBX->m_Meshes)
+				{
+					//S
+					VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+					VPMath::Vector3 afterMin = mesh->MinBounding * s;
+
+					VPMath::Vector3 distance = afterMax - afterMin;
+					VPMath::Vector3 half = distance / 2;
+
+					DirectX::BoundingOrientedBox obbInfo;
+
+					obbInfo.Center = t + afterMin + half;
+					obbInfo.Extents = half;
+					obbInfo.Orientation = r;
+
+					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+					if (contains)
+					{
+						object->isVisible = true;
+						break;
+					}
+				}
+			}
+		}
+
+		m_AfterCulling.push_back(object);
+	}
+}
+
+std::vector<std::shared_ptr<RenderData>>::iterator GraphicsEngine::FindEntity(uint32_t id)
+{
+	for (auto start = m_RenderVector.begin(); start != m_RenderVector.end(); start++)
+	{
+		auto entity = *start;
+		if (entity->EntityID == id)
+		{
+			return start;
+		}
+	}
+
+	return m_RenderVector.end();	
 }
 
 /// Editor

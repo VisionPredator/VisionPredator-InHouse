@@ -10,11 +10,10 @@
 /// <summary>
 /// index, vertex buffer의 부모 클래스
 /// </summary>
-class Buffer :
-	public Resource
+class Buffer : public Resource
 {
 public:
-	Buffer();
+	Buffer() = default;
 	Buffer(std::shared_ptr<Device> device, UINT count);
 	Buffer(std::shared_ptr<Device> device);
 	Buffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc);

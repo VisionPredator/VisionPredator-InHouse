@@ -1,33 +1,30 @@
 #pragma once
 #include "RenderPass.h"
 
+class LightManager;
+
 class DeferredPass : public RenderPass
 {
 public:
-	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
+	// 일단 임시. 아래 생성자 없애면 이것도 삭제 해야한다.
+	DeferredPass() = default;
+
+	DeferredPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<LightManager>lightmanager);
 	~DeferredPass();
-	virtual void Render() override;
+
+	void Initialize(const std::shared_ptr<Device>& device,
+		const std::shared_ptr<ResourceManager>& resourceManager,
+		std::shared_ptr<LightManager>& lightManager);
+	void Render() override;
 	void OnResize() override;
 
 private:
-
+	void PreDepth();
 	void Geometry();
 	void Light();
 
 private:
-	enum class Geo_Tex
-	{
-		Albedo = 0,
-		Normal,
-		Position,
-		Depth,
-		Metalic,
-		Roughness,
-		AO,
-		Emissive,
-		LightMap,
-
-	};
+	std::weak_ptr<LightManager> m_LightManager;
 private:
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 
@@ -63,7 +60,5 @@ private:
 
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBuffer;
-
-	std::unique_ptr<DirectX::DX11::CommonStates> m_States;
 };
 

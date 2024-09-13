@@ -4,10 +4,16 @@
 class DebugPass : public RenderPass
 {
 public:
+	DebugPass() = default;
+
 	DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug);
 	~DebugPass();
 
-	virtual void Render() override;
+	void Initialize(const std::shared_ptr<Device>& device,
+		const std::shared_ptr<ResourceManager>& resourceManager,
+		const std::shared_ptr<DebugDrawManager>& debugDrawManager);
+
+	void Render() override;
 	void OnResize() override;
 
 private:
