@@ -27,7 +27,7 @@ int initProject()
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
 	// Optionally set a specific allocation number to break on
-	_CrtSetBreakAlloc(196);  // Uncomment and set the number if needed
+	//_CrtSetBreakAlloc(1808058);  // Uncomment and set the number if needed
 	//_CrtSetBreakAlloc(441);
 	return 0;  // It's good practice to have a return value
 }

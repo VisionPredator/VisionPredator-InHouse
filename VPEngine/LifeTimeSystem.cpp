@@ -7,7 +7,7 @@ LifeTimeSystem::LifeTimeSystem(std::shared_ptr<SceneManager> sceneManager):Syste
 
 void LifeTimeSystem::FixedUpdate(float deltaTime)
 {
-	COMPLOOP(LifeTimeComponent)
+	COMPLOOP(LifeTimeComponent,comp)
 	{
 		if (comp.LifeTime < 0)
 			GetSceneManager()->DestroyEntity(comp.GetEntityID());

@@ -67,6 +67,9 @@
     <Filter Include="VisPredMath">
       <UniqueIdentifier>{c9967b03-29c5-484d-a7bf-51de3ed1ab3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NavMesh">
+      <UniqueIdentifier>{20e9601b-fb0f-45c9-84dc-cc77584a0e5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -189,6 +192,30 @@
     <ClInclude Include="Sprite2DComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
+    <ClInclude Include="LifeTimeComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeTimeSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LogicSystems.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMeshSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavStructs.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMeshData.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavAgentSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="NavAgentComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -287,13 +314,25 @@
     <ClCompile Include="GeometryComponent.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="NavMeshSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavStructs.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshData.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavAgentSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavAgentComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
       <Filter>자체 엔진\리소스 파일</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

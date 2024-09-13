@@ -20,6 +20,8 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) abstract;
 	virtual void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) abstract;
 	virtual void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) abstract;
+	virtual void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
+	virtual void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;
 	virtual void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) abstract;

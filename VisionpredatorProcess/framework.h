@@ -16,6 +16,13 @@
 #include <d3d11.h>
 #include <PxPhysicsAPI.h>
 
+///Nav Mesh
+#include "recastnavigation/Detour/DetourNavMesh.h"
+#include "recastnavigation/Detour/DetourNavMeshBuilder.h"
+#include "recastnavigation/Detour/DetourNavMeshQuery.h"
+#include "recastnavigation/DetourCrowd/DetourCrowd.h"
+#include "recastnavigation/Recast/Recast.h"
+
 #include "../include/entt/entt.hpp"
 #include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;

@@ -24,9 +24,8 @@ public:
 	void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) { m_PhyiscsInfo= engineinfo; }
 
 	void OnSetPhysicInfo(std::any PhysicInfo);
-
-	// IPhysx을(를) 통해 상속됨
-
+	void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
+	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 
 	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;

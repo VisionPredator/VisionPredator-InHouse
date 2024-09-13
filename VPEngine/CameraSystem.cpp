@@ -42,8 +42,8 @@ void CameraSystem::OnResize(std::any hwnd)
 	RECT tempsize{};
 	GetClientRect(tempHwnd, &tempsize);
 
-	m_Width = tempsize.right- tempsize.left;
-	m_Height = tempsize.bottom- tempsize.top;
+	m_Width = static_cast<float>(tempsize.right - tempsize.left);
+	m_Height = static_cast<float>(tempsize.bottom - tempsize.top);
 }
 
 
