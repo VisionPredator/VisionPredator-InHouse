@@ -3,6 +3,11 @@
 #include "ResourceManager.h"
 #include "Desc.h"
 
+LightManager::~LightManager()
+{
+	m_LightMap.clear();
+}
+
 void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 {
 	m_ResourceManager = manager;

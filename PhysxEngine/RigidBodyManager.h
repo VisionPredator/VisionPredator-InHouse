@@ -27,7 +27,11 @@ public:
 	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
+	
 	bool HasRigidBody(uint32_t EntityID);
+	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
+	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
+	void ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 
 	void SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q);
 	VPMath::Vector3 GetVelocity(uint32_t entityID);
@@ -38,7 +42,7 @@ public:
 
 
 private:
-	void OnAddBodyScene(std::any data);
+	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);
 	void OnReleaseBodyScene(std::any data);
 	void AddBodyScene(std::shared_ptr<RigidBody> body);
 

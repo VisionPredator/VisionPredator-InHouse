@@ -5,7 +5,7 @@
 
 struct TransformComponent;
 
-class TransformSystem : public System, public IUpdatable, public EventSubscriber,public IStartable,public IRenderable
+class TransformSystem : public System, public IUpdatable, public EventSubscriber/*,public IStartable*/,public IRenderable
 {
 public:
     TransformSystem(std::shared_ptr<SceneManager> entityManager);
@@ -46,14 +46,14 @@ private:
     void UpdatePreviousLocalTransform(TransformComponent* transform);
 
 
-    // IStartable을(를) 통해 상속됨
-    void Initialize() override;
+    //// IStartable을(를) 통해 상속됨
+    //void Initialize() override;
 
-    void Start(uint32_t gameObjectId) override;
+    //void Start(uint32_t gameObjectId) override;
 
-    void Finish(uint32_t gameObjectId) override;
+    //void Finish(uint32_t gameObjectId) override;
 
-    void Finalize() override;
+    //void Finalize() override;
 
 
     // IRenderable을(를) 통해 상속됨

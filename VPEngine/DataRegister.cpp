@@ -21,7 +21,7 @@ void VPRegister::Register_Metadata()
 
 void VPRegister::Register_EnumClass()
 {
-	META_ADD_ENUMCLASS(GeoMetryFilter,GeoMetryFilter::Axis, GeoMetryFilter::Box,GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
+	META_ADD_ENUMCLASS(GeoMetryFilter, GeoMetryFilter::Axis, GeoMetryFilter::Box, GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
 	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
@@ -129,4 +129,6 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
 	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
+	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
 }
+

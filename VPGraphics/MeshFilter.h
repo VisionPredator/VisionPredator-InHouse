@@ -13,7 +13,7 @@ enum class GeoMetryFilter : unsigned int
 enum class PassState : unsigned int
 {
 	None = 0,					// 유지	
-	Geometry = 1 << 4,			// 삭제?
+	Geometry = 1 << 4,			// 삭제? 나중에 사라질 예정
 	ObjectMask = 1 << 5,		// 유지
 	End = 99999
 };

@@ -63,8 +63,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIManager = uiManager;
 	m_LightManager = lightmanager;
 
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
-		std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
+	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
+	//	std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
@@ -85,17 +85,17 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 	m_ObjectMaskPass->SetRenderQueue(afterCulling);
 
 	// 일단 ObjectMask 빼고 모두 삭제.
-	for (auto& model : afterCulling)
-	{
-		std::shared_ptr<RenderData> curModel = model;
-		CheckPassState(curModel, PassState::Geometry);
-	}
+	//for (auto& model : afterCulling)
+	//{
+	//	std::shared_ptr<RenderData> curModel = model;
+	//	CheckPassState(curModel, PassState::Geometry);
+	//}
 }
 
 void PassManager::Render()
 {
 	//m_Passes[PassState::Debug]->Render();
-	m_Passes[PassState::Geometry]->Render();
+	//m_Passes[PassState::Geometry]->Render();
 
 	m_DebugPass->Render();
 	m_DeferredPass->Render();
@@ -118,25 +118,15 @@ void PassManager::OnResize()
 	m_DeferredPass->OnResize();
 	m_TransparencyPass->OnResize();
 
-	for (auto& pass : m_Passes)
-	{
-		pass.second->OnResize();
-	}
+	//for (auto& pass : m_Passes)
+	//{
+	//	pass.second->OnResize();
+	//}
 	m_ObjectMaskPass->OnResize();
 
 	m_OutlineEdgeDetectPass->OnResize();
 	m_OutlineBlurPass->OnResize();
 	m_OutlineAddPass->OnResize();
-}
-
-void PassManager::CheckPassState(std::shared_ptr<RenderData>& model, PassState pass)
-{
-	PassState temp = model->Pass;
-	temp &= pass;
-	if (temp == pass)
-	{
-		m_Passes[pass]->AddModelData(model);
-	}
 }
 
 void PassManager::DrawIMGUI()

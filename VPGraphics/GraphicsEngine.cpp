@@ -119,6 +119,7 @@ bool GraphicsEngine::Finalize()
 	}
 
 	m_CurViewPort.reset();
+	m_Device.reset();
 
 	m_Loader.reset();
 	m_Animator.reset();
@@ -127,8 +128,10 @@ bool GraphicsEngine::Finalize()
 	m_UIManager.reset();
 	m_ParticleManager.reset();
 	m_ResourceManager.reset();
-	m_Device.reset();
+	m_LightManager.reset();
 	DestroyImGui();
+
+
 
 	return true;
 }

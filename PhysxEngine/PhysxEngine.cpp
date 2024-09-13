@@ -132,6 +132,17 @@ void PhysxEngine::OnSetPhysicInfo(std::any data)
 
 }
 
+void PhysxEngine::ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+{
+	m_RigidBodyManager->ExtractSceneVerticesAndFacesByLayer(m_PxScene, layer, outVertices, outIndices);
+}
+
+void PhysxEngine::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+{
+
+	m_RigidBodyManager->ExtractVerticesAndFaces(entityID, outVertices, outIndices);
+}
+
 void PhysxEngine::CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)
 {
 	m_RigidBodyManager->CreateStaticBody(boxinfo, collidertype, m_PhyiscsInfo);

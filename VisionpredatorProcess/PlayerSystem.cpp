@@ -6,17 +6,11 @@ PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ 
 
 void PlayerSystem::Update(float deltaTime)
 {
-	for (PlayerComponent& comp: COMPITER(PlayerComponent))
+	COMPLOOP(PlayerComponent, playercomp)
 	{
-		TransformComponent* TransformComp = comp.GetComponent<TransformComponent>();
-
-		if (comp.HasComponent<ControllerComponent>())
-		{
-			PlayerLocation(TransformComp);
-
-		}
-		PlayerRotation(TransformComp);
-		PlayerShoot(comp);
+		UpdateCharDataToController(playercomp);
+		Calculate_FSM(playercomp);
+		Action_FSM(playercomp);
 	}
 }
 
@@ -26,64 +20,6 @@ void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
 
 }
-
-void PlayerSystem::PlayerLocation(TransformComponent* comp)
-{
-	ControllerComponent* controllercomp = comp->GetComponent<ControllerComponent>();
-	controllercomp->InputDir = {};
-	if (INPUTKEY(KEYBOARDKEY::W))
-	{
-		controllercomp->InputDir += comp->FrontVector;
-	}
-	if (INPUTKEY(KEYBOARDKEY::S))
-	{
-		controllercomp->InputDir -= comp->FrontVector;
-
-	}
-	if (INPUTKEY(KEYBOARDKEY::A))
-	{
-		controllercomp->InputDir -= comp->RightVector;
-	}
-	if (INPUTKEY(KEYBOARDKEY::D))
-	{
-		controllercomp->InputDir += comp->RightVector;
-	}
-}
-
-void PlayerSystem::PlayerRotation(TransformComponent* comp)
-{
-	// 컴포넌트 접근을 캐싱
-	auto player = comp->GetComponent<PlayerComponent>();
-	// 입력 매니저에서 마우스 델타 값을 미리 가져옴
-	int deltaCurposX = InputManager::GetInstance().GetMouseDeltaX();
-	int deltaCurposY = InputManager::GetInstance().GetMouseDeltaY();
-	float sensitivity = player->Sencitive;
-	// 플레이어의 회전 업데이트
-	float yaw = deltaCurposX * sensitivity;
-	VPMath::Vector3 playerRotation = comp->World_Rotation;
-	playerRotation.y += yaw;
-	comp->SetWorldRotation(playerRotation);
-
-	// 자식 컴포넌트가 있는 경우에만 처리
-	if (!player->HasComponent<Children>())
-		return;
-	auto children = player->GetComponent<Children>();
-	for (uint32_t childID : children->ChildrenID)
-	{
-		if (!GetSceneManager()->HasComponent<CameraComponent>(childID))
-			continue;
-		auto camera = GetSceneManager()->GetComponent<CameraComponent>(childID);
-		TransformComponent* cameratransform = camera->GetComponent<TransformComponent>();
-		// 카메라 회전 업데이트
-		float pitch = deltaCurposY * sensitivity;
-		VPMath::Vector3 cameraRotation = cameratransform->Local_Rotation;
-		cameraRotation.x += pitch;
-		cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
-		cameratransform->SetLocalRotation(cameraRotation);
-	}
-}
-
-
 
 void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 {
@@ -102,3 +38,350 @@ void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 		m_SceneManager.lock()->SpawnPrefab("../Data/Prefab/cube.prefab", temppos, temprotatin, tempscale);
 	}
 }
+void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
+{
+	ControllerComponent& controllercomp=  *playercomp.GetComponent<ControllerComponent>();
+	controllercomp.Acceleration= playercomp.Accel;
+	controllercomp.MaxSpeed = playercomp.WalkSpeed;
+	controllercomp.JumpSpeed = playercomp.JumpFoce;
+	controllercomp.StaticFriction = playercomp.StaticFriction;
+	controllercomp.DynamicFriction = playercomp.DynamicFriction;
+	controllercomp.JumpXZAcceleration = playercomp.Accel *playercomp.AirControlPercent/100;
+	controllercomp.GravityWeight = playercomp.GravityPower* 9.80665;
+}
+#pragma region FSM Calculate
+
+void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
+{
+	switch (playercomp.CurrentFSM)
+	{
+	case VisPred::Game::EFSM::IDLE:
+		Calculate_Idle(playercomp);
+		break;
+	case VisPred::Game::EFSM::WALK:
+		Calculate_Walk(playercomp);
+		break;
+	case VisPred::Game::EFSM::RUN:
+		Calculate_Run(playercomp);
+		break;
+	case VisPred::Game::EFSM::JUMP:
+		Calculate_Jump(playercomp);
+		break;
+	case VisPred::Game::EFSM::CROUCH:
+		Calculate_Crouch(playercomp);
+		break;
+	case VisPred::Game::EFSM::SLIDE:
+		Calculate_Slide(playercomp);
+		break;
+	case VisPred::Game::EFSM::ATTACK:
+		Calculate_Attack(playercomp);
+		break;
+	case VisPred::Game::EFSM::DIE:
+		Calculate_Die(playercomp);
+		break;
+	case VisPred::Game::EFSM::DESTROY:
+		Calculate_Destroy(playercomp);
+		break;
+	default:
+		break;
+	}
+}
+
+void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
+{
+	///뛰기
+	if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT)||INPUTKEY(KEYBOARDKEY::LSHIFT)) 
+		&& INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+	}
+	///걷기
+	else if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+	}
+	///슬라이딩
+	else if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))&&
+		INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
+	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
+	///점프
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE)|| playercomp.GetComponent<ControllerComponent>()->IsFall)
+		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
+
+}
+
+void PlayerSystem::Calculate_Die(PlayerComponent& playercomp)
+{
+
+}
+
+
+
+void PlayerSystem::Calculate_Attack(PlayerComponent& playercomp)
+{
+}
+
+void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
+{
+	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+	else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
+	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL)|| INPUTKEY(KEYBOARDKEY::LCONTROL))
+		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
+}
+void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
+{
+	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+	else if (INPUTKEYUP(KEYBOARDKEY::LSHIFT))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
+	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
+}
+
+void PlayerSystem::Calculate_Crouch(PlayerComponent& playercomp)
+{
+	if (INPUTKEYUP(KEYBOARDKEY::LCONTROL))
+	{
+		if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		{
+			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+		}
+		else
+		{
+			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+		}
+	}
+}
+void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
+{
+	if (true)
+	{
+		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+	}
+
+
+}
+void PlayerSystem::Calculate_Jump(PlayerComponent& playercomp)
+{
+	if (!playercomp.GetComponent<ControllerComponent>()->IsFall)
+		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+
+}
+
+void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
+{
+}
+
+#pragma endregion
+
+#pragma region FSM Action
+void PlayerSystem::Action_FSM(PlayerComponent& playercomp)
+{
+	switch (playercomp.CurrentFSM)
+	{
+	case VisPred::Game::EFSM::IDLE:
+		Action_Idle(playercomp);
+		break;
+	case VisPred::Game::EFSM::WALK:
+		Action_Walk(playercomp);
+		break;
+	case VisPred::Game::EFSM::RUN:
+		Action_Run(playercomp);
+		break;
+	case VisPred::Game::EFSM::CROUCH:
+		Action_Crouch(playercomp);
+		break;
+	case VisPred::Game::EFSM::JUMP:
+		Action_Jump(playercomp);
+		break;
+	case VisPred::Game::EFSM::ATTACK:
+		Action_Attack(playercomp);
+		break;
+	case VisPred::Game::EFSM::DIE:
+		Action_Die(playercomp);
+		break;
+	case VisPred::Game::EFSM::DESTROY:
+		Action_Destroy(playercomp);
+		break;
+	default:
+		break;
+	}
+}
+
+void PlayerSystem::Action_Idle(PlayerComponent& playercomp)
+{
+	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Move_Rotation(playercomp, transfomcomp);
+}
+
+void PlayerSystem::Action_Slide(PlayerComponent& playercomp)
+{
+	///지면 기준에서 하기.
+	///Input이 있을경우에는 그 방향으로 이동해야함.
+	/// 콜라이더 오프셋 기능 추가.
+}
+
+void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
+{
+	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.MaxSpeed = playercomp.WalkSpeed;
+	Move_Walk(transfomcomp, Controller);
+	Move_Rotation(playercomp, transfomcomp);
+}
+
+void PlayerSystem::Action_Run(PlayerComponent& playercomp)
+{
+	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.MaxSpeed = playercomp.RunSpeed;
+	Move_Walk(transfomcomp, Controller);
+	Move_Rotation(playercomp, transfomcomp);
+}
+void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
+{
+	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
+	Move_Walk(transfomcomp, Controller);
+	Move_Rotation(playercomp, transfomcomp);
+}
+
+void PlayerSystem::Action_Jump(PlayerComponent& playercomp)
+{
+	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Move_Walk(transfomcomp, Controller);
+	Move_Rotation(playercomp, transfomcomp);
+	Move_Jump(transfomcomp, Controller);
+}
+
+void PlayerSystem::Action_Attack(PlayerComponent& playercomp)
+{
+	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Move_Walk(transfomcomp, Controller);
+	Move_Rotation(playercomp, transfomcomp);
+	switch (playercomp.ShootType)
+	{
+	case VisPred::Game::GunType::PISTOL:
+		Shoot_Pistol(playercomp);
+		break;
+	case VisPred::Game::GunType::SHOTGUN:
+		Shoot_ShotGun(playercomp);
+		break;
+	case VisPred::Game::GunType::RIFLE:
+		Shoot_Rifle(playercomp);
+		break;
+	default:
+		break;
+	}
+}
+
+void PlayerSystem::Action_Die(PlayerComponent& playercomp)
+{
+
+}
+
+void PlayerSystem::Action_Destroy(PlayerComponent& playercomp)
+{
+
+}
+#pragma endregion
+
+#pragma region Shoot Logic
+void PlayerSystem::Shoot_Style(PlayerComponent& playercomp)
+{
+}
+
+void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp)
+{
+
+
+
+
+}
+
+void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp)
+{
+
+}
+void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp)
+{
+}
+
+#pragma endregion
+
+#pragma region Move Logic
+
+void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
+{							 
+	controllercomp.InputDir.x = {};
+	controllercomp.InputDir.z = {};
+	if (INPUTKEY(KEYBOARDKEY::W))
+		controllercomp.InputDir += transformcomp.FrontVector;
+	if (INPUTKEY(KEYBOARDKEY::S))
+		controllercomp.InputDir -= transformcomp.FrontVector;
+	if (INPUTKEY(KEYBOARDKEY::A))
+		controllercomp.InputDir -= transformcomp.RightVector;
+	if (INPUTKEY(KEYBOARDKEY::D))
+		controllercomp.InputDir += transformcomp.RightVector;
+}
+
+void PlayerSystem::Move_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp)
+{
+	// 컴포넌트 접근을 캐싱
+	// 입력 매니저에서 마우스 델타 값을 미리 가져옴
+	int deltaCurposX = InputManager::GetInstance().GetMouseDeltaX();
+	int deltaCurposY = InputManager::GetInstance().GetMouseDeltaY();
+	float sensitivity = playercomp.Sencitive;
+	// 플레이어의 회전 업데이트
+	float yaw = deltaCurposX * sensitivity;
+	VPMath::Vector3 playerRotation = transformcomp.World_Rotation;
+	playerRotation.y += yaw;
+	transformcomp.SetWorldRotation(playerRotation);
+	// 자식 컴포넌트가 있는 경우에만 처리
+	if (!playercomp.HasComponent<Children>())
+		return;
+	auto children = playercomp.GetComponent<Children>();
+	for (uint32_t childID : children->ChildrenID)
+	{
+		if (!GetSceneManager()->HasComponent<CameraComponent>(childID))
+			continue;
+		auto camera = GetSceneManager()->GetComponent<CameraComponent>(childID);
+		TransformComponent* cameratransform = camera->GetComponent<TransformComponent>();
+		// 카메라 회전 업데이트
+		float pitch = deltaCurposY * sensitivity;
+		VPMath::Vector3 cameraRotation = cameratransform->Local_Rotation;
+		cameraRotation.x += pitch;
+		cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
+		cameratransform->SetLocalRotation(cameraRotation);
+	}
+}
+
+void PlayerSystem::Move_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
+{
+	controllercomp.InputDir.y = {};
+	if (INPUTKEYDOWN(KEYBOARDKEY::SPACE)|| INPUTKEY(KEYBOARDKEY::SPACE))
+		controllercomp.InputDir += transformcomp.UpVector;
+}
+
+void PlayerSystem::Move_Slide(PlayerComponent& playercomp)
+{
+}
+#pragma endregion

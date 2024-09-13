@@ -2,13 +2,22 @@
 
 #include"EventSubscriber.h" 
 ///Input
+#define DIRECTINPUT_VERSION 0x0800 // DirectInput 8.0À» »ç¿ë
 #include <dinput.h>
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #pragma comment(lib, "dinput8.lib")
 
 #define INPUTKEYDOWN(KEYENUM) InputManager::GetInstance().GetKeyDown(KEYENUM)
+
+#define INPUTKEYDOWNS(...) \
+    CheckMultipleKeys(__VA_ARGS__)
+
 #define INPUTKEY(KEYENUM) InputManager::GetInstance().GetKey(KEYENUM)
+#define INPUTKEYS(...) \
+    (CheckMultipleKeysState(__VA_ARGS__))
+
+
 #define INPUTKEYUP(KEYENUM) InputManager::GetInstance().GetKeyUp(KEYENUM)
 
 enum class MOUSEKEY
@@ -195,7 +204,6 @@ public:
 	int GetMouseDeltaX() const { return m_mouseDeltaX; }
 	int GetMouseDeltaY() const { return m_mouseDeltaY; }
 	void Shutdown();
-
 	bool GetKeyDown(KEYBOARDKEY inputkey);
 	bool GetKeyUp(KEYBOARDKEY inputkey);
 	bool GetKey(KEYBOARDKEY inputkey);
@@ -203,7 +211,6 @@ public:
 	bool GetKeyUp(MOUSEKEY inputkey);
 	bool GetKey(MOUSEKEY);
 	bool IsEscapePressed();
-
 private:
 	void CopyKeyStateToPrevious();
 	void CopyMouseStateToPrevious();
@@ -228,3 +235,21 @@ private:
 	int m_mouseDeltaY=0;
 };
 
+template <typename T>
+bool CheckMultipleKeys(T key) {
+	return InputManager::GetInstance().GetKeyDown(key);
+}
+
+template <typename T, typename... Args>
+bool CheckMultipleKeys(T key, Args... keys) {
+	return InputManager::GetInstance().GetKeyDown(key) || CheckMultipleKeys(keys...);
+}
+template <typename T>
+bool CheckMultipleKeysState(T key) {
+	return InputManager::GetInstance().GetKey(key);
+}
+
+template <typename T, typename... Args>
+bool CheckMultipleKeysState(T key, Args... keys) {
+	return InputManager::GetInstance().GetKey(key) || CheckMultipleKeysState(keys...);
+}

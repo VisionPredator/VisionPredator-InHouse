@@ -19,6 +19,12 @@
 
 #include "VisPredMath.h"
 namespace VPMath = VisPred::SimpleMath;
+///Nav Mesh
+#include "recastnavigation/Detour/DetourNavMesh.h"
+#include "recastnavigation/Detour/DetourNavMeshBuilder.h"
+#include "recastnavigation/Detour/DetourNavMeshQuery.h"
+#include "recastnavigation/DetourCrowd/DetourCrowd.h"
+#include "recastnavigation/Recast/Recast.h"
 
 using namespace entt::literals;
 #define IMGUI_DEFINE_MATH_OPERATORS

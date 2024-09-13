@@ -50,11 +50,8 @@ namespace VPPhysics
 	};
 	struct PhysicsInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(PhysicsInfo, Gravity, FrameRate, CollisionMatrix)
-			void SerializePhysicsInfo(nlohmann::json& json)
-		{
-			to_json(json, *this);
-		}
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(PhysicsInfo, Gravity, FrameRate, CollisionMatrix)
+
 
 		VPMath::Vector3 Gravity{};
 		uint32_t FrameRate = 60;
@@ -79,7 +76,7 @@ namespace VPPhysics
 	};
 	struct ControllerInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ControllerInfo,  LayerNumber);
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(ControllerInfo,  LayerNumber);
 
 		uint32_t EntityId = noneID;								// 캐릭터 컨트롤러 아이디
 		EPhysicsLayer LayerNumber{};								// 충돌 매트릭스 레이어 넘버
@@ -88,7 +85,7 @@ namespace VPPhysics
 	struct CapsuleControllerInfo
 	{
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CapsuleControllerInfo, Info, position, height, radius, stepOffset, slopeLimit, contactOffset);
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CapsuleControllerInfo, Info, position, height, radius, stepOffset, slopeLimit, contactOffset);
 
 		ControllerInfo Info{};
 		VPMath::Vector3 position{ 0.f, 0.f, 0.f };					// 캐릭터 컨트롤러가 위치하는 처음 생성 위치
@@ -116,7 +113,7 @@ namespace VPPhysics
 
 	struct ColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColliderInfo, PhysicsLayer, UseGravity, LinearLock, AngleLock, OffSet, StaticFriction, DynamicFriction, Restitution, Density)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(ColliderInfo, PhysicsLayer, UseGravity, LinearLock, AngleLock, OffSet, StaticFriction, DynamicFriction, Restitution, Density)
 
 		EPhysicsLayer PhysicsLayer{};
 		uint32_t EntityID = noneID;
@@ -135,7 +132,7 @@ namespace VPPhysics
 
 	struct BoxColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(BoxColliderInfo,  Extent)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(BoxColliderInfo,  Extent)
 
 		ColliderInfo colliderInfo{};
 		VPMath::Vector3 Extent = {1,1,1};		// 길이
@@ -143,7 +140,7 @@ namespace VPPhysics
 
 	struct SphereColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(SphereColliderInfo,  Radius)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(SphereColliderInfo,  Radius)
 
 		ColliderInfo colliderInfo{};
 		float Radius = 1.f;									// 반지름
@@ -156,7 +153,7 @@ namespace VPPhysics
 	};
 	struct CapsuleColliderInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CapsuleColliderInfo,  Radius, HalfHeight)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CapsuleColliderInfo,  Radius, HalfHeight)
 
 		ColliderInfo colliderInfo{};
 		float Radius = 1.f;									// 반지름

@@ -50,11 +50,15 @@ void SceneSerializer::OnSerializeScene(std::any data)
 			}
 			SceneJson["Entitys"].push_back(entityJson);
 		}
-		        // Serialize scene physics data
-        VPPhysics::PhysicsInfo ScenePhysicInfo = GetSceneManager()->GetScenePhysic();
-
+		// Serialize scene physics data
+		VPPhysics::PhysicsInfo ScenePhysicInfo = GetSceneManager()->GetScenePhysic();
 		nlohmann::json physicsJson = ScenePhysicInfo;
-        SceneJson["PhysicsInfo"] = physicsJson;
+		SceneJson["PhysicsInfo"] = physicsJson;
+
+		// Serialize BuildSettings
+		BuildSettings sceneBuildSettings = GetSceneManager()->GetSceneBuildSettrings();
+		nlohmann::json buildSettingsJson = sceneBuildSettings;
+		SceneJson["BuildSettings"] = buildSettingsJson;
 
         // Write the serialized JSON data to the file
         ofsmapFilePath << SceneJson.dump(4);
@@ -129,6 +133,14 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 			VPPhysics::PhysicsInfo ScenePhysicInfo;
 			sceneJson.at("PhysicsInfo").get_to(ScenePhysicInfo);
 			GetSceneManager()->SetScenePhysic(ScenePhysicInfo);
+		}
+
+		// Deserialize BuildSettings
+		if (sceneJson.contains("BuildSettings"))
+		{
+			BuildSettings sceneBuildSettings;
+			sceneJson.at("BuildSettings").get_to(sceneBuildSettings);
+			GetSceneManager()->SetSceneBuildSettrings(sceneBuildSettings);
 		}
 	}
 	catch (const std::exception& e)

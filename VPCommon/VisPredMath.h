@@ -113,7 +113,7 @@ namespace VisPred
         // 2D vector
         struct Vector2 : public XMFLOAT2
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Vector2, x, y)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Vector2, x, y)
 
             Vector2() noexcept : XMFLOAT2(0.f, 0.f) {}
             constexpr explicit Vector2(float ix) noexcept : XMFLOAT2(ix, ix) {}
@@ -228,7 +228,7 @@ namespace VisPred
         // 3D vector
         struct Vector3 : public XMFLOAT3
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Vector3, x, y, z)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Vector3, x, y, z)
 
             Vector3() noexcept : XMFLOAT3(0.f, 0.f, 0.f) {}
             constexpr explicit Vector3(float ix) noexcept : XMFLOAT3(ix, ix, ix) {}
@@ -350,7 +350,7 @@ namespace VisPred
         // 4D vector
         struct Vector4 : public XMFLOAT4
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Vector4, x, y,z,w)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Vector4, x, y,z,w)
 
             Vector4() noexcept : XMFLOAT4(0.f, 0.f, 0.f, 0.f) {}
             constexpr explicit Vector4(float ix) noexcept : XMFLOAT4(ix, ix, ix, ix) {}
@@ -466,7 +466,7 @@ namespace VisPred
         // 4x4 Matrix (assumes right-handed cooordinates)
         struct Matrix : public XMFLOAT4X4
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Matrix, _11, _12, _13, _14, _21, _22, _23, _24, _31, _32, _33, _34, _41, _42, _43, _44)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Matrix, _11, _12, _13, _14, _21, _22, _23, _24, _31, _32, _33, _34, _41, _42, _43, _44)
 
             Matrix() noexcept
                 : XMFLOAT4X4(1.f, 0, 0, 0,
@@ -658,7 +658,7 @@ namespace VisPred
         // Plane
         struct Plane : public XMFLOAT4
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Plane, x, y, z, w)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Plane, x, y, z, w)
 
             Plane() noexcept : XMFLOAT4(0.f, 1.f, 0.f, 0.f) {}
             constexpr Plane(float ix, float iy, float iz, float iw) noexcept : XMFLOAT4(ix, iy, iz, iw) {}
@@ -714,7 +714,7 @@ namespace VisPred
         // Quaternion
         struct Quaternion : public XMFLOAT4
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Quaternion, x, y, z, w)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Quaternion, x, y, z, w)
 
             Quaternion() noexcept : XMFLOAT4(0, 0, 0, 1.f) {}
             constexpr Quaternion(float ix, float iy, float iz, float iw) noexcept : XMFLOAT4(ix, iy, iz, iw) {}
@@ -814,7 +814,7 @@ namespace VisPred
         // Color
         struct Color : public XMFLOAT4
         {
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Color, x, y, z, w)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Color, x, y, z, w)
 
             Color() noexcept : XMFLOAT4(0, 0, 0, 1.f) {}
             constexpr Color(float _r, float _g, float _b) noexcept : XMFLOAT4(_r, _g, _b, 1.f) {}
@@ -916,7 +916,7 @@ namespace VisPred
         {
 
         public:
-            NLOHMANN_DEFINE_TYPE_INTRUSIVE(Ray, position, direction)
+            NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(Ray, position, direction)
             Vector3 position;
             Vector3 direction;
 

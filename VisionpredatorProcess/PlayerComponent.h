@@ -1,22 +1,25 @@
 #pragma once
 #include "Component.h"
+#include "VisPredStructs.h"
 struct PlayerComponent :
     public Component
 {
     PlayerComponent();
-    VP_JSONBODY(PlayerComponent, Sencitive, HP, Maxspeed, Accel, JumpFoce, MaxJumpCount, AirControl, HasGun, FirPosition)
-		uint32_t HP{};
+	VP_JSONBODY(PlayerComponent, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, HasGun, GravityPower, FirPosition)
+	uint32_t HP{};
+    VisPred::Game::EFSM CurrentFSM=VisPred::Game::EFSM::IDLE;
     float Sencitive=1.f;
-    float Speed{};
+    float WalkSpeed{};
+    float RunSpeed{};
+    float SlideDisTance{};
     float Accel{};
-    float Maxspeed{};
+    float StaticFriction{};
+    float DynamicFriction{};
     float JumpFoce{};
-    float JumppHeight{};
-    uint32_t MaxJumpCount{};
-    uint32_t Jumpcount{};
-    float AirControl{};
-    bool Isground{};
+    float AirControlPercent{};
+    float GravityPower = 1.f;
     bool HasGun{};
+    VisPred::Game::GunType ShootType{};
     std::string FirPosition;
 };
 

@@ -78,78 +78,91 @@ void TransparencyPass::Render()
 	for (const auto& curData: m_RenderList)
 	{
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+
+		bool isTransparency = false;
+
 		if (curModel != nullptr)
 		{
-			Device->Context()->RSSetState(curModel->RS.lock()->Get());
-
-			for (auto& mesh : curModel->m_Meshes)
+			for (auto material : curModel->m_Materials)
 			{
-				Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
-				Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
-				Device->Context()->IASetPrimitiveTopology(mesh->m_primitive);
-				Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
-
-				if (mesh->IsSkinned())
+				if (material->m_OpacitySRV.lock() != nullptr)
 				{
-					Device->BindVS(m_SkeletalMeshVS.lock());
+					isTransparency = true;
+					break;
+				}
+			}
 
-					std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+			Device->Context()->RSSetState(curModel->RS.lock()->Get());
+			if (isTransparency)
+			{
+				for (auto& mesh : curModel->m_Meshes)
+				{
+					Device->Context()->IASetVertexBuffers(0, 1, mesh->GetAddressVB(), mesh->VBSize(), mesh->VBOffset());
+					Device->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+					Device->Context()->IASetPrimitiveTopology(mesh->m_primitive);
+					Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 
-					// CB Update
-					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
-
-					TransformData renew;
-					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
-					renew.local = curMesh->m_node.lock()->m_World;
-					XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));
-					XMStoreFloat4x4(&renew.worldInverse, (renew.world.Invert()));
-					position->Update(renew);
-
-					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
-					if (!curData->FBX.empty() && curData->isPlay)
+					if (mesh->IsSkinned())
 					{
-						std::wstring id = std::to_wstring(curData->EntityID);
-						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+						Device->BindVS(m_SkeletalMeshVS.lock());
+
+						std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+
+						// CB Update
+						std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+
+						TransformData renew;
+						XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+						renew.local = curMesh->m_node.lock()->m_World;
+						XMStoreFloat4x4(&renew.localInverse, (renew.local.Invert()));
+						XMStoreFloat4x4(&renew.worldInverse, (renew.world.Invert()));
+						position->Update(renew);
+
+						std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
+						if (!curData->FBX.empty() && curData->isPlay)
+						{
+							std::wstring id = std::to_wstring(curData->EntityID);
+							pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock();
+						}
+						else
+						{
+							pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+						}
+						pallete->Update();
+						Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 					}
 					else
 					{
-						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+						BindStatic(curData);
+
+						std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
 					}
-					pallete->Update();
-					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
-				}
-				else
-				{
-					BindStatic(curData);
 
-					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default).lock();
-				}
-
-				if (!curModel->m_Materials.empty())
-				{
-					std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
-					std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-
-					MaterialData curMaterialData = curMaterial->m_Data;
-					curData->Update(curMaterialData);
-
-					if (curData->m_struct.useNEOL.z > 0)
+					if (!curModel->m_Materials.empty())
 					{
-						Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
-						Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);
-					}
-					
+						std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
+						std::shared_ptr<ConstantBuffer<MaterialData>> curData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 
-					Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
-					{
-						Device->BindMaterialSRV(curMaterial);
+						MaterialData curMaterialData = curMaterial->m_Data;
+						curData->Update(curMaterialData);
+
+						if (curData->m_struct.useNEOL.z > 0)
+						{
+							Device->Context()->OMSetBlendState(state->GetState().Get(), nullptr, 0xFFFFFFFF);
+							Device->Context()->OMSetDepthStencilState(depth->GetState().Get(), 1);
+						}
+
+
+						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+						{
+							Device->BindMaterialSRV(curMaterial);
+						}
 					}
+
+					///Draw
+					Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 				}
-
-				///Draw
-				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
-
 		}
 	}
 }

@@ -1,17 +1,91 @@
 {
     "Entitys": [
         {
-            "EntityID": 3838161738,
+            "EntityID": 4191678254,
             "Component": [
                 {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 0,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": false
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
                     "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Name": "Ground"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        49,
+                        45,
+                        50,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
                 },
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": -11.0,
                         "z": 0.0
                     },
                     "Local_Quaternion": {
@@ -25,38 +99,15 @@
                         "y": 1.0,
                         "z": 1.0
                     }
-                },
-                {
-                    "ComponentID": 4257272042,
-                    "attenuation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "direction": {
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "intensity": 1.0,
-                    "range": -1.0,
-                    "spot": -1.0,
-                    "type": 0
                 }
             ]
         },
         {
-            "EntityID": 500751651,
+            "EntityID": 673789209,
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Gun"
+                    "Name": "Player"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -76,13 +127,104 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                },
+                {
+                    "Accel": 5.0,
+                    "AirControlPercent": 0.0,
+                    "ComponentID": 4183631247,
+                    "CurrentFSM": 0,
+                    "DynamicFriction": 0.0,
+                    "FirPosition": "",
+                    "GravityPower": 1.0,
+                    "HP": 0,
+                    "HasGun": false,
+                    "JumpFoce": 0.0,
+                    "RunSpeed": 0.0,
+                    "Sencitive": 0.10000000149011612,
+                    "SlideDisTance": 0.0,
+                    "StaticFriction": 0.0,
+                    "WalkSpeed": 0.0
+                },
+                {
+                    "Acceleration": 30.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 0
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 10.0,
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "radius": 3.0,
+                        "slopeLimit": 0.30000001192092896,
+                        "stepOffset": 0.0
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 0
+                    },
+                    "DynamicFriction": 0.10000000149011612,
+                    "GravityWeight": 9.8100004196167,
+                    "JumpSpeed": 11.0,
+                    "JumpXZAcceleration": 10.0,
+                    "JumpXZDeceleration": 0.10000000149011612,
+                    "MaxSpeed": 10.0,
+                    "StaticFriction": 0.4000000059604645
+                },
+                {
+                    "ChildrenID": [
+                        305523436
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 305523436,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Camera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 673789209
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 1000.0,
+                    "IsMain": true,
+                    "NearZ": 1.0
                 }
             ]
         }
     ],
     "PhysicsInfo": {
         "CollisionMatrix": [
-            0,
+            1,
             0,
             0,
             0,
@@ -95,8 +237,18 @@
         "FrameRate": 60,
         "Gravity": {
             "x": 0.0,
-            "y": 0.0,
+            "y": -9.8100004196167,
             "z": 0.0
         }
+    },
+    "BuildSettings": {
+        "DivisionSizeXZ": 0.30000001192092896,
+        "DivisionSizeY": 0.20000000298023224,
+        "MaxAgentRadius": 0.6000000238418579,
+        "MaxCrowdNumber": 64,
+        "UseNavMesh": false,
+        "WalkableClimb": 0.20000000298023224,
+        "WalkableHeight": 0.30000001192092896,
+        "WalkableSlopeAngle": 30.0
     }
 }

@@ -2,10 +2,10 @@
 #include "Component.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
 struct ControllerComponent :
-    public Component
+	public Component
 {
-    VP_JSONBODY(ControllerComponent, Contollerinfo, CapsuleControllerinfo, MaxSpeed, Acceleration, StaticFriction, DynamicFriction, JumpSpeed, JumpXZAcceleration, JumpXZDeceleration, GravityWeight)
-    
+	VP_JSONBODY(ControllerComponent, Contollerinfo, CapsuleControllerinfo, MaxSpeed, Acceleration, StaticFriction, DynamicFriction, JumpSpeed, JumpXZAcceleration, JumpXZDeceleration, GravityWeight);
+
 	VPPhysics::ControllerInfo Contollerinfo;
 	VPPhysics::CapsuleControllerInfo CapsuleControllerinfo;
 	VPMath::Vector3 InputDir{};
