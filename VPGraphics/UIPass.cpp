@@ -54,7 +54,7 @@ void UIPass::Render()
 
 	// ¾ËÆÄ ºí·£µù »ç¿ë.
 	float factor[] = { 0.f, 0.f, 0.f, 0.f };
-	m_Device->Context()->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlending").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
+	m_Device->Context()->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlend").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
 
 	// 2D ·»´õ¸µÀ» À§ÇØ Z ¹öÆÛ ²ô±â
 	m_Device->Context()->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DisableDepth").lock()->GetState().Get(), 0);

@@ -1,12 +1,10 @@
 #include "pch.h"
 #include "DepthStencilState.h"
-
 #include "Defines.h"
 
-DepthStencilState::DepthStencilState(const std::shared_ptr<Device>& device, const DepthStencilStateType& type) : Resource(device)
+DepthStencilState::DepthStencilState(const std::shared_ptr<Device>& device, DepthStencilStateType type)
 {
-	D3D11_DEPTH_STENCIL_DESC desc;
-	ZeroMemory(&desc, sizeof(desc));
+	CD3D11_DEPTH_STENCIL_DESC desc(CD3D11_DEFAULT{});
 
 	switch (type)
 	{

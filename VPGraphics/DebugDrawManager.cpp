@@ -11,7 +11,7 @@ using namespace VPMath;
 
 void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
-    m_AlphaBlendBS = resourceManager->Get<BlendState>(L"AlphaBlending").lock();
+    m_AlphaBlendBS = resourceManager->Get<BlendState>(L"AlphaBlend").lock();
     m_DefaultDSS = resourceManager->Get<DepthStencilState>(L"DefaultDSS").lock();
     m_CullNoneRS = std::make_shared<RenderState>(device, RasterizerStateType::CullNone);
 
