@@ -27,6 +27,7 @@ public:
 	void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 
+
 	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
@@ -71,41 +72,25 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void RemoveController(uint32_t entityID) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	VPMath::Vector3 GetControllerGobalPose(uint32_t entityID) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity) override;
-
-
 	bool GetControllerIsFall(uint32_t entityID) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) override;
-
 	bool HasConvexMeshResource(const std::wstring& key) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
-
 	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
+	bool HasRigidBody(uint32_t entityID) override;
+
 
 
 	// IPhysx을(를) 통해 상속됨
-	bool HasRigidBody(uint32_t entityID) override;
+	uint32_t RaycastFromEntity(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
+
+	uint32_t RaycastFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+
+	uint32_t RaycastFromLocationWithIgnore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
 };
 

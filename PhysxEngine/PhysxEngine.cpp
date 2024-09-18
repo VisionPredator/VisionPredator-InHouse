@@ -197,6 +197,26 @@ bool PhysxEngine::HasRigidBody(uint32_t entityID)
 	return m_RigidBodyManager->HasRigidBody(entityID);;
 }
 
+uint32_t PhysxEngine::RaycastFromEntity(uint32_t entityID, VPMath::Vector3 dir, float distance)
+{
+
+
+
+
+	return 0;
+}
+
+uint32_t PhysxEngine::RaycastFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	return 0;
+}
+
+uint32_t PhysxEngine::RaycastFromLocationWithIgnore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	return 0;
+}
+
+
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
 {
 	m_RigidBodyManager->SetGobalPose(entityID, P, Q);

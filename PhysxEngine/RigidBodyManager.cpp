@@ -25,7 +25,7 @@ bool RigidBodyManager::Initialize(physx::PxPhysics* physics, physx::PxScene* sce
 	m_Scene = scene;
 	m_ResourceManager = resourceManager;
 	return true;
-}
+} 
 
 void RigidBodyManager::Update()
 {
@@ -311,16 +311,11 @@ std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::Px
 
 void RigidBodyManager::OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody)
 {
-	//auto tempRigid = std::any_cast<std::shared_ptr<RigidBody>>(data);
+	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+		m_Scene->addActor(*std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody)->GetPxDynamicRigid());
+	else if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+		m_Scene->addActor(*std::dynamic_pointer_cast<StaticRigidBody>(rigidbody)->GetPxStaticRigid());
 
-	if (auto dynamicBody = std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody))
-	{
-		m_Scene->addActor(*dynamicBody->GetPxDynamicRigid());
-	}
-	else if (auto staticBody = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
-	{
-		m_Scene->addActor(*staticBody->GetPxStaticRigid());
-	}
 }
 void RigidBodyManager::OnReleaseBodyScene(std::any data)
 {
@@ -351,26 +346,31 @@ void RigidBodyManager::ReleaseBodyScene(uint32_t entityID)
 	auto tempbody = it->second;
 	bool isDynamic = false;
 
-	if (auto dynamicBody = dynamic_cast<DynamicRigidBody*>(tempbody.get()))
+	// DynamicRigidBody인지 체크 후 처리
+	if (Reflection::IsSameType<DynamicRigidBody>(tempbody->GetTypeID()))
 	{
+		auto dynamicBody = std::static_pointer_cast<DynamicRigidBody>(tempbody);
 		if (dynamicBody->GetPxDynamicRigid()->getScene() == m_Scene)
 		{
 			m_RigidBodyMap.erase(it);
 			isDynamic = true;
 		}
 	}
-	else if (auto staticBody = dynamic_cast<StaticRigidBody*>(tempbody.get()))
+	// StaticRigidBody인지 체크 후 처리
+	else if (Reflection::IsSameType<StaticRigidBody>(tempbody->GetTypeID()))
 	{
+		auto staticBody = std::static_pointer_cast<StaticRigidBody>(tempbody);
 		if (staticBody->GetPxStaticRigid()->getScene() == m_Scene)
 		{
 			m_RigidBodyMap.erase(it);
 		}
 	}
 
+	// tempbody와 isDynamic의 값을 std::any로 래핑하여 이벤트를 호출
 	std::any data = std::make_pair(tempbody, isDynamic);
-	//EventManager::GetInstance().ScheduleEvent("OnReleaseBodyScene", data);
 	OnReleaseBodyScene(data);
 }
+
 
 std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
 {
@@ -640,6 +640,157 @@ VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
 		assert(false); // Add an assert to handle the unexpected case
 		return {};
 	}
+}
+
+uint32_t RigidBodyManager::FindIDByActor(physx::PxRigidActor* Actor)
+{
+	auto key = static_cast<uint32_t*>(Actor->userData);
+	return *key;
+}
+
+uint32_t RigidBodyManager::RaycastToFirstHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+{
+	auto tempActor = FindActorByID(entityID);
+	physx::PxVec3 tempDir = { dir.x,dir.y,dir.z };
+	tempDir.normalize();
+	PxF32 max = (PxF32)distance;
+	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+	if (tempDir.isZero())
+		return 0;
+
+	bool find = m_Scene->raycast(
+		tempActor->getGlobalPose().p,				// 시작점
+		tempDir,									// 단위벡터
+		max,										// 거리
+		buf);										// PxRaycastCallback& hitCall
+
+	if (!find)
+		return 0;
+
+	for (PxU32 i = 0; i < buf.nbTouches; i++)
+	{
+
+		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
+		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+		if (tempID == entityID)
+			continue;
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+			return tempID;
+	}
+	return 0;
+}
+
+uint32_t RigidBodyManager::RaycastToFirstHitActorWithOffset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+{
+	auto tempActor = FindActorByID(entityID);			// entityID를 통해 물리 액터를 찾아옴
+	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };	// 입력된 방향 벡터를 PhysX의 PxVec3로 변환
+	tempDir.normalize();								// 방향 벡터를 단위 벡터로 정규화
+	PxF32 max = (PxF32)distance;						// 레이캐스트할 최대 거리를 설정
+	const PxU32 bufferSize = 32;						// 레이캐스트 히트 결과를 저장할 버퍼의 크기 설정
+	PxRaycastHit hitBuffer[bufferSize];					// 레이캐스트에 의해 접촉된 물체들의 정보를 저장할 버퍼
+	PxRaycastBuffer buf(hitBuffer, bufferSize);			// 레이캐스트 결과를 저장할 버퍼 객체 생성
+
+	if (tempDir.isZero())	// 방향 벡터가 0인 경우(정규화 실패), 0을 반환
+		return 0;
+
+	// 레이캐스트 시작점 설정: 액터의 전역 위치에 오프셋을 더한 값
+	PxVec3 raypos = PxVec3{ offset.x, offset.y, offset.z } + tempActor->getGlobalPose().p;
+
+	// 레이캐스트 실행
+	bool find = m_Scene->raycast(
+		raypos,               // 레이캐스트 시작점
+		tempDir,              // 레이캐스트 방향 (정규화된 단위 벡터)
+		max,                  // 레이캐스트 최대 거리
+		buf);                 // 레이캐스트 결과를 저장할 버퍼
+
+	if (!find)  // 레이캐스트로 아무것도 찾지 못한 경우 0을 반환
+		return 0;
+
+	// 레이캐스트로 접촉된 모든 객체들에 대해 반복
+	for (PxU32 i = 0; i < buf.nbTouches; i++)
+	{
+		PxVec3 p = buf.getTouch(i).position;   // i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+		PxVec3 n = buf.getTouch(i).normal;     // i번째 접촉된 지점의 표면 법선 벡터를 가져옴
+		PxF32 d = buf.getTouch(i).distance;    // i번째 접촉된 지점까지의 거리를 가져옴
+		auto tempID = FindIDByActor(buf.touches[i].actor);  // i번째 접촉된 액터(물리 객체)에 해당하는 엔티티 ID를 찾음
+
+		if (tempID == entityID)  // 자신과 동일한 엔티티 ID는 무시하고 다음 반복으로 넘어감
+			continue;
+
+		// 트리거가 아닌 충돌체에 대해서만 해당 엔티티 ID를 반환
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+			return tempID;
+	}
+
+	return 0;  // 트리거가 아닌 충돌체를 찾지 못한 경우 0을 반환
+}
+
+
+uint32_t RigidBodyManager::RaycastToFirstHitFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+	tempDir.normalize();  // 단위 벡터로 정규화
+	PxF32 max = (PxF32)distance;
+	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+
+	if (tempDir.isZero())
+		return 0;
+
+	// 주어진 위치를 PhysX의 PxVec3로 변환
+	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
+
+	// 레이캐스트 수행
+	bool find = m_Scene->raycast(
+		raypos,                                   // 시작점
+		tempDir,                                  // 단위벡터
+		max,                                      // 거리
+		buf);                                     // PxRaycastCallback& hitCall
+
+	if (!find)
+		return 0;
+
+	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
+	for (PxU32 i = 0; i < buf.nbTouches; i++)
+	{
+		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
+		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+
+		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+			return tempID;
+	}
+
+	return 0;
+}
+
+
+
+physx::PxRigidActor* RigidBodyManager::FindActorByID(uint32_t entityID)
+{
+	// 먼저 m_RigidBodyMap에서 엔티티를 찾음
+	auto it = m_RigidBodyMap.find(entityID);
+	if (it == m_RigidBodyMap.end())
+		return nullptr;
+
+	auto rigidbody = it->second;  // 검색한 결과의 값을 가져옴
+	Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID());
+	// DynamicRigidBody 타입인지 먼저 체크 후 반환
+	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+		return std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody)->GetPxDynamicRigid();
+
+	// StaticRigidBody 타입인지 체크 후 반환
+	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+		return std::dynamic_pointer_cast<StaticRigidBody>(rigidbody)->GetPxStaticRigid();
+
+	return nullptr;  // 해당하는 타입이 없으면 nullptr 반환
 }
 
 void RigidBodyManager::AddBodyScene(std::shared_ptr<RigidBody> body)

@@ -19,7 +19,7 @@ bool ControllerManager::Initialize(physx::PxScene* scene, physx::PxPhysics* phys
 {
     m_PxPhysics = physics;
     m_Material = m_PxPhysics->createMaterial(1.f, 1.f, 0.f);
-
+    m_Scene = scene;
     m_CollisionManager = collisionManager;
     m_PxControllerManager = PxCreateControllerManager(*scene);
     return true;
@@ -63,6 +63,56 @@ bool ControllerManager::Update(float deltatime)
 
 }
 
+uint32_t ControllerManager::RaycastToFirstHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+{
+    //auto tempActor = GetController(entityID);
+    //physx::PxVec3 tempDir = { dir.x,dir.y,dir.z };
+    //tempDir.normalize();
+    //PxF32 max = (PxF32)distance;
+    //const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+    //PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+    //PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+    //if (tempDir.isZero())
+    //    return 0;
+    //bool find = ->raycast(
+    //    tempActor->getGlobalPose().p,				// 시작점
+    //    tempDir,									// 단위벡터
+    //    max,										// 거리
+    //    buf);										// PxRaycastCallback& hitCall
+
+    //if (!find)
+    //    return 0;
+
+    //for (PxU32 i = 0; i < buf.nbTouches; i++)
+    //{
+
+    //    PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+    //    PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
+    //    PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+    //    auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+    //    if (tempID == entityID)
+    //        continue;
+    //    if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+    //        return tempID;
+    //}
+    //return 0;
+
+
+
+
+    return 0;
+}
+
+uint32_t ControllerManager::RaycastToFirstHitActorWithOffset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+{
+    return 0;
+}
+
+uint32_t ControllerManager::RaycastToFirstHitFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+    return 0;
+}
+
 bool ControllerManager::RemoveController(const unsigned int& id)
 {
     auto controller = m_CharectorMap.find(id);
@@ -82,7 +132,14 @@ bool ControllerManager::HasController(uint32_t entityID)
 
 Controller* ControllerManager::GetController(uint32_t entityID)
 {
-	if (!HasController(entityID))
-    return nullptr;
-    return m_CharectorMap[entityID].get();
+    // 먼저 entityID가 m_CharectorMap에 존재하는지 확인
+    auto it = m_CharectorMap.find(entityID);
+    if (it == m_CharectorMap.end())
+        return nullptr;
+    auto controller = it->second;  // 검색한 결과의 값을 가져옴
+
+    return it->second.get();
+    if (auto capsuleController = std::dynamic_pointer_cast<CapsuleController>(controller))
+        return capsuleController.get();  // raw 포인터로 반환
+    // 키가 존재하면 해당 shared_ptr의 raw 포인터를 반환
 }

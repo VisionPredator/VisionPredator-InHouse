@@ -24,6 +24,9 @@ public:
 	bool CreatController();
 	bool CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo);
 	bool Update(float deltatime);
+	uint32_t RaycastToFirstHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToFirstHitActorWithOffset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToFirstHitFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
 	/// <summary>
 /// 캐릭터 컨트롤러 삭제 함수
 /// </summary>
@@ -38,6 +41,8 @@ public:
 
 
 	physx::PxPhysics* m_PxPhysics{};
+	physx::PxScene* m_Scene = nullptr;
+
 	CollisionManager* m_CollisionManager{};
 	physx::PxControllerManager* m_PxControllerManager{};
 
