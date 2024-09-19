@@ -339,6 +339,11 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 	return VPMath::Matrix::Identity;
 }
 
+void GraphicsEngine::SetVP(bool isVP)
+{
+	m_PassManager->SetVP(isVP);
+}
+
 void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
 {
 	m_ParticleManager->CreateParticleObject(entityID, info);

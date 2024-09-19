@@ -36,7 +36,7 @@ public:
 
 	void Render();
 	void OnResize();
-
+	void SetVP(bool isVP);
 private:
 	void DrawIMGUI();
 
@@ -66,5 +66,8 @@ private:
 
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;
+
+private:
+	bool m_isVP = false;
 };
 

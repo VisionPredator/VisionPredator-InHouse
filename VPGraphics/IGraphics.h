@@ -65,6 +65,9 @@ namespace Graphics
 		//소켓 - 본의 위치를 받는다
 		virtual const VPMath::Matrix Attachment(const uint32_t entityID) abstract;
 
+		//vp 스킬 쓰면 렌더 바꾸기
+		virtual void SetVP(bool isVP) abstract;
+
 		/// Effect
 		virtual void CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;
 		virtual void UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info) abstract;

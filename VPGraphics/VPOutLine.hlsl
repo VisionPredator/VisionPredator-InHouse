@@ -26,7 +26,7 @@ sampler gLinear : register(s0);
 
 
 
-
+float gamma = 2.2f;
 
 
 float4 main(VS_OUTPUT input) : SV_TARGET
@@ -77,14 +77,27 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     // 임계값 설정 (Normal 변화량이 크면 경계로 간주)
     float threshold = 0.1f;
 
+    
+    float4 output;
     // 경계를 감지하여 Outline 그리기
     if (magnitude > threshold)
     {
-        return float4(1, 0, 0, 1);
+        output = float4(0, 0.466f, 0.529f, 1);
     }
     else
     {
-	    return float4(0.0f, 0.0f, 0.0f, 1.0f);
+        output = float4(0.0470f, 0.0f, 0.3490f, 1.0f);
     }
-    
+
+    //aces tone mapping    
+    {
+        float a = 2.51f;
+        float b = 0.03f;
+        float c = 2.43f;
+        float d = 0.59f;
+        float e = 0.14f;
+        //output = saturate((output * (a * output + b)) / (output * (c * output + d) + e));
+    }
+        
+    return output;
 }
