@@ -100,7 +100,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.Color = component->Color;
 		info.Scale = component->Scale;
 
-		m_Graphics->CreateImageObject(component->GetEntityID(), info);
+		m_Graphics->Create2DImageObject(component->GetEntityID(), info);
 	}
 }
 
@@ -146,7 +146,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
 	{
 		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
-		m_Graphics->DeleteImageObject(component->GetEntityID());
+		m_Graphics->Delete2DImageObject(component->GetEntityID());
 	}
 }
 
@@ -188,7 +188,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.Color = component.Color;
 		info.Scale = component.Scale;
 
-		m_Graphics->UpdateImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+		m_Graphics->Update2DImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 }
 
@@ -198,10 +198,8 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 	bool IsChanged = false;
 	auto renderdata = meshComp.Renderdata;
 
-	renderdata->FBX = meshComp.FBX;
 	renderdata->world = transform.WorldTransform;
 	renderdata->rotation = transform.World_Rotation;
-	renderdata->MaskingColor = meshComp.MaskColor;
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)

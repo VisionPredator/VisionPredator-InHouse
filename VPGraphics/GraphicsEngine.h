@@ -62,9 +62,9 @@ public:
 	void DeleteParticleObjectByID(uint32_t id) override;
 
 	/// UI
-	void CreateImageObject(uint32_t id, const ui::ImageInfo& info) override;
-	void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) override;
-	void DeleteImageObject(uint32_t id) override;
+	void Create2DImageObject(uint32_t id, const ui::ImageInfo& info) override;
+	void Update2DImageObject(uint32_t id, const ui::ImageInfo& info) override;
+	void Delete2DImageObject(uint32_t id) override;
 
 	/// Light
 	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;

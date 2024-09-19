@@ -87,9 +87,9 @@ namespace Graphics
 		virtual void DrawRay(const debug::RayInfo& info) abstract;
 
 		/// UI
-		virtual void CreateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
-		virtual void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
-		virtual void DeleteImageObject(uint32_t id) abstract;
+		virtual void Create2DImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
+		virtual void Update2DImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
+		virtual void Delete2DImageObject(uint32_t id) abstract;
 
 		///Editor Àü¿ë
 		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;

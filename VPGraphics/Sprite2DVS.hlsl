@@ -24,8 +24,8 @@ VS_OUTPUT main(VS_INPUT input)
 	input.position.w = 1.0f;
 
 	output.position = mul(input.position, gWorldMatrix);
-	output.position = mul(input.position, gViewMatrix);
-	output.position = mul(input.position, gProjectionMatrix);
+	output.position = mul(output.position, gViewMatrix);
+	output.position = mul(output.position, gProjectionMatrix);
 
 	output.uv = input.uv;
 

@@ -18,13 +18,15 @@ public:
 
 	void Initialize(const std::shared_ptr<class Device>& device
 		, const std::shared_ptr<class ResourceManager>& resourceManager);
-
 	void Render();
 
-	// Image
-	void CreateImageObject(uint32_t entityID, const ui::ImageInfo& info);
-	void UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info);
-	void DeleteImageObject(uint32_t entityId);
+	// Images
+	void Create2DImageObject(uint32_t entityID, const ui::ImageInfo& info);
+	void Update2DImageObject(uint32_t entityID, const ui::ImageInfo& info);
+	void Delete2DImageObject(uint32_t entityId);
+	//void Create3DImageObject(uint32_t entityID, const ui::ImageInfo& info);
+	//void Update3DImageObject(uint32_t entityID, const ui::ImageInfo& info);
+	//void Delete3DImageObject(uint32_t entityId);
 
 	// TODO: Create Font
 	//void CreateTextObject(uint32_t entityID, const ui::TextInfo& info);
@@ -39,10 +41,9 @@ private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 
-	// Image
-	std::vector<std::shared_ptr<ImageObject>> m_ImageObjects;
+	// 생성해서 집어넣는 컨테이너를 통해 이미지의 2D 렌더링과 3D 렌더링을 구분짓는다.
+	std::vector<std::shared_ptr<ImageObject>> m_TwoDImages;
+	std::vector<std::shared_ptr<ImageObject>> m_ThreeDImages;
 
 	// TODO: Font
-
 };
-
