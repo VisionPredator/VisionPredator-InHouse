@@ -293,6 +293,7 @@
     <ClInclude Include="PostProcessManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
+    <ClInclude Include="VPOutLinePass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -461,6 +462,7 @@
     <ClCompile Include="PostProcessManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
+    <ClCompile Include="VPOutLinePass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -532,6 +534,7 @@
     <FxCompile Include="PreDepthPS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
+    <FxCompile Include="VPOutLine.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

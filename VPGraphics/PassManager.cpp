@@ -25,6 +25,7 @@
 #include "OutlineAddPass.h"
 #include "OutlineBlurPass.h"
 #include "OutlineEdgeDetectPass.h"
+#include "VPOutLinePass.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -46,7 +47,7 @@ PassManager::~PassManager()
 {
 	for (auto& pass : m_Passes)
 	{
-		pass.second.reset();
+		pass.reset();
 	}
 
 	m_Passes.clear();
@@ -64,10 +65,6 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 
 	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
 	//	std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Geometry,
-		std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock())));
-	m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::ObjectMask, 
-		std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock())));
 
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
@@ -78,26 +75,30 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_OutlineAddPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
+	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
+	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
+
+	m_Passes.push_back(m_GeometryPass);
+	m_Passes.push_back(std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock()));
+	m_Passes.push_back(m_DebugPass);
+	m_Passes.push_back(m_DeferredPass);
+	m_Passes.push_back(m_TransparencyPass);
+	m_Passes.push_back(m_VPOutLinePass);
 }
 
 void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling)
 {
 	m_DeferredPass->SetRenderQueue(afterCulling);
 	m_TransparencyPass->SetRenderQueue(afterCulling);
-	m_Passes[PassState::Geometry]->SetRenderQueue(afterCulling);
+	m_GeometryPass->SetRenderQueue(afterCulling);
 }
 
 void PassManager::Render()
 {
-	//m_Passes[PassState::Debug]->Render();
-	m_Passes[PassState::Geometry]->Render();
-	//m_ObjectMaskPass->Render();
-
-	m_DebugPass->Render();
-	m_DeferredPass->Render();
-	m_TransparencyPass->Render();
-
-	//m_Passes[PassState::ObjectMask]->Render();
+	for (auto& pass : m_Passes)
+	{
+		pass->Render();
+	}
 
 	m_OutlineEdgeDetectPass->Render();
 	m_OutlineBlurPass->Render();
@@ -118,7 +119,7 @@ void PassManager::OnResize()
 
 	for (auto& pass : m_Passes)
 	{
-		pass.second->OnResize();
+		pass->OnResize();
 	}
 	//m_ObjectMaskPass->OnResize();
 

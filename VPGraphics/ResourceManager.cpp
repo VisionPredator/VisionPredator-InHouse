@@ -104,6 +104,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"MeshDeferredLight", L"MeshDeferredLightPS", "main");
 	Create<PixelShader>(L"MeshDeferredGeometry", L"MeshDeferredGeometryPS", "main");
 	Create<PixelShader>(L"Quad", L"QuadPS", "main");
+	Create<PixelShader>(L"VPOutLine", L"VPOutLine", "main");
 
 
 	// ----------------------------------------------------------------------------------------
@@ -167,9 +168,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Transform = Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default);
 	m_UsingLights = Create<ConstantBuffer<LightArray>>(L"LightArray", ConstantBufferType::Default);
 	m_UsingMaterial = Create<ConstantBuffer<MaterialData>>(L"MaterialData", ConstantBufferType::Default);
-	m_Pallete = Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete", ConstantBufferType::Default);
+ 	m_Pallete = Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete", ConstantBufferType::Default);
+	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize", ConstantBufferType::Default);
 
-	//Bind CB only Once
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, (m_Camera.lock()->GetAddress()));
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, m_Pallete.lock()->GetAddress());
@@ -179,7 +180,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, m_UsingMaterial.lock()->GetAddress());
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
 
-	Create<ConstantBuffer<DirectX::XMFLOAT4>>(L"Color", ConstantBufferType::Default);
 
 	//LightMap
 	{

@@ -92,7 +92,4 @@ protected:
 	std::weak_ptr<VertexShader> m_StaticMeshVS;
 	std::weak_ptr<RenderTargetView> m_RTV;
 	std::weak_ptr<DepthStencilView> m_DSV;
-
-	// 곧 사라질 변수
-	PassState m_state = PassState::None;
 };
