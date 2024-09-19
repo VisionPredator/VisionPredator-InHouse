@@ -10,7 +10,7 @@ public:
     ~PlayerSystem()=default;
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
-
+	void RaycastTest(PlayerComponent& playercomp);
     // IPhysicable을(를) 통해 상속됨
     void PhysicsUpdate(float deltaTime) override;
     void PlayerShoot(PlayerComponent& playercomp);

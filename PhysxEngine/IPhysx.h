@@ -22,9 +22,11 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) abstract;
 	virtual void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
 	virtual void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
-	virtual uint32_t RaycastFromEntity(uint32_t entityID, VPMath::Vector3 dir,float distance) abstract;
-	virtual uint32_t RaycastFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
-	virtual uint32_t RaycastFromLocationWithIgnore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
+	virtual uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)abstract;
+	virtual uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)abstract;
+	virtual uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)abstract;
+	virtual void UpdateCapsuleControllerSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& capsuleinfo) abstract;
+
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;
 	virtual void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) abstract;

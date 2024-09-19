@@ -27,6 +27,7 @@ public:
 	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
 	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
 	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	void UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info);
 	/// <summary>
 /// 캐릭터 컨트롤러 삭제 함수
 /// </summary>
@@ -36,6 +37,7 @@ public:
 
 	bool HasController(uint32_t entityID);
 	Controller* GetController(uint32_t entityID);
+	physx::PxController* GetPxController(uint32_t entityID);
 	std::unordered_map<uint32_t, std::shared_ptr<Controller> > m_CharectorMap{};
 	physx::PxMaterial* m_Material{};
 	uint32_t GetIDFromActor(physx::PxRigidActor* Actor);

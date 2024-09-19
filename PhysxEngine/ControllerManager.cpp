@@ -74,6 +74,9 @@ uint32_t ControllerManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3
 	tempDir.normalize();
 #pragma region Controller ver.
 	{
+        // Sort hits by distance
+
+
 		PxF32 max = (PxF32)distance;
 		const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
 		PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
@@ -89,7 +92,9 @@ uint32_t ControllerManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3
 			buf);
 		if (!find)
 			return 0;
-
+		std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+			return a.distance < b.distance;
+			});
 		for (PxU32 i = 0; i < buf.nbTouches; i++)
 		{
 
@@ -109,12 +114,97 @@ uint32_t ControllerManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3
 
 uint32_t ControllerManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
+    auto temp = GetController(entityID);
+    if (!temp)
+        return 0;
+
+    auto tempController = temp->GetPxController();
+    physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+    tempDir.normalize();
+
+    PxF32 max = (PxF32)distance;
+    const PxU32 bufferSize = 32;
+    PxRaycastHit hitBuffer[bufferSize];
+    PxRaycastBuffer buf(hitBuffer, bufferSize);
+
+    if (tempDir.isZero())
+        return 0;
+
+    // Controller 위치에 offset을 적용
+    auto temppose = tempController->getPosition();
+    PxVec3 controllerpose = { static_cast<float>(temppose.x + offset.x),
+                              static_cast<float>(temppose.y + offset.y),
+                              static_cast<float>(temppose.z + offset.z) };
+
+    // Offset된 위치에서 레이캐스트 수행
+    bool find = m_Scene->raycast(controllerpose, tempDir, max, buf);
+
+    if (!find)
+        return 0;
+    std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+        return a.distance < b.distance;
+        });
+    for (PxU32 i = 0; i < buf.nbTouches; i++)
+    {
+        auto tempID = GetIDFromActor(buf.touches[i].actor);
+        if (tempID == entityID)
+            continue;
+
+        if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+            return tempID;
+    }
+
     return 0;
 }
 
 uint32_t ControllerManager::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
+    physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+    tempDir.normalize();
+
+    PxF32 max = (PxF32)distance;
+    const PxU32 bufferSize = 32;
+    PxRaycastHit hitBuffer[bufferSize];
+    PxRaycastBuffer buf(hitBuffer, bufferSize);
+
+    if (tempDir.isZero())
+        return 0;
+
+    // 주어진 location에서 레이캐스트 수행
+    PxVec3 rayOrigin = { static_cast<float>(location.x),
+                         static_cast<float>(location.y),
+                         static_cast<float>(location.z) };
+
+    bool find = m_Scene->raycast(rayOrigin, tempDir, max, buf);
+
+    if (!find)
+        return 0;
+    std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+        return a.distance < b.distance;
+        });
+    for (PxU32 i = 0; i < buf.nbTouches; i++)
+    {
+        auto tempID = GetIDFromActor(buf.touches[i].actor);
+        if (tempID == 0)
+            continue;
+
+        if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+            return tempID;
+    }
+
     return 0;
+}
+
+void ControllerManager::UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info)
+{
+    if (!HasController(entityID))
+        return;
+    auto controller = GetController(entityID);
+    if (Reflection::IsSameType<CapsuleController>(controller->GetTypeID()))
+    {
+        auto Capsulecontroller = dynamic_cast<CapsuleController*>(controller); 
+        Capsulecontroller->UpdateCapsuleSize(info);
+    }
 }
 
 bool ControllerManager::RemoveController(const unsigned int& id)
@@ -141,11 +231,17 @@ Controller* ControllerManager::GetController(uint32_t entityID)
     if (it == m_CharectorMap.end())
         return nullptr;
     auto controller = it->second;  // 검색한 결과의 값을 가져옴
-
     return it->second.get();
-    if (auto capsuleController = std::dynamic_pointer_cast<CapsuleController>(controller))
-        return capsuleController.get();  // raw 포인터로 반환
-    // 키가 존재하면 해당 shared_ptr의 raw 포인터를 반환
+}
+
+physx::PxController* ControllerManager::GetPxController(uint32_t entityID)
+{
+    // 먼저 entityID가 m_CharectorMap에 존재하는지 확인
+    auto it = m_CharectorMap.find(entityID);
+    if (it == m_CharectorMap.end())
+        return nullptr;
+    auto controller = it->second;  // 검색한 결과의 값을 가져옴
+    return controller->GetPxController();
 }
 
 uint32_t ControllerManager::GetIDFromActor(physx::PxRigidActor* Actor)

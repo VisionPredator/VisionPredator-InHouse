@@ -84,13 +84,14 @@ private:
 	bool HasRigidBody(uint32_t entityID) override;
 
 
+	// IPhysx을(를) 통해 상속됨
+	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
+	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
+	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+
 
 	// IPhysx을(를) 통해 상속됨
-	uint32_t RaycastFromEntity(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
-
-	uint32_t RaycastFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-
-	uint32_t RaycastFromLocationWithIgnore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	void UpdateCapsuleControllerSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& capsuleinfo) override;
 
 };
 

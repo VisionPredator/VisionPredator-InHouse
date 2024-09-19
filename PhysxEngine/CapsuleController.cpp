@@ -43,6 +43,71 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
 
 }
 
+void CapsuleController::SetShapeOffset(VPMath::Vector3 offset)
+{
+	if (m_Controller)
+	{
+		physx::PxRigidDynamic* body = m_Controller->getActor();
+		physx::PxShape* shape = nullptr;
+		int shapeCount = body->getNbShapes();
+		body->getShapes(&shape, shapeCount);
+
+		if (shape)
+		{
+			// 로컬 좌표계에서의 오프셋 설정
+			physx::PxTransform localPose(physx::PxVec3(offset.x, offset.y, offset.z));
+			shape->setLocalPose(localPose);
+		}
+	}
+}
+
+void CapsuleController::UpdateCapsuleDimensions(CapsuleControllerInfo info)
+{
+	if (m_Controller)
+	{
+		physx::PxCapsuleController* capsuleController = dynamic_cast<physx::PxCapsuleController*>(m_Controller);
+		if (capsuleController)
+		{
+			// 캡슐 크기 업데이트
+			capsuleController->setRadius(info.radius);
+			capsuleController->setHeight(info.height);
+		}
+	}
+}
+
+void CapsuleController::UpdateCapsuleSize(const CapsuleControllerInfo& newInfo)
+{
+	if (m_Controller)
+	{
+		// 현재 캡슐 컨트롤러를 가져오기
+		physx::PxCapsuleController* capsuleController = dynamic_cast<physx::PxCapsuleController*>(m_Controller);
+		if (capsuleController)
+		{
+			// 기존 캡슐의 높이와 반지름 가져오기
+			float originalHeight = capsuleController->getHeight();
+			float originalRadius = capsuleController->getRadius();
+
+			// 새로운 높이와 반지름 설정
+			float newHeight = newInfo.height;
+			float newRadius = newInfo.radius;
+
+			if (originalHeight == newHeight && originalRadius == newRadius)
+				return;  // 크기가 동일하므로 함수 종료
+
+			// 높이 차이를 계산
+			float heightDifference = originalHeight - newHeight;
+
+			// 오프셋 적용: 바닥이 동일하도록 높이 차이의 절반만큼 Y축 방향으로 이동
+			VPMath::Vector3 offset(0.0f, heightDifference / 2.0f, 0.0f);
+
+			// 캡슐의 크기 변경
+			UpdateCapsuleDimensions(newInfo);
+			// 새 크기에 맞춰 오프셋 적용
+			SetShapeOffset(offset);
+		}
+	}
+}
+
 
 CapsuleController::~CapsuleController()
 {

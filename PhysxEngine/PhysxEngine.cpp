@@ -193,27 +193,36 @@ void PhysxEngine::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexi
 
 bool PhysxEngine::HasRigidBody(uint32_t entityID)
 {
-	
 	return m_RigidBodyManager->HasRigidBody(entityID);;
 }
 
-uint32_t PhysxEngine::RaycastFromEntity(uint32_t entityID, VPMath::Vector3 dir, float distance)
+uint32_t PhysxEngine::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
-
-
-
-
+	if (m_RigidBodyManager->HasRigidBody(entityID))
+		return m_RigidBodyManager->RaycastToHitActor(entityID, dir, distance);
+	else if (m_ControllerManager->HasController(entityID))
+		return 	m_ControllerManager->RaycastToHitActor(entityID, dir, distance);
 	return 0;
 }
 
-uint32_t PhysxEngine::RaycastFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+uint32_t PhysxEngine::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
+	if (m_RigidBodyManager->HasRigidBody(entityID))
+		return m_RigidBodyManager->RaycastToHitActor_Offset(entityID, offset, dir, distance);
+	else if (m_ControllerManager->HasController(entityID))
+		return m_ControllerManager->RaycastToHitActor_Offset(entityID, offset, dir, distance);
 	return 0;
 }
 
-uint32_t PhysxEngine::RaycastFromLocationWithIgnore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+uint32_t PhysxEngine::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
+	m_RigidBodyManager->RaycastToHitActorFromLocation(location, dir, distance);
 	return 0;
+}
+
+void PhysxEngine::UpdateCapsuleControllerSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& capsuleinfo)
+{
+	m_ControllerManager->UpdateCapsuleSize(entityID, capsuleinfo);
 }
 
 

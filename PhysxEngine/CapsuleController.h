@@ -7,8 +7,9 @@ class CapsuleController :
 public:
     CapsuleController();
 	bool Initialize(CapsuleControllerInfo info, physx::PxControllerManager* CCTManager, physx::PxMaterial* material/*, CollisionData* collisionData*/, PhysicsInfo physicinfo );
-
-
+    void UpdateCapsuleSize(const CapsuleControllerInfo& newInfo);
+    void SetShapeOffset(VPMath::Vector3 offset);
+    void UpdateCapsuleDimensions(CapsuleControllerInfo info);
     ~CapsuleController();
     entt::id_type GetTypeID() const override {
         return Reflection::GetTypeID<CapsuleController>();

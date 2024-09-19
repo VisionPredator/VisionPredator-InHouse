@@ -531,12 +531,13 @@ void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P,
 	physx::PxQuat tempQuat = physx::PxQuat(Q.x, Q.y, Q.z, Q.w);
 	tempQuat.normalize();
 
-	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+
+	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		dynamicBody->GetPxDynamicRigid()->setGlobalPose({ tempPos, tempQuat });
 	}
-	else if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	else if (Reflection::IsSameType<StaticRigidBody>(temp->GetTypeID()))
 	{
 		auto staticBody = static_cast<StaticRigidBody*>(temp.get());
 		staticBody->GetPxStaticRigid()->setGlobalPose({ tempPos, tempQuat });
@@ -554,14 +555,13 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 	{
 		assert(false);
 	}
-
-	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		PxVec3 velocity = dynamicBody->GetPxDynamicRigid()->getLinearVelocity();
 		return { velocity.x, velocity.y, velocity.z };
 	}
-	else if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	else if (Reflection::IsSameType<StaticRigidBody>(temp->GetTypeID()))
 	{
 		return { 0, 0, 0 };
 	}
@@ -580,8 +580,7 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir
 		assert(false);
 		return;
 	}
-
-	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		VPMath::Vector3 Dir = dir;
@@ -595,14 +594,13 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir
 VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
-
-	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
 	{
 		auto dynamicbody = static_cast<DynamicRigidBody*>(temp.get());
 		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
 		return { pose.p.x, pose.p.y, pose.p.z };
 	}
-	else if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	else if (Reflection::IsSameType<StaticRigidBody>(temp->GetTypeID()))
 	{
 		auto staticbody = static_cast<StaticRigidBody*>(temp.get());
 		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
@@ -668,7 +666,9 @@ uint32_t RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 
 
 	if (!find)
 		return 0;
-
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
 	for (PxU32 i = 0; i < buf.nbTouches; i++)
 	{
 
@@ -709,7 +709,9 @@ uint32_t RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::V
 
 	if (!find)  // 레이캐스트로 아무것도 찾지 못한 경우 0을 반환
 		return 0;
-
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
 	// 레이캐스트로 접촉된 모든 객체들에 대해 반복
 	for (PxU32 i = 0; i < buf.nbTouches; i++)
 	{
@@ -754,7 +756,9 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 locatio
 
 	if (!find)
 		return 0;
-
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
 	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
 	for (PxU32 i = 0; i < buf.nbTouches; i++)
 	{

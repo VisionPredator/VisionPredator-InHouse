@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PlayerSystem.h"
+#include <iostream>
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 }
@@ -11,7 +12,25 @@ void PlayerSystem::Update(float deltaTime)
 		UpdateCharDataToController(playercomp);
 		Calculate_FSM(playercomp);
 		Action_FSM(playercomp);
+		RaycastTest(playercomp);
 	}
+}
+
+void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
+{
+	if (INPUTKEYDOWN(KEYBOARDKEY::R))
+	{
+		auto posEntity = GetSceneManager()->GetChildEntityByName(playercomp.GetEntityID(), "PlayerCamera");
+		if (!posEntity)
+			return;
+		if (!posEntity->HasComponent<CameraComponent>())
+			return;
+		auto cameratransform = posEntity->GetComponent<TransformComponent>();
+		auto front = cameratransform->FrontVector;
+		std::cout << m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 500);
+		
+	}
+
 }
 
 
