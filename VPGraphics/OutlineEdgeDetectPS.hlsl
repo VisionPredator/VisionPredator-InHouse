@@ -22,22 +22,38 @@ static const float gMask[9] =
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
-	float4 color = float4(0, 0, 0, 0);
-	const float coord[3] = { -1, 0, 1 };
+	float4 output = float4(0, 0, 0, 1);
 
-	// 샘플링 범위를 확장하여 더 두꺼운 엣지를 얻음
-	const float scale = 5.0;
+	const float scale = 5.0;	// 샘플링 범위를 확장하여 더 두꺼운 엣지를 얻음
+	const float2 texelSize = float2(scale / Width, scale / Height);
+	const float2 offsetCoord[9] = {
+		float2(-1, -1), float2(0, -1), float2(1, -1),
+		float2(-1,  0), float2(0,  0), float2(1,  0),
+		float2(-1,  1), float2(0,  1), float2(1,  1)
+	};
+	const float3 grayScale = float3(0.3, 0.59, 0.11);
+
+	float edgeStrength = 0;  // 엣지 강도 계산
 
 	for (int i = 0; i < 9; i++)
 	{
-		const float2 offset = float2(coord[i % 3] * scale / Width, coord[i / 3] * scale / Height);
+		const float2 offset = offsetCoord[i] * texelSize;
 		const float4 sampleColor = ObjectMask.Sample(LinearClamp, input.TexCoord + offset);
 
-		// 필터 결과 누적
-		color += gMask[i] * sampleColor;
+		// 필터 결과를 밝기로 계산하여 결과 누적 (RGB 대신 밝기 값 사용)
+		edgeStrength += gMask[i] * dot(sampleColor.rgb, grayScale);  // 밝기 기준
 	}
+	
+	// 엣지 감지 여부 결정 (임계값 기반)
+	float isEdge = step(0.3, abs(edgeStrength));
 
-	return color;
+	// 엣지가 감지된 경우 텍스처의 색상 사용, 그렇지 않으면 검정색
+	if (isEdge > 0.0)
+		output = ObjectMask.Sample(LinearClamp, input.TexCoord);
+	else
+		output = float4(0, 0, 0, 0);
+
+	return output;
 }
 
 // 여기서 발생했던 문제

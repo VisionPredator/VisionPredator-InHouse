@@ -27,11 +27,11 @@ public:
 	void DeleteImageObject(uint32_t entityId);
 
 	// TODO: Create Font
-	//void CreateTextObject(const uint32_t& entityID, const ui::TextInfo& info);
-	//void UpdateTextObject(const uint32_t& entityID, const ui::TextInfo& info);
-	//void DeleteTextObject(const uint32_t& entityId);
+	//void CreateTextObject(uint32_t entityID, const ui::TextInfo& info);
+	//void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info);
+	//void DeleteTextObject(uint32_t entityId);
 
-private:
+private: 
 	void DrawAllImages();
 	void DrawAllTexts();
 

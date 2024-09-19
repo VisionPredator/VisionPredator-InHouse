@@ -66,3 +66,7 @@ void UIManager::DrawAllImages()
 		image->Render();
 	}
 }
+
+void UIManager::DrawAllTexts()
+{
+}
