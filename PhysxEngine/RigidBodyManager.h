@@ -40,9 +40,9 @@ public:
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID);
 	uint32_t FindIDByActor(physx::PxRigidActor* Actor);
 
-	uint32_t RaycastToFirstHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
-	uint32_t RaycastToFirstHitActorWithOffset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
-	uint32_t RaycastToFirstHitFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
 private:
 	physx::PxRigidActor* FindActorByID(uint32_t entityID);
 	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);

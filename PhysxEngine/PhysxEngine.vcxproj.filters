@@ -57,6 +57,12 @@
     <Filter Include="struct\Controller\Capsule">
       <UniqueIdentifier>{2af42363-2950-4bbe-b5ee-3419ae5049ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\Resource">
+      <UniqueIdentifier>{ea4ce6dd-56dc-40d2-8595-bf8c01ee83d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Resource">
+      <UniqueIdentifier>{188a47b9-9503-4cc3-9eba-65ba7cec31a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -104,23 +110,23 @@
     <ClInclude Include="CapsuleController.h">
       <Filter>struct\Controller\Capsule</Filter>
     </ClInclude>
-    <ClInclude Include="ControllerQueryFilterCallback.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ControllerHitCallback.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysichResourceManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ConvexMeshResource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicModelLoader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CommonInclude.h">
       <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysichResourceManager.h">
+      <Filter>Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerHitCallback.h">
+      <Filter>struct\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerQueryFilterCallback.h">
+      <Filter>struct\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexMeshResource.h">
+      <Filter>struct\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicModelLoader.h">
+      <Filter>struct\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -166,20 +172,20 @@
     <ClCompile Include="CapsuleController.cpp">
       <Filter>struct\Controller\Capsule</Filter>
     </ClCompile>
-    <ClCompile Include="ControllerQueryFilterCallback.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="PhysichResourceManager.cpp">
+      <Filter>Manager\Resource</Filter>
     </ClCompile>
     <ClCompile Include="ControllerHitCallback.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>struct\Callback</Filter>
     </ClCompile>
-    <ClCompile Include="PhysichResourceManager.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ControllerQueryFilterCallback.cpp">
+      <Filter>struct\Callback</Filter>
     </ClCompile>
     <ClCompile Include="ConvexMeshResource.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>struct\Resource</Filter>
     </ClCompile>
     <ClCompile Include="PhysicModelLoader.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>struct\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

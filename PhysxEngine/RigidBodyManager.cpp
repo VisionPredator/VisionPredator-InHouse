@@ -648,7 +648,7 @@ uint32_t RigidBodyManager::FindIDByActor(physx::PxRigidActor* Actor)
 	return *key;
 }
 
-uint32_t RigidBodyManager::RaycastToFirstHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+uint32_t RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
 	auto tempActor = FindActorByID(entityID);
 	physx::PxVec3 tempDir = { dir.x,dir.y,dir.z };
@@ -684,7 +684,7 @@ uint32_t RigidBodyManager::RaycastToFirstHitActor(uint32_t entityID, VPMath::Vec
 	return 0;
 }
 
-uint32_t RigidBodyManager::RaycastToFirstHitActorWithOffset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+uint32_t RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
 	auto tempActor = FindActorByID(entityID);			// entityID를 통해 물리 액터를 찾아옴
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };	// 입력된 방향 벡터를 PhysX의 PxVec3로 변환
@@ -730,7 +730,7 @@ uint32_t RigidBodyManager::RaycastToFirstHitActorWithOffset(uint32_t entityID, V
 }
 
 
-uint32_t RigidBodyManager::RaycastToFirstHitFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
 	tempDir.normalize();  // 단위 벡터로 정규화
