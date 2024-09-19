@@ -60,7 +60,7 @@ void VPOutLinePass::Render()
 void VPOutLinePass::OnResize()
 {
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = manager->Get<Sampler>(L"LinearWrap").lock();
+	std::shared_ptr<Sampler> linear = manager->Get<Sampler>(L"LinearClamp").lock();
 
 	const uint32_t width = m_Device.lock()->GetWndWidth();
 	const uint32_t height = m_Device.lock()->GetWndHeight();
