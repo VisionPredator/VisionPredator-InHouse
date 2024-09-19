@@ -138,7 +138,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
-
+	
 
 	// ----------------------------------------------------------------------------------------
 	// Render Target View

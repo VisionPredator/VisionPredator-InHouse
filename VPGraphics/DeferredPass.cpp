@@ -455,9 +455,6 @@ void DeferredPass::Geometry()
 
 void DeferredPass::Light()
 {
-
-
-
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();

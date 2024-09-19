@@ -37,7 +37,6 @@ void VPOutLinePass::Render()
 	Device->BindVS(m_QuadVS.lock());
 	Device->Context()->PSSetShader(m_VPOutLine.lock()->GetPS(), nullptr, 0);
 
-
 	Device->Context()->PSSetConstantBuffers(0, 1, m_Screen->GetAddress());
 
 	Device->Context()->PSSetShaderResources(0, 1, m_Normal.lock()->GetAddress());
@@ -47,28 +46,20 @@ void VPOutLinePass::Render()
 	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
 	m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
 
-
-	//Device->Context()->PSSetConstantBuffers(0, 1, m_Screen->GetAddress());
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
-	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Deferred").lock();
-
 
 	Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 	Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-
 }
 
 void VPOutLinePass::OnResize()
 {
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = manager->Get<Sampler>(L"LinearClamp").lock();
 
 	const uint32_t width = m_Device.lock()->GetWndWidth();
 	const uint32_t height = m_Device.lock()->GetWndHeight();
 
-	/*
-	*/
 	m_Screen = manager->Get<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize").lock();
 	
 	m_Screen->m_struct.x = width;

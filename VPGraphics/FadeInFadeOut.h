@@ -18,8 +18,11 @@ private:
 	std::weak_ptr<IndexBuffer> m_QuadIB;
 	std::weak_ptr<VertexShader> m_QuadVS;
 	std::weak_ptr<PixelShader> m_FadeInFadeOut;
+	std::weak_ptr<PixelShader> m_QuadPS;
 
 	std::weak_ptr<ShaderResourceView> m_Gbuffer;
 
+	std::weak_ptr<ShaderResourceView> m_FadeInOutSRV;
+	std::weak_ptr<RenderTargetView> m_FadeInOutRTV;
 };
 

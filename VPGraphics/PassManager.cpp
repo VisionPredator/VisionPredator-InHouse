@@ -115,6 +115,8 @@ void PassManager::Render()
 	m_OutlineAddPass->Render();
 	m_ParticlePass->Render();
 	m_UIPass->Render();
+	/*
+	*/
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
 	// DrawIMGUI 이렇게 함수로 두지 말고 FinalPass 클래스로 이식하자.
