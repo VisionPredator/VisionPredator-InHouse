@@ -23,6 +23,7 @@ class DebugDrawManager;
 class UIManager;
 class GeoMetryPass;
 class VPOutLinePass;
+class FadeInFadeOut;
 
 class PassManager
 {
@@ -55,6 +56,7 @@ private:
 	std::shared_ptr<OutlineAddPass> m_OutlineAddPass;
 	std::shared_ptr<GeoMetryPass> m_GeometryPass;
 	std::shared_ptr<VPOutLinePass> m_VPOutLinePass;
+	std::shared_ptr<FadeInFadeOut> m_FadeInFadeOut;
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;

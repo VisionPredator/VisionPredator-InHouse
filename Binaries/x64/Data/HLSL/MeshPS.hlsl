@@ -61,7 +61,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
     if (AMRO.z > 0)
     {
-        roughnessValue = gRoughness.Sample(samLinear, input.tex).g;
+        roughnessValue = gMetalic.Sample(samLinear, input.tex).g;
     }
     else
     {

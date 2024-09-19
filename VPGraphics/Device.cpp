@@ -163,8 +163,7 @@ void Device::UnBindSRV()
 		pSRV[i] = nullptr;
 	}
 
-
-	m_Context->PSSetShaderResources(0, num, pSRV);
+	m_Context->PSSetShaderResources(0, num, pSRV);//ÃÖ´ë128
 	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
 }
 

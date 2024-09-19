@@ -105,6 +105,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"MeshDeferredGeometry", L"MeshDeferredGeometryPS", "main");
 	Create<PixelShader>(L"Quad", L"QuadPS", "main");
 	Create<PixelShader>(L"VPOutLine", L"VPOutLine", "main");
+	Create<PixelShader>(L"FadeInFadeOut", L"FadeInFadeOut", "main");
 
 
 	// ----------------------------------------------------------------------------------------

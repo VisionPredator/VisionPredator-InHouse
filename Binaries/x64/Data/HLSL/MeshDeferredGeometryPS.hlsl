@@ -126,9 +126,8 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
     {
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
-    
-    
-    output.LightMap = gLightMap.Sample(samLinear, input.lightuv);
+        
+    output.LightMap = pow(gLightMap.Sample(samLinear, input.lightuv), float4(1 / gamma, 1 / gamma, 1 / gamma, 1 / gamma));
     
     return output;
     

@@ -1,11 +1,9 @@
 #include "pch.h"
-#include "VPOutLinePass.h"
-#include "Sampler.h"
+#include "FadeInFadeOut.h"
 #include "ResourceManager.h"
 #include "StaticData.h"
 
-
-VPOutLinePass::VPOutLinePass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass()
+FadeInFadeOut::FadeInFadeOut(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager) : RenderPass()
 {
 	m_ResourceManager = manager;
 	m_Device = device;
@@ -13,18 +11,17 @@ VPOutLinePass::VPOutLinePass(std::shared_ptr<Device> device, std::shared_ptr<Res
 	m_QuadVB = manager->Get<VertexBuffer>(L"Quad_VB");
 	m_QuadIB = manager->Get<IndexBuffer>(L"Quad_IB");
 	m_QuadVS = manager->Get<VertexShader>(L"Quad");
-	m_VPOutLine = manager->Get<PixelShader>(L"Quad");
+	m_FadeInFadeOut= manager->Get<PixelShader>(L"FadeInFadeOut");
+	m_Gbuffer= manager->Get<ShaderResourceView>(L"GBuffer").lock();
 
-	m_Normal = manager->Get<ShaderResourceView>(L"Normal").lock();
-	m_Depth = manager->Get<ShaderResourceView>(L"Depth").lock();
 }
 
-VPOutLinePass::~VPOutLinePass()
+FadeInFadeOut::~FadeInFadeOut()
 {
 
 }
 
-void VPOutLinePass::Render()
+void FadeInFadeOut::Render()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
@@ -35,20 +32,16 @@ void VPOutLinePass::Render()
 	Device->UnBindSRV();
 
 	Device->BindVS(m_QuadVS.lock());
-	Device->Context()->PSSetShader(m_VPOutLine.lock()->GetPS(), nullptr, 0);
+	Device->Context()->PSSetShader(m_FadeInFadeOut.lock()->GetPS(), nullptr, 0);
 
 
-	Device->Context()->PSSetConstantBuffers(0, 1, m_Screen->GetAddress());
+	Device->Context()->PSSetShaderResources(0, 1, m_Gbuffer.lock()->GetAddress());
 
-	Device->Context()->PSSetShaderResources(0, 1, m_Normal.lock()->GetAddress());
-	Device->Context()->PSSetShaderResources(1, 1, m_Depth.lock()->GetAddress());
-	
 	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
 	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
 	m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
 
 
-	//Device->Context()->PSSetConstantBuffers(0, 1, m_Screen->GetAddress());
 	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
 	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
@@ -59,27 +52,15 @@ void VPOutLinePass::Render()
 
 }
 
-void VPOutLinePass::OnResize()
+void FadeInFadeOut::OnResize()
 {
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
 	std::shared_ptr<Sampler> linear = manager->Get<Sampler>(L"LinearClamp").lock();
 
-	const uint32_t width = m_Device.lock()->GetWndWidth();
-	const uint32_t height = m_Device.lock()->GetWndHeight();
-
-	/*
-	*/
-	m_Screen = manager->Get<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize").lock();
-	
-	m_Screen->m_struct.x = width;
-	m_Screen->m_struct.y = height;
-	m_Screen->Update();
-
-	m_Normal = manager->Get<ShaderResourceView>(L"Normal").lock();
-	m_Depth = manager->Get<ShaderResourceView>(L"Depth").lock();
+	m_Gbuffer= manager->Get<ShaderResourceView>(L"GBuffer").lock();
 
 	m_QuadVB = manager->Get<VertexBuffer>(L"Quad_VB");
 	m_QuadIB = manager->Get<IndexBuffer>(L"Quad_IB");
 	m_QuadVS = manager->Get<VertexShader>(L"Quad");
-	m_VPOutLine = manager->Get<PixelShader>(L"VPOutLine");
+	m_FadeInFadeOut = manager->Get<PixelShader>(L"FadeInFadeOut");
 }

@@ -26,6 +26,7 @@
 #include "OutlineBlurPass.h"
 #include "OutlineEdgeDetectPass.h"
 #include "VPOutLinePass.h"
+#include "FadeInFadeOut.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -77,12 +78,15 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
+	m_FadeInFadeOut = std::make_shared<FadeInFadeOut>(m_Device.lock(), m_ResourceManager.lock());
+
 
 	m_Passes.push_back(m_GeometryPass);
 	m_Passes.push_back(std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock()));
 	m_Passes.push_back(m_DebugPass);
 	m_Passes.push_back(m_DeferredPass);
 	m_Passes.push_back(m_TransparencyPass);
+	m_Passes.push_back(m_FadeInFadeOut);
 	//m_Passes.push_back(m_VPOutLinePass);
 }
 
