@@ -5,7 +5,7 @@
 #include <imgui.h>
 #include <io.h>
 #include "LogicSystems.h"
-#include "DataRegister.h"
+#include "DataRegister_Engine.h"
 #include "../VPGraphics/GraphicsEngine.h"
 #include "../PhysxEngine/PhysxEngine.h"
 #include "../PhysxEngine/IPhysx.h"
@@ -19,6 +19,8 @@ bool VPEngine::isResize = false;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
+	EngineRegister::Register_Metadata();
+
 	auto wTitle = std::wstring(title.begin(), title.end());
 	// 윈도우 클래스 구조체 정의
 	m_hinstance = GetModuleHandle(NULL);
@@ -51,7 +53,6 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 	InputManager::GetInstance().Initialize(m_hinstance, m_hWnd, m_ScreenWidth, m_ScreenHeight);
 
-	VPRegister::Register_Metadata();
 
 	m_TimeManager = new TimeManager;
 	m_PhysicEngine = new PhysxEngine;

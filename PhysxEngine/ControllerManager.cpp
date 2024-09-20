@@ -249,33 +249,3 @@ uint32_t ControllerManager::GetIDFromActor(physx::PxRigidActor* Actor)
     auto key = static_cast<uint32_t*>(Actor->userData);
     return *key;
 }
-//#pragma region Actor ver.
-//{
-//PxF32 max = (PxF32)distance;
-//	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
-//	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
-//	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
-//	if (tempDir.isZero())
-//		return 0;
-//	bool find = m_Scene->raycast(
-//		tempActor->getGlobalPose().p,
-//		tempDir,
-//		max,
-//		buf);
-//	if (!find)
-//		return 0;
-//	for (PxU32 i = 0; i < buf.nbTouches; i++)
-//	{
-//
-//		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
-//		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
-//		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
-//		auto tempID = GetIDFromActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
-//		if (tempID == entityID)
-//			continue;
-//		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
-//			return tempID;
-//	}
-//	return 0;
-//}
-//#pragma endregion

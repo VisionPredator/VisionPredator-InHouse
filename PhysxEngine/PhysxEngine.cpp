@@ -11,6 +11,8 @@
 #include "EventManager.h"
 #include "CollisionManager.h"
 #include <iostream>
+#include "DataRegister_Physics.h"
+
 /// <summary>
 /// 충돌 콜백 함수
 /// <summary>
@@ -60,6 +62,7 @@ physx::PxFilterFlags CustomSimulationFilterShader(
 
 PhysxEngine::PhysxEngine()
 {
+	PhysicsRegister::Register_Metadata();
 	EventManager::GetInstance().Subscribe("OnSetPhysicInfo", CreateSubscriber(&PhysxEngine::OnSetPhysicInfo));
 }
 

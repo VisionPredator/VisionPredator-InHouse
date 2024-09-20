@@ -6,66 +6,70 @@ CapsuleController::CapsuleController():Controller{}
 {
 }
 
-bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControllerManager * controllerManager, physx::PxMaterial* material, PhysicsInfo physicinfo)
+bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControllerManager* controllerManager, physx::PxMaterial* material, PhysicsInfo physicinfo)
 {
-	ControllerInit(info.Info, material, physicinfo);
-	physx::PxCapsuleControllerDesc desc;
-	desc.height = info.height;
-	desc.radius = info.radius;
-	desc.contactOffset = info.contactOffset;
-	desc.stepOffset = info.stepOffset;
-	desc.nonWalkableMode = physx::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-	desc.slopeLimit = info.slopeLimit;
-	desc.maxJumpHeight = 10.f;
-	desc.position.x = info.position.x;
-	desc.position.y = info.position.y;
-	desc.position.z = info.position.z;
-	desc.material = m_Material;
-	m_ControllerHitCallback = std::make_shared<ControllerHitCallback>();
-	desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback.get());
-	m_Controller= controllerManager->createController(desc);
+    ControllerInit(info.Info, material, physicinfo);
 
-	physx::PxRigidDynamic* body = m_Controller->getActor();
+    // Set up capsule controller description
+    physx::PxCapsuleControllerDesc desc;
+    desc.height = info.height;
+    desc.radius = info.radius;
+    desc.contactOffset = info.contactOffset;
+    desc.stepOffset = info.stepOffset;
+    desc.nonWalkableMode = physx::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+    desc.slopeLimit = info.slopeLimit;
+    desc.maxJumpHeight = 10.f;
 
-	int ShapeSize = body->getNbShapes();
-	body->userData = &m_EntityID;
-	physx::PxShape* shape=nullptr;
-	body->getShapes(&shape, ShapeSize);
-	body->setSolverIterationCounts(8, 4);
-	shape->setContactOffset(0.02f);
-	shape->userData = &m_EntityID;
-	shape->setRestOffset(0.01f);
-	physx::PxFilterData filterData;
-	filterData.word0 = (int)info.Info.LayerNumber;
-	filterData.word1 = physicinfo.CollisionMatrix[(int)info.Info.LayerNumber];
-	shape->setSimulationFilterData(filterData);
-	return true;
+    // Directly use the position from info.position without adjustment
+    desc.position = physx::PxExtendedVec3(info.position.x, info.position.y, info.position.z);
 
+    desc.material = material;
+    m_ControllerHitCallback = std::make_shared<ControllerHitCallback>();
+    desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback.get());
+    m_Controller = controllerManager->createController(desc);
+
+    if (!m_Controller)
+        return false;
+
+    // Get the rigid body actor and shape
+    physx::PxRigidDynamic* body = m_Controller->getActor();
+    if (!body)
+        return false;
+
+    physx::PxShape* shape = nullptr;
+    int shapeCount = body->getNbShapes();
+    body->getShapes(&shape, shapeCount);
+    if (!shape)
+        return false;
+
+    // Set solver iteration counts
+    body->setSolverIterationCounts(8, 4);
+    body->userData = &m_EntityID;
+    shape->userData = &m_EntityID;
+
+    // Set contact and rest offsets for the shape
+    shape->setContactOffset(0.02f);
+    shape->setRestOffset(0.01f);
+
+    // Set collision filter data
+    physx::PxFilterData filterData;
+    filterData.word0 = static_cast<int>(info.Info.LayerNumber);
+    filterData.word1 = physicinfo.CollisionMatrix[static_cast<int>(info.Info.LayerNumber)];
+    shape->setSimulationFilterData(filterData);
+
+    // Apply shape offset based on pivot and local offset
+    //SetShapeOffset(info.Info.Pivot, info.LocalOffset);
+
+    return true;
 }
 
-void CapsuleController::SetShapeOffset(VPMath::Vector3 offset)
-{
-	if (m_Controller)
-	{
-		physx::PxRigidDynamic* body = m_Controller->getActor();
-		physx::PxShape* shape = nullptr;
-		int shapeCount = body->getNbShapes();
-		body->getShapes(&shape, shapeCount);
 
-		if (shape)
-		{
-			// 로컬 좌표계에서의 오프셋 설정
-			physx::PxTransform localPose(physx::PxVec3(offset.x, offset.y, offset.z));
-			shape->setLocalPose(localPose);
-		}
-	}
-}
 
 void CapsuleController::UpdateCapsuleDimensions(CapsuleControllerInfo info)
 {
 	if (m_Controller)
 	{
-		physx::PxCapsuleController* capsuleController = dynamic_cast<physx::PxCapsuleController*>(m_Controller);
+        physx::PxCapsuleController* capsuleController = static_cast<physx::PxCapsuleController*>(m_Controller);
 		if (capsuleController)
 		{
 			// 캡슐 크기 업데이트
@@ -77,35 +81,89 @@ void CapsuleController::UpdateCapsuleDimensions(CapsuleControllerInfo info)
 
 void CapsuleController::UpdateCapsuleSize(const CapsuleControllerInfo& newInfo)
 {
-	if (m_Controller)
-	{
-		// 현재 캡슐 컨트롤러를 가져오기
-		physx::PxCapsuleController* capsuleController = dynamic_cast<physx::PxCapsuleController*>(m_Controller);
-		if (capsuleController)
-		{
-			// 기존 캡슐의 높이와 반지름 가져오기
-			float originalHeight = capsuleController->getHeight();
-			float originalRadius = capsuleController->getRadius();
+    if (m_Controller)
+    {
+        // Current capsule controller
+        physx::PxCapsuleController* capsuleController = static_cast<physx::PxCapsuleController*>(m_Controller);
+        if (capsuleController)
+        {
+            // Get current height and radius
+            float originalHeight = capsuleController->getHeight();
+            float originalRadius = capsuleController->getRadius();
 
-			// 새로운 높이와 반지름 설정
-			float newHeight = newInfo.height;
-			float newRadius = newInfo.radius;
+            // New height and radius
+            float newHeight = newInfo.height;
+            float newRadius = newInfo.radius;
 
-			if (originalHeight == newHeight && originalRadius == newRadius)
-				return;  // 크기가 동일하므로 함수 종료
+            if (originalHeight == newHeight && originalRadius == newRadius)
+                return;  // No change in size
 
-			// 높이 차이를 계산
-			float heightDifference = originalHeight - newHeight;
+            // Update capsule dimensions
+            UpdateCapsuleDimensions(newInfo);
 
-			// 오프셋 적용: 바닥이 동일하도록 높이 차이의 절반만큼 Y축 방향으로 이동
-			VPMath::Vector3 offset(0.0f, heightDifference / 2.0f, 0.0f);
+            // Apply pivot logic and LocalOffset in shape offset
+            SetShapeOffset(newInfo.Info.Pivot,newInfo.LocalOffset);
+        }
+    }
+}
 
-			// 캡슐의 크기 변경
-			UpdateCapsuleDimensions(newInfo);
-			// 새 크기에 맞춰 오프셋 적용
-			SetShapeOffset(offset);
-		}
-	}
+void CapsuleController::SetShapeOffset(ControllerPivot pivot, VPMath::Vector3 offset)
+{
+    if (m_Controller)
+    {
+        // Cast to PxCapsuleController
+        physx::PxCapsuleController* capsuleController = static_cast<physx::PxCapsuleController*>(m_Controller);
+        if (capsuleController)
+        {
+            // Get the current height and radius from the capsule controller
+            float height = capsuleController->getHeight();  // Full height of the cylindrical part
+            float radius = capsuleController->getRadius();
+
+            // Default shape offset
+            VPMath::Vector3 shapeOffset = offset;
+
+            // Calculate full capsule height (radius + height/2)
+            float fullCapsuleHeight = radius + (height * 0.5f);
+
+            // Adjust the local pose based on the pivot type
+            switch (pivot)
+            {
+            case ControllerPivot::FOOT:
+                // Align the shape's bottom (foot) with the position
+                // Since Y-up in left-hand system, we move the shape UP to align the bottom
+                shapeOffset.y += fullCapsuleHeight;
+                break;
+
+            case ControllerPivot::CENTER:
+                // No adjustment needed; position is already at the center of the capsule
+                break;
+
+            case ControllerPivot::END:
+                // If END is encountered, we simply ignore it (no action required)
+                return;
+
+            default:
+                // Handle any other cases that may not be valid
+                return;
+            }
+
+            // Apply the local pose offset to the shape
+            physx::PxRigidDynamic* body = m_Controller->getActor();
+            physx::PxShape* shape = nullptr;
+            int shapeCount = body->getNbShapes();
+            body->getShapes(&shape, shapeCount);
+
+            if (shape)
+            {
+                physx::PxTransform localPose(physx::PxVec3(shapeOffset.y, -shapeOffset.x, -shapeOffset.z));
+                auto a = shape->getLocalPose();
+
+                shape->setLocalPose(localPose);
+                auto b = shape->getLocalPose();
+
+            }
+        }
+    }
 }
 
 

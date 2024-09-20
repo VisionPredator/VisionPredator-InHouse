@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VPRegister
+namespace EngineRegister
 {
 	void Register_Metadata();
 	void Register_Components();

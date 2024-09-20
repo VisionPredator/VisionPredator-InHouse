@@ -63,6 +63,9 @@
     <Filter Include="struct\Resource">
       <UniqueIdentifier>{188a47b9-9503-4cc3-9eba-65ba7cec31a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataRegist">
+      <UniqueIdentifier>{e7659d13-625c-4aa3-9488-7e056fb8b284}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -128,6 +131,9 @@
     <ClInclude Include="PhysicModelLoader.h">
       <Filter>struct\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="DataRegister_Physics.h">
+      <Filter>DataRegist</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VPPhysicsStructs.cpp">
@@ -186,6 +192,9 @@
     </ClCompile>
     <ClCompile Include="PhysicModelLoader.cpp">
       <Filter>struct\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister_Physics.cpp">
+      <Filter>DataRegist</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
