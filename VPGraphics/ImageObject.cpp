@@ -33,9 +33,9 @@ ImageObject::ImageObject(const std::shared_ptr<Device>& device, const std::share
 	m_BitmapHeight = m_Texture->GetHeight();
 
 	// 이전 렌더링 정보를 음수로 초기화
-	m_PreviousWidth = -1;
-	m_PreviousHeight = -1;
-	m_PreviousScale = -1;
+	m_PrevWidth = -1;
+	m_PrevHeight = -1;
+	m_PrevScale = -1;
 
 	// 정점 및 인덱스 버퍼 초기화
 	InitializeBuffers();
@@ -78,6 +78,8 @@ void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 	m_Info.ImagePath = info.ImagePath;
 	m_Info.Color = info.Color;
 	m_Info.Scale = info.Scale;
+	m_Info.World = info.World;
+	m_Info.RenderMode = info.RenderMode;
 
 	// 모델의 텍스처 로드
 	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
@@ -126,33 +128,63 @@ bool ImageObject::InitializeBuffers()
 
 void ImageObject::UpdateBuffers()
 {
-	std::vector<ImageVertex> vertices;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-	float left;
-	float right;
-	float top;
-	float bottom;
+	float left, right, top, bottom;
 
 	if (m_Info.RenderMode == ui::RenderModeType::WorldSpace)
 	{
 		m_CanvasWidth = m_BitmapWidth;
 		m_CanvasHeight = m_BitmapHeight;
 
+		//if (m_PrevCanvasWidth == m_CanvasWidth && m_PrevCanvasHeight == m_CanvasHeight)
+		//	return;
+
+		// 카메라 데이터 관리하는게 마음에 안든다.
+		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+		DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(cameraCB->m_struct.viewInverse.Transpose()._41, cameraCB->m_struct.viewInverse.Transpose()._42, cameraCB->m_struct.viewInverse.Transpose()._43);
+		DirectX::XMFLOAT3 cameraUp = DirectX::XMFLOAT3(cameraCB->m_struct.view._21, cameraCB->m_struct.view._22, cameraCB->m_struct.view._23);
+
+		const DirectX::XMFLOAT3 imagePos = DirectX::XMFLOAT3(m_Info.World._41, m_Info.World._42, m_Info.World._43);
+
+		// 아크 탄젠트 함수를 사용하여 현재 카메라 위치를 향하도록 빌보드 모델에 적용해야하는 회전을 계산합니다.
+		double angle = atan2(imagePos.x - cameraPos.x, imagePos.z - cameraPos.z) * (180 / DirectX::XM_PI);
+
+		// 회전을 라디안으로 변환한다.
+		float rotation = (float)angle * 0.0174532925f;
+		DirectX::XMMATRIX worldMatrix = DirectX::XMMatrixRotationY(rotation);
+
+		// 빌보드 행렬 계산
+		DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(imagePos.x, imagePos.y, imagePos.z);
+		worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, translateMatrix);
+
+		m_Transform.World = XMMatrixTranspose(worldMatrix);
+		m_Transform.View = cameraCB->m_struct.view;
+		m_Transform.Projection = cameraCB->m_struct.proj;
+		m_ImageTransformCB->Update(m_Transform);
+
+		float sizeX = static_cast<float>(m_CanvasWidth) * 0.0005f;
+		float sizeY = static_cast<float>(m_CanvasHeight) * 0.0005f;
+
+		left = -sizeX;
+		top = sizeY;
+		right = sizeX;
+		bottom = -sizeY;
 	}
 	else    // ui::RenderModeType::ScreenSpaceOverlay
 	{
+
 		m_CanvasWidth = m_Device->GetWndWidth();
 		m_CanvasHeight = m_Device->GetWndHeight();
 
 		// 이미지의 정보를 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
-		if ((m_Info.PosXPercent == m_PreviousPosXPercent && m_Info.PosYPercent == m_PreviousPosYPercent)
-			&& (m_BitmapWidth == m_PreviousWidth && m_BitmapHeight == m_PreviousHeight)
-			&& (m_Info.Scale == m_PreviousScale)
-			&& (m_CanvasWidth == m_PreviousScreenWidth) && (m_CanvasHeight == m_PreviousScreenHeight))
+		// 이전 프레임과 비교하여 위치가 변하지 않았다면
+		// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
+		if ((m_Info.PosXPercent == m_PrevPosXPercent && m_Info.PosYPercent == m_PrevPosYPercent)
+			&& (m_BitmapWidth == m_PrevWidth && m_BitmapHeight == m_PrevHeight)
+			&& (m_Info.Scale == m_PrevScale)
+			&& (m_CanvasWidth == m_PrevCanvasWidth) && (m_CanvasHeight == m_PrevCanvasHeight))
 			return;
 
-		std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 		m_Transform.World = VPMath::Matrix::Identity;
 		m_Transform.View = VPMath::Matrix::Identity;
 		m_Transform.Projection = cameraCB->m_struct.orthoProj;	// 정사영 투영 행렬
@@ -174,21 +206,25 @@ void ImageObject::UpdateBuffers()
 		m_ImagePosX = m_ImageCenterPosX - (scaledWidth / 2.0f);
 		m_ImagePosY = m_ImageCenterPosY - (scaledHeight / 2.0f);
 
-		// 렌더링 되는 위치와 크기를 업데이트한다.
-		m_PreviousPosXPercent = m_Info.PosXPercent;
-		m_PreviousPosYPercent = m_Info.PosYPercent;
-		m_PreviousWidth = m_BitmapWidth;
-		m_PreviousHeight = m_BitmapHeight;
-		m_PreviousScale = m_Info.Scale;
-		m_PreviousScreenWidth = m_CanvasWidth;
-		m_PreviousScreenHeight = m_CanvasHeight;
-
 		// 비트맵의 좌표 계산
-		left = static_cast<float>((m_CanvasWidth / 2) * (-1)) + m_ImagePosX;
+		left = static_cast<float>(m_CanvasWidth) / 2 * -1 + m_ImagePosX;
 		right = left + scaledWidth;
-		top = static_cast<float>(m_CanvasHeight / 2) - m_ImagePosY;
+		top = static_cast<float>(m_CanvasHeight) / 2 - m_ImagePosY;
 		bottom = top - scaledHeight;
 	}
+
+	// 렌더링 되는 위치와 크기를 업데이트한다.
+	m_PrevPosXPercent = m_Info.PosXPercent;
+	m_PrevPosYPercent = m_Info.PosYPercent;
+	m_PrevScale = m_Info.Scale;
+	m_PrevWidth = m_BitmapWidth;
+	m_PrevHeight = m_BitmapHeight;
+	m_PrevCanvasWidth = m_CanvasWidth;
+	m_PrevCanvasHeight = m_CanvasHeight;
+	m_PrevWorld = m_Info.World;
+
+	std::vector<ImageVertex> vertices;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
 
 	vertices.resize(m_vertexCount);
 	if (vertices.empty())

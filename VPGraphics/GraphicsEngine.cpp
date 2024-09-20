@@ -353,19 +353,19 @@ void GraphicsEngine::DeleteParticleObjectByID(uint32_t id)
 	m_ParticleManager->DeleteParticleObjectByID(id);
 }
 
-void GraphicsEngine::Create2DImageObject(uint32_t id, const ui::ImageInfo& info)
+void GraphicsEngine::CreateImageObject(uint32_t id, const ui::ImageInfo& info)
 {
-	m_UIManager->Create2DImageObject(id, info);
+	m_UIManager->CreateImageObject(id, info);
 }
 
-void GraphicsEngine::Update2DImageObject(uint32_t id, const ui::ImageInfo& info)
+void GraphicsEngine::UpdateImageObject(uint32_t id, const ui::ImageInfo& info)
 {
-	m_UIManager->Update2DImageObject(id, info);
+	m_UIManager->UpdateImageObject(id, info);
 }
 
-void GraphicsEngine::Delete2DImageObject(uint32_t id)
+void GraphicsEngine::DeleteImageObject(uint32_t id)
 {
-	m_UIManager->Delete2DImageObject(id);
+	m_UIManager->DeleteImageObject(id);
 }
 
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)

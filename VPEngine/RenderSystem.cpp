@@ -92,6 +92,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
 	{
 		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		const TransformComponent& Transform = *component->GetComponent<TransformComponent>();
 		ui::ImageInfo info;
 		info.ImagePath = component->TexturePath;
 		info.PosXPercent = component->PosXPercent;
@@ -99,8 +100,10 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.Layer = component->Layer;
 		info.Color = component->Color;
 		info.Scale = component->Scale;
+		info.World = Transform.WorldTransform;
+		info.RenderMode = component->RenderMode;
 
-		m_Graphics->Create2DImageObject(component->GetEntityID(), info);
+		m_Graphics->CreateImageObject(component->GetEntityID(), info);
 	}
 }
 
@@ -146,7 +149,7 @@ void RenderSystem::OnReleasedComponent(std::any data)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
 	{
 		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
-		m_Graphics->Delete2DImageObject(component->GetEntityID());
+		m_Graphics->DeleteImageObject(component->GetEntityID());
 	}
 }
 
@@ -180,6 +183,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 
 	for (Sprite2DComponent& component : COMPITER(Sprite2DComponent))
 	{
+		const TransformComponent& transform = *component.GetComponent<TransformComponent>();
 		ui::ImageInfo info;
 		info.ImagePath = component.TexturePath;
 		info.PosXPercent = component.PosXPercent;
@@ -187,8 +191,10 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.Layer = component.Layer;
 		info.Color = component.Color;
 		info.Scale = component.Scale;
+		info.World = transform.WorldTransform;
+		info.RenderMode = component.RenderMode;
 
-		m_Graphics->Update2DImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+		m_Graphics->UpdateImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 }
 
@@ -198,8 +204,10 @@ void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 	bool IsChanged = false;
 	auto renderdata = meshComp.Renderdata;
 
+	renderdata->FBX = meshComp.FBX;
 	renderdata->world = transform.WorldTransform;
 	renderdata->rotation = transform.World_Rotation;
+	renderdata->MaskingColor = meshComp.MaskColor;
 }
 
 void RenderSystem::SkincompRender(SkinningMeshComponent& skinComp)

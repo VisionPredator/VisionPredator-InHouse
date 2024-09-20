@@ -21,14 +21,14 @@ void UIManager::Render()
 	DrawAllImages();
 }
 
-void UIManager::Create2DImageObject(uint32_t entityID, const ui::ImageInfo& info)
+void UIManager::CreateImageObject(uint32_t entityID, const ui::ImageInfo& info)
 {
-	m_TwoDImages.push_back(std::make_shared<ImageObject>(m_Device, m_ResourceManager, info, entityID));
+	m_Images.push_back(std::make_shared<ImageObject>(m_Device, m_ResourceManager, info, entityID));
 }
 
-void UIManager::Update2DImageObject(uint32_t entityID, const ui::ImageInfo& info)
+void UIManager::UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info)
 {
-	for (const auto& ui : m_TwoDImages)
+	for (const auto& ui : m_Images)
 	{
 		if (ui->GetID() == entityID)
 		{
@@ -38,37 +38,33 @@ void UIManager::Update2DImageObject(uint32_t entityID, const ui::ImageInfo& info
 	}
 }
 
-void UIManager::Delete2DImageObject(uint32_t entityId)
+void UIManager::DeleteImageObject(uint32_t entityId)
 {
-	auto it = std::remove_if(m_TwoDImages.begin(), m_TwoDImages.end(),
+	auto it = std::remove_if(m_Images.begin(), m_Images.end(),
 		[entityId](const std::shared_ptr<ImageObject>& obj)
 		{
 			return obj->GetID() == entityId;
 		});
 
-	if (it != m_TwoDImages.end())
+	if (it != m_Images.end())
 	{
-		m_TwoDImages.erase(it, m_TwoDImages.end());
+		m_Images.erase(it, m_Images.end());
 	}
 }
 
 void UIManager::DrawAllImages()
 {
-	/// Render 2D Images
 	// Image 의 Layer 값에 따라 정렬하고 그린다.
-	std::sort(m_TwoDImages.begin(), m_TwoDImages.end(),
+	std::sort(m_Images.begin(), m_Images.end(),
 		[&](const std::shared_ptr<ImageObject>& lhs, const std::shared_ptr<ImageObject>& rhs)
 		{
 			return lhs->GetLayer() > rhs->GetLayer();
 		});
 
-	for (const auto& image : m_TwoDImages)
+	for (const auto& image : m_Images)
 	{
 		image->Render();
 	}
-
-	/// Render 3D Images
-	// TODO
 }
 
 void UIManager::DrawAllTexts()

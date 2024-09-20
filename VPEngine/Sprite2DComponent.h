@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "../VPGraphics/vpGraphics.h"
 
 struct Sprite2DComponent : Component
 {
@@ -9,8 +10,9 @@ struct Sprite2DComponent : Component
 		
 	}
 
-	VP_JSONBODY(Sprite2DComponent, TexturePath, PosXPercent, PosYPercent, Scale, Layer, Color);
+	VP_JSONBODY(Sprite2DComponent, RenderMode, TexturePath, PosXPercent, PosYPercent, Scale, Layer, Color);
 
+	ui::RenderModeType RenderMode = ui::RenderModeType::ScreenSpaceOverlay;
 	std::string TexturePath;
 	float PosXPercent = 0.f;
 	float PosYPercent = 0.f;

@@ -104,7 +104,7 @@ namespace ui
 	{
 		std::string ImagePath = {};
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
-		RenderModeType RenderMode = RenderModeType::ScreenSpaceOverlay;
+		RenderModeType RenderMode = RenderModeType::WorldSpace;
 
 		// 2D info
 		float PosXPercent = 0.f;

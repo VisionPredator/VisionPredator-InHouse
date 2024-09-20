@@ -53,25 +53,26 @@ private:
 	ui::ImageInfo m_Info;
 
 	// 화면 사이즈는 UI 매니저가 가지고 잇는게 나을듯.
-	int m_CanvasWidth = 0;		// 렌더링을 할 정확한 정점 위치가 필요하기 때문에 저장.
-	int m_CanvasHeight = 0;
+	uint32_t m_CanvasWidth = 0;		// 렌더링을 할 정확한 정점 위치가 필요하기 때문에 저장.
+	uint32_t m_CanvasHeight = 0;
 	uint32_t m_BitmapWidth = 0;
 	uint32_t m_BitmapHeight = 0;
 
-	float m_PreviousPosXPercent = 0.f;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
-	float m_PreviousPosYPercent = 0.f;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
-	uint32_t m_PreviousWidth = -1;
-	uint32_t m_PreviousHeight = -1;
-	float m_PreviousScale = -1;
-	uint32_t m_PreviousScreenWidth = 0;
-	uint32_t m_PreviousScreenHeight = 0;
+	float m_PrevPosXPercent = 0.f;	// 이전 프레임과 비교하여 위치가 변하지 않았다면
+	float m_PrevPosYPercent = 0.f;	// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
+	uint32_t m_PrevWidth = -1;
+	uint32_t m_PrevHeight = -1;
+	float m_PrevScale = -1;
+	uint32_t m_PrevCanvasWidth = 0;
+	uint32_t m_PrevCanvasHeight = 0;
+	VPMath::Matrix m_PrevWorld = VPMath::Matrix::Identity;
 
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<IndexBuffer> m_IndexBuffer;
 
 	ImageTransformCB m_Transform;
 	std::shared_ptr<ConstantBuffer<ImageTransformCB>> m_ImageTransformCB;
-	std::shared_ptr<ConstantBuffer<ColorCB>> m_ColorCB;		// 이미지의 색상 값을 pixel shader 에 넘겨주기 위해 필요하다.
+	std::shared_ptr<ConstantBuffer<ColorCB>> m_ColorCB;
 
 	std::shared_ptr<ShaderResourceView> m_Texture;
 	

@@ -21,13 +21,14 @@ void VPRegister::Register_Metadata()
 
 void VPRegister::Register_EnumClass()
 {
+	using namespace  ui;
 	META_ADD_ENUMCLASS(GeoMetryFilter, GeoMetryFilter::Axis, GeoMetryFilter::Box, GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
 	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
 	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
-
+	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
 }
 
 void VPRegister::Register_Structs()
@@ -128,7 +129,7 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
-	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
+	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::RenderMode, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
 }
 
