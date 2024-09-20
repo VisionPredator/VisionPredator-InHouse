@@ -20,6 +20,7 @@ FadeInFadeOut::FadeInFadeOut(std::shared_ptr<Device> device, std::shared_ptr<Res
 
 	m_FadeInOutRTV = manager->Create<RenderTargetView>(L"FadeInOutRTV", RenderTargetViewType::OffScreen,width,height).lock();
 	m_FadeInOutSRV = manager->Create<ShaderResourceView>(L"FadeInOutSRV",m_FadeInOutRTV.lock()).lock();
+	m_Texture = manager->Get<ShaderResourceView>(L"FadeInFadeOut");
 }
 
 FadeInFadeOut::~FadeInFadeOut()
@@ -41,6 +42,7 @@ void FadeInFadeOut::Render()
 	Device->BindVS(m_QuadVS.lock());
 	Device->Context()->PSSetShader(m_FadeInFadeOut.lock()->GetPS(), nullptr, 0);
 	Device->Context()->PSSetShaderResources(0, 1, m_Gbuffer.lock()->GetAddress());
+	Device->Context()->PSSetShaderResources(1, 1, m_Texture.lock()->GetAddress());
 
 	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
 	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());

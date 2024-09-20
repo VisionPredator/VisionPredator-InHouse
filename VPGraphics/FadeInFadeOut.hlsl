@@ -19,10 +19,7 @@ sampler gLinear : register(s0);
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
-    //float4 color = gGuffer.Sample(gLinear, input.tex);
-    float4 color = float4(1, 0, 0, 1);
-    
-    
+    float4 color = gGuffer.Sample(gLinear, input.tex);
     
 	return color;
 }

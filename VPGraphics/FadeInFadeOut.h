@@ -21,6 +21,7 @@ private:
 	std::weak_ptr<PixelShader> m_QuadPS;
 
 	std::weak_ptr<ShaderResourceView> m_Gbuffer;
+	std::weak_ptr<ShaderResourceView> m_Texture;
 
 	std::weak_ptr<ShaderResourceView> m_FadeInOutSRV;
 	std::weak_ptr<RenderTargetView> m_FadeInOutRTV;
