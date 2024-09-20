@@ -90,8 +90,14 @@ private:
 	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
 
+
+
+
 	// IPhysx을(를) 통해 상속됨
-	void UpdateCapsuleControllerSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& capsuleinfo) override;
+	void ResizeCapsuleController(uint32_t entityID, float radius, float height) override;
+
+
+
 
 };
 

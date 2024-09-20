@@ -63,6 +63,22 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
     return true;
 }
 
+void CapsuleController::ResizeCapsuleControllerSize(float radius, float height)
+{
+    if (m_Controller)
+    {
+        // Cast to PxCapsuleController to access specific capsule properties
+        physx::PxCapsuleController* capsuleController = static_cast<physx::PxCapsuleController*>(m_Controller);
+
+        if (capsuleController)
+        {
+            // Set the new radius and height for the capsule controller
+            capsuleController->setRadius(radius);
+            capsuleController->setHeight(height);
+        }
+    }
+}
+
 
 
 void CapsuleController::UpdateCapsuleDimensions(CapsuleControllerInfo info)
@@ -102,7 +118,7 @@ void CapsuleController::UpdateCapsuleSize(const CapsuleControllerInfo& newInfo)
             UpdateCapsuleDimensions(newInfo);
 
             // Apply pivot logic and LocalOffset in shape offset
-            SetShapeOffset(newInfo.Info.Pivot,newInfo.LocalOffset);
+            SetShapeOffset(newInfo.Info.Pivot,newInfo.Info.LocalOffset);
         }
     }
 }

@@ -195,17 +195,29 @@ uint32_t ControllerManager::RaycastToHitActorFromLocation(VPMath::Vector3 locati
     return 0;
 }
 
-void ControllerManager::UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info)
+void ControllerManager::ResizeCapsuleControllerSize(uint32_t entityID, float radius, float height)
 {
     if (!HasController(entityID))
         return;
     auto controller = GetController(entityID);
     if (Reflection::IsSameType<CapsuleController>(controller->GetTypeID()))
     {
-        auto Capsulecontroller = dynamic_cast<CapsuleController*>(controller); 
-        Capsulecontroller->UpdateCapsuleSize(info);
+        auto Capsulecontroller = dynamic_cast<CapsuleController*>(controller);
+        Capsulecontroller->ResizeCapsuleControllerSize(radius, height);
     }
 }
+
+//void ControllerManager::UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info)
+//{
+//    if (!HasController(entityID))
+//        return;
+//    auto controller = GetController(entityID);
+//    if (Reflection::IsSameType<CapsuleController>(controller->GetTypeID()))
+//    {
+//        auto Capsulecontroller = dynamic_cast<CapsuleController*>(controller); 
+//        Capsulecontroller->UpdateCapsuleSize(info);
+//    }
+//}
 
 bool ControllerManager::RemoveController(const unsigned int& id)
 {

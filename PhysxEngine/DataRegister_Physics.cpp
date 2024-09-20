@@ -39,8 +39,8 @@ void PhysicsRegister::Register_Structs()
 	META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::Extent);
 	META_ADD_STRUCT(SphereColliderInfo, SphereColliderInfo::colliderInfo, SphereColliderInfo::Radius);
 	META_ADD_STRUCT(CapsuleColliderInfo, CapsuleColliderInfo::colliderInfo, CapsuleColliderInfo::Radius, CapsuleColliderInfo::HalfHeight);
-	META_ADD_STRUCT(CapsuleControllerInfo, CapsuleControllerInfo::contactOffset, CapsuleControllerInfo::LocalOffset, CapsuleControllerInfo::height, CapsuleControllerInfo::position, CapsuleControllerInfo::radius, CapsuleControllerInfo::slopeLimit, CapsuleControllerInfo::stepOffset);
-	entt::meta<ControllerInfo>().type("ControllerInfo"_hs).data<&ControllerInfo::LayerNumber >("ControllerInfo::LayerNumber"_hs).prop(Reflection::Prop::Name, "ControllerInfo::LayerNumber").data<&ControllerInfo::Pivot >("ControllerInfo::Pivot"_hs).prop(Reflection::Prop::Name, "ControllerInfo::Pivot");
+	META_ADD_STRUCT(CapsuleControllerInfo, CapsuleControllerInfo::contactOffset, CapsuleControllerInfo::height, CapsuleControllerInfo::position, CapsuleControllerInfo::radius, CapsuleControllerInfo::slopeLimit, CapsuleControllerInfo::stepOffset);
+	META_ADD_STRUCT(ControllerInfo, ControllerInfo::LayerNumber, ControllerInfo::Pivot,ControllerInfo::LocalOffset);
 }
 
 void PhysicsRegister::Register_Value()

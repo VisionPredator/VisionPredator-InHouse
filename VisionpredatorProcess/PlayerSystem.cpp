@@ -68,6 +68,41 @@ void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 	controllercomp.JumpXZAcceleration = playercomp.Accel *playercomp.AirControlPercent/100;
 	controllercomp.GravityWeight = playercomp.GravityPower* 9.80665;
 }
+void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
+{
+	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.height, controllercomp.CapsuleControllerinfo.radius);
+}
+void PlayerSystem::CrouchModeController(PlayerComponent& playercomp)
+{
+	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+	// Current full height of the capsule (Total Height = 2 * (radius + height))
+	float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
+	// New height after crouching (half of the full height)
+	float newHeight =  ((fullHeight / 2) - 2 * controllercomp.CapsuleControllerinfo.radius)/2;
+
+	// Ensure the new height doesn't become negative
+	if (newHeight < 0.01f)  // You can set a reasonable minimum threshold
+	{
+		newHeight = 0.01f;
+	}
+	float heightReduction = controllercomp.CapsuleControllerinfo.height - newHeight;
+	controllercomp.Contollerinfo.LocalOffset.y = -heightReduction / 2;
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(),  controllercomp.CapsuleControllerinfo.radius, newHeight);
+}
+void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
+{
+	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+	controllercomp.Contollerinfo.LocalOffset.y = 0;
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.radius, controllercomp.CapsuleControllerinfo.height);
+}
+void PlayerSystem::DownCamera(PlayerComponent& playercomp)
+{
+}
+void PlayerSystem::UpCamera(PlayerComponent& playercomp)
+{
+}
+
 #pragma region FSM Calculate
 
 void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
@@ -124,7 +159,10 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+	{
+		CrouchModeController(playercomp);
 		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
+	}
 	///มกวม
 	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE)|| playercomp.GetComponent<ControllerComponent>()->IsFall)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
@@ -152,8 +190,12 @@ void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
 	}
 	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
-	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL)|| INPUTKEY(KEYBOARDKEY::LCONTROL))
+	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL) || INPUTKEY(KEYBOARDKEY::LCONTROL))
+	{
+		CrouchModeController(playercomp);
+
 		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
+	}
 }
 void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 {
@@ -177,10 +219,12 @@ void PlayerSystem::Calculate_Crouch(PlayerComponent& playercomp)
 	{
 		if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
+			DefalutModeController(playercomp);
 			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 		}
 		else
 		{
+			DefalutModeController(playercomp);
 			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
 		}
 	}
@@ -274,6 +318,7 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 }
 void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 {
+
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;

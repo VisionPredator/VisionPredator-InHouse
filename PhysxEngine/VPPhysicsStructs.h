@@ -82,20 +82,21 @@ namespace VPPhysics
 	};
 	struct ControllerInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(ControllerInfo, LayerNumber, Pivot)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(ControllerInfo, LayerNumber, Pivot, LocalOffset)
 
 		uint32_t EntityId = noneID;								// 캐릭터 컨트롤러 아이디
 		EPhysicsLayer LayerNumber{};								// 충돌 매트릭스 레이어 넘버
 		ControllerPivot Pivot{};								//컨트롤러의 Pivot 위치
+		VPMath::Vector3 LocalOffset{ 0.f,0.f ,0.f };
+
 	};
 	struct CapsuleControllerInfo
 	{
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CapsuleControllerInfo, Info, position, LocalOffset, height, radius, stepOffset, slopeLimit, contactOffset);
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CapsuleControllerInfo, Info, position, height, radius, stepOffset, slopeLimit, contactOffset);
 
 		ControllerInfo Info{};
 		VPMath::Vector3 position{ 0.f, 0.f, 0.f };					// 캐릭터 컨트롤러가 위치하는 처음 생성 위치
-		VPMath::Vector3 LocalOffset {0.f,0.f ,0.f };
 		float height = 0.1f;										// 캐릭터 컨트롤러(캡슐)의 높이
 		float radius = 0.05f;										// 캐릭터 컨트롤러(캡슐)의 반지름
 		float stepOffset = 0.0f;									// 캐릭터 컨트롤러가 지나갈 수 있는 

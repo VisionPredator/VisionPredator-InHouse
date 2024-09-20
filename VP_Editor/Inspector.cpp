@@ -866,6 +866,11 @@ void Inspector::TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Compone
 			}
 			ImGui::EndCombo();
 		}
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		float LocalOffset[3] = { tempControllerInfo.LocalOffset.x, tempControllerInfo.LocalOffset.y, tempControllerInfo.LocalOffset.z };
+		ImGui::DragFloat3("LocalOffset", LocalOffset, 0.1f, 0.1f);
+		tempControllerInfo.LocalOffset = { LocalOffset[0], LocalOffset[1], LocalOffset[2] };
 	}
 
 	// Update the memberMetaData with the new values
@@ -884,10 +889,7 @@ void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, 
 	// Use Collapsing Header to toggle visibility
 	if (ImGui::CollapsingHeader("Capsule Controller Info", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::SetNextItemWidth(m_TypeBoxsize);
-		float LocalOffset[3] = { tempCapsuleControllerInfo.LocalOffset.x, tempCapsuleControllerInfo.LocalOffset.y, tempCapsuleControllerInfo.LocalOffset.z };
-		ImGui::DragFloat3("LocalOffset", LocalOffset, 0.1f, 0.1f);
-		tempCapsuleControllerInfo.LocalOffset = { LocalOffset[0], LocalOffset[1], LocalOffset[2] };
+
 
 		ImGui::SetNextItemWidth(m_TypeBoxsize);
 		ImGui::DragFloat("Height", &tempCapsuleControllerInfo.height, 0.1f, 0.1f);

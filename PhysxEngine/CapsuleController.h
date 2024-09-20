@@ -7,6 +7,8 @@ class CapsuleController :
 public:
     CapsuleController();
 	bool Initialize(CapsuleControllerInfo info, physx::PxControllerManager* CCTManager, physx::PxMaterial* material/*, CollisionData* collisionData*/, PhysicsInfo physicinfo );
+    void ResizeCapsuleControllerSize(float radius, float height);
+
     void UpdateCapsuleSize(const CapsuleControllerInfo& newInfo);
     void SetShapeOffset(ControllerPivot pivot,VPMath::Vector3 offset);
     void UpdateCapsuleDimensions(CapsuleControllerInfo info);

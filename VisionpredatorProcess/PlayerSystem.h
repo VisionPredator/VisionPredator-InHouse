@@ -16,7 +16,11 @@ public:
     void PlayerShoot(PlayerComponent& playercomp);
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
-
+	void UpdateControllerSize(PlayerComponent& playercomp);
+	void CrouchModeController(PlayerComponent& playercomp);
+	void DefalutModeController(PlayerComponent& playercomp);
+	void DownCamera(PlayerComponent& playercomp);
+	void UpCamera(PlayerComponent& playercomp);
 #pragma endregion 
 #pragma region FSM Calculate
 	void Calculate_FSM(PlayerComponent& playercomp);

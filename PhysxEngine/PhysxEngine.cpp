@@ -223,10 +223,15 @@ uint32_t PhysxEngine::RaycastToHitActorFromLocation(VPMath::Vector3 location, VP
 	return 0;
 }
 
-void PhysxEngine::UpdateCapsuleControllerSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& capsuleinfo)
+
+void PhysxEngine::ResizeCapsuleController(uint32_t entityID, float radius, float height)
 {
-	m_ControllerManager->UpdateCapsuleSize(entityID, capsuleinfo);
+	if (m_ControllerManager->HasController(entityID))
+	{
+		m_ControllerManager->ResizeCapsuleControllerSize(entityID, radius, height);
+	}
 }
+
 
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)

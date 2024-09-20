@@ -27,7 +27,8 @@ public:
 	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
 	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
 	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
-	void UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info);
+	//void UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info);
+	void ResizeCapsuleControllerSize(uint32_t entityID, float radius, float height);
 	/// <summary>
 /// 캐릭터 컨트롤러 삭제 함수
 /// </summary>
