@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Components.h"
 #include "EventSubscriber.h"
+#include "NavMeshData.h"
 struct PrefabData
 {
 	uint32_t MainEntityID;
@@ -79,6 +80,7 @@ public:
 	{
 		return GetEntity(entityID)->GetComponent(compId);
 	}
+
 	std::shared_ptr<Entity> GetEntity(uint32_t entityID)
 	{
 		auto it = m_CurrentScene->EntityMap.find(entityID);
@@ -91,10 +93,11 @@ public:
 
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
-
+	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
 
 
 	void SetSceneName(const std::string& sceneName) { m_CurrentScene->SceneName = sceneName; }
+	void SetSceneBuildSettrings(BuildSettings navbuildsetting) { m_CurrentScene->NavBuildSetting = navbuildsetting; }
 
 	template<typename T>
 	inline std::vector<std::reference_wrapper<T>> GetComponentPool();
@@ -107,6 +110,9 @@ public:
 protected:
 	friend class CompIter;
 private:
+	std::shared_ptr<NavMeshData> GetSceneNavMeshData() { return m_CurrentScene->SceneNavData; }
+	void SetSceneNavMeshData(std::shared_ptr<NavMeshData> navMeshdata) { m_CurrentScene->SceneNavData = navMeshdata; }
+	void ResetNavMeshData() { m_CurrentScene->SceneNavData.reset(); }
 	std::unordered_map<uint32_t, std::shared_ptr<Entity>>& GetEntityMap()
 	{
 		return m_CurrentScene->EntityMap;
@@ -166,6 +172,7 @@ private:
 	inline void ReleaseCompFromPool(entt::id_type compID, Component* comp);
 
 	friend class SceneSerializer;
+	friend class NavAgentSystem;
 
 	std::pair<uint32_t, uint32_t>& findOrCreatePair(std::vector<std::pair<uint32_t, uint32_t>>& vec, uint32_t key);
 
@@ -188,6 +195,7 @@ private:
 
 	friend class Toolbar;
 	friend class SceneSerializer;
+	friend class NavMeshSystem;
 };
 
 

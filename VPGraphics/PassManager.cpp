@@ -36,6 +36,7 @@ PassManager::PassManager()
 	: m_DeferredPass(std::make_shared<DeferredPass>())
 	, m_TransparencyPass(std::make_shared<TransparencyPass>())
 	, m_DebugPass(std::make_shared<DebugPass>())
+	, m_ObjectMaskPass(std::make_shared<ObjectMaskPass>())
 	, m_ParticlePass(std::make_shared<ParticlePass>())
 	, m_UIPass(std::make_shared<UIPass>())
 	, m_OutlineEdgeDetectPass(std::make_shared<OutlineEdgeDetectPass>())
@@ -71,6 +72,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_TransparencyPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
+	m_ObjectMaskPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineEdgeDetectPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineBlurPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineAddPass->Initialize(m_Device.lock(), m_ResourceManager.lock());

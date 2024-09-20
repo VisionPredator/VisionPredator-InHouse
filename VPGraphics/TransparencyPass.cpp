@@ -15,7 +15,7 @@
 #include "DebugDrawManager.h"
 #include "DepthStencilState.h"
 
-TransparencyPass::TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager)
+TransparencyPass::TransparencyPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager)
 {
 	m_Device = device;
 	m_ResourceManager = manager;
@@ -75,7 +75,7 @@ void TransparencyPass::Render()
 	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	Device->Context()->OMSetDepthStencilState(nullptr, 1);
 
-	for (auto& curData : m_RenderList)
+	for (const auto& curData: m_RenderList)
 	{
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 

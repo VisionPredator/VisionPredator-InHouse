@@ -4,7 +4,7 @@
 #include "StaticData.h"
 #include "Slot.h"
 
-GeoMetryPass::GeoMetryPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manger)
+GeoMetryPass::GeoMetryPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manger)
 {
 	m_Device = device;
 	m_ResourceManager = manger;
@@ -25,7 +25,7 @@ void GeoMetryPass::Render()
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, RTV->GetAddress(), DSV->Get());
 
-	for (auto& curOb : m_RenderList)
+	for (const auto& curOb : m_RenderList)
 	{
 		if (curOb->Filter == GeoMetryFilter::Box)
 		{

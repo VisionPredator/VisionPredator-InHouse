@@ -12,7 +12,7 @@
 #include "Defines.h"
 
 
-ShaderResourceView::ShaderResourceView(std::shared_ptr<Device> device) : Resource(device)
+ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device) : Resource(device)
 {
 }
 

@@ -21,12 +21,12 @@ void UIManager::Render()
 	DrawAllImages();
 }
 
-void UIManager::CreateImageObject(const uint32_t& entityID, const ui::ImageInfo& info)
+void UIManager::CreateImageObject(uint32_t entityID, const ui::ImageInfo& info)
 {
 	m_ImageObjects.push_back(std::make_shared<ImageObject>(m_Device, m_ResourceManager, info, entityID));
 }
 
-void UIManager::UpdateImageObject(const uint32_t& entityID, const ui::ImageInfo& info)
+void UIManager::UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info)
 {
 	for (const auto& ui : m_ImageObjects)
 	{
@@ -38,7 +38,7 @@ void UIManager::UpdateImageObject(const uint32_t& entityID, const ui::ImageInfo&
 	}
 }
 
-void UIManager::DeleteImageObject(const uint32_t& entityId)
+void UIManager::DeleteImageObject(uint32_t entityId)
 {
 	auto it = std::remove_if(m_ImageObjects.begin(), m_ImageObjects.end(),
 		[entityId](const std::shared_ptr<ImageObject>& obj)

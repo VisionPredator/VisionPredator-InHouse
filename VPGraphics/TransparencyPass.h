@@ -8,7 +8,7 @@ class TransparencyPass :
 public:
 	TransparencyPass() = default;
 
-	TransparencyPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
+	TransparencyPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager);
 	~TransparencyPass() override;
 
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager);

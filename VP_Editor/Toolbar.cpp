@@ -113,6 +113,9 @@ void Toolbar::ImGuiRender()
 	}
 	// PhysicEngineImGui 함수 호출
 	PhysicEngineImGui();
+	NavMeshImGui();
+
+
 }
 
 void Toolbar::Menu()
@@ -150,6 +153,11 @@ void Toolbar::Help()
 	{
 		m_ShowPhysicSettings = true;
 	}
+
+	if (ImGui::MenuItem("NavMeshSetting"))
+	{
+		m_ShowNavSettings = true;
+	}
 }
 
 void Toolbar::Serialize()
@@ -169,7 +177,7 @@ void Toolbar::PhysicEngineImGui()
 {
 	if (!m_ShowPhysicSettings) // Show the settings window if the flag is true
 	{
-		m_phsicsinfo = m_SceneManager.lock()->GetScenePhysic();
+		m_PhysicInfo_ImGui = m_SceneManager.lock()->GetScenePhysic();
 		return;
 	}
 	// Static cache for enum members to avoid recomputation
@@ -187,22 +195,19 @@ void Toolbar::PhysicEngineImGui()
 		// 중력 벡터 편집
 		ImGui::Text("Gravity");
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat3("##Gravity",&m_phsicsinfo.Gravity.x);
-		//ImGui::InputFloat("Gravity X", &m_phsicsinfo.Gravity.x);
-		//ImGui::InputFloat("Gravity Y", &m_phsicsinfo.Gravity.y);
-		//ImGui::InputFloat("Gravity Z", &m_phsicsinfo.Gravity.z);
+		ImGui::DragFloat3("##Gravity",&m_PhysicInfo_ImGui.Gravity.x);
 
 		// 프레임 레이트 편집
 		ImGui::SetNextItemWidth(200.f);
 
-		int tempFrameRate = static_cast<int>(m_phsicsinfo.FrameRate); // 임시 int 변수에 저장
+		int tempFrameRate = static_cast<int>(m_PhysicInfo_ImGui.FrameRate); // 임시 int 변수에 저장
 
 		if (ImGui::InputInt("Frame Rate", &tempFrameRate)) 
 		{
 			if (tempFrameRate < 1) {
 				tempFrameRate =1; // 음수 값을 0으로 설정
 			}
-			m_phsicsinfo.FrameRate = static_cast<uint32_t>(tempFrameRate); // uint32_t로 변환하여 저장
+			m_PhysicInfo_ImGui.FrameRate = static_cast<uint32_t>(tempFrameRate); // uint32_t로 변환하여 저장
 		}
 
 
@@ -242,18 +247,18 @@ void Toolbar::PhysicEngineImGui()
 				for (int j = 0; j < static_cast<int>(EPhysicsLayer::END); ++j)
 				{
 					ImGui::TableNextColumn();
-					bool is_colliding = (m_phsicsinfo.CollisionMatrix[i] & (1 << j)) != 0;
+					bool is_colliding = (m_PhysicInfo_ImGui.CollisionMatrix[i] & (1 << j)) != 0;
 					if (ImGui::Checkbox(("##" + std::to_string(i) + "_" + std::to_string(j)).c_str(), &is_colliding))
 					{
 						if (is_colliding)
 						{
-							m_phsicsinfo.CollisionMatrix[i] |= (1 << j);
-							m_phsicsinfo.CollisionMatrix[j] |= (1 << i); // Also set the symmetric element
+							m_PhysicInfo_ImGui.CollisionMatrix[i] |= (1 << j);
+							m_PhysicInfo_ImGui.CollisionMatrix[j] |= (1 << i); // Also set the symmetric element
 						}
 						else
 						{
-							m_phsicsinfo.CollisionMatrix[i] &= ~(1 << j);
-							m_phsicsinfo.CollisionMatrix[j] &= ~(1 << i); // Also clear the symmetric element
+							m_PhysicInfo_ImGui.CollisionMatrix[i] &= ~(1 << j);
+							m_PhysicInfo_ImGui.CollisionMatrix[j] &= ~(1 << i); // Also clear the symmetric element
 						}
 					}
 				}
@@ -261,16 +266,79 @@ void Toolbar::PhysicEngineImGui()
 			ImGui::EndTable();
 		}
 
-		// Apply 버튼을 추가하여 변경 사항을 물리 엔진에 적용
+		// Apply 버튼을 추가하여 변경 사항을 물리 엔진에 적용 이건 솔직히 필요 없을 듯 하다. systemInit했을 때 설정해줘도 늦지 않는다.
 		if (ImGui::Button("Apply"))
 		{
 			// 수정된 정보를 물리 엔진에 설정합니다.
-			m_SceneManager.lock()->SetScenePhysic(m_phsicsinfo);
-			m_PhysicEngine->SetPhysicsInfo(m_SceneManager.lock()->GetScenePhysic());
-			EventManager::GetInstance().ImmediateEvent("OnSetPhysicUpdateRate", m_phsicsinfo.FrameRate);
+			m_SceneManager.lock()->SetScenePhysic(m_PhysicInfo_ImGui);
 			m_ShowPhysicSettings = false;
 		}
 	}
 	ImGui::End();
 	ImGui::PopID();
 }
+
+void Toolbar::NavMeshImGui()
+{
+	if (!m_ShowNavSettings) // Show the settings window if the flag is true
+	{
+		m_NavBuildSetteing_ImGui = m_SceneManager.lock()->GetSceneBuildSettrings();
+		return;
+	}
+	// Set up the ImGui window properties
+	ImGui::PushID("NavMeshSettings");
+	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+	ImVec2 windowSize = ImVec2(600, 450);
+	ImVec2 windowPos = ImVec2((displaySize.x - windowSize.x) / 2, ((displaySize.y - windowSize.y) / 2 - 100));
+
+	ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
+
+	if (ImGui::Begin("NavMesh Build Settings", &m_ShowNavSettings))
+	{
+		// UseNavMesh toggle
+		ImGui::Checkbox("Use NavMesh", &m_NavBuildSetteing_ImGui.UseNavMesh);
+
+		// maxCrowdNumber
+		ImGui::Text("Crowd Settings");
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::InputInt("Max Crowd Number", &m_NavBuildSetteing_ImGui.MaxCrowdNumber);
+
+		// maxAgentRadius
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::DragFloat("Max Agent Radius", &m_NavBuildSetteing_ImGui.MaxAgentRadius, 0.01f, 0.1f, 10.0f, "%.2f");
+
+		// walkableSlopeAngle
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::DragFloat("Walkable Slope Angle", &m_NavBuildSetteing_ImGui.WalkableSlopeAngle, 1.0f, 0.0f, 90.0f, "%.0f");
+
+		// walkableClimb
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::DragFloat("Walkable Climb", &m_NavBuildSetteing_ImGui.WalkableClimb, 0.01f, 0.0f, 10.0f, "%.2f");
+
+		// walkableHeight
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::DragFloat("Walkable Height", &m_NavBuildSetteing_ImGui.WalkableHeight, 0.01f, 0.1f, 10.0f, "%.2f");
+
+		// divisionSizeXZ
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::DragFloat("Division Size XZ", &m_NavBuildSetteing_ImGui.DivisionSizeXZ, 0.01f, 0.01f, 10.0f, "%.2f");
+
+		// divisionSizeY
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::DragFloat("Division Size Y", &m_NavBuildSetteing_ImGui.DivisionSizeY, 0.01f, 0.01f, 10.0f, "%.2f");
+
+		// Apply button
+		if (ImGui::Button("Apply"))
+		{
+			// Apply the modified settings to the scene's navigation build settings
+			m_SceneManager.lock()->SetSceneBuildSettrings(m_NavBuildSetteing_ImGui);
+			m_ShowNavSettings = false; // Close the settings window
+		}
+	}
+	ImGui::End();
+	ImGui::PopID();
+}
+
+
+

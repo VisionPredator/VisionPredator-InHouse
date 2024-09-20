@@ -76,7 +76,7 @@ bool GraphicsEngine::Initialize()
 	m_Loader->Initialize(m_ResourceManager, m_Device);
 	m_LightManager->Initialize(m_ResourceManager);
 	m_Animator->Initialize(m_ResourceManager);
-	m_DebugDrawManager->Initialize(m_Device);
+	m_DebugDrawManager->Initialize(m_Device, m_ResourceManager);
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 	m_UIManager->Initialize(m_Device, m_ResourceManager);
 	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager, m_LightManager);
@@ -333,7 +333,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 		debug::SphereInfo temp;
 		temp.Sphere.Center = { a._41,a._42,a._43 };
 		temp.Sphere.Radius = 0.1;
-		temp.Color = { 0,1,0,1 };
+		temp.Color = VPMath::Color{ 0,1,0,1 };
 		DrawSphere(temp);
 
 		return a;
@@ -347,32 +347,32 @@ void GraphicsEngine::SetVP(bool isVP)
 	m_PassManager->SetVP(isVP);
 }
 
-void GraphicsEngine::CreateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
+void GraphicsEngine::CreateParticleObject(uint32_t entityID, const effect::ParticleInfo& info)
 {
 	m_ParticleManager->CreateParticleObject(entityID, info);
 }
 
-void GraphicsEngine::UpdateParticleObject(const uint32_t& entityID, const effect::ParticleInfo& info)
+void GraphicsEngine::UpdateParticleObject(uint32_t entityID, const effect::ParticleInfo& info)
 {
 	m_ParticleManager->UpdateParticleInfoByID(entityID, info);
 }
 
-void GraphicsEngine::DeleteParticleObjectByID(const uint32_t& id)
+void GraphicsEngine::DeleteParticleObjectByID(uint32_t id)
 {
 	m_ParticleManager->DeleteParticleObjectByID(id);
 }
 
-void GraphicsEngine::CreateImageObject(const uint32_t& id, const ui::ImageInfo& info)
+void GraphicsEngine::CreateImageObject(uint32_t id, const ui::ImageInfo& info)
 {
 	m_UIManager->CreateImageObject(id, info);
 }
 
-void GraphicsEngine::UpdateImageObject(const uint32_t& id, const ui::ImageInfo& info)
+void GraphicsEngine::UpdateImageObject(uint32_t id, const ui::ImageInfo& info)
 {
 	m_UIManager->UpdateImageObject(id, info);
 }
 
-void GraphicsEngine::DeleteImageObject(const uint32_t& id)
+void GraphicsEngine::DeleteImageObject(uint32_t id)
 {
 	m_UIManager->DeleteImageObject(id);
 }

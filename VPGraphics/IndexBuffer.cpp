@@ -3,7 +3,7 @@
 #include "IndexBuffer.h"
 #include <d3d11.h>
 
-IndexBuffer::IndexBuffer(std::shared_ptr<Device> device, UINT count) : Buffer(device, count)
+IndexBuffer::IndexBuffer(const std::shared_ptr<Device>& device, UINT count) : Buffer(device, count)
 {
 
 }
@@ -13,7 +13,7 @@ IndexBuffer::IndexBuffer()
 
 }
 
-IndexBuffer::IndexBuffer(std::shared_ptr<Device> device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, int drawindex) : Buffer(device, desc, data, drawindex)
+IndexBuffer::IndexBuffer(const std::shared_ptr<Device>& device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, int drawindex) : Buffer(device, desc, data, drawindex)
 {
 	HRESULT hr;
 	hr = m_Device.lock()->Get()->CreateBuffer(&m_Desc, &m_Data, &m_buffer);

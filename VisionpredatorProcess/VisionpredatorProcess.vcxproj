@@ -121,7 +121,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -130,8 +130,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>Recast.lib;Detour.lib;DetourCrowd.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,7 +143,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -156,6 +155,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Recast.lib;Detour.lib;DetourCrowd.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -164,10 +164,12 @@
     <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="FSMComponent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="TestCameraSystem.h" />
+    <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
     <ClInclude Include="VisPredDataRegister.h" />
     <ClInclude Include="VPProcess.h" />
@@ -177,6 +179,7 @@
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="EnemySystem.cpp" />
+    <ClCompile Include="FSMComponent.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -186,6 +189,7 @@
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
+    <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="VisPredDataRegister.cpp" />
     <ClCompile Include="VPProcess.cpp" />
   </ItemGroup>

@@ -11,7 +11,7 @@
 //
 //}
 
-PixelShader::PixelShader(std::shared_ptr<Device> device, std::wstring filename) : Shader(device, filename)
+PixelShader::PixelShader(const std::shared_ptr<Device>& device, std::wstring filename) : Shader(device, filename)
 {
 	// 작업 디렉토리 기준으로 cso 파일을 찾는다.
 	// 프로젝트 설정으로 작업 디렉토리를 Binaries 폴더 안으로 바꾸었으므로

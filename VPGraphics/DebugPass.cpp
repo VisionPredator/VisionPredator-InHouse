@@ -14,7 +14,7 @@
 #include "StaticData.h"
 #include "DebugDrawManager.h"
 
-DebugPass::DebugPass(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug)
+DebugPass::DebugPass(const std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager> manager, std::shared_ptr<DebugDrawManager> debug)
 {
 	m_Device = device;
 	m_ResourceManager = manager;
@@ -80,7 +80,7 @@ void DebugPass::Render()
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(CameraCB->m_struct.proj));
 	Device->Context()->OMSetRenderTargets(1, m_RTV.lock()->GetAddress(), DSV->Get());
 
-	for (auto& curData : m_RenderList)
+	for (const auto& curData : m_RenderList)
 	{
 		//bounding box
 		{
@@ -114,7 +114,7 @@ void DebugPass::Render()
 					obbInfo.yAxisAngle = curData->rotation.y;
 					obbInfo.zAxisAngle = curData->rotation.z;
 
-					obbInfo.Color = { 1,0,0,1 };
+					obbInfo.Color = VPMath::Color{ 1,0,0,1 };
 					debugManager->AddTask(obbInfo);
 
 				}
@@ -122,6 +122,7 @@ void DebugPass::Render()
 			}
 
 		}
+
 	}
 
 	debugManager->Execute(Device, m_View, m_Proj);

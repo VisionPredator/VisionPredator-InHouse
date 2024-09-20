@@ -8,3 +8,5 @@
 #include "CameraSystem.h"
 #include "AnimationSystem.h"
 #include "SceneSerializer.h"
+#include "NavMeshSystem.h"
+#include "NavAgentSystem.h"

@@ -22,9 +22,9 @@ public:
 	void Render();
 
 	// Image
-	void CreateImageObject(const uint32_t& entityID, const ui::ImageInfo& info);
-	void UpdateImageObject(const uint32_t& entityID, const ui::ImageInfo& info);
-	void DeleteImageObject(const uint32_t& entityId);
+	void CreateImageObject(uint32_t entityID, const ui::ImageInfo& info);
+	void UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info);
+	void DeleteImageObject(uint32_t entityId);
 
 	// TODO: Create Font
 	//void CreateTextObject(const uint32_t& entityID, const ui::TextInfo& info);
