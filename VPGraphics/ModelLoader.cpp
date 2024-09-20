@@ -239,22 +239,6 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 		case Filter::STATIC:
 		{
 
-			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
-			{
-				ProcessVertexBuffer(TextureVertices, curMesh, i);
-
-				VPMath::Vector3 curPos;
-				curPos.x = TextureVertices.back().pos.x;
-				curPos.y = TextureVertices.back().pos.y;
-				curPos.z = -TextureVertices.back().pos.z;
-
-
-
-				Model->vertices.push_back(curPos);
-			}
-			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
-			data.pSysMem = &(TextureVertices[0]);
-			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
 
 			//유니티랑 기준을 맞추려고 회전했으므로 바운딩볼륨도 회전시켜놔야지
 			VPMath::Matrix test;
@@ -268,10 +252,50 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			v = XMVector3Transform(v, test);
 			newMesh->MaxBounding = { v.x,v.y,v.z };
 
+			float maxL = v.Length();
+
 			v = newMesh->MinBounding;
 			v = XMVector3Transform(v, test);
-			newMesh->MinBounding = { v.x,v.y,v.z };
 
+			float minL = v.Length();
+			if(minL < maxL)
+			{
+				newMesh->MinBounding = { v.x,v.y,v.z };
+			}
+			else
+			{
+				newMesh->MinBounding = newMesh->MaxBounding;
+				newMesh->MaxBounding = { v.x,v.y,v.z };
+			}
+
+			newMesh->Pivot = VPMath::Vector3(newMesh->MaxBounding.x + newMesh->MinBounding.x, newMesh->MaxBounding.y + newMesh->MinBounding.y, newMesh->MaxBounding.z + newMesh->MinBounding.z)/2;
+
+			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
+			{
+				ProcessVertexBuffer(TextureVertices, curMesh, i);
+
+				VPMath::Vector3 curPos;
+				curPos.x = TextureVertices.back().pos.x;
+				curPos.y = TextureVertices.back().pos.y;
+				curPos.z = -TextureVertices.back().pos.z;
+
+				curPos -= newMesh->Pivot;
+
+				Model->vertices.push_back(curPos);
+			}
+
+			for (auto& ver : TextureVertices)
+			{
+				DirectX::XMFLOAT4& curPos = ver.pos;
+				curPos.x -= newMesh->Pivot.x;
+				curPos.y -= newMesh->Pivot.y;
+				curPos.z -= newMesh->Pivot.z;
+			}
+
+
+			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
+			data.pSysMem = &(TextureVertices[0]);
+			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
 		}
 			break;
 

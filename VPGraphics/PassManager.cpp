@@ -86,7 +86,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_Passes.push_back(m_DebugPass);
 	m_Passes.push_back(m_DeferredPass);
 	m_Passes.push_back(m_TransparencyPass);
-	m_Passes.push_back(m_FadeInFadeOut);
+	//m_Passes.push_back(m_FadeInFadeOut);
 	//m_Passes.push_back(m_VPOutLinePass);
 }
 
@@ -128,7 +128,7 @@ void PassManager::OnResize()
 	m_DebugPass->OnResize();
 	m_DeferredPass->OnResize();
 	m_TransparencyPass->OnResize();
-
+	m_VPOutLinePass->OnResize();
 	for (auto& pass : m_Passes)
 	{
 		pass->OnResize();
