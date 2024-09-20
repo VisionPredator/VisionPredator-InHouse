@@ -135,8 +135,6 @@ void ImageObject::UpdateBuffers()
 		m_CanvasWidth = m_BitmapWidth;
 		m_CanvasHeight = m_BitmapHeight;
 
-		//if (m_PrevCanvasWidth == m_CanvasWidth && m_PrevCanvasHeight == m_CanvasHeight)
-		//	return;
 
 		// 카메라 데이터 관리하는게 마음에 안든다.
 		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
@@ -144,16 +142,24 @@ void ImageObject::UpdateBuffers()
 		DirectX::XMFLOAT3 cameraUp = DirectX::XMFLOAT3(cameraCB->m_struct.view._21, cameraCB->m_struct.view._22, cameraCB->m_struct.view._23);
 
 		const DirectX::XMFLOAT3 imagePos = DirectX::XMFLOAT3(m_Info.World._41, m_Info.World._42, m_Info.World._43);
+		const DirectX::XMFLOAT3 imageScale = DirectX::XMFLOAT3(m_Info.World._11, m_Info.World._22, m_Info.World._33);
 
 		// 아크 탄젠트 함수를 사용하여 현재 카메라 위치를 향하도록 빌보드 모델에 적용해야하는 회전을 계산합니다.
 		double angle = atan2(imagePos.x - cameraPos.x, imagePos.z - cameraPos.z) * (180 / DirectX::XM_PI);
 
 		// 회전을 라디안으로 변환한다.
 		float rotation = (float)angle * 0.0174532925f;
-		DirectX::XMMATRIX worldMatrix = DirectX::XMMatrixRotationY(rotation);
+
+		DirectX::XMMATRIX scaleMatrix = DirectX::XMMatrixScaling(imageScale.x, imageScale.y, imageScale.z);
+		DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationY(rotation);
+		DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(imagePos.x, imagePos.y, imagePos.z);
+		DirectX::XMMATRIX worldMatrix = scaleMatrix;
+
+		//worldMatrix = DirectX::XMMatrixRotationY(rotation);
 
 		// 빌보드 행렬 계산
-		DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(imagePos.x, imagePos.y, imagePos.z);
+		//DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(imagePos.x, imagePos.y, imagePos.z);
+		worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, rotationMatrix);
 		worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, translateMatrix);
 
 		m_Transform.World = XMMatrixTranspose(worldMatrix);
@@ -161,8 +167,11 @@ void ImageObject::UpdateBuffers()
 		m_Transform.Projection = cameraCB->m_struct.proj;
 		m_ImageTransformCB->Update(m_Transform);
 
-		float sizeX = static_cast<float>(m_CanvasWidth) * 0.0005f;
-		float sizeY = static_cast<float>(m_CanvasHeight) * 0.0005f;
+		if (m_PrevCanvasWidth == m_CanvasWidth && m_PrevCanvasHeight == m_CanvasHeight)
+			return;
+
+		float sizeX = static_cast<float>(m_CanvasWidth) * 0.001f;
+		float sizeY = static_cast<float>(m_CanvasHeight) * 0.001f;
 
 		left = -sizeX;
 		top = sizeY;
@@ -171,7 +180,6 @@ void ImageObject::UpdateBuffers()
 	}
 	else    // ui::RenderModeType::ScreenSpaceOverlay
 	{
-
 		m_CanvasWidth = m_Device->GetWndWidth();
 		m_CanvasHeight = m_Device->GetWndHeight();
 

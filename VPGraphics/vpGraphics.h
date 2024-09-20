@@ -100,21 +100,27 @@ namespace ui
 		ScreenSpaceCamera,		// 특정 카메라에 연결하여 렌더링..		// 유니티를 참고함
 	};
 
+	enum class BillboardType
+	{
+		None,
+		LookAtCamera,
+
+	};
+
 	struct ImageInfo
 	{
 		std::string ImagePath = {};
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
-		RenderModeType RenderMode = RenderModeType::WorldSpace;
+		RenderModeType RenderMode = RenderModeType::ScreenSpaceOverlay;
 
-		// 2D info
+		// 2D
 		float PosXPercent = 0.f;
 		float PosYPercent = 0.f;
 		float Scale = 1.f;		
 		uint32_t Layer = 0;		// 이미지 깊이값
 
-		// 3D info
+		// 3D
 		VPMath::Matrix World = VPMath::Matrix::Identity;
-		VPMath::Vector3 Rotation = VPMath::Vector3::Zero;
 	};
 
 	struct TextInfo
