@@ -293,6 +293,12 @@
     <ClInclude Include="PostProcessManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
+    <ClInclude Include="FadeInFadeOut.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="VPOutLinePass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -461,6 +467,12 @@
     <ClCompile Include="PostProcessManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
+    <ClCompile Include="FadeInFadeOut.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VPOutLinePass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -530,6 +542,12 @@
       <Filter>HLSL\CS</Filter>
     </FxCompile>
     <FxCompile Include="PreDepthPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="FadeInFadeOut.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="VPOutLine.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
   </ItemGroup>
