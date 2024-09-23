@@ -61,7 +61,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         normalLeftDown, normalDown, normalRightDown,
     };
     
-    float3 laplacianResult;
+    float3 laplacianResult = float3(0, 0, 0);
     
     for (int i = 0; i < 9; i++)
     {

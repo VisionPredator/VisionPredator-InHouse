@@ -9,16 +9,17 @@ struct AnimationComponent : public Component
 
 	std::wstring FBX = L"";
 
-	int curAni = 0;
-	int preAni = 0;
+	int curAni = 5;
+	int preAni = 5;
 
 	float duration = 0;	//애니메이션 재생시간
 	float preDuration = 0;
 
 	std::vector<std::wstring> animationList;
 
-	bool isPlay = false;
-	bool isChange = false;
+	bool isPlay = true;
+	bool isLoop = true;
+
 	float speed = 1.0f;
 	float transitionDuration = 0.2f;
 };

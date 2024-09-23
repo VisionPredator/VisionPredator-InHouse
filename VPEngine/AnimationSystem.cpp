@@ -39,8 +39,6 @@ void AnimationSystem::Update(float deltaTime)
 
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
-		aniComp.isPlay = true;
-
 		if (!aniComp.FBX.empty())
 		{
 			aniComp.duration += deltaTime * aniComp.speed;
@@ -49,9 +47,13 @@ void AnimationSystem::Update(float deltaTime)
 			if (aniComp.preAni == aniComp.curAni)
 			{
 				double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
-				if (aniComp.duration > curDuration)
+
+				if (aniComp.isLoop)
 				{
-					aniComp.duration -= curDuration;
+					if (aniComp.duration > curDuration)
+					{
+						aniComp.duration -= curDuration;
+					}
 				}
 			}
 			else
