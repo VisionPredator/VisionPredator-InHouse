@@ -22,6 +22,7 @@ public:
 	void DownCamera(PlayerComponent& playercomp,float deltatime);
 	void UpCamera(PlayerComponent& playercomp, float deltatime);
 	void CarmeraPosChange(PlayerComponent& playercomp,float deltatime);
+	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 #pragma endregion 
 #pragma region FSM Calculate
 
@@ -62,7 +63,7 @@ public:
 #pragma endregion
 
 #pragma region Move Logic
-	void Move_Walk(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
+	void Move_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void Move_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp);
 	void Move_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
 	void Move_Slide(PlayerComponent& playercomp);

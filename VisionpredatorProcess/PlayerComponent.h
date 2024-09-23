@@ -33,7 +33,8 @@ struct PlayerComponent :
     float CamTransDuration=0.07f;
     float CamTransProgress=0.f;
     VPMath::Vector3 DefalutCameraPos{};
-    float SlideDuration{};
+    float SlideDuration =0.5f;
     float SlideProgress{};
+    VPMath::Vector3 SlideDir{};
 };
 

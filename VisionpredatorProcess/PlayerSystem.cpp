@@ -65,6 +65,10 @@ void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 	controllercomp.DynamicFriction = playercomp.DynamicFriction;
 	controllercomp.JumpXZAcceleration = playercomp.Accel *playercomp.AirControlPercent/100;
 	controllercomp.GravityWeight = playercomp.GravityPower* 9.80665;
+
+
+
+
 }
 void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 {
@@ -149,6 +153,14 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 
 }
 
+void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
+{
+	
+	if (playercomp.GetEntityID()!= controllercomp.GetEntityID())
+		return;
+	playercomp.SlideDir = controllercomp.InputDir;
+}
+
 #pragma region FSM Calculate
 
 void PlayerSystem::Calculate_FSM(PlayerComponent & playercomp)
@@ -201,9 +213,12 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 	}
 	///슬라이딩
-	else if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))&&
+	else if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT)) &&
 		INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+	{
+		CrouchModeController(playercomp);
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
+	}
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
 	{
 		CrouchModeController(playercomp);
@@ -253,6 +268,7 @@ void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 	}
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
 	{
+		CrouchModeController(playercomp);
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
 	}
 	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
@@ -279,7 +295,10 @@ void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 {
 	if (playercomp.SlideProgress>= playercomp.SlideDuration)
 	{
+		playercomp.SlideProgress = 0;
+		DefalutModeController(playercomp);
 		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+
 	}
 
 
@@ -346,6 +365,23 @@ void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
 	///지면 기준에서 하기.
 	///Input이 있을경우에는 그 방향으로 이동해야함.
 	/// 콜라이더 오프셋 기능 추가.
+
+	if (!playercomp.HasComponent<ControllerComponent>())
+		return; 
+
+	auto& controller = *playercomp.GetComponent<ControllerComponent>();
+	auto& transcomp = *playercomp.GetComponent<TransformComponent>();
+	playercomp.SlideProgress += deltatime;
+
+
+
+	auto slidespeed = playercomp.RunSpeed * 1.5;
+	controller.MaxSpeed = playercomp.RunSpeed * 1.5;
+	controller.Acceleration = controller.MaxSpeed * 3;
+
+	//Move_Walk(transcomp, playercomp, controllercomp);
+	Move_Rotation(playercomp, transcomp);
+	
 }
 
 void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
@@ -353,7 +389,10 @@ void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.WalkSpeed;
-	Move_Walk(transfomcomp, Controller);
+	Controller.Acceleration = Controller.MaxSpeed * 3;
+
+
+	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 }
 
@@ -362,7 +401,9 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.RunSpeed;
-	Move_Walk(transfomcomp, Controller);
+	Controller.Acceleration = Controller.MaxSpeed * 3;
+
+	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 }
 void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
@@ -370,7 +411,9 @@ void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
-	Move_Walk(transfomcomp, Controller);
+	Controller.Acceleration = Controller.MaxSpeed * 3;
+
+	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 }
 
@@ -378,7 +421,7 @@ void PlayerSystem::Action_Jump(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Move_Walk(transfomcomp, Controller);
+	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 	Move_Jump(transfomcomp, Controller);
 }
@@ -387,7 +430,7 @@ void PlayerSystem::Action_Attack(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Move_Walk(transfomcomp, Controller);
+	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 	switch (playercomp.ShootType)
 	{
@@ -445,7 +488,7 @@ void PlayerSystem::GunCooltime(PlayerComponent& playercomp)
 
 #pragma region Move Logic
 
-void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
+void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp)
 {							 
 	controllercomp.InputDir.x = {};
 	controllercomp.InputDir.z = {};
@@ -457,6 +500,8 @@ void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, Controller
 		controllercomp.InputDir -= transformcomp.RightVector;
 	if (INPUTKEY(KEYBOARDKEY::D))
 		controllercomp.InputDir += transformcomp.RightVector;
+
+	SetSlideDir(playercomp, controllercomp);
 }
 
 void PlayerSystem::Move_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp)
