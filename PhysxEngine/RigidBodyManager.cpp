@@ -446,46 +446,52 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 	if (!actor)
 		return;
 
-	// Get the actor's global pose (world transformation)
+	// 액터의 전역 포즈(월드 변환)를 가져옵니다.
 	PxTransform globalPose = actor->getGlobalPose();
 
-	// Retrieve shapes from the PxRigidStatic actor
+	// PxRigidStatic 액터에서 쉐이프들을 가져옵니다.
 	PxU32 shapeCount = actor->getNbShapes();
 	std::vector<PxShape*> shapes(shapeCount);
 	actor->getShapes(shapes.data(), shapeCount);
 
 	for (PxShape* shape : shapes)
 	{
-		// Only process shapes that are marked as SIMULATION_SHAPE (i.e., COLLISION)
+		// SIMULATION_SHAPE(충돌 용도)로 표시된 쉐이프만 처리합니다.
 		if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
 		{
-			// Get the geometry from the shape
+			// 쉐이프에서 지오메트리를 가져옵니다.
 			PxGeometryHolder geometryHolder = shape->getGeometry();
 
 			if (geometryHolder.getType() == PxGeometryType::eCONVEXMESH)
 			{
-				// Access the convex mesh geometry
+				// 컨벡스 메쉬 지오메트리 접근
 				PxConvexMeshGeometry convexGeometry = geometryHolder.convexMesh();
 				PxConvexMesh* convexMesh = convexGeometry.convexMesh;
 
-				// Extract vertices from the PxConvexMesh
+				// convexGeometry에서 스케일을 추출합니다.
+				PxMeshScale scale = convexGeometry.scale;
+
+				// PxConvexMesh에서 정점들을 추출합니다.
 				const PxVec3* meshVertices = convexMesh->getVertices();
 				PxU32 vertexCount = convexMesh->getNbVertices();
 
-				// Store the start index for this batch of vertices
+				// 이 정점 배치의 시작 인덱스를 저장합니다.
 				int baseIndex = static_cast<int>(outVertices.size());
 
-				// Convert and append vertices to outVertices (in world space)
+				// 정점을 변환하여 월드 공간으로 변환한 후 outVertices에 추가합니다.
 				for (PxU32 i = 0; i < vertexCount; ++i)
 				{
-					// Transform the vertex to world space using the actor's global pose
-					PxVec3 worldVertex = globalPose.transform(meshVertices[i]);
+					// 먼저 로컬 정점에 스케일을 적용합니다.
+					PxVec3 scaledVertex = scale.transform(meshVertices[i]);
 
-					// Add the transformed vertex to the output vector
+					// 스케일링된 정점을 액터의 전역 포즈를 사용하여 월드 공간으로 변환합니다.
+					PxVec3 worldVertex = globalPose.transform(scaledVertex);
+
+					// 변환된 정점을 출력 벡터에 추가합니다.
 					outVertices.emplace_back(worldVertex.x, worldVertex.y, worldVertex.z);
 				}
 
-				// Extract indices (the index buffer refers to the vertex buffer)
+				// 인덱스를 추출합니다 (인덱스 버퍼는 정점 버퍼를 참조합니다).
 				const PxU8* indexBuffer = convexMesh->getIndexBuffer();
 				PxU32 polygonCount = convexMesh->getNbPolygons();
 
@@ -494,8 +500,8 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 					PxHullPolygon polygon;
 					convexMesh->getPolygonData(i, polygon);
 
-					// Extract the vertex indices for the polygon
-					if (polygon.mNbVerts == 3) // Already a triangle
+					// 폴리곤의 정점 인덱스를 추출합니다.
+					if (polygon.mNbVerts == 3) // 이미 삼각형
 					{
 						for (PxU32 j = 0; j < 3; ++j)
 						{
@@ -503,7 +509,7 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 							outIndices.push_back(baseIndex + static_cast<int>(vertexIndex));
 						}
 					}
-					else if (polygon.mNbVerts > 3) // Polygon with more than 3 vertices (needs triangulation)
+					else if (polygon.mNbVerts > 3) // 3개 이상의 정점을 가진 폴리곤(삼각형화가 필요)
 					{
 						for (PxU32 j = 2; j < polygon.mNbVerts; ++j)
 						{
@@ -513,9 +519,9 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 						}
 					}
 
-					// Debugging output
-					std::cout << "Polygon " << i << " has " << polygon.mNbVerts << " vertices.\n";
-					std::cout << "Indices so far: " << outIndices.size() << "\n";
+					// 디버깅 출력
+					std::cout << "폴리곤 " << i << " 은(는) " << polygon.mNbVerts << " 개의 정점을 가지고 있습니다.\n";
+					std::cout << "현재까지의 인덱스 개수: " << outIndices.size() << "\n";
 				}
 			}
 		}

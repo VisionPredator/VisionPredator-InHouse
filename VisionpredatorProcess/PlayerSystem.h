@@ -2,7 +2,7 @@
 #include <System.h>
 #include "VisPredComponents.h"
 class PlayerSystem :
-    public System, public IUpdatable,public IPhysicable
+    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable
 {
 
 public:
@@ -19,10 +19,14 @@ public:
 	void UpdateControllerSize(PlayerComponent& playercomp);
 	void CrouchModeController(PlayerComponent& playercomp);
 	void DefalutModeController(PlayerComponent& playercomp);
-	void DownCamera(PlayerComponent& playercomp);
-	void UpCamera(PlayerComponent& playercomp);
+	void DownCamera(PlayerComponent& playercomp,float deltatime);
+	void UpCamera(PlayerComponent& playercomp, float deltatime);
+	void CarmeraPosChange(PlayerComponent& playercomp,float deltatime);
 #pragma endregion 
 #pragma region FSM Calculate
+
+
+
 	void Calculate_FSM(PlayerComponent& playercomp);
 	void Calculate_Idle(PlayerComponent& playercomp);
 	void Calculate_Die(PlayerComponent& playercomp);
@@ -37,12 +41,12 @@ public:
 #pragma endregion
 
 #pragma region FSM Action
-	void Action_FSM(PlayerComponent& playercomp);
+	void Action_FSM(PlayerComponent& playercomp, float deltaTime);
 	void Action_Idle(PlayerComponent& playercomp);
-	void Action_Slide(PlayerComponent& playercomp);
 	void Action_Walk(PlayerComponent& playercomp);
 	void Action_Run(PlayerComponent& playercomp);
 	void Action_Crouch(PlayerComponent& playercomp);
+	void Action_Slide(PlayerComponent& playercomp,float deltatime);
 	void Action_Jump(PlayerComponent& playercomp);
 	void Action_Attack(PlayerComponent& playercomp);
 	void Action_Die(PlayerComponent& playercomp);
@@ -54,6 +58,7 @@ public:
 	void Shoot_Pistol(PlayerComponent& playercomp);
 	void Shoot_ShotGun(PlayerComponent& playercomp);
 	void Shoot_Rifle(PlayerComponent& playercomp);
+	void GunCooltime(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Move Logic
@@ -64,6 +69,20 @@ public:
 #pragma endregion
 
 
+
+
+	// IStartable을(를) 통해 상속됨
+	void Initialize() override;
+
+	void Start(uint32_t gameObjectId) override;
+
+	void Finish(uint32_t gameObjectId) override;
+
+	void Finalize() override;
+
+
+	// IFixedUpdatable을(를) 통해 상속됨
+	void FixedUpdate(float deltaTime) override;
 
 };
 

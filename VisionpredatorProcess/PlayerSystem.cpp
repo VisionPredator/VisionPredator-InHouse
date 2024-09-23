@@ -9,9 +9,8 @@ void PlayerSystem::Update(float deltaTime)
 {
 	COMPLOOP(PlayerComponent, playercomp)
 	{
-		UpdateCharDataToController(playercomp);
 		Calculate_FSM(playercomp);
-		Action_FSM(playercomp);
+		Action_FSM(playercomp,deltaTime);
 		RaycastTest(playercomp);
 	}
 }
@@ -28,7 +27,6 @@ void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
 		auto cameratransform = posEntity->GetComponent<TransformComponent>();
 		auto front = cameratransform->FrontVector;
 		std::cout << m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 500);
-		
 	}
 
 }
@@ -47,7 +45,7 @@ void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 	{
 		if (!comp.HasGun)
 			return;
-		auto posEntity = GetSceneManager()->GetChildEntityByName(comp.GetEntityID(), comp.FirPosition);
+		auto posEntity = GetSceneManager()->GetChildEntityByName(comp.GetEntityID(), comp.FirePosition);
 		if (!posEntity)
 			return;
 		auto tempTransform = posEntity->GetComponent<TransformComponent>();
@@ -73,39 +71,87 @@ void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
 	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.height, controllercomp.CapsuleControllerinfo.radius);
 }
-void PlayerSystem::CrouchModeController(PlayerComponent& playercomp)
+void PlayerSystem::CrouchModeController(PlayerComponent & playercomp)
 {
 	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
-	// Current full height of the capsule (Total Height = 2 * (radius + height))
-	float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
-	// New height after crouching (half of the full height)
-	float newHeight =  ((fullHeight / 2) - 2 * controllercomp.CapsuleControllerinfo.radius)/2;
-
-	// Ensure the new height doesn't become negative
-	if (newHeight < 0.01f)  // You can set a reasonable minimum threshold
-	{
-		newHeight = 0.01f;
-	}
-	float heightReduction = controllercomp.CapsuleControllerinfo.height - newHeight;
-	controllercomp.Contollerinfo.LocalOffset.y = -heightReduction / 2;
-	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(),  controllercomp.CapsuleControllerinfo.radius, newHeight);
+	controllercomp.Contollerinfo.LocalOffset.y = -playercomp.SitHeightDiff;
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.radius, playercomp.SitHeight);
 }
-void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
+void PlayerSystem::DefalutModeController(PlayerComponent & playercomp)
 {
 	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
 	controllercomp.Contollerinfo.LocalOffset.y = 0;
 	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.radius, controllercomp.CapsuleControllerinfo.height);
 }
-void PlayerSystem::DownCamera(PlayerComponent& playercomp)
+void PlayerSystem::DownCamera(PlayerComponent & playercomp,float deltatime)
 {
+	auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp.GetEntityID(), "PlayerCamera");
+	auto& cameracomp =  *cameraentity->GetComponent<TransformComponent>();
+	///카메라와 앉은 위치의 pos 와의 거리가 0.01 보다 작을 때.
+	if ((playercomp.SitCameraPos - cameracomp.Local_Location).Length()<0.01f)
+	{
+		playercomp.SitCameraPos = cameracomp.Local_Location;
+		playercomp.CamTransProgress = 0;
+	}
+	else
+	{
+		playercomp.CamTransProgress += deltatime;
+		VPMath::Vector3 Temp{};
+		if (playercomp.CamTransProgress>= playercomp.CamTransDuration)
+		{
+			playercomp.CamTransProgress = playercomp.CamTransDuration;
+		}
+		Temp = VPMath::Vector3::Lerp(playercomp.DefalutCameraPos, playercomp.SitCameraPos, (playercomp.CamTransProgress / playercomp.CamTransDuration));
+		cameracomp.SetLocalLocation(Temp);
+	}
 }
-void PlayerSystem::UpCamera(PlayerComponent& playercomp)
+void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 {
+	auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp.GetEntityID(), "PlayerCamera");
+	auto& cameracomp = *cameraentity->GetComponent<TransformComponent>();
+	///카메라와 앉은 위치의 pos 와의 거리가 0.01 보다 작을 때.
+	if ((playercomp.DefalutCameraPos - cameracomp.Local_Location).Length() < 0.01f)
+	{
+		playercomp.DefalutCameraPos = cameracomp.Local_Location;
+		playercomp.CamTransProgress = 0;
+	}
+	else
+	{
+		playercomp.CamTransProgress += deltatime;
+		VPMath::Vector3 Temp{};
+		if (playercomp.CamTransProgress >= playercomp.CamTransDuration)
+		{
+			playercomp.CamTransProgress = playercomp.CamTransDuration;
+		}
+		Temp = VPMath::Vector3::Lerp(playercomp.SitCameraPos, playercomp.DefalutCameraPos, (playercomp.CamTransProgress / playercomp.CamTransDuration));
+		cameracomp.SetLocalLocation(Temp);
+	}
+
+}
+
+void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime)
+{
+	switch (playercomp.CurrentFSM)
+	{
+	case VisPred::Game::EFSM::CROUCH:
+	case VisPred::Game::EFSM::SLIDE:
+	{
+		DownCamera(playercomp, deltatime);
+	}
+	break;
+	default:
+	{
+		UpCamera(playercomp, deltatime);
+	}
+	break;
+	}
+
+
 }
 
 #pragma region FSM Calculate
 
-void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
+void PlayerSystem::Calculate_FSM(PlayerComponent & playercomp)
 {
 	switch (playercomp.CurrentFSM)
 	{
@@ -231,7 +277,7 @@ void PlayerSystem::Calculate_Crouch(PlayerComponent& playercomp)
 }
 void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 {
-	if (true)
+	if (playercomp.SlideProgress>= playercomp.SlideDuration)
 	{
 		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
 	}
@@ -252,7 +298,7 @@ void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 #pragma endregion
 
 #pragma region FSM Action
-void PlayerSystem::Action_FSM(PlayerComponent& playercomp)
+void PlayerSystem::Action_FSM(PlayerComponent& playercomp, float deltaTime)
 {
 	switch (playercomp.CurrentFSM)
 	{
@@ -267,6 +313,9 @@ void PlayerSystem::Action_FSM(PlayerComponent& playercomp)
 		break;
 	case VisPred::Game::EFSM::CROUCH:
 		Action_Crouch(playercomp);
+		break;
+	case VisPred::Game::EFSM::SLIDE:
+		Action_Slide(playercomp,deltaTime);
 		break;
 	case VisPred::Game::EFSM::JUMP:
 		Action_Jump(playercomp);
@@ -292,7 +341,7 @@ void PlayerSystem::Action_Idle(PlayerComponent& playercomp)
 	Move_Rotation(playercomp, transfomcomp);
 }
 
-void PlayerSystem::Action_Slide(PlayerComponent& playercomp)
+void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
 {
 	///지면 기준에서 하기.
 	///Input이 있을경우에는 그 방향으로 이동해야함.
@@ -318,7 +367,6 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 }
 void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 {
-
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
@@ -389,6 +437,10 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp)
 {
 }
 
+void PlayerSystem::GunCooltime(PlayerComponent& playercomp)
+{
+}
+
 #pragma endregion
 
 #pragma region Move Logic
@@ -447,5 +499,53 @@ void PlayerSystem::Move_Jump(const TransformComponent& transformcomp, Controller
 
 void PlayerSystem::Move_Slide(PlayerComponent& playercomp)
 {
+}
+void PlayerSystem::Initialize()
+{
+	COMPLOOP(PlayerComponent, playercomp)
+	{
+		Start(playercomp.GetEntityID());
+	}
+}
+void PlayerSystem::Start(uint32_t gameObjectId)
+{
+	if (GetSceneManager()->HasComponent<PlayerComponent>(gameObjectId))
+	{
+		auto playercomp = GetSceneManager()->GetComponent<PlayerComponent>(gameObjectId);
+		playercomp->DefalutCameraPos;
+		playercomp->SitCameraPos;
+		auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp->GetEntityID(), "PlayerCamera");
+		auto cameracomp = cameraentity->GetComponent<TransformComponent>();
+		playercomp->DefalutCameraPos = cameracomp->Local_Location;
+
+		auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
+		// Current full height of the capsule (Total Height = 2 * (radius + height))
+		float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
+		// New height after crouching (half of the full height)
+		float SitHeight = ((fullHeight / 2) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2;
+		// Ensure the new height doesn't become negative
+		if (SitHeight < 0.01f)  // You can set a reasonable minimum threshold
+			SitHeight = 0.01f;
+		float heightReduction = controllercomp.CapsuleControllerinfo.height - SitHeight;
+		playercomp->SitHeight = SitHeight;
+		playercomp->SitHeightDiff = heightReduction / 2;
+		playercomp->SitCameraPos.y = playercomp->DefalutCameraPos.y- playercomp->SitHeightDiff;
+	};
+
+}
+void PlayerSystem::Finish(uint32_t gameObjectId)
+{
+}
+void PlayerSystem::Finalize()
+{
+}
+void PlayerSystem::FixedUpdate(float deltaTime)
+{
+	COMPLOOP(PlayerComponent, playercomp)
+	{
+		GunCooltime(playercomp);
+		UpdateCharDataToController(playercomp);
+		CarmeraPosChange(playercomp, deltaTime);
+	}
 }
 #pragma endregion
