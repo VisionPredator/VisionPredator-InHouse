@@ -33,8 +33,6 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 	curModel = m_ResourceManager.lock()->Get<ModelData>(curOb->FBX).lock();	//하나의 fbx안에 여러개의 애니메이션
 
 	//애니메이션 데이터가 유효한가?
-
-
 	int curindex = curOb->curAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
 	int preindex = curOb->preAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
 
@@ -153,7 +151,7 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 		RootNode->m_WorldInverse = RootNode->m_World.Invert();
 	}
 
-	if (RootNode->name == L"mixamorig:LeftFoot")
+	if (RootNode->name == L"mixamorig:LeftFoot")//이름 바꾸기
 	{
 		socket = RootNode->m_World;
 	}

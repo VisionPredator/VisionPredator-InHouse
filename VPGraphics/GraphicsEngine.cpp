@@ -309,7 +309,7 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 	std::shared_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name).lock();
 	if (curAni != nullptr)
 	{
-		if (!curAni->m_Animations.empty())
+		if (!curAni->m_Animations.empty() && 0 <= index && index < curAni->m_Animations.size())
 		{
 			//전체 tick / 초당 틱 == 애니메이션 재생시간
 			return curAni->m_Animations[index]->m_Duration / curAni->m_Animations[index]->m_TickFrame;
@@ -327,7 +327,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");
+		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");	//이름 수정필요
 		VPMath::Matrix a = test * (*find)->world;
 
 		debug::SphereInfo temp;
