@@ -15,3 +15,4 @@
 #include "LifeTimeComponent.h"
 #include "GeometryComponent.h"
 #include "NavAgentComponent.h"
+#include "SocketComponent.h"

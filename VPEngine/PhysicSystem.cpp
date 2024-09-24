@@ -398,3 +398,8 @@ VPMath::Vector3 PhysicSystem::DisApplyPivotAndOffset(const ControllerComponent& 
 
 	return adjustedLocation;
 }
+
+void PhysicSystem::EditorRenderUpdate(float deltaTime)
+{
+	RenderUpdate(deltaTime);
+}

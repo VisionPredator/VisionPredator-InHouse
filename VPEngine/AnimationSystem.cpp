@@ -31,12 +31,6 @@ void AnimationSystem::OnReleasedComponent(std::any data)
 
 void AnimationSystem::RenderUpdate(float deltaTime)
 {
-
-}
-
-void AnimationSystem::Update(float deltaTime)
-{
-
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
 		if (!aniComp.FBX.empty())
@@ -81,6 +75,12 @@ void AnimationSystem::Update(float deltaTime)
 	}
 }
 
+void AnimationSystem::Update(float deltaTime)
+{
+
+	
+}
+
 
 void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
 {
@@ -96,3 +96,9 @@ void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
 		aniComp->duration = 0.0f;
 	}
 }
+
+void AnimationSystem::EditorRenderUpdate(float deltaTime)
+{
+
+}
+

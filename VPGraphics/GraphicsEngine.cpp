@@ -98,12 +98,18 @@ void GraphicsEngine::Update(double dt)
 	m_LightManager->Update(m_Lights);
 	*/
 
-	Culling();
-	m_Animator->Update(dt, m_AfterCulling);
+	//Culling();
+	//m_Animator->Update(dt, m_AfterCulling);
 	m_PassManager->Update(m_AfterCulling);
 	m_LightManager->Update(m_Lights);
 
 	m_AfterCulling.clear();
+}
+
+void GraphicsEngine::UpdateTest(double dt)
+{
+	Culling();
+	m_Animator->Update(dt, m_AfterCulling);
 }
 
 bool GraphicsEngine::Finalize()
@@ -320,19 +326,19 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 	return 0;
 }
 
-const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
+const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const std::wstring socketName)
 {
 
 	auto find = FindEntity(entityID);
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");	//이름 수정필요
+		const VPMath::Matrix& test = m_Animator->Attachment(socketName);	//이름 수정필요
 		VPMath::Matrix a = test * (*find)->world;
 
 		debug::SphereInfo temp;
 		temp.Sphere.Center = { a._41,a._42,a._43 };
-		temp.Sphere.Radius = 0.1;
+		temp.Sphere.Radius = 1.f;
 		temp.Color = VPMath::Color{ 0,1,0,1 };
 		DrawSphere(temp);
 

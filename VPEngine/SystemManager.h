@@ -23,8 +23,9 @@
 		void OnCollisionExit(std::any pair);
 		void FixedUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
+		void EditorRenderUpdate(float deltatime);
 		void LateUpdate(float deltatime);
-		void PhysicUpdatable(float deltatime);
+		void PhysicUpdate(float deltatime);
 		template <typename T>
 		bool IsSystemAdded() const
 		{

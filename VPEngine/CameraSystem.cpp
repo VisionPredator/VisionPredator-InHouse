@@ -11,29 +11,7 @@ CameraSystem::CameraSystem(std::shared_ptr<SceneManager> sceneManager) :System(s
 
 void CameraSystem::LateUpdate(float deltaTime)
 {
-	bool IsMainCameraExist = false;
-	///CameraComponent를 순회하면서 Main카메라에 해당하는 컴포넌틑를 찾아 찾을시 순회를 그만둔다.
-	for (CameraComponent& cameracomp : COMPITER(CameraComponent))
-	{
-		if (cameracomp.IsMain != true)
-			continue;
-		IsMainCameraExist = true;
 
-		CameraCalculation(cameracomp);
-		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
-
-		///그런다음 for문 종료하기!
-		break;
-	}
-
-
-	if (!IsMainCameraExist)
-	{
-		///존재하지 않는다면, 0,0,0에 해당하는 카메라 정보값을 건네주기!
-		//기본 카메라 같은거 만들어 두면 좋을 듯?
-		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
-
-	}
 }
 
 void CameraSystem::OnResize(std::any hwnd)
@@ -44,6 +22,10 @@ void CameraSystem::OnResize(std::any hwnd)
 
 	m_Width = static_cast<float>(tempsize.right - tempsize.left);
 	m_Height = static_cast<float>(tempsize.bottom - tempsize.top);
+}
+
+void CameraSystem::EditorRenderUpdate(float deltaTime)
+{
 }
 
 
@@ -106,25 +88,29 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 
 void CameraSystem::RenderUpdate(float deltaTime)
 {
-	
-	/* 컬링용 카메라 프러스텀 보기
+	bool IsMainCameraExist = false;
+	///CameraComponent를 순회하면서 Main카메라에 해당하는 컴포넌틑를 찾아 찾을시 순회를 그만둔다.
 	for (CameraComponent& cameracomp : COMPITER(CameraComponent))
 	{
+		if (cameracomp.IsMain != true)
+			continue;
+		IsMainCameraExist = true;
+
 		CameraCalculation(cameracomp);
+		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
 
-		m_Graphics->testCulling(cameracomp.View, cameracomp.Proj);
-
-		DirectX::BoundingFrustum frustum;
-		DirectX::BoundingFrustum::CreateFromMatrix(frustum, cameracomp.Proj);
-		frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(cameracomp.View.Invert());
-		frustum.Origin = { cameracomp.View.Invert()._41,cameracomp.View.Invert()._42,cameracomp.View.Invert()._43 };
-
-		debug::FrustumInfo temp;
-		temp.Frustum = frustum;
-		temp.Color = { 1,1,0,1 };
-
-		m_Graphics->DrawFrustum(temp);
+		///그런다음 for문 종료하기!
+		break;
 	}
-	*/
+
+
+	if (!IsMainCameraExist)
+	{
+		///존재하지 않는다면, 0,0,0에 해당하는 카메라 정보값을 건네주기!
+		//기본 카메라 같은거 만들어 두면 좋을 듯?
+		//Graphics::Interface::SetCamera(cameracomp.View, cameracomp.Proj);
+
+	}
+	
 }
 

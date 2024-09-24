@@ -40,6 +40,9 @@ class IRenderable
 {
 public:
 	virtual void RenderUpdate(float deltaTime) = 0;
+	virtual void EditorRenderUpdate(float deltaTime) = 0;
+
+
 	virtual void SetGraphics(Graphics::Interface* Graphics) { m_Graphics= Graphics; }
 	Graphics::Interface* m_Graphics = nullptr;
 };

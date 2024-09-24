@@ -82,6 +82,7 @@ VPEngine::~VPEngine()
 }
 void VPEngine::Addsystem()
 {
+	m_SystemManager->AddSystem<SocketSystem>();
 	m_SystemManager->AddSystem<ControllerMovementSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
 	m_SystemManager->AddSystem<NavMeshSystem>();
@@ -125,15 +126,21 @@ void VPEngine::Loop()
 		else
 		{
 			Update();
+			//Fixed
+			//Update
+			//소켓 
 			static float tempTime = 0;
 			tempTime += m_DeltaTime;
-			while (tempTime > (1 / 90.f))
+			while (tempTime > (1 / 60.f))
 			{
-				m_SystemManager->RenderUpdate(m_DeltaTime);
-				m_Graphics->Update(m_DeltaTime);
+				//m_SystemManager->RenderUpdate(tempTime);
+				m_SystemManager->RenderUpdate(tempTime);
+				m_Graphics->UpdateTest(tempTime);
+				m_Graphics->Update(tempTime);
+
 				Render();
 				EndRender();
-				tempTime -= (1 / 90.f);
+				tempTime -= (1 / 60.f);
 			}
 
 			//// 사용자가 ESC키를 눌렀는지 확인 후 종료 처리함
@@ -157,7 +164,7 @@ void VPEngine::Update()
 	EventManager::GetInstance().Update(m_DeltaTime);
 	InputManager::GetInstance().Update();
 
-	m_SystemManager->PhysicUpdatable(m_DeltaTime);
+	m_SystemManager->PhysicUpdate(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
@@ -167,7 +174,6 @@ void VPEngine::Update()
 		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 		SetWindowTextW(m_hWnd, newname.c_str());
 	}
-
 }
 
 

@@ -19,25 +19,18 @@ void EngineRegister::Register_EnumClass()
 {
 	META_ADD_ENUMCLASS(GeoMetryFilter, GeoMetryFilter::Axis, GeoMetryFilter::Box, GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
-
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
 
 }
 
 void EngineRegister::Register_Structs()
 {
-	//META_ADD_STRUCT(PhysicsInfo, PhysicsInfo::Gravity, PhysicsInfo::FrameRate, PhysicsInfo::CollisionMatrix);
-	//META_ADD_STRUCT(ColliderInfo, ColliderInfo::PhysicsLayer, ColliderInfo::OffSet, ColliderInfo::LinearLock, ColliderInfo::AngleLock, ColliderInfo::StaticFriction, ColliderInfo::DynamicFriction, ColliderInfo::Restitution, ColliderInfo::Density);
-	//META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::Extent);
-	//META_ADD_STRUCT(SphereColliderInfo, SphereColliderInfo::colliderInfo, SphereColliderInfo::Radius);
-	//META_ADD_STRUCT(CapsuleColliderInfo, CapsuleColliderInfo::colliderInfo, CapsuleColliderInfo::Radius, CapsuleColliderInfo::HalfHeight);
 }
 
 void EngineRegister::Register_Value()
 {
 	META_ADD_VALUE(std::vector<std::string>);
 	META_ADD_VALUE(std::vector<std::wstring>);
-
 }
 
 void EngineRegister::Register_VPMath()
@@ -57,7 +50,6 @@ void EngineRegister::Register_VPMath()
 		.data<&Vector4::y>("y"_hs)
 		.data<&Vector4::z>("z"_hs)
 		.data<&Vector4::w>("w"_hs);
-
 
 	entt::meta<Matrix>()
 		.data<&Matrix::_11>("_11"_hs).data<&Matrix::_12>("_12"_hs).data<&Matrix::_13>("_13"_hs).data<&Matrix::_14>("_14"_hs)
@@ -119,5 +111,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
 	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
+	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConneted);
 }
 

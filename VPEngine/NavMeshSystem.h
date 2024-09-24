@@ -34,5 +34,8 @@ private:
     friend NavMeshData;
     // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
+
+    // IRenderable을(를) 통해 상속됨
+    void EditorRenderUpdate(float deltaTime) override;
 };
 

@@ -11,7 +11,7 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
     EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
     EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData), EventType::SCENE);
     EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&TransformSystem::OnAddedComponent));
-    
+    EventManager::GetInstance().Subscribe("OnUpdate", CreateSubscriber(&TransformSystem::OnUpdate));    
 }
 void TransformSystem::OnAddedComponent(std::any data)
 {
@@ -28,6 +28,12 @@ std::vector<TransformComponent*> TransformSystem::newupdatevector;
 void TransformSystem::Update(float deltaTime)
 {
     newUpdate();
+}
+
+void TransformSystem::OnUpdate(std::any)
+{
+    newUpdate();
+
 }
 
 void TransformSystem::UpdateAllEntitys()
@@ -348,24 +354,6 @@ void TransformSystem::UpdatePreviousLocalTransform(TransformComponent* transform
     transform->Previous_Location = transform->Local_Location;
 }
 
-////void TransformSystem::Initialize()
-////{
-////    UpdateAllEntitys();
-////}
-//
-//void TransformSystem::Start(uint32_t gameObjectId)
-//{
-//
-//}
-//
-//void TransformSystem::Finish(uint32_t gameObjectId)
-//{
-//}
-//
-//void TransformSystem::Finalize()
-//{
-//
-//}
 
 void TransformSystem::RenderUpdate(float deltaTime)
 {
@@ -379,4 +367,26 @@ void TransformSystem::RenderUpdate(float deltaTime)
         obbinfo.zAxisAngle = comp.World_Rotation.z;
         m_Graphics->DrawOBB(obbinfo);
     }
+}
+
+void TransformSystem::Initialize()
+{
+}
+
+void TransformSystem::Start(uint32_t gameObjectId)
+{
+}
+
+void TransformSystem::Finish(uint32_t gameObjectId)
+{
+}
+
+void TransformSystem::Finalize()
+{
+    newupdatevector.clear();
+}
+
+void TransformSystem::EditorRenderUpdate(float deltaTime)
+{
+    RenderUpdate(deltaTime);
 }

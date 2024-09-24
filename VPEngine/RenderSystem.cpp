@@ -192,6 +192,13 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	}
 }
 
+void RenderSystem::EditorRenderUpdate(float deltaTime)
+{
+	RenderUpdate(deltaTime);
+}
+
+
+
 void RenderSystem::MeshCompRender(MeshComponent& meshComp)
 {
 	const TransformComponent& transform = *meshComp.GetComponent<TransformComponent>();
@@ -309,5 +316,4 @@ void RenderSystem::GeometryRender(GeometryComponent& geometryComp)
 	}
 
 }
-
 

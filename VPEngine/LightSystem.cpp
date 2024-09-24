@@ -83,3 +83,8 @@ void LightSystem::RenderUpdate(float deltaTime)
 
 	}
 }
+
+void LightSystem::EditorRenderUpdate(float deltaTime)
+{
+	RenderUpdate(deltaTime);
+}

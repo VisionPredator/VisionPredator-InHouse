@@ -277,4 +277,9 @@ void NavMeshSystem::RenderUpdate(float deltaTime)
 
 }
 
+void NavMeshSystem::EditorRenderUpdate(float deltaTime)
+{
+	RenderUpdate(deltaTime);
+}
+
 

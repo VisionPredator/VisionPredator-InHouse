@@ -19,5 +19,9 @@ public:
     void SkincompRender(SkinningMeshComponent& Comp);
     void GeometryRender(GeometryComponent& Comp);
 
+
+    // IRenderable을(를) 통해 상속됨
+    void EditorRenderUpdate(float deltaTime) override;
+
 };
 

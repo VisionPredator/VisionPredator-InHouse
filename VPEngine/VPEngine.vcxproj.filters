@@ -216,6 +216,12 @@
     <ClInclude Include="DataRegister_Engine.h">
       <Filter>DataRegist</Filter>
     </ClInclude>
+    <ClInclude Include="SocketComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -331,6 +337,12 @@
     </ClCompile>
     <ClCompile Include="DataRegister_Engine.cpp">
       <Filter>DataRegist</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketSystem.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

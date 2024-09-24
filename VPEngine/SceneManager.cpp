@@ -781,6 +781,74 @@ std::shared_ptr<Entity> SceneManager::GetChildEntityByName(uint32_t entityID, st
 	return nullptr;
 }
 
+std::shared_ptr<Entity> SceneManager::GetRelationEntityByName(uint32_t entityID, std::string name)
+{
+	uint32_t mainID = entityID;
+	std::queue<uint32_t> ChildrenIDs;
+	//ChildrenIDs.push(mainID);
+	if (!HasEntity(mainID))
+		return nullptr;
+	
+	while (GetEntity(mainID)->HasComponent<Parent>())
+	{
+		mainID = GetEntity(mainID)->GetComponent<Parent>()->ParentID;
+	}
+
+	while (!ChildrenIDs.empty())
+	{
+		uint32_t childID = ChildrenIDs.front();
+		ChildrenIDs.pop();
+
+		// GetEntity 호출을 최소화
+		auto currentEntity = GetEntity(childID);
+		auto idComponent = currentEntity->GetComponent<IDComponent>();
+		if (idComponent->Name == name)
+		{
+			return currentEntity;
+		}
+
+		// 자식 엔티티의 ID를 큐에 추가
+		if (currentEntity->HasComponent<Children>())
+		{
+			auto children = currentEntity->GetComponent<Children>();
+			for (const auto& child : children->ChildrenID)
+			{
+				ChildrenIDs.push(child);
+			}
+		}
+	}
+	return nullptr;
+}
+
+std::shared_ptr<Entity> SceneManager::GetEntityByIdentityName( std::string name) 
+{
+	// IdentityComponent의 컴포넌트 풀을 가져옵니다.
+	auto comppool = GetComponentPool<IdentityComponent>();
+	// 컴포넌트 풀이 비어 있는지 확인합니다.
+	if (comppool.empty()) 
+		return nullptr;
+
+	// 컴포넌트 풀을 순회합니다.
+	for (auto& identity : comppool) 
+	{
+		// UUID가 주어진 이름과 일치하는지 확인합니다.
+		if (identity.get().UUID == name) 
+		{
+			// entityID로 엔티티를 검색합니다.
+			auto entity = GetEntity(identity.get().GetEntityID());
+
+			// 엔티티가 Scene의 EntityMap에 존재하는지 확인합니다.
+			if (entity) 
+				return entity;
+			else
+				return nullptr;
+		}
+	}
+	// 일치하는 IdentityComponent가 없는 경우 처리
+	return nullptr;
+}
+
+
 void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
 {
 	if (!HasEntity(entityID))

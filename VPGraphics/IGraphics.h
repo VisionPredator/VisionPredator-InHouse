@@ -37,6 +37,7 @@ namespace Graphics
 
 		virtual bool Initialize() abstract;
 		virtual void Update(double dt) abstract;
+		virtual void UpdateTest(double dt) abstract;
 		virtual bool Finalize() abstract;
 		virtual void BeginRender() abstract;
 		virtual void Render() abstract;
@@ -63,7 +64,8 @@ namespace Graphics
 		virtual const double GetDuration(std::wstring name, int index) abstract;
 
 		//소켓 - 본의 위치를 받는다
-		virtual const VPMath::Matrix Attachment(const uint32_t entityID) abstract;
+		//virtual const VPMath::Matrix Attachment(const uint32_t entityID) abstract;
+		virtual const VPMath::Matrix Attachment(const uint32_t entityID, const std::wstring socketName) abstract;
 
 		//vp 스킬 쓰면 렌더 바꾸기
 		virtual void SetVP(bool isVP) abstract;

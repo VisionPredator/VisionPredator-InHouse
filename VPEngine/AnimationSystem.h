@@ -11,12 +11,20 @@ public:
 	void OnReleasedComponent(std::any data);
 
 
-	// IRenderable을(를) 통해 상속됨
-	void RenderUpdate(float deltaTime) override;
+
 
 	// IUpdatable을(를) 통해 상속됨
 	void Update(float deltaTime) override;
 
 	void OnChangeAnimation(std::any pairdata_entityid_AniIndex);
+
+	// IRenderable을(를) 통해 상속됨
+	void RenderUpdate(float deltaTime) override;
+	// IRenderable을(를) 통해 상속됨
+	void EditorRenderUpdate(float deltaTime) override;
+
+
+
+
 };
 

@@ -33,7 +33,7 @@
 		m_Startables.clear();
 		m_LateUpdatable.clear();
 	}
-	void SystemManager::PhysicUpdatable(float deltatime)
+	void SystemManager::PhysicUpdate(float deltatime)
 	{
 		m_PhysicProgressedTime += deltatime;
 		while (m_PhysicProgressedTime > m_PhysicDeltatime)
@@ -65,7 +65,6 @@
 		{
 			updateable->Update(deltatime);
 		}
-
 	}
 	void SystemManager::LateUpdate(float deltatime)
 	{
@@ -79,6 +78,14 @@
 		for (auto renderable : m_Renderables)
 		{
 			renderable->RenderUpdate(deltatime);
+		}
+	}
+
+	void SystemManager::EditorRenderUpdate(float deltatime)
+	{
+		for (auto renderable : m_Renderables)
+		{
+			renderable->EditorRenderUpdate(deltatime);
 		}
 	}
 

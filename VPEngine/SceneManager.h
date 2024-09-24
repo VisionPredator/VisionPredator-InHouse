@@ -28,10 +28,7 @@ public:
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
 	
-	/// 해당 json를 Deserialize 한다.
-	// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
-	std::shared_ptr<Entity> CreateEntity();
-	uint32_t CreateRandomEntityID();
+
 
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
@@ -88,9 +85,8 @@ public:
 	}
 
 	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
-
-
-
+	std::shared_ptr<Entity> GetRelationEntityByName(uint32_t entityID,std::string name);
+	std::shared_ptr<Entity> GetEntityByIdentityName(std::string name);
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
@@ -110,6 +106,10 @@ public:
 protected:
 	friend class CompIter;
 private:
+	/// 해당 json를 Deserialize 한다.
+// 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
+	std::shared_ptr<Entity> CreateEntity();
+	uint32_t CreateRandomEntityID();
 	std::shared_ptr<NavMeshData> GetSceneNavMeshData() { return m_CurrentScene->SceneNavData; }
 	void SetSceneNavMeshData(std::shared_ptr<NavMeshData> navMeshdata) { m_CurrentScene->SceneNavData = navMeshdata; }
 	void ResetNavMeshData() { m_CurrentScene->SceneNavData.reset(); }
@@ -196,6 +196,7 @@ private:
 	friend class Toolbar;
 	friend class SceneSerializer;
 	friend class NavMeshSystem;
+	friend class Hierarchy;
 };
 
 
