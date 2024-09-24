@@ -3,53 +3,31 @@
 
 #include "Defines.h"
 
-BlendState::BlendState(const std::shared_ptr<Device>& device, const BlendStateType& type)
+BlendState::BlendState(const std::shared_ptr<Device>& device, BlendStateType type)
 {
-	D3D11_BLEND_DESC desc;
-	ZeroMemory(&desc, sizeof(desc));
+	CD3D11_BLEND_DESC desc(CD3D11_DEFAULT{});
 
 	switch (type)
 	{
-	case BlendStateType::Default:
-		{
-			desc.AlphaToCoverageEnable = false;
-			desc.RenderTarget[0].BlendEnable = false;
-			desc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-			desc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
-			desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-			desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-			desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-			desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-			desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	case BlendStateType::Opaque:
+		/* Default */
 		break;
-		}
-	case BlendStateType::AlphaBlending:
+	case BlendStateType::AlphaBlend:
 		{
-			desc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
-			desc.AlphaToCoverageEnable = false;
-			desc.IndependentBlendEnable = false;
-			desc.RenderTarget[0].BlendEnable = true;
-			desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-			desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-			desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-			desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-			desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-			desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-			desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+			desc.RenderTarget[0].BlendEnable = TRUE;	// ºí·»µù È°¼ºÈ­
+			desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;	// ¼Ò½º »ö»ó ºí·»µå ÆÑÅÍ
+			desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;	// ¼Ò½º ¾ËÆÄ ºí·»µå ÆÑÅÍ
+			desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;	// ´ë»ó »ö»ó ºí·»µå ÆÑÅÍ
+			desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;		// ´ë»ó ¾ËÆÄ ºí·»µå ÆÑÅÍ
 			break;
 		}
 	case BlendStateType::AdditiveBlending:
 		{
-			desc.AlphaToCoverageEnable = false;
-			desc.IndependentBlendEnable = false;
-			desc.RenderTarget[0].BlendEnable = true;
+			desc.RenderTarget[0].BlendEnable = TRUE;
 			desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+			desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
 			desc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-			desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-			desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 			desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-			desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-			desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		break;
 		}
 	}

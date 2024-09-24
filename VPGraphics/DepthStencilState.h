@@ -15,7 +15,7 @@ enum class DepthStencilStateType
 class DepthStencilState : public Resource
 {
 public:
-	DepthStencilState(const std::shared_ptr<Device>& device, const DepthStencilStateType& type);
+	DepthStencilState(const std::shared_ptr<Device>& device, DepthStencilStateType type);
 
 	void Release() override;
 
