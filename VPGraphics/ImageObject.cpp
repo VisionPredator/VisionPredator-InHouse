@@ -58,9 +58,13 @@ void ImageObject::Render()
 		return;
 
 	// CB Update
-	ColorCB alpha;
-	alpha.Color = m_Info.Color;
-	m_ColorCB->Update(alpha);
+	ColorCB color;
+	color.Color = m_Info.Color;
+	color.leftPercent = m_Info.LeftPercent;
+	color.rightPercent = m_Info.RightPercent;
+	color.topPercent = m_Info.TopPercent;
+	color.bottomPercent = m_Info.BottomPercent;
+	m_ColorCB->Update(color);
 
 	m_Device->Context()->IASetVertexBuffers(0, 1, m_VertexBuffer->GetAddress(), &stride, &offset);
 	m_Device->Context()->IASetIndexBuffer(m_IndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -80,6 +84,11 @@ void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 	m_Info.Scale = info.Scale;
 	m_Info.World = info.World;
 	m_Info.RenderMode = info.RenderMode;
+	m_Info.Billboard = info.Billboard;
+	m_Info.LeftPercent = info.LeftPercent;
+	m_Info.RightPercent = info.RightPercent;
+	m_Info.TopPercent = info.TopPercent;
+	m_Info.BottomPercent = info.BottomPercent;
 
 	// 모델의 텍스처 로드
 	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
@@ -135,34 +144,50 @@ void ImageObject::UpdateBuffers()
 		m_CanvasWidth = m_BitmapWidth;
 		m_CanvasHeight = m_BitmapHeight;
 
-
-		// 카메라 데이터 관리하는게 마음에 안든다.
 		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 		DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(cameraCB->m_struct.viewInverse.Transpose()._41, cameraCB->m_struct.viewInverse.Transpose()._42, cameraCB->m_struct.viewInverse.Transpose()._43);
-		DirectX::XMFLOAT3 cameraUp = DirectX::XMFLOAT3(cameraCB->m_struct.view._21, cameraCB->m_struct.view._22, cameraCB->m_struct.view._23);
-
 		const DirectX::XMFLOAT3 imagePos = DirectX::XMFLOAT3(m_Info.World._41, m_Info.World._42, m_Info.World._43);
 		const DirectX::XMFLOAT3 imageScale = DirectX::XMFLOAT3(m_Info.World._11, m_Info.World._22, m_Info.World._33);
-
-		// 아크 탄젠트 함수를 사용하여 현재 카메라 위치를 향하도록 빌보드 모델에 적용해야하는 회전을 계산합니다.
-		double angle = atan2(imagePos.x - cameraPos.x, imagePos.z - cameraPos.z) * (180 / DirectX::XM_PI);
-
-		// 회전을 라디안으로 변환한다.
-		float rotation = (float)angle * 0.0174532925f;
-
 		DirectX::XMMATRIX scaleMatrix = DirectX::XMMatrixScaling(imageScale.x, imageScale.y, imageScale.z);
-		DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationY(rotation);
 		DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(imagePos.x, imagePos.y, imagePos.z);
 		DirectX::XMMATRIX worldMatrix = scaleMatrix;
 
-		//worldMatrix = DirectX::XMMatrixRotationY(rotation);
+		DirectX::XMMATRIX rotationMatrix;
 
-		// 빌보드 행렬 계산
-		//DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(imagePos.x, imagePos.y, imagePos.z);
-		worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, rotationMatrix);
-		worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, translateMatrix);
+		if (m_Info.Billboard == ui::BillboardType::Full)
+		{
+			DirectX::XMMATRIX cameraView = cameraCB->m_struct.view.Transpose();
+			// 카메라 뷰 행렬에서 회전 부분 추출 (회전 행렬만 가져옴)
+			DirectX::XMMATRIX cameraRotationMatrix = cameraView;
+			cameraRotationMatrix.r[3] = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);  // 위치 요소 제거
+			// 회전 행렬의 역행렬을 구해 이미지가 카메라를 바라보도록 함
+			rotationMatrix = DirectX::XMMatrixTranspose(cameraRotationMatrix);
 
-		m_Transform.World = XMMatrixTranspose(worldMatrix);
+			worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, rotationMatrix);
+			worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, translateMatrix);
+
+			m_Transform.World = XMMatrixTranspose(worldMatrix);
+		}
+		else if (m_Info.Billboard == ui::BillboardType::AxisY)
+		{
+			// 아크 탄젠트 함수를 사용하여 현재 카메라 위치를 향하도록 빌보드 모델에 적용해야하는 회전을 계산합니다.
+			double angle = atan2(imagePos.x - cameraPos.x, imagePos.z - cameraPos.z) * (180 / DirectX::XM_PI);
+
+			// 회전을 라디안으로 변환한다.
+			float rotation = (float)angle * 0.0174532925f;
+
+			rotationMatrix = DirectX::XMMatrixRotationY(rotation);
+
+			worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, rotationMatrix);
+			worldMatrix = DirectX::XMMatrixMultiply(worldMatrix, translateMatrix);
+
+			m_Transform.World = XMMatrixTranspose(worldMatrix);
+		}
+		else    // == ui::BillboardType::None
+		{
+			m_Transform.World = m_Info.World.Transpose();						
+		}
+
 		m_Transform.View = cameraCB->m_struct.view;
 		m_Transform.Projection = cameraCB->m_struct.proj;
 		m_ImageTransformCB->Update(m_Transform);

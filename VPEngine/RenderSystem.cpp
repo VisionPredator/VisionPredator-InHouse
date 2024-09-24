@@ -102,6 +102,11 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.Scale = component->Scale;
 		info.World = Transform.WorldTransform;
 		info.RenderMode = component->RenderMode;
+		info.Billboard = component->Billboard;
+		info.LeftPercent = component->LeftPercent;
+		info.RightPercent = component->RightPercent;
+		info.TopPercent = component->TopPercent;
+		info.BottomPercent = component->BottomPercent;
 
 		m_Graphics->CreateImageObject(component->GetEntityID(), info);
 	}
@@ -193,6 +198,11 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.Scale = component.Scale;
 		info.World = transform.WorldTransform;
 		info.RenderMode = component.RenderMode;
+		info.Billboard = component.Billboard;
+		info.LeftPercent = component.LeftPercent;
+		info.RightPercent = component.RightPercent;
+		info.TopPercent = component.TopPercent;
+		info.BottomPercent = component.BottomPercent;
 
 		m_Graphics->UpdateImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}

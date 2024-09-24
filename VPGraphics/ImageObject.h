@@ -26,6 +26,10 @@ private:
 	struct ColorCB
 	{
 		VPMath::Color Color;	// rgba
+		float leftPercent;   // 왼쪽에서 사라지는 비율 (0.0f ~ 1.0f)
+		float rightPercent;  // 오른쪽에서 사라지는 비율 (0.0f ~ 1.0f)
+		float topPercent;    // 위쪽에서 사라지는 비율 (0.0f ~ 1.0f)
+		float bottomPercent; // 아래쪽에서 사라지는 비율 (0.0f ~ 1.0f)
 	};
 	static_assert(sizeof(ColorCB) % 16 == 0, "must be align");
 

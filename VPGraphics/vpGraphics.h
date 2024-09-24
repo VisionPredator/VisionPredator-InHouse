@@ -103,8 +103,8 @@ namespace ui
 	enum class BillboardType
 	{
 		None,
-		LookAtCamera,
-
+		Full,
+		AxisY
 	};
 
 	struct ImageInfo
@@ -112,6 +112,11 @@ namespace ui
 		std::string ImagePath = {};
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };	// 이미지 색상. rgba
 		RenderModeType RenderMode = RenderModeType::ScreenSpaceOverlay;
+		BillboardType Billboard = BillboardType::None;
+		float LeftPercent;   // 왼쪽에서 사라지는 비율 (0.0f ~ 1.0f)
+		float RightPercent;  // 오른쪽에서 사라지는 비율 (0.0f ~ 1.0f)
+		float TopPercent;    // 위쪽에서 사라지는 비율 (0.0f ~ 1.0f)
+		float BottomPercent; // 아래쪽에서 사라지는 비율 (0.0f ~ 1.0f)
 
 		// 2D
 		float PosXPercent = 0.f;
@@ -121,6 +126,7 @@ namespace ui
 
 		// 3D
 		VPMath::Matrix World = VPMath::Matrix::Identity;
+		
 	};
 
 	struct TextInfo
