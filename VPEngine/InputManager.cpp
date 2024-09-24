@@ -81,14 +81,14 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 	result = m_keyboard->Acquire();
 	if (FAILED(result))
 	{
-		VP_ASSERT(false, "m_keyboard->Acquire()");
+		std::cout << "m_keyboard->Acquire()" << std::endl;
 		returnbool = false;
 	}
 	// 마우스를 할당받는다
 	result = m_mouse->Acquire();
 	if (FAILED(result))
 	{
-		VP_ASSERT(false, "m_mouse->Acquire()");
+		std::cout << "m_mouse->Acquire()"<<std::endl;
 		returnbool = false;
 	}
 

@@ -10,19 +10,23 @@ public:
     ~PlayerSystem()=default;
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
+
+	// IFixedUpdatable을(를) 통해 상속됨
+	void FixedUpdate(float deltaTime) override;
+	// IPhysicable을(를) 통해 상속됨
+	void PhysicsUpdate(float deltaTime) override;
 	void RaycastTest(PlayerComponent& playercomp);
-    // IPhysicable을(를) 통해 상속됨
-    void PhysicsUpdate(float deltaTime) override;
+
     void PlayerShoot(PlayerComponent& playercomp);
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
 	void UpdateControllerSize(PlayerComponent& playercomp);
 	void CrouchModeController(PlayerComponent& playercomp);
+	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void DefalutModeController(PlayerComponent& playercomp);
 	void DownCamera(PlayerComponent& playercomp,float deltatime);
 	void UpCamera(PlayerComponent& playercomp, float deltatime);
 	void CarmeraPosChange(PlayerComponent& playercomp,float deltatime);
-	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 #pragma endregion 
 #pragma region FSM Calculate
 
@@ -81,9 +85,6 @@ public:
 
 	void Finalize() override;
 
-
-	// IFixedUpdatable을(를) 통해 상속됨
-	void FixedUpdate(float deltaTime) override;
 
 };
 

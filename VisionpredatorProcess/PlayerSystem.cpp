@@ -10,9 +10,22 @@ void PlayerSystem::Update(float deltaTime)
 	COMPLOOP(PlayerComponent, playercomp)
 	{
 		Calculate_FSM(playercomp);
-		Action_FSM(playercomp,deltaTime);
 		RaycastTest(playercomp);
+		Action_FSM(playercomp, deltaTime);
 	}
+}
+void PlayerSystem::FixedUpdate(float deltaTime)
+{
+	COMPLOOP(PlayerComponent, playercomp)
+	{
+		GunCooltime(playercomp);
+		UpdateCharDataToController(playercomp);
+		CarmeraPosChange(playercomp, deltaTime);
+	}
+}
+
+void PlayerSystem::PhysicsUpdate(float deltaTime)
+{
 }
 
 void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
@@ -33,10 +46,7 @@ void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
 
 
 
-void PlayerSystem::PhysicsUpdate(float deltaTime)
-{
 
-}
 
 void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 {
@@ -58,17 +68,13 @@ void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
 	ControllerComponent& controllercomp=  *playercomp.GetComponent<ControllerComponent>();
-	controllercomp.Acceleration= playercomp.Accel;
-	controllercomp.MaxSpeed = playercomp.WalkSpeed;
+	//controllercomp.Acceleration= playercomp.Accel;
+	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
 	controllercomp.JumpSpeed = playercomp.JumpFoce;
 	controllercomp.StaticFriction = playercomp.StaticFriction;
 	controllercomp.DynamicFriction = playercomp.DynamicFriction;
-	controllercomp.JumpXZAcceleration = playercomp.Accel *playercomp.AirControlPercent/100;
+	controllercomp.JumpXZAcceleration = controllercomp.Acceleration *playercomp.AirControlPercent/100;
 	controllercomp.GravityWeight = playercomp.GravityPower* 9.80665;
-
-
-
-
 }
 void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 {
@@ -158,7 +164,11 @@ void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent&
 	
 	if (playercomp.GetEntityID()!= controllercomp.GetEntityID())
 		return;
+	if (controllercomp.InputDir.Length() <0.01f)
+		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
+	else
 	playercomp.SlideDir = controllercomp.InputDir;
+
 }
 
 #pragma region FSM Calculate
@@ -217,6 +227,11 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
 	{
 		CrouchModeController(playercomp);
+		if (playercomp.HasComponent<ControllerComponent>())
+		{
+		auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+		SetSlideDir(playercomp, controllercomp);
+		}
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
 	}
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
@@ -269,9 +284,14 @@ void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
 	{
 		CrouchModeController(playercomp);
+		if (playercomp.HasComponent<ControllerComponent>())
+		{
+			auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+			SetSlideDir(playercomp, controllercomp);
+		}
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
 	}
-	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+	else if (playercomp.GetComponent<ControllerComponent>()->IsFall)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 }
 
@@ -378,7 +398,7 @@ void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
 	auto slidespeed = playercomp.RunSpeed * 1.5;
 	controller.MaxSpeed = playercomp.RunSpeed * 1.5;
 	controller.Acceleration = controller.MaxSpeed * 3;
-
+	controller.InputDir = playercomp.SlideDir;
 	//Move_Walk(transcomp, playercomp, controllercomp);
 	Move_Rotation(playercomp, transcomp);
 	
@@ -394,6 +414,8 @@ void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
 
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
+	Move_Jump(transfomcomp, Controller);
+
 }
 
 void PlayerSystem::Action_Run(PlayerComponent& playercomp)
@@ -405,6 +427,8 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
+	Move_Jump(transfomcomp, Controller);
+
 }
 void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 {
@@ -415,6 +439,7 @@ void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
+
 }
 
 void PlayerSystem::Action_Jump(PlayerComponent& playercomp)
@@ -501,7 +526,6 @@ void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, PlayerComp
 	if (INPUTKEY(KEYBOARDKEY::D))
 		controllercomp.InputDir += transformcomp.RightVector;
 
-	SetSlideDir(playercomp, controllercomp);
 }
 
 void PlayerSystem::Move_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp)
@@ -558,10 +582,10 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 	{
 		auto playercomp = GetSceneManager()->GetComponent<PlayerComponent>(gameObjectId);
 		playercomp->DefalutCameraPos;
-		playercomp->SitCameraPos;
 		auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp->GetEntityID(), "PlayerCamera");
 		auto cameracomp = cameraentity->GetComponent<TransformComponent>();
 		playercomp->DefalutCameraPos = cameracomp->Local_Location;
+		playercomp->SitCameraPos = playercomp->DefalutCameraPos;
 
 		auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
 		// Current full height of the capsule (Total Height = 2 * (radius + height))
@@ -574,7 +598,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		float heightReduction = controllercomp.CapsuleControllerinfo.height - SitHeight;
 		playercomp->SitHeight = SitHeight;
 		playercomp->SitHeightDiff = heightReduction / 2;
-		playercomp->SitCameraPos.y = playercomp->DefalutCameraPos.y- playercomp->SitHeightDiff;
+		playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
 	};
 
 }
@@ -584,13 +608,5 @@ void PlayerSystem::Finish(uint32_t gameObjectId)
 void PlayerSystem::Finalize()
 {
 }
-void PlayerSystem::FixedUpdate(float deltaTime)
-{
-	COMPLOOP(PlayerComponent, playercomp)
-	{
-		GunCooltime(playercomp);
-		UpdateCharDataToController(playercomp);
-		CarmeraPosChange(playercomp, deltaTime);
-	}
-}
+
 #pragma endregion
