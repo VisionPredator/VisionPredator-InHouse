@@ -293,7 +293,7 @@
     <ClInclude Include="PostProcessManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="FadeInFadeOut.h">
+    <ClInclude Include="RimLight.h">
       <Filter>Pass\PostProcess</Filter>
     </ClInclude>
     <ClInclude Include="VPOutLinePass.h">
@@ -467,7 +467,7 @@
     <ClCompile Include="PostProcessManager.cpp">
       <Filter>Manager\Source</Filter>
     </ClCompile>
-    <ClCompile Include="FadeInFadeOut.cpp">
+    <ClCompile Include="RimLight.cpp">
       <Filter>Pass\PostProcess\Source</Filter>
     </ClCompile>
     <ClCompile Include="VPOutLinePass.cpp">
@@ -544,12 +544,13 @@
     <FxCompile Include="PreDepthPS.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
-    <FxCompile Include="FadeInFadeOut.hlsl">
+    <FxCompile Include="RimLight.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
     <FxCompile Include="VPOutLine.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
+    <FxCompile Include="RimLightGeometry.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

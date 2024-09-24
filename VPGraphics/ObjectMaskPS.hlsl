@@ -9,8 +9,28 @@ struct VertexOut
 	float4 Color : COLOR;
 };
 
-float4 main(VertexOut input) : SV_TARGET
+
+
+struct PS_OUTPUT
 {
-	return gColor;
-	//return input.Color;
-}
+    float4 ObjectMask : SV_Target0;
+    float4 RimLightMask : SV_Target1;
+};
+
+
+
+PS_OUTPUT main(VertexOut input) : SV_TARGET
+{
+	
+    PS_OUTPUT output;
+	if(gColor.x > 0)
+    {
+        output.ObjectMask = gColor;
+    }
+    output.ObjectMask = 0;
+    
+    output.RimLightMask = gColor + 10;
+	
+	//return gColor;
+        return output;
+    }

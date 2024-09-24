@@ -175,7 +175,7 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 	auto find = FindEntity(data->EntityID);
 	if (find != m_RenderVector.end())
 	{
-		
+
 
 		(*find) = data;
 	}
@@ -232,18 +232,18 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 
 	///testCulling 쓸때는 주석 필요
 	{
-	//절두체
-	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
+		//절두체
+		DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
 
-	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
-	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
-	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
+		//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
+		//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
+		//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
 
 
-	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+		m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
 
-	//카메라위치
-	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
+		//카메라위치
+		m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
 	}
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
@@ -504,6 +504,7 @@ void GraphicsEngine::Culling()
 				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
 				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
 
+				bool visible = false;
 				for (auto& mesh : curFBX->m_Meshes)
 				{
 					//S
@@ -516,7 +517,7 @@ void GraphicsEngine::Culling()
 					DirectX::BoundingOrientedBox obbInfo;
 
 					obbInfo.Center = t;
-					obbInfo.Extents = VPMath::XMFLOAT3 (fabs(half.x), fabs(half.y), fabs(half.z));
+					obbInfo.Extents = VPMath::XMFLOAT3(fabs(half.x), fabs(half.y), fabs(half.z));
 					obbInfo.Orientation = r;
 
 					debug::OBBInfo temp;
@@ -532,11 +533,17 @@ void GraphicsEngine::Culling()
 					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
 					if (contains)
 					{
-						object->isVisible = true;
-						m_AfterCulling.push_back(object);
-						break;
+						visible |= contains;
+						//break
 					}
 				}
+
+				if (visible)
+				{
+					object->isVisible = visible;
+					m_AfterCulling.push_back(object);
+				}
+				//break;
 			}
 		}
 
@@ -554,7 +561,7 @@ std::vector<std::shared_ptr<RenderData>>::iterator GraphicsEngine::FindEntity(ui
 		}
 	}
 
-	return m_RenderVector.end();	
+	return m_RenderVector.end();
 }
 
 /// Editor

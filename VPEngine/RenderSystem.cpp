@@ -53,6 +53,7 @@ void RenderSystem::OnAddedComponent(std::any data)
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->duration = 0;
 		meshComponent->Renderdata->isSkinned = true;
+		meshComponent->Renderdata->MaskingColor = {-1,0,0,255}; //림라이트 마스킹하기 위해 임시로 박아 놓음
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;

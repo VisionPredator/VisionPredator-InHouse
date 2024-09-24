@@ -29,12 +29,14 @@ public:
 
 private:
 	std::shared_ptr<RenderTargetView> m_ObjectMaskRTV;
+	std::shared_ptr<RenderTargetView> m_RimLightMaskRTV;
 	std::shared_ptr<DepthStencilView> m_DefaultDSV;
 	std::shared_ptr<class DepthStencilState> m_DSS;
 
 	std::shared_ptr<PixelShader> m_ObjectMaskPS;
 	std::shared_ptr<VertexShader> m_ObjectMaskStaticMeshVS;
 	std::shared_ptr<VertexShader> m_ObjectMaskSkeletalMeshVS;
+	std::shared_ptr<ShaderResourceView> m_RimLightSRV;
 
 	std::shared_ptr<ConstantBuffer<MaskColorCB>> m_MaskColorCB;
 };

@@ -26,7 +26,7 @@
 #include "OutlineBlurPass.h"
 #include "OutlineEdgeDetectPass.h"
 #include "VPOutLinePass.h"
-#include "FadeInFadeOut.h"
+#include "RimLight.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -80,43 +80,59 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
-	m_FadeInFadeOut = std::make_shared<FadeInFadeOut>(m_Device.lock(), m_ResourceManager.lock());
+	m_RimLight = std::make_shared<RimLight>(m_Device.lock(), m_ResourceManager.lock());
 
 
 	m_Passes.push_back(m_GeometryPass);
-	m_Passes.push_back(std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock()));
 	m_Passes.push_back(m_DebugPass);
 	m_Passes.push_back(m_DeferredPass);
+	m_Passes.push_back(m_ObjectMaskPass);
+
 	m_Passes.push_back(m_TransparencyPass);
-	//m_Passes.push_back(m_FadeInFadeOut);
+	m_Passes.push_back(m_RimLight);
 	//m_Passes.push_back(m_VPOutLinePass);
 }
 
 void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling)
 {
-	m_DeferredPass->SetRenderQueue(afterCulling);
+	/*m_DeferredPass->SetRenderQueue(afterCulling);
 	m_TransparencyPass->SetRenderQueue(afterCulling);
 	m_GeometryPass->SetRenderQueue(afterCulling);
+	m_RimLight->SetRenderQueue(afterCulling);*/
+
+	for (auto& pass : m_Passes)
+	{
+		pass->SetRenderQueue(afterCulling);
+	}
+
 }
 
 void PassManager::Render()
 {
-	for (auto& pass : m_Passes)
-	{
-		pass->Render();
-	}
+	m_GeometryPass->Render();
+	m_DebugPass->Render();
+	m_DeferredPass->Render();
+	m_ObjectMaskPass->Render();
 
-
-	if (m_isVP)
-	{
-		m_VPOutLinePass->Render();
-	}
+	m_TransparencyPass->Render();
 
 	m_OutlineEdgeDetectPass->Render();
 	m_OutlineBlurPass->Render();
 	m_OutlineAddPass->Render();
 	m_ParticlePass->Render();
 	m_UIPass->Render();
+
+
+	for (auto& pass : m_Passes)
+	{
+		//pass->Render();
+	}
+
+	if (m_isVP)
+	{
+		m_VPOutLinePass->Render();
+		m_RimLight->Render();
+	}
 	/*
 	*/
 
