@@ -147,9 +147,6 @@
     <ClInclude Include="resource1.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClInclude>
@@ -189,7 +186,7 @@
     <ClInclude Include="ParticleComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite2DComponent.h">
+    <ClInclude Include="ImageComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
     <ClInclude Include="LifeTimeComponent.h">
@@ -278,9 +275,6 @@
     <ClCompile Include="RenderSystem.cpp">
       <Filter>자체 엔진\System\Source</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>자체 엔진\Entity\Component\Base</Filter>
     </ClCompile>
@@ -327,6 +321,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="NavAgentComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LifeTimeComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LifeTimeSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

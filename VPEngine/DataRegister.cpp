@@ -130,7 +130,7 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
-	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::RenderMode, Sprite2DComponent::Billboard, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color, Sprite2DComponent::LeftPercent, Sprite2DComponent::RightPercent, Sprite2DComponent::TopPercent, Sprite2DComponent::BottomPercent);
+	META_ADD_COMP(ImageComponent, ImageComponent::RenderMode, ImageComponent::Billboard, ImageComponent::TexturePath, ImageComponent::PosXPercent, ImageComponent::PosYPercent, ImageComponent::Scale, ImageComponent::Layer, ImageComponent::Color, ImageComponent::LeftPercent, ImageComponent::RightPercent, ImageComponent::TopPercent, ImageComponent::BottomPercent);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
 }
 

@@ -89,9 +89,9 @@ void RenderSystem::OnAddedComponent(std::any data)
 	}
 
 	// UI Object
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ImageComponent>())
 	{
-		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		ImageComponent* component = static_cast<ImageComponent*>(comp);
 		const TransformComponent& Transform = *component->GetComponent<TransformComponent>();
 		ui::ImageInfo info;
 		info.ImagePath = component->TexturePath;
@@ -151,9 +151,9 @@ void RenderSystem::OnReleasedComponent(std::any data)
 		m_Graphics->DeleteParticleObjectByID(component->GetEntityID());
 	}
 
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ImageComponent>())
 	{
-		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		ImageComponent* component = static_cast<ImageComponent*>(comp);
 		m_Graphics->DeleteImageObject(component->GetEntityID());
 	}
 }
@@ -186,7 +186,7 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 
-	for (Sprite2DComponent& component : COMPITER(Sprite2DComponent))
+	for (ImageComponent& component : COMPITER(ImageComponent))
 	{
 		const TransformComponent& transform = *component.GetComponent<TransformComponent>();
 		ui::ImageInfo info;

@@ -11,7 +11,7 @@
 #include "ParticleComponent.h"
 #include "ControllerComponent.h"
 #include "ParticleComponent.h"
-#include "Sprite2DComponent.h"
+#include "ImageComponent.h"
 #include "LifeTimeComponent.h"
 #include "GeometryComponent.h"
 #include "NavAgentComponent.h"
