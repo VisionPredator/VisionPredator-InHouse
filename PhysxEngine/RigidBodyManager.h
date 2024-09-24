@@ -27,7 +27,7 @@ public:
 	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
-	
+
 	bool HasRigidBody(uint32_t EntityID);
 	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
@@ -38,10 +38,13 @@ public:
 	void AddVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V);
 	VPMath::Vector3 GetGobalLocation(uint32_t entityID);
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID);
+	uint32_t FindIDByActor(physx::PxRigidActor* Actor);
 
-
-
+	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
 private:
+	physx::PxRigidActor* FindActorByID(uint32_t entityID);
 	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);
 	void OnReleaseBodyScene(std::any data);
 	void AddBodyScene(std::shared_ptr<RigidBody> body);

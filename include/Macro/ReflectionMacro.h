@@ -163,7 +163,11 @@ namespace Reflection
 		return typeID;
 	}
 
-
+	template<typename T>
+	bool IsSameType(entt::id_type temp)
+	{
+		return temp == GetTypeID<T>();
+	}
 	// Static cache for enum members to avoid recomputation
 	template<typename T>
 	static std::map<int, entt::meta_data>  GetEnumMap()

@@ -10,7 +10,6 @@
 //memory leak
 #include <stdlib.h>
 #include <crtdbg.h>
-#include <DataRegister.h>
 
 /// <summary>
 /// 누수 메모!!!
@@ -55,7 +54,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
-	VPRegister::Register_Metadata();
 	VP_Editor* Process;
 	Process = new VP_Editor(hInstance, "VisionPredator", 1920, 1080);
 	Process->Loop();

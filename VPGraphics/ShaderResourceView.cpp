@@ -59,7 +59,7 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 	{
 		std::wstring text = L"Create Failed this File : ";
 		text = text + filePath;
-		MessageBox(0, text.c_str(), 0, 0);
+		//MessageBox(0, text.c_str(), 0, 0);
 	}
 #endif
 

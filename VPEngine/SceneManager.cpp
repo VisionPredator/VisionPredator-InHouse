@@ -458,11 +458,13 @@ void SceneManager::OnSerializePrefab(std::any data)
 		// 엔티티의 모든 컴포넌트를 순회하며 직렬화
 		for (const auto& comp : serializeEntity->GetOwnedComponents())
 		{
+			auto compid = comp->GetHandle()->type().id();
 			if (entityID == serializeID)
 			{
-				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
+				if (Reflection::IsSameType<Parent>(compid))
 					continue;
-				if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
+		
+				if (Reflection::IsSameType<TransformComponent>(compid))
 				{
 					auto temp = std::dynamic_pointer_cast<TransformComponent>(comp);
 					TransformComponent Temp = *temp;
@@ -471,14 +473,14 @@ void SceneManager::OnSerializePrefab(std::any data)
 					Temp.Local_Scale = Temp.World_Scale;
 					nlohmann::json componentEntity;
 					Temp.SerializeComponent(componentEntity);
-					componentEntity["ComponentID"] = comp->GetHandle()->type().id();
+					componentEntity["ComponentID"] = compid;
 					entityJson["Component"].push_back(componentEntity);
 					continue;
 				}
 			}
 			nlohmann::json componentEntity;
 			comp->SerializeComponent(componentEntity);
-			componentEntity["ComponentID"] = comp->GetHandle()->type().id();
+			componentEntity["ComponentID"] = compid;
 			entityJson["Component"].push_back(componentEntity);
 		}
 
@@ -530,14 +532,17 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 					if (myFunctionMeta)
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),false,false);
+						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(), false, false);
 						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 						{
 							auto compPtr = *compPPtr;
-							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
+							auto compid = compPtr->GetHandle()->type().id();
+							if (Reflection::IsSameType<Children>(compid))
+							{
 								for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
 									childID = findOrCreatePair(entityResettingPair, childID).second;
-							else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
+							}
+							else if (Reflection::IsSameType<Parent>(compid))
 							{
 								Parent* parentComponet = static_cast<Parent*>(compPtr.get());
 								parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;

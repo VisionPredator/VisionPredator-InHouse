@@ -174,7 +174,7 @@
     <ClInclude Include="ControllerMovementSystem.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="DataRegister.h" />
+    <ClInclude Include="DataRegister_Engine.h" />
     <ClInclude Include="GeometryComponent.h" />
     <ClInclude Include="LifeTimeComponent.h" />
     <ClInclude Include="LifeTimeSystem.h" />
@@ -221,7 +221,7 @@
     <ClCompile Include="ControllerComponent.cpp" />
     <ClCompile Include="ControllerMovementSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="DataRegister.cpp" />
+    <ClCompile Include="DataRegister_Engine.cpp" />
     <ClCompile Include="GeometryComponent.cpp" />
     <ClCompile Include="IDComponent.cpp" />
     <ClCompile Include="IdentityComponent.cpp" />

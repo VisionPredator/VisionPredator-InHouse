@@ -28,6 +28,12 @@ namespace VPPhysics
 		TRIGGER,
 		END
 	};
+	enum class ControllerPivot
+	{
+		CENTER=0,
+		FOOT,
+		END
+	};
 	/// <summary>
 /// 콜백 함수에 전달되는 콜리전 이벤트 형태
 /// </summary>
@@ -76,10 +82,12 @@ namespace VPPhysics
 	};
 	struct ControllerInfo
 	{
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(ControllerInfo,  LayerNumber);
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(ControllerInfo, LayerNumber, Pivot, LocalOffset)
 
 		uint32_t EntityId = noneID;								// 캐릭터 컨트롤러 아이디
 		EPhysicsLayer LayerNumber{};								// 충돌 매트릭스 레이어 넘버
+		ControllerPivot Pivot{};								//컨트롤러의 Pivot 위치
+		VPMath::Vector3 LocalOffset{ 0.f,0.f ,0.f };
 
 	};
 	struct CapsuleControllerInfo
