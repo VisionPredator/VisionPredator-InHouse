@@ -160,7 +160,7 @@ void PassManager::OnResize()
 
 void PassManager::SetVP(bool isVP)
 {
-	isVP = isVP;
+	m_isVP = isVP;
 }
 
 void PassManager::DrawIMGUI()
