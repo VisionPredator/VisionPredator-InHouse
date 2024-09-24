@@ -29,6 +29,18 @@ namespace VisPred
 			NONE,
 			END
 		};
+
+		enum class EnemyState
+		{
+			IDLE,
+			CHASE,
+			BACKWALK,
+			ATTACK,
+			DIE,
+			DESTROY,
+			NONE,
+			END
+		};
 	}
 
 }

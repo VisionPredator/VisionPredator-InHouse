@@ -1,59 +1,48 @@
 #include "pch.h"
-#include "DataRegister.h"
+#include "DataRegister_Engine.h"
 #include "Components.h"
 #include "ParticleComponent.h"
 #include "../VPGraphics/MeshFilter.h"
 #include "../VPGraphics/CBuffer.h"
-#include "../PhysxEngine/VPPhysicsStructs.h"
-#include "../PhysxEngine/DynamicRigidBody.h"
-#include "../PhysxEngine/StaticRigidBody.h"
-using namespace VPPhysics;
 
-void VPRegister::Register_Metadata()
+void EngineRegister::Register_Metadata()
 {
-	VPRegister::Register_VPMath();
-	VPRegister::Register_Structs();
-	VPRegister::Register_EnumClass();
-	VPRegister::Register_Value();
-	VPRegister::Register_Components();
+	EngineRegister::Register_VPMath();
+	EngineRegister::Register_Structs();
+	EngineRegister::Register_EnumClass();
+	EngineRegister::Register_Value();
+	EngineRegister::Register_Components();
 
 }
 
-void VPRegister::Register_EnumClass()
+void EngineRegister::Register_EnumClass()
 {
 	using namespace  ui;
 	META_ADD_ENUMCLASS(GeoMetryFilter, GeoMetryFilter::Axis, GeoMetryFilter::Box, GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
-	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
-	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER,EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
-	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE,EColliderShape::CONVEX);
+
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
 	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
 	META_ADD_ENUMCLASS(BillboardType, BillboardType::None, BillboardType::Full, BillboardType::AxisY);
 }
 
-void VPRegister::Register_Structs()
+void EngineRegister::Register_Structs()
 {
-	META_ADD_STRUCT(PhysicsInfo, PhysicsInfo::Gravity, PhysicsInfo::FrameRate, PhysicsInfo::CollisionMatrix);
-	META_ADD_STRUCT(ColliderInfo, ColliderInfo::PhysicsLayer, ColliderInfo::OffSet, ColliderInfo::LinearLock, ColliderInfo::AngleLock, ColliderInfo::StaticFriction, ColliderInfo::DynamicFriction, ColliderInfo::Restitution, ColliderInfo::Density);
-	META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::Extent);
-	META_ADD_STRUCT(SphereColliderInfo, SphereColliderInfo::colliderInfo, SphereColliderInfo::Radius);
-	META_ADD_STRUCT(CapsuleColliderInfo, CapsuleColliderInfo::colliderInfo, CapsuleColliderInfo::Radius, CapsuleColliderInfo::HalfHeight);
+	//META_ADD_STRUCT(PhysicsInfo, PhysicsInfo::Gravity, PhysicsInfo::FrameRate, PhysicsInfo::CollisionMatrix);
+	//META_ADD_STRUCT(ColliderInfo, ColliderInfo::PhysicsLayer, ColliderInfo::OffSet, ColliderInfo::LinearLock, ColliderInfo::AngleLock, ColliderInfo::StaticFriction, ColliderInfo::DynamicFriction, ColliderInfo::Restitution, ColliderInfo::Density);
+	//META_ADD_STRUCT(BoxColliderInfo, BoxColliderInfo::colliderInfo, BoxColliderInfo::Extent);
+	//META_ADD_STRUCT(SphereColliderInfo, SphereColliderInfo::colliderInfo, SphereColliderInfo::Radius);
+	//META_ADD_STRUCT(CapsuleColliderInfo, CapsuleColliderInfo::colliderInfo, CapsuleColliderInfo::Radius, CapsuleColliderInfo::HalfHeight);
 }
 
-void VPRegister::Register_Value()
+void EngineRegister::Register_Value()
 {
 	META_ADD_VALUE(std::vector<std::string>);
-	META_ADD_VALUE(DynamicRigidBody);
-	META_ADD_VALUE(StaticRigidBody);
-	META_ADD_VALUE(RigidBody);
 	META_ADD_VALUE(std::vector<std::wstring>);
-	entt::meta<std::array<int, (int)EPhysicsLayer::END>>().type("std::array<int,(int)EPhysicsLayer::END>"_hs);
-	entt::meta<std::array<bool, 3>>().type("std::array<bool, 3>"_hs);
 
 }
 
-void VPRegister::Register_VPMath()
+void EngineRegister::Register_VPMath()
 {
 	using namespace VPMath;
 	entt::meta<Vector2>()
@@ -112,7 +101,7 @@ void VPRegister::Register_VPMath()
 
 
 
-void VPRegister::Register_Components()
+void EngineRegister::Register_Components()
 {
 	META_ADD_COMP(IDComponent, IDComponent::Name);
 	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
@@ -123,7 +112,7 @@ void VPRegister::Register_Components()
 	META_ADD_COMP(Parent, Parent::ParentID);
 	META_ADD_COMP(Children, Children::ChildrenID);
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
-	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration);
+	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
 	META_ADD_COMP(GeometryComponent, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);

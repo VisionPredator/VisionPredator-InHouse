@@ -4,11 +4,13 @@
 #include "Managers.h"
 #include "TestCameraSystem.h"
 #include "PlayerSystem.h"
-#include"VisPredDataRegister.h"
+#include "DataRegister_Vispred.h"
 #include "BulletSystem.h"
+#include "EnemySystem.h"
+
 VPProcess::VPProcess(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
-	VisPredRegister::Register_Metadata();
+	VispredRegister::Register_Metadata();
 	Initialize();
 }
 
@@ -23,6 +25,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<PlayerSystem>();
 	m_SystemManager->AddSystem<TestCameraSystem>();
 	m_SystemManager->AddSystem<BulletSystem>();
+	m_SystemManager->AddSystem<EnemySystem>();
 }
 
 VPProcess::~VPProcess()

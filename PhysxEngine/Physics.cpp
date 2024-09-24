@@ -13,14 +13,7 @@ Physics::Physics()
 
 Physics::~Physics()
 {
-#ifdef _DEBUG
-	// Release PVD Transport in debug mode
-	if (m_pTransport)
-	{
-		m_pTransport->release();
-		m_pTransport = nullptr;
-	}
-#endif
+
 
 	// Release Dispatcher
 	PX_RELEASE(m_Dispatcher);
@@ -35,7 +28,14 @@ Physics::~Physics()
 		m_Pvd->release();
 		m_Pvd = nullptr;
 	}
-
+#ifdef _DEBUG
+	// Release PVD Transport in debug mode
+	if (m_pTransport)
+	{
+		m_pTransport->release();
+		m_pTransport = nullptr;
+	}
+#endif
 	// Release Foundation
 	PX_RELEASE(m_Foundation);
 }

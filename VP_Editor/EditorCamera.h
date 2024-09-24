@@ -10,6 +10,7 @@ public:
 	void Initialize();
 	void Update(float deltatime);
 	void CameraMove(float deltatime);
+	void MoveableSetting();
 	void CameraRotation();
 	void CalculateCamera();
 	void CalculateCameraTransform();
@@ -21,6 +22,7 @@ public:
 	VPMath::Matrix GetView() const { return m_view; }
 	VPMath::Matrix GetProj() const { return m_proj; }
 	VPMath::Matrix GetOrthoProj() const { return m_orthoProj; }
+	bool IsMoveable{};
 
 private:
 	float m_sensitivity= 0.1f;

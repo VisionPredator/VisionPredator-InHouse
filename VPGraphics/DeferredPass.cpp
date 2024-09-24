@@ -228,7 +228,7 @@ void DeferredPass::GeometryPass()
 	{
 		Device->UnBindSRV();
 		std::vector<ID3D11RenderTargetView*> RTVs;
-		int GBufferSize = 8;//static_cast<int>(Slot_T::End) - 1;//ÃÖ´ë 8°³ ¹Û¿¡ ¾ÈµÊ
+		int GBufferSize = 8;//ÃÖ´ë 8°³ ¹Û¿¡ ¾ÈµÊ
 		RTVs.reserve(GBufferSize);
 
 		RTVs.push_back(m_AlbedoRTV.lock()->Get());
@@ -390,13 +390,12 @@ void DeferredPass::GeometryPass()
 		}
 	}
 
-	//·»´õÅ¸°Ù ÇØÁ¦ÇØÁà¾ßÁö srvµµ ÇØÁ¦
+	//·»´õÅ¸°Ù ÇØÁ¦ÇØÁà¾ßÁö
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 void DeferredPass::LightPass()
 {
-
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();

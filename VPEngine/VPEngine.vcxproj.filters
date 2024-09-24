@@ -70,6 +70,9 @@
     <Filter Include="NavMesh">
       <UniqueIdentifier>{20e9601b-fb0f-45c9-84dc-cc77584a0e5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataRegist">
+      <UniqueIdentifier>{034cddac-6a0d-4b58-b3e7-efe8c7aa51a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h">
@@ -153,9 +156,6 @@
     <ClInclude Include="LightComponent.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="DataRegister.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationComponent.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -212,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="NavAgentComponent.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DataRegister_Engine.h">
+      <Filter>DataRegist</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -281,9 +284,6 @@
     <ClCompile Include="LightComponent.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="DataRegister.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationComponent.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -328,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="LifeTimeSystem.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister_Engine.cpp">
+      <Filter>DataRegist</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

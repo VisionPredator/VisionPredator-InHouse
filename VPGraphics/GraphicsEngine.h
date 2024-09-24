@@ -55,6 +55,8 @@ public:
 	void UpdateModel(uint32_t EntityID)override;
 	const double GetDuration(std::wstring name, int index) override;
 	virtual const VPMath::Matrix Attachment(const uint32_t entityID) override;
+	virtual void SetVP(bool isVP) override;
+
 
 	/// Particle
 	void CreateParticleObject(uint32_t entityID, const effect::ParticleInfo& info) override;

@@ -51,6 +51,7 @@ public:
 
 	VPMath::XMFLOAT3 MinBounding;
 	VPMath::XMFLOAT3 MaxBounding;
+	VPMath::XMFLOAT3 Pivot;
 };
 
 class StaticMesh : public Mesh

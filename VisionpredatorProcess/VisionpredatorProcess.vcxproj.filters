@@ -39,9 +39,6 @@
     <ClInclude Include="BulletComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="VisPredDataRegister.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="VisPredComponents.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -63,6 +60,9 @@
     <ClInclude Include="VisPredStructs.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="DataRegister_Vispred.h">
+      <Filter>DataRegist</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -78,9 +78,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BulletComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="VisPredDataRegister.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BulletSystem.cpp">
@@ -100,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="VisPredStructs.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister_Vispred.cpp">
+      <Filter>DataRegist</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

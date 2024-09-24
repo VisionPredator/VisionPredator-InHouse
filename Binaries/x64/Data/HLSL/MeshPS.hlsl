@@ -61,7 +61,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
     if (AMRO.z > 0)
     {
-        roughnessValue = gRoughness.Sample(samLinear, input.tex).g;
+        roughnessValue = gMetalic.Sample(samLinear, input.tex).g;
     }
     else
     {
@@ -117,8 +117,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float3 color = ambient + result;
 
     
-    // HDR tonemapping
-    color = color / (color + float3(1.0, 1.0, 1.0)) + emissive;
+    color = color + emissive;
     
     // gamma correct
     color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2));

@@ -18,6 +18,7 @@ public:
 	const VPMath::Vector3 GetPosition();
 	inline VPMath::Vector3 GetVelocity();
 	inline bool GetIsFall();
+	physx::PxController* GetPxController() { return m_Controller; }
 	virtual entt::id_type GetTypeID() const { return Reflection::GetTypeID<Controller>(); }
 	inline uint32_t GetEntityID();
 	inline physx::PxControllerFilters* GetFilters();

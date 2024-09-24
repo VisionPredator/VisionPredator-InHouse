@@ -118,10 +118,10 @@ void Inspector::TransformComponentImGui(Component* component)
 
 	ImGui::Text("TransformComponent");
 	TransformComponent* comp = static_cast<TransformComponent*> (component);
-	float temp_Local_Location[3] =	{ comp->Local_Location .x,comp->Local_Location .y,comp->Local_Location .z};
-	float temp_Local_Rotation[3] =	{ comp->Local_Rotation.x,comp->Local_Rotation.y,comp->Local_Rotation.z };
+	float temp_Local_Location[3] = { comp->Local_Location.x,comp->Local_Location.y,comp->Local_Location.z };
+	float temp_Local_Rotation[3] = { comp->Local_Rotation.x,comp->Local_Rotation.y,comp->Local_Rotation.z };
 	float temp_Local_Quaternion[3] = {};
-	float temp_Local_Scale[3] =		{ comp->Local_Scale.x,comp->Local_Scale.y,comp->Local_Scale.z };
+	float temp_Local_Scale[3] = { comp->Local_Scale.x,comp->Local_Scale.y,comp->Local_Scale.z };
 	float temp_World_Location[3] = { comp->World_Location.x,	comp->World_Location.y,		comp->World_Location.z };
 	float temp_World_Rotation[3] = { comp->World_Rotation.x,	comp->World_Rotation.y,		comp->World_Rotation.z };
 	float temp_World_Quaternion[3] = { comp->World_Quaternion.x,	comp->World_Quaternion.y,	comp->World_Quaternion.z };
@@ -815,66 +815,108 @@ void Inspector::TypeImGui_ControllerInfo(entt::meta_data memberMetaData, Compone
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Controller colliderInfo");
 
-
-	auto enumMap = Reflection::GetEnumMap<EPhysicsLayer>();
-
-	int currentEnumInt = (int)tempControllerInfo.LayerNumber;
-	std::string valuename = "EPhysicsLayer";
-	auto iter = enumMap.find(currentEnumInt);
-	assert(iter != enumMap.end());
-	std::string currentEnumName = Reflection::GetName(iter->second);
-
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	if (ImGui::BeginCombo(valuename.c_str(), currentEnumName.c_str()))
+	// Use Collapsing Header to toggle visibility
+	if (ImGui::CollapsingHeader("Controller colliderInfo", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		for (const auto& [val, metaData] : enumMap)
+		// Handling LayerNumber
+		auto enumMap = Reflection::GetEnumMap<EPhysicsLayer>();
+
+		int currentEnumInt = (int)tempControllerInfo.LayerNumber;
+		std::string valuename = "EPhysicsLayer";
+		auto iter = enumMap.find(currentEnumInt);
+		assert(iter != enumMap.end());
+		std::string currentEnumName = Reflection::GetName(iter->second);
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::BeginCombo(valuename.c_str(), currentEnumName.c_str()))
 		{
-			std::string memberName = Reflection::GetName(metaData);
-			const bool bIsSelected = val == currentEnumInt;
-			if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+			for (const auto& [val, metaData] : enumMap)
 			{
-				tempControllerInfo.LayerNumber = (EPhysicsLayer)val;
+				std::string memberName = Reflection::GetName(metaData);
+				const bool bIsSelected = val == currentEnumInt;
+				if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+				{
+					tempControllerInfo.LayerNumber = (EPhysicsLayer)val;
+				}
 			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
+
+		// Handling Pivot
+		auto pivotEnumMap = Reflection::GetEnumMap<ControllerPivot>();
+
+		int currentPivotEnumInt = (int)tempControllerInfo.Pivot;
+		std::string pivotValueName = "ControllerPivot";
+		auto pivotIter = pivotEnumMap.find(currentPivotEnumInt);
+		assert(pivotIter != pivotEnumMap.end());
+		std::string currentPivotEnumName = Reflection::GetName(pivotIter->second);
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::BeginCombo(pivotValueName.c_str(), currentPivotEnumName.c_str()))
+		{
+			for (const auto& [val, metaData] : pivotEnumMap)
+			{
+				std::string memberName = Reflection::GetName(metaData);
+				const bool bIsSelected = val == currentPivotEnumInt;
+				if (ImGui::Selectable(memberName.c_str(), bIsSelected))
+				{
+					tempControllerInfo.Pivot = (ControllerPivot)val;
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		float LocalOffset[3] = { tempControllerInfo.LocalOffset.x, tempControllerInfo.LocalOffset.y, tempControllerInfo.LocalOffset.z };
+		ImGui::DragFloat3("LocalOffset", LocalOffset, 0.1f, 0.1f);
+		tempControllerInfo.LocalOffset = { LocalOffset[0], LocalOffset[1], LocalOffset[2] };
 	}
 
+	// Update the memberMetaData with the new values
 	memberMetaData.set(component->GetHandle(), tempControllerInfo);
+
 	ImGui::PopID();
 }
+
 void Inspector::TypeImGui_CapsuleControllerInfo(entt::meta_data memberMetaData, Component* component)
 {
 	CapsuleControllerInfo tempCapsuleControllerInfo = memberMetaData.get(component->GetHandle()).cast<CapsuleControllerInfo>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text("Capsule Controller colliderInfo");
 
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	ImGui::DragFloat("Height", &tempCapsuleControllerInfo.height, 0.1f, 0.1f);
-	if (tempCapsuleControllerInfo.height <= 0.f)
-		tempCapsuleControllerInfo.height = 0.1f;
+	// Use Collapsing Header to toggle visibility
+	if (ImGui::CollapsingHeader("Capsule Controller Info", ImGuiTreeNodeFlags_DefaultOpen))
+	{
 
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	ImGui::DragFloat("Radius", &tempCapsuleControllerInfo.radius, 0.01f, 0.01f);
-	if (tempCapsuleControllerInfo.radius <= 0.f)
-		tempCapsuleControllerInfo.radius = 0.01f;
 
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	ImGui::DragFloat("Step Offset", &tempCapsuleControllerInfo.stepOffset, 0.01f);
-	
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	ImGui::DragFloat("Slope Limit", &tempCapsuleControllerInfo.slopeLimit, 0.01f);
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		ImGui::DragFloat("Height", &tempCapsuleControllerInfo.height, 0.1f, 0.1f);
+		if (tempCapsuleControllerInfo.height <= 0.f)
+			tempCapsuleControllerInfo.height = 0.1f;
 
-	ImGui::SetNextItemWidth(m_TypeBoxsize);
-	ImGui::DragFloat("Contact Offset", &tempCapsuleControllerInfo.contactOffset, 0.001f);
-	ImGui::Text("Controller colliderInfo");
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		ImGui::DragFloat("Radius", &tempCapsuleControllerInfo.radius, 0.01f, 0.01f);
+		if (tempCapsuleControllerInfo.radius <= 0.f)
+			tempCapsuleControllerInfo.radius = 0.01f;
 
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		ImGui::DragFloat("Step Offset", &tempCapsuleControllerInfo.stepOffset, 0.01f);
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		ImGui::DragFloat("Slope Limit", &tempCapsuleControllerInfo.slopeLimit, 0.01f);
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		ImGui::DragFloat("Contact Offset", &tempCapsuleControllerInfo.contactOffset, 0.001f);
+	}
+
+	// Update the memberMetaData with the new values
 	memberMetaData.set(component->GetHandle(), tempCapsuleControllerInfo);
+
 	ImGui::PopID();
 }
+
 
 bool Inspector::ShouldSkipComponent(entt::id_type metaTypeID)
 {

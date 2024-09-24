@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VisPredRegister
+namespace PhysicsRegister
 {
 	void Register_Metadata();
 	void Register_Components();
