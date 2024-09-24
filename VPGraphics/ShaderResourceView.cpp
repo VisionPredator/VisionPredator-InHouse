@@ -54,12 +54,14 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 
 	(hr = DirectX::CreateShaderResourceView(m_Device.lock()->Get(), scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, &m_SRV));
 
+#ifdef _DEBUG 
 	if (FAILED(hr))
 	{
 		std::wstring text = L"Create Failed this File : ";
 		text = text + filePath;
 		//MessageBox(0, text.c_str(), 0, 0);
 	}
+#endif
 
 	// TODO: 텍스처를 찾지 못했을 때의 대처가 필요.
 }

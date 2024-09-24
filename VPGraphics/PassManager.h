@@ -21,6 +21,9 @@ class ParticleManager;
 class ModelData;
 class DebugDrawManager;
 class UIManager;
+class GeoMetryPass;
+class VPOutLinePass;
+class FadeInFadeOut;
 
 class PassManager
 {
@@ -34,12 +37,13 @@ public:
 
 	void Render();
 	void OnResize();
-
+	void SetVP(bool isVP);
 private:
 	void DrawIMGUI();
 
 private:
-	std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;
+	//std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;
+	std::vector<std::shared_ptr<RenderPass>> m_Passes;
 
 	std::shared_ptr<DeferredPass> m_DeferredPass;
 	std::shared_ptr<TransparencyPass> m_TransparencyPass;
@@ -50,6 +54,9 @@ private:
 	std::shared_ptr<OutlineEdgeDetectPass> m_OutlineEdgeDetectPass;
 	std::shared_ptr<OutlineBlurPass> m_OutlineBlurPass;
 	std::shared_ptr<OutlineAddPass> m_OutlineAddPass;
+	std::shared_ptr<GeoMetryPass> m_GeometryPass;
+	std::shared_ptr<VPOutLinePass> m_VPOutLinePass;
+	std::shared_ptr<FadeInFadeOut> m_FadeInFadeOut;
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;
@@ -61,5 +68,8 @@ private:
 
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;
+
+private:
+	bool m_isVP = false;
 };
 

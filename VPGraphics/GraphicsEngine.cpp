@@ -143,17 +143,17 @@ void GraphicsEngine::BeginRender()
 	const VPMath::Color red = { 1.f, 0.f, 0.f, 1.f };
 	const VPMath::Color green = { 0.f, 1.f, 0.f, 1.f };
 	const VPMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
-	const VPMath::Color gray = { 0.5f, 0.5f, 0.5f, 1.f };
+	const VPMath::Color gray = { 0.2f, 0.2f, 0.2f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
 		if (i == 0)
 		{
-			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), Black);
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[0].lock()->Get(), gray);
 		}
 		else
 		{
-			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[1].lock()->Get(), Black);
+			m_Device->BeginRender(m_RTVs[i].lock()->Get(), m_DSVs[1].lock()->Get(), gray);
 		}
 	}
 }
@@ -229,10 +229,11 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	VPMath::Matrix projInverse = proj.Invert();
 	cb_projInverse = projInverse.Transpose();
 
+
+	///testCulling 쓸때는 주석 필요
+	{
 	//절두체
 	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
-
-
 
 	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
 	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
@@ -243,6 +244,7 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 
 	//카메라위치
 	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
+	}
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
 	Camera.lock()->m_struct.view = cb_view;
@@ -257,6 +259,7 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 void GraphicsEngine::testCulling(VPMath::Matrix view, VPMath::Matrix proj)
 {
 	VPMath::Matrix viewInverse = view.Invert();
+
 
 	//절두체
 	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
@@ -306,7 +309,7 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 	std::shared_ptr<ModelData> curAni = m_ResourceManager->Get<ModelData>(name).lock();
 	if (curAni != nullptr)
 	{
-		if (!curAni->m_Animations.empty())
+		if (!curAni->m_Animations.empty() && 0 <= index && index < curAni->m_Animations.size())
 		{
 			//전체 tick / 초당 틱 == 애니메이션 재생시간
 			return curAni->m_Animations[index]->m_Duration / curAni->m_Animations[index]->m_TickFrame;
@@ -324,7 +327,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");
+		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");	//이름 수정필요
 		VPMath::Matrix a = test * (*find)->world;
 
 		debug::SphereInfo temp;
@@ -338,6 +341,12 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 
 	return VPMath::Matrix::Identity;
 }
+
+void GraphicsEngine::SetVP(bool isVP)
+{
+	m_PassManager->SetVP(isVP);
+}
+
 void GraphicsEngine::CreateParticleObject(uint32_t entityID, const effect::ParticleInfo& info)
 {
 	m_ParticleManager->CreateParticleObject(entityID, info);
@@ -495,36 +504,42 @@ void GraphicsEngine::Culling()
 				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
 				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
 
-				VPMath::Vector3 Max;
-
-				VPMath::Vector3 Min;
-
 				for (auto& mesh : curFBX->m_Meshes)
 				{
 					//S
-					VPMath::Vector3 afterMax = mesh->MaxBounding * s;
-					VPMath::Vector3 afterMin = mesh->MinBounding * s;
+					VPMath::Vector3 afterMax = mesh->MaxBounding * s + t;
+					VPMath::Vector3 afterMin = mesh->MinBounding * s + t;
 
 					VPMath::Vector3 distance = afterMax - afterMin;
 					VPMath::Vector3 half = distance / 2;
 
 					DirectX::BoundingOrientedBox obbInfo;
 
-					obbInfo.Center = t + afterMin + half;
-					obbInfo.Extents = half;
+					obbInfo.Center = t;
+					obbInfo.Extents = VPMath::XMFLOAT3 (fabs(half.x), fabs(half.y), fabs(half.z));
 					obbInfo.Orientation = r;
+
+					debug::OBBInfo temp;
+					temp.OBB = obbInfo;
+					/*temp.xAxisAngle = object->rotation.x;
+					temp.yAxisAngle = object->rotation.y;
+					temp.zAxisAngle = object->rotation.z;*/
+
+
+					temp.Color = (VPMath::Color{ 1,0,0,1 });
+					DrawOBB(temp);
 
 					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
 					if (contains)
 					{
 						object->isVisible = true;
+						m_AfterCulling.push_back(object);
 						break;
 					}
 				}
 			}
 		}
 
-		m_AfterCulling.push_back(object);
 	}
 }
 

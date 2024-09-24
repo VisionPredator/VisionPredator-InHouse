@@ -239,22 +239,6 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 		case Filter::STATIC:
 		{
 
-			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
-			{
-				ProcessVertexBuffer(TextureVertices, curMesh, i);
-
-				VPMath::Vector3 curPos;
-				curPos.x = TextureVertices.back().pos.x;
-				curPos.y = TextureVertices.back().pos.y;
-				curPos.z = -TextureVertices.back().pos.z;
-
-
-
-				Model->vertices.push_back(curPos);
-			}
-			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
-			data.pSysMem = &(TextureVertices[0]);
-			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
 
 			//유니티랑 기준을 맞추려고 회전했으므로 바운딩볼륨도 회전시켜놔야지
 			VPMath::Matrix test;
@@ -268,10 +252,50 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			v = XMVector3Transform(v, test);
 			newMesh->MaxBounding = { v.x,v.y,v.z };
 
+			float maxL = v.Length();
+
 			v = newMesh->MinBounding;
 			v = XMVector3Transform(v, test);
-			newMesh->MinBounding = { v.x,v.y,v.z };
 
+			float minL = v.Length();
+			if(minL < maxL)
+			{
+				newMesh->MinBounding = { v.x,v.y,v.z };
+			}
+			else
+			{
+				newMesh->MinBounding = newMesh->MaxBounding;
+				newMesh->MaxBounding = { v.x,v.y,v.z };
+			}
+
+			newMesh->Pivot = VPMath::Vector3(newMesh->MaxBounding.x + newMesh->MinBounding.x, newMesh->MaxBounding.y + newMesh->MinBounding.y, newMesh->MaxBounding.z + newMesh->MinBounding.z)/2;
+
+			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
+			{
+				ProcessVertexBuffer(TextureVertices, curMesh, i);
+
+				VPMath::Vector3 curPos;
+				curPos.x = TextureVertices.back().pos.x;
+				curPos.y = TextureVertices.back().pos.y;
+				curPos.z = -TextureVertices.back().pos.z;
+
+				curPos -= newMesh->Pivot;
+
+				Model->vertices.push_back(curPos);
+			}
+
+			for (auto& ver : TextureVertices)
+			{
+				DirectX::XMFLOAT4& curPos = ver.pos;
+				curPos.x -= newMesh->Pivot.x;
+				curPos.y -= newMesh->Pivot.y;
+				curPos.z -= newMesh->Pivot.z;
+			}
+
+
+			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
+			data.pSysMem = &(TextureVertices[0]);
+			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
 		}
 			break;
 
@@ -698,38 +722,52 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 {
 	BaseVertex vertex;
 
-	vertex.pos.x = curMesh->mVertices[index].x;
-	vertex.pos.y = curMesh->mVertices[index].y;
-	vertex.pos.z = curMesh->mVertices[index].z;
-	vertex.pos.w = 1;
+
+	vertex.color = { 0.7f,0.7f, 0.7f, 1.0f };
 
 	//유니티랑 x축 90 차이나서 의도적으로 회전시킴
 	//왼손좌표계라 기존 회전방향을 반대로 곱해준다
 	/*
 	*/
-	VPMath::Matrix test;
+
+	VPMath::Matrix _RotX90;
+
+	vertex.pos.x = curMesh->mVertices[index].x;
+	vertex.pos.y = curMesh->mVertices[index].y;
+	vertex.pos.z = curMesh->mVertices[index].z;
+	vertex.pos.w = 1;
+
+	_RotX90._11 = 1; _RotX90._12 = 0; _RotX90._13 = 0;
+	_RotX90._21 = 0; _RotX90._22 = 0; _RotX90._23 = 1;
+	_RotX90._31 = 0; _RotX90._32 = -1; _RotX90._33 = 0;
+
 	VPMath::Vector3 v = { vertex.pos.x,vertex.pos.y,vertex.pos.z};
-
-	test._11 = 1; test._12 = 0; test._13 = 0;
-	test._21 = 0; test._22 = 0; test._23 = 1;
-	test._31 = 0; test._32 = -1; test._33 = 0;
-
-	v = XMVector3Transform(v, test);
+	v = XMVector3Transform(v, _RotX90);
 	vertex.pos = { v.x,v.y,v.z,1};
-
-	vertex.color = { 0.7f,0.7f, 0.7f, 1.0f };
 
 	vertex.normal.x = curMesh->mNormals[index].x;
 	vertex.normal.y = curMesh->mNormals[index].y;
 	vertex.normal.z = curMesh->mNormals[index].z;
 
+	v = { vertex.normal.x,vertex.normal.y,vertex.normal.z };
+	v = XMVector3Transform(v, _RotX90);
+	vertex.normal = { v.x,v.y,v.z,0};
+
 	vertex.tangent.x = curMesh->mTangents[index].x;
 	vertex.tangent.y = curMesh->mTangents[index].y;
 	vertex.tangent.z = curMesh->mTangents[index].z;
 
+	v = { vertex.tangent.x,vertex.tangent.y,vertex.tangent.z };
+	v = XMVector3Transform(v, _RotX90);
+	vertex.tangent= { v.x,v.y,v.z,1 };
+
 	vertex.bitangent.x = curMesh->mBitangents[index].x;
 	vertex.bitangent.y = curMesh->mBitangents[index].y;
 	vertex.bitangent.z = curMesh->mBitangents[index].z;
+
+	v = { vertex.bitangent.x,vertex.bitangent.y,vertex.bitangent.z };
+	v = XMVector3Transform(v, _RotX90);
+	vertex.bitangent = { v.x,v.y,v.z,1 };
 
 	//texture uv channel
 	vertex.TexCord.x = curMesh->mTextureCoords[0][index].x;

@@ -93,8 +93,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
  
     result = directlight + indirectlight;
     
-    // HDR tonemapping
-    result = result / (result + float3(1.0, 1.0, 1.0)) + EmissiveValue;
+    result = result + EmissiveValue;
     
     // gamma correct
     result = pow(result, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
