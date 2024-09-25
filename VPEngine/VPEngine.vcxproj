@@ -192,6 +192,7 @@
     <ClInclude Include="resource1.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="ImageComponent.h" />
+    <ClInclude Include="TextComponent.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />

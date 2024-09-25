@@ -377,6 +377,21 @@ void GraphicsEngine::DeleteImageObject(uint32_t id)
 	m_UIManager->DeleteImageObject(id);
 }
 
+void GraphicsEngine::CreateTextObject(uint32_t entityID, const ui::TextInfo& info)
+{
+	m_UIManager->CreateTextObject(entityID, info);
+}
+
+void GraphicsEngine::UpdateTextObject(uint32_t entityID, const ui::TextInfo& info)
+{
+	m_UIManager->UpdateTextObject(entityID, info);
+}
+
+void GraphicsEngine::DeleteTextObject(uint32_t entityId)
+{
+	m_UIManager->DeleteTextObject(entityId);
+}
+
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
 {
 	m_DebugDrawManager->AddTask(info);

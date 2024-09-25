@@ -67,6 +67,9 @@ public:
 	void CreateImageObject(uint32_t id, const ui::ImageInfo& info) override;
 	void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) override;
 	void DeleteImageObject(uint32_t id) override;
+	void CreateTextObject(uint32_t entityID, const ui::TextInfo& info) override;
+	void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info) override;
+	void DeleteTextObject(uint32_t entityId) override;
 
 	/// Light
 	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;

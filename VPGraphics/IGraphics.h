@@ -93,10 +93,12 @@ namespace Graphics
 		virtual void CreateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
 		virtual void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
 		virtual void DeleteImageObject(uint32_t id) abstract;
+		virtual void CreateTextObject(uint32_t entityID, const ui::TextInfo& info) abstract;
+		virtual void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info) abstract;
+		virtual void DeleteTextObject(uint32_t entityId) abstract;
 
 		///Editor 전용
 		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
-
 
 		///물리 전용
 		virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) abstract;

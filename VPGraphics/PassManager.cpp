@@ -65,9 +65,6 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIManager = uiManager;
 	m_LightManager = lightmanager;
 
-	//m_Passes.insert(std::make_pair<PassState, std::shared_ptr<RenderPass>>(PassState::Debug, 
-	//	std::make_shared<DebugPass>(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock())));
-
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_TransparencyPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
@@ -82,9 +79,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
 	m_FadeInFadeOut = std::make_shared<FadeInFadeOut>(m_Device.lock(), m_ResourceManager.lock());
 
-
 	m_Passes.push_back(m_GeometryPass);
-	m_Passes.push_back(std::make_shared<ObjectMaskPass>(m_Device.lock(), m_ResourceManager.lock()));
+	m_Passes.push_back(m_ObjectMaskPass);
 	m_Passes.push_back(m_DebugPass);
 	m_Passes.push_back(m_DeferredPass);
 	m_Passes.push_back(m_TransparencyPass);
@@ -97,6 +93,7 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 	m_DeferredPass->SetRenderQueue(afterCulling);
 	m_TransparencyPass->SetRenderQueue(afterCulling);
 	m_GeometryPass->SetRenderQueue(afterCulling);
+	m_ObjectMaskPass->SetRenderQueue(afterCulling);
 }
 
 void PassManager::Render()
@@ -105,7 +102,6 @@ void PassManager::Render()
 	{
 		pass->Render();
 	}
-
 
 	if (m_isVP)
 	{
