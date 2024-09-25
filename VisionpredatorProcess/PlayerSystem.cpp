@@ -499,7 +499,7 @@ void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 	static int a = 0;
 	if (INPUTKEYDOWN(KEYBOARDKEY::O))
 	{
-		ChangeAniToIndex(entityid, a);
+		ChangeAniToIndex(entityid, static_cast<VisPred::Game::PlayerAni>(a));
 		a++;
 		a = a % 29;
 
@@ -516,7 +516,6 @@ void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp)
 
 
 }
-
 void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp)
 {
 

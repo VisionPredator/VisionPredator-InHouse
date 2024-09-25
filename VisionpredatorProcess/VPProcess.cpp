@@ -42,5 +42,5 @@ void VPProcess::RenderUpdate()
 	VPEngine::RenderUpdate();
 	VPEngine::BeginRender();
 	VPEngine::EndRender();
-}
+}		
 
