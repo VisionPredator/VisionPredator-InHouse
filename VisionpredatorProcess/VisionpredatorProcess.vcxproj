@@ -165,6 +165,7 @@
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FSMComponent.h" />
+    <ClInclude Include="GunComponent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="EnemySystem.cpp" />
     <ClCompile Include="FSMComponent.cpp" />
+    <ClCompile Include="GunComponent.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

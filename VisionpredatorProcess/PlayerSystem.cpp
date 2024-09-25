@@ -378,6 +378,7 @@ void PlayerSystem::Action_Idle(PlayerComponent& playercomp)
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Move_Rotation(playercomp, transfomcomp);
+	Animation(playercomp.PlayerHandID, 0);
 }
 
 void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
@@ -385,7 +386,6 @@ void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
 	///지면 기준에서 하기.
 	///Input이 있을경우에는 그 방향으로 이동해야함.
 	/// 콜라이더 오프셋 기능 추가.
-
 	if (!playercomp.HasComponent<ControllerComponent>())
 		return; 
 
@@ -453,6 +453,7 @@ void PlayerSystem::Action_Jump(PlayerComponent& playercomp)
 
 void PlayerSystem::Action_Attack(PlayerComponent& playercomp)
 {
+	
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Move_Walk(transfomcomp, playercomp, Controller);
@@ -485,6 +486,25 @@ void PlayerSystem::Action_Destroy(PlayerComponent& playercomp)
 #pragma endregion
 
 #pragma region Shoot Logic
+void PlayerSystem::ChangeAniToIndex(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, bool Immidiate)
+{
+	std::any data = std::make_pair(entityID, static_cast<int>(playeraniIndex));
+	if (Immidiate)
+		EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
+	else
+		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
+}
+void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
+{
+	static int a = 0;
+	if (INPUTKEYDOWN(KEYBOARDKEY::O))
+	{
+		ChangeAniToIndex(entityid, a);
+		a++;
+		a = a % 29;
+
+	}
+}
 void PlayerSystem::Shoot_Style(PlayerComponent& playercomp)
 {
 }
@@ -599,6 +619,10 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		playercomp->SitHeight = SitHeight;
 		playercomp->SitHeightDiff = heightReduction / 2;
 		playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
+		auto PlayerHandEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->PlayerHandName);
+		auto PlayerCameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->PlayerCameraName);
+		playercomp->PlayerHandID = PlayerHandEntity->GetEntityID();
+		playercomp->PlayerCameraID = PlayerCameraEntity->GetEntityID();
 	};
 
 }

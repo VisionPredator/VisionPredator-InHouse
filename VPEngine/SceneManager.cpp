@@ -785,7 +785,6 @@ std::shared_ptr<Entity> SceneManager::GetRelationEntityByName(uint32_t entityID,
 {
 	uint32_t mainID = entityID;
 	std::queue<uint32_t> ChildrenIDs;
-	//ChildrenIDs.push(mainID);
 	if (!HasEntity(mainID))
 		return nullptr;
 	
@@ -793,6 +792,7 @@ std::shared_ptr<Entity> SceneManager::GetRelationEntityByName(uint32_t entityID,
 	{
 		mainID = GetEntity(mainID)->GetComponent<Parent>()->ParentID;
 	}
+	ChildrenIDs.push(mainID);
 
 	while (!ChildrenIDs.empty())
 	{

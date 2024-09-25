@@ -18,9 +18,13 @@
 		EventManager::GetInstance().Subscribe("OnStart_Parent", CreateSubscriber(&SystemManager::OnStart_Parent));
 		EventManager::GetInstance().Subscribe("OnFinish", CreateSubscriber(&SystemManager::OnFinish));
 		EventManager::GetInstance().Subscribe("OnFinish_Parent", CreateSubscriber(&SystemManager::OnFinish_Parent));
+		EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&SystemManager::OnAddedComponent));
+		EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&SystemManager::OnReleasedComponent));
 
 		m_FixedDeltatime = 1.f / m_FixedFrame;
 		m_PhysicDeltatime= 1.f / m_PhysicsFrame;
+		m_RenderDeltatime= 1.f / m_RenderFPS;
+		m_EditorRenderDeltatime = 1.f / m_RenderFPS;
 
 	}
 	SystemManager::~SystemManager()
@@ -59,6 +63,53 @@
 
 		}
 	}
+	void SystemManager::RenderSystemUpdate(float deltatime)
+	{
+		m_RenderProgressTime += deltatime;
+
+		if (m_RenderProgressTime > m_RenderDeltatime)
+		{
+			BeginRenderUpdate(m_RenderProgressTime);
+			RenderUpdate(m_RenderProgressTime);
+			LateRenderUpdate(m_RenderProgressTime);
+		}
+	}
+	void SystemManager::BeginRender()
+	{
+		if (m_RenderProgressTime > m_RenderDeltatime)
+		{
+			m_Graphics->BeginRender();
+			m_Graphics->Render();
+		}
+	}
+	bool SystemManager::ImguiBeginRender()
+	{
+		if (m_RenderProgressTime > m_RenderDeltatime)
+		{
+			m_Graphics->ImguiBeginRender();
+			return true;
+		}
+		else
+		{
+		return false;
+		}
+	}
+	void SystemManager::ImguiEndRender()
+	{
+		if (m_RenderProgressTime > m_RenderDeltatime)
+		{
+			m_Graphics->ImguiEndRender();
+		}
+	}
+	void SystemManager::EndRender()
+	{
+		if (m_RenderProgressTime > m_RenderDeltatime)
+		{
+			m_Graphics->EndRender();
+			m_RenderProgressTime = 0;
+		}
+	}
+
 	void SystemManager::Update(float deltatime)
 	{
 		for (auto updateable : m_Updatables)
@@ -73,11 +124,34 @@
 			lateUpdatable->LateUpdate(deltatime);
 		}
 	}
+	void SystemManager::EditorRenderSystemUpdate(float deltatime)
+	{
+		m_RenderProgressTime += deltatime;
+
+		if (m_RenderProgressTime > m_RenderDeltatime)
+		{
+			EditorRenderUpdate(m_RenderProgressTime);
+		}
+	}
+	void SystemManager::BeginRenderUpdate(float deltatime)
+	{
+		for (auto renderable : m_Renderables)
+		{
+			renderable->BeginRenderUpdate(deltatime);
+		}
+	}
 	void SystemManager::RenderUpdate(float deltatime)
 	{
 		for (auto renderable : m_Renderables)
 		{
 			renderable->RenderUpdate(deltatime);
+		}
+	}
+	void SystemManager::LateRenderUpdate(float deltatime)
+	{
+		for (auto renderable : m_Renderables)
+		{
+			renderable->LateRenderUpdate(deltatime);
 		}
 	}
 
@@ -114,6 +188,25 @@
 		for (auto contactable : m_Contactable)
 		{
 			contactable->ExitCollision(entitypair);
+		}
+	}
+
+	void SystemManager::OnAddedComponent(std::any data)
+	{
+		auto comp = std::any_cast<Component*>(data);
+		for (auto compaddable : m_CompAddable)
+		{
+			compaddable->ComponentAdded(comp);
+		}
+
+	}
+
+	void SystemManager::OnReleasedComponent(std::any data)
+	{
+		auto comp = std::any_cast<Component*>(data);
+		for (auto compaddable : m_CompAddable)
+		{
+			compaddable->ComponentReleased(comp);
 		}
 	}
 

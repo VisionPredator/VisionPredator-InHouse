@@ -89,7 +89,15 @@ bool GraphicsEngine::Initialize()
 
 	return true;
 }
+void GraphicsEngine::CulingUpdate()
+{
+	Culling();
+}
+void GraphicsEngine::AnimationUpdate(double dt)
+{
+	m_Animator->Update(dt, m_AfterCulling);
 
+}
 void GraphicsEngine::Update(double dt)
 {
 	/*
@@ -103,14 +111,15 @@ void GraphicsEngine::Update(double dt)
 	m_PassManager->Update(m_AfterCulling);
 	m_LightManager->Update(m_Lights);
 
+}
+void GraphicsEngine::EndUpdate(double dt)
+{
 	m_AfterCulling.clear();
 }
 
-void GraphicsEngine::UpdateTest(double dt)
-{
-	Culling();
-	m_Animator->Update(dt, m_AfterCulling);
-}
+
+
+
 
 bool GraphicsEngine::Finalize()
 {
@@ -167,12 +176,20 @@ void GraphicsEngine::BeginRender()
 void GraphicsEngine::Render()
 {
 	m_PassManager->Render();
+}
+
+void GraphicsEngine::ImguiBeginRender()
+{
 	BeginImGui();
+}
+
+void GraphicsEngine::ImguiEndRender()
+{
+	EndImGui();
 }
 
 void GraphicsEngine::EndRender()
 {
-	EndImGui();
 	m_Device->EndRender();
 }
 
@@ -602,3 +619,4 @@ void GraphicsEngine::DestroyImGui()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
+

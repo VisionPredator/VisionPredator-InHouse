@@ -58,8 +58,13 @@ private:
 
 
     // IRenderable을(를) 통해 상속됨
+    void BeginRenderUpdate(float deltaTime) override;
+    // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
 
+    void LateRenderUpdate(float deltaTime) override;
+
+    void EditorRenderUpdate(float deltaTime) override;
 
     // IStartable을(를) 통해 상속됨
     void Initialize() override;
@@ -71,7 +76,9 @@ private:
     void Finalize() override;
 
 
-    // IRenderable을(를) 통해 상속됨
-    void EditorRenderUpdate(float deltaTime) override;
+
+
+
+
 
 };

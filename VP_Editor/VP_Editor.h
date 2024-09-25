@@ -16,7 +16,8 @@ public:
 	std::vector<std::shared_ptr<IImGui>> m_ImGuis;
 	std::shared_ptr<EditorCamera> m_editorcamera;
 	void SetUnityDarkThemeColors();
-
+	void EditorRenderUpdate();
+	void ImguiRender();
 	bool m_IsEditorMode = true;
 	void OnPlayButton(std::any);
 	void OnStopButton(std::any);

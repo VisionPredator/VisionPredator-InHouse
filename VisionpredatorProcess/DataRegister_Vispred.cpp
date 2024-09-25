@@ -14,8 +14,9 @@ void VispredRegister::Register_Metadata()
 void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, PlayerComponent::HP, PlayerComponent::Sencitive, PlayerComponent::StaticFriction, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::Accel, PlayerComponent::CurrentFSM, PlayerComponent::AirControlPercent, PlayerComponent::FirePosition, PlayerComponent::GravityPower, PlayerComponent::HasGun);
+	META_ADD_COMP(PlayerComponent, PlayerComponent::PlayerCameraName, PlayerComponent::PlayerHandName, PlayerComponent::HP, PlayerComponent::Sencitive, PlayerComponent::StaticFriction, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::Accel, PlayerComponent::CurrentFSM, PlayerComponent::AirControlPercent, PlayerComponent::FirePosition, PlayerComponent::GravityPower, PlayerComponent::HasGun);
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
+	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::CurrentBullet, GunComponent::Bullets)
 }
 
 void VispredRegister::Register_EnumClass()

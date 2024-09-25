@@ -33,8 +33,9 @@ private:
 	const float m_location_threshold = 0.000001f;
 	const float m_rotation_threshold_degrees = 0.000001f;
 	// IRenderable을(를) 통해 상속됨
-    void RenderUpdate(float deltaTime) override;
-
+    void BeginRenderUpdate(float deltaTime) override;
+	void RenderUpdate(float deltaTime) override;
+	void LateRenderUpdate(float deltaTime) override;
 	// IRenderable을(를) 통해 상속됨
 	void EditorRenderUpdate(float deltaTime) override;
 
@@ -43,6 +44,9 @@ private:
 
 	VPMath::Vector3 ApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation);
 	VPMath::Vector3 DisApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation);
+
+
+
 
 
 

@@ -28,6 +28,14 @@ void CameraSystem::EditorRenderUpdate(float deltaTime)
 {
 }
 
+void CameraSystem::RenderUpdate(float deltaTime)
+{
+}
+
+void CameraSystem::LateRenderUpdate(float deltaTime)
+{
+}
+
 
 void CameraSystem::OnSetMainCamera(std::any data)
 {
@@ -86,7 +94,7 @@ void CameraSystem::CameraCalculation(CameraComponent& mainCamera)
 	mainCamera.OrthoProj = VPMath::Matrix::CreateOrthographic_LH(m_Width, m_Height, mainCamera.NearZ, mainCamera.FarZ);
 }
 
-void CameraSystem::RenderUpdate(float deltaTime)
+void CameraSystem::BeginRenderUpdate(float deltaTime)
 {
 	bool IsMainCameraExist = false;
 	///CameraComponent를 순회하면서 Main카메라에 해당하는 컴포넌틑를 찾아 찾을시 순회를 그만둔다.

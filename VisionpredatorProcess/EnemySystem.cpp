@@ -58,8 +58,7 @@ void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 	}
 	else if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
-	else if (1 == 2)
-		;
+ 
 
 	//enemycomp.CurrentFSM = VisPred::Game::EnemyState::WALK;
 }

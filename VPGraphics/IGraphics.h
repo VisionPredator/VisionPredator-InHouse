@@ -36,11 +36,15 @@ namespace Graphics
 
 
 		virtual bool Initialize() abstract;
+		virtual void CulingUpdate() abstract;
+		virtual void AnimationUpdate(double dt) abstract;
 		virtual void Update(double dt) abstract;
-		virtual void UpdateTest(double dt) abstract;
+		virtual void EndUpdate(double dt) abstract;
 		virtual bool Finalize() abstract;
 		virtual void BeginRender() abstract;
 		virtual void Render() abstract;
+		virtual void ImguiBeginRender() abstract;
+		virtual void ImguiEndRender() abstract;
 		virtual void EndRender() abstract;
 		virtual void OnResize(HWND hwnd) abstract;
 
@@ -98,7 +102,6 @@ namespace Graphics
 
 		///Editor 전용
 		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
-
 
 		///물리 전용
 		virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) abstract;

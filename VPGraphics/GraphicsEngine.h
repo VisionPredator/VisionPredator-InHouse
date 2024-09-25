@@ -40,10 +40,14 @@ public:
 
 	bool Initialize() override;
 	void Update(double dt) override;
-	void UpdateTest(double dt) override;
+	void CulingUpdate() override;
+	void AnimationUpdate(double dt) override;
+	void EndUpdate(double dt) override;
 	bool Finalize() override;
 	void BeginRender() override;
 	void Render() override;
+	void ImguiBeginRender() override;
+	void ImguiEndRender() override;
 	void EndRender() override;
 
 	void OnResize(HWND hwnd) override;
@@ -138,4 +142,5 @@ private:
 	void BeginImGui();
 	void EndImGui();
 	void DestroyImGui();
+
 };

@@ -248,7 +248,7 @@ void NavMeshSystem::Finalize()
 	//m_NavMeshData.reset();
 }
 
-void NavMeshSystem::RenderUpdate(float deltaTime)
+void NavMeshSystem::BeginRenderUpdate(float deltaTime)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	if (!navMeshdata)
@@ -279,7 +279,15 @@ void NavMeshSystem::RenderUpdate(float deltaTime)
 
 void NavMeshSystem::EditorRenderUpdate(float deltaTime)
 {
-	RenderUpdate(deltaTime);
+	BeginRenderUpdate(deltaTime);
+}
+
+void NavMeshSystem::RenderUpdate(float deltaTime)
+{
+}
+
+void NavMeshSystem::LateRenderUpdate(float deltaTime)
+{
 }
 
 

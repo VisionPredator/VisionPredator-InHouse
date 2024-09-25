@@ -10,10 +10,21 @@ void SocketSystem::Update(float deltaTime)
 
 }
 
+void SocketSystem::BeginRenderUpdate(float deltaTime)
+{
+
+}
+
+void SocketSystem::EditorRenderUpdate(float deltaTime)
+{
+}
+
 void SocketSystem::RenderUpdate(float deltaTime)
 {
 	COMPLOOP(SocketComponent, socketcomp)
 	{
+		if (!socketcomp.IsConneted)
+			continue;
 		if (socketcomp.PreviewConnectedEntity != socketcomp.ConnectedEntity)
 		{
 			socketcomp.PreviewConnectedEntity = socketcomp.ConnectedEntity;
@@ -51,9 +62,71 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		temptrnasform->SetWorldQuaternion(tempQuater);
 		temptrnasform->SetWorldScale(tempscale);
 	}
+
 	EventManager::GetInstance().ImmediateEvent("OnUpdate");
+
 }
 
-void SocketSystem::EditorRenderUpdate(float deltaTime)
+void SocketSystem::LateRenderUpdate(float deltaTime)
 {
+	COMPLOOP(SocketComponent, socketcomp)
+	{
+
+		UpdateSocketRenderData(*socketcomp.GetComponent<TransformComponent>());
+		//std::list<uint32_t> UpdateListID;
+
+		//UpdateListID.push_back(socketcomp.GetEntityID());
+
+		//if (socketcomp.HasComponent<Children>())
+		//{
+		//	auto childcomp = socketcomp.GetComponent<Children>();
+		//	for (auto childID : childcomp->ChildrenID)
+		//	{
+		//		UpdateListID.push_back(childID);
+		//	}
+		//}
+
+		//if (!socketcomp.HasComponent<MeshComponent>())
+		//	return;
+		//auto& meshComp = *socketcomp.GetComponent<MeshComponent>();
+		//const TransformComponent& transform = *socketcomp.GetComponent<TransformComponent>();
+		//bool IsChanged = false;
+		//auto renderdata = meshComp.Renderdata;
+
+		//renderdata->FBX = meshComp.FBX;
+		//renderdata->world = transform.WorldTransform;
+		//renderdata->rotation = transform.World_Rotation;
+		//renderdata->MaskingColor = meshComp.MaskColor;
+
+	}
+
 }
+
+void SocketSystem::UpdateSocketRenderData(TransformComponent& transformcomp)
+{
+	if (transformcomp.HasComponent<MeshComponent>())
+	{
+		auto& meshComp = *transformcomp.GetComponent<MeshComponent>();
+		bool IsChanged = false;
+		auto renderdata = meshComp.Renderdata;
+
+		renderdata->FBX = meshComp.FBX;
+		renderdata->world = transformcomp.WorldTransform;
+		renderdata->rotation = transformcomp.World_Rotation;
+		renderdata->MaskingColor = meshComp.MaskColor;
+	}
+
+	if (transformcomp.HasComponent<Children>())
+	{
+		auto childcomp = transformcomp.GetComponent<Children>();
+		for (auto entityid: childcomp->ChildrenID)
+		{
+
+			UpdateSocketRenderData(*GetSceneManager()->GetComponent<TransformComponent>(entityid));
+		}
+
+	}
+
+
+}
+

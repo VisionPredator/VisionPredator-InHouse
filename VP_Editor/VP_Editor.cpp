@@ -74,24 +74,60 @@ void VP_Editor::Render()
     if (m_IsEditorMode)
     {
         m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
+        EditorRenderUpdate();
+        VPEngine::BeginRender();
+        ImguiRender();
 
+
+        VPEngine::EndRender();
+        
+    }
+    else
+    {
+	VPEngine::RenderUpdate();
+    VPEngine::BeginRender();
+    ImguiRender();
+    VPEngine::EndRender();
     }
 
 
-	VPEngine::Render();
 
-	// Create a window called "Hello, world!" and append into it.
+	//// Create a window called "Hello, world!" and append into it.
 
-	ImGui::DockSpaceOverViewport();
+	//ImGui::DockSpaceOverViewport();
 
-	// Render
-	for (auto& ImGui : m_ImGuis)
-	{
-        //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))
-        //    continue;
-		ImGui->ImGuiRender();
-	}
+	//// Render
+	//for (auto& ImGui : m_ImGuis)
+	//{
+ //       //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))
+ //       //    continue;
+	//	ImGui->ImGuiRender();
+	//}
 }
+void VP_Editor::EditorRenderUpdate()
+{
+    m_SystemManager->EditorRenderSystemUpdate(m_DeltaTime);
+}
+
+void VP_Editor::ImguiRender()
+{
+   bool isUpdate = VPEngine::ImguiBeginRender();
+   if (isUpdate)
+   {
+       ImGui::DockSpaceOverViewport();
+
+       // Render
+       for (auto& ImGui : m_ImGuis)
+       {
+           //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))
+           //    continue;
+           ImGui->ImGuiRender();
+       }
+       VPEngine::ImguiEndRender();
+   }
+
+}
+
 
 void VP_Editor::SetUnityDarkThemeColors()
 {
@@ -181,6 +217,7 @@ void VP_Editor::SetUnityDarkThemeColors()
     style.ButtonTextAlign = ImVec2(0.5f, 0.5f);
     style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
 }
+
 
 void VP_Editor::OnPlayButton(std::any)
 {

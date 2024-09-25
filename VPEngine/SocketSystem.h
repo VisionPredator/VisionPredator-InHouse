@@ -9,9 +9,12 @@ public:
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
     // IRenderable을(를) 통해 상속됨
+    void BeginRenderUpdate(float deltaTime) override;
+    // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
 
-
+    void LateRenderUpdate(float deltaTime) override;
+    void UpdateSocketRenderData(TransformComponent& entity);
     // IRenderable을(를) 통해 상속됨
     void EditorRenderUpdate(float deltaTime) override;
 

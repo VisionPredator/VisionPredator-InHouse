@@ -207,7 +207,7 @@ void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
 
 
 
-void PhysicSystem::RenderUpdate(float deltaTime)
+void PhysicSystem::BeginRenderUpdate(float deltaTime)
 {
 	debug::OBBInfo obbInfo{};
 	debug::SphereInfo sphereInfo{};
@@ -399,7 +399,15 @@ VPMath::Vector3 PhysicSystem::DisApplyPivotAndOffset(const ControllerComponent& 
 	return adjustedLocation;
 }
 
+void PhysicSystem::RenderUpdate(float deltaTime)
+{
+}
+
+void PhysicSystem::LateRenderUpdate(float deltaTime)
+{
+}
+
 void PhysicSystem::EditorRenderUpdate(float deltaTime)
 {
-	RenderUpdate(deltaTime);
+	BeginRenderUpdate(deltaTime);
 }

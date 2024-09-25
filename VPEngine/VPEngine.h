@@ -30,6 +30,10 @@ protected:
 	void Addsystem();
 	virtual void Update();
 	virtual void Render();
+	virtual void RenderUpdate();
+	virtual void BeginRender();
+	virtual bool ImguiBeginRender();
+	virtual void ImguiEndRender();
 	virtual void EndRender();
 	void OnAddSystemLater(std::any);
 	TimeManager* m_TimeManager;

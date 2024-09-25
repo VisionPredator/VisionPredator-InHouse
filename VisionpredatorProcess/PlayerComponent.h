@@ -5,7 +5,11 @@ struct PlayerComponent :
     public Component
 {
     PlayerComponent();
-    VP_JSONBODY(PlayerComponent, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, HasGun, GravityPower, FirePosition)
+    VP_JSONBODY(PlayerComponent, PlayerHandName, PlayerCameraName, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, HasGun, GravityPower, FirePosition)
+    std::string PlayerHandName{};
+    std::string PlayerCameraName{};
+    uint32_t PlayerHandID{};
+    uint32_t PlayerCameraID{};
         uint32_t HP{};
     VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
     float Height{};
@@ -21,6 +25,7 @@ struct PlayerComponent :
     float AirControlPercent{};
     float GravityPower = 1.f;
     bool HasGun{};
+    uint32_t GunEntityID{};
     VisPred::Game::GunType ShootType{};
 
     /// <summary>
@@ -36,5 +41,6 @@ struct PlayerComponent :
     float SlideDuration =0.5f;
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
+
 };
 
