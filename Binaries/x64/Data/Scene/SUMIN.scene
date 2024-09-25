@@ -52,152 +52,11 @@
             ]
         },
         {
-            "EntityID": 2685103366,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Gun2222"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.9091068506240845
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": [
-                        99,
-                        101,
-                        114,
-                        98,
-                        101,
-                        114,
-                        117,
-                        115,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "LightMapIndex": 0.0,
-                    "LightMapOffset": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "LightMapScale": 0.0,
-                    "LightMapTiling": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "MaskColor": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                }
-            ]
-        },
-        {
-            "EntityID": 2797202730,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Gun2222"
-                },
-                {
-                    "ComponentID": 3774279003,
-                    "FBX": [
-                        99,
-                        101,
-                        114,
-                        98,
-                        101,
-                        114,
-                        117,
-                        115,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "LightMapIndex": 0.0,
-                    "LightMapOffset": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "LightMapScale": 0.0,
-                    "LightMapTiling": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "MaskColor": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": -0.9775919318199158
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                }
-            ]
-        },
-        {
             "EntityID": 1121785234,
             "Component": [
                 {
                     "ComponentID": 1365953231,
                     "Name": "Gun1"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
                 },
                 {
                     "ComponentID": 3774279003,
@@ -231,6 +90,147 @@
                         "y": 0.8765957355499268,
                         "z": 0.0
                     }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2797202730,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun2222"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -0.9775919318199158
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 2685103366,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun2222"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.9091068506240845
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
                 }
             ]
         },
@@ -240,6 +240,39 @@
                 {
                     "ComponentID": 1365953231,
                     "Name": "Gun2222"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 },
                 {
                     "ComponentID": 3400599862,
@@ -259,6 +292,15 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                }
+            ]
+        },
+        {
+            "EntityID": 2269375384,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun2222"
                 },
                 {
                     "ComponentID": 3774279003,
@@ -292,15 +334,6 @@
                         "y": 0.0,
                         "z": 0.0
                     }
-                }
-            ]
-        },
-        {
-            "EntityID": 2269375384,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Gun2222"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -320,6 +353,15 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                }
+            ]
+        },
+        {
+            "EntityID": 1335261450,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun2222"
                 },
                 {
                     "ComponentID": 3774279003,
@@ -353,15 +395,6 @@
                         "y": 0.0,
                         "z": 0.0
                     }
-                }
-            ]
-        },
-        {
-            "EntityID": 1335261450,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Gun2222"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -381,39 +414,151 @@
                         "y": 1.0,
                         "z": 1.0
                     }
+                }
+            ]
+        },
+        {
+            "EntityID": 2872003375,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Peng"
                 },
                 {
-                    "ComponentID": 3774279003,
-                    "FBX": [
-                        99,
-                        101,
-                        114,
-                        98,
-                        101,
-                        114,
-                        117,
-                        115,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "LightMapIndex": 0.0,
-                    "LightMapOffset": {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
                         "x": 0.0,
-                        "y": 0.0
+                        "y": 0.0,
+                        "z": 0.0
                     },
-                    "LightMapScale": 0.0,
-                    "LightMapTiling": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "MaskColor": {
+                    "Local_Quaternion": {
                         "w": 1.0,
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     }
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 18.299999237060547,
+                    "PosYPercent": 66.69999694824219,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 0.4740000069141388,
+                    "TexturePath": "",
+                    "TopPercent": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 1910387997,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "AMMOImage"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 88.4000015258789,
+                    "PosYPercent": 90.80000305175781,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "2323.png",
+                    "TopPercent": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 1959270025,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Entity2"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 0.9446808099746704,
+                        "z": 0.0
+                    },
+                    "ComponentID": 2892956045,
+                    "Layer": 0,
+                    "Pos": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "PosXPercent": 89.9000015258789,
+                    "PosYPercent": 88.30000305175781,
+                    "Scale": 1.0,
+                    "Text": [
+                        49,
+                        48
+                    ]
                 }
             ]
         }
@@ -436,5 +581,15 @@
             "y": 0.0,
             "z": 0.0
         }
+    },
+    "BuildSettings": {
+        "DivisionSizeXZ": 0.30000001192092896,
+        "DivisionSizeY": 0.20000000298023224,
+        "MaxAgentRadius": 0.6000000238418579,
+        "MaxCrowdNumber": 64,
+        "UseNavMesh": false,
+        "WalkableClimb": 0.20000000298023224,
+        "WalkableHeight": 0.30000001192092896,
+        "WalkableSlopeAngle": 30.0
     }
 }

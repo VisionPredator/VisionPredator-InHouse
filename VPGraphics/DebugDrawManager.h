@@ -2,7 +2,6 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 #include <queue>
-//#include <directxtk/CommonStates.h>
 #include <directxtk/PrimitiveBatch.h>
 #include <directxtk/Effects.h>
 #include <directxtk/VertexTypes.h>
@@ -54,7 +53,6 @@ private:
 	std::shared_ptr<DepthStencilState> m_DefaultDSS;
 	std::shared_ptr<RenderState> m_CullNoneRS;
 
-	//std::unique_ptr<CommonStates> m_States;
 	std::unique_ptr<BasicEffect> m_BatchEffect;
 	std::unique_ptr<PrimitiveBatch<VertexPositionColor>> m_Batch;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_BatchInputLayout;

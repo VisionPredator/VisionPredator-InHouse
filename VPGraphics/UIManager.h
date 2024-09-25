@@ -1,15 +1,16 @@
 #pragma once
 #include "vpGraphics.h"
 
+#include <SpriteBatch.h>
+#include <SpriteFont.h>
+
 /*
  * 게임 UI에 쓰일
  * Image 와 Font를 관리하는 매니저
  */
 
-// TODO: 글자 렌더링 기능을 마저 구현하자.
-
-class ImageObject;	// 비트맵 목록에서 텍스처 리소스 이름으로 파일을 찾아온다.
-// class TextObject;
+class TextObject;
+class ImageObject;
 
 class UIManager
 {
@@ -20,15 +21,13 @@ public:
 		, const std::shared_ptr<class ResourceManager>& resourceManager);
 	void Render();
 
-	// Images
 	void CreateImageObject(uint32_t entityID, const ui::ImageInfo& info);
 	void UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info);
 	void DeleteImageObject(uint32_t entityId);
 
-	// TODO: Create Font
-	//void CreateTextObject(uint32_t entityID, const ui::TextInfo& info);
-	//void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info);
-	//void DeleteTextObject(uint32_t entityId);
+	void CreateTextObject(uint32_t entityID, const ui::TextInfo& info);
+	void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info);
+	void DeleteTextObject(uint32_t entityId);
 
 private: 
 	void DrawAllImages();
@@ -41,4 +40,9 @@ private:
 	std::vector<std::shared_ptr<ImageObject>> m_Images;
 
 	// TODO: Font
+	std::vector<std::shared_ptr<TextObject>> m_Texts;
+
+	// Sprite Font
+	std::unique_ptr<DirectX::SpriteBatch> m_SpriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> m_SpriteFont;
 };

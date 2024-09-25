@@ -11,29 +11,29 @@
 #include "Material.h"
 #include "Slot.h"
 
-ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
-{
-	m_Device = device;
-	m_ResourceManager = resourceManager;
-
-	const uint32_t width = m_Device.lock()->GetWndWidth();
-	const uint32_t height = m_Device.lock()->GetWndHeight();
-
-	m_ObjectMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"ObjectMaskRTV", RenderTargetViewType::ObjectMask, width, height).lock();
-	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
-	m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
-
-	D3D_SHADER_MACRO macro[] =
-	{
-		{"SKINNING",""}, // 매크로 이름과 값을 설정
-		{nullptr, nullptr}    // 배열의 끝을 나타내기 위해 nullptr로 끝낸다.
-	};
-	m_ObjectMaskSkeletalMeshVS = m_ResourceManager.lock()->Create<VertexShader>(L"ObjectMaskSkeletalMeshVS", L"ObjectMaskVS", "main", macro).lock();
-	m_ObjectMaskStaticMeshVS = m_ResourceManager.lock()->Create<VertexShader>(L"ObjectMaskStaticMeshVS", L"ObjectMaskVS", "main").lock();
-	m_ObjectMaskPS = m_ResourceManager.lock()->Create<PixelShader>(L"ObjectMask", L"ObjectMask").lock();
-
-	m_MaskColorCB = std::make_shared<ConstantBuffer<MaskColorCB>>(device, ConstantBufferType::Default);
-}
+//ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
+//{
+//	m_Device = device;
+//	m_ResourceManager = resourceManager;
+//
+//	const uint32_t width = m_Device.lock()->GetWndWidth();
+//	const uint32_t height = m_Device.lock()->GetWndHeight();
+//
+//	m_ObjectMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"ObjectMaskRTV", RenderTargetViewType::ObjectMask, width, height).lock();
+//	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
+//	m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
+//
+//	D3D_SHADER_MACRO macro[] =
+//	{
+//		{"SKINNING",""}, // 매크로 이름과 값을 설정
+//		{nullptr, nullptr}    // 배열의 끝을 나타내기 위해 nullptr로 끝낸다.
+//	};
+//	m_ObjectMaskSkeletalMeshVS = m_ResourceManager.lock()->Create<VertexShader>(L"ObjectMaskSkeletalMeshVS", L"ObjectMaskVS", "main", macro).lock();
+//	m_ObjectMaskStaticMeshVS = m_ResourceManager.lock()->Create<VertexShader>(L"ObjectMaskStaticMeshVS", L"ObjectMaskVS", "main").lock();
+//	m_ObjectMaskPS = m_ResourceManager.lock()->Create<PixelShader>(L"ObjectMask", L"ObjectMask").lock();
+//
+//	m_MaskColorCB = std::make_shared<ConstantBuffer<MaskColorCB>>(device, ConstantBufferType::Default);
+//}
 
 void ObjectMaskPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
@@ -98,12 +98,12 @@ void ObjectMaskPass::Render()
 	for (const auto& curData : m_RenderList)
 	{
 		// 마스킹 색상을 가지고 있는 오브젝트만 마스킹한다.
-		if (curData->MaskingColor.A() == 255)
+		if (curData->MaskingColor.A() == 0.f)
 			continue;
 
-		if (curData->MaskingColor.R() == 0 && 
-			curData->MaskingColor.G() == 0 &&
-			curData->MaskingColor.B() == 0)
+		if (curData->MaskingColor.R() == 0.f && 
+			curData->MaskingColor.G() == 0.f &&
+			curData->MaskingColor.B() == 0.f)
 			continue;
 
 		MaskColorCB maskColor;

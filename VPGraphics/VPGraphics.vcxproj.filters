@@ -299,6 +299,9 @@
     <ClInclude Include="VPOutLinePass.h">
       <Filter>Pass\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="TextObject.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -472,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="VPOutLinePass.cpp">
       <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextObject.cpp">
+      <Filter>GraphicsEngine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

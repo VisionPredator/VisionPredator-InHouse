@@ -121,5 +121,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
 	META_ADD_COMP(ImageComponent, ImageComponent::RenderMode, ImageComponent::Billboard, ImageComponent::TexturePath, ImageComponent::PosXPercent, ImageComponent::PosYPercent, ImageComponent::Scale, ImageComponent::Layer, ImageComponent::Color, ImageComponent::LeftPercent, ImageComponent::RightPercent, ImageComponent::TopPercent, ImageComponent::BottomPercent);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
+	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Layer);
 }
 

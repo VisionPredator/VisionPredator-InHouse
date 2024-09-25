@@ -192,9 +192,6 @@ void ImageObject::UpdateBuffers()
 		m_Transform.Projection = cameraCB->m_struct.proj;
 		m_ImageTransformCB->Update(m_Transform);
 
-		if (m_PrevCanvasWidth == m_CanvasWidth && m_PrevCanvasHeight == m_CanvasHeight)
-			return;
-
 		float sizeX = static_cast<float>(m_CanvasWidth) * 0.001f;
 		float sizeY = static_cast<float>(m_CanvasHeight) * 0.001f;
 
@@ -208,6 +205,12 @@ void ImageObject::UpdateBuffers()
 		m_CanvasWidth = m_Device->GetWndWidth();
 		m_CanvasHeight = m_Device->GetWndHeight();
 
+		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+		m_Transform.World = VPMath::Matrix::Identity;
+		m_Transform.View = VPMath::Matrix::Identity;
+		m_Transform.Projection = cameraCB->m_struct.orthoProj;	// 정사영 투영 행렬
+		m_ImageTransformCB->Update(m_Transform);
+
 		// 이미지의 정보를 이전과 비교하여 달라지지 않았다면 버퍼를 업데이트하지 않는다.
 		// 이전 프레임과 비교하여 위치가 변하지 않았다면
 		// 동적 정점 버퍼를 바꾸지 않기 때문에 성능의 향상을 꾀할 수 있다.
@@ -216,12 +219,6 @@ void ImageObject::UpdateBuffers()
 			&& (m_Info.Scale == m_PrevScale)
 			&& (m_CanvasWidth == m_PrevCanvasWidth) && (m_CanvasHeight == m_PrevCanvasHeight))
 			return;
-
-		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
-		m_Transform.World = VPMath::Matrix::Identity;
-		m_Transform.View = VPMath::Matrix::Identity;
-		m_Transform.Projection = cameraCB->m_struct.orthoProj;	// 정사영 투영 행렬
-		m_ImageTransformCB->Update(m_Transform);
 
 		// 퍼센트 기반의 값을 비율로 변환 (0.0 ~ 1.0)
 		const float relPosX = m_Info.PosXPercent / 100.0f;  // 1%는 0.01로 변환
