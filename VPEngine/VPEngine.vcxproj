@@ -196,7 +196,8 @@
     <ClInclude Include="SkinnedMeshSystem.h" />
     <ClInclude Include="SocketComponent.h" />
     <ClInclude Include="SocketSystem.h" />
-    <ClInclude Include="Sprite2DComponent.h" />
+    <ClInclude Include="ImageComponent.h" />
+    <ClInclude Include="TextComponent.h" />
     <ClInclude Include="UISystem.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
@@ -244,6 +245,7 @@
     <ClCompile Include="NavMeshData.cpp" />
     <ClCompile Include="NavStructs.cpp" />
     <ClCompile Include="NavMeshSystem.cpp" />
+    <ClCompile Include="ParticleComponent.cpp" />
     <ClCompile Include="PhysicSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="pch.cpp">

@@ -54,7 +54,7 @@ namespace Graphics
 
 		///추가해야할거
 		//엔티티의 데이터가 업데이트 되면 그값을 renderlist의 값에 갱신 시켜줘야하는 함수 근데 이게 맞아? 매번 엔티티마다 이함수를 부를거야? 그건 좀..
-		virtual void UpdateModel(uint32_t EntityID)abstract;
+		virtual void UpdateModel(uint32_t EntityID) abstract;
 		
 		//카메라의 상태 업데이트
 		virtual void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) abstract;
@@ -99,6 +99,9 @@ namespace Graphics
 		virtual void CreateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
 		virtual void UpdateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;
 		virtual void DeleteImageObject(uint32_t id) abstract;
+		virtual void CreateTextObject(uint32_t entityID, const ui::TextInfo& info) abstract;
+		virtual void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info) abstract;
+		virtual void DeleteTextObject(uint32_t entityId) abstract;
 
 		///Editor 전용
 		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;

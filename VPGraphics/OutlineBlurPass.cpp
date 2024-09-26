@@ -84,6 +84,10 @@ void OutlineBlurPass::Render()
 	m_Device->Context()->PSSetShaderResources(0, 1, srv->GetAddress());
 	m_Device->Context()->PSSetShaderResources(1, 1, srv2->GetAddress());
 	m_Device->Context()->DrawIndexed(6, 0, 0);
+
+	ID3D11ShaderResourceView* tempShaderResource = nullptr;
+	m_Device->Context()->PSSetShaderResources(0, 1, &tempShaderResource);
+	m_Device->Context()->PSSetShaderResources(1, 1, &tempShaderResource);
 }
 
 void OutlineBlurPass::OnResize()

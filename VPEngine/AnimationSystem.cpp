@@ -20,11 +20,15 @@ void AnimationSystem::BeginRenderUpdate(float deltaTime)
 			{
 				double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
 
-				if (aniComp.isLoop)
+				if (aniComp.duration > curDuration)
 				{
-					if (aniComp.duration > curDuration)
+					if (aniComp.isLoop)
 					{
 						aniComp.duration -= curDuration;
+					}
+					else
+					{
+						aniComp.duration = curDuration;
 					}
 				}
 				else
@@ -70,11 +74,15 @@ void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
 	if (GetSceneManager()->HasComponent<AnimationComponent>(entityid))
 	{
 		auto aniComp = GetSceneManager()->GetComponent<AnimationComponent>(entityid);
-		aniComp->preAni = aniComp->curAni;
-		aniComp->preDuration = aniComp->duration;
 
-		aniComp->curAni = index;
-		aniComp->duration = 0.0f;
+		if (aniComp->curAni != index)	//애니메이션이 다를때만 변경 같으면 그대로
+		{
+			aniComp->preAni = aniComp->curAni;
+			aniComp->preDuration = aniComp->duration;
+
+			aniComp->curAni = index;
+			aniComp->duration = 0.0f;
+		}
 	}
 }
 

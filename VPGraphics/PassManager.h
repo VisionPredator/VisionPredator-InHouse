@@ -23,7 +23,7 @@ class DebugDrawManager;
 class UIManager;
 class GeoMetryPass;
 class VPOutLinePass;
-class FadeInFadeOut;
+class RimLight;
 
 class PassManager
 {
@@ -42,8 +42,9 @@ private:
 	void DrawIMGUI();
 
 private:
-	//std::unordered_map<PassState,std::shared_ptr<RenderPass>> m_Passes;
-	std::vector<std::shared_ptr<RenderPass>> m_Passes;
+	std::vector<std::shared_ptr<RenderPass>> m_BasePasses;
+	std::vector<std::shared_ptr<RenderPass>> m_VPPasses;	//vp 상태일떄만 쓰는 패스
+	std::vector<std::shared_ptr<RenderPass>> m_IndepentCulling;
 
 	std::shared_ptr<DeferredPass> m_DeferredPass;
 	std::shared_ptr<TransparencyPass> m_TransparencyPass;
@@ -56,7 +57,7 @@ private:
 	std::shared_ptr<OutlineAddPass> m_OutlineAddPass;
 	std::shared_ptr<GeoMetryPass> m_GeometryPass;
 	std::shared_ptr<VPOutLinePass> m_VPOutLinePass;
-	std::shared_ptr<FadeInFadeOut> m_FadeInFadeOut;
+	std::shared_ptr<RimLight> m_RimLight;
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;

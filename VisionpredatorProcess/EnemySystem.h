@@ -13,10 +13,13 @@ public:
 
 #pragma region FSM Calculate
 	void Calculate_FSM(EnemyComponent& enemycomp);
-	void Calculate_Idle(EnemyComponent& enemycomp);
-	void Calculate_Die(EnemyComponent& enemycomp);
 	void Calculate_Attack(EnemyComponent& enemycomp);
-	void Calculate_Move(EnemyComponent& enemycomp);
+	void Calculate_Idle(EnemyComponent& enemycomp);
+	void Calculate_Chase(EnemyComponent& enemycomp);
+	void Calculate_Walk(EnemyComponent& enemycomp);
+	void Calculate_Die(EnemyComponent& enemycomp);
+	void Calculate_Attacked(EnemyComponent& enemycomp);
+	void Calculate_BackWalk(EnemyComponent& enemycomp);
 	void Calculate_Destroy(EnemyComponent& enemycomp);
 #pragma endregion
 
@@ -35,6 +38,10 @@ public:
 	void Shoot_ShotGun(EnemyComponent& enemycomp);
 	void Shoot_Rifle(EnemyComponent& enemycomp);
 #pragma endregion
+
+
+private:
+	void Die(EnemyComponent& enemycomp);
 
 };
 

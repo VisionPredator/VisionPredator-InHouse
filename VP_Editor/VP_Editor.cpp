@@ -77,10 +77,7 @@ void VP_Editor::Render()
         EditorRenderUpdate();
         VPEngine::BeginRender();
         ImguiRender();
-
-
         VPEngine::EndRender();
-        
     }
     else
     {
@@ -89,20 +86,6 @@ void VP_Editor::Render()
     ImguiRender();
     VPEngine::EndRender();
     }
-
-
-
-	//// Create a window called "Hello, world!" and append into it.
-
-	//ImGui::DockSpaceOverViewport();
-
-	//// Render
-	//for (auto& ImGui : m_ImGuis)
-	//{
- //       //if (dynamic_cast<Hierarchy*>(ImGui)|| dynamic_cast<EditorViewPort*>(ImGui))
- //       //    continue;
-	//	ImGui->ImGuiRender();
-	//}
 }
 void VP_Editor::EditorRenderUpdate()
 {

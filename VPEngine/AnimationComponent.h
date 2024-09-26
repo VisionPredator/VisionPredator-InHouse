@@ -9,8 +9,8 @@ struct AnimationComponent : public Component
 
 	std::wstring FBX = L"";
 
-	int curAni = 5;
-	int preAni = 5;
+	int curAni = 1;	//기본 IDLE은 1
+	int preAni = 1;	//기본 IDLE은 1
 
 	float duration = 0;	//애니메이션 재생시간
 	float preDuration = 0;

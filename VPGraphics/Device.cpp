@@ -66,6 +66,7 @@ void Device::Initialize(HWND hWnd)
 	HRESULT result;
 	uint32_t createDeviceFlags = 0;
 
+	createDeviceFlags |= D3D11_CREATE_DEVICE_BGRA_SUPPORT;	// Direct2D와 Direct3D 장치를 공유하기 위한 플래그
 #if defined(DEBUG) || defined(_DEBUG)
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif

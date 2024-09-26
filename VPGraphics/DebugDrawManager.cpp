@@ -11,50 +11,55 @@ using namespace VPMath;
 
 void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
-	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(device->Context());
-	m_BatchEffect = std::make_unique<BasicEffect>(device->Get());
-	m_BatchEffect->SetVertexColorEnabled(true);
+    m_AlphaBlendBS = resourceManager->Get<BlendState>(L"AlphaBlend").lock();
+    m_DefaultDSS = resourceManager->Get<DepthStencilState>(L"DefaultDSS").lock();
+    m_CullNoneRS = std::make_shared<RenderState>(device, RasterizerStateType::CullNone);
 
-	void const* shaderByteCode;
-	size_t byteCodeLength;
+    m_Batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(device->Context());
+    m_BatchEffect = std::make_unique<BasicEffect>(device->Get());
+    m_BatchEffect->SetVertexColorEnabled(true);
 
-	m_BatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+    void const* shaderByteCode;
+    size_t byteCodeLength;
 
-	HR_CHECK(device->Get()->CreateInputLayout(VertexPositionColor::InputElements,
-		VertexPositionColor::InputElementCount,
-		shaderByteCode, byteCodeLength,
-		&m_BatchInputLayout));
+    m_BatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+
+    HR_CHECK(device->Get()->CreateInputLayout(VertexPositionColor::InputElements,
+        VertexPositionColor::InputElementCount,
+        shaderByteCode, byteCodeLength,
+        &m_BatchInputLayout));
 }
 
 void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view, const VPMath::Matrix proj)
 {
-	/*device->Context()->OMSetBlendState(m_States->AlphaBlend(), nullptr, 0xFFFFFFFF);
-	device->Context()->OMSetDepthStencilState(m_States->DepthDefault(), 0);
-	device->Context()->RSSetState(m_States->CullNone());*/
 
-	m_BatchEffect->SetView(view);
-	m_BatchEffect->SetProjection(proj);
-	m_BatchEffect->Apply(device->Context());    //최종 멤버들을 적용한다 먼저 해버리면 이전 프레임의 값이 적용된다
+    device->Context()->OMSetBlendState(m_AlphaBlendBS->GetState().Get(), nullptr, 0xFFFFFFFF);
+	device->Context()->OMSetDepthStencilState(m_DefaultDSS->GetState().Get(), 0);
+	device->Context()->RSSetState(m_CullNoneRS->Get());
+    
+    m_BatchEffect->SetView(view);
+    m_BatchEffect->SetProjection(proj);
+    m_BatchEffect->Apply(device->Context());    //최종 멤버들을 적용한다 먼저 해버리면 이전 프레임의 값이 적용된다
 
-	device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
+    device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
 
-	m_Batch->Begin();
+    m_Batch->Begin();
 
-	while (!m_SphereInfos.empty()) { Draw(m_SphereInfos.front()); m_SphereInfos.pop(); }
-	while (!m_BoxInfos.empty()) { Draw(m_BoxInfos.front()); m_BoxInfos.pop(); }
-	while (!m_OBBInfos.empty()) { Draw(m_OBBInfos.front()); m_OBBInfos.pop(); }
-	while (!m_FrustumInfos.empty()) { Draw(m_FrustumInfos.front()); m_FrustumInfos.pop(); }
-	while (!m_GridInfos.empty()) { Draw(m_GridInfos.front()); m_GridInfos.pop(); }
-	while (!m_RayInfos.empty()) { Draw(m_RayInfos.front()); m_RayInfos.pop(); }
-	while (!m_TriangleInfos.empty()) { Draw(m_TriangleInfos.front()); m_TriangleInfos.pop(); }
-	while (!m_QuadInfos.empty()) { Draw(m_QuadInfos.front()); m_QuadInfos.pop(); }
-	while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
+    while (!m_SphereInfos.empty()) { Draw(m_SphereInfos.front()); m_SphereInfos.pop();}
+    while (!m_BoxInfos.empty()) { Draw(m_BoxInfos.front()); m_BoxInfos.pop(); }
+    while (!m_OBBInfos.empty()) { Draw(m_OBBInfos.front()); m_OBBInfos.pop(); }
+    while (!m_FrustumInfos.empty()) { Draw(m_FrustumInfos.front()); m_FrustumInfos.pop(); }
+    while (!m_GridInfos.empty()) { Draw(m_GridInfos.front()); m_GridInfos.pop(); }
+    while (!m_RayInfos.empty()) { Draw(m_RayInfos.front()); m_RayInfos.pop(); }
+    while (!m_TriangleInfos.empty()) { Draw(m_TriangleInfos.front()); m_TriangleInfos.pop(); }
+    while (!m_QuadInfos.empty()) { Draw(m_QuadInfos.front()); m_QuadInfos.pop(); }
+    while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
 
-	m_Batch->End();
+    m_Batch->End();
 
-	device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
-	device->Context()->OMSetDepthStencilState(nullptr, 0);
-	device->Context()->RSSetState(nullptr);
+    device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+    device->Context()->OMSetDepthStencilState(nullptr, 0);
+    device->Context()->RSSetState(nullptr);
 }
 
 void DebugDrawManager::Draw(const debug::SphereInfo& info)

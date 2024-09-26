@@ -2,10 +2,19 @@
 #include "Common.hlsli"
 
 
+float3x3 ExtractRotationMatrix(float4x4 m)
+{
+    return float3x3(
+        m[0].xyz, // X축
+        m[1].xyz, // Y축
+        m[2].xyz   // Z축
+    );
+}
+
 VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
-    
+        
     output.posWorld = mul(input.pos, gWorld);
     output.pos = mul(output.posWorld, gWorldViewProj);
     output.color = input.color;
@@ -14,23 +23,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.bitangent = input.bitangent;
     output.tex = input.tex;
     output.lightuv = input.lightuv;
-    /*
-    */
-    if (useNEOL.x > 0) 
-    {
-        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
         
-        //방향 vector
-        float3 vTangent = normalize(mul(float4(input.tangent.xyz, 0), meshWorld));
-        float3 vBitangent = normalize(mul(float4(input.bitangent.xyz, 0), meshWorld));
-        float3 vNormal = normalize(mul(float4(input.normal.xyz, 0), meshWorld));
-                        
-        //색상 표현을 위해 점으로 저장 w == 1
-        output.normal = float4(vNormal.xyz, 1);        
-        output.tangent = float4(vTangent.xyz, 0);
-        output.bitangent = float4(vBitangent.xyz, 0);        
-    }
-    
     if(useNEOL.w > 0)
     {
         float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.x;
@@ -44,7 +37,7 @@ VS_OUTPUT main(VS_INPUT input)
         output.lightuv = uv;
         //output.LightMap = (gLightMap.Sample(samLinear, uv));
     }
-    
+       
     
 #ifdef SKINNING
     int index[8];
@@ -86,7 +79,30 @@ VS_OUTPUT main(VS_INPUT input)
     output.posWorld = mul(mul(input.pos, skinning), gWorld);
     
     output.pos = mul(output.posWorld, gWorldViewProj);
+    
+    //float3x3 rot = ExtractRotationMatrix(skinning); 
+    //
+    //output.normal.xyz = normalize(mul(input.normal.xyz, rot));
+    //output.tangent.xyz = normalize(mul(input.tangent.xyz, rot));
+    //output.bitangent.xyz = normalize(mul(input.bitangent.xyz, rot));
 #endif     
+    
+    
+
+    if (useNEOL.x > 0)
+    {
+        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
+        
+        //방향 vector
+        float3 vTangent = normalize(mul(float4(output.tangent.xyz, 0), meshWorld));
+        float3 vBitangent = normalize(mul(float4(output.bitangent.xyz, 0), meshWorld));
+        float3 vNormal = normalize(mul(float4(output.normal.xyz, 0), meshWorld));
+                        
+        //색상 표현을 위해 점으로 저장 w == 1
+        output.normal = float4(vNormal.xyz, 1);
+        output.tangent = float4(vTangent.xyz, 0);
+        output.bitangent = float4(vBitangent.xyz, 0);
+    }
     
     return output;
 }

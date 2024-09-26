@@ -38,8 +38,13 @@ void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
 		return;
 	auto cameratransform = posEntity->GetComponent<TransformComponent>();
 	auto front = cameratransform->FrontVector;
-	uint32_t racastedEntityID = m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 500);
+	uint32_t racastedEntityID = m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 100);
+	auto gunentity = GetSceneManager()->GetEntity(racastedEntityID);
+	if (gunentity && gunentity->HasComponent<GunComponent>())
+	{
+		gunentity->GetComponent<MeshComponent>()->MaskColor = {255,0,0,255};
 
+	}
 	if (INPUTKEYDOWN(KEYBOARDKEY::R))
 	{
 		auto posEntity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
@@ -49,7 +54,7 @@ void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
 			return;
 		auto cameratransform = posEntity->GetComponent<TransformComponent>();
 		auto front = cameratransform->FrontVector;
-		std::cout << m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 500);
+		std::cout << m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 100);
 		GrabGun(playercomp, racastedEntityID);
 	}
 
