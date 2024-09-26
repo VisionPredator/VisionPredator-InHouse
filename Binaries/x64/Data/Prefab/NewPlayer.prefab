@@ -1,0 +1,216 @@
+[
+    {
+        "EntityID": 673789209,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "NewPlayer"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": -36.71483612060547,
+                    "y": 20.0,
+                    "z": 49.5970573425293
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Acceleration": 30.0,
+                "CapsuleControllerinfo": {
+                    "Info": {
+                        "LayerNumber": 3,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 0
+                    },
+                    "contactOffset": 0.0010000000474974513,
+                    "height": 10.0,
+                    "position": {
+                        "x": -36.71483612060547,
+                        "y": 20.0,
+                        "z": 49.5970573425293
+                    },
+                    "radius": 5.0,
+                    "slopeLimit": 0.5,
+                    "stepOffset": 0.5
+                },
+                "ComponentID": 3341766812,
+                "Contollerinfo": {
+                    "LayerNumber": 3,
+                    "LocalOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Pivot": 0
+                },
+                "DynamicFriction": 0.10000000149011612,
+                "GravityWeight": 9.8100004196167,
+                "JumpSpeed": 11.0,
+                "JumpXZAcceleration": 1.0,
+                "JumpXZDeceleration": 0.009999999776482582,
+                "MaxSpeed": 10.0,
+                "StaticFriction": 0.4000000059604645
+            },
+            {
+                "Accel": 200.0,
+                "AirControlPercent": 40.0,
+                "ComponentID": 4183631247,
+                "CurrentFSM": 0,
+                "DynamicFriction": 0.0,
+                "FirePosition": "",
+                "GravityPower": 1.0,
+                "HP": 0,
+                "HasGun": false,
+                "JumpFoce": 10.0,
+                "PlayerCameraName": "PlayerCamera",
+                "PlayerHandName": "PlayerHand",
+                "RunSpeed": 80.0,
+                "Sencitive": 0.10000000149011612,
+                "SlideDisTance": 0.0,
+                "StaticFriction": 5.0,
+                "WalkSpeed": 40.0
+            },
+            {
+                "ChildrenID": [
+                    82098914
+                ],
+                "ComponentID": 188567026
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "Player"
+            }
+        ]
+    },
+    {
+        "EntityID": 82098914,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "PlayerCamera"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 6.0,
+                    "z": 5.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 3575595261,
+                "FOV": 0.7850000262260437,
+                "FarZ": 1000.0,
+                "IsMain": true,
+                "NearZ": 0.0010000000474974513
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 673789209
+            },
+            {
+                "ChildrenID": [
+                    4227205418
+                ],
+                "ComponentID": 188567026
+            }
+        ]
+    },
+    {
+        "EntityID": 4227205418,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "PlayerHand"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": -10.5,
+                    "z": 0.3855781555175781
+                },
+                "Local_Quaternion": {
+                    "w": -1.192093321833454e-07,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "Local_Scale": {
+                    "x": 0.9999995231628418,
+                    "y": 1.0,
+                    "z": 0.9999995231628418
+                }
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "PlayerHand"
+            },
+            {
+                "ComponentID": 2778840952,
+                "FBX": [
+                    112,
+                    108,
+                    97,
+                    121,
+                    101,
+                    114,
+                    95,
+                    46,
+                    102,
+                    98,
+                    120
+                ],
+                "animationList": [],
+                "speed": 1.0,
+                "transitionDuration": 0.20000000298023224
+            },
+            {
+                "ComponentID": 1142749570,
+                "FBX": [
+                    112,
+                    108,
+                    97,
+                    121,
+                    101,
+                    114,
+                    95,
+                    46,
+                    102,
+                    98,
+                    120
+                ]
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 82098914
+            }
+        ]
+    }
+]

@@ -3,40 +3,12 @@
 
 AnimationSystem::AnimationSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {
-	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&AnimationSystem::OnAddedComponent));
-	EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&AnimationSystem::OnReleasedComponent));
 	EventManager::GetInstance().Subscribe("OnChangeAnimation", CreateSubscriber(&AnimationSystem::OnChangeAnimation));
 }
 
-void AnimationSystem::OnAddedComponent(std::any data)
+
+void AnimationSystem::BeginRenderUpdate(float deltaTime)
 {
-	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<AnimationComponent>())
-	{
-		AnimationComponent* aniComp = static_cast<AnimationComponent*>(comp);
-		return;
-	}
-}
-
-void AnimationSystem::OnReleasedComponent(std::any data)
-{
-	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<AnimationComponent>())
-	{
-		AnimationComponent* aniComp = static_cast<AnimationComponent*>(comp);
-
-		return;
-	}
-}
-
-void AnimationSystem::RenderUpdate(float deltaTime)
-{
-
-}
-
-void AnimationSystem::Update(float deltaTime)
-{
-
 	for (AnimationComponent& aniComp : COMPITER(AnimationComponent))
 	{
 		if (!aniComp.FBX.empty())
@@ -55,6 +27,13 @@ void AnimationSystem::Update(float deltaTime)
 						aniComp.duration -= curDuration;
 					}
 					else
+					{
+						aniComp.duration = curDuration;
+					}
+				}
+				else
+				{
+					if (aniComp.duration > curDuration)
 					{
 						aniComp.duration = curDuration;
 					}
@@ -83,7 +62,9 @@ void AnimationSystem::Update(float deltaTime)
 			skinned->Renderdata->transitionDuration = aniComp.transitionDuration;
 		}
 	}
+
 }
+
 
 
 void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
@@ -104,3 +85,18 @@ void AnimationSystem::OnChangeAnimation(std::any pairdata_entityid_AniIndex)
 		}
 	}
 }
+
+void AnimationSystem::EditorRenderUpdate(float deltaTime)
+{
+
+}
+
+void AnimationSystem::RenderUpdate(float deltaTime)
+{
+	
+}
+
+void AnimationSystem::LateRenderUpdate(float deltaTime)
+{
+}
+

@@ -151,7 +151,7 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 		RootNode->m_WorldInverse = RootNode->m_World.Invert();
 	}
 
-	if (RootNode->name == L"mixamorig:LeftFoot")//이름 바꾸기
+	if (RootNode->name == L"DEF-palm.02.R")//이름 바꾸기
 	{
 		socket = RootNode->m_World;
 	}

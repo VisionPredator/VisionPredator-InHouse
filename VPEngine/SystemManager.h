@@ -12,7 +12,11 @@
 		int m_FixedFrame = 60;
 		float m_PhysicDeltatime = 1.f / 60.f;
 		float m_FixedDeltatime = 1.f / 60.f;
-
+		float m_RenderFPS = 60.f;
+		float m_RenderDeltatime{};
+		float m_EditorRenderDeltatime{};
+		float m_RenderProgressTime{};
+		float m_EditorRenderProgressTime{};
 	public:
 		SystemManager();
 		~SystemManager();
@@ -21,10 +25,22 @@
 
 		void OnCollisionEnter(std::any pair);
 		void OnCollisionExit(std::any pair);
+		void OnAddedComponent(std::any data);
+		void OnReleasedComponent(std::any data);
 		void FixedUpdate(float deltatime);
+		void RenderSystemUpdate(float deltatime);
+		void BeginRender();
+		bool ImguiBeginRender();
+		void ImguiEndRender();
+		void EndRender();
+
+		void EditorRenderSystemUpdate(float deltatime);
+		void BeginRenderUpdate(float deltatime);
 		void RenderUpdate(float deltatime);
+		void LateRenderUpdate(float deltatime);
+		void EditorRenderUpdate(float deltatime);
 		void LateUpdate(float deltatime);
-		void PhysicUpdatable(float deltatime);
+		void PhysicUpdate(float deltatime);
 		template <typename T>
 		bool IsSystemAdded() const
 		{
@@ -81,6 +97,10 @@
 			{
 				m_Contactable.push_back(system);
 			}
+			if constexpr (std::is_base_of_v<ICompAddable, T>)
+			{
+				m_CompAddable.push_back(system);
+			}
 
 			return static_cast<T*>(system);
 		}
@@ -133,6 +153,12 @@
 				auto it = std::find_if(m_Contactable.begin(), m_Contactable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
 				if (it != m_Contactable.end())
 					m_Contactable.erase(it);
+			}
+			if constexpr (std::is_base_of_v<ICompAddable, T>)
+			{
+				auto it = std::find_if(m_CompAddable.begin(), m_CompAddable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_CompAddable.end())
+					m_CompAddable.erase(it);
 			}
 
 
@@ -188,9 +214,10 @@
 		std::vector<IPhysicable*> m_PhysicUpdatable;
 		std::vector<IFixedUpdatable*> m_FixedUpdatables;
 		std::vector<IUpdatable*> m_Updatables;
+		std::vector<ILateUpdatable*> m_LateUpdatable;
 		std::vector<IRenderable*> m_Renderables;
 		std::vector<IStartable*> m_Startables;
-		std::vector<ILateUpdatable*> m_LateUpdatable;
 		std::vector<IContactable*> m_Contactable;
+		std::vector<ICompAddable*> m_CompAddable;
 	};
 

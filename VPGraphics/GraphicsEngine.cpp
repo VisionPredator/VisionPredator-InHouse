@@ -89,7 +89,15 @@ bool GraphicsEngine::Initialize()
 
 	return true;
 }
+void GraphicsEngine::CulingUpdate()
+{
+	Culling();
+}
+void GraphicsEngine::AnimationUpdate(double dt)
+{
+	m_Animator->Update(dt, m_AfterCulling);
 
+}
 void GraphicsEngine::Update(double dt)
 {
 	/*
@@ -98,13 +106,20 @@ void GraphicsEngine::Update(double dt)
 	m_LightManager->Update(m_Lights);
 	*/
 
-	Culling();
-	m_Animator->Update(dt, m_AfterCulling);
+	//Culling();
+	//m_Animator->Update(dt, m_AfterCulling);
 	m_PassManager->Update(m_AfterCulling);
 	m_LightManager->Update(m_Lights);
 
+}
+void GraphicsEngine::EndUpdate(double dt)
+{
 	m_AfterCulling.clear();
 }
+
+
+
+
 
 bool GraphicsEngine::Finalize()
 {
@@ -161,12 +176,20 @@ void GraphicsEngine::BeginRender()
 void GraphicsEngine::Render()
 {
 	m_PassManager->Render();
+}
+
+void GraphicsEngine::ImguiBeginRender()
+{
 	BeginImGui();
+}
+
+void GraphicsEngine::ImguiEndRender()
+{
+	EndImGui();
 }
 
 void GraphicsEngine::EndRender()
 {
-	EndImGui();
 	m_Device->EndRender();
 }
 
@@ -320,14 +343,14 @@ const double GraphicsEngine::GetDuration(std::wstring name, int index)
 	return 0;
 }
 
-const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
+const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const std::wstring socketName)
 {
 
 	auto find = FindEntity(entityID);
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& test = m_Animator->Attachment(L"mixamorig:LeftFoot");	//이름 수정필요
+		const VPMath::Matrix& test = m_Animator->Attachment(socketName);	//이름 수정필요
 		VPMath::Matrix a = test * (*find)->world;
 
 		debug::SphereInfo temp;
@@ -668,3 +691,4 @@ void GraphicsEngine::DestroyImGui()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
+
