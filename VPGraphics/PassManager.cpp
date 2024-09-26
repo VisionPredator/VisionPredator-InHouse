@@ -26,7 +26,7 @@
 #include "OutlineBlurPass.h"
 #include "OutlineEdgeDetectPass.h"
 #include "VPOutLinePass.h"
-#include "FadeInFadeOut.h"
+#include "RimLight.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -47,12 +47,27 @@ PassManager::PassManager()
 
 PassManager::~PassManager()
 {
-	for (auto& pass : m_Passes)
+	for (auto& pass : m_BasePasses)
 	{
 		pass.reset();
 	}
 
-	m_Passes.clear();
+	m_BasePasses.clear();
+
+	for (auto& pass : m_IndepentCulling)
+	{
+		pass.reset();
+	}
+
+	m_IndepentCulling.clear();
+
+	for (auto& pass : m_VPPasses)
+	{
+		pass.reset();
+	}
+
+	m_VPPasses.clear();
+
 }
 
 void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
@@ -65,56 +80,80 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIManager = uiManager;
 	m_LightManager = lightmanager;
 
+	//BasePasses
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_TransparencyPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_ObjectMaskPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
+	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
+
+	//VPpasses
+	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
+	m_RimLight = std::make_shared<RimLight>(m_Device.lock(), m_ResourceManager.lock());
+
+	//offscreenpasses
 	m_OutlineEdgeDetectPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineBlurPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_OutlineAddPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
+
+	//not in passes
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
-	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
-	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
-	m_FadeInFadeOut = std::make_shared<FadeInFadeOut>(m_Device.lock(), m_ResourceManager.lock());
 
-	m_Passes.push_back(m_GeometryPass);
-	m_Passes.push_back(m_ObjectMaskPass);
-	m_Passes.push_back(m_DebugPass);
-	m_Passes.push_back(m_DeferredPass);
-	m_Passes.push_back(m_TransparencyPass);
-	//m_Passes.push_back(m_FadeInFadeOut);
-	//m_Passes.push_back(m_VPOutLinePass);
+
+	//pass push
+	m_BasePasses.push_back(m_GeometryPass);
+	m_BasePasses.push_back(m_DebugPass);
+	m_BasePasses.push_back(m_DeferredPass);
+	m_BasePasses.push_back(m_ObjectMaskPass);
+
+	m_BasePasses.push_back(m_TransparencyPass);
+	m_VPPasses.push_back(m_VPOutLinePass);
+	m_VPPasses.push_back(m_RimLight);
+
+	m_IndepentCulling.push_back(m_OutlineEdgeDetectPass);
+	m_IndepentCulling.push_back(m_OutlineBlurPass);
+	m_IndepentCulling.push_back(m_OutlineAddPass);
+
 }
 
 void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling)
 {
-	m_DeferredPass->SetRenderQueue(afterCulling);
-	m_TransparencyPass->SetRenderQueue(afterCulling);
-	m_GeometryPass->SetRenderQueue(afterCulling);
-	m_ObjectMaskPass->SetRenderQueue(afterCulling);
+	for (auto& pass : m_BasePasses)
+	{
+		pass->SetRenderQueue(afterCulling);
+	}
+
+	if (m_isVP)
+	{
+		m_VPOutLinePass->SetRenderQueue(afterCulling);
+		m_RimLight->SetRenderQueue(afterCulling);
+	}
 }
 
 void PassManager::Render()
 {
-	for (auto& pass : m_Passes)
+	for (auto& pass : m_BasePasses)
+	{
+		pass->Render();
+	}
+
+	for (auto& pass : m_IndepentCulling)
 	{
 		pass->Render();
 	}
 
 	if (m_isVP)
 	{
-		m_VPOutLinePass->Render();
+		for (auto& pass : m_VPPasses)
+		{
+			pass->Render();
+		}
 	}
 
-	m_OutlineEdgeDetectPass->Render();
-	m_OutlineBlurPass->Render();
-	m_OutlineAddPass->Render();
 	m_ParticlePass->Render();
 	m_UIPass->Render();
-	/*
-	*/
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
 	// DrawIMGUI 이렇게 함수로 두지 말고 FinalPass 클래스로 이식하자.
@@ -123,24 +162,25 @@ void PassManager::Render()
 
 void PassManager::OnResize()
 {
-	m_DebugPass->OnResize();
-	m_DeferredPass->OnResize();
-	m_TransparencyPass->OnResize();
-	m_VPOutLinePass->OnResize();
-	for (auto& pass : m_Passes)
+	for (auto& pass : m_BasePasses)
 	{
 		pass->OnResize();
 	}
-	//m_ObjectMaskPass->OnResize();
 
-	m_OutlineEdgeDetectPass->OnResize();
-	m_OutlineBlurPass->OnResize();
-	m_OutlineAddPass->OnResize();
+	for (auto& pass : m_VPPasses)
+	{
+		pass->OnResize();
+	}
+
+	for (auto& pass : m_IndepentCulling)
+	{
+		pass->OnResize();
+	}
 }
 
 void PassManager::SetVP(bool isVP)
 {
-	isVP = isVP;
+	m_isVP = isVP;
 }
 
 void PassManager::DrawIMGUI()

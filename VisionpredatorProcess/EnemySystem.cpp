@@ -12,11 +12,6 @@ void EnemySystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(EnemyComponent, enemycomp)
 	{
-		if (INPUTKEYDOWN(KEYBOARDKEY::H))
-		{
-			enemycomp.HP = -1;
-		}
-
 		Calculate_FSM(enemycomp);
 		Action_FSM(enemycomp);
 	}
@@ -26,17 +21,23 @@ void EnemySystem::Calculate_FSM(EnemyComponent& enemycomp)
 {
 	switch (enemycomp.CurrentFSM)
 	{
+		case VisPred::Game::EnemyState::ATTACK:
+			Calculate_Attack(enemycomp);
+			break;
 		case VisPred::Game::EnemyState::IDLE:
 			Calculate_Idle(enemycomp);
 			break;
 		case VisPred::Game::EnemyState::CHASE:
-			Calculate_Move(enemycomp);
-			break;
-		case VisPred::Game::EnemyState::ATTACK:
-			Calculate_Attack(enemycomp);
+			Calculate_Chase(enemycomp);
 			break;
 		case VisPred::Game::EnemyState::DIE:
 			Calculate_Die(enemycomp);
+			break;
+		case VisPred::Game::EnemyState::ATTACKED:
+			Calculate_Attacked(enemycomp);
+			break;
+		case VisPred::Game::EnemyState::BACKWALK:
+			Calculate_BackWalk(enemycomp);
 			break;
 		case VisPred::Game::EnemyState::DESTROY:
 			Calculate_Destroy(enemycomp);
@@ -46,15 +47,24 @@ void EnemySystem::Calculate_FSM(EnemyComponent& enemycomp)
 	}
 
 }
+
+void EnemySystem::Calculate_Attack(EnemyComponent& enemycomp)
+{
+	///애니메이션이 끝나면 DIE-> DESTROY로 변경이 되어야 한다.
+	if (enemycomp.HP <= 0)
+	{
+		Die(enemycomp);
+	}
+	else if (1 == 2)
+		;
+	//enemycomp.CurrentFSM = VisPred::Game::EnemyState::WALK;
+}
+
 void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 {
 	if (enemycomp.HP <= 0)
 	{
-		enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
-		uint32_t id = enemycomp.GetEntityID();
-		int aniIndex = 3; //해당 인덱스 enum으로 뽑아서 일관적으로 써야할듯
-		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", std::pair<uint32_t, int>(id, aniIndex));
-
+		Die(enemycomp);
 	}
 	else if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
@@ -63,29 +73,48 @@ void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 
 	//enemycomp.CurrentFSM = VisPred::Game::EnemyState::WALK;
 }
+
+void EnemySystem::Calculate_Chase(EnemyComponent& enemycomp)
+{
+	if (enemycomp.HP <= 0)
+	{
+		Die(enemycomp);
+	}
+}
+
+void EnemySystem::Calculate_Walk(EnemyComponent& enemycomp)
+{
+	if (enemycomp.HP <= 0)
+	{
+		Die(enemycomp);
+	}
+}
+
 void EnemySystem::Calculate_Die(EnemyComponent& enemycomp)
 {
 	///애니메이션이 끝나면 DIE-> DESTROY로 변경이 되어야 한다.
 	if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EnemyState::DESTROY;
 }
-void EnemySystem::Calculate_Attack(EnemyComponent& enemycomp)
+
+void EnemySystem::Calculate_Attacked(EnemyComponent& enemycomp)
 {
-	///애니메이션이 끝나면 DIE-> DESTROY로 변경이 되어야 한다.
 	if (enemycomp.HP <= 0)
-		enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
-	else if (1 == 2)
-		;
-	//enemycomp.CurrentFSM = VisPred::Game::EnemyState::WALK;
+	{
+		Die(enemycomp);
+	}
 }
-void EnemySystem::Calculate_Move(EnemyComponent& enemycomp)
+
+void EnemySystem::Calculate_BackWalk(EnemyComponent& enemycomp)
 {
-	///애니메이션이 끝나면 DIE-> DESTROY로 변경이 되어야 한다.
 	if (enemycomp.HP <= 0)
-		enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
-	else if (1 == 2)
-		enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
+	{
+		Die(enemycomp);
+	}
 }
+
+
+
 void EnemySystem::Calculate_Destroy(EnemyComponent& enemycomp)
 {
 
@@ -186,3 +215,18 @@ void EnemySystem::Shoot_Rifle(EnemyComponent& enemycomp)
 }
 
 #pragma endregion
+
+void EnemySystem::Die(EnemyComponent& enemycomp)
+{
+	enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
+	uint32_t id = enemycomp.GetEntityID();
+	int aniIndex = static_cast<int>(enemycomp.CurrentFSM); //해당 인덱스 enum으로 뽑아서 일관적으로 써야할듯
+	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", std::pair<uint32_t, int>(id, aniIndex));
+
+	if (enemycomp.HasComponent<AnimationComponent>())
+	{
+		auto ani = enemycomp.GetComponent<AnimationComponent>();
+		ani->isLoop = false;
+	}
+}
+
