@@ -2,6 +2,7 @@
 #include "UIManager.h"
 
 #include <memory>
+#include <memory>
 
 #include "Device.h"
 #include "ResourceManager.h"
@@ -16,12 +17,18 @@ void UIManager::Initialize(const std::shared_ptr<Device>& device,
 {
 	m_Device = device;
 	m_ResourceManager = resourceManager;
-#ifdef _DEBUG
-	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\KIMM_B48_HY.spritefont");
-#else
-	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B48_HY.spritefont");
-#endif
+
 	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_Device->Context());
+
+#ifdef _DEBUG
+	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\roboto.spritefont");
+	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\KIMM_B48_HY.spritefont");
+	m_SpaceShards48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\SpaceShards_48.spritefont");
+#else
+	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\roboto.spritefont");
+	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B48_HY.spritefont");
+	m_SpaceShards48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\SpaceShards_48.spritefont");
+#endif
 }
 
 void UIManager::Render()
@@ -122,15 +129,25 @@ void UIManager::DrawAllTexts()
 		float posX = relPosX * static_cast<float>(screenWidth);
 		float posY = relPosY * static_cast<float>(screenHeight);
 
-		VisPred::SimpleMath::Vector2 origin = m_SpriteFont->MeasureString(info.Text.c_str());
+		auto& font = m_DefaultFont;
+		if (info.FontPath == L"KIMM_B48_HY.spritefont")
+			font = m_KIMM48;
+		else if (info.FontPath == L"SpaceShards_48.spritefont")
+			font = m_SpaceShards48;
+		else
+			font = m_DefaultFont;
+
+		auto rotation = info.Angle * (DirectX::XM_PI / 180.f);
+
+		VisPred::SimpleMath::Vector2 origin = font->MeasureString(info.Text.c_str());
 		origin.x /= 2.f;
 		origin.y /= 2.f;
-		m_SpriteFont->DrawString(
+		font->DrawString(
 			m_SpriteBatch.get(),
 			info.Text.c_str(),
 			VisPred::SimpleMath::Vector2(posX, posY),
 			info.Color,
-			0.f,
+			rotation,
 			origin,
 			info.Scale,
 			DirectX::SpriteEffects_None,

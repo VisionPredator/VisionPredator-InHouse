@@ -117,10 +117,12 @@ void RenderSystem::OnAddedComponent(std::any data)
 		TextComponent* component = static_cast<TextComponent*>(comp);
 		ui::TextInfo info;
 		info.Text = component->Text;
+		info.FontPath = component->FontPath;
 		info.Color = component->Color;
 		info.PosXPercent = component->PosXPercent;
 		info.PosYPercent = component->PosYPercent;
 		info.Scale = component->Scale;
+		info.Angle = component->Angle;
 		info.Layer = component->Layer;
 
 		m_Graphics->CreateTextObject(component->GetEntityID(), info);
@@ -234,10 +236,12 @@ void RenderSystem::RenderUpdate(float deltaTime)
 	{
 		ui::TextInfo info;
 		info.Text = component.Text;
+		info.FontPath = component.FontPath;
 		info.PosXPercent = component.PosXPercent;
 		info.PosYPercent = component.PosYPercent;
 		info.Color = component.Color;
 		info.Scale = component.Scale;
+		info.Angle = component.Angle;
 		info.Layer = component.Layer;
 
 		m_Graphics->UpdateTextObject(component.GetComponent<IDComponent>()->GetEntityID(), info);

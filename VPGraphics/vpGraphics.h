@@ -137,6 +137,7 @@ namespace ui
 		float PosXPercent = 0.f;
 		float PosYPercent = 0.f;
 		float Scale = 1.f;
+		float Angle = 0.f;
 		uint32_t Layer = 0;
 
 		// effect

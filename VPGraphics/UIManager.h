@@ -44,5 +44,10 @@ private:
 
 	// Sprite Font
 	std::unique_ptr<DirectX::SpriteBatch> m_SpriteBatch;
-	std::unique_ptr<DirectX::SpriteFont> m_SpriteFont;
+	std::shared_ptr<DirectX::SpriteFont> m_SpriteFont;
+
+	std::shared_ptr<DirectX::SpriteFont> m_DefaultFont;
+	std::shared_ptr<DirectX::SpriteFont> m_SpaceShards48;
+	std::shared_ptr<DirectX::SpriteFont> m_KIMM48;
 };
+ 
