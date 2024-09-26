@@ -550,7 +550,6 @@
     <FxCompile Include="VPOutLine.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
-    <FxCompile Include="RimLightGeometry.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

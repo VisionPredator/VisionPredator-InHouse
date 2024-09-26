@@ -332,7 +332,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 
 		debug::SphereInfo temp;
 		temp.Sphere.Center = { a._41,a._42,a._43 };
-		temp.Sphere.Radius = 0.1;
+		temp.Sphere.Radius = 1.f;
 		temp.Color = VPMath::Color{ 0,1,0,1 };
 		DrawSphere(temp);
 
@@ -505,37 +505,81 @@ void GraphicsEngine::Culling()
 				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
 
 				bool visible = false;
-				for (auto& mesh : curFBX->m_Meshes)
+				if (!object->isSkinned)
 				{
-					//S
-					VPMath::Vector3 afterMax = mesh->MaxBounding * s + t;
-					VPMath::Vector3 afterMin = mesh->MinBounding * s + t;
-
-					VPMath::Vector3 distance = afterMax - afterMin;
-					VPMath::Vector3 half = distance / 2;
-
-					DirectX::BoundingOrientedBox obbInfo;
-
-					obbInfo.Center = t;
-					obbInfo.Extents = VPMath::XMFLOAT3(fabs(half.x), fabs(half.y), fabs(half.z));
-					obbInfo.Orientation = r;
-
-					debug::OBBInfo temp;
-					temp.OBB = obbInfo;
-					/*temp.xAxisAngle = object->rotation.x;
-					temp.yAxisAngle = object->rotation.y;
-					temp.zAxisAngle = object->rotation.z;*/
-
-
-					temp.Color = (VPMath::Color{ 1,0,0,1 });
-					DrawOBB(temp);
-
-					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
-					if (contains)
+					for (auto& mesh : curFBX->m_Meshes)
 					{
-						visible |= contains;
-						//break
+						//S
+						VPMath::Vector3 afterMax = mesh->MaxBounding * s + t;
+						VPMath::Vector3 afterMin = mesh->MinBounding * s + t;
+
+						VPMath::Vector3 distance = afterMax - afterMin;
+						VPMath::Vector3 half = distance / 2;
+
+						DirectX::BoundingOrientedBox obbInfo;
+
+						obbInfo.Center = t;
+						obbInfo.Extents = VPMath::XMFLOAT3(fabs(half.x), fabs(half.y), fabs(half.z));
+						obbInfo.Orientation = r;
+
+						debug::OBBInfo temp;
+						temp.OBB = obbInfo;
+
+						temp.Color = (VPMath::Color{ 1,0,0,1 });
+						DrawOBB(temp);
+
+						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+						if (contains)
+						{
+							visible |= contains;
+							//break
+						}
 					}
+				}
+				else
+				{
+					VPMath::Vector3 max{-1,-1,-1};
+
+					for (auto& mesh : curFBX->m_Meshes)
+					{
+						VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+
+						VPMath::Vector3 afterMin = mesh->MinBounding * s;
+
+						if (afterMax.x > max.x)
+						{
+							max.x = afterMax.x;
+						}
+
+						if (afterMax.y > max.y)
+						{
+							max.y = afterMax.y;
+						}
+
+						if (afterMax.z > max.z)
+						{
+							max.z = afterMax.z;
+						}
+					}
+						DirectX::BoundingOrientedBox obbInfo;
+
+						obbInfo.Center = t;
+						obbInfo.Extents = VPMath::XMFLOAT3(fabs(max.x), fabs(max.y), fabs(max.z));
+						obbInfo.Orientation = r;
+
+						debug::OBBInfo temp;
+						temp.OBB = obbInfo;
+
+						temp.Color = (VPMath::Color{ 1,0,0,1 });
+						DrawOBB(temp);
+
+						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+						if (contains)
+						{
+							visible |= contains;
+							//m_AfterCulling.push_back(object);
+							//break;	//바운딩박스보려고 임시 해제
+						}
 				}
 
 				if (visible)
@@ -546,7 +590,13 @@ void GraphicsEngine::Culling()
 				//break;
 			}
 		}
-
+		else
+		{
+			if (object->Filter == GeoMetryFilter::Box)
+			{
+				m_AfterCulling.push_back(object);
+			}
+		}
 	}
 }
 

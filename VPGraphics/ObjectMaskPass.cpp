@@ -20,12 +20,13 @@ ObjectMaskPass::ObjectMaskPass(const std::shared_ptr<Device>& device, const std:
 	const uint32_t height = m_Device.lock()->GetWndHeight();
 
 	m_ObjectMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"ObjectMaskRTV", RenderTargetViewType::ObjectMask, width, height).lock();
-	m_RimLightMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"RimLightMaskRTV").lock();
+	m_RimLightMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"RimLightMaskRTV", RenderTargetViewType::OffScreen, width, height).lock();
 	m_RimLightSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"RimLightMaskSRV", m_RimLightMaskRTV).lock();
 
 
 	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
-	m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
+	//m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
+	m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"DefaultDSS").lock();
 
 	D3D_SHADER_MACRO macro[] =
 	{
@@ -48,7 +49,7 @@ void ObjectMaskPass::Initialize(const std::shared_ptr<Device>& device, const std
 	const uint32_t height = m_Device.lock()->GetWndHeight();
 
 	m_ObjectMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"ObjectMaskRTV", RenderTargetViewType::ObjectMask, width, height).lock();
-	m_RimLightMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"RimLightMaskRTV", RenderTargetViewType::ObjectMask, width, height).lock();
+	m_RimLightMaskRTV = m_ResourceManager.lock()->Create<RenderTargetView>(L"RimLightMaskRTV", RenderTargetViewType::OffScreen, width, height).lock();
 	m_DefaultDSV = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 	m_DSS = m_ResourceManager.lock()->Get<DepthStencilState>(L"NoDepthWrites").lock();
 
@@ -98,12 +99,14 @@ void ObjectMaskPass::Render()
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
 		Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
 
-		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+		/*Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
-		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
-		Device->Context()->PSSetConstantBuffers(5, 1, m_MaskColorCB->GetAddress());
+		Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());*/
+		Device->Context()->PSSetConstantBuffers(0, 1, m_MaskColorCB->GetAddress());
+
+
 	}
 	
 	Device->Context()->PSSetShader(m_ObjectMaskPS->GetShader(), nullptr, 0);
@@ -135,6 +138,7 @@ void ObjectMaskPass::Render()
 				if (!mesh->IsSkinned())
 				{
 					Device->BindVS(m_ObjectMaskStaticMeshVS);
+					Device->Context()->IASetInputLayout(m_ObjectMaskStaticMeshVS->InputLayout());
 
 					// CB Update
 					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
@@ -149,6 +153,7 @@ void ObjectMaskPass::Render()
 				else
 				{
 					Device->BindVS(m_ObjectMaskSkeletalMeshVS);
+					Device->Context()->IASetInputLayout(m_ObjectMaskSkeletalMeshVS->InputLayout());
 
 					std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
 
@@ -185,11 +190,31 @@ void ObjectMaskPass::Render()
 					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
 				}
 
+				if (!curModel->m_Materials.empty())
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+					std::shared_ptr<Material> curMaterial = curModel->m_Materials[mesh->m_material];
+
+					if (curMaterial != nullptr)
+					{
+						MaterialData data = curMaterial->m_Data;
+						curMaterialData->Update(data);
+
+						Device->Context()->PSSetShaderResources(0, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+						std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
+
+						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+
+						Device->BindMaterialSRV(curMaterial);
+					}
+				}
+
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
 			}
 		}
 	}
 
+	Device->UnBindSRV();
 	Device->Context()->OMSetDepthStencilState(nullptr, 0);
 }
 

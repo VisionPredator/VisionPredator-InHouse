@@ -1,4 +1,5 @@
 #pragma once
+#include "RenderPass.h"
 
 /*
  *	아웃라인 두번째 패스
@@ -16,7 +17,7 @@ class RenderTargetView;
 class ResourceManager;
 class Device;
 
-class OutlineBlurPass
+class OutlineBlurPass : public RenderPass
 {
 public:
 	void Initialize(const std::shared_ptr<Device>& device,

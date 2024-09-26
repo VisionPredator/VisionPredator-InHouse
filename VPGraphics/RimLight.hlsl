@@ -1,4 +1,5 @@
 
+
 struct VS_OUTPUT
 {
     float4 pos : SV_POSITION;
@@ -14,8 +15,6 @@ struct VS_OUTPUT
 
 Texture2D gBuffer : register(t0);
 Texture2D gNormal : register(t1);
-Texture2D gPosition : register(t2);
-Texture2D gMask : register(t3);
 
 sampler gLinear : register(s0);
 
@@ -29,26 +28,48 @@ cbuffer Camera : register(b0)
     float4x4 gProjInverse;
 };
 
+//Material
+cbuffer Material : register(b1)
+{
+    float4 AMRO;
+    float4 useNEOL; //normal, Emissive, opacity, LightMap
+    float4 albedo;
+    float metalness;
+    float roughness;
+    float ao; // Ambient Occlusion
+    float pad;
+    float4 lightmapdata; //index, offset(x,y),scale
+    float2 lightmaptiling; // x y
+};
+
 
 float4 main(VS_OUTPUT input) : SV_TARGET
-{
-    float4 Mask = gMask.Sample(gLinear, input.tex);
-    float4 result = gBuffer.Sample(gLinear, input.tex);
+{   
+    float4 baseColor = float4(1, 0, 0, 1.f);     
     
-    if(Mask.x + Mask.y + Mask.z > 0)
+   
+    float4 Normal = input.normal;
+    if (useNEOL.x >= 1)
     {
-        float4 pos = gPosition.Sample(gLinear, input.tex);
-        float4 N = gNormal.Sample(gLinear, input.tex);
-        float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - pos.xyz);
-
-        float rim = 1 - saturate(dot(N, V));
-        rim = smoothstep(0, 1.0f, rim);
-    
-        return rim * float4(1, 0, 0, 1) + result;
+        float3 NormalTangentSpace = gNormal.Sample(gLinear, input.tex).rgb;
+        NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
+        NormalTangentSpace = normalize(NormalTangentSpace);
+        
+        float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
+        Normal.xyz = normalize(mul(NormalTangentSpace, (WorldTransform)));
     }
     
-    
-    
-    return result;
 
+    float4 N = Normal;
+
+    float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.pos.xyz);
+    float NdotV = saturate(dot(N.xyz, V));
+    
+    
+    float rim = 1 - NdotV;
+    rim = smoothstep(0, 1.0f, rim);
+    
+    float4 result = rim * baseColor;
+    result.w = 1; //우리는 림라이트로만 보여줄거라 alpha 1로 고정함
+    return result;
 }
