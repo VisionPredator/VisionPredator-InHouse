@@ -53,6 +53,21 @@ PassManager::~PassManager()
 	}
 
 	m_BasePasses.clear();
+
+	for (auto& pass : m_IndepentCulling)
+	{
+		pass.reset();
+	}
+
+	m_IndepentCulling.clear();
+
+	for (auto& pass : m_VPPasses)
+	{
+		pass.reset();
+	}
+
+	m_VPPasses.clear();
+
 }
 
 void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
@@ -85,7 +100,6 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	//not in passes
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
-
 
 
 	//pass push

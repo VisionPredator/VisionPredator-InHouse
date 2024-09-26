@@ -89,10 +89,11 @@ void RenderSystem::OnAddedComponent(std::any data)
 		return;
 	}
 
-	// UI Object
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
+	// Image Object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ImageComponent>())
 	{
-		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		ImageComponent* component = static_cast<ImageComponent*>(comp);
+		const TransformComponent& Transform = *component->GetComponent<TransformComponent>();
 		ui::ImageInfo info;
 		info.ImagePath = component->TexturePath;
 		info.PosXPercent = component->PosXPercent;
@@ -100,8 +101,29 @@ void RenderSystem::OnAddedComponent(std::any data)
 		info.Layer = component->Layer;
 		info.Color = component->Color;
 		info.Scale = component->Scale;
+		info.World = Transform.WorldTransform;
+		info.RenderMode = component->RenderMode;
+		info.Billboard = component->Billboard;
+		info.LeftPercent = component->LeftPercent;
+		info.RightPercent = component->RightPercent;
+		info.TopPercent = component->TopPercent;
+		info.BottomPercent = component->BottomPercent;
 
 		m_Graphics->CreateImageObject(component->GetEntityID(), info);
+	}
+
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TextComponent>())
+	{
+		TextComponent* component = static_cast<TextComponent*>(comp);
+		ui::TextInfo info;
+		info.Text = component->Text;
+		info.Color = component->Color;
+		info.PosXPercent = component->PosXPercent;
+		info.PosYPercent = component->PosYPercent;
+		info.Scale = component->Scale;
+		info.Layer = component->Layer;
+
+		m_Graphics->CreateTextObject(component->GetEntityID(), info);
 	}
 }
 
@@ -144,10 +166,18 @@ void RenderSystem::OnReleasedComponent(std::any data)
 		m_Graphics->DeleteParticleObjectByID(component->GetEntityID());
 	}
 
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<Sprite2DComponent>())
+	// image object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ImageComponent>())
 	{
-		Sprite2DComponent* component = static_cast<Sprite2DComponent*>(comp);
+		ImageComponent* component = static_cast<ImageComponent*>(comp);
 		m_Graphics->DeleteImageObject(component->GetEntityID());
+	}
+
+	// text object
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TextComponent>())
+	{
+		TextComponent* component = static_cast<TextComponent*>(comp);
+		m_Graphics->DeleteTextObject(component->GetEntityID());
 	}
 }
 
@@ -179,8 +209,9 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 
-	for (Sprite2DComponent& component : COMPITER(Sprite2DComponent))
+	for (ImageComponent& component : COMPITER(ImageComponent))
 	{
+		const TransformComponent& transform = *component.GetComponent<TransformComponent>();
 		ui::ImageInfo info;
 		info.ImagePath = component.TexturePath;
 		info.PosXPercent = component.PosXPercent;
@@ -188,8 +219,28 @@ void RenderSystem::RenderUpdate(float deltaTime)
 		info.Layer = component.Layer;
 		info.Color = component.Color;
 		info.Scale = component.Scale;
+		info.World = transform.WorldTransform;
+		info.RenderMode = component.RenderMode;
+		info.Billboard = component.Billboard;
+		info.LeftPercent = component.LeftPercent;
+		info.RightPercent = component.RightPercent;
+		info.TopPercent = component.TopPercent;
+		info.BottomPercent = component.BottomPercent;
 
-		m_Graphics->UpdateImageObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
+		m_Graphics->UpdateImageObject(component.GetEntityID(), info);
+	}
+
+	for (TextComponent& component: COMPITER(TextComponent))
+	{
+		ui::TextInfo info;
+		info.Text = component.Text;
+		info.PosXPercent = component.PosXPercent;
+		info.PosYPercent = component.PosYPercent;
+		info.Color = component.Color;
+		info.Scale = component.Scale;
+		info.Layer = component.Layer;
+
+		m_Graphics->UpdateTextObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 }
 

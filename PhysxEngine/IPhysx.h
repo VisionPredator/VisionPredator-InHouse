@@ -22,6 +22,10 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) abstract;
 	virtual void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
 	virtual void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
+	virtual uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)abstract;
+	virtual uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)abstract;
+	virtual uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)abstract;
+
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;
 	virtual void  SetPhysicsInfo(VPPhysics::PhysicsInfo engineinfo) abstract;
@@ -31,6 +35,7 @@ public:
 	virtual VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) abstract;
 
 	virtual void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo) abstract;
+	virtual void ResizeCapsuleController(uint32_t entityID, float radius, float height) abstract;
 	virtual void RemoveController(uint32_t entityID) abstract;
 	virtual void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) abstract;
 	virtual void SetControllerVelocity(uint32_t entityID,VPMath::Vector3 velocity) abstract;
@@ -42,11 +47,7 @@ public:
 	virtual void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) abstract;
 	virtual void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) abstract;
 	virtual bool HasRigidBody(uint32_t entityID) abstract;
-
-
 	virtual bool HasConvexMeshResource(const std::wstring& key) abstract;
-
-
 
 };
 

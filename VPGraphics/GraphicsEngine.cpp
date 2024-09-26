@@ -143,7 +143,7 @@ void GraphicsEngine::BeginRender()
 	const VPMath::Color red = { 1.f, 0.f, 0.f, 1.f };
 	const VPMath::Color green = { 0.f, 1.f, 0.f, 1.f };
 	const VPMath::Color blue = { 0.f, 0.f, 1.f, 1.f };
-	const VPMath::Color gray = { 0.2f, 0.2f, 0.2f, 1.f };
+	const VPMath::Color gray = { 0.05f, 0.05f, 0.05f, 1.f };
 
 	for (int i = 0; i < m_RTVs.size(); i++)
 	{
@@ -375,6 +375,21 @@ void GraphicsEngine::UpdateImageObject(uint32_t id, const ui::ImageInfo& info)
 void GraphicsEngine::DeleteImageObject(uint32_t id)
 {
 	m_UIManager->DeleteImageObject(id);
+}
+
+void GraphicsEngine::CreateTextObject(uint32_t entityID, const ui::TextInfo& info)
+{
+	m_UIManager->CreateTextObject(entityID, info);
+}
+
+void GraphicsEngine::UpdateTextObject(uint32_t entityID, const ui::TextInfo& info)
+{
+	m_UIManager->UpdateTextObject(entityID, info);
+}
+
+void GraphicsEngine::DeleteTextObject(uint32_t entityId)
+{
+	m_UIManager->DeleteTextObject(entityId);
 }
 
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)

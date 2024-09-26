@@ -5,17 +5,15 @@
 
 enum class BlendStateType
 {
-	Default,
+	Opaque,		/* Default */
+	AlphaBlend,
 	AdditiveBlending,
-	AlphaBlending
-
 };
 
 class BlendState : public Resource
 {
 public:
-	BlendState(const std::shared_ptr<Device>& device, const BlendStateType& type = BlendStateType::Default);
-
+	BlendState(const std::shared_ptr<Device>& device, BlendStateType type = BlendStateType::Opaque);
 	void Release() override;
 
 	Microsoft::WRL::ComPtr<ID3D11BlendState> GetState() { return m_State; }

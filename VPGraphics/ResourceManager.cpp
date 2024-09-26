@@ -62,9 +62,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// ----------------------------------------------------------------------------------------
 	// Blend State
 	// ----------------------------------------------------------------------------------------
-	Create<BlendState>(L"AlphaBlending", BlendStateType::AlphaBlending);
+	Create<BlendState>(L"AlphaBlend", BlendStateType::AlphaBlend);
 	Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
-	Create<BlendState>(L"DefaultBlending", BlendStateType::Default);
+	Create<BlendState>(L"Opaque", BlendStateType::Opaque);
 
 
 	// ----------------------------------------------------------------------------------------

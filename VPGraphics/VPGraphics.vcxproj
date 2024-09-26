@@ -196,6 +196,7 @@
     <ClInclude Include="FinalPass.h" />
     <ClInclude Include="GeoMetryPass.h" />
     <ClInclude Include="GeometryShader.h" />
+    <ClInclude Include="TextObject.h" />
     <ClInclude Include="TransparencyPass.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IGraphics.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="RimLight.cpp" />
     <ClCompile Include="FinalPass.cpp" />
+    <ClCompile Include="TextObject.cpp" />
     <ClCompile Include="TransparencyPass.cpp" />
     <ClCompile Include="GeoMetryPass.cpp" />
     <ClCompile Include="GeometryShader.cpp" />

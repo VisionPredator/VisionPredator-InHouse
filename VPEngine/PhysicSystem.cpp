@@ -330,13 +330,15 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 	{
 		uint32_t entityID = controllerCompoent.GetEntityID();
 
-
 		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
 		VPMath::Vector3 templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
+		templocation = DisApplyPivotAndOffset(controllerCompoent,templocation);
 		float offset_T = (controllerTransform->World_Location - templocation).Length();
-
 		if (offset_T > m_location_threshold)
-			m_PhysicsEngine->SetControllerGobalPose(entityID, controllerTransform->World_Location);
+		{
+			templocation = ApplyPivotAndOffset(controllerCompoent,controllerTransform->World_Location);
+			m_PhysicsEngine->SetControllerGobalPose(entityID, templocation);
+		}
 	}
 
 	m_PhysicsEngine->Update(deltaTime);
@@ -357,8 +359,42 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		uint32_t entityID = controllerComponent.GetEntityID();
 
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
-		controllerTransform->SetWorldLocation(m_PhysicsEngine->GetControllerGobalPose(entityID));
+		auto templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
+		templocation = DisApplyPivotAndOffset(controllerComponent,templocation);
+		controllerTransform->SetWorldLocation(templocation);
 		TransformSystem::AddUpdateData(controllerTransform);
 	}
 
+}
+
+VPMath::Vector3 PhysicSystem::ApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation)
+{
+	VPMath::Vector3 adjustedLocation = baseLocation + controllerComponent.Contollerinfo.LocalOffset;
+
+	switch (controllerComponent.Contollerinfo.Pivot)
+	{
+	case VPPhysics::ControllerPivot::FOOT:
+		adjustedLocation.y += (controllerComponent.CapsuleControllerinfo.radius + controllerComponent.CapsuleControllerinfo.height / 2);
+		break;
+	default:
+		break;
+	}
+
+	return adjustedLocation;
+}
+
+VPMath::Vector3 PhysicSystem::DisApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation)
+{
+	VPMath::Vector3 adjustedLocation = baseLocation - controllerComponent.Contollerinfo.LocalOffset;
+
+	switch (controllerComponent.Contollerinfo.Pivot)
+	{
+	case VPPhysics::ControllerPivot::FOOT:
+		adjustedLocation.y -= (controllerComponent.CapsuleControllerinfo.radius + controllerComponent.CapsuleControllerinfo.height / 2);
+		break;
+	default:
+		break;
+	}
+
+	return adjustedLocation;
 }

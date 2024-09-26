@@ -38,6 +38,7 @@ void EditorCamera::Initialize()
 
 void EditorCamera::Update(float deltatime)
 {
+	MoveableSetting();
 	CameraMove(deltatime);
 	CameraRotation();
 	DoubleClicked(deltatime);
@@ -46,7 +47,7 @@ void EditorCamera::Update(float deltatime)
 
 void EditorCamera::CameraMove(float deltatime)
 {
-	if (!InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
+	if (!IsMoveable)
 		return;
 
 	VPMath::Vector3 moveDirection = {};
@@ -78,9 +79,22 @@ void EditorCamera::CameraMove(float deltatime)
 		m_PressedShift = false;
 }
 
+void EditorCamera::MoveableSetting()
+{
+	if (InputManager::GetInstance().GetKeyDown(MOUSEKEY::RBUTTON))
+	{
+	IsMoveable = true; 
+	}
+	else if (InputManager::GetInstance().GetKeyUp(MOUSEKEY::RBUTTON))
+	{
+		IsMoveable = false;
+	}
+
+}
+
 void EditorCamera::CameraRotation()
 {
-	if (InputManager::GetInstance().GetKey(MOUSEKEY::RBUTTON))
+	if (IsMoveable)
 	{
 		int deltaCurposx = InputManager::GetInstance().GetMouseDeltaX();
 		int deltaCurposy = InputManager::GetInstance().GetMouseDeltaY();
