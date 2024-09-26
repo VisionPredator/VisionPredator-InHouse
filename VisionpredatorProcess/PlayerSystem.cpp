@@ -21,6 +21,7 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 		GunCooltime(playercomp);
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
+
 	}
 }
 
@@ -30,9 +31,18 @@ void PlayerSystem::PhysicsUpdate(float deltaTime)
 
 void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
 {
+	auto posEntity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
+	if (!posEntity)
+		return;
+	if (!posEntity->HasComponent<CameraComponent>())
+		return;
+	auto cameratransform = posEntity->GetComponent<TransformComponent>();
+	auto front = cameratransform->FrontVector;
+	uint32_t racastedEntityID = m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 500);
+
 	if (INPUTKEYDOWN(KEYBOARDKEY::R))
 	{
-		auto posEntity = GetSceneManager()->GetChildEntityByName(playercomp.GetEntityID(), "PlayerCamera");
+		auto posEntity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
 		if (!posEntity)
 			return;
 		if (!posEntity->HasComponent<CameraComponent>())
@@ -40,8 +50,28 @@ void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
 		auto cameratransform = posEntity->GetComponent<TransformComponent>();
 		auto front = cameratransform->FrontVector;
 		std::cout << m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 500);
+		GrabGun(playercomp, racastedEntityID);
 	}
 
+}
+
+void PlayerSystem::GrabGun(PlayerComponent& playercomp, uint32_t gunEntityID)
+{
+	if (playercomp.HasGun)
+		return;
+	auto gunentity = GetSceneManager()->GetEntity(gunEntityID);
+	if (!gunentity || !gunentity->HasComponent<GunComponent>())
+		return;
+
+	auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
+	if (!socketentity)
+		return;
+	auto guncomp = gunentity->GetComponent<GunComponent>();
+	auto soceketcomp = socketentity->GetComponent<SocketComponent>();
+	soceketcomp->IsConnected = true;
+	soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
+	playercomp.HasGun = true;
+	playercomp.GunEntityID = guncomp->GetEntityID();
 }
 
 
@@ -95,7 +125,9 @@ void PlayerSystem::DefalutModeController(PlayerComponent & playercomp)
 }
 void PlayerSystem::DownCamera(PlayerComponent & playercomp,float deltatime)
 {
-	auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp.GetEntityID(), "PlayerCamera");
+	auto cameraentity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
+	if (!cameraentity)
+		return;
 	auto& cameracomp =  *cameraentity->GetComponent<TransformComponent>();
 	///카메라와 앉은 위치의 pos 와의 거리가 0.01 보다 작을 때.
 	if ((playercomp.SitCameraPos - cameracomp.Local_Location).Length()<0.01f)
@@ -117,7 +149,9 @@ void PlayerSystem::DownCamera(PlayerComponent & playercomp,float deltatime)
 }
 void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 {
-	auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp.GetEntityID(), "PlayerCamera");
+	auto cameraentity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
+	if (!cameraentity)
+		return;
 	auto& cameracomp = *cameraentity->GetComponent<TransformComponent>();
 	///카메라와 앉은 위치의 pos 와의 거리가 0.01 보다 작을 때.
 	if ((playercomp.DefalutCameraPos - cameracomp.Local_Location).Length() < 0.01f)
@@ -600,28 +634,41 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 	if (GetSceneManager()->HasComponent<PlayerComponent>(gameObjectId))
 	{
 		auto playercomp = GetSceneManager()->GetComponent<PlayerComponent>(gameObjectId);
-		playercomp->DefalutCameraPos;
-		auto cameraentity = GetSceneManager()->GetChildEntityByName(playercomp->GetEntityID(), "PlayerCamera");
-		auto cameracomp = cameraentity->GetComponent<TransformComponent>();
-		playercomp->DefalutCameraPos = cameracomp->Local_Location;
-		playercomp->SitCameraPos = playercomp->DefalutCameraPos;
-
-		auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
-		// Current full height of the capsule (Total Height = 2 * (radius + height))
-		float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
-		// New height after crouching (half of the full height)
-		float SitHeight = ((fullHeight / 2) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2;
-		// Ensure the new height doesn't become negative
-		if (SitHeight < 0.01f)  // You can set a reasonable minimum threshold
-			SitHeight = 0.01f;
-		float heightReduction = controllercomp.CapsuleControllerinfo.height - SitHeight;
-		playercomp->SitHeight = SitHeight;
-		playercomp->SitHeightDiff = heightReduction / 2;
-		playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
 		auto PlayerHandEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->PlayerHandName);
 		auto PlayerCameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->PlayerCameraName);
-		playercomp->PlayerHandID = PlayerHandEntity->GetEntityID();
-		playercomp->PlayerCameraID = PlayerCameraEntity->GetEntityID();
+		if (PlayerHandEntity)
+			playercomp->PlayerHandID = PlayerHandEntity->GetEntityID();
+		else
+			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
+
+		if (PlayerCameraEntity)
+		{
+			playercomp->PlayerCameraID = PlayerCameraEntity->GetEntityID();
+			auto cameracomp = PlayerCameraEntity->GetComponent<TransformComponent>();
+			playercomp->DefalutCameraPos = cameracomp->Local_Location;
+			playercomp->SitCameraPos = playercomp->DefalutCameraPos;
+		}
+		else
+			VP_ASSERT(false,"player의 카메라가 감지되지 않습니다.");
+
+		if (playercomp->HasComponent<ControllerComponent>())
+		{
+			auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
+			// Current full height of the capsule (Total Height = 2 * (radius + height))
+			float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
+			// New height after crouching (half of the full height)
+			float SitHeight = ((fullHeight / 2) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2;
+			// Ensure the new height doesn't become negative
+			if (SitHeight < 0.01f)  // You can set a reasonable minimum threshold
+				SitHeight = 0.01f;
+			float heightReduction = controllercomp.CapsuleControllerinfo.height - SitHeight;
+			playercomp->SitHeight = SitHeight;
+			playercomp->SitHeightDiff = heightReduction / 2;
+			playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
+		}
+		else
+			VP_ASSERT(false,"player의 Controller가 감지되지 않습니다.");
+	
 	};
 
 }

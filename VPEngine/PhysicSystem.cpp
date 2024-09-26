@@ -351,7 +351,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
 		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
-		rigidBodyTransform->SetLocalQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
+		rigidBodyTransform->SetWorldQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
 	}
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
@@ -364,7 +364,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		controllerTransform->SetWorldLocation(templocation);
 		TransformSystem::AddUpdateData(controllerTransform);
 	}
-
+	EventManager::GetInstance().ImmediateEvent("OnUpdate");
 }
 
 VPMath::Vector3 PhysicSystem::ApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation)

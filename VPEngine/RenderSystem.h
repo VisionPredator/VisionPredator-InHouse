@@ -18,5 +18,7 @@ public:
     void RenderUpdate(float deltaTime) override;
     void LateRenderUpdate(float deltaTime) override;
     void EditorRenderUpdate(float deltaTime) override;
+    void OnButtonClick(std::any data);
+
 };
 

@@ -22,6 +22,7 @@ void CameraSystem::OnResize(std::any hwnd)
 
 	m_Width = static_cast<float>(tempsize.right - tempsize.left);
 	m_Height = static_cast<float>(tempsize.bottom - tempsize.top);
+
 }
 
 void CameraSystem::EditorRenderUpdate(float deltaTime)

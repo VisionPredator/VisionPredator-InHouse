@@ -16,7 +16,7 @@ public:
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override;
 	void RaycastTest(PlayerComponent& playercomp);
-
+	void GrabGun(PlayerComponent& playercomp , uint32_t gunEntityID);
     void PlayerShoot(PlayerComponent& playercomp);
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);

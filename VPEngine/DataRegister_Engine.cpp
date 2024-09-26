@@ -111,6 +111,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
 	META_ADD_COMP(Sprite2DComponent, Sprite2DComponent::TexturePath, Sprite2DComponent::PosXPercent, Sprite2DComponent::PosYPercent, Sprite2DComponent::Scale, Sprite2DComponent::Layer, Sprite2DComponent::Color);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
-	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConneted, SocketComponent::Offset, SocketComponent::Rotation);
+	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConnected, SocketComponent::Offset, SocketComponent::OffsetRotation);
 }
 

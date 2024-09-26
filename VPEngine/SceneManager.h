@@ -87,6 +87,7 @@ public:
 	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetRelationEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetEntityByIdentityName(std::string name);
+	std::shared_ptr<Entity> GetEntitySocketEntity(uint32_t entityID);
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
