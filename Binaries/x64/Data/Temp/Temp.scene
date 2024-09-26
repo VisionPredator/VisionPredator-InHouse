@@ -261,9 +261,9 @@
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 29.17204475402832
+                        "x": -7.8159637451171875,
+                        "y": 14.031465530395508,
+                        "z": 32.17204284667969
                     },
                     "Local_Quaternion": {
                         "w": 1.0,
@@ -280,24 +280,18 @@
                 {
                     "ComponentID": 2225601387,
                     "ConnectedEntity": "PlayerHand",
-                    "IsConneted": false,
+                    "IsConnected": false,
                     "Offset": {
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "Rotation": {
+                    "OffsetRotation": {
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
                     "SocketName": []
-                },
-                {
-                    "ChildrenID": [
-                        1996138070
-                    ],
-                    "ComponentID": 188567026
                 }
             ]
         },
@@ -536,21 +530,62 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Mesh"
+                    "Name": "Guns"
+                },
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 4,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": true
+                    },
+                    "IsDynamic": false,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
                 },
                 {
                     "ComponentID": 3774279003,
                     "FBX": [
                         99,
                         101,
-                        108,
-                        51,
-                        95,
-                        108,
-                        105,
-                        103,
-                        104,
-                        116,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
                         46,
                         102,
                         98,
@@ -576,65 +611,44 @@
                 {
                     "ComponentID": 3400599862,
                     "Local_Location": {
-                        "x": 0.0,
-                        "y": 1.0000004768371582,
-                        "z": 1.0
+                        "x": 2.0,
+                        "y": 22.57686424255371,
+                        "z": 37.17204284667969
                     },
                     "Local_Quaternion": {
-                        "w": 0.7072288393974304,
+                        "w": 0.7072290182113647,
                         "x": -0.0,
-                        "y": -0.7069846987724304,
+                        "y": -0.7069845795631409,
                         "z": -0.0
                     },
                     "Local_Scale": {
-                        "x": 0.1357693374156952,
-                        "y": 0.05181685462594032,
-                        "z": 1.0
+                        "x": 5.0,
+                        "y": 5.0,
+                        "z": 5.0
                     }
                 },
                 {
-                    "ComponentID": 3243699741,
-                    "ParentID": 3319789877
-                }
-            ]
-        },
-        {
-            "EntityID": 507865657,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Entity0"
+                    "Bullets": 0,
+                    "ComponentID": 3546995328,
+                    "CoolTime": 0.0,
+                    "CurrentBullet": 0,
+                    "Type": 0
                 },
                 {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
+                    "ComponentID": 2225601387,
+                    "ConnectedEntity": "",
+                    "IsConnected": false,
+                    "Offset": {
                         "x": 0.0,
+                        "y": -4.0,
+                        "z": 0.0
+                    },
+                    "OffsetRotation": {
+                        "x": 180.0,
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 4075385036,
-                    "FBXFilter": 0,
-                    "TextureName": [],
-                    "UseTexture": false,
-                    "color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
+                    "SocketName": []
                 }
             ]
         }

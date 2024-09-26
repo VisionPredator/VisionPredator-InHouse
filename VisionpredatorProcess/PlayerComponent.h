@@ -25,8 +25,7 @@ struct PlayerComponent :
     float AirControlPercent{};
     float GravityPower = 1.f;
     bool HasGun{};
-    uint32_t GunEntityID{};
-    VisPred::Game::GunType ShootType{};
+
 
     /// <summary>
     /// 게임로직을 위한 변수들
@@ -42,5 +41,7 @@ struct PlayerComponent :
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
 
+    uint32_t GunEntityID{};
+    VisPred::Game::GunType ShootType{};
 };
 

@@ -39,6 +39,8 @@
 #endif
 
 // Macro to simplify type ID definition
+#define ERRORCOUT(TEXT) std::cout<<"ERROR: "<< TEXT<<std::endl;
+
 
 
 /// \def VP_JSONBODY(CLASSNAME,...)
