@@ -1,4 +1,5 @@
 #pragma once
+#include "RenderPass.h"
 #include "ConstantBuffer.h"
 
 /*
@@ -14,7 +15,7 @@ class PixelShader;
 class VertexShader;
 class ShaderResourceView;
 
-class OutlineEdgeDetectPass
+class OutlineEdgeDetectPass : public RenderPass
 {
 	struct ScreenSizeCB
 	{

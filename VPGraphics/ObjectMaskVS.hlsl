@@ -4,6 +4,10 @@ struct VertexOut
 {
     float4 PosWorld : SV_POSITION;
     float4 Color : COLOR;
+    float4 normal : NORMAL;
+    float4 tangent : TANGENT;
+    float4 bitangent : BITANGENT;
+    float2 tex : TEXCOORD;
 };
 
 VertexOut main(VS_INPUT input)
@@ -48,6 +52,7 @@ VertexOut main(VS_INPUT input)
     output.PosWorld = mul(mul(input.pos, skinning), gWorld);
     output.PosWorld = mul(output.PosWorld, gWorldViewProj);
 #endif     
-
+    
+    
     return output;
 }

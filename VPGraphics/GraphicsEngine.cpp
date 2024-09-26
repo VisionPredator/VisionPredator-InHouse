@@ -175,7 +175,7 @@ bool GraphicsEngine::AddRenderModel(std::shared_ptr<RenderData> data)
 	auto find = FindEntity(data->EntityID);
 	if (find != m_RenderVector.end())
 	{
-		
+
 
 		(*find) = data;
 	}
@@ -232,18 +232,18 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 
 	///testCulling 쓸때는 주석 필요
 	{
-	//절두체
-	DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
+		//절두체
+		DirectX::BoundingFrustum::CreateFromMatrix(m_Frustum, m_Proj);
 
-	//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
-	//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
-	//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
+		//회전이 왜 반대로 먹음..? -> view 자체가 카메라의 기준의 세상을 표현한 행렬
+		//우리가 frustum을 구성하려면 카메라 자체의 위치와 회전 값이 필요함
+		//view == camera invert , 우린 camera 자체가 필요함 즉 view invert를 써야함
 
 
-	m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
+		m_Frustum.Orientation = VPMath::Quaternion::CreateFromRotationMatrix(viewInverse);
 
-	//카메라위치
-	m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
+		//카메라위치
+		m_Frustum.Origin = { viewInverse._41,viewInverse._42,viewInverse._43 };
 	}
 
 	std::weak_ptr<ConstantBuffer<CameraData>> Camera = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera");
@@ -332,7 +332,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID)
 
 		debug::SphereInfo temp;
 		temp.Sphere.Center = { a._41,a._42,a._43 };
-		temp.Sphere.Radius = 0.1;
+		temp.Sphere.Radius = 1.f;
 		temp.Color = VPMath::Color{ 0,1,0,1 };
 		DrawSphere(temp);
 
@@ -519,42 +519,99 @@ void GraphicsEngine::Culling()
 				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
 				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
 
-				for (auto& mesh : curFBX->m_Meshes)
+				bool visible = false;
+				if (!object->isSkinned)
 				{
-					//S
-					VPMath::Vector3 afterMax = mesh->MaxBounding * s + t;
-					VPMath::Vector3 afterMin = mesh->MinBounding * s + t;
-
-					VPMath::Vector3 distance = afterMax - afterMin;
-					VPMath::Vector3 half = distance / 2;
-
-					DirectX::BoundingOrientedBox obbInfo;
-
-					obbInfo.Center = t;
-					obbInfo.Extents = VPMath::XMFLOAT3 (fabs(half.x), fabs(half.y), fabs(half.z));
-					obbInfo.Orientation = r;
-
-					debug::OBBInfo temp;
-					temp.OBB = obbInfo;
-					/*temp.xAxisAngle = object->rotation.x;
-					temp.yAxisAngle = object->rotation.y;
-					temp.zAxisAngle = object->rotation.z;*/
-
-
-					temp.Color = (VPMath::Color{ 1,0,0,1 });
-					DrawOBB(temp);
-
-					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
-					if (contains)
+					for (auto& mesh : curFBX->m_Meshes)
 					{
-						object->isVisible = true;
-						m_AfterCulling.push_back(object);
-						break;
+						//S
+						VPMath::Vector3 afterMax = mesh->MaxBounding * s + t;
+						VPMath::Vector3 afterMin = mesh->MinBounding * s + t;
+
+						VPMath::Vector3 distance = afterMax - afterMin;
+						VPMath::Vector3 half = distance / 2;
+
+						DirectX::BoundingOrientedBox obbInfo;
+
+						obbInfo.Center = t;
+						obbInfo.Extents = VPMath::XMFLOAT3(fabs(half.x), fabs(half.y), fabs(half.z));
+						obbInfo.Orientation = r;
+
+						debug::OBBInfo temp;
+						temp.OBB = obbInfo;
+
+						temp.Color = (VPMath::Color{ 1,0,0,1 });
+						DrawOBB(temp);
+
+						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+						if (contains)
+						{
+							visible |= contains;
+							//break
+						}
 					}
 				}
+				else
+				{
+					VPMath::Vector3 max{-1,-1,-1};
+
+					for (auto& mesh : curFBX->m_Meshes)
+					{
+						VPMath::Vector3 afterMax = mesh->MaxBounding * s;
+
+						VPMath::Vector3 afterMin = mesh->MinBounding * s;
+
+						if (afterMax.x > max.x)
+						{
+							max.x = afterMax.x;
+						}
+
+						if (afterMax.y > max.y)
+						{
+							max.y = afterMax.y;
+						}
+
+						if (afterMax.z > max.z)
+						{
+							max.z = afterMax.z;
+						}
+					}
+						DirectX::BoundingOrientedBox obbInfo;
+
+						obbInfo.Center = t;
+						obbInfo.Extents = VPMath::XMFLOAT3(fabs(max.x), fabs(max.y), fabs(max.z));
+						obbInfo.Orientation = r;
+
+						debug::OBBInfo temp;
+						temp.OBB = obbInfo;
+
+						temp.Color = (VPMath::Color{ 1,0,0,1 });
+						DrawOBB(temp);
+
+						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+						if (contains)
+						{
+							visible |= contains;
+							//m_AfterCulling.push_back(object);
+							//break;	//바운딩박스보려고 임시 해제
+						}
+				}
+
+				if (visible)
+				{
+					object->isVisible = visible;
+					m_AfterCulling.push_back(object);
+				}
+				//break;
 			}
 		}
-
+		else
+		{
+			if (object->Filter == GeoMetryFilter::Box)
+			{
+				m_AfterCulling.push_back(object);
+			}
+		}
 	}
 }
 
@@ -569,7 +626,7 @@ std::vector<std::shared_ptr<RenderData>>::iterator GraphicsEngine::FindEntity(ui
 		}
 	}
 
-	return m_RenderVector.end();	
+	return m_RenderVector.end();
 }
 
 /// Editor

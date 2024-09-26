@@ -30,13 +30,17 @@ namespace VisPred
 			END
 		};
 
+		//fbx에 저장된 순서에 맞게 enum을 맞춰놨음
 		enum class EnemyState
 		{
+			ATTACK,
 			IDLE,
 			CHASE,
-			BACKWALK,
-			ATTACK,
+			JUMP,
+			WALK,
 			DIE,
+			ATTACKED,
+			BACKWALK,
 			DESTROY,
 			NONE,
 			END
@@ -44,7 +48,3 @@ namespace VisPred
 	}
 
 }
-
-
-
-

@@ -80,53 +80,7 @@ void DebugPass::Render()
 	XMStoreFloat4x4(&m_Proj, XMMatrixTranspose(CameraCB->m_struct.proj));
 	Device->Context()->OMSetRenderTargets(1, m_RTV.lock()->GetAddress(), DSV->Get());
 
-	for (const auto& curData : m_RenderList)
-	{
-		//bounding box
-		{
-			std::shared_ptr<ModelData> curFBX = resourceManager->Get<ModelData>(curData->FBX).lock();
-			if (curFBX != nullptr)
-			{
-
-				VPMath::Vector3 s;
-				VPMath::Quaternion r;
-				VPMath::Vector3 t;
-				curData->world.Decompose(s, r, t);
-
-				VPMath::Matrix rot = VPMath::Matrix::CreateFromQuaternion(r);
-				VPMath::Matrix scale = VPMath::Matrix::CreateScale(s);
-
-				for (auto& mesh : curFBX->m_Meshes)
-				{
-					//S
-					VPMath::Vector3 afterMax = mesh->MaxBounding * s;
-					VPMath::Vector3 afterMin = mesh->MinBounding * s;
-
-					VPMath::Vector3 distance = afterMax - afterMin;
-					VPMath::Vector3 half = distance / 2;
-
-
-
-					debug::OBBInfo obbInfo;
-					obbInfo.OBB.Center = t + afterMin + half;
-					obbInfo.OBB.Extents = half;
-					obbInfo.xAxisAngle = curData->rotation.x;
-					obbInfo.yAxisAngle = curData->rotation.y;
-					obbInfo.zAxisAngle = curData->rotation.z;
-
-					obbInfo.Color = VPMath::Color{ 1,0,0,1 };
-					debugManager->AddTask(obbInfo);
-
-				}
-
-			}
-
-		}
-
-	}
-
 	debugManager->Execute(Device, m_View, m_Proj);
-
 }
 
 void DebugPass::OnResize()
