@@ -16,8 +16,11 @@ void UIManager::Initialize(const std::shared_ptr<Device>& device,
 {
 	m_Device = device;
 	m_ResourceManager = resourceManager;
-
+#ifdef _DEBUG
 	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\KIMM_B48_HY.spritefont");
+#else
+	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B48_HY.spritefont");
+#endif
 	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_Device->Context());
 }
 
