@@ -82,21 +82,29 @@ VPEngine::~VPEngine()
 }
 void VPEngine::Addsystem()
 {
+	m_SystemManager->AddSystem<SocketSystem>();
 	m_SystemManager->AddSystem<ControllerMovementSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
 	m_SystemManager->AddSystem<NavMeshSystem>();
 	m_SystemManager->AddSystem<NavAgentSystem>();
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<LightSystem>();
+	///그래픽스
 	m_SystemManager->AddSystem<AnimationSystem>();
-	m_SystemManager->AddSystem<RenderSystem>();
+	m_SystemManager->AddSystem<MeshSystem>();
+	m_SystemManager->AddSystem<SkinnedMeshSystem>();
+	m_SystemManager->AddSystem <GeometrySystem>();
+	m_SystemManager->AddSystem <UISystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
 	m_SystemManager->AddSystem<LifeTimeSystem>();
+
 
 }
 void VPEngine::OnAddSystemLater(std::any)
 {
 	m_TransformSystem = m_SystemManager->AddSystem<TransformSystem>();
+	m_SystemManager->AddSystem<RenderSystem>();
+
 }
 void VPEngine::Loop()
 {
@@ -125,22 +133,31 @@ void VPEngine::Loop()
 		else
 		{
 			Update();
-			static float tempTime = 0;
-			tempTime += m_DeltaTime;
-			while (tempTime > (1 / 90.f))
-			{
-				m_SystemManager->RenderUpdate(m_DeltaTime);
-				m_Graphics->Update(m_DeltaTime);
-				Render();
-				EndRender();
-				tempTime -= (1 / 90.f);
-			}
+			Render();
+			/*
+			//Fixed
+			//Update
+			//소켓 
+			//static float tempTime = 0;
+			//tempTime += m_DeltaTime;
+			//while (tempTime > (1 / 60.f))
+			//{
+			//	//m_SystemManager->RenderUpdate(tempTime);
+			//	m_SystemManager->BeginRenderUpdate(tempTime);
+			//	m_Graphics->CulingUpdate(tempTime);
+			//	m_Graphics->Update(tempTime);
+			//	Render();
+			//	EndRender();
+
+			//	tempTime -= (1 / 60.f);
+			//}
 
 			//// 사용자가 ESC키를 눌렀는지 확인 후 종료 처리함
 			//if (InputManager::GetInstance().IsEscapePressed())
 			//{
 			//	break;
 			//}
+			*/
 		}
 	}
 }
@@ -157,7 +174,7 @@ void VPEngine::Update()
 	EventManager::GetInstance().Update(m_DeltaTime);
 	InputManager::GetInstance().Update();
 
-	m_SystemManager->PhysicUpdatable(m_DeltaTime);
+	m_SystemManager->PhysicUpdate(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
@@ -167,22 +184,39 @@ void VPEngine::Update()
 		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
 		SetWindowTextW(m_hWnd, newname.c_str());
 	}
-
 }
-
-
 void VPEngine::Render()
 {
-	m_Graphics->BeginRender();
-	m_Graphics->Render();
+	RenderUpdate();
+	BeginRender();
+	EndRender();
 }
 
+void VPEngine::RenderUpdate()
+{
+	m_SystemManager->RenderSystemUpdate(m_DeltaTime);
+}
+
+void VPEngine::BeginRender()
+{
+	m_SystemManager->BeginRender();
+}
+
+bool VPEngine::ImguiBeginRender()
+{
+	return m_SystemManager->ImguiBeginRender();
+}
+
+void VPEngine::ImguiEndRender()
+{
+	m_SystemManager->ImguiEndRender();
+}
 
 void VPEngine::EndRender()
 {
-	m_Graphics->EndRender();
-}
+	m_SystemManager->EndRender();
 
+}
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 

@@ -180,23 +180,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, m_UsingMaterial.lock()->GetAddress());
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
-
-
-	//LightMap
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			std::wstring index = std::to_wstring(i);
-			std::wstring text = L"Lightmap-";
-			text = text + index;
-			text = text + L"_comp_light.png";
-
-
-			//Create<ShaderResourceView>(L"Lightmap-0_comp_light.png", L"Lightmap-0_comp_light.png");
-			//Create<ShaderResourceView>(text,text);
-		}
-
-	}
 }
 
 void ResourceManager::OnResize(RECT& wndsize)

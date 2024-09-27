@@ -8,7 +8,7 @@ public:
 	void Initialize();
 	void AddSystems();
 	virtual void Update();
-	virtual void Render();
+	virtual void RenderUpdate();
 
 
 };

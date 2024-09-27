@@ -10,6 +10,7 @@ namespace Physic
 {
 	class IPhysx;
 }
+struct Component;
 class IPhysicable
 {
 public:
@@ -39,11 +40,19 @@ public:
 class IRenderable
 {
 public:
+	virtual void BeginRenderUpdate(float deltaTime) = 0;
 	virtual void RenderUpdate(float deltaTime) = 0;
+	virtual void LateRenderUpdate(float deltaTime) = 0;
+	virtual void EditorRenderUpdate(float deltaTime) = 0;
 	virtual void SetGraphics(Graphics::Interface* Graphics) { m_Graphics= Graphics; }
 	Graphics::Interface* m_Graphics = nullptr;
 };
-
+class ICompAddable
+{
+public:
+	virtual void ComponentAdded(Component* comp) = 0;
+	virtual void ComponentReleased(Component* comp) = 0;
+};
 
 class IStartable
 {

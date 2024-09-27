@@ -40,9 +40,14 @@ public:
 
 	bool Initialize() override;
 	void Update(double dt) override;
+	void CulingUpdate() override;
+	void AnimationUpdate(double dt) override;
+	void EndUpdate(double dt) override;
 	bool Finalize() override;
 	void BeginRender() override;
 	void Render() override;
+	void ImguiBeginRender() override;
+	void ImguiEndRender() override;
 	void EndRender() override;
 
 	void OnResize(HWND hwnd) override;
@@ -54,7 +59,7 @@ public:
 	void EraseObject(uint32_t EntityID) override;
 	void UpdateModel(uint32_t EntityID)override;
 	const double GetDuration(std::wstring name, int index) override;
-	virtual const VPMath::Matrix Attachment(const uint32_t entityID) override;
+	virtual const VPMath::Matrix Attachment(const uint32_t entityID, const std::wstring socketName) override;
 	virtual void SetVP(bool isVP) override;
 
 
@@ -140,4 +145,5 @@ private:
 	void BeginImGui();
 	void EndImGui();
 	void DestroyImGui();
+
 };

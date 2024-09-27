@@ -11,7 +11,7 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
     EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
     EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData), EventType::SCENE);
     EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&TransformSystem::OnAddedComponent));
-    
+    EventManager::GetInstance().Subscribe("OnUpdate", CreateSubscriber(&TransformSystem::OnUpdate));    
 }
 void TransformSystem::OnAddedComponent(std::any data)
 {
@@ -28,6 +28,12 @@ std::vector<TransformComponent*> TransformSystem::newupdatevector;
 void TransformSystem::Update(float deltaTime)
 {
     newUpdate();
+}
+
+void TransformSystem::OnUpdate(std::any)
+{
+    newUpdate();
+
 }
 
 void TransformSystem::UpdateAllEntitys()
@@ -348,35 +354,52 @@ void TransformSystem::UpdatePreviousLocalTransform(TransformComponent* transform
     transform->Previous_Location = transform->Local_Location;
 }
 
-////void TransformSystem::Initialize()
-////{
-////    UpdateAllEntitys();
-////}
-//
-//void TransformSystem::Start(uint32_t gameObjectId)
-//{
-//
-//}
-//
-//void TransformSystem::Finish(uint32_t gameObjectId)
-//{
-//}
-//
-//void TransformSystem::Finalize()
-//{
-//
-//}
+
+void TransformSystem::BeginRenderUpdate(float deltaTime)
+{
+
+}
 
 void TransformSystem::RenderUpdate(float deltaTime)
 {
-    for (TransformComponent&  comp : COMPITER(TransformComponent))
+    for (TransformComponent& comp : COMPITER(TransformComponent))
     {
         debug::OBBInfo obbinfo{};
         obbinfo.OBB.Center = comp.World_Location;
-        obbinfo.OBB.Extents = {0.2f,0.2f ,0.2f };
-        obbinfo.xAxisAngle = comp.World_Rotation.x; 
+        obbinfo.OBB.Extents = { 0.2f,0.2f ,0.2f };
+        obbinfo.xAxisAngle = comp.World_Rotation.x;
         obbinfo.yAxisAngle = comp.World_Rotation.y;
         obbinfo.zAxisAngle = comp.World_Rotation.z;
         m_Graphics->DrawOBB(obbinfo);
     }
 }
+
+void TransformSystem::LateRenderUpdate(float deltaTime)
+{
+}
+
+void TransformSystem::EditorRenderUpdate(float deltaTime)
+{
+    RenderUpdate(deltaTime);
+}
+
+
+
+
+void TransformSystem::Initialize()
+{
+}
+
+void TransformSystem::Start(uint32_t gameObjectId)
+{
+}
+
+void TransformSystem::Finish(uint32_t gameObjectId)
+{
+}
+
+void TransformSystem::Finalize()
+{
+    newupdatevector.clear();
+}
+

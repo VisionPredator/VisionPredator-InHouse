@@ -219,6 +219,24 @@
     <ClInclude Include="TextComponent.h">
       <Filter>자체 엔진\Entity\Component\Header</Filter>
     </ClInclude>
+    <ClInclude Include="GeometrySystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMeshSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketComponent.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UISystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -334,6 +352,27 @@
     </ClCompile>
     <ClCompile Include="DataRegister_Engine.cpp">
       <Filter>DataRegist</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometrySystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMeshSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketComponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UISystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleComponent.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,7 @@ public:
 	void SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q);
 	VPMath::Vector3 GetVelocity(uint32_t entityID);
 	void AddVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V);
+	void SetVelocity(uint32_t entityID, const VPMath::Vector3& dir = {}, float V=0);
 	VPMath::Vector3 GetGobalLocation(uint32_t entityID);
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID);
 	uint32_t FindIDByActor(physx::PxRigidActor* Actor);
@@ -43,6 +44,7 @@ public:
 	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
 	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
 	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	uint32_t RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
 private:
 	physx::PxRigidActor* FindActorByID(uint32_t entityID);
 	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);

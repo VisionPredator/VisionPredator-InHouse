@@ -1,15 +1,17 @@
 #pragma once
 #include "System.h"
 #include "VisPredComponents.h"
+#include "EventSubscriber.h"
 
 class PlayerUISystem
 	: public System
 	, public IUpdatable
 	, public IStartable
+	, public EventSubscriber
 {
 public:
-	PlayerUISystem();
-	~PlayerUISystem() override;
+	PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager);
+	~PlayerUISystem() override = default;
 
 	void Update(float deltaTime) override;
 	void Initialize() override;
@@ -22,5 +24,6 @@ public:
 	void UpdateAim(const PlayerComponent& playerComponent);
 	void UpdateWeapon(const PlayerComponent& playerComponent);
 
-
+	// Event
+	void OnGunShoot(std::any data);
 };

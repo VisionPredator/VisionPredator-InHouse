@@ -219,8 +219,11 @@ uint32_t PhysxEngine::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector
 
 uint32_t PhysxEngine::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
-	m_RigidBodyManager->RaycastToHitActorFromLocation(location, dir, distance);
-	return 0;
+	return m_RigidBodyManager->RaycastToHitActorFromLocation(location, dir, distance);
+}
+uint32_t PhysxEngine::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	return  m_RigidBodyManager->RaycastToHitActorFromLocation_Ignore(entityID, location, dir, distance);
 }
 
 
@@ -266,6 +269,10 @@ void PhysxEngine::ApplyPhysicEngineInfo()
 void PhysxEngine::AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity)
 {
 	m_RigidBodyManager->AddVelocity(entityID, Dir, velocity);
+}
+void PhysxEngine::SetVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity)
+{
+	m_RigidBodyManager->SetVelocity(entityID, Dir, velocity);
 }
 
 void PhysxEngine::AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power)

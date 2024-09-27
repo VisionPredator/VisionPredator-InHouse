@@ -40,7 +40,7 @@ void LightSystem::OnReleasedComponent(std::any data)
 }
 
 
-void LightSystem::RenderUpdate(float deltaTime)
+void LightSystem::BeginRenderUpdate(float deltaTime)
 {
 	for (LightComponent& lightComp : COMPITER(LightComponent))
 	{
@@ -82,4 +82,17 @@ void LightSystem::RenderUpdate(float deltaTime)
 		m_Graphics->DrawRay(ray);
 
 	}
+}
+
+void LightSystem::EditorRenderUpdate(float deltaTime)
+{
+	BeginRenderUpdate(deltaTime);
+}
+
+void LightSystem::RenderUpdate(float deltaTime)
+{
+}
+
+void LightSystem::LateRenderUpdate(float deltaTime)
+{
 }
