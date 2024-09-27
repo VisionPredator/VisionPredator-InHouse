@@ -194,7 +194,6 @@ void PhysicSystem::ReleaseRigidBody(uint32_t EntityID)
 	if (!entity->HasComponent<RigidBodyComponent>())
 		return;
 	m_PhysicsEngine->ReleaseActor(EntityID);
-
 }
 
 void PhysicSystem::ReleaseCapsuleController(uint32_t EntityID)
@@ -324,6 +323,9 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		{
 			m_PhysicsEngine->SetGobalPose(entityID, rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
 		}
+		VPMath::Vector3 speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
+		speed = {};
+
 	}
 
 	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))						
@@ -352,6 +354,8 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 
 		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
 		rigidBodyTransform->SetWorldQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
+	 VPMath::Vector3 speed=	m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
+	 speed = {};
 	}
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))

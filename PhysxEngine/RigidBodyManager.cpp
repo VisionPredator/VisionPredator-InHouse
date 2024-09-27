@@ -590,12 +590,44 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		VPMath::Vector3 Dir = dir;
+		float length = Dir.Length(); // 벡터의 크기를 확인
+		// 벡터의 크기가 0이면 예외 처리
+		if (length == 0.0f)
+		{
+			return;
+		}
 		Dir.Normalize();
 		PxVec3 force = { Dir.x, Dir.y, Dir.z };
 		force *= V;
 		dynamicBody->GetPxDynamicRigid()->addForce(force, PxForceMode::eACCELERATION);
 	}
 }
+
+void RigidBodyManager::SetVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V) {
+	auto temp = GetRigidBody(entityID);
+	if (!temp) {
+		assert(false);
+		return;
+	}
+	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID())) 
+	{
+		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
+		VPMath::Vector3 Dir = dir;
+		float length = Dir.Length(); // 벡터의 크기를 확인
+
+		// 벡터의 크기가 0이거나 아주 작은 경우
+		if (length < 1e-6f || V == 0.0f) {
+			dynamicBody->GetPxDynamicRigid()->setLinearVelocity({0,0,0}); // 속도 0으로 설정
+			return;
+		}
+
+		Dir.Normalize();
+		PxVec3 force = { Dir.x, Dir.y, Dir.z };
+		force *= V;
+		dynamicBody->GetPxDynamicRigid()->setLinearVelocity(force);
+	}
+}
+
 
 VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 {
@@ -781,6 +813,50 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 locatio
 	return 0;
 }
 
+uint32_t RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+	tempDir.normalize();  // 단위 벡터로 정규화
+	PxF32 max = (PxF32)distance;
+	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+
+	if (tempDir.isZero())
+		return 0;
+
+	// 주어진 위치를 PhysX의 PxVec3로 변환
+	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
+
+	// 레이캐스트 수행
+	bool find = m_Scene->raycast(
+		raypos,                                   // 시작점
+		tempDir,                                  // 단위벡터
+		max,                                      // 거리
+		buf);                                     // PxRaycastCallback& hitCall
+
+	if (!find)
+		return 0;
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
+	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
+	for (PxU32 i = 0; i < buf.nbTouches; i++)
+	{
+		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
+		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+
+		if (tempID == entityID)  // 자신과 동일한 엔티티 ID는 무시하고 다음 반복으로 넘어감
+			continue;
+		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+			return tempID;
+	}
+
+	return 0;
+}
 
 
 physx::PxRigidActor* RigidBodyManager::FindActorByID(uint32_t entityID)

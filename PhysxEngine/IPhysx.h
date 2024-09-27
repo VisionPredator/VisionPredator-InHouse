@@ -25,6 +25,7 @@ public:
 	virtual uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)abstract;
 	virtual uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)abstract;
 	virtual uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)abstract;
+	virtual uint32_t RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
 
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;
@@ -43,6 +44,7 @@ public:
 	virtual bool GetControllerIsFall(uint32_t entityID) abstract;
 
 	virtual void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) abstract;
+	virtual void SetVelocity(uint32_t entityID, VPMath::Vector3 Dir = {}, float velocity = 0) abstract;
 	virtual VPMath::Vector3 GetVelocity(uint32_t entityID)abstract;
 	virtual void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) abstract;
 	virtual void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) abstract;

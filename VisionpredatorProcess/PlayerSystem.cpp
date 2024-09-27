@@ -10,15 +10,18 @@ void PlayerSystem::Update(float deltaTime)
 	COMPLOOP(PlayerComponent, playercomp)
 	{
 		Calculate_FSM(playercomp);
-		RaycastTest(playercomp);
 		Action_FSM(playercomp, deltaTime);
+		ToVPMode(playercomp);
+		GrabGun(playercomp);
 	}
 }
 void PlayerSystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(PlayerComponent, playercomp)
 	{
-		GunCooltime(playercomp);
+		GunCooltime(playercomp, deltaTime);
+		if (!playercomp.HasGun)
+			SearchingItem(playercomp);
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 
@@ -29,54 +32,78 @@ void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
 }
 
-void PlayerSystem::RaycastTest(PlayerComponent& playercomp)
+void PlayerSystem::SearchingItem(PlayerComponent& playercomp)
 {
+	///이전에 감지했던 물체가 총이라면 레이아웃 끄기.
+	auto presearchedentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+	if (presearchedentity && presearchedentity->HasComponent<GunComponent>())
+		presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
-	if (!posEntity)
-		return;
-	if (!posEntity->HasComponent<CameraComponent>())
+	if (!posEntity || !posEntity->HasComponent<CameraComponent>())
 		return;
 	auto cameratransform = posEntity->GetComponent<TransformComponent>();
 	auto front = cameratransform->FrontVector;
-	uint32_t racastedEntityID = m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 100);
-	auto gunentity = GetSceneManager()->GetEntity(racastedEntityID);
+	playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(playercomp.GetEntityID(), cameratransform->World_Location, front, 100);
+	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
 	if (gunentity && gunentity->HasComponent<GunComponent>())
-	{
-		gunentity->GetComponent<MeshComponent>()->MaskColor = {255,0,0,255};
+		gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
+	debug::RayInfo frontInfo{};
+	frontInfo.Color = { 0,0,1,1 };
+	frontInfo.Origin = cameratransform->World_Location;
+	frontInfo.Direction = 10 * cameratransform->FrontVector;
+	frontInfo.Normalize = false;
+	m_Graphics->DrawRay(frontInfo);
 
+
+
+}
+
+void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
+{
+	static bool temp = false;
+	if (INPUTKEYDOWN(KEYBOARDKEY::Z))
+	{
+		temp = !temp;
+		m_Graphics->SetVP(temp);
 	}
+
+
+}
+
+void PlayerSystem::GrabGun(PlayerComponent& playercomp)
+{
 	if (INPUTKEYDOWN(KEYBOARDKEY::R))
 	{
-		auto posEntity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
-		if (!posEntity)
+
+		if (playercomp.HasGun)
 			return;
-		if (!posEntity->HasComponent<CameraComponent>())
+		auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+		if (!gunentity || !gunentity->HasComponent<GunComponent>())
 			return;
-		auto cameratransform = posEntity->GetComponent<TransformComponent>();
-		auto front = cameratransform->FrontVector;
-		std::cout << m_PhysicsEngine->RaycastToHitActor(playercomp.GetEntityID(), front, 100);
-		GrabGun(playercomp, racastedEntityID);
+
+		auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
+		if (!socketentity)
+			return;
+		auto guncomp = gunentity->GetComponent<GunComponent>();
+		auto soceketcomp = socketentity->GetComponent<SocketComponent>();
+		soceketcomp->IsConnected = true;
+		soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
+		playercomp.HasGun = true;
+		playercomp.GunEntityID = guncomp->GetEntityID();
+		guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 	}
 
 }
 
-void PlayerSystem::GrabGun(PlayerComponent& playercomp, uint32_t gunEntityID)
+void PlayerSystem::GunShoot(PlayerComponent& playercomp)
 {
-	if (playercomp.HasGun)
-		return;
-	auto gunentity = GetSceneManager()->GetEntity(gunEntityID);
-	if (!gunentity || !gunentity->HasComponent<GunComponent>())
+	if (!playercomp.HasGun)
 		return;
 
-	auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
-	if (!socketentity)
-		return;
-	auto guncomp = gunentity->GetComponent<GunComponent>();
-	auto soceketcomp = socketentity->GetComponent<SocketComponent>();
-	soceketcomp->IsConnected = true;
-	soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
-	playercomp.HasGun = true;
-	playercomp.GunEntityID = guncomp->GetEntityID();
+}
+
+void PlayerSystem::GunThrow(PlayerComponent& playercomp)
+{
 }
 
 
@@ -90,6 +117,8 @@ void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 	{
 		if (!comp.HasGun)
 			return;
+
+
 		auto posEntity = GetSceneManager()->GetChildEntityByName(comp.GetEntityID(), comp.FirePosition);
 		if (!posEntity)
 			return;
@@ -100,42 +129,43 @@ void PlayerSystem::PlayerShoot(PlayerComponent& comp)
 		m_SceneManager.lock()->SpawnPrefab("../Data/Prefab/cube.prefab", temppos, temprotatin, tempscale);
 	}
 }
+
 void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
-	ControllerComponent& controllercomp=  *playercomp.GetComponent<ControllerComponent>();
+	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
 	//controllercomp.Acceleration= playercomp.Accel;
 	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
 	controllercomp.JumpSpeed = playercomp.JumpFoce;
 	controllercomp.StaticFriction = playercomp.StaticFriction;
 	controllercomp.DynamicFriction = playercomp.DynamicFriction;
-	controllercomp.JumpXZAcceleration = controllercomp.Acceleration *playercomp.AirControlPercent/100;
-	controllercomp.GravityWeight = playercomp.GravityPower* 9.80665;
+	controllercomp.JumpXZAcceleration = controllercomp.Acceleration * playercomp.AirControlPercent / 100;
+	controllercomp.GravityWeight = playercomp.GravityPower * 9.80665;
 }
 void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 {
 	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
 	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.height, controllercomp.CapsuleControllerinfo.radius);
 }
-void PlayerSystem::CrouchModeController(PlayerComponent & playercomp)
+void PlayerSystem::CrouchModeController(PlayerComponent& playercomp)
 {
 	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
 	controllercomp.Contollerinfo.LocalOffset.y = -playercomp.SitHeightDiff;
 	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.radius, playercomp.SitHeight);
 }
-void PlayerSystem::DefalutModeController(PlayerComponent & playercomp)
+void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
 {
 	ControllerComponent& controllercomp = *playercomp.GetComponent<ControllerComponent>();
 	controllercomp.Contollerinfo.LocalOffset.y = 0;
 	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.radius, controllercomp.CapsuleControllerinfo.height);
 }
-void PlayerSystem::DownCamera(PlayerComponent & playercomp,float deltatime)
+void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 {
 	auto cameraentity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
 	if (!cameraentity)
 		return;
-	auto& cameracomp =  *cameraentity->GetComponent<TransformComponent>();
+	auto& cameracomp = *cameraentity->GetComponent<TransformComponent>();
 	///카메라와 앉은 위치의 pos 와의 거리가 0.01 보다 작을 때.
-	if ((playercomp.SitCameraPos - cameracomp.Local_Location).Length()<0.01f)
+	if ((playercomp.SitCameraPos - cameracomp.Local_Location).Length() < 0.01f)
 	{
 		playercomp.SitCameraPos = cameracomp.Local_Location;
 		playercomp.CamTransProgress = 0;
@@ -144,7 +174,7 @@ void PlayerSystem::DownCamera(PlayerComponent & playercomp,float deltatime)
 	{
 		playercomp.CamTransProgress += deltatime;
 		VPMath::Vector3 Temp{};
-		if (playercomp.CamTransProgress>= playercomp.CamTransDuration)
+		if (playercomp.CamTransProgress >= playercomp.CamTransDuration)
 		{
 			playercomp.CamTransProgress = playercomp.CamTransDuration;
 		}
@@ -200,19 +230,19 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 
 void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
 {
-	
-	if (playercomp.GetEntityID()!= controllercomp.GetEntityID())
+
+	if (playercomp.GetEntityID() != controllercomp.GetEntityID())
 		return;
-	if (controllercomp.InputDir.Length() <0.01f)
+	if (controllercomp.InputDir.Length() < 0.01f)
 		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
 	else
-	playercomp.SlideDir = controllercomp.InputDir;
+		playercomp.SlideDir = controllercomp.InputDir;
 
 }
 
 #pragma region FSM Calculate
 
-void PlayerSystem::Calculate_FSM(PlayerComponent & playercomp)
+void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 {
 	switch (playercomp.CurrentFSM)
 	{
@@ -251,7 +281,7 @@ void PlayerSystem::Calculate_FSM(PlayerComponent & playercomp)
 void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 {
 	///뛰기
-	if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT)||INPUTKEY(KEYBOARDKEY::LSHIFT)) 
+	if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))
 		&& INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 	{
 		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
@@ -268,8 +298,8 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		CrouchModeController(playercomp);
 		if (playercomp.HasComponent<ControllerComponent>())
 		{
-		auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
-		SetSlideDir(playercomp, controllercomp);
+			auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+			SetSlideDir(playercomp, controllercomp);
 		}
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
 	}
@@ -279,7 +309,7 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
 	}
 	///점프
-	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE)|| playercomp.GetComponent<ControllerComponent>()->IsFall)
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 
 }
@@ -352,7 +382,7 @@ void PlayerSystem::Calculate_Crouch(PlayerComponent& playercomp)
 }
 void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 {
-	if (playercomp.SlideProgress>= playercomp.SlideDuration)
+	if (playercomp.SlideProgress >= playercomp.SlideDuration)
 	{
 		playercomp.SlideProgress = 0;
 		DefalutModeController(playercomp);
@@ -393,7 +423,7 @@ void PlayerSystem::Action_FSM(PlayerComponent& playercomp, float deltaTime)
 		Action_Crouch(playercomp);
 		break;
 	case VisPred::Game::EFSM::SLIDE:
-		Action_Slide(playercomp,deltaTime);
+		Action_Slide(playercomp, deltaTime);
 		break;
 	case VisPred::Game::EFSM::JUMP:
 		Action_Jump(playercomp);
@@ -420,13 +450,13 @@ void PlayerSystem::Action_Idle(PlayerComponent& playercomp)
 	Animation(playercomp.PlayerHandID, 0);
 }
 
-void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
+void PlayerSystem::Action_Slide(PlayerComponent& playercomp, float deltatime)
 {
 	///지면 기준에서 하기.
 	///Input이 있을경우에는 그 방향으로 이동해야함.
 	/// 콜라이더 오프셋 기능 추가.
 	if (!playercomp.HasComponent<ControllerComponent>())
-		return; 
+		return;
 
 	auto& controller = *playercomp.GetComponent<ControllerComponent>();
 	auto& transcomp = *playercomp.GetComponent<TransformComponent>();
@@ -440,7 +470,7 @@ void PlayerSystem::Action_Slide(PlayerComponent& playercomp,float deltatime)
 	controller.InputDir = playercomp.SlideDir;
 	//Move_Walk(transcomp, playercomp, controllercomp);
 	Move_Rotation(playercomp, transcomp);
-	
+
 }
 
 void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
@@ -492,7 +522,7 @@ void PlayerSystem::Action_Jump(PlayerComponent& playercomp)
 
 void PlayerSystem::Action_Attack(PlayerComponent& playercomp)
 {
-	
+
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Move_Walk(transfomcomp, playercomp, Controller);
@@ -550,10 +580,6 @@ void PlayerSystem::Shoot_Style(PlayerComponent& playercomp)
 
 void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp)
 {
-
-
-
-
 }
 void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp)
 {
@@ -563,8 +589,18 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp)
 {
 }
 
-void PlayerSystem::GunCooltime(PlayerComponent& playercomp)
+void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
 {
+	if (!playercomp.HasGun)
+		playercomp.GunprogressTime += deltatime;
+	else
+	{
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		if (playercomp.GunprogressTime > gunComp->CoolTime)
+			playercomp.GunprogressTime = gunComp->CoolTime;
+		else
+			playercomp.GunprogressTime += deltatime;
+	}
 }
 
 #pragma endregion
@@ -572,7 +608,7 @@ void PlayerSystem::GunCooltime(PlayerComponent& playercomp)
 #pragma region Move Logic
 
 void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp)
-{							 
+{
 	controllercomp.InputDir.x = {};
 	controllercomp.InputDir.z = {};
 	if (INPUTKEY(KEYBOARDKEY::W))
@@ -620,7 +656,7 @@ void PlayerSystem::Move_Rotation(PlayerComponent& playercomp, TransformComponent
 void PlayerSystem::Move_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
 {
 	controllercomp.InputDir.y = {};
-	if (INPUTKEYDOWN(KEYBOARDKEY::SPACE)|| INPUTKEY(KEYBOARDKEY::SPACE))
+	if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || INPUTKEY(KEYBOARDKEY::SPACE))
 		controllercomp.InputDir += transformcomp.UpVector;
 }
 
@@ -654,7 +690,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			playercomp->SitCameraPos = playercomp->DefalutCameraPos;
 		}
 		else
-			VP_ASSERT(false,"player의 카메라가 감지되지 않습니다.");
+			VP_ASSERT(false, "player의 카메라가 감지되지 않습니다.");
 
 		if (playercomp->HasComponent<ControllerComponent>())
 		{
@@ -672,8 +708,8 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
 		}
 		else
-			VP_ASSERT(false,"player의 Controller가 감지되지 않습니다.");
-	
+			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
+
 	};
 
 }
@@ -681,6 +717,22 @@ void PlayerSystem::Finish(uint32_t gameObjectId)
 {
 }
 void PlayerSystem::Finalize()
+{
+}
+
+void PlayerSystem::BeginRenderUpdate(float deltaTime)
+{
+}
+
+void PlayerSystem::RenderUpdate(float deltaTime)
+{
+}
+
+void PlayerSystem::LateRenderUpdate(float deltaTime)
+{
+}
+
+void PlayerSystem::EditorRenderUpdate(float deltaTime)
 {
 }
 

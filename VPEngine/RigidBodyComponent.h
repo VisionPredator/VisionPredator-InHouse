@@ -14,6 +14,7 @@ struct RigidBodyComponent :
     VPPhysics::CapsuleColliderInfo CapsuleInfo{};
     VPPhysics::ConvexColliderInfo ConvexColliderInfo{};
     VPPhysics::ColliderInfo DefaultColliderInfo{};
+    VPMath::Vector3 Speed{};
 
 };
 
