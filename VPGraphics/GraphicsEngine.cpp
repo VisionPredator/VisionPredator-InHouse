@@ -495,7 +495,7 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_RTVs.clear();
 	m_DSVs.clear();
 
-	m_Device->OnResize();
+	m_Device->OnResize();	//alt enter ´©¸£¸é create swapchain ÅÍÁü
 	m_ResourceManager->OnResize(m_wndSize);
 	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
 
