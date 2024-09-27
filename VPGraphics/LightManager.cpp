@@ -3,6 +3,9 @@
 #include "ResourceManager.h"
 #include "Desc.h"
 
+#include <iostream>
+#include <filesystem>
+
 LightManager::~LightManager()
 {
 	m_LightMap.clear();
@@ -14,15 +17,35 @@ void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 	//m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png"));
 
 
-	for (int i = 0; i < 4; i++)
+	std::string path;
+#ifdef _DEBUG
+	path = "..\\..\\..\\Resource\\LightMap";
+#else
+	path = "..\\Data\\LightMap";
+#endif
+
+	if (!std::filesystem::exists(path))
 	{
-		std::wstring index = std::to_wstring(i);
-		std::wstring text = L"Lightmap-";
-		text = text + index;
-		text = text + L"_comp_light.png";
+		//디렉토리 없으면 만들기
+		std::filesystem::create_directories(path);
+	}
+	else
+	{
+		std::vector<std::string> filelist;
 
-		m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(text));
+		for (const auto& entry : std::filesystem::directory_iterator(path))
+		{
+			std::string filename = std::filesystem::path(entry).filename().string();
+			filelist.push_back(filename);
+		}
 
+		for (auto& file : filelist)
+		{
+			std::wstring wfilename;
+			wfilename.assign(file.begin(), file.end());
+
+			m_LightMap.push_back(manager.lock()->Create<ShaderResourceView>(wfilename, wfilename));
+		}
 	}
 
 }
@@ -94,9 +117,9 @@ void LightManager::Update(std::unordered_map<uint32_t, LightData>& usinglight)
 
 	for (int i = 0; i < pointIndex; i++)
 	{
-		m_BufferStruct.array[dirIndex+ spotIndex + i] = point[i];
+		m_BufferStruct.array[dirIndex + spotIndex + i] = point[i];
 	}
-	
+
 	std::shared_ptr<ConstantBuffer<LightArray>> cbuffer = m_ResourceManager.lock()->Get<ConstantBuffer<LightArray>>(L"LightArray").lock();
 	cbuffer->Update(m_BufferStruct);
 }
