@@ -633,7 +633,7 @@
         "DivisionSizeY": 0.20000000298023224,
         "MaxAgentRadius": 199.0,
         "MaxCrowdNumber": 64,
-        "UseNavMesh": true,
+        "UseNavMesh": false,
         "WalkableClimb": 1.0,
         "WalkableHeight": 1.0,
         "WalkableSlopeAngle": 30.0

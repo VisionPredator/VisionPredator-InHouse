@@ -98,6 +98,12 @@ void SocketSystem::RenderUpdate(float deltaTime)
 
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);
+		if (tempsworld.Length()<1)
+		{
+			int a = 5;
+			finalMatrix.Decompose(tempscale, tempQuater, tempsworld);
+
+		}
 		temptrnasform->SetWorldQuaternion(tempQuater);
 		if (socketcomp.HasComponent<RigidBodyComponent>())
 		{

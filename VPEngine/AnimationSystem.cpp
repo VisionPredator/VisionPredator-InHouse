@@ -30,10 +30,7 @@ void AnimationSystem::BeginRenderUpdate(float deltaTime)
 						aniComp.duration = curDuration;
 					}
 				}
-				else
-				{
-					int a = 0;
-				}
+
 			}
 			else
 			{
