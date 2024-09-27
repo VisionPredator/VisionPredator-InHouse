@@ -91,8 +91,8 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 		scratchImage = std::move(mipChain);  // ¹Ó¸ÊÀÌ Æ÷ÇÔµÈ ÅØ½ºÃ³·Î ±³Ã¼
 
 		D3D11_TEXTURE2D_DESC textureDesc = {};
-		textureDesc.Width = metadata.width;
-		textureDesc.Height = metadata.height;
+		textureDesc.Width = static_cast<UINT>(metadata.width);
+		textureDesc.Height = static_cast<UINT>(metadata.height);
 		textureDesc.MipLevels = static_cast<UINT>(scratchImage.GetImageCount()); // ¹Ó¸Ê ·¹º§ ¼ö
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = metadata.format;
@@ -106,15 +106,15 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 		{
 			const DirectX::Image* mipImage = scratchImage.GetImage(i, 0, 0);
 			subresourceData[i].pSysMem = mipImage->pixels;
-			subresourceData[i].SysMemPitch = mipImage->rowPitch;
-			subresourceData[i].SysMemSlicePitch = mipImage->slicePitch;
+			subresourceData[i].SysMemPitch = static_cast<UINT>(mipImage->rowPitch);
+			subresourceData[i].SysMemSlicePitch = static_cast<UINT>(mipImage->slicePitch);
 		}
 
 		device->Get()->CreateTexture2D(&textureDesc, subresourceData.data(), texture.GetAddressOf());
 	}
 
-	m_Width = metadata.width;
-	m_Height = metadata.height;
+	m_Width = static_cast<UINT>(metadata.width);
+	m_Height = static_cast<UINT>(metadata.height);
 
 	HR_CHECK(device->Get()->CreateShaderResourceView(texture.Get(), nullptr, m_SRV.GetAddressOf()));
 }

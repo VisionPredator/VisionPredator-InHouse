@@ -168,6 +168,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
+    <ClInclude Include="PlayerUISystem.h" />
     <ClInclude Include="TestCameraSystem.h" />
     <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
@@ -188,6 +189,7 @@
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
+    <ClCompile Include="PlayerUISystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />
