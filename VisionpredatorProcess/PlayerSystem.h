@@ -2,7 +2,7 @@
 #include <System.h>
 #include "VisPredComponents.h"
 class PlayerSystem :
-    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable
+    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable,public IRenderable
 {
 
 public:
@@ -15,8 +15,11 @@ public:
 	void FixedUpdate(float deltaTime) override;
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override;
-	void RaycastTest(PlayerComponent& playercomp);
-	void GrabGun(PlayerComponent& playercomp , uint32_t gunEntityID);
+	void SearchingItem(PlayerComponent& playercomp);
+	void ToVPMode(PlayerComponent& playercomp);
+	void GrabGun(PlayerComponent& playercomp);
+	void GunShoot(PlayerComponent& playercomp);
+	void GunThrow(PlayerComponent& playercomp);
     void PlayerShoot(PlayerComponent& playercomp);
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
@@ -95,7 +98,7 @@ public:
 	void Shoot_Pistol(PlayerComponent& playercomp);
 	void Shoot_ShotGun(PlayerComponent& playercomp);
 	void Shoot_Rifle(PlayerComponent& playercomp);
-	void GunCooltime(PlayerComponent& playercomp);
+	void GunCooltime(PlayerComponent& playercomp, float deltatime);
 #pragma endregion
 
 #pragma region Move Logic
@@ -117,6 +120,16 @@ public:
 
 	void Finalize() override;
 
+
+
+	// IRenderable을(를) 통해 상속됨
+	void BeginRenderUpdate(float deltaTime) override;
+
+	void RenderUpdate(float deltaTime) override;
+
+	void LateRenderUpdate(float deltaTime) override;
+
+	void EditorRenderUpdate(float deltaTime) override;
 
 };
 

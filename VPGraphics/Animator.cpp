@@ -123,7 +123,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				}
 			}
 		}
-		`
+		
 		//키프레임값을 못찾았다는 뜻 (틱이 마지막 틱보다 커서) 마지막 애니메이션을 넣어주자
 		if (preAni.empty())
 		{

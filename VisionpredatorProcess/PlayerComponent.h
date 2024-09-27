@@ -24,7 +24,6 @@ struct PlayerComponent :
     float JumpFoce{};
     float AirControlPercent{};
     float GravityPower = 1.f;
-    bool HasGun{};
 
 
     /// <summary>
@@ -40,8 +39,15 @@ struct PlayerComponent :
     float SlideDuration =0.5f;
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
-
+    
+    uint32_t SearchedItemID{};
     uint32_t GunEntityID{};
+
+
+
     VisPred::Game::GunType ShootType{};
+    bool HasGun{};
+    float GunprogressTime{};
+    bool ReadyToShoot{};
 };
 

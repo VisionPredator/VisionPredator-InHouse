@@ -54,6 +54,10 @@ void SocketSystem::TargetConnectedID(SocketComponent& socketcomp)
 	}
 }
 
+void SocketSystem::PhysicsUpdate(float deltaTime)
+{
+}
+
 void SocketSystem::RenderUpdate(float deltaTime)
 {
 	COMPLOOP(SocketComponent, socketcomp)
@@ -94,8 +98,21 @@ void SocketSystem::RenderUpdate(float deltaTime)
 
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);
+		if (tempsworld.Length()<1)
+		{
+			int a = 5;
+			finalMatrix.Decompose(tempscale, tempQuater, tempsworld);
+
+		}
 		temptrnasform->SetWorldQuaternion(tempQuater);
-		//temptrnasform->SetWorldScale(tempscale);
+		if (socketcomp.HasComponent<RigidBodyComponent>())
+		{
+			auto rigid = socketcomp.GetComponent<RigidBodyComponent>();
+			if (rigid->IsDynamic)
+				m_PhysicsEngine->SetVelocity(rigid->GetEntityID());
+			VPMath::Vector3 speed = m_PhysicsEngine->GetVelocity(rigid->GetEntityID());
+			speed = {};
+		}
 	}
 
 	EventManager::GetInstance().ImmediateEvent("OnUpdate");

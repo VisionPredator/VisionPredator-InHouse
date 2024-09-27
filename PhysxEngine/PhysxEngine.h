@@ -44,6 +44,7 @@ public:
 
 	// IPhysx을(를) 통해 상속됨
 	void AddVelocity(uint32_t entityID, VPMath::Vector3 Dir, float velocity) override;
+	void SetVelocity(uint32_t entityID, VPMath::Vector3 Dir = {}, float velocity = {}) override;
 
 	void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) override;
 
@@ -88,6 +89,7 @@ private:
 	uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
 	uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
 	uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	uint32_t RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
 
 
