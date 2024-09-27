@@ -14,9 +14,6 @@ LightManager::~LightManager()
 void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 {
 	m_ResourceManager = manager;
-	//m_LightMap.push_back(manager.lock()->Get<ShaderResourceView>(L"Lightmap-0_comp_light.png"));
-
-
 	std::string path;
 #ifdef _DEBUG
 	path = "..\\..\\..\\Resource\\LightMap";
