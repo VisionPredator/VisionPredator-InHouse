@@ -2,13 +2,31 @@
 #include "Common.hlsli"
 
 
-float3x3 ExtractRotationMatrix(float4x4 m)
+float3x3 ExtractRotationMatrix(float4x4 worldMatrix)
 {
-    return float3x3(
-        m[0].xyz, // X축
-        m[1].xyz, // Y축
-        m[2].xyz   // Z축
-    );
+    // 회전 행렬을 초기화
+    float3x3 rotationMatrix;
+
+    // 스케일링 벡터 추출
+    float3 scale;
+    scale.x = length(float3(worldMatrix[0][0], worldMatrix[0][1], worldMatrix[0][2]));
+    scale.y = length(float3(worldMatrix[1][0], worldMatrix[1][1], worldMatrix[1][2]));
+    scale.z = length(float3(worldMatrix[2][0], worldMatrix[2][1], worldMatrix[2][2]));
+
+    // 회전 행렬 계산 (스케일링을 제외한 회전)
+    rotationMatrix[0][0] = worldMatrix[0][0] / scale.x;
+    rotationMatrix[0][1] = worldMatrix[0][1] / scale.x;
+    rotationMatrix[0][2] = worldMatrix[0][2] / scale.x;
+
+    rotationMatrix[1][0] = worldMatrix[1][0] / scale.y;
+    rotationMatrix[1][1] = worldMatrix[1][1] / scale.y;
+    rotationMatrix[1][2] = worldMatrix[1][2] / scale.y;
+
+    rotationMatrix[2][0] = worldMatrix[2][0] / scale.z;
+    rotationMatrix[2][1] = worldMatrix[2][1] / scale.z;
+    rotationMatrix[2][2] = worldMatrix[2][2] / scale.z;
+
+    return rotationMatrix;
 }
 
 VS_OUTPUT main(VS_INPUT input)
@@ -91,18 +109,28 @@ VS_OUTPUT main(VS_INPUT input)
 
     if (useNEOL.x > 0)
     {
-        float4x4 meshWorld = gWorldInverse; //메쉬의 월드 공간
+        float3x3 meshWorld = ExtractRotationMatrix(gWorldInverse); //메쉬의 월드 공간
         
         //방향 vector
-        float3 vTangent = normalize(mul(float4(output.tangent.xyz, 0), meshWorld));
-        float3 vBitangent = normalize(mul(float4(output.bitangent.xyz, 0), meshWorld));
-        float3 vNormal = normalize(mul(float4(output.normal.xyz, 0), meshWorld));
+        float3 vTangent = normalize(mul((output.tangent.xyz), meshWorld));
+        float3 vBitangent = normalize(mul((output.bitangent.xyz), meshWorld));
+        float3 vNormal = normalize(mul((output.normal.xyz), meshWorld));
                         
         //색상 표현을 위해 점으로 저장 w == 1
         output.normal = float4(vNormal.xyz, 1);
         output.tangent = float4(vTangent.xyz, 0);
         output.bitangent = float4(vBitangent.xyz, 0);
+        
+        //float3 NormalTangentSpace = gNormal.SampleLevel(samLinear, input.tex,4).rgb;
+        //NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
+        //NormalTangentSpace = normalize(NormalTangentSpace);
+        
+        //float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
+        //float3 worldNormal = normalize(mul(NormalTangentSpace, WorldTransform));
+        //output.normal = float4(worldNormal, 1);
+        
     }
+    
     
     return output;
 }
