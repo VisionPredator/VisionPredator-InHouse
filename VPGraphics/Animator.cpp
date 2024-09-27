@@ -36,8 +36,8 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 	int curindex = curOb->curAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
 	int preindex = curOb->preAni;	//fbx안에 여러 애니메이션이 존재 어떤 애니메이션을 쓸건지 index로 지정
 
-	if (curModel == nullptr 
-		|| curModel->m_Animations.empty() 
+	if (curModel == nullptr
+		|| curModel->m_Animations.empty()
 		|| curModel->m_Animations.size() <= curindex
 		|| curModel->m_Animations.size() <= preindex
 		|| curindex < 0
@@ -64,7 +64,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				{
 					//tick이 curtick의 다음 애니메이션이다
 					//그래서 현재 재생되고 있는 애니메이션은 tick - 1
-					std::vector<std::pair<float,VPMath::Matrix>>::iterator cur;
+					std::vector<std::pair<float, VPMath::Matrix>>::iterator cur;
 					if (tick == ani->totals.begin())
 					{
 						cur = tick;
@@ -105,9 +105,9 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 		float transitionDuration = curOb->transitionDuration; //  n초 동안 전환
 		float transitionTime = curOb->duration; // 경과 시간
 		float t = (transitionTime / transitionDuration);
-		t =  1 - std::min<float>(t, 1.0f);
+		t = 1 - std::min<float>(t, 1.0f);
 		//다른 애니메이션과 blending
-		    
+
 		//이전 애니메이션 저장 공간
 		std::unordered_map<std::wstring, VPMath::Matrix> preAni;
 
@@ -119,10 +119,22 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			{
 				if (pretick < tick->first)
 				{
-					preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (tick-1)->second));
+					preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (tick - 1)->second));
 				}
 			}
 		}
+		`
+		//키프레임값을 못찾았다는 뜻 (틱이 마지막 틱보다 커서) 마지막 애니메이션을 넣어주자
+		if (preAni.empty())
+		{
+			for (auto& ani : curModel->m_Animations[preindex]->m_Channels)
+			{
+				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (ani->totals.end() - 1)->second));
+
+				
+			}
+		}
+
 
 		//현재 애니메이션 - 시작까지 사이 보간
 		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)

@@ -13,7 +13,6 @@ void AnimationSystem::BeginRenderUpdate(float deltaTime)
 	{
 		if (!aniComp.FBX.empty())
 		{
-			aniComp.duration += deltaTime * aniComp.speed;
 
 			//애니메이션 계속 재생
 			if (aniComp.preAni == aniComp.curAni)
@@ -33,10 +32,7 @@ void AnimationSystem::BeginRenderUpdate(float deltaTime)
 				}
 				else
 				{
-					if (aniComp.duration > curDuration)
-					{
-						aniComp.duration = curDuration;
-					}
+					int a = 0;
 				}
 			}
 			else
@@ -48,6 +44,7 @@ void AnimationSystem::BeginRenderUpdate(float deltaTime)
 					aniComp.duration = 0;
 				}
 			}
+			aniComp.duration += deltaTime * aniComp.speed;
 		}
 
 		auto ent = aniComp.GetEntity();
