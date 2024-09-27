@@ -64,17 +64,8 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
         NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
         NormalTangentSpace = normalize(NormalTangentSpace);
 
-        float3 normalT = normalize(2.0 * NormalTangentSpace - 1.0);
-        float3 N = normalize(input.normal.xyz);
-        float3 T = normalize(input.tangent.xyz - dot(input.tangent.xyz, N) * N);
-        float3 B = cross(N, T);
-
-        float3x3 TBN = float3x3(T, B, N);
-
-        float3 bumpedNormalW = mul(normalT, TBN);
-
         float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
-        output.Normal.xyz = bumpedNormalW;
+        output.Normal.xyz = normalize(mul(NormalTangentSpace, (WorldTransform)));
     }
 	
     output.Emissive = 0;
