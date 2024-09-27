@@ -759,7 +759,7 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 
 	v = { vertex.tangent.x,vertex.tangent.y,vertex.tangent.z };
 	v = XMVector3Transform(v, _RotX90);
-	vertex.tangent= { v.x,v.y,v.z,1 };
+	vertex.tangent= { v.x,v.y,v.z,0 };
 
 	vertex.bitangent.x = curMesh->mBitangents[index].x;
 	vertex.bitangent.y = curMesh->mBitangents[index].y;
@@ -767,7 +767,7 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 
 	v = { vertex.bitangent.x,vertex.bitangent.y,vertex.bitangent.z };
 	v = XMVector3Transform(v, _RotX90);
-	vertex.bitangent = { v.x,v.y,v.z,1 };
+	vertex.bitangent = { v.x,v.y,v.z,0 };
 
 	//texture uv channel
 	vertex.TexCord.x = curMesh->mTextureCoords[0][index].x;
