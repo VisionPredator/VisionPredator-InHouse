@@ -302,6 +302,7 @@
     <ClInclude Include="TextObject.h">
       <Filter>GraphicsEngine</Filter>
     </ClInclude>
+    <ClInclude Include="Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -478,6 +479,9 @@
     </ClCompile>
     <ClCompile Include="TextObject.cpp">
       <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Utils\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -481,7 +481,70 @@
             ]
         },
         {
-            "EntityID": 2106294342,
+            "EntityID": 4155893495,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Wall"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.7071064114570618,
+                        "x": 2.2643812158662513e-08,
+                        "y": 1.633189725680495e-07,
+                        "z": 0.7071071267127991
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        54,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 1720398024,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -508,18 +571,64 @@
                 },
                 {
                     "ChildrenID": [
-                        3742343987,
-                        1147772789,
-                        1750037134,
-                        2512812887,
-                        3259112990
+                        3956200108,
+                        1386675621,
+                        127493378,
+                        424879946,
+                        3578437176
                     ],
                     "ComponentID": 188567026
                 }
             ]
         },
         {
-            "EntityID": 3742343987,
+            "EntityID": 2501341895,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerCamera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 6.0,
+                        "z": 5.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 1000.0,
+                    "IsMain": true,
+                    "NearZ": 0.0010000000474974513
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 46320443
+                },
+                {
+                    "ChildrenID": [
+                        416429169,
+                        2500623154
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 3956200108,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -545,10 +654,6 @@
                     }
                 },
                 {
-                    "ComponentID": 1080109110,
-                    "UUID": "Weapon"
-                },
-                {
                     "Billboard": 0,
                     "BottomPercent": 0.0,
                     "Color": {
@@ -569,13 +674,17 @@
                     "TopPercent": 0.0
                 },
                 {
+                    "ComponentID": 1080109110,
+                    "UUID": "WeaponUI"
+                },
+                {
                     "ComponentID": 3243699741,
-                    "ParentID": 2106294342
+                    "ParentID": 1720398024
                 }
             ]
         },
         {
-            "EntityID": 1147772789,
+            "EntityID": 1386675621,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -601,10 +710,6 @@
                     }
                 },
                 {
-                    "ComponentID": 1080109110,
-                    "UUID": "Aim"
-                },
-                {
                     "Billboard": 0,
                     "BottomPercent": 0.0,
                     "Color": {
@@ -625,13 +730,17 @@
                     "TopPercent": 0.0
                 },
                 {
+                    "ComponentID": 1080109110,
+                    "UUID": "AimUI"
+                },
+                {
                     "ComponentID": 3243699741,
-                    "ParentID": 2106294342
+                    "ParentID": 1720398024
                 }
             ]
         },
         {
-            "EntityID": 1750037134,
+            "EntityID": 127493378,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -658,9 +767,10 @@
                 },
                 {
                     "ComponentID": 1080109110,
-                    "UUID": "Ammo"
+                    "UUID": "AmmoUI"
                 },
                 {
+                    "Angle": 0.0,
                     "Color": {
                         "w": 1.0,
                         "x": 0.7921568751335144,
@@ -703,12 +813,12 @@
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 2106294342
+                    "ParentID": 1720398024
                 }
             ]
         },
         {
-            "EntityID": 2512812887,
+            "EntityID": 424879946,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -735,21 +845,21 @@
                 },
                 {
                     "ChildrenID": [
-                        2872434647,
-                        804189808,
-                        3446191147,
-                        3139238148
+                        3065419633,
+                        3914023851,
+                        124876199,
+                        1638454072
                     ],
                     "ComponentID": 188567026
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 2106294342
+                    "ParentID": 1720398024
                 }
             ]
         },
         {
-            "EntityID": 3259112990,
+            "EntityID": 3578437176,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -776,19 +886,19 @@
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 2106294342
+                    "ParentID": 1720398024
                 },
                 {
                     "ChildrenID": [
-                        1424917984,
-                        2762206846
+                        2582224771,
+                        1944047537
                     ],
                     "ComponentID": 188567026
                 }
             ]
         },
         {
-            "EntityID": 2872434647,
+            "EntityID": 3065419633,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -814,10 +924,6 @@
                     }
                 },
                 {
-                    "ComponentID": 1080109110,
-                    "UUID": "HPGage"
-                },
-                {
                     "Billboard": 0,
                     "BottomPercent": 0.0,
                     "Color": {
@@ -838,13 +944,17 @@
                     "TopPercent": 0.0
                 },
                 {
+                    "ComponentID": 1080109110,
+                    "UUID": "HPGageUI"
+                },
+                {
                     "ComponentID": 3243699741,
-                    "ParentID": 2512812887
+                    "ParentID": 424879946
                 }
             ]
         },
         {
-            "EntityID": 804189808,
+            "EntityID": 3914023851,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -891,12 +1001,12 @@
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 2512812887
+                    "ParentID": 424879946
                 }
             ]
         },
         {
-            "EntityID": 3446191147,
+            "EntityID": 124876199,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -943,12 +1053,12 @@
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 2512812887
+                    "ParentID": 424879946
                 }
             ]
         },
         {
-            "EntityID": 3139238148,
+            "EntityID": 1638454072,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -974,6 +1084,7 @@
                     }
                 },
                 {
+                    "Angle": -5.0,
                     "Color": {
                         "w": 1.0,
                         "x": 0.7063829898834229,
@@ -1009,8 +1120,8 @@
                         116
                     ],
                     "Layer": 0,
-                    "PosXPercent": 16.600000381469727,
-                    "PosYPercent": 94.0,
+                    "PosXPercent": 15.0,
+                    "PosYPercent": 93.5,
                     "Scale": 1.0,
                     "Text": [
                         49,
@@ -1020,16 +1131,16 @@
                 },
                 {
                     "ComponentID": 1080109110,
-                    "UUID": "HPCount"
+                    "UUID": "HPCountUI"
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 2512812887
+                    "ParentID": 424879946
                 }
             ]
         },
         {
-            "EntityID": 1424917984,
+            "EntityID": 2582224771,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -1055,6 +1166,10 @@
                     }
                 },
                 {
+                    "ComponentID": 1080109110,
+                    "UUID": "VPStateUI"
+                },
+                {
                     "Billboard": 0,
                     "BottomPercent": 0.0,
                     "Color": {
@@ -1075,17 +1190,111 @@
                     "TopPercent": 0.0
                 },
                 {
-                    "ComponentID": 1080109110,
-                    "UUID": "VPState"
-                },
-                {
                     "ComponentID": 3243699741,
-                    "ParentID": 3259112990
+                    "ParentID": 3578437176
                 }
             ]
         },
         {
-            "EntityID": 2762206846,
+            "EntityID": 46320443,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Player"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -36.71483612060547,
+                        "y": 20.0,
+                        "z": 49.5970573425293
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Acceleration": 30.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 3,
+                            "LocalOffset": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "Pivot": 0
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 10.0,
+                        "position": {
+                            "x": -36.71483612060547,
+                            "y": 20.0,
+                            "z": 49.5970573425293
+                        },
+                        "radius": 5.0,
+                        "slopeLimit": 0.5,
+                        "stepOffset": 0.5
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 3,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 0
+                    },
+                    "DynamicFriction": 0.10000000149011612,
+                    "GravityWeight": 9.8100004196167,
+                    "JumpSpeed": 11.0,
+                    "JumpXZAcceleration": 1.0,
+                    "JumpXZDeceleration": 0.009999999776482582,
+                    "MaxSpeed": 10.0,
+                    "StaticFriction": 0.4000000059604645
+                },
+                {
+                    "Accel": 200.0,
+                    "AirControlPercent": 40.0,
+                    "ComponentID": 4183631247,
+                    "CurrentFSM": 0,
+                    "DynamicFriction": 0.0,
+                    "FirePosition": "Fireposition",
+                    "GravityPower": 1.0,
+                    "HP": 0,
+                    "HasGun": false,
+                    "JumpFoce": 10.0,
+                    "PlayerCameraName": "PlayerCamera",
+                    "PlayerHandName": "PlayerHand",
+                    "RunSpeed": 80.0,
+                    "Sencitive": 0.10000000149011612,
+                    "SlideDisTance": 0.0,
+                    "StaticFriction": 5.0,
+                    "WalkSpeed": 40.0
+                },
+                {
+                    "ChildrenID": [
+                        2501341895
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "Player"
+                }
+            ]
+        },
+        {
+            "EntityID": 1944047537,
             "Component": [
                 {
                     "ComponentID": 1365953231,
@@ -1112,7 +1321,7 @@
                 },
                 {
                     "ComponentID": 3243699741,
-                    "ParentID": 3259112990
+                    "ParentID": 3578437176
                 },
                 {
                     "Billboard": 0,
@@ -1133,6 +1342,109 @@
                     "Scale": 1.0,
                     "TexturePath": "eye_side.png",
                     "TopPercent": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 416429169,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerHand"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": -10.5,
+                        "z": 0.3855781555175781
+                    },
+                    "Local_Quaternion": {
+                        "w": -1.192093321833454e-07,
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999995231628418,
+                        "y": 1.0,
+                        "z": 0.9999995231628418
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "PlayerHand"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "animationList": [],
+                    "speed": 1.0,
+                    "transitionDuration": 0.20000000298023224
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2501341895
+                }
+            ]
+        },
+        {
+            "EntityID": 2500623154,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Fireposition"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2501341895
                 }
             ]
         }
