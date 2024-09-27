@@ -14,10 +14,10 @@ public:
 	~PlayerUISystem() override = default;
 
 	void Update(float deltaTime) override;
-	void Initialize() override;
-	void Start(uint32_t gameObjectId) override;
-	void Finish(uint32_t gameObjectId) override;
-	void Finalize() override;
+	void Initialize() override {};
+	void Start(uint32_t gameObjectId) override {};
+	void Finish(uint32_t gameObjectId) override {};
+	void Finalize() override {};
 
 	void UpdateHP(const PlayerComponent& playerComponent);
 	void UpdateVPState(const PlayerComponent& playerComponent);

@@ -4,7 +4,6 @@
 #include "Managers.h"
 #include "GameLogicSystem.h"
 #include "DataRegister_Vispred.h"
-#include "PlayerUISystem.h"
 
 VPProcess::VPProcess(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
