@@ -62,8 +62,8 @@ void VPOutLinePass::OnResize()
 
 	m_Screen = manager->Get<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize").lock();
 	
-	m_Screen->m_struct.x = width;
-	m_Screen->m_struct.y = height;
+	m_Screen->m_struct.x = static_cast<float>(width);
+	m_Screen->m_struct.y = static_cast<float>(height);
 	m_Screen->Update();
 
 	m_Normal = manager->Get<ShaderResourceView>(L"Normal").lock();

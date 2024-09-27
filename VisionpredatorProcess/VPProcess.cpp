@@ -2,11 +2,8 @@
 #include "VPProcess.h"
 #include "SceneManager.h"
 #include "Managers.h"
-#include "TestCameraSystem.h"
-#include "PlayerSystem.h"
+#include "GameLogicSystem.h"
 #include "DataRegister_Vispred.h"
-#include "BulletSystem.h"
-#include "EnemySystem.h"
 
 VPProcess::VPProcess(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
 {
@@ -22,10 +19,12 @@ void VPProcess::Initialize()
 
 void VPProcess::AddSystems()
 {
+	m_SystemManager->AddSystem<PlayerUISystem>();
 	m_SystemManager->AddSystem<PlayerSystem>();
 	m_SystemManager->AddSystem<TestCameraSystem>();
 	m_SystemManager->AddSystem<BulletSystem>();
 	m_SystemManager->AddSystem<EnemySystem>();
+	m_SystemManager->AddSystem<GunSystem>();
 }
 
 VPProcess::~VPProcess()

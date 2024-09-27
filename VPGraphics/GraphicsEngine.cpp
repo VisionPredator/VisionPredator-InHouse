@@ -1,6 +1,8 @@
 #include "pch.h"	
 #include "GraphicsEngine.h"
 
+#include "Log.h"
+
 #pragma region DX
 #include <d3d11.h>
 #include "Device.h"
@@ -70,6 +72,8 @@ bool GraphicsEngine::Initialize()
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	GetClientRect(m_hWnd, &m_wndSize);
+
+	Log::Init();
 
 	m_Device->Initialize(m_hWnd);
 	m_ResourceManager->Initialize(m_Device);
