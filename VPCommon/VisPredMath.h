@@ -577,6 +577,10 @@ namespace VisPred
             // Matrix operations
             bool Decompose(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept;
 
+
+            // Matrix operations
+            bool DecomposeWithFallback(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept;
+
             Matrix Transpose() const noexcept;
             void Transpose(Matrix& result) const noexcept;
 

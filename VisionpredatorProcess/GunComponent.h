@@ -12,6 +12,7 @@ struct GunComponent :
     uint32_t Bullets{};
     uint32_t Damage{};
     bool IsGrapped{};
+    bool IsEmpty = false;
     uint32_t GrappedEntityID{};
 };
 

@@ -2336,7 +2336,36 @@ inline bool Matrix::Decompose(Vector3& scale, Quaternion& rotation, Vector3& tra
 
     return true;
 }
+// Custom decomposition with fallback for irregular matrices
+inline bool Matrix::DecomposeWithFallback(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept {
+    using namespace DirectX;
 
+    // Extract translation
+    translation = { _41, _42, _43 };
+
+    // Extract scale (handle potential zero or irregular scales)
+    scale.x = sqrtf(_11 * _11 + _12 * _12 + _13 * _13);
+    scale.y = sqrtf(_21 * _21 + _22 * _22 + _23 * _23);
+    scale.z = sqrtf(_31 * _31 + _32 * _32 + _33 * _33);
+
+    // Handle cases where scale is very small (near-zero values)
+    if (scale.x < FLT_EPSILON) scale.x = 0.0001f;  // Assign minimal value to avoid division by zero
+    if (scale.y < FLT_EPSILON) scale.y = 0.0001f;
+    if (scale.z < FLT_EPSILON) scale.z = 0.0001f;
+
+    // Remove scale from the matrix to get the rotation part
+    Matrix rotationMatrix = *this;
+
+    // Normalize each row to remove scaling
+    rotationMatrix._11 /= scale.x; rotationMatrix._12 /= scale.x; rotationMatrix._13 /= scale.x;
+    rotationMatrix._21 /= scale.y; rotationMatrix._22 /= scale.y; rotationMatrix._23 /= scale.y;
+    rotationMatrix._31 /= scale.z; rotationMatrix._32 /= scale.z; rotationMatrix._33 /= scale.z;
+
+    // Convert the rotation matrix to a quaternion
+    rotation = Quaternion::CreateFromRotationMatrix(rotationMatrix);
+
+    return true;
+}
 inline Matrix Matrix::Transpose() const noexcept
 {
     using namespace DirectX;

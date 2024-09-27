@@ -17,10 +17,9 @@ public:
 	void PhysicsUpdate(float deltaTime) override;
 	void SearchingItem(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
-	void GrabGun(PlayerComponent& playercomp);
-	void GunShoot(PlayerComponent& playercomp);
-	void GunThrow(PlayerComponent& playercomp);
-    void PlayerShoot(PlayerComponent& playercomp);
+
+
+
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
 	void UpdateControllerSize(PlayerComponent& playercomp);
@@ -45,61 +44,67 @@ public:
 #pragma endregion
 
 #pragma region FSM Action
-	void Action_FSM(PlayerComponent& playercomp, float deltaTime);
-	void Action_Idle(PlayerComponent& playercomp);
-	void Action_Walk(PlayerComponent& playercomp);
-	void Action_Run(PlayerComponent& playercomp);
-	void Action_Crouch(PlayerComponent& playercomp);
-	void Action_Slide(PlayerComponent& playercomp,float deltatime);
-	void Action_Jump(PlayerComponent& playercomp);
-	void Action_Attack(PlayerComponent& playercomp);
-	void Action_Die(PlayerComponent& playercomp);
-	void Action_Destroy(PlayerComponent& playercomp);
+	void FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime);
+	void FSM_Action_Idle(PlayerComponent& playercomp);
+	void FSM_Action_Walk(PlayerComponent& playercomp);
+	void FSM_Action_Run(PlayerComponent& playercomp);
+	void FSM_Action_Crouch(PlayerComponent& playercomp);
+	void FSM_Action_Slide(PlayerComponent& playercomp,float deltatime);
+	void FSM_Action_Jump(PlayerComponent& playercomp);
+	void FSM_Action_Attack(PlayerComponent& playercomp);
+	void FSM_Action_Die(PlayerComponent& playercomp);
+	void FSM_Action_Destroy(PlayerComponent& playercomp);
 #pragma endregion
 #pragma region Animation Change
-	void ChangeAniToAttack_Pistol	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToAttack_Pistol	); };
-	void ChangeAniToAttack_Rifle	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToAttack_Rifle	); };
-	void ChangeAniToAttack_ShotGun	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToAttack_ShotGun	); };
-	void ChangeAniToIdle01_Pistol	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle01_Pistol	); };
-	void ChangeAniToIdle01_Rifle	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle01_Rifle	); };
-	void ChangeAniToIdle01_ShotGun	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle01_ShotGun	); };
-	void ChangeAniToIdle02_Pistol	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle02_Pistol	); };
-	void ChangeAniToIdle02_Rifle	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle02_Rifle	); };
-	void ChangeAniToIdle02_ShotGun	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle02_ShotGun	); };
-	void ChangeAniTohook_Sword		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::Tohook_Sword		); };
-	void ChangeAniTohook_Pistol		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::Tohook_Pistol	); };
-	void ChangeAniTohook_Rifle		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::Tohook_Rifle		); };
-	void ChangeAniTohook_ShotGun	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::Tohook_ShotGun	); };
-	void ChangeAniTointeraction		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::Tointeraction	); };
-	void ChangeAniToAttack1_Sword	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToAttack1_Sword	); };
-	void ChangeAniToAttack2_Sword	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToAttack2_Sword	); };
-	void ChangeAniToAttack3_Sword	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToAttack3_Sword	); };
-	void ChangeAniToIdle01_Sword	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle01_Sword	); };
-	void ChangeAniToIdle02_Sword	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToIdle02_Sword	); };
-	void ChangeAniTothrow_Pistol	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToThrow_Pistol	); };
-	void ChangeAniTothrow_Rifle		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToThrow_Rifle	); };
-	void ChangeAniTothrow_ShotGun	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToThrow_ShotGun	); };
-	void ChangeAniToVP1_attack_L	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_attack_L	); };
-	void ChangeAniToVP1_attack_R	(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_attack_R	); };
-	void ChangeAniToVP2_Idle		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_Idle		); };
-	void ChangeAniTovp3_dash		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_dash		); };
-	void ChangeAniTovp4_jump		(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_jump		); };
-	void ChangeAniTovp5_run			(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_run		); };
-	void ChangeAniTovp_draw			(PlayerComponent& PlayerComp){ ChangeAniToIndex(PlayerComp.GetEntityID(),VisPred::Game::PlayerAni::ToVP_draw		); };
-	void ChangeAniToIndex(uint32_t, VisPred::Game::PlayerAni index,bool Immidiate=false) ;
+	void ChangeAni_Attack_Pistol(PlayerComponent& PlayerComp,bool Immidiate =false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, Immidiate); };
+	void ChangeAni_Attack_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, Immidiate); };
+	void ChangeAni_Attack_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, Immidiate); };
+	void ChangeAni_Idle01_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Pistol, Immidiate); };
+	void ChangeAni_Idle01_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Rifle, Immidiate); };
+	void ChangeAni_Idle01_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_ShotGun, Immidiate); };
+	void ChangeAni_Idle02_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_Pistol, Immidiate); };
+	void ChangeAni_Idle02_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_Rifle, Immidiate); };
+	void ChangeAni_Idle02_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_ShotGun, Immidiate); };
+	void ChangeAni_hook_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_Sword, Immidiate); };
+	void ChangeAni_hook_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_Pistol, Immidiate); };
+	void ChangeAni_hook_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_Rifle, Immidiate); };
+	void ChangeAni_hook_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_ShotGun, Immidiate); };
+	void ChangeAni_interaction(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tointeraction, Immidiate); };
+	void ChangeAni_Attack1_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack1_Sword, Immidiate); };
+	void ChangeAni_Attack2_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack2_Sword, Immidiate); };
+	void ChangeAni_Attack3_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack3_Sword, Immidiate); };
+	void ChangeAni_Idle01_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Sword, Immidiate); };
+	void ChangeAni_Idle02_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_Sword, Immidiate); };
+	void ChangeAni_throw_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, Immidiate); };
+	void ChangeAni_throw_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, Immidiate); };
+	void ChangeAni_throw_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, Immidiate); };
+	void ChangeAni_VP1_attack_L(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_attack_L, Immidiate); };
+	void ChangeAni_VP1_attack_R(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_attack_R, Immidiate); };
+	void ChangeAni_VP2_Idle(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_Idle, Immidiate); };
+	void ChangeAni_vp3_dash(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_dash, Immidiate); };
+	void ChangeAni_vp4_jump(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_jump, Immidiate); };
+	void ChangeAni_vp5_run(PlayerComponent& PlayerComp, bool Immidiate = false)			{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_run, Immidiate); };
+	void ChangeAni_vp_draw(PlayerComponent& PlayerComp, bool Immidiate = false)			{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_draw, Immidiate); };
+	void ChangeAni_Index(uint32_t, VisPred::Game::PlayerAni index, bool Immidiate = false);
 #pragma endregion
 #pragma region Animation
 	void Animation(uint32_t entityid, float deltaTime);
 
 #pragma endregion
 
-#pragma region Shoot Logic
-	void Shoot_Style(PlayerComponent& playercomp);
-	void Shoot_Pistol(PlayerComponent& playercomp);
-	void Shoot_ShotGun(PlayerComponent& playercomp);
-	void Shoot_Rifle(PlayerComponent& playercomp);
+#pragma region Gun Logic
+	void Gun_Grab(PlayerComponent& playercomp);
+	void Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
+	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
+	void PlayerShoot(PlayerComponent& playercomp);
 	void GunCooltime(PlayerComponent& playercomp, float deltatime);
+
+#pragma region Shoot Logic
+	void Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
+	void Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
+	void Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
 #pragma endregion
+#pragma endregion 
 
 #pragma region Move Logic
 	void Move_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp);
@@ -107,7 +112,9 @@ public:
 	void Move_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
 	void Move_Slide(PlayerComponent& playercomp);
 #pragma endregion
-
+#pragma region Attack Logic
+	void Attack(PlayerComponent& playercomp);
+#pragma endregion
 
 
 
