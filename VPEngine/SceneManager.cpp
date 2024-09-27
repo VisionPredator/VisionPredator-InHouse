@@ -737,7 +737,8 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 		}
 		auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
 		Transform->SetLocalLocation(prefabData.pos);
-		Transform->SetLocalScale(prefabData.scale);
+		if (prefabData.scale.x > 0)
+			Transform->SetLocalScale(prefabData.scale);
 		//prefabData.direction = -prefabData.direction;
 		Transform->SetLocalRotation(prefabData.rotation);
 		//VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
@@ -860,6 +861,7 @@ std::shared_ptr<Entity> SceneManager::GetEntitySocketEntity(uint32_t entityID)
 		else
 			return nullptr; 
 	}
+	return nullptr;
 }
 
 

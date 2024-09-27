@@ -9,17 +9,17 @@ void PlayerSystem::Update(float deltaTime)
 {
 	COMPLOOP(PlayerComponent, playercomp)
 	{
+		GunCooltime(playercomp, deltaTime);
 		Calculate_FSM(playercomp);
-		Action_FSM(playercomp, deltaTime);
+		FSM_Action_FSM(playercomp, deltaTime);
 		ToVPMode(playercomp);
-		GrabGun(playercomp);
+		Gun_Grab(playercomp);
 	}
 }
 void PlayerSystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(PlayerComponent, playercomp)
 	{
-		GunCooltime(playercomp, deltaTime);
 		if (!playercomp.HasGun)
 			SearchingItem(playercomp);
 		UpdateCharDataToController(playercomp);
@@ -61,7 +61,7 @@ void PlayerSystem::SearchingItem(PlayerComponent& playercomp)
 void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 {
 	static bool temp = false;
-	if (INPUTKEYDOWN(KEYBOARDKEY::Z))
+	if (INPUTKEYDOWN(KEYBOARDKEY::R))
 	{
 		temp = !temp;
 		m_Graphics->SetVP(temp);
@@ -70,65 +70,7 @@ void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 
 }
 
-void PlayerSystem::GrabGun(PlayerComponent& playercomp)
-{
-	if (INPUTKEYDOWN(KEYBOARDKEY::R))
-	{
-
-		if (playercomp.HasGun)
-			return;
-		auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-		if (!gunentity || !gunentity->HasComponent<GunComponent>())
-			return;
-
-		auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
-		if (!socketentity)
-			return;
-		auto guncomp = gunentity->GetComponent<GunComponent>();
-		auto soceketcomp = socketentity->GetComponent<SocketComponent>();
-		soceketcomp->IsConnected = true;
-		soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
-		playercomp.HasGun = true;
-		playercomp.GunEntityID = guncomp->GetEntityID();
-		guncomp->GetComponent<MeshComponent>()->MaskColor = {};
-	}
-
-}
-
-void PlayerSystem::GunShoot(PlayerComponent& playercomp)
-{
-	if (!playercomp.HasGun)
-		return;
-
-}
-
-void PlayerSystem::GunThrow(PlayerComponent& playercomp)
-{
-}
-
-
-
-
-
-void PlayerSystem::PlayerShoot(PlayerComponent& comp)
-{
-	const TransformComponent& transform = *comp.GetComponent<TransformComponent>();
-	if (INPUTKEYDOWN(MOUSEKEY::LBUTTON))
-	{
-		if (!comp.HasGun)
-			return;
-
-
-		auto posEntity = GetSceneManager()->GetChildEntityByName(comp.GetEntityID(), comp.FirePosition);
-		if (!posEntity)
-			return;
-		auto tempTransform = posEntity->GetComponent<TransformComponent>();
-		auto temppos = tempTransform->World_Location;
-		auto temprotatin = tempTransform->World_Rotation;
-		VPMath::Vector3 tempscale = { 1,1,1 };
-		m_SceneManager.lock()->SpawnPrefab("../Data/Prefab/cube.prefab", temppos, temprotatin, tempscale);
-	}
-}
+#pragma region Physics Setting
 
 void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
@@ -239,6 +181,7 @@ void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent&
 		playercomp.SlideDir = controllercomp.InputDir;
 
 }
+#pragma endregion 
 
 #pragma region FSM Calculate
 
@@ -323,6 +266,7 @@ void PlayerSystem::Calculate_Die(PlayerComponent& playercomp)
 
 void PlayerSystem::Calculate_Attack(PlayerComponent& playercomp)
 {
+
 }
 
 void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
@@ -406,51 +350,52 @@ void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 #pragma endregion
 
 #pragma region FSM Action
-void PlayerSystem::Action_FSM(PlayerComponent& playercomp, float deltaTime)
+void PlayerSystem::FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime)
 {
 	switch (playercomp.CurrentFSM)
 	{
 	case VisPred::Game::EFSM::IDLE:
-		Action_Idle(playercomp);
+		FSM_Action_Idle(playercomp);
 		break;
 	case VisPred::Game::EFSM::WALK:
-		Action_Walk(playercomp);
+		FSM_Action_Walk(playercomp);
 		break;
 	case VisPred::Game::EFSM::RUN:
-		Action_Run(playercomp);
+		FSM_Action_Run(playercomp);
 		break;
 	case VisPred::Game::EFSM::CROUCH:
-		Action_Crouch(playercomp);
+		FSM_Action_Crouch(playercomp);
 		break;
 	case VisPred::Game::EFSM::SLIDE:
-		Action_Slide(playercomp, deltaTime);
+		FSM_Action_Slide(playercomp, deltaTime);
 		break;
 	case VisPred::Game::EFSM::JUMP:
-		Action_Jump(playercomp);
+		FSM_Action_Jump(playercomp);
 		break;
 	case VisPred::Game::EFSM::ATTACK:
-		Action_Attack(playercomp);
+		FSM_Action_Attack(playercomp);
 		break;
 	case VisPred::Game::EFSM::DIE:
-		Action_Die(playercomp);
+		FSM_Action_Die(playercomp);
 		break;
 	case VisPred::Game::EFSM::DESTROY:
-		Action_Destroy(playercomp);
+		FSM_Action_Destroy(playercomp);
 		break;
 	default:
 		break;
 	}
 }
 
-void PlayerSystem::Action_Idle(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Idle(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Move_Rotation(playercomp, transfomcomp);
 	Animation(playercomp.PlayerHandID, 0);
+	Attack(playercomp);
 }
 
-void PlayerSystem::Action_Slide(PlayerComponent& playercomp, float deltatime)
+void PlayerSystem::FSM_Action_Slide(PlayerComponent& playercomp, float deltatime)
 {
 	///지면 기준에서 하기.
 	///Input이 있을경우에는 그 방향으로 이동해야함.
@@ -473,7 +418,7 @@ void PlayerSystem::Action_Slide(PlayerComponent& playercomp, float deltatime)
 
 }
 
-void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Walk(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
@@ -484,10 +429,11 @@ void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 	Move_Jump(transfomcomp, Controller);
+	Attack(playercomp);
 
 }
 
-void PlayerSystem::Action_Run(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Run(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
@@ -497,9 +443,10 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 	Move_Jump(transfomcomp, Controller);
+	Attack(playercomp);
 
 }
-void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Crouch(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
@@ -508,54 +455,43 @@ void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
+	Attack(playercomp);
 
 }
 
-void PlayerSystem::Action_Jump(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Jump(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 	Move_Jump(transfomcomp, Controller);
+	Attack(playercomp);
+
 }
 
-void PlayerSystem::Action_Attack(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Attack(PlayerComponent& playercomp)
 {
 
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
-	switch (playercomp.ShootType)
-	{
-	case VisPred::Game::GunType::PISTOL:
-		Shoot_Pistol(playercomp);
-		break;
-	case VisPred::Game::GunType::SHOTGUN:
-		Shoot_ShotGun(playercomp);
-		break;
-	case VisPred::Game::GunType::RIFLE:
-		Shoot_Rifle(playercomp);
-		break;
-	default:
-		break;
-	}
+
 }
 
-void PlayerSystem::Action_Die(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Die(PlayerComponent& playercomp)
 {
 
 }
 
-void PlayerSystem::Action_Destroy(PlayerComponent& playercomp)
+void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 {
 
 }
 #pragma endregion
-
-#pragma region Shoot Logic
-void PlayerSystem::ChangeAniToIndex(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, bool Immidiate)
+#pragma region Animation Change
+void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, bool Immidiate)
 {
 	std::any data = std::make_pair(entityID, static_cast<int>(playeraniIndex));
 	if (Immidiate)
@@ -563,47 +499,132 @@ void PlayerSystem::ChangeAniToIndex(uint32_t entityID, VisPred::Game::PlayerAni 
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
+#pragma endregion
 void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 {
 	static int a = 0;
 	if (INPUTKEYDOWN(KEYBOARDKEY::O))
 	{
-		ChangeAniToIndex(entityid, static_cast<VisPred::Game::PlayerAni>(a));
+		ChangeAni_Index(entityid, static_cast<VisPred::Game::PlayerAni>(a));
 		a++;
 		a = a % 29;
 
 	}
 }
-void PlayerSystem::Shoot_Style(PlayerComponent& playercomp)
+
+
+#pragma region Gun Logic
+void PlayerSystem::Gun_Grab(PlayerComponent& playercomp)
 {
+	if (INPUTKEYDOWN(KEYBOARDKEY::F))
+	{
+		if (playercomp.HasGun)
+			return;
+		auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+		if (!gunentity || !gunentity->HasComponent<GunComponent>())
+			return;
+
+		auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
+		if (!socketentity)
+			return;
+		auto guncomp = gunentity->GetComponent<GunComponent>();
+		auto soceketcomp = socketentity->GetComponent<SocketComponent>();
+		soceketcomp->IsConnected = true;
+		soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
+		playercomp.HasGun = true;
+		playercomp.GunEntityID = guncomp->GetEntityID();
+		guncomp->GetComponent<MeshComponent>()->MaskColor = {};
+	}
+}
+void PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+		switch (playercomp.ShootType)
+		{
+		case VisPred::Game::GunType::PISTOL:
+			Shoot_Pistol(playercomp, guncomp);
+			break;
+		case VisPred::Game::GunType::SHOTGUN:
+			Shoot_ShotGun(playercomp, guncomp);
+			break;
+		case VisPred::Game::GunType::RIFLE:
+			Shoot_Rifle(playercomp, guncomp);
+			break;
+		default:
+			break;
+		}
+}
+void PlayerSystem::Gun_Throw(PlayerComponent& playercomp,GunComponent& guncomp)
+{
+}
+void PlayerSystem::PlayerShoot(PlayerComponent& playercomp)
+{
+	const TransformComponent& transform = *playercomp.GetComponent<TransformComponent>();
+	if (INPUTKEYDOWN(MOUSEKEY::LBUTTON))
+	{
+		if (!playercomp.HasGun)
+			return;
+
+
+		auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
+		if (!posEntity)
+			return;
+		auto tempTransform = posEntity->GetComponent<TransformComponent>();
+		auto temppos = tempTransform->World_Location;
+		auto temprotatin = tempTransform->World_Rotation;
+		VPMath::Vector3 tempscale = { 1,1,1 };
+		m_SceneManager.lock()->SpawnPrefab("../Data/Prefab/cube.prefab", temppos, temprotatin);
+	}
 }
 
-void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp)
-{
-}
-void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp)
-{
 
-}
-void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp)
+#pragma region Shoot Logic
+
+void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	guncomp.CurrentBullet -= 1;
+}
+void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	guncomp.CurrentBullet -= 1;
+}
+void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	guncomp.CurrentBullet -= 1;
 }
 
 void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
 {
-	if (!playercomp.HasGun)
+	if (!playercomp.HasGun) 
+	{
 		playercomp.GunprogressTime += deltatime;
+		playercomp.ReadyToShoot = false;
+
+	}
 	else
 	{
 		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		if (playercomp.GunprogressTime > gunComp->CoolTime)
+		if (playercomp.GunprogressTime >= gunComp->CoolTime)
+		{
 			playercomp.GunprogressTime = gunComp->CoolTime;
+			playercomp.ReadyToShoot = true;
+		}
 		else
+		{
 			playercomp.GunprogressTime += deltatime;
+			playercomp.ReadyToShoot = false;
+
+		}
 	}
 }
 
 #pragma endregion
+#pragma endregion 
 
 #pragma region Move Logic
 
@@ -663,6 +684,24 @@ void PlayerSystem::Move_Jump(const TransformComponent& transformcomp, Controller
 void PlayerSystem::Move_Slide(PlayerComponent& playercomp)
 {
 }
+void PlayerSystem::Attack(PlayerComponent& playercomp)
+{
+	if (INPUTKEY(MOUSEKEY::LBUTTON))
+	{
+		if (playercomp.HasGun && playercomp.ReadyToShoot)
+		{
+			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+			if (!guncomp.IsEmpty)
+				Gun_Shoot(playercomp, guncomp);
+			else
+			{
+				Gun_Throw(playercomp, guncomp);
+			}
+		}
+
+
+	}
+}
 void PlayerSystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, playercomp)
@@ -677,10 +716,16 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto playercomp = GetSceneManager()->GetComponent<PlayerComponent>(gameObjectId);
 		auto PlayerHandEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->PlayerHandName);
 		auto PlayerCameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->PlayerCameraName);
+		auto PlayerFirPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosition);
 		if (PlayerHandEntity)
 			playercomp->PlayerHandID = PlayerHandEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
+
+		if (PlayerFirPosEntity)
+			playercomp->FirePosEntityID = PlayerFirPosEntity->GetEntityID();
+		else
+			VP_ASSERT(false, "player의 FirePos 감지되지 않습니다.");
 
 		if (PlayerCameraEntity)
 		{
