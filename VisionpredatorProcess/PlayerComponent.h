@@ -42,7 +42,7 @@ struct PlayerComponent :
     
     uint32_t SearchedItemID{};
     uint32_t GunEntityID{};
-
+    uint32_t FirePosEntityID{};
 
 
     VisPred::Game::GunType ShootType{};

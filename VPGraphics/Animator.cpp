@@ -206,6 +206,4 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 const VPMath::Matrix Animator::Attachment(std::wstring region)
 {
 	return socket.Transpose();
-
-	//return VPMath::Matrix::Identity;
 }

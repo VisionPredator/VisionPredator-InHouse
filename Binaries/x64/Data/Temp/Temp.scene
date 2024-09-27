@@ -140,7 +140,7 @@
                     "ComponentID": 4183631247,
                     "CurrentFSM": 0,
                     "DynamicFriction": 0.0,
-                    "FirePosition": "",
+                    "FirePosition": "Fireposition",
                     "GravityPower": 1.0,
                     "HP": 0,
                     "HasGun": false,
@@ -245,7 +245,8 @@
                 },
                 {
                     "ChildrenID": [
-                        4227205418
+                        4227205418,
+                        2327024491
                     ],
                     "ComponentID": 188567026
                 }
@@ -584,10 +585,10 @@
                     }
                 },
                 {
-                    "Bullets": 6,
+                    "Bullets": 49,
                     "ComponentID": 3546995328,
-                    "CoolTime": 0.0,
-                    "CurrentBullet": 6,
+                    "CoolTime": 0.30000001192092896,
+                    "CurrentBullet": 49,
                     "Type": 0
                 },
                 {
@@ -605,6 +606,38 @@
                         "z": 0.0
                     },
                     "SocketName": []
+                }
+            ]
+        },
+        {
+            "EntityID": 2327024491,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Fireposition"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 82098914
                 }
             ]
         }

@@ -78,7 +78,6 @@ void SocketSystem::RenderUpdate(float deltaTime)
 			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.x),
 			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.z));
 
-
 		///로컬 매트릭스 만들기
 		VPMath::Matrix offsetMatrix = VPMath::Matrix::CreateTranslation(socketcomp.Offset);
 
@@ -87,21 +86,19 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		finalMatrix = offsetMatrix * finalMatrix;
 
 
-
 		auto Finalpose = offsetMatrix * attachmentMatrix;
 		Finalpose = VPMath::Matrix::CreateFromQuaternion(rotationQuat) * Finalpose;
 		VPMath::Vector3 tempscale{};
 		VPMath::Quaternion tempQuater{};
 		VPMath::Vector3 tempsworld{};
 
-		finalMatrix.Decompose(tempscale, tempQuater, tempsworld);
+		finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
 
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);
 		if (tempsworld.Length()<1)
 		{
 			int a = 5;
-			finalMatrix.Decompose(tempscale, tempQuater, tempsworld);
 
 		}
 		temptrnasform->SetWorldQuaternion(tempQuater);
