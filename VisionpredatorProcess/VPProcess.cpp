@@ -35,7 +35,7 @@ void VPProcess::Update()
 	VPEngine::Update();
 }
 
-void VPProcess::RenderUpdate()
+void VPProcess::Render()
 {
 	VPEngine::RenderUpdate();
 	VPEngine::BeginRender();

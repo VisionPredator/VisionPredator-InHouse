@@ -1,7 +1,7 @@
 #pragma once
 #include "System.h"
 class AnimationSystem :
-	public System, public EventSubscriber, public IRenderable
+	public System, public EventSubscriber, public IRenderable,public IFixedUpdatable
 {
 public:
 	AnimationSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -22,6 +22,10 @@ public:
 	void LateRenderUpdate(float deltaTime) override;
 
 
+
+
+	// IFixedUpdatable을(를) 통해 상속됨
+	void FixedUpdate(float deltaTime) override;
 
 };
 

@@ -220,7 +220,7 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 	enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
 	uint32_t id = enemycomp.GetEntityID();
 	int aniIndex = static_cast<int>(enemycomp.CurrentFSM); //해당 인덱스 enum으로 뽑아서 일관적으로 써야할듯
-	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", std::pair<uint32_t, int>(id, aniIndex));
+	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", std::tuple<uint32_t, int,bool>(id, aniIndex,false));
 
 	if (enemycomp.HasComponent<AnimationComponent>())
 	{
