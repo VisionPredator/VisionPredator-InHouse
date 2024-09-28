@@ -9,7 +9,8 @@
 #include "../VPGraphics/GraphicsEngine.h"
 #include "../PhysxEngine/PhysxEngine.h"
 #include "../PhysxEngine/IPhysx.h"
-
+#include "../SoundEngine/SoundEngine.h"
+#include "../SoundEngine/ISound.h"
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
@@ -58,7 +59,10 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_PhysicEngine = new PhysxEngine;
 	m_SceneManager = std::make_shared< SceneManager>();
 	m_SystemManager = std::make_shared<SystemManager>();
+	m_SoundEngine = std::make_shared<SoundEngine>();
 	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+	m_SoundEngine->Initialize();
+	m_SoundEngine->LoadAllSound();
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
@@ -67,6 +71,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
+	m_SoundEngine->Play(0, "MainTitle_BGM", 1, {});
 }
 
 VPEngine::~VPEngine()
@@ -96,6 +101,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem <UISystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
 	m_SystemManager->AddSystem<LifeTimeSystem>();
+	m_SystemManager->AddSystem<SoundSystem>();
 
 
 }
@@ -179,6 +185,7 @@ void VPEngine::Update()
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
+	m_SystemManager->SoundUpdate(m_DeltaTime);
 
 	if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
 	{

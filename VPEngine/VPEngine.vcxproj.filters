@@ -1,383 +1,435 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="자체 엔진">
-      <UniqueIdentifier>{73498306-e79e-4b10-a680-9bd53aad170d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Manager">
-      <UniqueIdentifier>{70396750-0529-47c6-a263-6417d2a6c097}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Manager\Header">
-      <UniqueIdentifier>{f1c3a2d7-c1cb-412b-816d-2c201b4cd9e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Manager\Source">
-      <UniqueIdentifier>{80ec881b-defc-41a6-b44b-a86932b974ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\System">
-      <UniqueIdentifier>{c21d30a0-bcf3-48de-b31b-408d8458d243}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\System\Header">
-      <UniqueIdentifier>{39119247-ed84-46a8-b843-a25bd1d02297}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\System\Source">
-      <UniqueIdentifier>{505c0ff4-a27d-49f6-8c45-7d1fc9f1fe2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\System\Base">
-      <UniqueIdentifier>{3c7d460d-1347-4046-8521-0685800cf968}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Pch">
-      <UniqueIdentifier>{3465b1c8-cbe4-43cd-8608-b20da3a5da70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Entity">
-      <UniqueIdentifier>{d2cbfec2-d362-41a4-b80b-eb34561c1e52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Entity\Component">
-      <UniqueIdentifier>{5c14ed15-78aa-4a17-af35-496000fdca53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Base">
-      <UniqueIdentifier>{f036751f-d27f-4895-a867-f81696b32c2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Base\Header">
-      <UniqueIdentifier>{4e34a081-e07a-4d27-8cbf-4d5118a1bb76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Base\Source">
-      <UniqueIdentifier>{65d255f2-a408-4c1e-a7ce-c92f664da441}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Header">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="자체 엔진\Entity\Component\Source">
-      <UniqueIdentifier>{9846a9ca-de8a-437e-8591-a77261db5f1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Entity\Component\Header">
-      <UniqueIdentifier>{735bd9a1-3a1e-4afa-83ec-b97f4c14b8c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="자체 엔진\Entity\Component\Base">
-      <UniqueIdentifier>{0cb2aa62-22e1-406a-b9cc-975e1bc376a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="VisPredMath">
-      <UniqueIdentifier>{c9967b03-29c5-484d-a7bf-51de3ed1ab3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="NavMesh">
-      <UniqueIdentifier>{20e9601b-fb0f-45c9-84dc-cc77584a0e5e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DataRegist">
       <UniqueIdentifier>{034cddac-6a0d-4b58-b3e7-efe8c7aa51a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{f036751f-d27f-4895-a867-f81696b32c2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Header">
+      <UniqueIdentifier>{4e34a081-e07a-4d27-8cbf-4d5118a1bb76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Source">
+      <UniqueIdentifier>{65d255f2-a408-4c1e-a7ce-c92f664da441}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{5c14ed15-78aa-4a17-af35-496000fdca53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Base">
+      <UniqueIdentifier>{0cb2aa62-22e1-406a-b9cc-975e1bc376a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived">
+      <UniqueIdentifier>{ffd56d03-898c-4ec1-b712-41d1fba3b93b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Graphics">
+      <UniqueIdentifier>{cd057254-5292-490c-a52f-b4766b613664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Graphics\Source">
+      <UniqueIdentifier>{f767fd5a-c512-4cca-8939-e16872abf90f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\NavMesh">
+      <UniqueIdentifier>{7fca30a2-00a3-4f40-aa5c-23c44c493836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Physics">
+      <UniqueIdentifier>{52116d47-bcb5-423d-9340-281a04799f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Physics\Source">
+      <UniqueIdentifier>{a9b7dbc1-3ee0-45c1-9dc1-c7e3480ac4cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Basic">
+      <UniqueIdentifier>{f7429ec9-0ac2-4fbb-aa87-86dca7b3d20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Basic\Source">
+      <UniqueIdentifier>{3206fb86-6862-44d1-8aa7-da10af3a0f2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\etc">
+      <UniqueIdentifier>{53c95db3-438a-4ea8-af8e-36d8ae30f9ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\etc\Source">
+      <UniqueIdentifier>{9846a9ca-de8a-437e-8591-a77261db5f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity">
+      <UniqueIdentifier>{d2cbfec2-d362-41a4-b80b-eb34561c1e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{70396750-0529-47c6-a263-6417d2a6c097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Header">
+      <UniqueIdentifier>{f1c3a2d7-c1cb-412b-816d-2c201b4cd9e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Source">
+      <UniqueIdentifier>{80ec881b-defc-41a6-b44b-a86932b974ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pch">
+      <UniqueIdentifier>{3465b1c8-cbe4-43cd-8608-b20da3a5da70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Structs">
+      <UniqueIdentifier>{3b0f500b-e9b7-4ede-9cb1-82c4c8dd54e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Structs\NavMesh">
+      <UniqueIdentifier>{75645ad5-19be-4e65-b202-8728f311cbbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Structs\NavMesh\Source">
+      <UniqueIdentifier>{9561db2e-8bc1-4fe4-9bd2-a002c6677a4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{c21d30a0-bcf3-48de-b31b-408d8458d243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Base">
+      <UniqueIdentifier>{3c7d460d-1347-4046-8521-0685800cf968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Base\Source">
+      <UniqueIdentifier>{bd106bce-0d16-42d5-9731-14fe941db11f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived">
+      <UniqueIdentifier>{a3210726-78b5-41df-81ce-d2f260aebecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Physics">
+      <UniqueIdentifier>{ff0654af-0f06-4cac-9b9f-97ab6e3ea735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Physics\source">
+      <UniqueIdentifier>{793188d7-6bf0-4d78-905a-856f332dcf60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Serialize">
+      <UniqueIdentifier>{5476010f-873a-4806-b387-1d3dc99f0cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Sound">
+      <UniqueIdentifier>{d3bc9498-b9cc-4a40-9439-7ac4fefbc0f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Sound\Source">
+      <UniqueIdentifier>{16a57122-9a4e-4c31-a173-3c9999eb08c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\NavMesh">
+      <UniqueIdentifier>{b196b080-92fd-494f-b1e2-23d76f279e85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\NavMesh\Source">
+      <UniqueIdentifier>{290de98e-d7b7-412b-8c50-d12d34240924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Graphics">
+      <UniqueIdentifier>{e0bafa21-0c7f-4a3e-8ec4-9387d5d77dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Graphics\Source">
+      <UniqueIdentifier>{16fbc2e0-56e9-4f8d-95d2-a8064b1d26a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Derived\Source">
+      <UniqueIdentifier>{505c0ff4-a27d-49f6-8c45-7d1fc9f1fe2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="IDComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="IdentityComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinningMeshComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Components.h">
-      <Filter>자체 엔진\Entity\Component</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>자체 엔진\Pch</Filter>
+      <Filter>Pch</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>자체 엔진\Pch</Filter>
+      <Filter>Pch</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>자체 엔진\Pch</Filter>
+      <Filter>Pch</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>자체 엔진\Manager\Header</Filter>
+      <Filter>Manager\Header</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>자체 엔진\Manager\Header</Filter>
+      <Filter>Manager\Header</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
-      <Filter>자체 엔진\Manager\Header</Filter>
+      <Filter>Manager\Header</Filter>
     </ClInclude>
     <ClInclude Include="SystemManager.h">
-      <Filter>자체 엔진\Manager\Header</Filter>
+      <Filter>Manager\Header</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>자체 엔진\Entity</Filter>
+      <Filter>Entity</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>자체 엔진\Pch</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneSerializer.h">
-      <Filter>자체 엔진\System\Header</Filter>
+      <Filter>Pch</Filter>
     </ClInclude>
     <ClInclude Include="SystemInterface.h">
-      <Filter>자체 엔진\System\Base</Filter>
+      <Filter>System\Base</Filter>
     </ClInclude>
     <ClInclude Include="System.h">
-      <Filter>자체 엔진\System\Base</Filter>
+      <Filter>System\Base</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>자체 엔진\Base\Header</Filter>
+      <Filter>Base\Header</Filter>
     </ClInclude>
     <ClInclude Include="VPEngine.h">
-      <Filter>자체 엔진\Base\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header</Filter>
+      <Filter>Base\Header</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>자체 엔진\Entity\Component\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="LightComponent.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationComponent.h">
-      <Filter>Header</Filter>
+      <Filter>Component\Base</Filter>
     </ClInclude>
     <ClInclude Include="Managers.h">
-      <Filter>자체 엔진\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBodyComponent.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="ControllerComponent.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="LightSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="ControllerMovementSystem.h">
-      <Filter>자체 엔진\System\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryComponent.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="LifeTimeComponent.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="LifeTimeSystem.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="LogicSystems.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="NavMeshSystem.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="NavStructs.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="NavMeshData.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="NavAgentSystem.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="NavAgentComponent.h">
-      <Filter>Header</Filter>
+      <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="DataRegister_Engine.h">
       <Filter>DataRegist</Filter>
     </ClInclude>
-    <ClInclude Include="TextComponent.h">
-      <Filter>자체 엔진\Entity\Component\Header</Filter>
+    <ClInclude Include="Components.h">
+      <Filter>Component\Base</Filter>
     </ClInclude>
-    <ClInclude Include="GeometrySystem.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="NavAgentComponent.h">
+      <Filter>Component\Derived\NavMesh</Filter>
     </ClInclude>
-    <ClInclude Include="MeshSystem.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="NavMeshData.h">
+      <Filter>Structs\NavMesh</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedMeshSystem.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="NavStructs.h">
+      <Filter>Structs\NavMesh</Filter>
     </ClInclude>
-    <ClInclude Include="SocketComponent.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="NavAgentSystem.h">
+      <Filter>System\Derived\NavMesh</Filter>
     </ClInclude>
-    <ClInclude Include="SocketSystem.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="NavMeshSystem.h">
+      <Filter>System\Derived\NavMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerMovementSystem.h">
+      <Filter>System\Derived\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicSystem.h">
+      <Filter>System\Derived\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerComponent.h">
+      <Filter>Component\Derived\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyComponent.h">
+      <Filter>Component\Derived\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningMeshComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSystem.h">
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSystem.h">
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSystem.h">
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem.h">
+      <Filter>System\Derived\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="UISystem.h">
-      <Filter>Header</Filter>
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometrySystem.h">
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshSystem.h">
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMeshSystem.h">
+      <Filter>System\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSerializer.h">
+      <Filter>System\Derived\Serialize</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>리소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>System\Derived\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeTimeSystem.h">
+      <Filter>System\Derived</Filter>
+    </ClInclude>
+    <ClInclude Include="LogicSystems.h">
+      <Filter>System\Derived</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketSystem.h">
+      <Filter>System\Derived</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformSystem.h">
+      <Filter>System\Derived</Filter>
+    </ClInclude>
+    <ClInclude Include="IDComponent.h">
+      <Filter>Component\Derived\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>Component\Derived\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="IdentityComponent.h">
+      <Filter>Component\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeTimeComponent.h">
+      <Filter>Component\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketComponent.h">
+      <Filter>Component\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="TextComponent.h">
+      <Filter>Component\etc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="IDComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>System\Derived\Source</Filter>
     </ClCompile>
     <ClCompile Include="IdentityComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinningMeshComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformComponent.cpp">
-      <Filter>자체 엔진\Entity\Component\Source</Filter>
+      <Filter>Component\etc\Source</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>자체 엔진\Pch</Filter>
+      <Filter>Pch</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>자체 엔진\Manager\Source</Filter>
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>자체 엔진\Manager\Source</Filter>
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>자체 엔진\Manager\Source</Filter>
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="SystemManager.cpp">
-      <Filter>자체 엔진\Manager\Source</Filter>
+      <Filter>Manager\Source</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>자체 엔진\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneSerializer.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="System.cpp">
-      <Filter>자체 엔진\System\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemInterface.cpp">
-      <Filter>자체 엔진\System\Base</Filter>
+      <Filter>Entity</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>자체 엔진\Base\Source</Filter>
+      <Filter>Base\Source</Filter>
     </ClCompile>
     <ClCompile Include="VPEngine.cpp">
-      <Filter>자체 엔진\Base\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
+      <Filter>Base\Source</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>자체 엔진\Entity\Component\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="LightComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBodyComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ControllerComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="LightSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ControllerMovementSystem.cpp">
-      <Filter>자체 엔진\System\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NavMeshSystem.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NavStructs.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NavMeshData.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NavAgentSystem.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NavAgentComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="LifeTimeComponent.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="LifeTimeSystem.cpp">
-      <Filter>Source</Filter>
+      <Filter>Component\Base</Filter>
     </ClCompile>
     <ClCompile Include="DataRegister_Engine.cpp">
       <Filter>DataRegist</Filter>
     </ClCompile>
-    <ClCompile Include="GeometrySystem.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshSystem.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedMeshSystem.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="LifeTimeComponent.cpp">
+      <Filter>Component\etc\Source</Filter>
     </ClCompile>
     <ClCompile Include="SocketComponent.cpp">
-      <Filter>Source</Filter>
+      <Filter>Component\etc\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavAgentComponent.cpp">
+      <Filter>Component\Derived\NavMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshData.cpp">
+      <Filter>Structs\NavMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavStructs.cpp">
+      <Filter>Structs\NavMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavAgentSystem.cpp">
+      <Filter>System\Derived\NavMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshSystem.cpp">
+      <Filter>System\Derived\NavMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LifeTimeSystem.cpp">
+      <Filter>Component\etc\Source</Filter>
     </ClCompile>
     <ClCompile Include="SocketSystem.cpp">
-      <Filter>Source</Filter>
+      <Filter>Component\etc\Source</Filter>
     </ClCompile>
-    <ClCompile Include="UISystem.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="ControllerMovementSystem.cpp">
+      <Filter>System\Derived\Physics\source</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicSystem.cpp">
+      <Filter>System\Derived\Physics\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerComponent.cpp">
+      <Filter>Component\Derived\Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyComponent.cpp">
+      <Filter>Component\Derived\Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
     </ClCompile>
     <ClCompile Include="ParticleComponent.cpp">
-      <Filter>Source</Filter>
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinningMeshComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometrySystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMeshSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UISystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSerializer.cpp">
+      <Filter>System\Derived\Serialize</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>System\Base\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemInterface.cpp">
+      <Filter>System\Base\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>System\Derived\Sound\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IDComponent.cpp">
+      <Filter>Component\Derived\Basic\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>Component\Derived\Basic\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
-      <Filter>자체 엔진\리소스 파일</Filter>
+      <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

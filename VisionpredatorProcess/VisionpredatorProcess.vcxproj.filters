@@ -19,6 +19,12 @@
     <Filter Include="DataRegist">
       <UniqueIdentifier>{79705368-ab84-4f9e-8f32-87cff26474d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{888a3034-ac31-4f3c-ac2d-4c2847c60009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Source">
+      <UniqueIdentifier>{f1bc4eb1-4705-4eac-97ad-bbc57a274af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -36,25 +42,10 @@
     <ClInclude Include="PlayerSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="BulletComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="VisPredComponents.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="BulletSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="EnemySystem.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FSMComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="VisPredStructs.h">
@@ -63,14 +54,29 @@
     <ClInclude Include="DataRegister_Vispred.h">
       <Filter>DataRegist</Filter>
     </ClInclude>
-    <ClInclude Include="GunComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="GunSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameLogicSystem.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FSMComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GunComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="VisPredComponents.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,22 +92,10 @@
     <ClCompile Include="PlayerSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BulletComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="BulletSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="EnemySystem.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FSMComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="VisPredStructs.cpp">
@@ -110,11 +104,23 @@
     <ClCompile Include="DataRegister_Vispred.cpp">
       <Filter>DataRegist</Filter>
     </ClCompile>
-    <ClCompile Include="GunComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="GunSystem.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FSMComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GunComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>Components\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

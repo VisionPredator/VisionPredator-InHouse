@@ -50,6 +50,13 @@
 		}
 
 	}
+	void SystemManager::SoundUpdate(float deltatime)
+	{
+		for (auto soundable : m_Soundable)
+		{
+			soundable->SoundUpdate(deltatime);
+		}
+	}
 	void SystemManager::FixedUpdate(float deltatime)
 	{
 		m_ProgressedTime += deltatime;
