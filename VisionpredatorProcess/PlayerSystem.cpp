@@ -510,15 +510,15 @@ void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 
 void PlayerSystem::PlayerAnime(PlayerComponent& playercomp)
 {
-	if (!playercomp.HasComponent<AnimationComponent>())
+	if (!GetSceneManager()->HasComponent<AnimationComponent>(playercomp.PlayerHandID))
 		return;
-	ReturnToIdle(*playercomp.GetComponent<AnimationComponent>());
+	ReturnToIdle(*GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID));
 }
 
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 {
 	using namespace VisPred::Game;
-	if (!anicomp.IsBlending || !anicomp.IsFinished)
+	if (anicomp.IsBlending || !anicomp.IsFinished)
 		return;
 
 	uint32_t entityID = anicomp.GetEntityID();
@@ -634,23 +634,34 @@ void PlayerSystem::PlayerShoot(PlayerComponent& playercomp)
 void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_Pistol))
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
+	ChangeAni_Attack_Pistol(anicomp->GetEntityID(), false);
+
 }
 void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
+		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
+	ChangeAni_Attack_ShotGun(anicomp->GetEntityID(), false);
 }
 void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
+		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
+	ChangeAni_Attack_Rifle(anicomp->GetEntityID(), false);
+
 }
 
 void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)

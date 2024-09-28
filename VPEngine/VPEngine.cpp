@@ -90,7 +90,6 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<LightSystem>();
 	///그래픽스
-	m_SystemManager->AddSystem<AnimationSystem>();
 	m_SystemManager->AddSystem<MeshSystem>();
 	m_SystemManager->AddSystem<SkinnedMeshSystem>();
 	m_SystemManager->AddSystem <GeometrySystem>();
@@ -102,6 +101,8 @@ void VPEngine::Addsystem()
 }
 void VPEngine::OnAddSystemLater(std::any)
 {
+	m_SystemManager->AddSystem<AnimationSystem>();
+
 	m_TransformSystem = m_SystemManager->AddSystem<TransformSystem>();
 	m_SystemManager->AddSystem<RenderSystem>();
 
