@@ -13,20 +13,24 @@ void AnimationSystem::BeginRenderUpdate(float deltaTime)
 	{
 		if (!aniComp.FBX.empty())
 		{
+			aniComp.IsFinished = false;
 
 			//애니메이션 계속 재생
 			if (aniComp.preAni == aniComp.curAni)
 			{
 				double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
 
-				if (aniComp.duration > curDuration)
+				if (aniComp.duration >= curDuration)
 				{
 					if (aniComp.isLoop)
 					{
 						aniComp.duration -= curDuration;
+						aniComp.IsFinished = false;
+
 					}
 					else
 					{
+						aniComp.IsFinished = true;
 						aniComp.duration = curDuration;
 					}
 				}

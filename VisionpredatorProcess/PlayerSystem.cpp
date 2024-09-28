@@ -13,7 +13,8 @@ void PlayerSystem::Update(float deltaTime)
 		Calculate_FSM(playercomp);
 		FSM_Action_FSM(playercomp, deltaTime);
 		ToVPMode(playercomp);
-		Gun_Grab(playercomp);
+		PlayerInterect(playercomp);
+		PlayerAnime(playercomp);
 	}
 }
 void PlayerSystem::FixedUpdate(float deltaTime)
@@ -21,7 +22,7 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 	COMPLOOP(PlayerComponent, playercomp)
 	{
 		if (!playercomp.HasGun)
-			SearchingItem(playercomp);
+			SearchingInterectiveItems(playercomp);
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 
@@ -32,7 +33,12 @@ void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
 }
 
-void PlayerSystem::SearchingItem(PlayerComponent& playercomp)
+void PlayerSystem::SearchingInterectiveItems(PlayerComponent& playercomp)
+{
+	SearchingGun(playercomp);
+}
+
+void PlayerSystem::SearchingGun(PlayerComponent& playercomp)
 {
 	///이전에 감지했던 물체가 총이라면 레이아웃 끄기.
 	auto presearchedentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
@@ -47,15 +53,6 @@ void PlayerSystem::SearchingItem(PlayerComponent& playercomp)
 	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
 	if (gunentity && gunentity->HasComponent<GunComponent>())
 		gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
-	debug::RayInfo frontInfo{};
-	frontInfo.Color = { 0,0,1,1 };
-	frontInfo.Origin = cameratransform->World_Location;
-	frontInfo.Direction = 10 * cameratransform->FrontVector;
-	frontInfo.Normalize = false;
-	m_Graphics->DrawRay(frontInfo);
-
-
-
 }
 
 void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
@@ -512,29 +509,85 @@ void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 	}
 }
 
+void PlayerSystem::PlayerAnime(PlayerComponent& playercomp)
+{
+	if (!playercomp.HasComponent<AnimationComponent>())
+		return;
+	ReturnToIdle(*playercomp.GetComponent<AnimationComponent>());
+}
+
+void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
+{
+	using namespace VisPred::Game;
+	if (anicomp.curAni != anicomp.preAni || !anicomp.IsFinished)
+		return;
+
+	uint32_t entityID = anicomp.GetEntityID();
+	switch (anicomp.curAni)
+	{
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol	:	ChangeAni_Index(entityID,PlayerAni::ToIdle02_Pistol);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle		:	ChangeAni_Index(entityID,PlayerAni::ToIdle02_Rifle);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol	:										break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle02_Rifle		:										break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun	:										break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Sword		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun);	break;
+	case  (int)VisPred::Game::PlayerAni::Tointeraction		:		break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword		:										break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol		:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword);	break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L		:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R		:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_Idle			:		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_dash			:		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_jump			:		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_run			:		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_draw			:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle);		break;
+	default:
+		break;
+	}
+
+}
+
 
 #pragma region Gun Logic
-void PlayerSystem::Gun_Grab(PlayerComponent& playercomp)
+void PlayerSystem::PlayerInterect(PlayerComponent& playercomp)
 {
 	if (INPUTKEYDOWN(KEYBOARDKEY::F))
 	{
-		if (playercomp.HasGun)
-			return;
-		auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-		if (!gunentity || !gunentity->HasComponent<GunComponent>())
-			return;
+		Grab_Gun(playercomp);
 
-		auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
-		if (!socketentity)
-			return;
-		auto guncomp = gunentity->GetComponent<GunComponent>();
-		auto soceketcomp = socketentity->GetComponent<SocketComponent>();
-		soceketcomp->IsConnected = true;
-		soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
-		playercomp.HasGun = true;
-		playercomp.GunEntityID = guncomp->GetEntityID();
-		guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 	}
+}
+void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
+{
+	if (playercomp.HasGun)
+		return;
+	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+	if (!gunentity || !gunentity->HasComponent<GunComponent>())
+		return;
+
+	auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
+	if (!socketentity)
+		return;
+	auto guncomp = gunentity->GetComponent<GunComponent>();
+	auto soceketcomp = socketentity->GetComponent<SocketComponent>();
+	soceketcomp->IsConnected = true;
+	soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
+	playercomp.HasGun = true;
+	playercomp.GunEntityID = guncomp->GetEntityID();
+	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 }
 void PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 {

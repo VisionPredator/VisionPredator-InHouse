@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "../VPCommon/EventManager.h"
+
 EventManager* EventManager::instance = nullptr;
 void EventManager::Update(float deltatime)
 {

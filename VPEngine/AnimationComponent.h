@@ -19,7 +19,7 @@ struct AnimationComponent : public Component
 
 	bool isPlay = true;
 	bool isLoop = true;
-
+	bool IsFinished = false;
 	float speed = 1.0f;
 	float transitionDuration = 0.2f;
 };
