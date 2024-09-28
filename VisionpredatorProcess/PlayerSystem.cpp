@@ -453,7 +453,6 @@ void PlayerSystem::FSM_Action_Crouch(PlayerComponent& playercomp)
 	Move_Walk(transfomcomp, playercomp, Controller);
 	Move_Rotation(playercomp, transfomcomp);
 	Attack(playercomp);
-
 }
 
 void PlayerSystem::FSM_Action_Jump(PlayerComponent& playercomp)
@@ -488,9 +487,9 @@ void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 }
 #pragma endregion
 #pragma region Animation Change
-void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, bool Immidiate)
+void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex,bool loop, bool Immidiate)
 {
-	std::any data = std::make_pair(entityID, static_cast<int>(playeraniIndex));
+	std::any data = std::make_tuple(entityID, static_cast<int>(playeraniIndex), loop);
 	if (Immidiate)
 		EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
 	else
@@ -502,7 +501,7 @@ void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 	static int a = 0;
 	if (INPUTKEYDOWN(KEYBOARDKEY::O))
 	{
-		ChangeAni_Index(entityid, static_cast<VisPred::Game::PlayerAni>(a));
+		ChangeAni_Index(entityid, static_cast<VisPred::Game::PlayerAni>(a),true);
 		a++;
 		a = a % 29;
 
@@ -519,41 +518,41 @@ void PlayerSystem::PlayerAnime(PlayerComponent& playercomp)
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 {
 	using namespace VisPred::Game;
-	if (anicomp.curAni != anicomp.preAni || !anicomp.IsFinished)
+	if (!anicomp.IsBlending || !anicomp.IsFinished)
 		return;
 
 	uint32_t entityID = anicomp.GetEntityID();
 	switch (anicomp.curAni)
 	{
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol	:	ChangeAni_Index(entityID,PlayerAni::ToIdle02_Pistol);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle		:	ChangeAni_Index(entityID,PlayerAni::ToIdle02_Rifle);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol		:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol	:										break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Rifle		:										break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun	:										break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Sword		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Sword		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, true);		break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, true);		break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, true);	break;
 	case  (int)VisPred::Game::PlayerAni::Tointeraction		:		break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword	:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword		:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword		:										break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol		:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle		:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun	:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword);	break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L		:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R		:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L		:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, true);			break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R		:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, true);			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_Idle			:		break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_dash			:		break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_jump			:		break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_run			:		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_draw			:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_draw			:	ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, true);			break;
 	default:
 		break;
 	}
@@ -634,6 +633,9 @@ void PlayerSystem::PlayerShoot(PlayerComponent& playercomp)
 
 void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_Pistol))
+		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;

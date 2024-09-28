@@ -86,7 +86,7 @@ public:
 	void ChangeAni_vp4_jump(uint32_t entityID, bool Immidiate = false)		{ ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_jump, Immidiate); };
 	void ChangeAni_vp5_run(uint32_t entityID, bool Immidiate = false)		{ ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_run, Immidiate); };
 	void ChangeAni_vp_draw(uint32_t entityID, bool Immidiate = false)		{ ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_draw, Immidiate); };
-	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, bool Immidiate = false);
+	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index,bool loop, bool Immidiate = false);
 #pragma endregion
 #pragma region Animation
 	void Animation(uint32_t entityid, float deltaTime);
