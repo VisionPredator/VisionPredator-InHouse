@@ -32,7 +32,7 @@ void TransformSystem::Update(float deltaTime)
 
 void TransformSystem::OnUpdate(std::any)
 {
-    newUpdate();
+	newUpdate();
 
 }
 
@@ -53,7 +53,7 @@ void TransformSystem::UpdateAllEntitys()
 		{
 			CalculateTransform_Parent(transformComp);
 		}
-    
+
 }
 
 void TransformSystem::newUpdate()

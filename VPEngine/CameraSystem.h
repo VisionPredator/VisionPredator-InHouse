@@ -2,7 +2,7 @@
 #include "EventSubscriber.h"
 #include "System.h"
 class CameraSystem :
-    public System, public IRenderable,public EventSubscriber,public ILateUpdatable
+    public System, public IRenderable,public EventSubscriber,public ILateUpdatable,public ISoundable
 {
 public:
     CameraSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -28,5 +28,8 @@ private:
     // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
     void LateRenderUpdate(float deltaTime) override;
+
+    // ISoundable을(를) 통해 상속됨
+    void SoundUpdate(float deltaTime) override;
 };
 

@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="DataRegist">
-      <UniqueIdentifier>{034cddac-6a0d-4b58-b3e7-efe8c7aa51a4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Base">
       <UniqueIdentifier>{f036751f-d27f-4895-a867-f81696b32c2e}</UniqueIdentifier>
     </Filter>
@@ -118,6 +115,15 @@
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Component\Derived\Sound">
+      <UniqueIdentifier>{10032dac-a075-4328-822c-e39043e87522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Derived\Sound\Source">
+      <UniqueIdentifier>{572475fd-846a-4673-baea-3aed857c7b75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataRegist">
+      <UniqueIdentifier>{034cddac-6a0d-4b58-b3e7-efe8c7aa51a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +292,9 @@
     <ClInclude Include="TextComponent.h">
       <Filter>Component\etc</Filter>
     </ClInclude>
+    <ClInclude Include="SoundComponent.h">
+      <Filter>Component\Derived\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -425,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Component\Derived\Basic\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundComponent.cpp">
+      <Filter>Component\Derived\Sound\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

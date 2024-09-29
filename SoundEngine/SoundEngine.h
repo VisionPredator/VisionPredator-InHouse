@@ -14,7 +14,7 @@ public:
     void All3DSound();
     void Load2DSound(const std::string& path, const std::string& key, SoundType type);
     void Load3DSound(const std::string& path, const std::string& key, SoundType type);
-    void Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose) override;
+    bool Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose) override;
     void Stop(const uint32_t& id, const std::string& soundKey) override;
     void SetListenerPosition(VPMath::Vector3 pos , VPMath::Vector3 Up, VPMath::Vector3 Forward) override;
     void CleanChannel() override;
@@ -36,6 +36,10 @@ private:
 	std::filesystem::path m_BGMPath{};
 	std::filesystem::path m_2DEffectPath{};
 	std::filesystem::path m_3DEffectPath{};
+
+
+    // ISound을(를) 통해 상속됨
+    float GetLength(const std::string& key) override;
 
 };
 

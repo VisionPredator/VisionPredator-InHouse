@@ -174,19 +174,17 @@ void SoundEngine::Load3DSound(const std::string& path, const std::string& key, S
 		m_System->createSound(path.c_str(), FMOD_DEFAULT | FMOD_3D, nullptr, &sound);
 		break;
 	}
-
 	m_SoundMap.insert(std::make_pair(key, sound));
 }
 
-void SoundEngine::Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose)
+bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose)
 {
 	// 사운드 맵에서 사운드를 찾습니다.
 	auto soundIter = m_SoundMap.find(key);
 	if (soundIter == m_SoundMap.end())
-		return;
+		return false;
 
 	FMOD::Sound* sound = soundIter->second;
-
 	// 해당 엔티티의 채널이 이미 존재하는지 확인합니다.
 	auto channelIter = m_EntityChannels.find(id);
 	if (channelIter != m_EntityChannels.end())
@@ -226,7 +224,7 @@ void SoundEngine::Play(const uint32_t& id, const std::string& key, float volume,
 	// 새로운 채널을 엔티티에 할당합니다.
 	m_EntityChannels[id] = channel;
 	channel->setPaused(false); // 재생을 시작합니다.
-
+	return true;
 }
 void SoundEngine::Stop(const uint32_t& id, const std::string& soundKey)
 {
@@ -267,4 +265,27 @@ void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, V
 
 void SoundEngine::CleanChannel()
 {
+}
+
+float SoundEngine::GetLength(const std::string& key)
+{
+	// 사운드 맵에서 사운드를 찾습니다.
+	auto soundIter = m_SoundMap.find(key);
+	if (soundIter == m_SoundMap.end()) {
+		return 0.0f;
+	}
+
+	FMOD::Sound* sound = soundIter->second;
+
+	// 사운드의 길이를 가져옵니다 (밀리초 단위)
+	unsigned int length = 0;
+	FMOD_RESULT result = sound->getLength(&length, FMOD_TIMEUNIT_MS);
+
+	if (result != FMOD_OK) 
+	{
+		return 0.0f; // 실패 시 0.0을 반환
+	}
+
+	// 초 단위로 변환하여 반환
+	return static_cast<float>(length) / 1000.0f;
 }

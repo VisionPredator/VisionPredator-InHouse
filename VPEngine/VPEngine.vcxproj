@@ -197,6 +197,7 @@
     <ClInclude Include="SocketComponent.h" />
     <ClInclude Include="SocketSystem.h" />
     <ClInclude Include="ImageComponent.h" />
+    <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="UISystem.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="SkinningMeshComponent.cpp" />
     <ClCompile Include="SocketComponent.cpp" />
     <ClCompile Include="SocketSystem.cpp" />
+    <ClCompile Include="SoundComponent.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemInterface.cpp" />
