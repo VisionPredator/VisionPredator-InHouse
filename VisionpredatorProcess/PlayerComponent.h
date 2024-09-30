@@ -41,6 +41,7 @@ struct PlayerComponent :
     VPMath::Vector3 SlideDir{};
     
     uint32_t SearchedItemID{};
+    uint32_t PreSearchedItemID{};
     uint32_t GunEntityID{};
     uint32_t FirePosEntityID{};
 

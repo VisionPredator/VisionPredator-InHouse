@@ -254,6 +254,24 @@ void SoundEngine::Stop(const uint32_t& id, const std::string& soundKey)
 	}
 }
 
+void SoundEngine::Stop(const uint32_t& id) 
+{
+	// Find the channel for the given ID
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end()) {
+		FMOD::Channel* channel = channelIter->second;
+
+		if (channel != nullptr) {
+			// Stop the channel
+			channel->stop();
+		}
+
+		// Remove the channel from the map
+		m_EntityChannels.erase(channelIter);
+	}
+}
+
+
 void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, VPMath::Vector3 Forward)
 {
 	m_ListenerPos = { pos.x,pos.y,pos.z };
@@ -263,9 +281,47 @@ void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, V
 
 }
 
-void SoundEngine::CleanChannel()
+void SoundEngine::CleanAllChannel()
 {
+	// Check if m_EntityChannels is empty
+	if (m_EntityChannels.empty()) 
+		return; // Nothing to clean if the map is empty
+
+	// Iterate over all channels in the map
+	for (auto& pair : m_EntityChannels) 
+	{
+		FMOD::Channel* channel = pair.second;
+
+		if (channel != nullptr)
+			// Stop the channel
+			channel->stop();
+	}
+
+	// Clear the entire map to remove all entries
+	m_EntityChannels.clear();
 }
+
+void SoundEngine::CleanChannel(const uint32_t& id) 
+{
+	// Check if m_EntityChannels is empty
+	if (m_EntityChannels.empty()) 
+		return; // Nothing to clean if the map is empty
+
+	// Find the channel for the given ID
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end()) 
+	{
+		FMOD::Channel* channel = channelIter->second;
+
+		if (channel != nullptr)
+			// Stop the channel
+			channel->stop();
+
+		// Remove the channel from the map
+		m_EntityChannels.erase(channelIter);
+	}
+}
+
 
 float SoundEngine::GetLength(const std::string& key)
 {
