@@ -73,24 +73,27 @@ void PlayerUISystem::UpdateAim(const PlayerComponent& playerComponent)
 		}
 	}
 
-	bool isInteracting = false;
-	if (GetSceneManager()->HasEntity(playerComponent.SearchedItemID))
+	if (ui)
 	{
-		if (GetSceneManager()->GetEntity(playerComponent.SearchedItemID)->HasComponent<GunComponent>())
-			isInteracting = true;
-	}
+		bool isInteracting = false;
+		if (GetSceneManager()->HasEntity(playerComponent.SearchedItemID))
+		{
+			if (GetSceneManager()->GetEntity(playerComponent.SearchedItemID)->HasComponent<GunComponent>())
+				isInteracting = true;
+		}
 
-	if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
-	{
-		ui->TexturePath = "aim_attack.png";
-	}
-	else if (true == isInteracting)	// 상호작용 중일 때
-	{
-		ui->TexturePath = "aim_interact.png";
-	}
-	else    // IDLE
-	{
-		ui->TexturePath = "aim_base.png";
+		if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
+		{
+			ui->TexturePath = "aim_attack.png";
+		}
+		else if (true == isInteracting)	// 상호작용 중일 때
+		{
+			ui->TexturePath = "aim_interact.png";
+		}
+		else    // IDLE
+		{
+			ui->TexturePath = "aim_base.png";
+		}
 	}
 }
 

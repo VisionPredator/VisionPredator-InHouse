@@ -1,11 +1,7 @@
 [
     {
-        "EntityID": 3441878020,
+        "EntityID": 1635874956,
         "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Pistol_Bullet"
-            },
             {
                 "BoxInfo": {
                     "Extent": {
@@ -39,28 +35,32 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "PhysicsLayer": 0,
+                    "PhysicsLayer": 6,
                     "Restitution": 0.0,
                     "StaticFriction": 1.0,
                     "UseGravity": false
                 },
-                "IsDynamic": false,
+                "IsDynamic": true,
                 "SphereInfo": {
-                    "Radius": 0.05000000074505806
+                    "Radius": 1.0
                 }
+            },
+            {
+                "ComponentID": 1365953231,
+                "Name": "Pistol_Bullet"
             },
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 28.578365325927734,
+                    "y": -49.276668548583984,
+                    "z": -16.812238693237305
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
-                    "x": 0.0,
+                    "x": -0.0,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": -0.0
                 },
                 "Local_Scale": {
                     "x": 1.0,
@@ -75,7 +75,7 @@
             },
             {
                 "ChildrenID": [
-                    3801268840
+                    3540704649
                 ],
                 "ComponentID": 188567026
             },
@@ -86,7 +86,7 @@
         ]
     },
     {
-        "EntityID": 3801268840,
+        "EntityID": 3540704649,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -113,7 +113,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3441878020
+                "ParentID": 1635874956
             },
             {
                 "ComponentID": 4075385036,
