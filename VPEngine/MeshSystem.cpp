@@ -51,6 +51,9 @@ void MeshSystem::BeginRenderUpdate(float deltaTime)
 		renderdata->world = transform.WorldTransform;
 		renderdata->rotation = transform.World_Rotation;
 		renderdata->MaskingColor = meshComp.MaskColor;
+		renderdata->tiling = meshComp.LightMapTiling;
+		renderdata->offset = meshComp.LightMapOffset;
+		renderdata->lightmapindex = meshComp.LightMapIndex;
 	}
 }
 
