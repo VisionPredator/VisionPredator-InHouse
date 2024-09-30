@@ -65,10 +65,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "WeaponUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -87,6 +83,10 @@
                 "Scale": 1.0,
                 "TexturePath": "gun1.png",
                 "TopPercent": 0.0
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "WeaponUI"
             },
             {
                 "ComponentID": 3243699741,
@@ -121,10 +121,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "AimUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -143,6 +139,10 @@
                 "Scale": 0.5789999961853027,
                 "TexturePath": "aim_base.png",
                 "TopPercent": 0.0
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "AimUI"
             },
             {
                 "ComponentID": 3243699741,
@@ -374,10 +374,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "HPGageUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -396,6 +392,10 @@
                 "Scale": 1.0,
                 "TexturePath": "HP 2.png",
                 "TopPercent": 0.0
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "HPGageUI"
             },
             {
                 "ComponentID": 3243699741,
@@ -622,6 +622,10 @@
                 }
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "VPStateUI"
+            },
+            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -640,10 +644,6 @@
                 "Scale": 1.0,
                 "TexturePath": "close_eye1.png",
                 "TopPercent": 0.0
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "VPStateUI"
             },
             {
                 "ComponentID": 3243699741,
@@ -734,6 +734,10 @@
                 "ParentID": 632508540
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "WeaponInfoBackgroundUI"
+            },
+            {
                 "Billboard": 0,
                 "BottomPercent": 0.41999998688697815,
                 "Color": {
@@ -752,10 +756,6 @@
                 "Scale": 0.7760000228881836,
                 "TexturePath": "",
                 "TopPercent": 0.41999998688697815
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "WeaponInfoBackgroundUI"
             }
         ]
     },

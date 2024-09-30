@@ -71,7 +71,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
-	m_SoundEngine->Play(0, "MainTitle_BGM", 1, {});
+	//m_SoundEngine->Play(0, "MainTitle_BGM", 1, {});
 }
 
 VPEngine::~VPEngine()

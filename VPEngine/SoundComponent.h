@@ -3,7 +3,7 @@
 
 struct SoundComponent : public Component
 {
-	VP_JSONBODY(SoundComponent, SoundPath);
+	VP_JSONBODY(SoundComponent, SoundPath, Loop, Volume);
 	std::string SoundPath{};
 	float Duration{};
 	bool Loop;

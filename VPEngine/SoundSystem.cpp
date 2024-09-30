@@ -8,6 +8,14 @@ SoundSystem::SoundSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sc
 void SoundSystem::SoundUpdate(float deltaTime)
 {
 	m_SoundEngine->Update();
+	COMPLOOP(SoundComponent, soundcomp)
+	{
+		if (m_SoundEngine->ChannelMusicFinished(soundcomp.GetEntityID()))
+		{
+
+		GetSceneManager()->DestroyEntity(soundcomp.GetEntityID());
+		}
+	}
 }
 
 void SoundSystem::Update(float deltaTime)
@@ -36,9 +44,16 @@ void SoundSystem::Start(uint32_t gameObjectId)
 
 void SoundSystem::Finish(uint32_t gameObjectId)
 {
-
+	auto entity = GetSceneManager()->GetEntity(gameObjectId);
+	if (!entity->HasComponent<SoundComponent>())
+		return;
+	m_SoundEngine->CleanChannel(gameObjectId);
 }
 
 void SoundSystem::Finalize()
 {
+	COMPLOOP(SoundComponent, soundcomp)
+	{
+		Finish(soundcomp.GetEntityID());
+	}
 }

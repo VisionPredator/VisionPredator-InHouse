@@ -143,7 +143,6 @@
                     "FirePosition": "Fireposition",
                     "GravityPower": 1.0,
                     "HP": 100,
-                    "HasGun": false,
                     "JumpFoce": 10.0,
                     "PlayerCameraName": "PlayerCamera",
                     "PlayerHandName": "PlayerHand",
@@ -704,6 +703,7 @@
                     "ComponentID": 3546995328,
                     "CoolTime": 0.30000001192092896,
                     "CurrentBullet": 49,
+                    "GunSoundPrefab": "",
                     "Type": 0
                 },
                 {
@@ -920,6 +920,7 @@
                     "ComponentID": 3546995328,
                     "CoolTime": 0.30000001192092896,
                     "CurrentBullet": 49,
+                    "GunSoundPrefab": "",
                     "Type": 0
                 },
                 {

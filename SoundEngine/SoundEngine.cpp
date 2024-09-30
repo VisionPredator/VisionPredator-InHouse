@@ -281,6 +281,31 @@ void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, V
 
 }
 
+bool SoundEngine::ChannelMusicFinished(const uint32_t& id) {
+	// Check if m_EntityChannels is empty
+	if (m_EntityChannels.empty()) 
+	{
+		return true; // If no channels exist, we assume no music is playing
+	}
+
+	// Find the channel for the given ID
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end()) 
+	{
+		FMOD::Channel* channel = channelIter->second;
+		if (channel != nullptr) 
+		{
+			bool isPlaying = false;
+			channel->isPlaying(&isPlaying);
+
+			if (!isPlaying) 
+				// The channel is no longer playing, meaning the music has finished
+				return true;
+		}
+	}
+	// If the channel wasn't found or is still playing
+	return false;
+}
 void SoundEngine::CleanAllChannel()
 {
 	// Check if m_EntityChannels is empty
