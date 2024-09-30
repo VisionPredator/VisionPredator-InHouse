@@ -17,3 +17,4 @@
 #include "NavAgentComponent.h"
 #include "SocketComponent.h"
 #include "TextComponent.h"
+#include "SoundComponent.h"

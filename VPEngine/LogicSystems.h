@@ -15,3 +15,4 @@
 #include "MeshSystem.h"
 #include "SkinnedMeshSystem.h"
 #include "GeometrySystem.h"
+#include "SoundSystem.h"

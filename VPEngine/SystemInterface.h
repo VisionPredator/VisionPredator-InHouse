@@ -1,5 +1,6 @@
 #pragma once
 #include "../PhysxEngine/IPhysx.h"
+#include "../SoundEngine/ISound.h"
 
 namespace Graphics
 {
@@ -11,6 +12,10 @@ namespace Physic
 	class IPhysx;
 }
 struct Component;
+namespace Sound
+{
+	class ISound;
+}
 class IPhysicable
 {
 public:
@@ -69,5 +74,14 @@ class IContactable
 public:
 	virtual void EnterCollision(std::pair<uint32_t,uint32_t> entitypair) = 0;
 	virtual void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) = 0;
+};
 
+class ISoundable
+{
+public:
+	virtual void SetSoundEngine(Sound::ISound* soundEngine) { m_SoundEngine = soundEngine; }
+
+	Sound::ISound* m_SoundEngine = nullptr;
+
+	virtual void SoundUpdate(float deltaTime) = 0;
 };

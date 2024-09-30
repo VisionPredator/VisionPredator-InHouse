@@ -16,7 +16,9 @@ public:
 	void CalculateCameraTransform();
 	void DoubleClicked(float deltatime);
 	void OnResize(std::any hwnd);
-
+	VPMath::Vector3 GetPose() { return m_Location; };
+	VPMath::Vector3 GetUp() { return m_UpVector; };
+	VPMath::Vector3 GetForward() { return m_ForwardVector; };
 	// IImGui을(를) 통해 상속됨
 	void ImGuiRender() override;
 	VPMath::Matrix GetView() const { return m_view; }
@@ -47,7 +49,7 @@ private:
 	VPMath::Vector3 m_Scale{ 1.f,1.f,1.f };
 	VPMath::Matrix m_Transform = VPMath::Matrix::Identity;
 	VPMath::Quaternion m_Quaternion = VPMath::Quaternion::Identity;
-	VPMath::Vector3 m_FrontVector = { 0.f,0.f,1.f };
+	VPMath::Vector3 m_ForwardVector = { 0.f,0.f,1.f };
 	VPMath::Vector3 m_UpVector = {};
 	VPMath::Vector3 m_RightVector = {};
 	VPMath::Vector3 m_LerpStartPos = {};

@@ -13,3 +13,5 @@
 #include <tchar.h>
 #include <string_view>
 #include <ranges>
+#include <map>
+#include <string>

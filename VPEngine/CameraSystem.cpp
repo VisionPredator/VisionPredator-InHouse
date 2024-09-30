@@ -37,10 +37,17 @@ void CameraSystem::LateRenderUpdate(float deltaTime)
 {
 }
 
+void CameraSystem::SoundUpdate(float deltaTime)
+{
+	if (!GetSceneManager()->GetEntity(m_MainCameraID))
+		return;
+	auto cameratrans = GetSceneManager()->GetComponent<TransformComponent>(m_MainCameraID);
+	m_SoundEngine->SetListenerPosition(cameratrans->World_Location, cameratrans->UpVector, cameratrans->FrontVector);
+}
+
 
 void CameraSystem::OnSetMainCamera(std::any data)
 {
-
 	try
 	{
 		int mainCameraCount = 0;						//방어코드! 해당 이름에 해당하는 카메라수가 1개가 아닐 때 assert발생!
@@ -104,9 +111,10 @@ void CameraSystem::BeginRenderUpdate(float deltaTime)
 		if (cameracomp.IsMain != true)
 			continue;
 		IsMainCameraExist = true;
-
+		m_MainCameraID = cameracomp.GetEntityID();
 		CameraCalculation(cameracomp);
 		m_Graphics->SetCamera(cameracomp.View, cameracomp.Proj, cameracomp.OrthoProj);
+
 
 		///그런다음 for문 종료하기!
 		break;

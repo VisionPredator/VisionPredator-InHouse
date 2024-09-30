@@ -8,8 +8,20 @@
  .data<& NAME >(#NAME##_hs)\
 		.prop(Reflection::Prop::Name,#NAME)
 #define MEMBER_EXPAND( x ) x
-#define MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10,_11,_12,_13,_14,_15,_16,_17,_18, NAME,...) NAME
+#define MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, NAME, ...) NAME
 #define MEMBER_PASTE(...) MEMBER_EXPAND(MEMBER_GET_MACRO(__VA_ARGS__, \
+        MEMBER_PASTE30, \
+        MEMBER_PASTE29, \
+        MEMBER_PASTE28, \
+        MEMBER_PASTE27, \
+        MEMBER_PASTE26, \
+        MEMBER_PASTE25, \
+        MEMBER_PASTE24, \
+        MEMBER_PASTE23, \
+        MEMBER_PASTE22, \
+        MEMBER_PASTE21, \
+        MEMBER_PASTE20, \
+        MEMBER_PASTE19, \
         MEMBER_PASTE18, \
         MEMBER_PASTE17, \
         MEMBER_PASTE16, \
@@ -28,23 +40,65 @@
         MEMBER_PASTE3, \
         MEMBER_PASTE2, \
         MEMBER_PASTE1)(__VA_ARGS__))
-#define MEMBER_PASTE2(func, v1) func(v1)
-#define MEMBER_PASTE3(func, v1, v2) MEMBER_PASTE2(func, v1) MEMBER_PASTE2(func, v2)
-#define MEMBER_PASTE4(func, v1, v2, v3) MEMBER_PASTE2(func, v1) MEMBER_PASTE3(func, v2, v3)
-#define MEMBER_PASTE5(func, v1, v2, v3, v4) MEMBER_PASTE2(func, v1) MEMBER_PASTE4(func, v2, v3, v4)
-#define MEMBER_PASTE6(func, v1, v2, v3, v4, v5) MEMBER_PASTE2(func, v1) MEMBER_PASTE5(func, v2, v3, v4, v5)
-#define MEMBER_PASTE7(func, v1, v2, v3, v4, v5, v6) MEMBER_PASTE2(func, v1) MEMBER_PASTE6(func, v2, v3, v4, v5, v6)
-#define MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) MEMBER_PASTE2(func, v1) MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
-#define MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) MEMBER_PASTE2(func, v1) MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
-#define MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
-#define MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10) MEMBER_PASTE2(func, v1) MEMBER_PASTE10(func, v2, v3, v4, v5, v6, v7, v8, v9,v10)
-#define MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11) MEMBER_PASTE2(func, v1) MEMBER_PASTE11(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11)
-#define MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12) MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12)
-#define MEMBER_PASTE14(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13) MEMBER_PASTE2(func, v1) MEMBER_PASTE13(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13)
-#define MEMBER_PASTE15(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14) MEMBER_PASTE2(func, v1) MEMBER_PASTE14(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14)
-#define MEMBER_PASTE16(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15) MEMBER_PASTE2(func, v1) MEMBER_PASTE15(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15)
-#define MEMBER_PASTE17(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15,v16) MEMBER_PASTE2(func, v1) MEMBER_PASTE16(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15,v16)
-#define MEMBER_PASTE18(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15,v16,v17) MEMBER_PASTE2(func, v1) MEMBER_PASTE17(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12,v13,v14,v15,v16,v17)
+
+#define MEMBER_PASTE2(func, v1)\
+ func(v1)
+#define MEMBER_PASTE3(func, v1, v2) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE2(func, v2)
+#define MEMBER_PASTE4(func, v1, v2, v3) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE3(func, v2, v3)
+#define MEMBER_PASTE5(func, v1, v2, v3, v4) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE4(func, v2, v3, v4)
+#define MEMBER_PASTE6(func, v1, v2, v3, v4, v5) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE5(func, v2, v3, v4, v5)
+#define MEMBER_PASTE7(func, v1, v2, v3, v4, v5, v6) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE6(func, v2, v3, v4, v5, v6)
+#define MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
+#define MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
+#define MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
+#define MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE10(func, v2, v3, v4, v5, v6, v7, v8, v9, v10)
+#define MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE11(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11)
+#define MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)
+#define MEMBER_PASTE14(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE13(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13)
+#define MEMBER_PASTE15(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE14(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14)
+#define MEMBER_PASTE16(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE15(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15)
+#define MEMBER_PASTE17(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE16(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16)
+#define MEMBER_PASTE18(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE17(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17)
+#define MEMBER_PASTE19(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE18(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18)
+#define MEMBER_PASTE20(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE19(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19)
+#define MEMBER_PASTE21(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE20(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20)
+#define MEMBER_PASTE22(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE21(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21)
+#define MEMBER_PASTE23(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE22(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22)
+#define MEMBER_PASTE24(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE23(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23)
+#define MEMBER_PASTE25(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE24(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24)
+#define MEMBER_PASTE26(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE25(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25)
+#define MEMBER_PASTE27(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE26(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26)
+#define MEMBER_PASTE28(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE27(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27)
+#define MEMBER_PASTE29(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28) \
+ MEMBER_PASTE2(func, v1) MEMBER_PASTE28(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28)
+#define MEMBER_PASTE30(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29) \
+MEMBER_PASTE2(func, v1) MEMBER_PASTE29(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29)
 #define  MEMBERS(...)  MEMBER_EXPAND( MEMBER_PASTE( MEMBER, __VA_ARGS__))
 
 #define META_ADD_COMP(CLASS,...)\
@@ -81,8 +135,27 @@ MEMBERS(__VA_ARGS__)\
  .data<NAME >(#NAME##_hs)\
 		.prop(Reflection::Prop::Name,#NAME)
 #define E_MEMBER_EXPAND( x ) x
-#define E_MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10,_11,_12,_13, NAME,...) NAME
+#define E_MEMBER_EXPAND(x) x
+#define E_MEMBER_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, NAME, ...) NAME
+
 #define E_MEMBER_PASTE(...) E_MEMBER_EXPAND(E_MEMBER_GET_MACRO(__VA_ARGS__, \
+        E_MEMBER_PASTE30, \
+        E_MEMBER_PASTE29, \
+        E_MEMBER_PASTE28, \
+        E_MEMBER_PASTE27, \
+        E_MEMBER_PASTE26, \
+        E_MEMBER_PASTE25, \
+        E_MEMBER_PASTE24, \
+        E_MEMBER_PASTE23, \
+        E_MEMBER_PASTE22, \
+        E_MEMBER_PASTE21, \
+        E_MEMBER_PASTE20, \
+        E_MEMBER_PASTE19, \
+        E_MEMBER_PASTE18, \
+        E_MEMBER_PASTE17, \
+        E_MEMBER_PASTE16, \
+        E_MEMBER_PASTE15, \
+        E_MEMBER_PASTE14, \
         E_MEMBER_PASTE13, \
         E_MEMBER_PASTE12, \
         E_MEMBER_PASTE11, \
@@ -96,18 +169,65 @@ MEMBERS(__VA_ARGS__)\
         E_MEMBER_PASTE3, \
         E_MEMBER_PASTE2, \
         E_MEMBER_PASTE1)(__VA_ARGS__))
-#define E_MEMBER_PASTE2(func, v1) func(v1)
-#define E_MEMBER_PASTE3(func, v1, v2) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE2(func, v2)
-#define E_MEMBER_PASTE4(func, v1, v2, v3) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE3(func, v2, v3)
-#define E_MEMBER_PASTE5(func, v1, v2, v3, v4) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE4(func, v2, v3, v4)
-#define E_MEMBER_PASTE6(func, v1, v2, v3, v4, v5) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE5(func, v2, v3, v4, v5)
-#define E_MEMBER_PASTE7(func, v1, v2, v3, v4, v5, v6) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE6(func, v2, v3, v4, v5, v6)
-#define E_MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
-#define E_MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
-#define E_MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
-#define E_MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE10(func, v2, v3, v4, v5, v6, v7, v8, v9,v10)
-#define E_MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE11(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11)
-#define E_MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12) E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9,v10,v11,v12)
+
+#define E_MEMBER_PASTE2(func, v1) \
+func(v1)
+#define E_MEMBER_PASTE3(func, v1, v2) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE2(func, v2)
+#define E_MEMBER_PASTE4(func, v1, v2, v3) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE3(func, v2, v3)
+#define E_MEMBER_PASTE5(func, v1, v2, v3, v4) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE4(func, v2, v3, v4)
+#define E_MEMBER_PASTE6(func, v1, v2, v3, v4, v5) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE5(func, v2, v3, v4, v5)
+#define E_MEMBER_PASTE7(func, v1, v2, v3, v4, v5, v6) \
+ E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE6(func, v2, v3, v4, v5, v6)
+#define E_MEMBER_PASTE8(func, v1, v2, v3, v4, v5, v6, v7) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE7(func, v2, v3, v4, v5, v6, v7)
+#define E_MEMBER_PASTE9(func, v1, v2, v3, v4, v5, v6, v7, v8) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE8(func, v2, v3, v4, v5, v6, v7, v8)
+#define E_MEMBER_PASTE10(func, v1, v2, v3, v4, v5, v6, v7, v8, v9) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE9(func, v2, v3, v4, v5, v6, v7, v8, v9)
+#define E_MEMBER_PASTE11(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) \
+ E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE10(func, v2, v3, v4, v5, v6, v7, v8, v9, v10)
+#define E_MEMBER_PASTE12(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE11(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11)
+#define E_MEMBER_PASTE13(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE12(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)
+#define E_MEMBER_PASTE14(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE13(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13)
+#define E_MEMBER_PASTE15(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE14(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14)
+#define E_MEMBER_PASTE16(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE15(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15)
+#define E_MEMBER_PASTE17(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE16(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16)
+#define E_MEMBER_PASTE18(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE17(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17)
+#define E_MEMBER_PASTE19(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE18(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18)
+#define E_MEMBER_PASTE20(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE19(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19)
+#define E_MEMBER_PASTE21(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE20(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20)
+#define E_MEMBER_PASTE22(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE21(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21)
+#define E_MEMBER_PASTE23(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22) \
+ E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE22(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22)
+#define E_MEMBER_PASTE24(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE23(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23)
+#define E_MEMBER_PASTE25(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE24(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24)
+#define E_MEMBER_PASTE26(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25) \
+ E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE25(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25)
+#define E_MEMBER_PASTE27(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26) \
+ E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE26(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26)
+#define E_MEMBER_PASTE28(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE27(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27)
+#define E_MEMBER_PASTE29(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE28(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28)
+#define E_MEMBER_PASTE30(func, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29) \
+E_MEMBER_PASTE2(func, v1) E_MEMBER_PASTE29(func, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29)
 #define  E_MEMBERS(...)  E_MEMBER_EXPAND( E_MEMBER_PASTE( E_MEMBER, __VA_ARGS__))
 
 #define META_ADD_ENUMCLASS(CLASS,...)\

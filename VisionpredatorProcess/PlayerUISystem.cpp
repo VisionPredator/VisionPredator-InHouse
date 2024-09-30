@@ -74,14 +74,10 @@ void PlayerUISystem::UpdateAim(const PlayerComponent& playerComponent)
 	}
 
 	bool isInteracting = false;
-	COMPLOOP(GunComponent, gunComp)
+	if (GetSceneManager()->HasEntity(playerComponent.SearchedItemID))
 	{
-		if (gunComp.GetEntityID() == playerComponent.SearchedItemID)
-		{
+		if (GetSceneManager()->GetEntity(playerComponent.SearchedItemID)->HasComponent<GunComponent>())
 			isInteracting = true;
-
-			break;
-		}
 	}
 
 	if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
