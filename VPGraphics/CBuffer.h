@@ -11,8 +11,8 @@ struct TransformData
 	VPMath::Matrix world;
 	VPMath::Matrix local;
 
-	VPMath::Matrix localInverse;
 	VPMath::Matrix worldInverse;
+	VPMath::Matrix localInverse;
 };
 
 struct CameraData
