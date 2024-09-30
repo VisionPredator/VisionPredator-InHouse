@@ -707,6 +707,14 @@ void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
 	ChangeAni_Attack_ShotGun(anicomp->GetEntityID(), 4, false);
+	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
+	if (!posEntity)
+		return;
+	auto tempTransform = posEntity->GetComponent<TransformComponent>();
+	auto temppos = tempTransform->World_Location;
+	auto temprotate = tempTransform->World_Rotation;
+	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 }
 void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
@@ -716,7 +724,15 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_Rifle(anicomp->GetEntityID(), 4, false);
+	ChangeAni_Attack_Rifle(anicomp->GetEntityID(), 10, false);
+	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
+	if (!posEntity)
+		return;
+	auto tempTransform = posEntity->GetComponent<TransformComponent>();
+	auto temppos = tempTransform->World_Location;
+	auto temprotate = tempTransform->World_Rotation;
+	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 
 }
 

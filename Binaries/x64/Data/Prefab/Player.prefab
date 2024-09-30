@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 673789209,
+        "EntityID": 1426059059,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -9,9 +9,9 @@
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": -36.71483612060547,
-                    "y": 20.0,
-                    "z": 49.5970573425293
+                    "x": 29.432300567626953,
+                    "y": -47.38056564331055,
+                    "z": -25.046640396118164
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
@@ -38,13 +38,13 @@
                         "Pivot": 0
                     },
                     "contactOffset": 0.0010000000474974513,
-                    "height": 10.0,
+                    "height": 1.0,
                     "position": {
-                        "x": -36.71483612060547,
-                        "y": 20.0,
-                        "z": 49.5970573425293
+                        "x": 30.437206268310547,
+                        "y": -47.38056564331055,
+                        "z": -25.046640396118164
                     },
-                    "radius": 5.0,
+                    "radius": 0.5,
                     "slopeLimit": 0.5,
                     "stepOffset": 0.5
                 },
@@ -76,18 +76,18 @@
                 "GravityPower": 1.0,
                 "HP": 0,
                 "HasGun": false,
-                "JumpFoce": 10.0,
+                "JumpFoce": 4.0,
                 "PlayerCameraName": "PlayerCamera",
                 "PlayerHandName": "PlayerHand",
-                "RunSpeed": 80.0,
+                "RunSpeed": 10.0,
                 "Sencitive": 0.10000000149011612,
                 "SlideDisTance": 0.0,
-                "StaticFriction": 5.0,
-                "WalkSpeed": 40.0
+                "StaticFriction": 10.0,
+                "WalkSpeed": 5.0
             },
             {
                 "ChildrenID": [
-                    82098914
+                    3290566118
                 ],
                 "ComponentID": 188567026
             },
@@ -98,7 +98,7 @@
         ]
     },
     {
-        "EntityID": 82098914,
+        "EntityID": 3290566118,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -108,8 +108,8 @@
                 "ComponentID": 3400599862,
                 "Local_Location": {
                     "x": 0.0,
-                    "y": 6.0,
-                    "z": 5.0
+                    "y": 0.6758384704589844,
+                    "z": 0.27631568908691406
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
@@ -126,25 +126,25 @@
             {
                 "ComponentID": 3575595261,
                 "FOV": 0.7850000262260437,
-                "FarZ": 1000.0,
+                "FarZ": 100.0,
                 "IsMain": true,
                 "NearZ": 0.0010000000474974513
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 673789209
+                "ParentID": 1426059059
             },
             {
                 "ChildrenID": [
-                    4227205418,
-                    2327024491
+                    3130222428,
+                    4141450831
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 4227205418,
+        "EntityID": 3130222428,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -154,8 +154,8 @@
                 "ComponentID": 3400599862,
                 "Local_Location": {
                     "x": 0.0,
-                    "y": -10.5,
-                    "z": 0.3855781555175781
+                    "y": -2.8730812072753906,
+                    "z": 0.057292938232421875
                 },
                 "Local_Quaternion": {
                     "w": -1.192093321833454e-07,
@@ -164,9 +164,9 @@
                     "z": 0.0
                 },
                 "Local_Scale": {
-                    "x": 0.9999995231628418,
-                    "y": 1.0,
-                    "z": 0.9999995231628418
+                    "x": 0.2651998698711395,
+                    "y": 0.26520001888275146,
+                    "z": 0.2651998698711395
                 }
             },
             {
@@ -212,12 +212,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 82098914
+                "ParentID": 3290566118
             }
         ]
     },
     {
-        "EntityID": 2327024491,
+        "EntityID": 4141450831,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -228,7 +228,7 @@
                 "Local_Location": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 6.0
+                    "z": 1.1858882904052734
                 },
                 "Local_Quaternion": {
                     "w": 1.0,
@@ -244,7 +244,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 82098914
+                "ParentID": 3290566118
             }
         ]
     }
