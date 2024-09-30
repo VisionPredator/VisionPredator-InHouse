@@ -180,182 +180,6 @@
             ]
         },
         {
-            "EntityID": 1239835630,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Player"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 29.432300567626953,
-                        "y": -47.38056564331055,
-                        "z": -25.046640396118164
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "Acceleration": 30.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 3,
-                            "LocalOffset": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
-                            },
-                            "Pivot": 0
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.0,
-                        "position": {
-                            "x": 29.432300567626953,
-                            "y": -47.38056564331055,
-                            "z": -25.046640396118164
-                        },
-                        "radius": 0.5,
-                        "slopeLimit": 0.5,
-                        "stepOffset": 0.5
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 3,
-                        "LocalOffset": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Pivot": 0
-                    },
-                    "DynamicFriction": 0.10000000149011612,
-                    "GravityWeight": 9.8100004196167,
-                    "JumpSpeed": 11.0,
-                    "JumpXZAcceleration": 1.0,
-                    "JumpXZDeceleration": 0.009999999776482582,
-                    "MaxSpeed": 10.0,
-                    "StaticFriction": 0.4000000059604645
-                },
-                {
-                    "Accel": 200.0,
-                    "AirControlPercent": 40.0,
-                    "ComponentID": 4183631247,
-                    "CurrentFSM": 0,
-                    "DynamicFriction": 0.0,
-                    "FirePosition": "Fireposition",
-                    "GravityPower": 1.0,
-                    "HP": 50,
-                    "HasGun": false,
-                    "JumpFoce": 4.0,
-                    "PlayerCameraName": "PlayerCamera",
-                    "PlayerHandName": "PlayerHand",
-                    "RunSpeed": 10.0,
-                    "Sencitive": 0.10000000149011612,
-                    "SlideDisTance": 0.0,
-                    "StaticFriction": 10.0,
-                    "WalkSpeed": 5.0
-                },
-                {
-                    "ChildrenID": [
-                        3394694966
-                    ],
-                    "ComponentID": 188567026
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": "Player"
-                }
-            ]
-        },
-        {
-            "EntityID": 2191910061,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Fireposition"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 1.1858882904052734
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 3394694966
-                }
-            ]
-        },
-        {
-            "EntityID": 3394694966,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "PlayerCamera"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.6758384704589844,
-                        "z": 0.27631568908691406
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 100.0,
-                    "IsMain": true,
-                    "NearZ": 0.0010000000474974513
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 1239835630
-                },
-                {
-                    "ChildrenID": [
-                        2632215907,
-                        2191910061
-                    ],
-                    "ComponentID": 188567026
-                }
-            ]
-        },
-        {
             "EntityID": 990759379,
             "Component": [
                 {
@@ -447,79 +271,6 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 83445193
-                }
-            ]
-        },
-        {
-            "EntityID": 2632215907,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "PlayerHand"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": -2.7473831176757813,
-                        "z": -0.020868301391601563
-                    },
-                    "Local_Quaternion": {
-                        "w": 0.014298317953944206,
-                        "x": 0.0,
-                        "y": 0.9998977780342102,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 0.2519398629665375,
-                        "y": 0.2519400119781494,
-                        "z": 0.2519398629665375
-                    }
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": "PlayerHand"
-                },
-                {
-                    "ComponentID": 2778840952,
-                    "FBX": [
-                        112,
-                        108,
-                        97,
-                        121,
-                        101,
-                        114,
-                        95,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "animationList": [],
-                    "curAni": 17,
-                    "isLoop": false,
-                    "speed": 1.0,
-                    "transitionDuration": 0.4000000059604645
-                },
-                {
-                    "ComponentID": 1142749570,
-                    "FBX": [
-                        112,
-                        108,
-                        97,
-                        121,
-                        101,
-                        114,
-                        95,
-                        46,
-                        102,
-                        98,
-                        120
-                    ]
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 3394694966
                 }
             ]
         },
@@ -681,62 +432,6 @@
             ]
         },
         {
-            "EntityID": 965843216,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "WeaponImage"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": "WeaponUI"
-                },
-                {
-                    "Billboard": 0,
-                    "BottomPercent": 0.0,
-                    "Color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "ComponentID": 2393760569,
-                    "Layer": 1,
-                    "LeftPercent": 0.0,
-                    "PosXPercent": 91.0,
-                    "PosYPercent": 92.0,
-                    "RenderMode": 1,
-                    "RightPercent": 0.0,
-                    "Scale": 1.0,
-                    "TexturePath": "gun1.png",
-                    "TopPercent": 0.0
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 990759379
-                }
-            ]
-        },
-        {
             "EntityID": 547554256,
             "Component": [
                 {
@@ -784,6 +479,62 @@
                     "RightPercent": 0.0,
                     "Scale": 0.5789999961853027,
                     "TexturePath": "aim_base.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 990759379
+                }
+            ]
+        },
+        {
+            "EntityID": 965843216,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "WeaponImage"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "WeaponUI"
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 91.0,
+                    "PosYPercent": 92.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "gun1.png",
                     "TopPercent": 0.0
                 },
                 {
@@ -990,6 +741,38 @@
             ]
         },
         {
+            "EntityID": 1281817810,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Fireposition"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 1.1858882904052734
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1070793923
+                }
+            ]
+        },
+        {
             "EntityID": 3113207785,
             "Component": [
                 {
@@ -1146,6 +929,52 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 3034253711
+                }
+            ]
+        },
+        {
+            "EntityID": 1070793923,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerCamera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.6758384704589844,
+                        "z": 0.27631568908691406
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.9661514759063721,
+                        "x": -0.2579755187034607,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 100.0,
+                    "IsMain": true,
+                    "NearZ": 0.009999999776482582
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1016388133
+                },
+                {
+                    "ChildrenID": [
+                        1223565655,
+                        1281817810
+                    ],
+                    "ComponentID": 188567026
                 }
             ]
         },
@@ -1736,6 +1565,176 @@
                     "isLoop": true,
                     "speed": 1.0,
                     "transitionDuration": 0.20000000298023224
+                }
+            ]
+        },
+        {
+            "EntityID": 1016388133,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Player"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 21.43320655822754,
+                        "y": -50.72981262207031,
+                        "z": -22.957979202270508
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.0375148169696331,
+                        "x": 0.0,
+                        "y": 0.9992961287498474,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999997019767761,
+                        "y": 1.0,
+                        "z": 0.9999997019767761
+                    }
+                },
+                {
+                    "Acceleration": 15.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 3,
+                            "LocalOffset": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "Pivot": 0
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 1.0,
+                        "position": {
+                            "x": 21.43320655822754,
+                            "y": -50.72981262207031,
+                            "z": -22.957979202270508
+                        },
+                        "radius": 0.5,
+                        "slopeLimit": 0.5,
+                        "stepOffset": 0.5
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 3,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 0
+                    },
+                    "DynamicFriction": 0.0,
+                    "GravityWeight": 9.806650161743164,
+                    "JumpSpeed": 4.0,
+                    "JumpXZAcceleration": 6.0,
+                    "JumpXZDeceleration": 0.009999999776482582,
+                    "MaxSpeed": 5.0,
+                    "StaticFriction": 10.0
+                },
+                {
+                    "Accel": 200.0,
+                    "AirControlPercent": 40.0,
+                    "ComponentID": 4183631247,
+                    "CurrentFSM": 0,
+                    "DynamicFriction": 0.0,
+                    "FirePosition": "Fireposition",
+                    "GravityPower": 1.0,
+                    "HP": 0,
+                    "JumpFoce": 4.0,
+                    "PlayerCameraName": "PlayerCamera",
+                    "PlayerHandName": "PlayerHand",
+                    "RunSpeed": 10.0,
+                    "Sencitive": 0.10000000149011612,
+                    "SlideDisTance": 0.0,
+                    "StaticFriction": 10.0,
+                    "WalkSpeed": 5.0
+                },
+                {
+                    "ChildrenID": [
+                        1070793923
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "Player"
+                }
+            ]
+        },
+        {
+            "EntityID": 1223565655,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerHand"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": -2.8730812072753906,
+                        "z": 0.057292938232421875
+                    },
+                    "Local_Quaternion": {
+                        "w": -1.192093321833454e-07,
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.2651998698711395,
+                        "y": 0.26520001888275146,
+                        "z": 0.2651998698711395
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "PlayerHand"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "animationList": [],
+                    "curAni": 17,
+                    "isLoop": false,
+                    "speed": 10.0,
+                    "transitionDuration": 0.4000000059604645
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1070793923
                 }
             ]
         }

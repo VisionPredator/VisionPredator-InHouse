@@ -221,7 +221,7 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 	enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
 	uint32_t id = enemycomp.GetEntityID();
 	int aniIndex = static_cast<int>(enemycomp.CurrentFSM); //해당 인덱스 enum으로 뽑아서 일관적으로 써야할듯
-	VisPred::Engine::AniBlendData temp{ enemycomp.GetEntityID() ,aniIndex ,4,false};
+	VisPred::Engine::AniBlendData temp{ enemycomp.GetEntityID() ,aniIndex ,2,false};
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 
