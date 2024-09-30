@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <memory>
+#include <memory>
 
 #include "Device.h"
 #include "ResourceManager.h"
@@ -24,6 +25,7 @@ void UIManager::Initialize(const std::shared_ptr<Device>& device,
 	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\roboto.spritefont");
 	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\KIMM_B48_HY.spritefont");
 	m_SpaceShards48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\SpaceShards_48.spritefont");
+	m_SpaceShardsItalic48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\SpaceShardsItalic_48.spritefont");
 #else
 	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\roboto.spritefont");
 	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B48_HY.spritefont");
@@ -134,6 +136,8 @@ void UIManager::DrawAllTexts()
 			font = m_KIMM48;
 		else if (info.FontPath == L"SpaceShards_48.spritefont")
 			font = m_SpaceShards48;
+		else if (info.FontPath == L"m_SpaceShardsItalic48.spritefont")
+			font = m_SpaceShardsItalic48;
 		else
 			font = m_DefaultFont;
 

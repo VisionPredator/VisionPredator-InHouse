@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 1278419768,
+        "EntityID": 1365888793,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -27,18 +27,18 @@
             },
             {
                 "ChildrenID": [
-                    1056306851,
-                    4285655864,
-                    1255597334,
-                    1267785048,
-                    1642594947
+                    541766550,
+                    3850311496,
+                    4232672827,
+                    1701584009,
+                    4024022662
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 1056306851,
+        "EntityID": 541766550,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -64,10 +64,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "WeaponUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -88,13 +84,17 @@
                 "TopPercent": 0.0
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "WeaponUI"
+            },
+            {
                 "ComponentID": 3243699741,
-                "ParentID": 1278419768
+                "ParentID": 1365888793
             }
         ]
     },
     {
-        "EntityID": 4285655864,
+        "EntityID": 3850311496,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -120,14 +120,10 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "AimUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
-                    "w": 1.0,
+                    "w": 0.6901960968971252,
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
@@ -139,18 +135,22 @@
                 "PosYPercent": 50.0,
                 "RenderMode": 1,
                 "RightPercent": 0.0,
-                "Scale": 1.0,
+                "Scale": 0.5789999961853027,
                 "TexturePath": "aim_base.png",
                 "TopPercent": 0.0
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "AimUI"
+            },
+            {
                 "ComponentID": 3243699741,
-                "ParentID": 1278419768
+                "ParentID": 1365888793
             }
         ]
     },
     {
-        "EntityID": 1255597334,
+        "EntityID": 4232672827,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -223,12 +223,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1278419768
+                "ParentID": 1365888793
             }
         ]
     },
     {
-        "EntityID": 1267785048,
+        "EntityID": 1701584009,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -255,21 +255,21 @@
             },
             {
                 "ChildrenID": [
-                    2781732031,
-                    1915601489,
-                    710790800,
-                    1059575871
+                    240315254,
+                    1310122086,
+                    4280389656,
+                    2972088986
                 ],
                 "ComponentID": 188567026
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1278419768
+                "ParentID": 1365888793
             }
         ]
     },
     {
-        "EntityID": 1642594947,
+        "EntityID": 4024022662,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -296,19 +296,19 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1278419768
+                "ParentID": 1365888793
             },
             {
                 "ChildrenID": [
-                    1058968019,
-                    1629291600
+                    2406087303,
+                    2018248767
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 2781732031,
+        "EntityID": 240315254,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -334,10 +334,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "HPGageUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -358,13 +354,17 @@
                 "TopPercent": 0.0
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "HPGageUI"
+            },
+            {
                 "ComponentID": 3243699741,
-                "ParentID": 1267785048
+                "ParentID": 1701584009
             }
         ]
     },
     {
-        "EntityID": 1915601489,
+        "EntityID": 1310122086,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -411,12 +411,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1267785048
+                "ParentID": 1701584009
             }
         ]
     },
     {
-        "EntityID": 710790800,
+        "EntityID": 4280389656,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -463,12 +463,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1267785048
+                "ParentID": 1701584009
             }
         ]
     },
     {
-        "EntityID": 1059575871,
+        "EntityID": 2972088986,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -497,12 +497,14 @@
                 "Angle": -5.0,
                 "Color": {
                     "w": 1.0,
-                    "x": 0.7063829898834229,
-                    "y": 0.7063829898834229,
-                    "z": 0.7063829898834229
+                    "x": 0.7914893627166748,
+                    "y": 0.7207605242729187,
+                    "z": 0.7207605242729187
                 },
                 "ComponentID": 2892956045,
                 "FontPath": [
+                    109,
+                    95,
                     83,
                     112,
                     97,
@@ -514,7 +516,12 @@
                     114,
                     100,
                     115,
-                    95,
+                    73,
+                    116,
+                    97,
+                    108,
+                    105,
+                    99,
                     52,
                     56,
                     46,
@@ -530,8 +537,8 @@
                     116
                 ],
                 "Layer": 0,
-                "PosXPercent": 15.0,
-                "PosYPercent": 93.5,
+                "PosXPercent": 14.699999809265137,
+                "PosYPercent": 93.73100280761719,
                 "Scale": 1.0,
                 "Text": [
                     49,
@@ -545,12 +552,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1267785048
+                "ParentID": 1701584009
             }
         ]
     },
     {
-        "EntityID": 1058968019,
+        "EntityID": 2406087303,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -576,6 +583,10 @@
                 }
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "VPStateUI"
+            },
+            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -596,17 +607,13 @@
                 "TopPercent": 0.0
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "VPStateUI"
-            },
-            {
                 "ComponentID": 3243699741,
-                "ParentID": 1642594947
+                "ParentID": 4024022662
             }
         ]
     },
     {
-        "EntityID": 1629291600,
+        "EntityID": 2018248767,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -633,7 +640,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1642594947
+                "ParentID": 4024022662
             },
             {
                 "Billboard": 0,
