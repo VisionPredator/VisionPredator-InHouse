@@ -676,7 +676,8 @@
                         3850311496,
                         4232672827,
                         1701584009,
-                        4024022662
+                        4024022662,
+                        2546807823
                     ],
                     "ComponentID": 188567026
                 }
@@ -687,7 +688,7 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Weapon"
+                    "Name": "WeaponImage"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -743,7 +744,7 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Aim"
+                    "Name": "AimImage"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -855,7 +856,7 @@
             "Component": [
                 {
                     "ComponentID": 1365953231,
-                    "Name": "Ammo"
+                    "Name": "AmmoText"
                 },
                 {
                     "ComponentID": 3400599862,
@@ -1198,9 +1199,9 @@
                     "Angle": -5.0,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.7063829898834229,
-                        "y": 0.7063829898834229,
-                        "z": 0.7063829898834229
+                        "x": 0.7404255270957947,
+                        "y": 0.6805613040924072,
+                        "z": 0.6805613040924072
                     },
                     "ComponentID": 2892956045,
                     "FontPath": [
@@ -1215,6 +1216,12 @@
                         114,
                         100,
                         115,
+                        73,
+                        116,
+                        97,
+                        108,
+                        105,
+                        99,
                         95,
                         52,
                         56,
@@ -1427,6 +1434,181 @@
                         "z": 0.0
                     },
                     "SocketName": []
+                }
+            ]
+        },
+        {
+            "EntityID": 2546807823,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "WeaponInfoUI"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ChildrenID": [
+                        3634465943,
+                        23289614
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1365888793
+                }
+            ]
+        },
+        {
+            "EntityID": 3634465943,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Background"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2546807823
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.41999998688697815,
+                    "Color": {
+                        "w": 0.2666666805744171,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.10000000149011612,
+                    "PosXPercent": 50.0,
+                    "PosYPercent": 40.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.10000000149011612,
+                    "Scale": 1.0,
+                    "TexturePath": "",
+                    "TopPercent": 0.41999998688697815
+                }
+            ]
+        },
+        {
+            "EntityID": 23289614,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Text"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2546807823
+                },
+                {
+                    "Angle": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 0.9411764740943909,
+                        "z": 0.0
+                    },
+                    "ComponentID": 2892956045,
+                    "FontPath": [
+                        75,
+                        73,
+                        77,
+                        77,
+                        95,
+                        66,
+                        51,
+                        50,
+                        95,
+                        72,
+                        89,
+                        46,
+                        115,
+                        112,
+                        114,
+                        105,
+                        116,
+                        101,
+                        102,
+                        111,
+                        110,
+                        116
+                    ],
+                    "Layer": 0,
+                    "PosXPercent": 50.0,
+                    "PosYPercent": 40.0,
+                    "Scale": 1.0,
+                    "Text": [
+                        65,
+                        115,
+                        115,
+                        117,
+                        108,
+                        116,
+                        32,
+                        82,
+                        105,
+                        102,
+                        108,
+                        101
+                    ]
                 }
             ]
         }

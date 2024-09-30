@@ -49,6 +49,7 @@ private:
 	std::shared_ptr<DirectX::SpriteFont> m_DefaultFont;
 	std::shared_ptr<DirectX::SpriteFont> m_SpaceShards48;
 	std::shared_ptr<DirectX::SpriteFont> m_KIMM48;
+	std::shared_ptr<DirectX::SpriteFont> m_KIMM32;
 	std::shared_ptr<DirectX::SpriteFont> m_SpaceShardsItalic48;
 };
  

@@ -131,6 +131,7 @@ void PlayerUISystem::UpdateWeapon(const PlayerComponent& playerComponent)
 				weaponUIComp->TexturePath = "gun5.png";
 			}
 		}
+
 		return;
 	}
 
@@ -149,13 +150,63 @@ void PlayerUISystem::UpdateWeapon(const PlayerComponent& playerComponent)
 			if (false == m_SceneManager.lock()->HasComponent<TextComponent>(uiID))
 				break;
 
-			auto ui = m_SceneManager.lock()->GetComponent<TextComponent>(uiID);
-			auto ammoStr = Util::ToWideChar(gun->CurrentBullet);
-			ui->Text = ammoStr;
-
+			ammoUIComp = m_SceneManager.lock()->GetComponent<TextComponent>(uiID);
 			break;
 		}
 	}
+
+	// 들고 있는 총기의 총알 갯수 업데이트
+	if (ammoUIComp != nullptr)
+	{
+		auto ammoStr = Util::ToWideChar(gun->CurrentBullet);
+		ammoUIComp->Text = ammoStr;
+	}
+
+	COMPLOOP(IdentityComponent, comp)
+	{
+		if (comp.UUID == "WeaponUI")
+		{
+			uint32_t id = comp.GetEntityID();
+			if (false == m_SceneManager.lock()->HasComponent<ImageComponent>(id))
+				break;
+
+			weaponUIComp = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
+			break;
+		}
+	}
+
+	VisPred::Game::GunType gunType;
+	if (m_SceneManager.lock()->HasComponent<GunComponent>(playerComponent.GunEntityID))
+	{
+		auto gunComp = m_SceneManager.lock()->GetComponent<GunComponent>(playerComponent.GunEntityID);
+		gunType = gunComp->Type;
+	}
+
+	// 들고 있는 무기 종류에 따른 총기 이미지 변경
+	if (weaponUIComp != nullptr)
+	{
+		switch (gunType)
+		{
+			case VisPred::Game::GunType::PISTOL:
+			{
+				weaponUIComp->TexturePath = "gun3.png";
+				break;
+			}
+			case VisPred::Game::GunType::RIFLE:
+			{
+				weaponUIComp->TexturePath = "gun1.png";
+				break;
+			}
+			case VisPred::Game::GunType::SHOTGUN:
+			{
+				weaponUIComp->TexturePath = "gun4.png";
+				break;
+			}
+			default:
+				break;
+		}
+	}
+
 }
 
 void PlayerUISystem::OnGunShoot(std::any data)
