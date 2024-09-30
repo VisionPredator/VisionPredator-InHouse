@@ -679,76 +679,66 @@ void SceneManager::OnSpawnPrefab(std::any prefabdata)
 	std::ifstream inputFile(prefabData.prefabname);
 	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
 	uint32_t mainprefabID{};
-	if (inputFile.is_open())
+	if (!inputFile.is_open())
+		return;
+	nlohmann::json prefabJson;
+	inputFile >> prefabJson;
+
+	for (const auto& entityJson : prefabJson)
 	{
-		nlohmann::json prefabJson;
-		inputFile >> prefabJson;
-		// 테스트코드
-		auto count = prefabJson.size();
-		for (const auto& entityJson : prefabJson)
+		const uint32_t oldEntityID = entityJson["EntityID"].get<uint32_t>();
+		uint32_t renewEntityID = findOrCreatePair(entityResettingPair, oldEntityID).second;
+		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
+		tempEntity->SetEntityID(renewEntityID);
+		SetEntityMap(renewEntityID, tempEntity);
+		///메인 Entity인가?
+		bool IsMainEntity = true;
+		///컴포넌트 배치.
+		for (const nlohmann::json compJson : entityJson["Component"])
 		{
-			const uint32_t oldEntityID = entityJson["EntityID"].get<uint32_t>();
-			uint32_t renewEntityID = findOrCreatePair(entityResettingPair, oldEntityID).second;
-			std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
-			tempEntity->SetEntityID(renewEntityID);
-			SetEntityMap(renewEntityID, tempEntity);
-			///메인 Entity인가?
-			bool IsMainEntity = true;
-			///컴포넌트 배치.
-			for (const nlohmann::json compJson : entityJson["Component"])
+			entt::id_type comp_id = (entt::id_type)compJson["ComponentID"];
+			auto metaType = entt::resolve(comp_id);
+			if (metaType)
 			{
-				entt::id_type comp_id = (entt::id_type)compJson["ComponentID"];
-				auto metaType = entt::resolve(comp_id);
-				if (metaType)
+				// 메타 타입으로부터 인스턴스를 생성합니다.
+				auto instance = metaType.construct();
+				// 특정 함수를 찾고 호출합니다.
+				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+				if (myFunctionMeta)
 				{
-					// 메타 타입으로부터 인스턴스를 생성합니다.
-					auto instance = metaType.construct();
-					// 특정 함수를 찾고 호출합니다.
-					auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
-					if (myFunctionMeta)
+					entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(), true, false);
+					if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
 					{
-						entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(),true, false);
-						if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
+						auto compPtr = *compPPtr;
+						if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
+							for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
+								childID = findOrCreatePair(entityResettingPair, childID).second;
+						else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
 						{
-							auto compPtr = *compPPtr;
-							if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>()) 
-								for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
-									childID = findOrCreatePair(entityResettingPair, childID).second;
-							else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
-							{
-								IsMainEntity = false;
-								Parent* parentComponet = static_cast<Parent*>(compPtr.get());
-								parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
-							}
+							IsMainEntity = false;
+							Parent* parentComponet = static_cast<Parent*>(compPtr.get());
+							parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
 						}
 					}
-					else
-						VP_ASSERT(false, "Reflection 함수 실패!");
 				}
+				else
+					VP_ASSERT(false, "Reflection 함수 실패!");
 			}
-			EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", renewEntityID);
-
-			if (IsMainEntity)
-			{
-				mainprefabID = renewEntityID;
-			}
-			EventManager::GetInstance().ImmediateEvent("OnStart", renewEntityID);
-
 		}
-		auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
-		Transform->SetLocalLocation(prefabData.pos);
-		if (prefabData.scale.x > 0)
-			Transform->SetLocalScale(prefabData.scale);
-		//prefabData.direction = -prefabData.direction;
-		Transform->SetLocalRotation(prefabData.rotation);
-		//VPMath::Matrix rotationMatrix = VPMath::Matrix::CreateLookAt_LH(VPMath::Vector3::Zero, prefabData.direction, VPMath::Vector3::Up);
-		//VPMath::Quaternion newRotation = VPMath::Quaternion::CreateFromRotationMatrix(rotationMatrix);
-		//newRotation.y = -newRotation.y;
-		//newRotation.x = -newRotation.x;
-		//Transform->SetLocalQuaternion(newRotation);
+		EventManager::GetInstance().ImmediateEvent("OnAddEntityComponentsToScene", renewEntityID);
 
-		//Transform->Local_Quaternion= Transform->Local_Quaternion.CreateFromRotationMatrixLH(rotationMatrix);
+		if (IsMainEntity)
+			mainprefabID = renewEntityID;
 	}
+	auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
+	Transform->SetLocalLocation(prefabData.pos);
+	if (prefabData.scale.x > 0)
+		Transform->SetLocalScale(prefabData.scale);
+	Transform->SetLocalRotation(prefabData.rotation);
+	EventManager::GetInstance().ImmediateEvent("OnUpdate");
+
+	for (auto [old, newID] : entityResettingPair)
+		EventManager::GetInstance().ImmediateEvent("OnStart", newID);
 }
 std::shared_ptr<Entity> SceneManager::GetChildEntityByName(uint32_t entityID, std::string name)
 {

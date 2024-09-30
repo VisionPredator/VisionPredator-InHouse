@@ -54,13 +54,13 @@ void VP_Editor::Update()
         m_TransformSystem->Update(m_DeltaTime);
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
-
         if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
         {
             std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
             SetWindowTextW(m_hWnd, newname.c_str());
         }
-
+        m_SoundEngine->SetListenerPosition(m_editorcamera->GetPose(), m_editorcamera->GetUp(), m_editorcamera->GetForward());
+        m_SoundEngine->Update();
 	}
 	else
 	{
@@ -71,21 +71,21 @@ void VP_Editor::Update()
 
 void VP_Editor::Render()
 {
-    if (m_IsEditorMode)
-    {
-        m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
-        EditorRenderUpdate();
-        VPEngine::BeginRender();
-        ImguiRender();
-        VPEngine::EndRender();
-    }
-    else
-    {
-	VPEngine::RenderUpdate();
-    VPEngine::BeginRender();
-    ImguiRender();
-    VPEngine::EndRender();
-    }
+	if (m_IsEditorMode)
+	{
+		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
+		EditorRenderUpdate();
+		VPEngine::BeginRender();
+		ImguiRender();
+		VPEngine::EndRender();
+	}
+	else
+	{
+		VPEngine::RenderUpdate();
+		VPEngine::BeginRender();
+		ImguiRender();
+		VPEngine::EndRender();
+	}
 }
 void VP_Editor::EditorRenderUpdate()
 {

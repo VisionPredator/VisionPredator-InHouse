@@ -50,6 +50,13 @@
 		}
 
 	}
+	void SystemManager::SoundUpdate(float deltatime)
+	{
+		for (auto soundable : m_Soundable)
+		{
+			soundable->SoundUpdate(deltatime);
+		}
+	}
 	void SystemManager::FixedUpdate(float deltatime)
 	{
 		m_ProgressedTime += deltatime;
@@ -166,11 +173,12 @@
 
 
 
-	void SystemManager::Initialize(std::shared_ptr<SceneManager> sceneManger, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface)
+	void SystemManager::Initialize(std::shared_ptr<SceneManager> sceneManger, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface, Sound::ISound* soundengine)
 	{
 		m_SceneManager = sceneManger;
 		m_Graphics = GraphicsInterface;
 		m_PhysicEngine = physicInterface;
+		m_SoundEngine = soundengine;
 	}
 
 	void SystemManager::OnCollisionEnter(std::any pair)

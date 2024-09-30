@@ -53,9 +53,9 @@ void EditorCamera::CameraMove(float deltatime)
 	VPMath::Vector3 moveDirection = {};
 
 	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::W))
-		moveDirection += m_FrontVector;
+		moveDirection += m_ForwardVector;
 	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::S))
-		moveDirection -= m_FrontVector;
+		moveDirection -= m_ForwardVector;
 	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::A))
 		moveDirection -= m_RightVector;
 	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::D))
@@ -132,7 +132,7 @@ void EditorCamera::CalculateCamera()
 		m_ratio = 0.00002f;
 
 	VPMath::Vector3 eye = m_Location;
-	VPMath::Vector3 target = eye + m_FrontVector;
+	VPMath::Vector3 target = eye + m_ForwardVector;
 	VPMath::Vector3 up = m_UpVector;
 	m_view = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
 
@@ -164,8 +164,8 @@ void EditorCamera::CalculateCameraTransform()
 		VPMath::Matrix::CreateFromQuaternion(m_Quaternion) *
 		VPMath::Matrix::CreateTranslation(m_Location);
 
-	m_FrontVector = m_Transform.Forward_L();
-	m_FrontVector.Normalize();
+	m_ForwardVector = m_Transform.Forward_L();
+	m_ForwardVector.Normalize();
 	m_RightVector = m_Transform.Right();
 	m_RightVector.Normalize();
 	m_UpVector = m_Transform.Up();
@@ -185,7 +185,7 @@ void EditorCamera::DoubleClicked(float deltatime)
 	{
 		m_LerpTime = 0;
 		m_LerpStartPos = m_Location;
-		m_LerpEndPos = transform->World_Location - 30 * m_FrontVector;
+		m_LerpEndPos = transform->World_Location - 30 * m_ForwardVector;
 	}
 	else
 	{

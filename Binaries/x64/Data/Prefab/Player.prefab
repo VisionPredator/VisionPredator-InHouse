@@ -26,25 +26,6 @@
                 }
             },
             {
-                "Accel": 200.0,
-                "AirControlPercent": 40.0,
-                "ComponentID": 4183631247,
-                "CurrentFSM": 0,
-                "DynamicFriction": 0.0,
-                "FirePosition": "Fireposition",
-                "GravityPower": 1.0,
-                "HP": 0,
-                "HasGun": false,
-                "JumpFoce": 10.0,
-                "PlayerCameraName": "PlayerCamera",
-                "PlayerHandName": "PlayerHand",
-                "RunSpeed": 80.0,
-                "Sencitive": 0.10000000149011612,
-                "SlideDisTance": 0.0,
-                "StaticFriction": 5.0,
-                "WalkSpeed": 40.0
-            },
-            {
                 "Acceleration": 30.0,
                 "CapsuleControllerinfo": {
                     "Info": {
@@ -84,6 +65,25 @@
                 "JumpXZDeceleration": 0.009999999776482582,
                 "MaxSpeed": 10.0,
                 "StaticFriction": 0.4000000059604645
+            },
+            {
+                "Accel": 200.0,
+                "AirControlPercent": 40.0,
+                "ComponentID": 4183631247,
+                "CurrentFSM": 0,
+                "DynamicFriction": 0.0,
+                "FirePosition": "Fireposition",
+                "GravityPower": 1.0,
+                "HP": 0,
+                "HasGun": false,
+                "JumpFoce": 10.0,
+                "PlayerCameraName": "PlayerCamera",
+                "PlayerHandName": "PlayerHand",
+                "RunSpeed": 80.0,
+                "Sencitive": 0.10000000149011612,
+                "SlideDisTance": 0.0,
+                "StaticFriction": 5.0,
+                "WalkSpeed": 40.0
             },
             {
                 "ChildrenID": [
@@ -170,6 +170,10 @@
                 }
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "PlayerHand"
+            },
+            {
                 "ComponentID": 2778840952,
                 "FBX": [
                     112,
@@ -185,12 +189,10 @@
                     120
                 ],
                 "animationList": [],
+                "curAni": 17,
+                "isLoop": false,
                 "speed": 1.0,
-                "transitionDuration": 0.20000000298023224
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "PlayerHand"
+                "transitionDuration": 0.4000000059604645
             },
             {
                 "ComponentID": 1142749570,

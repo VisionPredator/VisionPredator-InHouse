@@ -15,7 +15,8 @@ public:
 	void FixedUpdate(float deltaTime) override;
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override;
-	void SearchingItem(PlayerComponent& playercomp);
+	void SearchingInterectiveItems(PlayerComponent& playercomp);
+	void SearchingGun(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
 
 
@@ -56,44 +57,46 @@ public:
 	void FSM_Action_Destroy(PlayerComponent& playercomp);
 #pragma endregion
 #pragma region Animation Change
-	void ChangeAni_Attack_Pistol(PlayerComponent& PlayerComp,bool Immidiate =false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, Immidiate); };
-	void ChangeAni_Attack_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, Immidiate); };
-	void ChangeAni_Attack_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, Immidiate); };
-	void ChangeAni_Idle01_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Pistol, Immidiate); };
-	void ChangeAni_Idle01_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Rifle, Immidiate); };
-	void ChangeAni_Idle01_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_ShotGun, Immidiate); };
-	void ChangeAni_Idle02_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_Pistol, Immidiate); };
-	void ChangeAni_Idle02_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_Rifle, Immidiate); };
-	void ChangeAni_Idle02_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_ShotGun, Immidiate); };
-	void ChangeAni_hook_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_Sword, Immidiate); };
-	void ChangeAni_hook_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_Pistol, Immidiate); };
-	void ChangeAni_hook_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_Rifle, Immidiate); };
-	void ChangeAni_hook_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tohook_ShotGun, Immidiate); };
-	void ChangeAni_interaction(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::Tointeraction, Immidiate); };
-	void ChangeAni_Attack1_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack1_Sword, Immidiate); };
-	void ChangeAni_Attack2_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack2_Sword, Immidiate); };
-	void ChangeAni_Attack3_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack3_Sword, Immidiate); };
-	void ChangeAni_Idle01_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Sword, Immidiate); };
-	void ChangeAni_Idle02_Sword(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToIdle02_Sword, Immidiate); };
-	void ChangeAni_throw_Pistol(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, Immidiate); };
-	void ChangeAni_throw_Rifle(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, Immidiate); };
-	void ChangeAni_throw_ShotGun(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, Immidiate); };
-	void ChangeAni_VP1_attack_L(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_attack_L, Immidiate); };
-	void ChangeAni_VP1_attack_R(PlayerComponent& PlayerComp, bool Immidiate = false)	{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_attack_R, Immidiate); };
-	void ChangeAni_VP2_Idle(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_Idle, Immidiate); };
-	void ChangeAni_vp3_dash(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_dash, Immidiate); };
-	void ChangeAni_vp4_jump(PlayerComponent& PlayerComp, bool Immidiate = false)		{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_jump, Immidiate); };
-	void ChangeAni_vp5_run(PlayerComponent& PlayerComp, bool Immidiate = false)			{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_run, Immidiate); };
-	void ChangeAni_vp_draw(PlayerComponent& PlayerComp, bool Immidiate = false)			{ ChangeAni_Index(PlayerComp.GetEntityID(), VisPred::Game::PlayerAni::ToVP_draw, Immidiate); };
-	void ChangeAni_Index(uint32_t, VisPred::Game::PlayerAni index, bool Immidiate = false);
+	void ChangeAni_Attack_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_Pistol, speed, loop, Immidiate); };
+	void ChangeAni_Attack_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_Rifle, speed, loop, Immidiate); };
+	void ChangeAni_Attack_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_ShotGun, speed, loop, Immidiate); };
+	void ChangeAni_Idle01_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_Pistol, speed, loop, Immidiate); };
+	void ChangeAni_Idle01_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_Rifle, speed, loop, Immidiate); };
+	void ChangeAni_Idle01_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, speed, loop, Immidiate); };
+	void ChangeAni_Idle02_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_Pistol, speed, loop, Immidiate); };
+	void ChangeAni_Idle02_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_Rifle, speed, loop, Immidiate); };
+	void ChangeAni_Idle02_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_ShotGun, speed, loop, Immidiate); };
+	void ChangeAni_hook_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_Sword, speed, loop, Immidiate); };
+	void ChangeAni_hook_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_Pistol, speed, loop, Immidiate); };
+	void ChangeAni_hook_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_Rifle, speed, loop, Immidiate); };
+	void ChangeAni_hook_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_ShotGun, speed, loop, Immidiate); };
+	void ChangeAni_interaction(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tointeraction, speed, loop, Immidiate); };
+	void ChangeAni_Attack1_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack1_Sword, speed, loop, Immidiate); };
+	void ChangeAni_Attack2_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack2_Sword, speed, loop, Immidiate); };
+	void ChangeAni_Attack3_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack3_Sword, speed, loop, Immidiate); };
+	void ChangeAni_Idle01_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_Sword, speed, loop, Immidiate); };
+	void ChangeAni_Idle02_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_Sword, speed, loop, Immidiate); };
+	void ChangeAni_throw_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToThrow_Pistol, speed, loop, Immidiate); };
+	void ChangeAni_throw_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToThrow_Rifle, speed, loop, Immidiate); };
+	void ChangeAni_throw_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToThrow_ShotGun, speed, loop, Immidiate); };
+	void ChangeAni_VP1_attack_L(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_attack_L, speed, loop, Immidiate); };
+	void ChangeAni_VP1_attack_R(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_attack_R, speed, loop, Immidiate); };
+	void ChangeAni_VP2_Idle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_Idle, speed, loop, Immidiate); };
+	void ChangeAni_vp3_dash(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_dash, speed, loop, Immidiate); };
+	void ChangeAni_vp4_jump(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_jump, speed, loop, Immidiate); };
+	void ChangeAni_vp5_run(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_run, speed, loop, Immidiate); };
+	void ChangeAni_vp_draw(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_draw, speed, loop, Immidiate); };
+	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, bool loop, bool Immidiate = false);
 #pragma endregion
 #pragma region Animation
 	void Animation(uint32_t entityid, float deltaTime);
-
+	void PlayerAnime(PlayerComponent& playercomp);
+	void ReturnToIdle(AnimationComponent& anicomp);
 #pragma endregion
 
 #pragma region Gun Logic
-	void Gun_Grab(PlayerComponent& playercomp);
+	void PlayerInterect(PlayerComponent& playercomp);
+	void Grab_Gun(PlayerComponent& playercomp);
 	void Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
 	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
 	void PlayerShoot(PlayerComponent& playercomp);

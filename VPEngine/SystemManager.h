@@ -21,7 +21,7 @@
 		SystemManager();
 		~SystemManager();
 		void Update(float deltatime);
-		void Initialize(std::shared_ptr<SceneManager> sceneManger,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
+		void Initialize(std::shared_ptr<SceneManager> sceneManger, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface, Sound::ISound* soundengine);
 
 		void OnCollisionEnter(std::any pair);
 		void OnCollisionExit(std::any pair);
@@ -41,6 +41,7 @@
 		void EditorRenderUpdate(float deltatime);
 		void LateUpdate(float deltatime);
 		void PhysicUpdate(float deltatime);
+		void SoundUpdate(float deltatime);
 		template <typename T>
 		bool IsSystemAdded() const
 		{
@@ -96,6 +97,11 @@
 			if constexpr (std::is_base_of_v<IContactable, T>)
 			{
 				m_Contactable.push_back(system);
+			}
+			if constexpr (std::is_base_of_v<ISoundable, T>)
+			{
+				m_Soundable.push_back(system);
+				system->SetSoundEngine(m_SoundEngine);
 			}
 			if constexpr (std::is_base_of_v<ICompAddable, T>)
 			{
@@ -154,6 +160,12 @@
 				if (it != m_Contactable.end())
 					m_Contactable.erase(it);
 			}
+			if constexpr (std::is_base_of_v<ISoundable, T>)
+			{
+				auto it = std::find_if(m_Soundable.begin(), m_Soundable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_Soundable.end())
+					m_Soundable.erase(it);
+			}
 			if constexpr (std::is_base_of_v<ICompAddable, T>)
 			{
 				auto it = std::find_if(m_CompAddable.begin(), m_CompAddable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
@@ -209,6 +221,7 @@
 		std::weak_ptr<SceneManager>m_SceneManager;
 		Physic::IPhysx* m_PhysicEngine=nullptr;
 		Graphics::Interface* m_Graphics = nullptr;
+		Sound::ISound* m_SoundEngine = nullptr;
 
 		std::vector<std::unique_ptr<System>> m_Systems;
 		std::vector<IPhysicable*> m_PhysicUpdatable;
@@ -219,5 +232,6 @@
 		std::vector<IStartable*> m_Startables;
 		std::vector<IContactable*> m_Contactable;
 		std::vector<ICompAddable*> m_CompAddable;
+		std::vector<ISoundable*> m_Soundable;
 	};
 

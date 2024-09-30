@@ -104,7 +104,7 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(Parent, Parent::ParentID);
 	META_ADD_COMP(Children, Children::ChildrenID);
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
-	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay);
+	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay, AnimationComponent::PlayerCurAni,AnimationComponent::IsBlending);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
 	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
 	META_ADD_COMP(GeometryComponent, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
@@ -115,5 +115,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
 	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConnected, SocketComponent::Offset, SocketComponent::OffsetRotation);
 	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::FontPath, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Angle, TextComponent::Layer);
+	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Duration, SoundComponent::Loop);
 }
 

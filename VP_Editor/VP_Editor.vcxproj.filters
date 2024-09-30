@@ -19,14 +19,14 @@
     <Filter Include="ImGuiBar\Header">
       <UniqueIdentifier>{9c4edc7a-1002-4539-865c-355964d641e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ImGuiBar\Source">
-      <UniqueIdentifier>{67ae2e5f-ff2c-489e-b36f-79fcbfa80e2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Macro">
       <UniqueIdentifier>{84c46fa4-27d5-4a22-ac1b-80a994b2d9fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="ImGuiDialog">
       <UniqueIdentifier>{090d0f07-d191-4b24-981b-8b532ba8cf6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGuiBar\Source">
+      <UniqueIdentifier>{67ae2e5f-ff2c-489e-b36f-79fcbfa80e2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

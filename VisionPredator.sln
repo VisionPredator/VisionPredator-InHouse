@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPCommon", "VPCommon\VPComm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher", "Launcher\Launcher.vcxproj", "{49ECA3DD-51D4-4013-A636-0A654E390DF4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundEngine", "SoundEngine\SoundEngine.vcxproj", "{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -83,6 +85,14 @@ Global
 		{49ECA3DD-51D4-4013-A636-0A654E390DF4}.Release|x64.Build.0 = Release|x64
 		{49ECA3DD-51D4-4013-A636-0A654E390DF4}.Release|x86.ActiveCfg = Release|Win32
 		{49ECA3DD-51D4-4013-A636-0A654E390DF4}.Release|x86.Build.0 = Release|Win32
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Debug|x64.ActiveCfg = Debug|x64
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Debug|x64.Build.0 = Debug|x64
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Debug|x86.ActiveCfg = Debug|Win32
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Debug|x86.Build.0 = Debug|Win32
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Release|x64.ActiveCfg = Release|x64
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Release|x64.Build.0 = Release|x64
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Release|x86.ActiveCfg = Release|Win32
+		{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
