@@ -66,7 +66,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
-	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine);
+	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine,m_SoundEngine.get());
 	/// 다 초기화 되고 윈도우 만들기
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));

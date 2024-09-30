@@ -71,21 +71,21 @@ void VP_Editor::Update()
 
 void VP_Editor::Render()
 {
-    if (m_IsEditorMode)
-    {
-        m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
-        EditorRenderUpdate();
-        VPEngine::BeginRender();
-        ImguiRender();
-        VPEngine::EndRender();
-    }
-    else
-    {
-	VPEngine::RenderUpdate();
-    VPEngine::BeginRender();
-    ImguiRender();
-    VPEngine::EndRender();
-    }
+	if (m_IsEditorMode)
+	{
+		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
+		EditorRenderUpdate();
+		VPEngine::BeginRender();
+		ImguiRender();
+		VPEngine::EndRender();
+	}
+	else
+	{
+		VPEngine::RenderUpdate();
+		VPEngine::BeginRender();
+		ImguiRender();
+		VPEngine::EndRender();
+	}
 }
 void VP_Editor::EditorRenderUpdate()
 {

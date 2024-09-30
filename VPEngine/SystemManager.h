@@ -21,7 +21,7 @@
 		SystemManager();
 		~SystemManager();
 		void Update(float deltatime);
-		void Initialize(std::shared_ptr<SceneManager> sceneManger,Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface);
+		void Initialize(std::shared_ptr<SceneManager> sceneManger, Graphics::Interface* GraphicsInterface, Physic::IPhysx* physicInterface, Sound::ISound* soundengine);
 
 		void OnCollisionEnter(std::any pair);
 		void OnCollisionExit(std::any pair);
@@ -102,11 +102,10 @@
 			{
 				m_Soundable.push_back(system);
 				system->SetSoundEngine(m_SoundEngine);
+			}
 			if constexpr (std::is_base_of_v<ICompAddable, T>)
 			{
 				m_CompAddable.push_back(system);
-			}
-
 			}
 
 			return static_cast<T*>(system);

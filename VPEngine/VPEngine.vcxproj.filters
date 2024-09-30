@@ -295,6 +295,9 @@
     <ClInclude Include="SoundComponent.h">
       <Filter>Component\Derived\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="EngineStructs.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -437,6 +440,9 @@
     </ClCompile>
     <ClCompile Include="SoundComponent.cpp">
       <Filter>Component\Derived\Sound\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineStructs.cpp">
+      <Filter>Structs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

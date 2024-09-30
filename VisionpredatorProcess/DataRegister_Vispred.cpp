@@ -25,6 +25,36 @@ void VispredRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::CHARGE, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
 	META_ADD_ENUMCLASS(EnemyState,EnemyState::IDLE, EnemyState::ATTACK, EnemyState::DIE, EnemyState::DESTROY);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
+	META_ADD_ENUMCLASS(PlayerAni
+		, PlayerAni::ToAttack_Pistol
+		,PlayerAni::ToAttack_Rifle
+		,PlayerAni::ToAttack_ShotGun
+		,PlayerAni::ToIdle01_Pistol
+		,PlayerAni::ToIdle01_Rifle
+		,PlayerAni::ToIdle01_ShotGun
+		,PlayerAni::ToIdle02_Pistol
+		,PlayerAni::ToIdle02_Rifle
+		,PlayerAni::ToIdle02_ShotGun
+		,PlayerAni::Tohook_Sword
+		,PlayerAni::Tohook_Pistol
+		,PlayerAni::Tohook_Rifle
+		,PlayerAni::Tohook_ShotGun
+		,PlayerAni::Tointeraction
+		,PlayerAni::ToAttack1_Sword
+		,PlayerAni::ToAttack2_Sword
+		,PlayerAni::ToAttack3_Sword
+		,PlayerAni::ToIdle01_Sword
+		,PlayerAni::ToIdle02_Sword
+		,PlayerAni::ToThrow_Pistol
+		,PlayerAni::ToThrow_Rifle
+		,PlayerAni::ToThrow_ShotGun
+		,PlayerAni::ToVP_attack_L
+		,PlayerAni::ToVP_attack_R
+		,PlayerAni::ToVP_Idle
+		,PlayerAni::ToVP_dash
+		,PlayerAni::ToVP_jump
+		,PlayerAni::ToVP_run
+		,PlayerAni::ToVP_draw);
 }
 
 void VispredRegister::Register_Structs()

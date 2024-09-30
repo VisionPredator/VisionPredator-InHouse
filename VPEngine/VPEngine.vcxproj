@@ -199,6 +199,7 @@
     <ClInclude Include="ImageComponent.h" />
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundSystem.h" />
+    <ClInclude Include="EngineStructs.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="UISystem.h" />
     <ClInclude Include="VPEngine.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="SocketSystem.cpp" />
     <ClCompile Include="SoundComponent.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
+    <ClCompile Include="EngineStructs.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemInterface.cpp" />
     <ClCompile Include="SystemManager.cpp" />

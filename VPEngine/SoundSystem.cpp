@@ -31,10 +31,12 @@ void SoundSystem::Start(uint32_t gameObjectId)
 	auto soundcomp = entity->GetComponent<SoundComponent>();
 
 	m_SoundEngine->Play(soundcomp->GetEntityID(), soundcomp->SoundPath, soundcomp->Volume, soundcomp->GetComponent<TransformComponent>()->World_Location);
+
 }
 
 void SoundSystem::Finish(uint32_t gameObjectId)
 {
+
 }
 
 void SoundSystem::Finalize()
