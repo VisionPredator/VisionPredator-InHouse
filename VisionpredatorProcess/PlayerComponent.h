@@ -5,7 +5,7 @@ struct PlayerComponent :
     public Component
 {
     PlayerComponent();
-    VP_JSONBODY(PlayerComponent, PlayerHandName, PlayerCameraName, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, HasGun, GravityPower, FirePosition)
+    VP_JSONBODY(PlayerComponent, PlayerHandName, PlayerCameraName, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, FirePosition)
     std::string PlayerHandName{};
     std::string PlayerCameraName{};
     uint32_t PlayerHandID{};
@@ -47,7 +47,7 @@ struct PlayerComponent :
 
 
     VisPred::Game::GunType ShootType{};
-    bool HasGun{};
+    bool HasGun=false;
     float GunprogressTime{};
     bool ReadyToShoot{};
 };
