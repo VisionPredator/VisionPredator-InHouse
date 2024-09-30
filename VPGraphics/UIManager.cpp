@@ -30,6 +30,7 @@ void UIManager::Initialize(const std::shared_ptr<Device>& device,
 	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\roboto.spritefont");
 	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B48_HY.spritefont");
 	m_SpaceShards48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\SpaceShards_48.spritefont");
+	m_SpaceShardsItalic48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\SpaceShardsItalic_48.spritefont");
 #endif
 }
 
