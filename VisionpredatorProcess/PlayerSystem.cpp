@@ -695,6 +695,7 @@ void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
 	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 }
 void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
 {

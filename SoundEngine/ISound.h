@@ -24,7 +24,7 @@ public:
 
 	virtual void Stop(const uint32_t& id, const std::string& soundKey) = 0;
 	virtual void Stop(const uint32_t& id) = 0;
-
+	virtual bool ChannelMusicFinished(const uint32_t& entityID) = 0;
 	virtual void SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, VPMath::Vector3 Forward) = 0;
 	virtual void CleanChannel(const uint32_t& id) = 0;
 	virtual void CleanAllChannel() = 0;

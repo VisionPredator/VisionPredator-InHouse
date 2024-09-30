@@ -18,6 +18,7 @@ public:
     void Stop(const uint32_t& id, const std::string& soundKey) override;
     void Stop(const uint32_t& id) override;
     void SetListenerPosition(VPMath::Vector3 pos , VPMath::Vector3 Up, VPMath::Vector3 Forward) override;
+    bool ChannelMusicFinished(const uint32_t& id);
     void CleanAllChannel() override;
     void CleanChannel(const uint32_t& id) override;
 private:
