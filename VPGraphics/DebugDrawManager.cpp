@@ -32,7 +32,7 @@ void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device, const s
 
 void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view, const VPMath::Matrix proj)
 {
-
+#ifdef _DEBUG
     device->Context()->OMSetBlendState(m_AlphaBlendBS->GetState().Get(), nullptr, 0xFFFFFFFF);
 	device->Context()->OMSetDepthStencilState(m_DefaultDSS->GetState().Get(), 0);
 	device->Context()->RSSetState(m_CullNoneRS->Get());
@@ -56,6 +56,7 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMa
     while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
 
     m_Batch->End();
+#endif
 
     device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
     device->Context()->OMSetDepthStencilState(nullptr, 0);

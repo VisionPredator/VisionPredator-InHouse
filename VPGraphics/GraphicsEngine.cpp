@@ -99,7 +99,7 @@ void GraphicsEngine::CulingUpdate()
 }
 void GraphicsEngine::AnimationUpdate(double dt)
 {
-	m_Animator->Update(dt, m_AfterCulling);
+	m_Animator->Update(m_AfterCulling);
 
 }
 void GraphicsEngine::Update(double dt)
@@ -300,7 +300,16 @@ void GraphicsEngine::testCulling(VPMath::Matrix view, VPMath::Matrix proj)
 
 void GraphicsEngine::UpdateModel(uint32_t EntityID)
 {
+	auto find = FindEntity(EntityID);
+	std::vector<std::shared_ptr<RenderData>> list;
 
+	if (find != m_RenderVector.end())
+	{
+		auto data = *find;
+
+		list.push_back(data);
+		m_Animator->Update(list);
+	}
 }
 
 void GraphicsEngine::AddLight(uint32_t EntityID, LightType kind, LightData data)

@@ -618,6 +618,7 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	soceketcomp->ConnectedEntityID = playercomp.PlayerHandID;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp->GetEntityID();
+	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 	switch (guncomp->Type)
 	{

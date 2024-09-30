@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <memory>
+#include <memory>
 
 #include "Device.h"
 #include "ResourceManager.h"
@@ -22,12 +23,16 @@ void UIManager::Initialize(const std::shared_ptr<Device>& device,
 
 #ifdef _DEBUG
 	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\roboto.spritefont");
+	m_KIMM32 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\KIMM_B32_HY.spritefont");
 	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\KIMM_B48_HY.spritefont");
 	m_SpaceShards48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\SpaceShards_48.spritefont");
+	m_SpaceShardsItalic48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\..\\..\\Resource\\Font\\SpaceShardsItalic_48.spritefont");
 #else
 	m_DefaultFont = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\roboto.spritefont");
+	m_KIMM32 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B32_HY.spritefont");
 	m_KIMM48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\KIMM_B48_HY.spritefont");
 	m_SpaceShards48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\SpaceShards_48.spritefont");
+	m_SpaceShardsItalic48 = std::make_shared<DirectX::SpriteFont>(m_Device->Get(), L"..\\Data\\Font\\SpaceShardsItalic_48.spritefont");
 #endif
 }
 
@@ -124,6 +129,9 @@ void UIManager::DrawAllTexts()
 	{
 		ui::TextInfo info = text->GetInfo();
 
+		if (info.Color.A() == 0)
+			continue;
+
 		const float relPosX = info.PosXPercent / 100.f;
 		const float relPosY = info.PosYPercent / 100.f;
 		float posX = relPosX * static_cast<float>(screenWidth);
@@ -132,8 +140,12 @@ void UIManager::DrawAllTexts()
 		auto& font = m_DefaultFont;
 		if (info.FontPath == L"KIMM_B48_HY.spritefont")
 			font = m_KIMM48;
+		else if (info.FontPath == L"KIMM_B32_HY.spritefont")
+			font = m_KIMM32;
 		else if (info.FontPath == L"SpaceShards_48.spritefont")
 			font = m_SpaceShards48;
+		else if (info.FontPath == L"SpaceShardsItalic_48.spritefont")
+			font = m_SpaceShardsItalic48;
 		else
 			font = m_DefaultFont;
 
