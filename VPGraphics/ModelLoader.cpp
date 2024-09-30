@@ -277,7 +277,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				VPMath::Vector3 curPos;
 				curPos.x = TextureVertices.back().pos.x;
 				curPos.y = TextureVertices.back().pos.y;
-				curPos.z = -TextureVertices.back().pos.z;
+				curPos.z = TextureVertices.back().pos.z;
 
 				curPos -= newMesh->Pivot;
 

@@ -19,7 +19,7 @@ public:
 
 	void Initialize(std::weak_ptr<ResourceManager> manager);
 
-	void Update(double dt, std::vector<std::shared_ptr<RenderData>>& renderlist);
+	void Update(std::vector<std::shared_ptr<RenderData>>& renderlist);
 	const VPMath::Matrix Attachment(std::wstring region);
 
 private:
