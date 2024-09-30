@@ -32,6 +32,8 @@ void PlayerUISystem::UpdateHP(const PlayerComponent& playerComponent)
 			uint32_t id = comp.GetEntityID();
 			auto ui = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
 			ui->RightPercent = 1.f - (playerComponent.HP * 0.01f);
+
+			break;
 		}
 	}
 
@@ -43,6 +45,8 @@ void PlayerUISystem::UpdateHP(const PlayerComponent& playerComponent)
 			auto ui = m_SceneManager.lock()->GetComponent<TextComponent>(id);
 			auto hpStr = Util::ToWideChar(playerComponent.HP);
 			ui->Text = hpStr;
+
+			break;
 		}
 	}
 }
@@ -54,38 +58,52 @@ void PlayerUISystem::UpdateVPState(const PlayerComponent& playerComponent)
 
 void PlayerUISystem::UpdateAim(const PlayerComponent& playerComponent)
 {
-	if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
+	ImageComponent* ui = nullptr;
+
+	COMPLOOP(IdentityComponent, identity)
 	{
-		COMPLOOP(IdentityComponent, comp)
+		if (identity.UUID == "AimUI")
 		{
-			if (comp.UUID == "AimUI")
-			{
-				uint32_t id = comp.GetEntityID();
-				auto ui = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
-				ui->TexturePath = "aim_attack.png";
-				break;
-			}
+			uint32_t id = identity.GetEntityID();
+			if (false == m_SceneManager.lock()->HasComponent<ImageComponent>(id))
+				return;
+			ui = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
+
+			break;
 		}
 	}
-	// else if 상호작용 중일 때.
+
+	bool isInteracting = false;
+	COMPLOOP(GunComponent, gunComp)
+	{
+		if (gunComp.GetEntityID() == playerComponent.SearchedItemID)
+		{
+			isInteracting = true;
+
+			break;
+		}
+	}
+
+	if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
+	{
+		ui->TexturePath = "aim_attack.png";
+	}
+	else if (true == isInteracting)	// 상호작용 중일 때
+	{
+		ui->TexturePath = "aim_interact.png";
+	}
 	else    // IDLE
 	{
-		COMPLOOP(IdentityComponent, comp)
-		{
-			if (comp.UUID == "AimUI")
-			{
-				uint32_t id = comp.GetEntityID();
-				auto ui = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
-				ui->TexturePath = "aim_base.png";
-				break;
-			}
-		}
+		ui->TexturePath = "aim_base.png";
 	}
 }
 
 // OnChangeWeapon 이벤트를 만들까..
 void PlayerUISystem::UpdateWeapon(const PlayerComponent& playerComponent)
 {
+	TextComponent* ammoUIComp = nullptr;
+	ImageComponent* weaponUIComp = nullptr;
+
 	// 총을 가지고 있을 때만 업데이트
 	if (!playerComponent.HasGun)
 	{
@@ -96,37 +114,52 @@ void PlayerUISystem::UpdateWeapon(const PlayerComponent& playerComponent)
 			{
 				uint32_t id = comp.GetEntityID();
 				if (false == m_SceneManager.lock()->HasComponent<TextComponent>(id))
-					continue;
+					break;
 
-				auto ui = m_SceneManager.lock()->GetComponent<TextComponent>(id);
-				ui->Text = L"0";
+				ammoUIComp = m_SceneManager.lock()->GetComponent<TextComponent>(id);
+				ammoUIComp->Text = L"0";
+
 				break;
+			}
+		}
+
+		COMPLOOP(IdentityComponent, comp)
+		{
+			if (comp.UUID == "WeaponUI")
+			{
+				uint32_t id = comp.GetEntityID();
+				if (false == m_SceneManager.lock()->HasComponent<ImageComponent>(id))
+					break;
+
+				weaponUIComp = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
+				weaponUIComp->TexturePath = "gun5.png";
 			}
 		}
 		return;
 	}
 
-	COMPLOOP(GunComponent, comp)
-	{
-		// 플레이어가 소지한 총이라면
-		if (comp.GetEntityID() == playerComponent.GunEntityID)
-		{
-			COMPLOOP(IdentityComponent, uiComp)
-			{
-				if (uiComp.UUID == "AmmoUI")
-				{
-					uint32_t id = uiComp.GetEntityID();
-					if (false == m_SceneManager.lock()->HasComponent<TextComponent>(id))
-						continue;
+	uint32_t gunID = playerComponent.GunEntityID;
+	if (false == m_SceneManager.lock()->HasComponent<GunComponent>(gunID))
+		return;
 
-					auto ui = m_SceneManager.lock()->GetComponent<TextComponent>(id);
-					auto ammoStr = Util::ToWideChar(comp.CurrentBullet);
-					ui->Text = ammoStr;
-				}
-			}
+	auto gun = m_SceneManager.lock()->GetComponent<GunComponent>(gunID);
+
+	COMPLOOP(IdentityComponent, uiComp)
+	{
+		if (uiComp.UUID == "AmmoUI")
+		{
+			uint32_t uiID = uiComp.GetEntityID();
+
+			if (false == m_SceneManager.lock()->HasComponent<TextComponent>(uiID))
+				break;
+
+			auto ui = m_SceneManager.lock()->GetComponent<TextComponent>(uiID);
+			auto ammoStr = Util::ToWideChar(gun->CurrentBullet);
+			ui->Text = ammoStr;
+
+			break;
 		}
 	}
-
 }
 
 void PlayerUISystem::OnGunShoot(std::any data)
