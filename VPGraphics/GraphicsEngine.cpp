@@ -354,16 +354,17 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const s
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& test = m_Animator->Attachment(socketName);	//이름 수정필요
-		VPMath::Matrix a = test * (*find)->world;
+		const VPMath::Matrix& Bone = m_Animator->Attachment(socketName);
+		std::shared_ptr<RenderData> data = (*find);
+		VPMath::Matrix attach = Bone * data->world;
 
 		debug::SphereInfo temp;
-		temp.Sphere.Center = { a._41,a._42,a._43 };
+		temp.Sphere.Center = { attach._41,attach._42,attach._43 };
 		temp.Sphere.Radius = 1.f;
 		temp.Color = VPMath::Color{ 0,1,0,1 };
 		DrawSphere(temp);
 
-		return a;
+		return attach;
 	}
 
 	return VPMath::Matrix::Identity;
