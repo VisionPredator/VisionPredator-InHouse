@@ -73,15 +73,15 @@ void PlayerUISystem::UpdateAim(const PlayerComponent& playerComponent)
 		}
 	}
 
-	if (ui)
+	bool isInteracting = false;
+	if (GetSceneManager()->HasEntity(playerComponent.SearchedItemID))
 	{
-		bool isInteracting = false;
-		if (GetSceneManager()->HasEntity(playerComponent.SearchedItemID))
-		{
-			if (GetSceneManager()->GetEntity(playerComponent.SearchedItemID)->HasComponent<GunComponent>())
-				isInteracting = true;
-		}
+		if (GetSceneManager()->GetEntity(playerComponent.SearchedItemID)->HasComponent<GunComponent>())
+			isInteracting = true;
+	}
 
+	if (ui != nullptr)
+	{
 		if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
 		{
 			ui->TexturePath = "aim_attack.png";
@@ -100,10 +100,103 @@ void PlayerUISystem::UpdateAim(const PlayerComponent& playerComponent)
 // OnChangeWeapon 이벤트를 만들까..
 void PlayerUISystem::UpdateWeapon(const PlayerComponent& playerComponent)
 {
+	/// 총을 가지고 있지 않을 때 ------------------------------------------------------------------------
+	// 상호작용 시 무기 정보 UI 출력
+	bool isInteracting = false;
+	VisPred::Game::GunType gunTypeNoInteract;
+	if (GetSceneManager()->HasEntity(playerComponent.SearchedItemID))
+	{
+		if (GetSceneManager()->GetEntity(playerComponent.SearchedItemID)->HasComponent<GunComponent>())
+		{
+			isInteracting = true;
+
+			auto gunComp = m_SceneManager.lock()->GetComponent<GunComponent>(playerComponent.SearchedItemID);
+			gunTypeNoInteract = gunComp->Type;
+		}
+	}
+
+	TextComponent* textUI = nullptr;
+	ImageComponent* imageUI = nullptr;
+
+	int roopCount = 0;
+	COMPLOOP(IdentityComponent, comp)
+	{
+		if (roopCount == 2)
+			break;
+
+		if (comp.UUID == "WeaponInfoTextUI")
+		{
+			uint32_t id = comp.GetEntityID();
+
+			if (false == m_SceneManager.lock()->HasComponent<TextComponent>(id))
+				continue;
+
+			textUI = m_SceneManager.lock()->GetComponent<TextComponent>(id);
+			roopCount++;
+		}
+		else if (comp.UUID == "WeaponInfoBackgroundUI")
+		{
+			uint32_t id = comp.GetEntityID();
+
+			if (false == m_SceneManager.lock()->HasComponent<ImageComponent>(id))
+				continue;
+
+			imageUI = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
+			roopCount++;
+		}
+	}
+
+	if (true == isInteracting)
+	{
+		if (textUI != nullptr)
+		{
+			textUI->Color.w = 1;
+
+			switch (gunTypeNoInteract)
+			{
+				case VisPred::Game::GunType::PISTOL:
+				{
+					textUI->Text = L"Pistol";
+					break;
+				}
+				case VisPred::Game::GunType::SHOTGUN:
+				{
+					textUI->Text = L"Shotgun";
+
+					break;
+				}
+				case VisPred::Game::GunType::RIFLE:
+				{
+					textUI->Text = L"Assault rifle";
+					break;
+				}
+				default:
+					break;
+			}
+		}
+
+		if (imageUI != nullptr)
+		{
+			imageUI->Color.w = 0.3;
+		}
+
+	}
+	else
+	{
+		if (textUI != nullptr)
+		{
+			textUI->Color.w = 0;
+		}
+		if (imageUI != nullptr)
+		{
+			imageUI->Color.w = 0;
+		}
+	}
+
+	/// 총을 가지고 있을 때 ------------------------------------------------------------------------
 	TextComponent* ammoUIComp = nullptr;
 	ImageComponent* weaponUIComp = nullptr;
 
-	// 총을 가지고 있을 때만 업데이트
 	if (!playerComponent.HasGun)
 	{
 		// 총을 가지고 있지 않다면 총알 갯수는 0으로 설정.
@@ -210,6 +303,7 @@ void PlayerUISystem::UpdateWeapon(const PlayerComponent& playerComponent)
 		}
 	}
 
+	
 }
 
 void PlayerUISystem::OnGunShoot(std::any data)
