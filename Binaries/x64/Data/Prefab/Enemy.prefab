@@ -1,0 +1,81 @@
+[
+    {
+        "EntityID": 3457491941,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Enemy"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 28.636999130249023,
+                    "y": -49.56412887573242,
+                    "z": -13.847757339477539
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 1822056614,
+                "CurrentFSM": 1,
+                "EnemyType": 0,
+                "HP": 5.0
+            },
+            {
+                "ComponentID": 1142749570,
+                "FBX": []
+            },
+            {
+                "Acceleration": 1.0,
+                "CapsuleControllerinfo": {
+                    "Info": {
+                        "LayerNumber": 0,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 1
+                    },
+                    "contactOffset": 0.0010000000474974513,
+                    "height": 5.0,
+                    "position": {
+                        "x": 28.636999130249023,
+                        "y": -49.56412887573242,
+                        "z": -13.847757339477539
+                    },
+                    "radius": 1.0,
+                    "slopeLimit": 0.30000001192092896,
+                    "stepOffset": 0.0
+                },
+                "ComponentID": 3341766812,
+                "Contollerinfo": {
+                    "LayerNumber": 5,
+                    "LocalOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Pivot": 1
+                },
+                "DynamicFriction": 0.10000000149011612,
+                "GravityWeight": 1.0,
+                "JumpSpeed": 0.05000000074505806,
+                "JumpXZAcceleration": 10.0,
+                "JumpXZDeceleration": 0.10000000149011612,
+                "MaxSpeed": 0.02500000037252903,
+                "StaticFriction": 0.4000000059604645
+            }
+        ]
+    }
+]
