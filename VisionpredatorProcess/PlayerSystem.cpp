@@ -30,10 +30,15 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 
 	}
 }
-
 void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
 }
+
+void PlayerSystem::SoundUpdate(float deltaTime)
+{
+}
+
+
 
 void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 {
@@ -116,7 +121,7 @@ void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 	controllercomp.StaticFriction = playercomp.StaticFriction;
 	controllercomp.DynamicFriction = playercomp.DynamicFriction;
 	controllercomp.JumpXZAcceleration = controllercomp.Acceleration * playercomp.AirControlPercent / 100;
-	controllercomp.GravityWeight = playercomp.GravityPower * 9.80665;
+	controllercomp.GravityWeight = playercomp.GravityPower * 9.80665f;
 }
 void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 {
@@ -210,7 +215,7 @@ void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent&
 	else
 		playercomp.SlideDir = controllercomp.InputDir;
 }
-
+#pragma region FSM_System
 #pragma region FSM Calculate
 #pragma region FSM Calculate Main
 void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
@@ -386,6 +391,8 @@ void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 #pragma endregion
 #pragma endregion
 
+#pragma region FSMActing
+
 #pragma region FSM Action
 void PlayerSystem::FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime)
 {
@@ -525,6 +532,9 @@ void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 {
 
 }
+
+#pragma endregion
+#pragma region FSM Sound
 void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
 {
 	switch (playercomp.CurrentFSM)
@@ -584,8 +594,6 @@ void PlayerSystem::FSM_Sound_Walk(PlayerComponent& playercomp)
 			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.WalkSoundKey2, playercomp.Volume_Walk, playercomp.GetComponent<TransformComponent>()->World_Location);
 		playercomp.Played_Walk1 = !playercomp.Played_Walk1;
 	}
-
-
 }
 void PlayerSystem::FSM_Sound_Run(PlayerComponent& playercomp)
 {
@@ -602,14 +610,8 @@ void PlayerSystem::FSM_Sound_Run(PlayerComponent& playercomp)
 			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.RunSoundKey1, playercomp.Volume_Run, playercomp.GetComponent<TransformComponent>()->World_Location);
 		else
 			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.RunSoundKey2, playercomp.Volume_Run, playercomp.GetComponent<TransformComponent>()->World_Location);
-	playercomp.Played_Run1 = !playercomp.Played_Run1;
+		playercomp.Played_Run1 = !playercomp.Played_Run1;
 	}
-
-
-
-
-
-
 }
 void PlayerSystem::FSM_Sound_Crouch(PlayerComponent& playercomp)
 {
@@ -617,7 +619,6 @@ void PlayerSystem::FSM_Sound_Crouch(PlayerComponent& playercomp)
 	playercomp.Played_Jump = false;
 	playercomp.Played_Slide = false;
 	playercomp.Played_Run1 = false;
-
 	if (playercomp.Played_Sit)
 		return;
 	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
@@ -625,8 +626,6 @@ void PlayerSystem::FSM_Sound_Crouch(PlayerComponent& playercomp)
 
 	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.SitSoundKey, playercomp.Volume_Sit, playercomp.GetComponent<TransformComponent>()->World_Location);
 	playercomp.Played_Sit = true;
-
-
 }
 void PlayerSystem::FSM_Sound_Slide(PlayerComponent& playercomp)
 {
@@ -634,7 +633,6 @@ void PlayerSystem::FSM_Sound_Slide(PlayerComponent& playercomp)
 	playercomp.Played_Jump = false;
 	playercomp.Played_Sit = false;
 	playercomp.Played_Run1 = false;
-
 	if (playercomp.Played_Slide)
 		return;
 	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
@@ -650,8 +648,6 @@ void PlayerSystem::FSM_Sound_Jump(PlayerComponent& playercomp)
 	playercomp.Played_Slide = false;
 	playercomp.Played_Sit = false;
 	playercomp.Played_Run1 = false;
-
-
 	if (playercomp.Played_Jump)
 		return;
 	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
@@ -669,6 +665,8 @@ void PlayerSystem::FSM_Sound_Die(PlayerComponent& playercomp)
 void PlayerSystem::FSM_Sound_Destroy(PlayerComponent& playercomp)
 {
 }
+#pragma endregion
+#pragma endregion
 #pragma endregion
 
 #pragma region Active_logic
@@ -761,6 +759,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
 	if (!GetSceneManager()->HasComponent<AnimationComponent>(playercomp.PlayerHandID))
 		return;
+	ThrowFinished(playercomp);
 	ReturnToIdle(*GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID));
 }
 
@@ -779,9 +778,9 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 4, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 4, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 4, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
@@ -805,6 +804,39 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	default:
 		break;
 	}
+
+}
+
+void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
+{
+	AnimationComponent& anicomp = *GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+
+	using namespace VisPred::Game;
+	if (anicomp.IsBlending || !anicomp.IsFinished)
+		return;
+	switch (anicomp.curAni)
+	{
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:
+	{
+		if (GetSceneManager()->GetEntity(playercomp.ThrowingGunEntityID))
+		{
+			auto& socketcomp = *GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
+			VPMath::Vector3 temp = GetSceneManager()->GetComponent <TransformComponent>(playercomp.FirePosEntityID)->FrontVector;
+			temp.RotateToUp2(6);
+			socketcomp.IsConnected = false;
+			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
+			socketcomp.ConnectedEntityID = 0;
+			playercomp.ThrowingGunEntityID = 0;
+		}
+		
+	}
+	break;
+	default:
+		break;
+	}
+
 
 }
 
@@ -875,6 +907,20 @@ void PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 }
 void PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	switch (playercomp.ShootType)
+	{
+	case VisPred::Game::GunType::PISTOL:
+		Throw_Pistol(playercomp, guncomp);
+		break;
+	case VisPred::Game::GunType::SHOTGUN:
+		Throw_ShotGun(playercomp, guncomp);
+		break;
+	case VisPred::Game::GunType::RIFLE:
+		Throw_Rifle(playercomp, guncomp);
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -911,7 +957,7 @@ void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_Pistol(anicomp->GetEntityID(), 4, false);
+	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 4, false);
 
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
@@ -930,7 +976,8 @@ void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_ShotGun(anicomp->GetEntityID(), 4, false);
+	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 4, false);
+
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
 		return;
@@ -948,7 +995,7 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_Rifle(anicomp->GetEntityID(), 10, false);
+	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
 		return;
@@ -958,6 +1005,60 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 
+}
+
+void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
+		return;
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	ChangeAni_Index(playercomp.PlayerHandID, VisPred::Game::PlayerAni::ToThrow_Pistol, 4, false);
+
+	auto socketcomp = guncomp.GetComponent<SocketComponent>();
+	//socketcomp->IsConnected = false;
+	//socketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
+}
+
+void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
+		return;
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	ChangeAni_Index(playercomp.PlayerHandID, VisPred::Game::PlayerAni::ToThrow_ShotGun, 4, false);
+
+	auto socketcomp = guncomp.GetComponent<SocketComponent>();
+	//socketcomp->IsConnected = false;
+	//socketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
+}
+
+void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
+		return;
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	ChangeAni_Index(playercomp.PlayerHandID, VisPred::Game::PlayerAni::ToThrow_Rifle, 4, false);
+
+	auto socketcomp = guncomp.GetComponent<SocketComponent>();
+	//socketcomp->IsConnected = false;
+	//socketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
 }
 
 void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
@@ -1004,6 +1105,8 @@ void PlayerSystem::Active_Walk(const TransformComponent& transformcomp, PlayerCo
 		controllercomp.InputDir += transformcomp.RightVector;
 
 }
+#pragma endregion
+#pragma region IStartable
 void PlayerSystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, playercomp)
@@ -1066,7 +1169,8 @@ void PlayerSystem::Finish(uint32_t gameObjectId)
 void PlayerSystem::Finalize()
 {
 }
-
+#pragma endregion
+#pragma region IRenderable
 void PlayerSystem::BeginRenderUpdate(float deltaTime)
 {
 }
@@ -1082,9 +1186,4 @@ void PlayerSystem::LateRenderUpdate(float deltaTime)
 void PlayerSystem::EditorRenderUpdate(float deltaTime)
 {
 }
-
-void PlayerSystem::SoundUpdate(float deltaTime)
-{
-}
-
 #pragma endregion

@@ -30,7 +30,7 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt
 	);
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
-	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets);
+	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets);
 }
 
 void VispredRegister::Register_EnumClass()

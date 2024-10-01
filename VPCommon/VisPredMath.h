@@ -267,7 +267,8 @@ namespace VisPred
 
             float Length() const noexcept;
             float LengthSquared() const noexcept;
-
+            void RotateToUp(float degrees) noexcept;
+            void RotateToUp2(float degrees) noexcept;
             float Dot(const Vector3& V) const noexcept;
             void Cross(const Vector3& V, Vector3& result) const noexcept;
             Vector3 Cross(const Vector3& V) const noexcept;

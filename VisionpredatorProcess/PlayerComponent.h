@@ -51,6 +51,7 @@ struct PlayerComponent :
     uint32_t SearchedItemID{};
     uint32_t PreSearchedItemID{};
     uint32_t GunEntityID{};
+    uint32_t ThrowingGunEntityID{};
     uint32_t FirePosEntityID{};
 
 

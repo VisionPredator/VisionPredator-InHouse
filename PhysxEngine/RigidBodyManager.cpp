@@ -599,7 +599,7 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir
 		Dir.Normalize();
 		PxVec3 force = { Dir.x, Dir.y, Dir.z };
 		force *= V;
-		dynamicBody->GetPxDynamicRigid()->addForce(force, PxForceMode::eACCELERATION);
+		dynamicBody->GetPxDynamicRigid()->addForce(force, PxForceMode::eVELOCITY_CHANGE);
 	}
 }
 

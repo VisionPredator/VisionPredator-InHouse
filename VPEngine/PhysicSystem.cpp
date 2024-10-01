@@ -323,9 +323,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		{
 			m_PhysicsEngine->SetGobalPose(entityID, rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
 		}
-		VPMath::Vector3 speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
-		speed = {};
-
+		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
 	}
 
 	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))						
@@ -354,8 +352,7 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 
 		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
 		rigidBodyTransform->SetWorldQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
-	 VPMath::Vector3 speed=	m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
-	 speed = {};
+		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
 	}
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))

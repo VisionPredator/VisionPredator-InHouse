@@ -71,35 +71,6 @@ public:
 #pragma endregion
 
 #pragma region Animation Change
-	void ChangeAni_Attack_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_Pistol, speed, loop, Immidiate); };
-	void ChangeAni_Attack_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_Rifle, speed, loop, Immidiate); };
-	void ChangeAni_Attack_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_ShotGun, speed, loop, Immidiate); };
-	void ChangeAni_Idle01_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_Pistol, speed, loop, Immidiate); };
-	void ChangeAni_Idle01_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_Rifle, speed, loop, Immidiate); };
-	void ChangeAni_Idle01_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, speed, loop, Immidiate); };
-	void ChangeAni_Idle02_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_Pistol, speed, loop, Immidiate); };
-	void ChangeAni_Idle02_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_Rifle, speed, loop, Immidiate); };
-	void ChangeAni_Idle02_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_ShotGun, speed, loop, Immidiate); };
-	void ChangeAni_hook_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_Sword, speed, loop, Immidiate); };
-	void ChangeAni_hook_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_Pistol, speed, loop, Immidiate); };
-	void ChangeAni_hook_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_Rifle, speed, loop, Immidiate); };
-	void ChangeAni_hook_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tohook_ShotGun, speed, loop, Immidiate); };
-	void ChangeAni_interaction(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::Tointeraction, speed, loop, Immidiate); };
-	void ChangeAni_Attack1_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack1_Sword, speed, loop, Immidiate); };
-	void ChangeAni_Attack2_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack2_Sword, speed, loop, Immidiate); };
-	void ChangeAni_Attack3_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack3_Sword, speed, loop, Immidiate); };
-	void ChangeAni_Idle01_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle01_Sword, speed, loop, Immidiate); };
-	void ChangeAni_Idle02_Sword(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToIdle02_Sword, speed, loop, Immidiate); };
-	void ChangeAni_throw_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToThrow_Pistol, speed, loop, Immidiate); };
-	void ChangeAni_throw_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToThrow_Rifle, speed, loop, Immidiate); };
-	void ChangeAni_throw_ShotGun(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToThrow_ShotGun, speed, loop, Immidiate); };
-	void ChangeAni_VP1_attack_L(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_attack_L, speed, loop, Immidiate); };
-	void ChangeAni_VP1_attack_R(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_attack_R, speed, loop, Immidiate); };
-	void ChangeAni_VP2_Idle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_Idle, speed, loop, Immidiate); };
-	void ChangeAni_vp3_dash(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_dash, speed, loop, Immidiate); };
-	void ChangeAni_vp4_jump(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_jump, speed, loop, Immidiate); };
-	void ChangeAni_vp5_run(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_run, speed, loop, Immidiate); };
-	void ChangeAni_vp_draw(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_draw, speed, loop, Immidiate); };
 	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, bool loop, bool Immidiate = false);
 #pragma endregion
 
@@ -116,6 +87,7 @@ public:
 	void Animation(uint32_t entityid, float deltaTime);
 	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
+	void ThrowFinished(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Gun Logic
@@ -133,7 +105,11 @@ public:
 #pragma endregion
 
 
-
+#pragma region Shoot Logic
+	void Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
+	void Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
+	void Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
+#pragma endregion
 
 	// IStartable을(를) 통해 상속됨
 	void Initialize() override;
