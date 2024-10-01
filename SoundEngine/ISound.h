@@ -28,7 +28,7 @@ public:
 	virtual void SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, VPMath::Vector3 Forward) = 0;
 	virtual void CleanChannel(const uint32_t& id) = 0;
 	virtual void CleanAllChannel() = 0;
-
+	virtual bool IsPlayingSound(uint32_t channelid, const std::string& soundKey = {}) = 0;
 
 
 };

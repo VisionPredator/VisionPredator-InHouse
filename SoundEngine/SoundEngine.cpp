@@ -281,7 +281,8 @@ void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, V
 
 }
 
-bool SoundEngine::ChannelMusicFinished(const uint32_t& id) {
+bool SoundEngine::ChannelMusicFinished(const uint32_t& id) 
+{
 	// Check if m_EntityChannels is empty
 	if (m_EntityChannels.empty()) 
 	{
@@ -297,7 +298,6 @@ bool SoundEngine::ChannelMusicFinished(const uint32_t& id) {
 		{
 			bool isPlaying = false;
 			channel->isPlaying(&isPlaying);
-
 			if (!isPlaying) 
 				// The channel is no longer playing, meaning the music has finished
 				return true;
@@ -369,4 +369,49 @@ float SoundEngine::GetLength(const std::string& key)
 
 	// 초 단위로 변환하여 반환
 	return static_cast<float>(length) / 1000.0f;
+}
+
+bool SoundEngine::IsPlayingSound(uint32_t channelid, const std::string& soundKey)
+{
+	// 해당 ID의 채널을 찾습니다.
+	auto channelIter = m_EntityChannels.find(channelid);
+	if (channelIter == m_EntityChannels.end())
+	{
+		return false; // 채널을 찾을 수 없으면 false 반환
+	}
+
+	FMOD::Channel* channel = channelIter->second;
+	if (channel != nullptr)
+	{
+		// 채널이 유효한지 확인
+		bool isPlaying = false;
+		channel->isPlaying(&isPlaying);
+
+		if (!isPlaying)
+		{
+			return false; // 채널이 재생 중이지 않으면 false 반환
+		}
+
+		// soundKey가 비어있으면 단순히 재생 중인지만 반환
+		if (soundKey.empty())
+		{
+			return true; // 채널이 재생 중이면 true 반환
+		}
+
+		// soundKey가 있는 경우 현재 재생 중인 사운드의 키를 비교
+		FMOD::Sound* currentSound = nullptr;
+		if (channel->getCurrentSound(&currentSound) == FMOD_OK && currentSound != nullptr)
+		{
+			char currentKey[256];
+			currentSound->getName(currentKey, sizeof(currentKey));
+
+			// 파일 이름에서 확장자를 제거
+			std::string currentKeyStr = std::filesystem::path(currentKey).stem().string();
+
+			// 사운드 키가 일치하는지 확인
+			return soundKey == currentKeyStr;
+		}
+	}
+
+	return false; // 조건을 만족하지 않으면 false 반환
 }

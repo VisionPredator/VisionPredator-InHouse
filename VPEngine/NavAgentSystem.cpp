@@ -139,6 +139,8 @@ void NavAgentSystem::AddAgentToCrowd(NavAgentComponent* comp)
 	auto transform = comp->GetComponent<TransformComponent>();
 
 	const float posf[3] = { transform->World_Location.x, transform->World_Location.y, transform->World_Location.z };
+	if (!GetSceneManager()->GetSceneNavMeshData()->crowd)
+		return;
 	comp->NavAgent->AgentID = GetSceneManager()->GetSceneNavMeshData()->crowd->addAgent(posf, &comp->NavAgent->agentParams);
 }
 

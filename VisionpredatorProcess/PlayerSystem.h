@@ -2,7 +2,7 @@
 #include <System.h>
 #include "VisPredComponents.h"
 class PlayerSystem :
-    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable,public IRenderable
+    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable,public IRenderable,public ISoundable
 {
 
 public:
@@ -19,7 +19,7 @@ public:
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
-
+	void hptest(PlayerComponent& playercomp, float delta);
 
 
 #pragma region Physics Setting
@@ -57,6 +57,19 @@ public:
 	void FSM_Action_Die(PlayerComponent& playercomp);
 	void FSM_Action_Destroy(PlayerComponent& playercomp);
 #pragma endregion
+#pragma region FSM Sound
+	void FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime);
+	void FSM_Sound_Idle(PlayerComponent& playercomp);
+	void FSM_Sound_Walk(PlayerComponent& playercomp);
+	void FSM_Sound_Run(PlayerComponent& playercomp);
+	void FSM_Sound_Crouch(PlayerComponent& playercomp);
+	void FSM_Sound_Slide(PlayerComponent& playercomp);
+	void FSM_Sound_Jump(PlayerComponent& playercomp);
+	void FSM_Sound_Attack(PlayerComponent& playercomp);
+	void FSM_Sound_Die(PlayerComponent& playercomp);
+	void FSM_Sound_Destroy(PlayerComponent& playercomp);
+#pragma endregion
+
 #pragma region Animation Change
 	void ChangeAni_Attack_Pistol(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_Pistol, speed, loop, Immidiate); };
 	void ChangeAni_Attack_Rifle(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToAttack_Rifle, speed, loop, Immidiate); };
@@ -89,9 +102,19 @@ public:
 	void ChangeAni_vp_draw(uint32_t entityID, float speed, bool loop, bool Immidiate = false) { ChangeAni_Index(entityID, VisPred::Game::PlayerAni::ToVP_draw, speed, loop, Immidiate); };
 	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, bool loop, bool Immidiate = false);
 #pragma endregion
+
+#pragma region Active_Logic
+	void Active_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp);
+	void Active_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp);
+	void Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
+	void Active_Slide(PlayerComponent& playercomp);
+	void Active_Attack(PlayerComponent& playercomp);
+#pragma endregion 
+
+
 #pragma region Animation
 	void Animation(uint32_t entityid, float deltaTime);
-	void PlayerAnime(PlayerComponent& playercomp);
+	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
 #pragma endregion
 
@@ -108,17 +131,7 @@ public:
 	void Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
 	void Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
 #pragma endregion
-#pragma endregion 
 
-#pragma region Move Logic
-	void Move_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp);
-	void Move_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp);
-	void Move_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
-	void Move_Slide(PlayerComponent& playercomp);
-#pragma endregion
-#pragma region Attack Logic
-	void Attack(PlayerComponent& playercomp);
-#pragma endregion
 
 
 
@@ -141,6 +154,10 @@ public:
 	void LateRenderUpdate(float deltaTime) override;
 
 	void EditorRenderUpdate(float deltaTime) override;
+
+
+	// ISoundable을(를) 통해 상속됨
+	void SoundUpdate(float deltaTime) override;
 
 };
 

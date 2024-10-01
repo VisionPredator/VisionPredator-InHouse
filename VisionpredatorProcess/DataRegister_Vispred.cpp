@@ -14,8 +14,22 @@ void VispredRegister::Register_Metadata()
 void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, PlayerComponent::PlayerCameraName, PlayerComponent::PlayerHandName, PlayerComponent::HP, PlayerComponent::Sencitive, PlayerComponent::StaticFriction, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::Accel, PlayerComponent::CurrentFSM, PlayerComponent::AirControlPercent, PlayerComponent::FirePosition, PlayerComponent::GravityPower, PlayerComponent::HasGun);
-		META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
+	META_ADD_COMP(PlayerComponent, PlayerComponent::PlayerCameraName
+		, PlayerComponent::PlayerHandName, PlayerComponent::HP
+		, PlayerComponent::Sencitive, PlayerComponent::StaticFriction
+		, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce
+		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
+		, PlayerComponent::Accel, PlayerComponent::CurrentFSM
+		, PlayerComponent::AirControlPercent, PlayerComponent::FirePosition
+		, PlayerComponent::GravityPower, PlayerComponent::HasGun
+		, PlayerComponent::WalkSoundKey1, PlayerComponent::WalkSoundKey2, PlayerComponent::Volume_Walk
+		, PlayerComponent::RunSoundKey1, PlayerComponent::RunSoundKey2, PlayerComponent::Volume_Run
+		, PlayerComponent::JumpSoundkey, PlayerComponent::Volume_Jump
+		, PlayerComponent::SlideSoundkey, PlayerComponent::Volume_Slide
+		, PlayerComponent::SitSoundKey, PlayerComponent::Volume_Sit
+		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt
+	);
+	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
 	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets);
 }
 
