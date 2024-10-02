@@ -31,7 +31,7 @@ void ObjectMaskPass::Initialize(const std::shared_ptr<Device>& device, const std
 	};
 	m_ObjectMaskSkeletalMeshVS = m_ResourceManager.lock()->Create<VertexShader>(L"ObjectMaskSkeletalMeshVS", L"ObjectMaskVS", "main", macro).lock();
 	m_ObjectMaskStaticMeshVS = m_ResourceManager.lock()->Create<VertexShader>(L"ObjectMaskStaticMeshVS", L"ObjectMaskVS", "main").lock();
-	m_ObjectMaskPS = m_ResourceManager.lock()->Create<PixelShader>(L"ObjectMask", L"ObjectMask").lock();
+	m_ObjectMaskPS = m_ResourceManager.lock()->Create<PixelShader>(L"ObjectMask", L"ObjectMaskPS", "main").lock();
 
 	m_MaskColorCB = std::make_shared<ConstantBuffer<MaskColorCB>>(device, ConstantBufferType::Default);
 }

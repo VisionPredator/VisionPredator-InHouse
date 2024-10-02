@@ -1178,6 +1178,135 @@
             ]
         },
         {
+            "EntityID": 1939224408,
+            "Component": [
+                {
+                    "BoxInfo": {
+                        "Extent": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    "CapsuleInfo": {
+                        "HalfHeight": 1.0,
+                        "Radius": 1.0
+                    },
+                    "ColliderShape": 3,
+                    "ColliderType": 1,
+                    "ComponentID": 4217231799,
+                    "DefaultColliderInfo": {
+                        "AngleLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "Density": 1.0,
+                        "DynamicFriction": 1.0,
+                        "LinearLock": [
+                            false,
+                            false,
+                            false
+                        ],
+                        "OffSet": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "PhysicsLayer": 4,
+                        "Restitution": 0.0,
+                        "StaticFriction": 1.0,
+                        "UseGravity": true
+                    },
+                    "IsDynamic": true,
+                    "SphereInfo": {
+                        "Radius": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Pistol"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 28.637222290039063,
+                        "y": -51.68584442138672,
+                        "z": -22.572526931762695
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.6822527647018433,
+                        "x": -0.18841704726219177,
+                        "y": -0.18903277814388275,
+                        "z": 0.6806591153144836
+                    },
+                    "Local_Scale": {
+                        "x": 0.26999998092651367,
+                        "y": 0.27000001072883606,
+                        "z": 0.26999998092651367
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "BulletPrefab": "../Data/Prefab/Pistol_Bullet.prefab",
+                    "Bullets": 40,
+                    "ComponentID": 3546995328,
+                    "CoolTime": 0.009999999776482582,
+                    "CurrentBullet": 40,
+                    "GunSoundPrefab": "../Data/Prefab/PisTolSound.prefab",
+                    "Type": 0
+                },
+                {
+                    "ComponentID": 2225601387,
+                    "ConnectedEntity": "",
+                    "IsConnected": false,
+                    "Offset": {
+                        "x": -0.33000001311302185,
+                        "y": 0.27000001072883606,
+                        "z": 0.6800000071525574
+                    },
+                    "OffsetRotation": {
+                        "x": -84.16999816894531,
+                        "y": -45.0,
+                        "z": 3.299999952316284
+                    },
+                    "SocketName": []
+                }
+            ]
+        },
+        {
             "EntityID": 2105011665,
             "Component": [
                 {

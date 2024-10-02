@@ -17,10 +17,6 @@ enum class VERTEXFILTER	// TODO: 昏力
 class VertexShader : public Shader
 {
 public:
-	//VertexShader(std::wstring filename = L"need name");
-	//VertexShader(std::shared_ptr<Device>device, std::wstring filename = L"need name");
-	//VertexShader(std::shared_ptr<Device>device, VERTEXFILTER kind_of_vertex = VERTEXFILTER::STATIC, std::wstring filename = L"need name");
-
 	// 窜老 积己磊
 	VertexShader(const std::shared_ptr<Device>& device,
 		const std::wstring& filename,
