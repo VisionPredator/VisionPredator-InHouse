@@ -99,14 +99,20 @@ void PlayerSystem::hptest(PlayerComponent& playercomp, float delta)
 	if (INPUTKEY(KEYBOARDKEY::N))
 	{
 		if (n > 0.05f)
+		{
 			playercomp.HP -= 1;
-		n = 0;
+			n = 0;
+
+		}
 	}
 	if (INPUTKEY(KEYBOARDKEY::M))
 	{
 		if (m > 0.05f)
+		{
 			playercomp.HP += 1;
-		m = 0;
+			m = 0;
+
+		}
 	}
 }
 
