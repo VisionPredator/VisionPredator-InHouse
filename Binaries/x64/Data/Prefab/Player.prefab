@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 1016388133,
+        "EntityID": 114816420,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -9,21 +9,53 @@
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": 21.43320655822754,
-                    "y": -50.72981262207031,
+                    "x": 27.466838836669922,
+                    "y": -48.146827697753906,
                     "z": -22.957979202270508
                 },
                 "Local_Quaternion": {
-                    "w": 0.037514813244342804,
-                    "x": 0.0,
-                    "y": 0.9992961287498474,
-                    "z": 0.0
+                    "w": 0.9860072731971741,
+                    "x": -0.0,
+                    "y": 0.16670221090316772,
+                    "z": -0.0
                 },
                 "Local_Scale": {
-                    "x": 0.9999998807907104,
+                    "x": 0.9999997019767761,
                     "y": 1.0,
-                    "z": 0.9999998807907104
+                    "z": 0.9999997019767761
                 }
+            },
+            {
+                "Accel": 200.0,
+                "AirControlPercent": 40.0,
+                "ComponentID": 4183631247,
+                "CurrentFSM": 0,
+                "DynamicFriction": 0.0,
+                "FirePosition": "Fireposition",
+                "GravityPower": 1.0,
+                "HP": 90,
+                "HurtSoundKey": "Player_Hurt",
+                "JumpFoce": 4.0,
+                "JumpSoundkey": "Player_Jump",
+                "PlayerCameraName": "PlayerCamera",
+                "PlayerHandName": "PlayerHand",
+                "RunSoundKey1": "Player_Run1",
+                "RunSoundKey2": "Player_Run2",
+                "RunSpeed": 10.0,
+                "Sencitive": 0.10000000149011612,
+                "SitSoundKey": "Player_Sit",
+                "SlideDisTance": 0.0,
+                "SlideSoundkey": "Player_Slide",
+                "StaticFriction": 10.0,
+                "Volume_Hurt": 0.10000000149011612,
+                "Volume_Jump": 0.03999999910593033,
+                "Volume_Run": 0.02500000037252903,
+                "Volume_Sit": 0.4000000059604645,
+                "Volume_Slide": 0.20000000298023224,
+                "Volume_Walk": 0.05000000074505806,
+                "WalkSoundKey1": "Player_Walk1",
+                "WalkSoundKey2": "Player_Walk2",
+                "WalkSpeed": 5.0
             },
             {
                 "Acceleration": 15.0,
@@ -40,8 +72,8 @@
                     "contactOffset": 0.0010000000474974513,
                     "height": 1.0,
                     "position": {
-                        "x": 21.43320655822754,
-                        "y": -50.72981262207031,
+                        "x": 27.466838836669922,
+                        "y": -48.146827697753906,
                         "z": -22.957979202270508
                     },
                     "radius": 0.5,
@@ -67,26 +99,8 @@
                 "StaticFriction": 10.0
             },
             {
-                "Accel": 200.0,
-                "AirControlPercent": 40.0,
-                "ComponentID": 4183631247,
-                "CurrentFSM": 0,
-                "DynamicFriction": 0.0,
-                "FirePosition": "Fireposition",
-                "GravityPower": 1.0,
-                "HP": 0,
-                "JumpFoce": 4.0,
-                "PlayerCameraName": "PlayerCamera",
-                "PlayerHandName": "PlayerHand",
-                "RunSpeed": 10.0,
-                "Sencitive": 0.10000000149011612,
-                "SlideDisTance": 0.0,
-                "StaticFriction": 10.0,
-                "WalkSpeed": 5.0
-            },
-            {
                 "ChildrenID": [
-                    1070793923
+                    888227744
                 ],
                 "ComponentID": 188567026
             },
@@ -97,7 +111,7 @@
         ]
     },
     {
-        "EntityID": 1070793923,
+        "EntityID": 888227744,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -131,19 +145,19 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1016388133
+                "ParentID": 114816420
             },
             {
                 "ChildrenID": [
-                    1223565655,
-                    1281817810
+                    3379424905,
+                    3562078941
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 1223565655,
+        "EntityID": 3379424905,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -169,10 +183,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "PlayerHand"
-            },
-            {
                 "ComponentID": 2778840952,
                 "FBX": [
                     112,
@@ -194,6 +204,10 @@
                 "transitionDuration": 0.4000000059604645
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "PlayerHand"
+            },
+            {
                 "ComponentID": 1142749570,
                 "FBX": [
                     112,
@@ -211,12 +225,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1070793923
+                "ParentID": 888227744
             }
         ]
     },
     {
-        "EntityID": 1281817810,
+        "EntityID": 3562078941,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -243,7 +257,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1070793923
+                "ParentID": 888227744
             }
         ]
     }

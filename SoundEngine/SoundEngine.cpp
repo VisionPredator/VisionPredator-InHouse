@@ -10,12 +10,30 @@ void SoundEngine::Initialize()
 	//m_SoundPath += "/Data/Sound/";
 
 	// FMOD 시스템 생성
-	FMOD::System_Create(&m_System);
+	FMOD_RESULT result = FMOD::System_Create(&m_System);
+	if (result != FMOD_OK)
+	{
+		std::cerr << "FMOD::System_Create failed: " << result << std::endl;
+		return; // If the system fails to create, return immediately
+	}
+	else
+	{
+		std::cerr << "FMOD::System_Create Succed: " << result << std::endl;
+	}
 
 	// FMOD 시스템 초기화
 	// 512 채널을 사용할 수 있으며, 기본 초기화 옵션(FMOD_INIT_NORMAL)을 사용
 	// 초기화 플래그나 드라이버 데이터를 위해 null을 사용
-	m_System->init(512, FMOD_INIT_NORMAL, nullptr);
+	result = m_System->init(512, FMOD_INIT_NORMAL, nullptr);
+	if (result != FMOD_OK)
+	{
+		std::cerr << "FMOD system init failed: " << result << std::endl;
+		return;
+	}
+	else
+	{
+		std::cerr << "FMOD system init Succed: " << result << std::endl;
+	}
 
 	// 3D 사운드 설정
 	// Doppler 스케일: 1.0 (일반적인 도플러 효과)
