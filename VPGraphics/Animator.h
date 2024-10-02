@@ -20,13 +20,13 @@ public:
 	void Initialize(std::weak_ptr<ResourceManager> manager);
 
 	void Update(std::vector<std::shared_ptr<RenderData>>& renderlist);
-	const VPMath::Matrix Attachment(std::wstring region);
-
+	const VPMath::Matrix Attachment(uint32_t entityID, std::wstring region);
+	
 private:
 
 
 	void UpdateWorld(std::weak_ptr<RenderData> ob);
-	void CalcWorld(std::shared_ptr<Node> RootNode);
+	void CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode);
 
 	void UpdateMatrixPallete(std::shared_ptr<RenderData>& curData);
 
@@ -38,6 +38,8 @@ private:
 
 
 	VPMath::Matrix socket;
+
+	std::vector<std::pair<uint32_t, VPMath::Matrix>> m_socketList;
 
 };
 
