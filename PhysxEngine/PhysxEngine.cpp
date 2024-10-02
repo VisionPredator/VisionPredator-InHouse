@@ -199,6 +199,11 @@ bool PhysxEngine::HasRigidBody(uint32_t entityID)
 	return m_RigidBodyManager->HasRigidBody(entityID);;
 }
 
+bool PhysxEngine::HasController(uint32_t entityID)
+{
+	return m_ControllerManager->HasController(entityID);
+}
+
 uint32_t PhysxEngine::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
 	if (m_RigidBodyManager->HasRigidBody(entityID))
@@ -311,18 +316,25 @@ VPMath::Vector3 PhysxEngine::GetControllerGobalPose(uint32_t entityID)
 {
 	auto Controller = m_ControllerManager->GetController(entityID);
 	if (!Controller)
-		return {};
+		return {0,0,0};
 	return Controller->GetPosition();
 }
 
 void PhysxEngine::SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity)
 {
-	m_ControllerManager->GetController(entityID)->SetVelocity(velocity);
+	if (auto controller =m_ControllerManager->GetController(entityID))
+	{
+		controller->SetVelocity(velocity);
+	}
 }
 
 bool PhysxEngine::GetControllerIsFall(uint32_t entityID)
 {
-	return m_ControllerManager->GetController(entityID)->GetIsFall();
+	if (auto controller = m_ControllerManager->GetController(entityID))
+	{
+	return controller->GetIsFall();
+	}
+	return false;
 }
 
 void PhysxEngine::LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info)

@@ -680,8 +680,8 @@ VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
 
 uint32_t RigidBodyManager::FindIDByActor(physx::PxRigidActor* Actor)
 {
-	auto key = static_cast<uint32_t*>(Actor->userData);
-	return *key;
+	auto key = static_cast<VPPhysics::USERDATA*>(Actor->userData);
+	return key->entityID;
 }
 
 uint32_t RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)

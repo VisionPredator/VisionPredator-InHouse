@@ -49,6 +49,7 @@ public:
 	virtual void AddImpulse(uint32_t entityID, VPMath::Vector3 Dir, float power) abstract;
 	virtual void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) abstract;
 	virtual bool HasRigidBody(uint32_t entityID) abstract;
+	virtual bool HasController(uint32_t entityID) abstract;
 	virtual bool HasConvexMeshResource(const std::wstring& key) abstract;
 
 };

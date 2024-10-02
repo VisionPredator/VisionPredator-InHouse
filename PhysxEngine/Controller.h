@@ -22,7 +22,8 @@ public:
 	virtual entt::id_type GetTypeID() const { return Reflection::GetTypeID<Controller>(); }
 	inline uint32_t GetEntityID();
 	inline physx::PxControllerFilters* GetFilters();
-	uint32_t m_EntityID{};
+	//uint32_t m_EntityID{};
+	USERDATA m_UserData{};
 	physx::PxController* m_Controller{};
 	VPPhysics::EPhysicsLayer m_LayerNum{};
 	physx::PxMaterial* m_Material{};
@@ -37,7 +38,7 @@ public:
 
 inline uint32_t Controller::GetEntityID()
 {
-	return m_EntityID;
+	return m_UserData.entityID;
 }
 
 inline physx::PxControllerFilters* Controller::GetFilters()

@@ -2,7 +2,7 @@
 #include "../VPEngine/System.h"
 struct EnemyComponent;
 class EnemySystem :
-	public System,public IFixedUpdatable,public IUpdatable
+	public System,public IFixedUpdatable,public IUpdatable,public IPhysicable
 {
 public:
     EnemySystem(std::shared_ptr<SceneManager> SceneMagener);
@@ -42,6 +42,10 @@ public:
 
 private:
 	void Die(EnemyComponent& enemycomp);
+
+
+	// IPhysicable을(를) 통해 상속됨
+	void PhysicsUpdate(float deltaTime) override;
 
 };
 

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "CollisionCallback.h"
 #include "EventManager.h"
+#include "VPPhysicsStructs.h"
 
 using namespace physx;
 CollisionCallback::CollisionCallback()
@@ -82,34 +83,34 @@ void CollisionCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const Px
 }
 std::pair<uint32_t, uint32_t> CollisionCallback::SortEntityPair(const PxContactPair pairs)
 {
-	auto entityID1 = static_cast<uint32_t*>(pairs.shapes[0]->userData);
-	auto entityID2 = static_cast<uint32_t*>(pairs.shapes[1]->userData);
+	auto userdata1 = static_cast<VPPhysics::USERDATA*>(pairs.shapes[0]->userData);
+	auto userdata2 = static_cast<VPPhysics::USERDATA*>(pairs.shapes[1]->userData);
 
 	std::pair<uint32_t, uint32_t> entitypair;
-	if (*entityID1 > *entityID2)
+	if (userdata1->entityID > userdata2->entityID)
 	{
-		entitypair = { *entityID2,*entityID1 };
+		entitypair = { userdata2->entityID,userdata1->entityID };
 	}
 	else
 	{
-		entitypair = { *entityID1,  *entityID2 };
+		entitypair = { userdata1->entityID,  userdata2->entityID };
 	}
 	return entitypair;
 }
 
 std::pair<uint32_t, uint32_t> CollisionCallback::SortEntityPair(const PxTriggerPair& pairs)
 {
-	auto entityID1 = static_cast<uint32_t*>(pairs.triggerShape->userData);
-	auto entityID2 = static_cast<uint32_t*>(pairs.otherShape->userData);
+	auto userdata1 = static_cast<VPPhysics::USERDATA*>(pairs.triggerShape->userData);
+	auto userdata2 = static_cast<VPPhysics::USERDATA*>(pairs.otherShape->userData);
 
 	std::pair<uint32_t, uint32_t> entitypair;
-	if (*entityID1 > *entityID2)
+	if (userdata1->entityID > userdata2->entityID)
 	{
-		entitypair = { *entityID2, *entityID1 };
+		entitypair = { userdata2->entityID, userdata1->entityID };
 	}
 	else
 	{
-		entitypair = { *entityID1, *entityID2 };
+		entitypair = { userdata1->entityID, userdata2->entityID };
 	}
 	return entitypair;
 }

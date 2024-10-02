@@ -326,19 +326,23 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
 	}
 
-	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))						
+	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
 	{
+		if (!m_PhysicsEngine->HasController(controllerCompoent.GetEntityID()))
+			continue;
 		uint32_t entityID = controllerCompoent.GetEntityID();
 
 		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
+
 		VPMath::Vector3 templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
-		templocation = DisApplyPivotAndOffset(controllerCompoent,templocation);
+		templocation = DisApplyPivotAndOffset(controllerCompoent, templocation);
 		float offset_T = (controllerTransform->World_Location - templocation).Length();
 		if (offset_T > m_location_threshold)
 		{
-			templocation = ApplyPivotAndOffset(controllerCompoent,controllerTransform->World_Location);
+			templocation = ApplyPivotAndOffset(controllerCompoent, controllerTransform->World_Location);
 			m_PhysicsEngine->SetControllerGobalPose(entityID, templocation);
 		}
+
 	}
 
 	m_PhysicsEngine->Update(deltaTime);
@@ -357,6 +361,8 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
 	{
+		if (!m_PhysicsEngine->HasController(controllerComponent.GetEntityID()))
+			continue;
 		uint32_t entityID = controllerComponent.GetEntityID();
 
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
