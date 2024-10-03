@@ -97,7 +97,7 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
     }
 
     // Reset input direction and check fall state
-    comp.InputDir = {};
+    //comp.InputDir = {};
     comp.IsFall = m_PhysicsEngine->GetControllerIsFall(comp.GetEntityID());
 }
 

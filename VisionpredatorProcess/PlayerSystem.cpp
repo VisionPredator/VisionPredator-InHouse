@@ -440,6 +440,7 @@ void PlayerSystem::FSM_Action_Idle(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.InputDir={};
 	Active_Rotation(playercomp, transfomcomp);
 	Animation(playercomp.PlayerHandID, 0);
 	Active_Attack(playercomp);
