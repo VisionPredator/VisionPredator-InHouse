@@ -1,0 +1,1496 @@
+{
+    "Entitys": [
+        {
+            "EntityID": 2423471605,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "DirectionalLight"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 2.344960927963257,
+                        "z": -0.5758053660392761
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 4257272042,
+                    "attenuation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "direction": {
+                        "x": 1.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "intensity": 1.0,
+                    "range": -1.0,
+                    "spot": -1.0,
+                    "type": 0
+                }
+            ]
+        },
+        {
+            "EntityID": 1121785234,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun2"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.20889095962047577,
+                        "y": 0.8765957355499268,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4273752894
+                }
+            ]
+        },
+        {
+            "EntityID": 2797202730,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun3"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -0.9775919318199158
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4273752894
+                }
+            ]
+        },
+        {
+            "EntityID": 2685103366,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun1"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.9091068506240845
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4273752894
+                }
+            ]
+        },
+        {
+            "EntityID": 2879970163,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun6"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -4.030869007110596
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4273752894
+                }
+            ]
+        },
+        {
+            "EntityID": 2269375384,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun4"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -2.02321195602417
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4273752894
+                }
+            ]
+        },
+        {
+            "EntityID": 1335261450,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Gun5"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        99,
+                        101,
+                        114,
+                        98,
+                        101,
+                        114,
+                        117,
+                        115,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -3.0601308345794678
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4273752894
+                }
+            ]
+        },
+        {
+            "EntityID": 4273752894,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Guns"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ChildrenID": [
+                        2685103366,
+                        1121785234,
+                        2797202730,
+                        2269375384,
+                        1335261450,
+                        2879970163
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 4155893495,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Wall"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        102,
+                        108,
+                        111,
+                        111,
+                        114,
+                        54,
+                        95,
+                        108,
+                        111,
+                        119,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.7071064114570618,
+                        "x": 2.2643812158662513e-08,
+                        "y": 1.633189725680495e-07,
+                        "z": 0.7071071267127991
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "EntityID": 1720398024,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerUI"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ChildrenID": [
+                        3956200108,
+                        1386675621,
+                        127493378,
+                        424879946,
+                        3578437176
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 3956200108,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Weapon"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "WeaponUI"
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 91.0,
+                    "PosYPercent": 92.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "gun1.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1720398024
+                }
+            ]
+        },
+        {
+            "EntityID": 2501341895,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerCamera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 6.0,
+                        "z": 5.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 1000.0,
+                    "IsMain": true,
+                    "NearZ": 0.0010000000474974513
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 46320443
+                },
+                {
+                    "ChildrenID": [
+                        416429169,
+                        2500623154
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 1386675621,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Aim"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "AimUI"
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 50.0,
+                    "PosYPercent": 50.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "aim_base.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1720398024
+                }
+            ]
+        },
+        {
+            "EntityID": 127493378,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Ammo"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "AmmoUI"
+                },
+                {
+                    "Angle": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 0.7921568751335144,
+                        "y": 0.6470588445663452,
+                        "z": 0.3019607961177826
+                    },
+                    "ComponentID": 2892956045,
+                    "FontPath": [
+                        75,
+                        73,
+                        77,
+                        77,
+                        95,
+                        66,
+                        52,
+                        56,
+                        95,
+                        72,
+                        89,
+                        46,
+                        115,
+                        112,
+                        114,
+                        105,
+                        116,
+                        101,
+                        102,
+                        111,
+                        110,
+                        116
+                    ],
+                    "Layer": 0,
+                    "PosXPercent": 80.0,
+                    "PosYPercent": 92.0,
+                    "Scale": 1.0,
+                    "Text": [
+                        51,
+                        48
+                    ]
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1720398024
+                }
+            ]
+        },
+        {
+            "EntityID": 424879946,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "HPUI"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ChildrenID": [
+                        3065419633,
+                        3914023851,
+                        124876199,
+                        1638454072
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1720398024
+                }
+            ]
+        },
+        {
+            "EntityID": 3578437176,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "VPState"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 1720398024
+                },
+                {
+                    "ChildrenID": [
+                        2582224771,
+                        1944047537
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 3065419633,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "HPGage"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "HPGageUI"
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 10.0,
+                    "PosYPercent": 92.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "HP 2.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 424879946
+                }
+            ]
+        },
+        {
+            "EntityID": 3914023851,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Border"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 10.0,
+                    "PosYPercent": 92.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "HP 4.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 424879946
+                }
+            ]
+        },
+        {
+            "EntityID": 124876199,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Background"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0000001192092896,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 2,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 10.0,
+                    "PosYPercent": 92.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "HP 3.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 424879946
+                }
+            ]
+        },
+        {
+            "EntityID": 1638454072,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "HPCount"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Angle": -5.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 0.7063829898834229,
+                        "y": 0.7063829898834229,
+                        "z": 0.7063829898834229
+                    },
+                    "ComponentID": 2892956045,
+                    "FontPath": [
+                        83,
+                        112,
+                        97,
+                        99,
+                        101,
+                        83,
+                        104,
+                        97,
+                        114,
+                        100,
+                        115,
+                        95,
+                        52,
+                        56,
+                        46,
+                        115,
+                        112,
+                        114,
+                        105,
+                        116,
+                        101,
+                        102,
+                        111,
+                        110,
+                        116
+                    ],
+                    "Layer": 0,
+                    "PosXPercent": 15.0,
+                    "PosYPercent": 93.5,
+                    "Scale": 1.0,
+                    "Text": [
+                        49,
+                        48,
+                        48
+                    ]
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "HPCountUI"
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 424879946
+                }
+            ]
+        },
+        {
+            "EntityID": 2582224771,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Eye"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 50.0,
+                    "PosYPercent": 90.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "close_eye1.png",
+                    "TopPercent": 0.0
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "VPStateUI"
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 3578437176
+                }
+            ]
+        },
+        {
+            "EntityID": 1944047537,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Border"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 3578437176
+                },
+                {
+                    "Billboard": 0,
+                    "BottomPercent": 0.0,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ComponentID": 2393760569,
+                    "Layer": 1,
+                    "LeftPercent": 0.0,
+                    "PosXPercent": 50.0,
+                    "PosYPercent": 90.0,
+                    "RenderMode": 1,
+                    "RightPercent": 0.0,
+                    "Scale": 1.0,
+                    "TexturePath": "eye_side.png",
+                    "TopPercent": 0.0
+                }
+            ]
+        },
+        {
+            "EntityID": 46320443,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Player"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -36.71483612060547,
+                        "y": 20.0,
+                        "z": 49.5970573425293
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "Accel": 200.0,
+                    "AirControlPercent": 40.0,
+                    "ComponentID": 4183631247,
+                    "CurrentFSM": 0,
+                    "DynamicFriction": 0.0,
+                    "FirePosition": "Fireposition",
+                    "GravityPower": 1.0,
+                    "HP": 0,
+                    "HurtSoundKey": "Player_Hurt",
+                    "JumpFoce": 10.0,
+                    "JumpSoundkey": "Player_Jump",
+                    "PlayerCameraName": "PlayerCamera",
+                    "PlayerHandName": "PlayerHand",
+                    "RunSoundKey1": "Player_Run1",
+                    "RunSoundKey2": "Player_Run2",
+                    "RunSpeed": 80.0,
+                    "Sencitive": 0.10000000149011612,
+                    "SitSoundKey": "Player_Sit",
+                    "SlideDisTance": 0.0,
+                    "SlideSoundkey": "Player_Slide",
+                    "StaticFriction": 5.0,
+                    "Volume_Hurt": 0.10000000149011612,
+                    "Volume_Jump": 0.10000000149011612,
+                    "Volume_Run": 0.10000000149011612,
+                    "Volume_Sit": 0.10000000149011612,
+                    "Volume_Slide": 0.10000000149011612,
+                    "Volume_Walk": 0.10000000149011612,
+                    "WalkSoundKey1": "Player_Walk1",
+                    "WalkSoundKey2": "Player_Walk2",
+                    "WalkSpeed": 40.0
+                },
+                {
+                    "Acceleration": 30.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 3,
+                            "LocalOffset": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "Pivot": 0
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 10.0,
+                        "position": {
+                            "x": -36.71483612060547,
+                            "y": 20.0,
+                            "z": 49.5970573425293
+                        },
+                        "radius": 5.0,
+                        "slopeLimit": 0.5,
+                        "stepOffset": 0.5
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 3,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 0
+                    },
+                    "DynamicFriction": 0.10000000149011612,
+                    "GravityWeight": 9.8100004196167,
+                    "JumpSpeed": 11.0,
+                    "JumpXZAcceleration": 1.0,
+                    "JumpXZDeceleration": 0.009999999776482582,
+                    "MaxSpeed": 10.0,
+                    "StaticFriction": 0.4000000059604645
+                },
+                {
+                    "ChildrenID": [
+                        2501341895
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "Player"
+                }
+            ]
+        },
+        {
+            "EntityID": 416429169,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerHand"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": -10.5,
+                        "z": 0.3855781555175781
+                    },
+                    "Local_Quaternion": {
+                        "w": -1.192093321833454e-07,
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999995231628418,
+                        "y": 1.0,
+                        "z": 0.9999995231628418
+                    }
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "animationList": [],
+                    "curAni": 1,
+                    "isLoop": true,
+                    "speed": 1.0,
+                    "transitionDuration": 0.20000000298023224
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "PlayerHand"
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2501341895
+                }
+            ]
+        },
+        {
+            "EntityID": 2500623154,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Fireposition"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 2501341895
+                }
+            ]
+        }
+    ],
+    "PhysicsInfo": {
+        "CollisionMatrix": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "FrameRate": 60,
+        "Gravity": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    },
+    "BuildSettings": {
+        "DivisionSizeXZ": 0.30000001192092896,
+        "DivisionSizeY": 0.20000000298023224,
+        "MaxAgentRadius": 0.6000000238418579,
+        "MaxCrowdNumber": 64,
+        "UseNavMesh": false,
+        "WalkableClimb": 0.20000000298023224,
+        "WalkableHeight": 0.30000001192092896,
+        "WalkableSlopeAngle": 30.0
+    }
+}
