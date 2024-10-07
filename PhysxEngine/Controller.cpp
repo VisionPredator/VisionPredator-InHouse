@@ -27,7 +27,7 @@ bool Controller::ControllerInit(VPPhysics::ControllerInfo info,physx::PxMaterial
 	data->word1 = physicsinfo.CollisionMatrix[(int)m_LayerNum];
 	m_PxQueryFilterCallback = std::make_shared<ControllerQueryFilterCallback>(data);
 	m_PxControllerFilterCallback = std::make_shared<MyControllerFilterCallback>();
-	m_Filters = std::make_shared<PxControllerFilters>(m_FilterData.get(), m_PxQueryFilterCallback.get(), m_PxControllerFilterCallback);
+	m_Filters = std::make_shared<PxControllerFilters>(m_FilterData.get(), m_PxQueryFilterCallback.get(), m_PxControllerFilterCallback.get());
 	//m_Filters = std::make_shared<PxControllerFilters>(m_FilterData.get(), m_ControllerQueryFilterCallback.get());
 	m_UserData.entityID = info.EntityId;
 	m_UserData.IsController = true;

@@ -14,7 +14,8 @@
 #include <tchar.h>
 #include <string_view>
 #include <d3d11.h>
-#include <PxPhysicsAPI.h>
+#include "../physx/PxPhysicsAPI.h"
+
 
 ///Nav Mesh
 #include "recastnavigation/Detour/DetourNavMesh.h"
