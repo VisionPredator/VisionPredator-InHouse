@@ -38,6 +38,10 @@ void PlayerSystem::SoundUpdate(float deltaTime)
 {
 }
 
+void PlayerSystem::PhysicsLateUpdate(float deltaTime)
+{
+}
+
 
 
 void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)

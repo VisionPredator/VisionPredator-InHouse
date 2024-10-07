@@ -88,7 +88,8 @@ void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination
 
 	SceneNavMeshData->navQuery->findNearestPoly(reinterpret_cast<float*>(&destination), halfExtents, filter, &comp->NavAgent->targetRef, comp->NavAgent->targetPos);
 
-	SceneNavMeshData->crowd->requestMoveTarget(comp->NavAgent->AgentID, comp->NavAgent->targetRef, comp->NavAgent->targetPos);
+	bool temp = SceneNavMeshData->crowd->requestMoveTarget(comp->NavAgent->AgentID, comp->NavAgent->targetRef, comp->NavAgent->targetPos);
+
 
 	comp->NavAgent->IsStop = false;
 }
@@ -96,12 +97,16 @@ void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination
 void NavAgentSystem::Stop(NavAgentComponent* comp)
 {
 	auto navmeshdata = GetSceneManager()->GetSceneNavMeshData();
+	if (!navmeshdata)
+		return;
+	if (!navmeshdata->crowd)
+		return;
 	navmeshdata->crowd->resetMoveTarget(comp->NavAgent->AgentID);
 	comp->TargetLocation = {};
 
 	comp->NavAgent->IsStop = true;
 }
-void NavAgentSystem::FixedUpdate(float deltaTime)
+void NavAgentSystem::PhysicsUpdate(float deltaTime)
 {
 	COMPLOOP(NavAgentComponent, navcomp)
 	{
@@ -130,7 +135,6 @@ void NavAgentSystem::FixedUpdate(float deltaTime)
 		}
 
 	}
-
 }
 
 
@@ -139,6 +143,8 @@ void NavAgentSystem::AddAgentToCrowd(NavAgentComponent* comp)
 	auto transform = comp->GetComponent<TransformComponent>();
 
 	const float posf[3] = { transform->World_Location.x, transform->World_Location.y, transform->World_Location.z };
+	if (!GetSceneManager()->GetSceneNavMeshData())
+		return;
 	if (!GetSceneManager()->GetSceneNavMeshData()->crowd)
 		return;
 	comp->NavAgent->AgentID = GetSceneManager()->GetSceneNavMeshData()->crowd->addAgent(posf, &comp->NavAgent->agentParams);
@@ -204,3 +210,8 @@ void NavAgentSystem::Finalize()
 		Finish(comp.GetEntityID());
 	}
 }
+
+void NavAgentSystem::PhysicsLateUpdate(float deltaTime)
+{
+}
+

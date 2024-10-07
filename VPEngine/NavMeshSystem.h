@@ -41,5 +41,8 @@ private:
     // IRenderable을(를) 통해 상속됨
     void RenderUpdate(float deltaTime) override;
     void LateRenderUpdate(float deltaTime) override;
+
+    // IPhysicable을(를) 통해 상속됨
+    void PhysicsLateUpdate(float deltaTime) override;
 };
 

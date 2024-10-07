@@ -42,8 +42,12 @@ private:
     // IPhysicable을(를) 통해 상속됨
     void PhysicsUpdate(float deltaTime) override;
 
+	// IPhysicable을(를) 통해 상속됨
+	void PhysicsLateUpdate(float deltaTime) override;
 	VPMath::Vector3 ApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation);
 	VPMath::Vector3 DisApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation);
+
+
 
 
 

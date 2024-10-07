@@ -21,6 +21,7 @@ class IPhysicable
 public:
 	virtual void SetPhysicEngine(Physic::IPhysx* PhysicEngine) { m_PhysicsEngine = PhysicEngine; }
 	virtual void PhysicsUpdate(float deltaTime) = 0;
+	virtual void PhysicsLateUpdate(float deltaTime) = 0;
 
 	Physic::IPhysx* m_PhysicsEngine = nullptr;
 };

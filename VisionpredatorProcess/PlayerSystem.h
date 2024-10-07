@@ -15,6 +15,8 @@ public:
 	void FixedUpdate(float deltaTime) override;
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override;
+	// IPhysicable을(를) 통해 상속됨
+	void PhysicsLateUpdate(float deltaTime) override;
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
@@ -134,6 +136,9 @@ public:
 
 	// ISoundable을(를) 통해 상속됨
 	void SoundUpdate(float deltaTime) override;
+
+
+
 
 };
 

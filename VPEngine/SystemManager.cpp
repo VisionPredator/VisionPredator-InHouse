@@ -48,10 +48,15 @@
 			{
 				physicsUpdatable->PhysicsUpdate(m_PhysicDeltatime);
 			}
+			for (auto physicsUpdatable : m_PhysicUpdatable)
+			{
+				physicsUpdatable->PhysicsLateUpdate(m_PhysicDeltatime);
+			}
 			m_PhysicProgressedTime -= m_PhysicDeltatime;
 		}
 
 	}
+
 	void SystemManager::SoundUpdate(float deltatime)
 	{
 		for (auto soundable : m_Soundable)
