@@ -232,9 +232,7 @@ void Toolbar::PhysicEngineImGui()
 				ImGui::TableNextColumn();
 				std::string layerName = Reflection::GetName(enumMap[j]);
 				for (char c : layerName)
-				{
 					ImGui::Text("%c", c);
-				}
 			}
 
 			// 각 행을 출력

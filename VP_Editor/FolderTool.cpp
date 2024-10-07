@@ -165,11 +165,10 @@ void FolderTool::FileImGui()
 			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(1) && !Toolbar::m_IsPlaying)
 			{
 				ImGui::OpenPopup("ItemOptions");
-				ImGui::SetClipboardText(buttonLabel.c_str());
 			}
 			if (ImGui::BeginPopup("ItemOptions"))
 			{
-				if (entry.path().extension() == ".prefab" || entry.path().extension() == ".scene" || entry.path().extension() == ".fbx")
+				if (entry.path().extension() == ".prefab" || entry.path().extension() == ".scene")
 				{
 					if (ImGui::MenuItem("Copy Filename"))
 					{
@@ -187,9 +186,36 @@ void FolderTool::FileImGui()
 						m_DeleteFilePath = entry.path();
 					}
 				}
+				else if (entry.path().extension() == ".fbx")
+				{
+					if (ImGui::MenuItem("Copy Filename"))
+					{
+						// Get the filename with extension
+						std::string filenameWithExtension = entry.path().filename().string();
+						ImGui::SetClipboardText(filenameWithExtension.c_str());
+					}
+					if (ImGui::MenuItem("Delete"))
+					{
+						m_ShowDeleteCaution = true;
+						m_DeleteFilePath = entry.path();
+					}
+				}
+				else if (entry.path().extension() == ".mp3"|| entry.path().extension() == ".wav")
+				{
+					if (ImGui::MenuItem("Copy Filename"))
+					{
+						// Get the filename without extension
+						std::string filenameWithoutExtension = entry.path().stem().string();
+						ImGui::SetClipboardText(filenameWithoutExtension.c_str());
+					}
+					if (ImGui::MenuItem("Delete"))
+					{
+						m_ShowDeleteCaution = true;
+						m_DeleteFilePath = entry.path();
+					}
+				}
 				ImGui::EndPopup();
 			}
-			//(tempLabel.c_str());
 			ImGui::PopID();
 		}
 
