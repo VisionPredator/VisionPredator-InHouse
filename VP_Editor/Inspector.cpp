@@ -381,7 +381,7 @@ void Inspector::TypeImGui_Vector2(entt::meta_data memberMetaData, Component* com
 	auto memberName = Reflection::GetName(memberMetaData);
 	float tempFloat[2]{ tempVector.x,tempVector.y };
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::DragFloat2(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
+	if (ImGui::DragFloat2(memberName.c_str(), tempFloat, 0.001f, -FLT_MAX, FLT_MAX))
 	{
 		tempVector.x = tempFloat[0];
 		tempVector.y = tempFloat[1];

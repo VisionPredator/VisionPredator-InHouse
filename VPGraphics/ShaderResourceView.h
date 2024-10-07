@@ -12,9 +12,15 @@
 class ShaderResourceView : public Resource
 {
 public:
+	enum class Directory
+	{
+		Texture = 0,
+		LightMap = 1
+	};
+
 	ShaderResourceView(const std::shared_ptr<Device>& device);		// TODO: ªË¡¶.
 
-	ShaderResourceView(const std::shared_ptr<Device>& device, const std::wstring& filename);
+	ShaderResourceView(const std::shared_ptr<Device>& device, const std::wstring& filename, Directory dir = Directory::Texture);
 	ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<RenderTargetView>& rtv);
 	ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<Texture2D>& texture2D);
 

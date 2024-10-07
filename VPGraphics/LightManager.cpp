@@ -41,10 +41,9 @@ void LightManager::Initialize(std::weak_ptr<ResourceManager> manager)
 			std::wstring wfilename;
 			wfilename.assign(file.begin(), file.end());
 
-			m_LightMap.push_back(manager.lock()->Create<ShaderResourceView>(wfilename, wfilename));
+			m_LightMap.push_back(manager.lock()->Create<ShaderResourceView>(wfilename, wfilename,ShaderResourceView::Directory::LightMap));	//texture folder에 없으면 못찾음 내부에서 경로를 texture로 지정해버리거든
 		}
 	}
-
 }
 
 void LightManager::EraseData(uint32_t EntityID, LightType type)

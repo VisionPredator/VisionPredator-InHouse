@@ -18,13 +18,35 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device) : 
 {
 }
 
-ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, const std::wstring& filename)
+ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, const std::wstring& filename , Directory dir)
 	: Resource(device)
 {
+	std::wstring filePath;
+
 #ifdef _DEBUG
-	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
+	switch (dir)
+	{
+		case ShaderResourceView::Directory::Texture:
+			filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
+			break;
+		case ShaderResourceView::Directory::LightMap:
+			filePath = L"..\\..\\..\\Resource\\LightMap\\" + filename;
+			break;
+		default:
+			break;
+	}
 #else
-	const std::wstring filePath = L"..\\Data\\Texture\\" + filename;
+	switch (dir)
+	{
+		case ShaderResourceView::Directory::Texture:
+			filePath = L"..\\Data\\Texture\\" + filename;
+			break;
+		case ShaderResourceView::Directory::LightMap:
+			filePath = L"..\\Data\\LightMap\\" + filename;
+			break;
+		default:
+			break;
+	}
 #endif
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
@@ -154,6 +176,8 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(texture2D->Get(), &srvDesc, m_SRV.GetAddressOf()));
 }
+
+
 
 ID3D11ShaderResourceView* ShaderResourceView::Get() const
 {
