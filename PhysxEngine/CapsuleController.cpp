@@ -2,6 +2,8 @@
 #include "CapsuleController.h"
 #include "VPPhysicsStructs.h"
 #include "ControllerHitCallback.h"
+
+
 CapsuleController::CapsuleController():Controller{}
 {
 }
@@ -24,10 +26,11 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
     desc.userData = &m_UserData;
 
     desc.material = material;
+    //std::shared_ptr<MyControllerFilterCallback> controllerFilterCallback = std::make_shared<MyControllerFilterCallback>();
     m_ControllerHitCallback = std::make_shared<ControllerHitCallback>();
     desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback.get());
     m_Controller = controllerManager->createController(desc);
-
+    
     if (!m_Controller)
         return false;
 

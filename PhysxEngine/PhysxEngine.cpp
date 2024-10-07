@@ -39,6 +39,7 @@ physx::PxFilterFlags CustomSimulationFilterShader(
 		}
 	}
 
+
 	// 필터 데이터 충돌 체크 ( 시뮬레이션 )
  	if ((((1 << filterData0.word0) & filterData1.word1) > 0) && (((1 << filterData1.word0) & filterData0.word1) > 0))
 	{
@@ -86,6 +87,7 @@ bool PhysxEngine::Initialize()
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
 	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
 	sceneDesc.filterShader = CustomSimulationFilterShader;
+
 	sceneDesc.simulationEventCallback = m_Collisioncallback.get();
 	sceneDesc.gravity=PxVec3(0.f,-9.81f,0.f);
 	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
