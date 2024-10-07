@@ -27,10 +27,11 @@ namespace VPPhysics
 		WALL,
 		TOP,
 		PLAYER,
-		OBJECT,
 		ENEMY,
+		WEAPON,
+		PLAYERBULLET,
+		ENEMYBULLET,
 		DOOR,
-		ACTIVEDOOR,
 		TRIGGER,
 		END
 	};

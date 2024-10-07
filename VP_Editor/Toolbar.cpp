@@ -195,7 +195,7 @@ void Toolbar::PhysicEngineImGui()
 		// 중력 벡터 편집
 		ImGui::Text("Gravity");
 		ImGui::SetNextItemWidth(200.f);
-		ImGui::DragFloat3("##Gravity",&m_PhysicInfo_ImGui.Gravity.x);
+		ImGui::DragFloat3("##Gravity",&m_PhysicInfo_ImGui.Gravity.x,0.001);
 
 		// 프레임 레이트 편집
 		ImGui::SetNextItemWidth(200.f);
@@ -217,7 +217,7 @@ void Toolbar::PhysicEngineImGui()
 		if (ImGui::BeginTable("CollisionMatrixTable", static_cast<int>(EPhysicsLayer::END) + 1, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX))
 		{
 			// Setup columns with fixed widths
-			ImGui::TableSetupColumn(" ", ImGuiTableColumnFlags_WidthFixed, 100.0f); // First column for row labels
+			ImGui::TableSetupColumn(" ", ImGuiTableColumnFlags_WidthFixed, 150.0f); // First column for row labels
 			for (int j = 0; j < static_cast<int>(EPhysicsLayer::END); ++j)
 			{
 				ImGui::TableSetupColumn(Reflection::GetName(enumMap[j]).c_str(), ImGuiTableColumnFlags_WidthFixed, 30.0f); // Each column with fixed width 30
