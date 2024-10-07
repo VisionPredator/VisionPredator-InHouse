@@ -214,6 +214,20 @@ void FolderTool::FileImGui()
 						m_DeleteFilePath = entry.path();
 					}
 				}
+				else if (entry.path().extension() == ".png"|| entry.path().extension() == ".dds")
+				{
+					if (ImGui::MenuItem("Copy Filename"))
+					{
+						// Get the filename with extension
+						std::string filenameWithExtension = entry.path().filename().string();
+						ImGui::SetClipboardText(filenameWithExtension.c_str());
+					}
+					if (ImGui::MenuItem("Delete"))
+					{
+						m_ShowDeleteCaution = true;
+						m_DeleteFilePath = entry.path();
+					}
+				}
 				ImGui::EndPopup();
 			}
 			ImGui::PopID();
