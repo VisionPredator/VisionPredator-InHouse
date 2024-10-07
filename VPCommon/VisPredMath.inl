@@ -915,6 +915,91 @@ inline float Vector3::LengthSquared() const noexcept
     return XMVectorGetX(X);
 }
 
+inline void Vector3::RotateToUp(float degrees) noexcept
+{
+	// Convert degrees to radians
+	float radians = degrees * DirectX::XM_PI / 180.0f;
+
+	// Get the normalized direction towards the UP vector
+	Vector3 up = Vector3::Up;
+	up.Normalize();
+	Vector3 current = *this;
+	current.Normalize();
+
+	// Calculate the dot product to find the angle between the current vector and up vector
+	float dot = current.Dot(up);
+
+	// Clamp the dot product to ensure it's within the valid range of acos
+	dot = std::clamp(dot, -1.0f, 1.0f);
+
+	// Get the current angle between the vectors
+	float currentAngle = std::acos(dot);
+
+	// Calculate the new angle, clamping it to a maximum of 90 degrees in radians
+	float maxRadians = DirectX::XM_PIDIV2; // 90 degrees in radians
+	float newAngle = currentAngle + radians;
+	if (newAngle > maxRadians)
+		newAngle = maxRadians;
+
+	// Calculate the lerp factor to move towards the UP direction
+	float t = newAngle / currentAngle;
+
+	// Linearly interpolate between the current vector and the UP vector
+	Vector3 result = Vector3::Lerp(current, up, t);
+
+	// Normalize and store the result back to the vector
+	result.Normalize();
+	*this = result;
+}
+inline void Vector3::RotateToUp2(float degrees) noexcept
+{
+    // Convert degrees to radians
+    float radians = degrees * DirectX::XM_PI / 180.0f;
+
+    // Get the normalized direction towards the UP vector
+    Vector3 up = Vector3::Up;
+    up.Normalize();
+    Vector3 current = *this;
+    current.Normalize();
+
+    // Calculate the dot product to find the angle between the current vector and up vector
+    float dot = current.Dot(up);
+
+    // Clamp the dot product to ensure it's within the valid range of acos
+    dot = std::clamp(dot, -1.0f, 1.0f);
+
+    // Get the current angle between the vectors
+    float currentAngle = std::acos(dot);
+
+    // Calculate the new angle, ensuring it doesn't exceed 90 degrees in radians
+    float maxRadians = DirectX::XM_PIDIV2; // 90 degrees in radians
+    float targetAngle = currentAngle + radians;
+    if (targetAngle > maxRadians)
+    {
+        targetAngle = maxRadians;
+    }
+
+    // Determine the SLERP factor for smooth rotation towards the up vector
+    float t = (targetAngle - currentAngle) / currentAngle;
+
+    // Calculate the rotation axis (cross product between current and up)
+    Vector3 rotationAxis;
+    current.Cross(up, rotationAxis);
+    rotationAxis.Normalize();
+
+    // Create a quaternion representing the rotation around the axis
+    DirectX::XMVECTOR axis = XMLoadFloat3(&rotationAxis);
+    DirectX::XMVECTOR quaternion = DirectX::XMQuaternionRotationAxis(axis, radians);
+
+    // Apply the quaternion to the current vector
+    DirectX::XMVECTOR currentVec = XMLoadFloat3(this);
+    DirectX::XMVECTOR rotatedVec = DirectX::XMVector3Rotate(currentVec, quaternion);
+
+    // Store the result
+    XMStoreFloat3(this, rotatedVec);
+}
+
+
 inline float Vector3::Dot(const Vector3& V) const noexcept
 {
     using namespace DirectX;

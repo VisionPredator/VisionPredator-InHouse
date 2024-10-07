@@ -13,5 +13,8 @@ public:
     //void ControllerUpdate( float deltatime ,ControllerComponent& comp);
     // IPhysicable을(를) 통해 상속됨
     void PhysicsUpdate(float deltaTime) override;
+
+    // IPhysicable을(를) 통해 상속됨
+    void PhysicsLateUpdate(float deltaTime) override;
 };
 

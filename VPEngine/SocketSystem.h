@@ -1,7 +1,7 @@
 #pragma once
 #include "System.h"
 class SocketSystem :
-    public System,public IUpdatable,public IRenderable, public IPhysicable
+    public System,public IUpdatable,public IRenderable,public IPhysicable
 {
 public:
     SocketSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -20,8 +20,11 @@ public:
 	void TargetConnectedID(SocketComponent& socketcomp);
 
 
-    // IPhysicable을(를) 통해 상속됨
-    void PhysicsUpdate(float deltaTime) override;
+
+
+	// IPhysicable을(를) 통해 상속됨
+	void PhysicsUpdate(float deltaTime) override { };
+	void PhysicsLateUpdate(float deltaTime)  override {};
 
 };
 

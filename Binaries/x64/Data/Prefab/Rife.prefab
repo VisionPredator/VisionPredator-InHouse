@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 3882896424,
+        "EntityID": 3374181812,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -82,29 +82,30 @@
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": 30.41059112548828,
+                    "x": 26.941476821899414,
                     "y": -49.25837326049805,
-                    "z": -20.3771915435791
+                    "z": -19.251773834228516
                 },
                 "Local_Quaternion": {
                     "w": 0.6822527647018433,
-                    "x": -0.18841704726219177,
-                    "y": -0.18903277814388275,
-                    "z": 0.6806591153144836
+                    "x": -0.18841707706451416,
+                    "y": -0.18903279304504395,
+                    "z": 0.6806591749191284
                 },
                 "Local_Scale": {
                     "x": 0.26999998092651367,
-                    "y": 0.27000007033348083,
+                    "y": 0.2700001001358032,
                     "z": 0.26999998092651367
                 }
             },
             {
                 "BulletPrefab": "../Data/Prefab/Pistol_Bullet.prefab",
-                "Bullets": 100,
+                "Bullets": 4,
                 "ComponentID": 3546995328,
                 "CoolTime": 0.009999999776482582,
-                "CurrentBullet": 100,
+                "CurrentBullet": 4,
                 "GunSoundPrefab": "../Data/Prefab/PisTolSound.prefab",
+                "ThrowDamage": 1,
                 "Type": 2
             },
             {

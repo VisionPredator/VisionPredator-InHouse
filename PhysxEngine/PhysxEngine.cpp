@@ -39,6 +39,7 @@ physx::PxFilterFlags CustomSimulationFilterShader(
 		}
 	}
 
+
 	// 필터 데이터 충돌 체크 ( 시뮬레이션 )
  	if ((((1 << filterData0.word0) & filterData1.word1) > 0) && (((1 << filterData1.word0) & filterData0.word1) > 0))
 	{
@@ -86,6 +87,7 @@ bool PhysxEngine::Initialize()
 	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
 	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
 	sceneDesc.filterShader = CustomSimulationFilterShader;
+
 	sceneDesc.simulationEventCallback = m_Collisioncallback.get();
 	sceneDesc.gravity=PxVec3(0.f,-9.81f,0.f);
 	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
@@ -197,6 +199,11 @@ void PhysxEngine::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexi
 bool PhysxEngine::HasRigidBody(uint32_t entityID)
 {
 	return m_RigidBodyManager->HasRigidBody(entityID);;
+}
+
+bool PhysxEngine::HasController(uint32_t entityID)
+{
+	return m_ControllerManager->HasController(entityID);
 }
 
 uint32_t PhysxEngine::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
@@ -311,18 +318,25 @@ VPMath::Vector3 PhysxEngine::GetControllerGobalPose(uint32_t entityID)
 {
 	auto Controller = m_ControllerManager->GetController(entityID);
 	if (!Controller)
-		return {};
+		return {0,0,0};
 	return Controller->GetPosition();
 }
 
 void PhysxEngine::SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity)
 {
-	m_ControllerManager->GetController(entityID)->SetVelocity(velocity);
+	if (auto controller =m_ControllerManager->GetController(entityID))
+	{
+		controller->SetVelocity(velocity);
+	}
 }
 
 bool PhysxEngine::GetControllerIsFall(uint32_t entityID)
 {
-	return m_ControllerManager->GetController(entityID)->GetIsFall();
+	if (auto controller = m_ControllerManager->GetController(entityID))
+	{
+	return controller->GetIsFall();
+	}
+	return false;
 }
 
 void PhysxEngine::LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info)

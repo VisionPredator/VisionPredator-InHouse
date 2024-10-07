@@ -54,9 +54,8 @@ void SocketSystem::TargetConnectedID(SocketComponent& socketcomp)
 	}
 }
 
-void SocketSystem::PhysicsUpdate(float deltaTime)
-{
-}
+
+
 
 void SocketSystem::RenderUpdate(float deltaTime)
 {

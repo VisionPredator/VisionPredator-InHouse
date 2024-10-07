@@ -27,10 +27,30 @@ void PhysicsRegister::Register_Components()
 
 void PhysicsRegister::Register_EnumClass()
 {
-	META_ADD_ENUMCLASS(EColliderType, EColliderType::TRIGGER, EColliderType::COLLISION);
-	META_ADD_ENUMCLASS(EPhysicsLayer, EPhysicsLayer::GROUND, EPhysicsLayer::WALL, EPhysicsLayer::TOP, EPhysicsLayer::PLAYER, EPhysicsLayer::OBJECT, EPhysicsLayer::ENEMY, EPhysicsLayer::DOOR, EPhysicsLayer::ACTIVEDOOR, EPhysicsLayer::TRIGGER);
-	META_ADD_ENUMCLASS(ControllerPivot, ControllerPivot::CENTER, ControllerPivot::END, ControllerPivot::FOOT);
-	META_ADD_ENUMCLASS(EColliderShape, EColliderShape::BOX, EColliderShape::SPHERE, EColliderShape::CAPSULE, EColliderShape::CONVEX);
+	META_ADD_ENUMCLASS(EColliderType,
+		EColliderType::TRIGGER,
+		EColliderType::COLLISION);
+	META_ADD_ENUMCLASS(EPhysicsLayer,
+		EPhysicsLayer::GROUND,
+		EPhysicsLayer::WALL,
+		EPhysicsLayer::TOP,
+		EPhysicsLayer::PLAYER,
+		EPhysicsLayer::ENEMY,
+		EPhysicsLayer::WEAPON,
+		EPhysicsLayer::PLAYERBULLET,
+		EPhysicsLayer::ENEMYBULLET,
+		EPhysicsLayer::DOOR,
+		EPhysicsLayer::TRIGGER);
+	META_ADD_ENUMCLASS(ControllerPivot,
+		ControllerPivot::CENTER,
+		ControllerPivot::FOOT,
+		ControllerPivot::END);
+	META_ADD_ENUMCLASS(EColliderShape,
+		EColliderShape::BOX,
+		EColliderShape::SPHERE,
+		EColliderShape::CAPSULE,
+		EColliderShape::CONVEX,
+		EColliderShape::END);
 }
 
 void PhysicsRegister::Register_Structs()
