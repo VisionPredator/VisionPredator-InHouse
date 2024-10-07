@@ -51,7 +51,7 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
 		/// ON_COLLSION 충돌 이벤트 실행
 		else if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
 		{
-			std::cout << "OnContact" << std::endl;
+			//std::cout << "OnContact" << std::endl;
 		}
 	}
 

@@ -15,6 +15,8 @@
 		EventManager::GetInstance().Subscribe("OnStart", CreateSubscriber(&SystemManager::OnStart));
 		EventManager::GetInstance().Subscribe("OnCollisionEnter", CreateSubscriber(&SystemManager::OnCollisionEnter));
 		EventManager::GetInstance().Subscribe("OnCollisionExit", CreateSubscriber(&SystemManager::OnCollisionExit));
+		EventManager::GetInstance().Subscribe("OnTriggerEnter", CreateSubscriber(&SystemManager::OnTriggerEnter));
+		EventManager::GetInstance().Subscribe("OnTriggerExit", CreateSubscriber(&SystemManager::OnTriggerExit));
 		EventManager::GetInstance().Subscribe("OnStart_Parent", CreateSubscriber(&SystemManager::OnStart_Parent));
 		EventManager::GetInstance().Subscribe("OnFinish", CreateSubscriber(&SystemManager::OnFinish));
 		EventManager::GetInstance().Subscribe("OnFinish_Parent", CreateSubscriber(&SystemManager::OnFinish_Parent));
@@ -196,6 +198,24 @@
 		for (auto contactable : m_Contactable)
 		{
 			contactable->ExitCollision(entitypair);
+		}
+	}
+
+	void SystemManager::OnTriggerEnter(std::any pair)
+	{
+		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		for (auto contactable : m_Triggerable)
+		{
+			contactable->EnterTrigger(entitypair);
+		}
+	}
+
+	void SystemManager::OnTriggerExit(std::any pair)
+	{
+		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		for (auto contactable : m_Triggerable)
+		{
+			contactable->ExitTrigger(entitypair);
 		}
 	}
 

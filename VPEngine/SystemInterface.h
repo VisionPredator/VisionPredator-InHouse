@@ -75,7 +75,12 @@ public:
 	virtual void EnterCollision(std::pair<uint32_t,uint32_t> entitypair) = 0;
 	virtual void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) = 0;
 };
-
+class ITriggerable
+{
+public:
+	virtual void EnterTrigger(std::pair<uint32_t, uint32_t> entitypair) = 0;
+	virtual void ExitTrigger(std::pair<uint32_t, uint32_t> entitypair) = 0;
+};
 class ISoundable
 {
 public:
