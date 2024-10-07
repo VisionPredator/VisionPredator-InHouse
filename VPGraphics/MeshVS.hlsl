@@ -45,7 +45,7 @@ VS_OUTPUT main(VS_INPUT input)
     if(useNEOL.w > 0)
     {
         float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.x;
-        float y = ((1 - input.lightuv.y) * lightmaptiling.y) + lightmapdata.y;
+        float y = (1 - input.lightuv.y) * lightmaptiling.y + lightmapdata.y;
     
     
         //Unity light mapÀº ÁÂÇÏ´ÜÀÌ 0,0 dx11 ÁÂ»ó´ÜÀÌ 0,0

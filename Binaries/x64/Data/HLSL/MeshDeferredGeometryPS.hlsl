@@ -63,7 +63,7 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
         float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb;
         NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
         NormalTangentSpace = normalize(NormalTangentSpace);
-        
+
         float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
         output.Normal.xyz = normalize(mul(NormalTangentSpace, (WorldTransform)));
     }
@@ -79,7 +79,7 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
         output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
     }
         
-    output.LightMap = pow(gLightMap.Sample(samLinear, input.lightuv), float4(1 / gamma, 1 / gamma, 1 / gamma, 1 / gamma));
+    output.LightMap = gLightMap.Sample(samLinear, input.lightuv);
     
     return output;
     
