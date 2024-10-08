@@ -186,7 +186,7 @@ void Inspector::TransformComponentImGui(Component* component)
 			tempVector.x = temp_Local_Scale[0];
 			tempVector.y = temp_Local_Scale[1];
 			tempVector.z = temp_Local_Scale[2];
-			comp->SetWorldScale(tempVector);
+			comp->SetLocalScale(tempVector);
 
 		}
 		ImGui::PopID();
@@ -234,7 +234,7 @@ void Inspector::TransformComponentImGui(Component* component)
 			euler.y = DirectX::XMConvertToRadians(temp_World_Quaternion[1]);
 			euler.z = DirectX::XMConvertToRadians(temp_World_Quaternion[2]);
 			tempVector = VPMath::Quaternion::CreateFromYawPitchRoll(euler);
-			comp->SetLocalQuaternion(tempVector);
+			comp->SetWorldQuaternion(tempVector);
 		}
 		ImGui::PopID();
 	}
