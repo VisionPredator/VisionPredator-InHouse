@@ -116,7 +116,13 @@ void NavAgentSystem::PhysicsUpdate(float deltaTime)
 		if (!navcomp.IsChase)
 		{
 			if (!navcomp.NavAgent->IsStop)
+			{
 				Stop(&navcomp);
+				if (navcomp.HasComponent<ControllerComponent>())
+				{
+					navcomp.GetComponent<ControllerComponent>()->InputDir= {};
+				}
+			}
 
 
 			continue;
@@ -167,6 +173,7 @@ void NavAgentSystem::Start(uint32_t gameObjectId)
 	{
 		const auto& controller = GetSceneManager()->GetComponent<ControllerComponent>(gameObjectId);
 		auto agentcomp = controller->GetComponent<NavAgentComponent>();
+		agentcomp->IsChanged= agentcomp->IsChase;
 		agentcomp->NavAgent = std::make_shared<NavAgentData>();
 		this->SetAcceleration(agentcomp, controller->Acceleration);
 		this->SetRadius(agentcomp, controller->CapsuleControllerinfo.radius);
@@ -181,6 +188,8 @@ void NavAgentSystem::Start(uint32_t gameObjectId)
 
 		const auto& transformcomp = GetSceneManager()->GetComponent<TransformComponent>(gameObjectId);
 		auto agentcomp = transformcomp->GetComponent<NavAgentComponent>();
+		agentcomp->IsChanged = agentcomp->IsChase;
+
 		agentcomp->NavAgent = std::make_shared<NavAgentData>();
 		this->SetAcceleration(agentcomp, 20 );
 		this->SetRadius(agentcomp, 2);
