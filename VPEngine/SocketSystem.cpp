@@ -89,10 +89,11 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		VPMath::Quaternion tempQuater{};
 		VPMath::Vector3 tempsworld{};
 
-		if (!finalMatrix.Decompose(tempscale, tempQuater, tempsworld))
-		{
-			finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
-		}
+		finalMatrix.NewDecompose(tempscale, tempQuater, tempsworld);
+		//if (!finalMatrix.Decompose(tempscale, tempQuater, tempsworld))
+		//{
+		//	finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
+		//}
 
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);

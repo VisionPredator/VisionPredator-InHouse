@@ -233,6 +233,12 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 		return;
 	COMPLOOP(NavAgentComponent, agentcomp)
 	{
+		if (!agentcomp.IsChase)
+		{
+			agentcomp.IsChanged = true;
+			continue;
+		}
+
 		auto Transform = agentcomp.GetComponent<TransformComponent>();
 		if (!navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID))
 			continue;
@@ -241,6 +247,19 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 		editAgent->npos[0] = Transform->World_Location.x;
 		editAgent->npos[1] = Transform->World_Location.y;
 		editAgent->npos[2] = Transform->World_Location.z;
+
+		if (agentcomp.IsChanged)
+		{
+			const dtQueryFilter* filter = navMeshdata->crowd->getFilter(0);
+			const float* halfExtents = navMeshdata->crowd->getQueryExtents();
+			dtPolyRef targetPoly;
+			navMeshdata->navQuery->findNearestPoly(editAgent->npos, halfExtents, filter, &targetPoly, nullptr);
+
+			// Update the agent's position and NavMesh poly reference
+			editAgent->corridor.reset(targetPoly, editAgent->npos);
+			agentcomp.IsChanged = false;
+		}
+
 	}
 
 	if (navMeshdata->crowd->getAgentCount() != 0)
@@ -250,6 +269,8 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 
 	COMPLOOP(NavAgentComponent, agentcomp)
 	{
+		if (!agentcomp.IsChase)
+			continue;
 		auto Transform = agentcomp.GetComponent<TransformComponent>();
 		if (!navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID))
 			continue;

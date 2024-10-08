@@ -577,6 +577,7 @@ namespace VisPred
 
             // Matrix operations
             bool Decompose(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept;
+            bool NewDecompose(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept;
 
 
             // Matrix operations

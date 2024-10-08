@@ -102,8 +102,11 @@ void TransformSystem::OnSetParentAndChild(std::any parentChild)
 	TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
 	TransformComponent* parentTransform = GetSceneManager()->GetComponent<TransformComponent>(parentID);
 	VPMath::Matrix newLocalTransform = childTransform->WorldTransform * parentTransform->WorldTransform.Invert();
-	newLocalTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
+	auto temp =newLocalTransform.NewDecompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
+    //VP_ASSERT(temp, "Depose 실패");
+
     AddUpdateData(parentTransform);
+    AddUpdateData(childTransform);
 }
 
 void TransformSystem::OnUpdateTransfomData(std::any data)
@@ -118,7 +121,8 @@ void TransformSystem::OnRelaseParentAndChild(std::any child)
     TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
     if (childTransform)
     {
-        childTransform->WorldTransform.Decompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
+       bool temp =  childTransform->WorldTransform.NewDecompose(childTransform->Local_Scale, childTransform->Local_Quaternion, childTransform->Local_Location);
+       //VP_ASSERT(temp, "Depose 실패");
     }
     AddUpdateData(childTransform);
 }
@@ -230,8 +234,11 @@ bool TransformSystem::IsWorldTransformChanged(TransformComponent* transform)
 
 void TransformSystem::UpdateWorldTransform(TransformComponent* transform, const VPMath::Matrix& worldTransform)
 {
-    transform->WorldTransform = worldTransform;
-    transform->WorldTransform.Decompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
+	transform->WorldTransform = worldTransform;
+	auto temp = transform->WorldTransform.NewDecompose(transform->World_Scale, transform->World_Quaternion, transform->World_Location);
+
+	////VP_ASSERT(temp, "Depose 실패");
+    
     transform->World_Rotation = transform->World_Quaternion.ToEuler() * 180 / VPMath::XM_PI;
 
     transform->Previous_WorldScale = transform->World_Scale;
@@ -280,7 +287,10 @@ void TransformSystem::CalculateTransformWorld(TransformComponent* transform)
         transform->LocalTransform = transform->WorldTransform;
     }
 
-    transform->LocalTransform.Decompose(transform->Local_Scale, transform->Local_Quaternion, transform->Local_Location);
+   auto  temp =transform->LocalTransform.NewDecompose(transform->Local_Scale, transform->Local_Quaternion, transform->Local_Location);
+
+    //VP_ASSERT(temp, "Depose 실패");
+
     transform->Local_Rotation = transform->Local_Quaternion.ToEuler() * 180 / VPMath::XM_PI;
 
     UpdatePreviousLocalTransform(transform);
