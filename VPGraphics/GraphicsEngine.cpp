@@ -474,6 +474,11 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 	m_DebugDrawManager->AddTask(info);
 }
 
+void GraphicsEngine::DrawCone(const debug::ConeInfo& info)
+{
+	m_DebugDrawManager->AddTask(info);
+}
+
 ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 {
 	std::shared_ptr<ShaderResourceView> srv = m_ResourceManager->Get<ShaderResourceView>(name).lock();

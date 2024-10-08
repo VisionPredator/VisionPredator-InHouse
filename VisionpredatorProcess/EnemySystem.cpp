@@ -63,13 +63,21 @@ void EnemySystem::Calculate_Attack(EnemyComponent& enemycomp)
 
 void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 {
+	/// OnStart -------------------------------------------------------------------------------------
+	// 플에이어 추격 종료
+	uint32_t enemyID = enemycomp.GetEntityID();
+	if (true == m_SceneManager.lock()->HasComponent<NavAgentComponent>(enemyID))
+	{
+		auto navComp = m_SceneManager.lock()->GetComponent<NavAgentComponent>(enemyID);
+		navComp->IsChase = false;
+	}
+
 	if (enemycomp.HP <= 0)
 	{
 		Die(enemycomp);
 	}
 	else if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
- 
 
 	//enemycomp.CurrentFSM = VisPred::Game::EnemyState::WALK;
 }

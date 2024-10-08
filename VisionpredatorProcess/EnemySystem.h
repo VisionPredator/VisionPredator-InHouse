@@ -1,6 +1,7 @@
 #pragma once
 #include "../VPEngine/System.h"
 struct EnemyComponent;
+struct PlayerComponent;
 class EnemySystem :
 	public System,public IFixedUpdatable,public IUpdatable
 {
@@ -42,6 +43,9 @@ public:
 
 private:
 	void Die(EnemyComponent& enemycomp);
+
+	// 시야 범위 안에 플레이어가 있는지 확인
+	void DetectTarget(const PlayerComponent& playerComp);
 
 };
 

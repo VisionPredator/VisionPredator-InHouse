@@ -276,6 +276,21 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 
 		m_Graphics->DrawRay(frontinfo);
 
+
+		// 수평 각도의 반을 라디안으로 변환
+		float horizontalAngleRadians = DirectX::XMConvertToRadians(160.0f / 2.0f);
+		// 반경 계산
+		float radius = 130.0f * tanf(horizontalAngleRadians);
+		// ConeInfo 설정
+		debug::ConeInfo coneInfo;
+		coneInfo.Apex = VPMath::Vector3(0.0f, 0.0f, 0.0f); // 시야의 중심점
+		coneInfo.Direction = VPMath::Vector3::UnitZ; // z축 방향으로 원뿔이 향하게 설정
+		coneInfo.Height = 130.0f; // 시야 길이
+		coneInfo.Radius = radius; // 계산된 반경
+		coneInfo.Color = VPMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f); // 예시로 빨간색
+		m_Graphics->DrawCone(coneInfo);
+
+
 		//RightVector
 		debug::RayInfo rightinfo{};
 		rightinfo.Color = { 1,0,0,1 };
