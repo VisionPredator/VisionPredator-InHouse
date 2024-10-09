@@ -29,8 +29,7 @@ static_assert(sizeof(CameraData) % 16 == 0, "must be align");
 
 struct MatrixPallete
 {
-	//임시로 엄청 넣어놓음
-	VPMath::Matrix offset[512];
+	VPMath::Matrix offset[128];
 };
 
 

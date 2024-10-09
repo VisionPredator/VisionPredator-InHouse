@@ -18,10 +18,7 @@
 
 DeferredPass::~DeferredPass()
 {
-	if (!m_AlbedoRTV.expired())
-	{
-		int a = 3;
-	}
+
 }
 
 void DeferredPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,

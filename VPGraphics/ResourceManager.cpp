@@ -93,8 +93,8 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	};
 	Create<VertexShader>(L"Base", L"MeshVS", "main");
 	Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
-	Create<VertexShader>(L"Quad", L"QuadVS", "main");
-
+	Create<VertexShader>(L"Quad", L"QuadVS", "main");	
+	Create<VertexShader>(L"InstancingVS", L"InstancingVS");	//Instancing VS
 
 	// ----------------------------------------------------------------------------------------
 	// Pixel Shader
@@ -106,7 +106,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"Quad", L"QuadPS", "main");
 	Create<PixelShader>(L"VPOutLine", L"VPOutLine", "main");
 	Create<PixelShader>(L"RimLight", L"RimLight", "main");
-
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer
