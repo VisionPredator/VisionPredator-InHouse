@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 770560975,
+        "EntityID": 114816420,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -9,15 +9,15 @@
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
-                    "x": 21.43320655822754,
-                    "y": -50.72981262207031,
+                    "x": 27.466838836669922,
+                    "y": -48.146827697753906,
                     "z": -22.957979202270508
                 },
                 "Local_Quaternion": {
-                    "w": 0.0375148169696331,
-                    "x": 0.0,
-                    "y": 0.9992961287498474,
-                    "z": 0.0
+                    "w": 0.9860072731971741,
+                    "x": -0.0,
+                    "y": 0.16670221090316772,
+                    "z": -0.0
                 },
                 "Local_Scale": {
                     "x": 0.9999997019767761,
@@ -33,14 +33,28 @@
                 "DynamicFriction": 0.0,
                 "FirePosition": "Fireposition",
                 "GravityPower": 1.0,
-                "HP": 0,
+                "HP": 90,
+                "HurtSoundKey": "Player_Hurt",
                 "JumpFoce": 4.0,
+                "JumpSoundkey": "Player_Jump",
                 "PlayerCameraName": "PlayerCamera",
                 "PlayerHandName": "PlayerHand",
+                "RunSoundKey1": "Player_Run1",
+                "RunSoundKey2": "Player_Run2",
                 "RunSpeed": 10.0,
                 "Sencitive": 0.10000000149011612,
+                "SitSoundKey": "Player_Sit",
                 "SlideDisTance": 0.0,
+                "SlideSoundkey": "Player_Slide",
                 "StaticFriction": 10.0,
+                "Volume_Hurt": 0.10000000149011612,
+                "Volume_Jump": 0.03999999910593033,
+                "Volume_Run": 0.02500000037252903,
+                "Volume_Sit": 0.4000000059604645,
+                "Volume_Slide": 0.20000000298023224,
+                "Volume_Walk": 0.05000000074505806,
+                "WalkSoundKey1": "Player_Walk1",
+                "WalkSoundKey2": "Player_Walk2",
                 "WalkSpeed": 5.0
             },
             {
@@ -58,8 +72,8 @@
                     "contactOffset": 0.0010000000474974513,
                     "height": 1.0,
                     "position": {
-                        "x": 21.43320655822754,
-                        "y": -50.72981262207031,
+                        "x": 27.466838836669922,
+                        "y": -48.146827697753906,
                         "z": -22.957979202270508
                     },
                     "radius": 0.5,
@@ -86,7 +100,7 @@
             },
             {
                 "ChildrenID": [
-                    3050552925
+                    888227744
                 ],
                 "ComponentID": 188567026
             },
@@ -97,7 +111,7 @@
         ]
     },
     {
-        "EntityID": 3050552925,
+        "EntityID": 888227744,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -131,19 +145,19 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 770560975
+                "ParentID": 114816420
             },
             {
                 "ChildrenID": [
-                    2851198187,
-                    3508016023
+                    3379424905,
+                    3562078941
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 2851198187,
+        "EntityID": 3379424905,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -211,12 +225,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3050552925
+                "ParentID": 888227744
             }
         ]
     },
     {
-        "EntityID": 3508016023,
+        "EntityID": 3562078941,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -243,7 +257,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3050552925
+                "ParentID": 888227744
             }
         ]
     }

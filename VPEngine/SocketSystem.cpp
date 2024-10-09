@@ -54,9 +54,8 @@ void SocketSystem::TargetConnectedID(SocketComponent& socketcomp)
 	}
 }
 
-void SocketSystem::PhysicsUpdate(float deltaTime)
-{
-}
+
+
 
 void SocketSystem::RenderUpdate(float deltaTime)
 {
@@ -78,6 +77,7 @@ void SocketSystem::RenderUpdate(float deltaTime)
 			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.x),
 			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.z));
 
+
 		///로컬 매트릭스 만들기
 		VPMath::Matrix offsetMatrix = VPMath::Matrix::CreateTranslation(socketcomp.Offset);
 
@@ -85,14 +85,15 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		VPMath::Matrix finalMatrix = VPMath::Matrix::CreateFromQuaternion(rotationQuat) * attachmentMatrix;
 		finalMatrix = offsetMatrix * finalMatrix;
 
-
-		auto Finalpose = offsetMatrix * attachmentMatrix;
-		Finalpose = VPMath::Matrix::CreateFromQuaternion(rotationQuat) * Finalpose;
 		VPMath::Vector3 tempscale{};
 		VPMath::Quaternion tempQuater{};
 		VPMath::Vector3 tempsworld{};
 
-		finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
+		finalMatrix.NewDecompose(tempscale, tempQuater, tempsworld);
+		//if (!finalMatrix.Decompose(tempscale, tempQuater, tempsworld))
+		//{
+		//	finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
+		//}
 
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);

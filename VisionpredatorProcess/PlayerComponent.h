@@ -4,12 +4,19 @@
 struct PlayerComponent :
     public Component
 {
-    PlayerComponent();
-    VP_JSONBODY(PlayerComponent, PlayerHandName, PlayerCameraName, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, FirePosition)
-    std::string PlayerHandName{};
-    std::string PlayerCameraName{};
-    uint32_t PlayerHandID{};
-    uint32_t PlayerCameraID{};
+	PlayerComponent();
+	VP_JSONBODY(PlayerComponent, PlayerHandName, PlayerCameraName, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, FirePosition,
+		WalkSoundKey1, WalkSoundKey2, Volume_Walk
+		, RunSoundKey1, RunSoundKey2, Volume_Run
+		, JumpSoundkey, Volume_Jump
+		, SlideSoundkey, Volume_Slide
+		, SitSoundKey, Volume_Sit
+		, HurtSoundKey, Volume_Hurt
+	)
+		std::string PlayerHandName{};
+	std::string PlayerCameraName{};
+	uint32_t PlayerHandID{};
+	uint32_t PlayerCameraID{};
         uint32_t HP{};
     VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
     float Height{};
@@ -29,7 +36,8 @@ struct PlayerComponent :
     /// <summary>
     /// 게임로직을 위한 변수들
     /// </summary>
-    std::string FirePosition;
+	std::string FirePosition;
+
     VPMath::Vector3 SitCameraPos{};
     float SitHeight{};
     float SitHeightDiff{};
@@ -43,6 +51,7 @@ struct PlayerComponent :
     uint32_t SearchedItemID{};
     uint32_t PreSearchedItemID{};
     uint32_t GunEntityID{};
+    uint32_t ThrowingGunEntityID{};
     uint32_t FirePosEntityID{};
 
 
@@ -50,5 +59,25 @@ struct PlayerComponent :
     bool HasGun=false;
     float GunprogressTime{};
     bool ReadyToShoot{};
+
+    float Volume_Walk   { 0.1f };
+    float Volume_Run    { 0.1f };
+    float Volume_Jump   { 0.1f };
+    float Volume_Slide  { 0.1f };
+    float Volume_Sit    { 0.1f };
+    float Volume_Hurt   { 0.1f };
+    std::string WalkSoundKey1 = "Player_Walk1";
+    std::string WalkSoundKey2 = "Player_Walk2";
+    std::string RunSoundKey1  = "Player_Run1";
+    std::string RunSoundKey2  = "Player_Run2";
+    std::string JumpSoundkey  = "Player_Jump";
+    std::string SlideSoundkey = "Player_Slide";
+    std::string SitSoundKey   = "Player_Sit";
+    std::string HurtSoundKey  = "Player_Hurt";
+    bool Played_Walk1{};
+    bool Played_Jump{};
+    bool Played_Slide{};
+    bool Played_Sit{};
+    bool Played_Run1{};
 };
 

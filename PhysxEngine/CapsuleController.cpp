@@ -2,6 +2,8 @@
 #include "CapsuleController.h"
 #include "VPPhysicsStructs.h"
 #include "ControllerHitCallback.h"
+
+
 CapsuleController::CapsuleController():Controller{}
 {
 }
@@ -19,15 +21,16 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
     desc.nonWalkableMode = physx::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
     desc.slopeLimit = info.slopeLimit;
     desc.maxJumpHeight = 10.f;
-
     // Directly use the position from info.position without adjustment
     desc.position = physx::PxExtendedVec3(info.position.x, info.position.y, info.position.z);
+    desc.userData = &m_UserData;
 
     desc.material = material;
+    //std::shared_ptr<MyControllerFilterCallback> controllerFilterCallback = std::make_shared<MyControllerFilterCallback>();
     m_ControllerHitCallback = std::make_shared<ControllerHitCallback>();
     desc.reportCallback = dynamic_cast<physx::PxUserControllerHitReport*>(m_ControllerHitCallback.get());
     m_Controller = controllerManager->createController(desc);
-
+    
     if (!m_Controller)
         return false;
 
@@ -44,18 +47,25 @@ bool CapsuleController::Initialize(CapsuleControllerInfo info, physx::PxControll
 
     // Set solver iteration counts
     body->setSolverIterationCounts(8, 4);
-    body->userData = &m_EntityID;
-    shape->userData = &m_EntityID;
+    body->userData = &m_UserData;
+    shape->userData = &m_UserData;
 
     // Set contact and rest offsets for the shape
     shape->setContactOffset(0.02f);
     shape->setRestOffset(0.01f);
+
+
+
 
     // Set collision filter data
     physx::PxFilterData filterData;
     filterData.word0 = static_cast<int>(info.Info.LayerNumber);
     filterData.word1 = physicinfo.CollisionMatrix[static_cast<int>(info.Info.LayerNumber)];
     shape->setSimulationFilterData(filterData);
+
+
+
+
 
     // Apply shape offset based on pivot and local offset
     //SetShapeOffset(info.Info.Pivot, info.LocalOffset);

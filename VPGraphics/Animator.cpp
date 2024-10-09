@@ -15,6 +15,7 @@ void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 
 void Animator::Update(std::vector<std::shared_ptr<RenderData>>& renderlist)
 {
+	m_socketList.clear();
 
 	for (auto& data : renderlist)
 	{
@@ -53,18 +54,29 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 	//이전 애니메이션과 현재 애니메이션이 같으면
 	if (curindex == preindex)
 	{
+		std::vector<std::pair<float, VPMath::Matrix>>::iterator cur;
+		std::vector<std::pair<float, VPMath::Matrix>>::iterator end;
+
 		//그대로 연속 재생
 		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
 		{
 			//가지고 있는 애니메이션 정보 순회
 			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
 			{
+				end = ani->totals.end() - 1;
+
+				if (curtick >= end->first )
+				{
+					std::shared_ptr<Node> curAni = ani->node.lock();
+					curAni->m_Local = end->second.Transpose();
+					break;
+				}
+
 				//현재 애니메이션 위치 찾고 보간
 				if (curtick < tick->first)
 				{
 					//tick이 curtick의 다음 애니메이션이다
 					//그래서 현재 재생되고 있는 애니메이션은 tick - 1
-					std::vector<std::pair<float, VPMath::Matrix>>::iterator cur;
 					if (tick == ani->totals.begin())
 					{
 						cur = tick;
@@ -97,7 +109,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			}
 		}
 
-		CalcWorld(curModel->m_RootNode);
+		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	}
 	else
 	{
@@ -123,7 +135,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				}
 			}
 		}
-		
+
 		//키프레임값을 못찾았다는 뜻 (틱이 마지막 틱보다 커서) 마지막 애니메이션을 넣어주자
 		if (preAni.empty())
 		{
@@ -131,7 +143,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			{
 				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (ani->totals.end() - 1)->second));
 
-				
+
 			}
 		}
 
@@ -146,11 +158,11 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			curAni->m_Local = VPMath::Matrix::Lerp(start->second, preAni[ani->nodename], t).Transpose();
 		}
 
-		CalcWorld(curModel->m_RootNode);
+		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	}
 }
 
-void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
+void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
 {
 	if (!RootNode->HasParents)
 	{
@@ -163,14 +175,18 @@ void Animator::CalcWorld(std::shared_ptr<Node> RootNode)
 		RootNode->m_WorldInverse = RootNode->m_World.Invert();
 	}
 
-	if (RootNode->name == L"DEF-palm.02.R")//이름 바꾸기
+	//플레이어만 갱신해야댐
 	{
-		socket = RootNode->m_World;
+		if (RootNode->name == L"DEF-palm.02.R")//
+		{
+			socket = RootNode->m_World;
+			m_socketList.push_back(std::pair(entityID, socket));
+		}
 	}
 
 	for (auto& node : RootNode->m_Childs)
 	{
-		CalcWorld(node);
+		CalcWorld(entityID, node);
 	}
 }
 
@@ -203,7 +219,15 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 	//Attachment(curData);
 }
 
-const VPMath::Matrix Animator::Attachment(std::wstring region)
+const VPMath::Matrix Animator::Attachment(uint32_t entityID, std::wstring region)
 {
-	return socket.Transpose();
+	for (auto& socket : m_socketList)
+	{
+		if (socket.first == entityID)
+		{
+			return socket.second.Transpose();
+		}
+	}
+
+	return VPMath::Matrix::Identity;
 }

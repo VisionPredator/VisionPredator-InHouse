@@ -75,6 +75,7 @@ void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 	if (enemycomp.HP <= 0)
 	{
 		Die(enemycomp);
+		m_PhysicsEngine->RemoveController(enemycomp.GetEntityID());
 	}
 	else if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
@@ -229,7 +230,7 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 	enemycomp.CurrentFSM = VisPred::Game::EnemyState::DIE;
 	uint32_t id = enemycomp.GetEntityID();
 	int aniIndex = static_cast<int>(enemycomp.CurrentFSM); //해당 인덱스 enum으로 뽑아서 일관적으로 써야할듯
-	VisPred::Engine::AniBlendData temp{ enemycomp.GetEntityID() ,aniIndex ,4,false};
+	VisPred::Engine::AniBlendData temp{ enemycomp.GetEntityID() ,aniIndex ,2,false};
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 
@@ -238,5 +239,13 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 		auto ani = enemycomp.GetComponent<AnimationComponent>();
 		ani->isLoop = false;
 	}
+}
+
+void EnemySystem::PhysicsUpdate(float deltaTime)
+{
+}
+
+void EnemySystem::PhysicsLateUpdate(float deltaTime)
+{
 }
 

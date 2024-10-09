@@ -186,7 +186,7 @@ void Inspector::TransformComponentImGui(Component* component)
 			tempVector.x = temp_Local_Scale[0];
 			tempVector.y = temp_Local_Scale[1];
 			tempVector.z = temp_Local_Scale[2];
-			comp->SetWorldScale(tempVector);
+			comp->SetLocalScale(tempVector);
 
 		}
 		ImGui::PopID();
@@ -234,7 +234,7 @@ void Inspector::TransformComponentImGui(Component* component)
 			euler.y = DirectX::XMConvertToRadians(temp_World_Quaternion[1]);
 			euler.z = DirectX::XMConvertToRadians(temp_World_Quaternion[2]);
 			tempVector = VPMath::Quaternion::CreateFromYawPitchRoll(euler);
-			comp->SetLocalQuaternion(tempVector);
+			comp->SetWorldQuaternion(tempVector);
 		}
 		ImGui::PopID();
 	}
@@ -381,7 +381,7 @@ void Inspector::TypeImGui_Vector2(entt::meta_data memberMetaData, Component* com
 	auto memberName = Reflection::GetName(memberMetaData);
 	float tempFloat[2]{ tempVector.x,tempVector.y };
 	ImGui::PushID(memberName.c_str());
-	if (ImGui::DragFloat2(memberName.c_str(), tempFloat, 1.f, -FLT_MAX, FLT_MAX))
+	if (ImGui::DragFloat2(memberName.c_str(), tempFloat, 0.001f, -FLT_MAX, FLT_MAX))
 	{
 		tempVector.x = tempFloat[0];
 		tempVector.y = tempFloat[1];

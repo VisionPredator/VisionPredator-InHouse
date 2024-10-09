@@ -12,10 +12,12 @@ void PlayerSystem::Update(float deltaTime)
 	{
 		GunCooltime(playercomp, deltaTime);
 		Calculate_FSM(playercomp);
+		FSM_Sound_FSM(playercomp, deltaTime);
 		FSM_Action_FSM(playercomp, deltaTime);
 		ToVPMode(playercomp);
 		PlayerInterect(playercomp);
-		PlayerAnime(playercomp);
+		PlayerAnimation(playercomp);
+		hptest(playercomp, deltaTime);
 	}
 }
 void PlayerSystem::FixedUpdate(float deltaTime)
@@ -28,10 +30,19 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 
 	}
 }
-
 void PlayerSystem::PhysicsUpdate(float deltaTime)
 {
 }
+
+void PlayerSystem::SoundUpdate(float deltaTime)
+{
+}
+
+void PlayerSystem::PhysicsLateUpdate(float deltaTime)
+{
+}
+
+
 
 void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 {
@@ -66,16 +77,8 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 }
 void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
 {
-	///이전에 감지했던 물체가 총이라면 레이아웃 끄기.
-	//auto presearchedentity = GetSceneManager()->GetEntity(playercomp.PreSearchedItemID);
-	//auto posEntity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
-	//if (!posEntity || !posEntity->HasComponent<CameraComponent>())
-	//	return;
-	//auto cameratransform = posEntity->GetComponent<TransformComponent>();
-	//auto front = cameratransform->FrontVector;
-	//playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(playercomp.GetEntityID(), cameratransform->World_Location, front, 100);
 	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-	if (gunentity && gunentity->HasComponent<GunComponent>())
+	if (gunentity && gunentity->HasComponent<GunComponent>()&& gunentity->GetEntityID()!=playercomp.GunEntityID)
 		gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
 }
 
@@ -89,8 +92,32 @@ void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 		temp = !temp;
 		m_Graphics->SetVP(temp);
 	}
+}
 
+void PlayerSystem::hptest(PlayerComponent& playercomp, float delta)
+{
+	static float n{};
+	n += delta;
+	static float m{};
+	m += delta;
+	if (INPUTKEY(KEYBOARDKEY::N))
+	{
+		if (n > 0.05f)
+		{
+			playercomp.HP -= 1;
+			n = 0;
 
+		}
+	}
+	if (INPUTKEY(KEYBOARDKEY::M))
+	{
+		if (m > 0.05f)
+		{
+			playercomp.HP += 1;
+			m = 0;
+
+		}
+	}
 }
 
 #pragma region Physics Setting
@@ -104,7 +131,7 @@ void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 	controllercomp.StaticFriction = playercomp.StaticFriction;
 	controllercomp.DynamicFriction = playercomp.DynamicFriction;
 	controllercomp.JumpXZAcceleration = controllercomp.Acceleration * playercomp.AirControlPercent / 100;
-	controllercomp.GravityWeight = playercomp.GravityPower * 9.80665;
+	controllercomp.GravityWeight = playercomp.GravityPower * 9.80665f;
 }
 void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 {
@@ -123,6 +150,8 @@ void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
 	controllercomp.Contollerinfo.LocalOffset.y = 0;
 	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controllercomp.CapsuleControllerinfo.radius, controllercomp.CapsuleControllerinfo.height);
 }
+#pragma endregion 
+#pragma region Camera Setting
 void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 {
 	auto cameraentity = GetSceneManager()->GetEntity(playercomp.PlayerCameraID);
@@ -172,42 +201,33 @@ void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 	}
 
 }
-
 void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime)
 {
 	switch (playercomp.CurrentFSM)
 	{
 	case VisPred::Game::EFSM::CROUCH:
 	case VisPred::Game::EFSM::SLIDE:
-	{
 		DownCamera(playercomp, deltatime);
-	}
 	break;
 	default:
-	{
 		UpCamera(playercomp, deltatime);
-	}
 	break;
 	}
-
-
 }
+#pragma endregion 
 
 void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
 {
-
 	if (playercomp.GetEntityID() != controllercomp.GetEntityID())
 		return;
 	if (controllercomp.InputDir.Length() < 0.01f)
 		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
 	else
 		playercomp.SlideDir = controllercomp.InputDir;
-
 }
-#pragma endregion 
-
+#pragma region FSM_System
 #pragma region FSM Calculate
-
+#pragma region FSM Calculate Main
 void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 {
 	switch (playercomp.CurrentFSM)
@@ -243,7 +263,8 @@ void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 		break;
 	}
 }
-
+#pragma endregion
+#pragma region FSM Calculate Logic
 void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 {
 	///뛰기
@@ -279,19 +300,14 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 
 }
-
 void PlayerSystem::Calculate_Die(PlayerComponent& playercomp)
 {
 
 }
-
-
-
 void PlayerSystem::Calculate_Attack(PlayerComponent& playercomp)
 {
 
 }
-
 void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
 {
 	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
@@ -317,6 +333,8 @@ void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 	{
 		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
 	{
 		CrouchModeController(playercomp);
@@ -327,10 +345,8 @@ void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 		}
 		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
 	}
-	else if (playercomp.GetComponent<ControllerComponent>()->IsFall)
-		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
-}
 
+}
 void PlayerSystem::Calculate_Crouch(PlayerComponent& playercomp)
 {
 	if (INPUTKEYUP(KEYBOARDKEY::LCONTROL))
@@ -353,7 +369,13 @@ void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 	{
 		playercomp.SlideProgress = 0;
 		DefalutModeController(playercomp);
-		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+
+		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+		else if (INPUTKEYS(KEYBOARDKEY::LSHIFT))
+			playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+		else
+			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 
 	}
 
@@ -362,15 +384,24 @@ void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 void PlayerSystem::Calculate_Jump(PlayerComponent& playercomp)
 {
 	if (!playercomp.GetComponent<ControllerComponent>()->IsFall)
-		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+	{
+		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+		else if (INPUTKEY(KEYBOARDKEY::LSHIFT))
+			playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+		else
+			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+	}
+
 
 }
-
 void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 {
 }
-
 #pragma endregion
+#pragma endregion
+
+#pragma region FSMActing
 
 #pragma region FSM Action
 void PlayerSystem::FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime)
@@ -413,9 +444,10 @@ void PlayerSystem::FSM_Action_Idle(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Move_Rotation(playercomp, transfomcomp);
+	Controller.InputDir={};
+	Active_Rotation(playercomp, transfomcomp);
 	Animation(playercomp.PlayerHandID, 0);
-	Attack(playercomp);
+	Active_Attack(playercomp);
 }
 
 void PlayerSystem::FSM_Action_Slide(PlayerComponent& playercomp, float deltatime)
@@ -437,7 +469,7 @@ void PlayerSystem::FSM_Action_Slide(PlayerComponent& playercomp, float deltatime
 	controller.Acceleration = controller.MaxSpeed * 3;
 	controller.InputDir = playercomp.SlideDir;
 	//Move_Walk(transcomp, playercomp, controllercomp);
-	Move_Rotation(playercomp, transcomp);
+	Active_Rotation(playercomp, transcomp);
 
 }
 
@@ -449,10 +481,10 @@ void PlayerSystem::FSM_Action_Walk(PlayerComponent& playercomp)
 	Controller.Acceleration = Controller.MaxSpeed * 3;
 
 
-	Move_Walk(transfomcomp, playercomp, Controller);
-	Move_Rotation(playercomp, transfomcomp);
-	Move_Jump(transfomcomp, Controller);
-	Attack(playercomp);
+	Active_Rotation(playercomp, transfomcomp);
+	Active_Walk(transfomcomp, playercomp, Controller);
+	//Active_Jump(transfomcomp, Controller);
+	Active_Attack(playercomp);
 
 }
 
@@ -463,10 +495,10 @@ void PlayerSystem::FSM_Action_Run(PlayerComponent& playercomp)
 	Controller.MaxSpeed = playercomp.RunSpeed;
 	Controller.Acceleration = Controller.MaxSpeed * 3;
 
-	Move_Walk(transfomcomp, playercomp, Controller);
-	Move_Rotation(playercomp, transfomcomp);
-	Move_Jump(transfomcomp, Controller);
-	Attack(playercomp);
+	Active_Rotation(playercomp, transfomcomp);
+	Active_Walk(transfomcomp, playercomp, Controller);
+	//Active_Jump(transfomcomp, Controller);
+	Active_Attack(playercomp);
 
 }
 void PlayerSystem::FSM_Action_Crouch(PlayerComponent& playercomp)
@@ -476,20 +508,20 @@ void PlayerSystem::FSM_Action_Crouch(PlayerComponent& playercomp)
 	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
 	Controller.Acceleration = Controller.MaxSpeed * 3;
 
-	Move_Walk(transfomcomp, playercomp, Controller);
-	Move_Rotation(playercomp, transfomcomp);
-	Attack(playercomp);
+	Active_Rotation(playercomp, transfomcomp);
+	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Attack(playercomp);
 }
 
 void PlayerSystem::FSM_Action_Jump(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Move_Walk(transfomcomp, playercomp, Controller);
-	Move_Rotation(playercomp, transfomcomp);
-	Move_Jump(transfomcomp, Controller);
-	Attack(playercomp);
+	Active_Rotation(playercomp, transfomcomp);
+	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Jump(transfomcomp, Controller);
 
+	Active_Attack(playercomp);
 }
 
 void PlayerSystem::FSM_Action_Attack(PlayerComponent& playercomp)
@@ -497,8 +529,8 @@ void PlayerSystem::FSM_Action_Attack(PlayerComponent& playercomp)
 
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Move_Walk(transfomcomp, playercomp, Controller);
-	Move_Rotation(playercomp, transfomcomp);
+	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Rotation(playercomp, transfomcomp);
 
 }
 
@@ -511,7 +543,204 @@ void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 {
 
 }
+
 #pragma endregion
+#pragma region FSM Sound
+void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
+{
+	switch (playercomp.CurrentFSM)
+	{
+	case VisPred::Game::EFSM::IDLE:
+		FSM_Sound_Idle(playercomp);
+		break;
+	case VisPred::Game::EFSM::WALK:
+		FSM_Sound_Walk(playercomp);
+		break;
+	case VisPred::Game::EFSM::RUN:
+		FSM_Sound_Run(playercomp);
+		break;
+	case VisPred::Game::EFSM::CROUCH:
+		FSM_Sound_Crouch(playercomp);
+		break;
+	case VisPred::Game::EFSM::SLIDE:
+		FSM_Sound_Slide(playercomp);
+		break;
+	case VisPred::Game::EFSM::JUMP:
+		FSM_Sound_Jump(playercomp);
+		break;
+	case VisPred::Game::EFSM::ATTACK:
+		FSM_Sound_Attack(playercomp);
+		break;
+	case VisPred::Game::EFSM::DIE:
+		FSM_Sound_Die(playercomp);
+		break;
+	case VisPred::Game::EFSM::DESTROY:
+		FSM_Sound_Destroy(playercomp);
+		break;
+	default:
+		break;
+	}
+}
+void PlayerSystem::FSM_Sound_Idle(PlayerComponent& playercomp)
+{
+	playercomp.Played_Walk1 = false;
+	playercomp.Played_Jump = false;
+	playercomp.Played_Slide = false;
+	playercomp.Played_Sit = false;
+	playercomp.Played_Run1 = false;
+}
+void PlayerSystem::FSM_Sound_Walk(PlayerComponent& playercomp)
+{
+	playercomp.Played_Jump = false;
+	playercomp.Played_Slide = false;
+	playercomp.Played_Sit = false;
+	playercomp.Played_Run1 = false;
+
+	if (!m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.WalkSoundKey1) && !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.WalkSoundKey2))
+	{
+		m_SoundEngine->Stop(playercomp.GetEntityID());
+		if (!playercomp.Played_Walk1)
+			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.WalkSoundKey1, playercomp.Volume_Walk, playercomp.GetComponent<TransformComponent>()->World_Location);
+		else
+			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.WalkSoundKey2, playercomp.Volume_Walk, playercomp.GetComponent<TransformComponent>()->World_Location);
+		playercomp.Played_Walk1 = !playercomp.Played_Walk1;
+	}
+}
+void PlayerSystem::FSM_Sound_Run(PlayerComponent& playercomp)
+{
+	playercomp.Played_Walk1 = false;
+	playercomp.Played_Jump = false;
+	playercomp.Played_Slide = false;
+	playercomp.Played_Sit = false;
+
+	if (!m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.RunSoundKey1)
+		&& !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.RunSoundKey2))
+	{
+		m_SoundEngine->Stop(playercomp.GetEntityID());
+		if (!playercomp.Played_Run1)
+			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.RunSoundKey1, playercomp.Volume_Run, playercomp.GetComponent<TransformComponent>()->World_Location);
+		else
+			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.RunSoundKey2, playercomp.Volume_Run, playercomp.GetComponent<TransformComponent>()->World_Location);
+		playercomp.Played_Run1 = !playercomp.Played_Run1;
+	}
+}
+void PlayerSystem::FSM_Sound_Crouch(PlayerComponent& playercomp)
+{
+	playercomp.Played_Walk1 = false;
+	playercomp.Played_Jump = false;
+	playercomp.Played_Slide = false;
+	playercomp.Played_Run1 = false;
+	if (playercomp.Played_Sit)
+		return;
+	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
+		m_SoundEngine->Stop(playercomp.GetEntityID());
+
+	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.SitSoundKey, playercomp.Volume_Sit, playercomp.GetComponent<TransformComponent>()->World_Location);
+	playercomp.Played_Sit = true;
+}
+void PlayerSystem::FSM_Sound_Slide(PlayerComponent& playercomp)
+{
+	playercomp.Played_Walk1 = false;
+	playercomp.Played_Jump = false;
+	playercomp.Played_Sit = false;
+	playercomp.Played_Run1 = false;
+	if (playercomp.Played_Slide)
+		return;
+	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
+		m_SoundEngine->Stop(playercomp.GetEntityID());
+
+	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.SlideSoundkey, playercomp.Volume_Slide, playercomp.GetComponent<TransformComponent>()->World_Location);
+	playercomp.Played_Slide = true;
+
+}
+void PlayerSystem::FSM_Sound_Jump(PlayerComponent& playercomp)
+{
+	playercomp.Played_Walk1 = false;
+	playercomp.Played_Slide = false;
+	playercomp.Played_Sit = false;
+	playercomp.Played_Run1 = false;
+	if (playercomp.Played_Jump)
+		return;
+	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
+		m_SoundEngine->Stop(playercomp.GetEntityID());
+
+	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.JumpSoundkey, playercomp.Volume_Jump, playercomp.GetComponent<TransformComponent>()->World_Location);
+	playercomp.Played_Jump = true;
+}
+void PlayerSystem::FSM_Sound_Attack(PlayerComponent& playercomp)
+{
+}
+void PlayerSystem::FSM_Sound_Die(PlayerComponent& playercomp)
+{
+}
+void PlayerSystem::FSM_Sound_Destroy(PlayerComponent& playercomp)
+{
+}
+#pragma endregion
+#pragma endregion
+#pragma endregion
+
+#pragma region Active_logic
+void PlayerSystem::Active_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp)
+{
+	// 컴포넌트 접근을 캐싱
+	// 입력 매니저에서 마우스 델타 값을 미리 가져옴
+	int deltaCurposX = InputManager::GetInstance().GetMouseDeltaX();
+	int deltaCurposY = InputManager::GetInstance().GetMouseDeltaY();
+	float sensitivity = playercomp.Sencitive;
+	// 플레이어의 회전 업데이트
+	float yaw = deltaCurposX * sensitivity;
+	VPMath::Vector3 playerRotation = transformcomp.World_Rotation;
+	playerRotation.y += yaw;
+	transformcomp.SetWorldRotation(playerRotation);
+	// 자식 컴포넌트가 있는 경우에만 처리
+	if (!playercomp.HasComponent<Children>())
+		return;
+	auto children = playercomp.GetComponent<Children>();
+	for (uint32_t childID : children->ChildrenID)
+	{
+		if (!GetSceneManager()->HasComponent<CameraComponent>(childID))
+			continue;
+		auto camera = GetSceneManager()->GetComponent<CameraComponent>(childID);
+		TransformComponent* cameratransform = camera->GetComponent<TransformComponent>();
+		// 카메라 회전 업데이트
+		float pitch = deltaCurposY * sensitivity;
+		VPMath::Vector3 cameraRotation = cameratransform->Local_Rotation;
+		cameraRotation.x += pitch;
+		cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
+		cameratransform->SetLocalRotation(cameraRotation);
+	}
+}
+void PlayerSystem::Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
+{
+	controllercomp.InputDir.y = {};
+	if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || INPUTKEY(KEYBOARDKEY::SPACE))
+		controllercomp.InputDir += transformcomp.UpVector;
+}
+void PlayerSystem::Active_Slide(PlayerComponent& playercomp)
+{
+}
+void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
+{
+	if (INPUTKEY(MOUSEKEY::LBUTTON))
+	{
+		if (playercomp.HasGun && playercomp.ReadyToShoot)
+		{
+			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+			if (!guncomp.IsEmpty)
+				Gun_Shoot(playercomp, guncomp);
+			else
+				Gun_Throw(playercomp, guncomp);
+		}
+
+
+	}
+}
+#pragma endregion
+
+
+
+
 #pragma region Animation Change
 void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, float Speed, bool loop, bool Immidiate)
 {
@@ -523,7 +752,7 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni p
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
-#pragma endregion
+
 void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 {
 	static int a = 0;
@@ -535,11 +764,13 @@ void PlayerSystem::Animation(uint32_t entityid, float deltaTime)
 
 	}
 }
+#pragma endregion
 
-void PlayerSystem::PlayerAnime(PlayerComponent& playercomp)
+void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
 	if (!GetSceneManager()->HasComponent<AnimationComponent>(playercomp.PlayerHandID))
 		return;
+	ThrowFinished(playercomp);
 	ReturnToIdle(*GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID));
 }
 
@@ -558,9 +789,9 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 4, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 4, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 4, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
@@ -584,6 +815,39 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	default:
 		break;
 	}
+
+}
+
+void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
+{
+	AnimationComponent& anicomp = *GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+
+	using namespace VisPred::Game;
+	if (anicomp.IsBlending || !anicomp.IsFinished)
+		return;
+	switch (anicomp.curAni)
+	{
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:
+	{
+		if (GetSceneManager()->GetEntity(playercomp.ThrowingGunEntityID))
+		{
+			auto& socketcomp = *GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
+			VPMath::Vector3 temp = GetSceneManager()->GetComponent <TransformComponent>(playercomp.FirePosEntityID)->FrontVector;
+			temp.RotateToUp2(6);
+			socketcomp.IsConnected = false;
+			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
+			socketcomp.ConnectedEntityID = 0;
+			playercomp.ThrowingGunEntityID = 0;
+		}
+		
+	}
+	break;
+	default:
+		break;
+	}
+
 
 }
 
@@ -654,7 +918,24 @@ void PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 }
 void PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	switch (playercomp.ShootType)
+	{
+	case VisPred::Game::GunType::PISTOL:
+		Throw_Pistol(playercomp, guncomp);
+		break;
+	case VisPred::Game::GunType::SHOTGUN:
+		Throw_ShotGun(playercomp, guncomp);
+		break;
+	case VisPred::Game::GunType::RIFLE:
+		Throw_Rifle(playercomp, guncomp);
+		break;
+	default:
+		break;
+	}
 }
+
+
+
 void PlayerSystem::PlayerShoot(PlayerComponent& playercomp)
 {
 	const TransformComponent& transform = *playercomp.GetComponent<TransformComponent>();
@@ -687,7 +968,7 @@ void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_Pistol(anicomp->GetEntityID(), 4, false);
+	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 4, false);
 
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
@@ -706,7 +987,8 @@ void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_ShotGun(anicomp->GetEntityID(), 4, false);
+	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 4, false);
+
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
 		return;
@@ -724,7 +1006,7 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Attack_Rifle(anicomp->GetEntityID(), 10, false);
+	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
 		return;
@@ -734,6 +1016,60 @@ void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 
+}
+
+void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
+		return;
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	ChangeAni_Index(playercomp.PlayerHandID, VisPred::Game::PlayerAni::ToThrow_Pistol, 4, false);
+
+	auto socketcomp = guncomp.GetComponent<SocketComponent>();
+	//socketcomp->IsConnected = false;
+	//socketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
+}
+
+void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
+		return;
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	ChangeAni_Index(playercomp.PlayerHandID, VisPred::Game::PlayerAni::ToThrow_ShotGun, 4, false);
+
+	auto socketcomp = guncomp.GetComponent<SocketComponent>();
+	//socketcomp->IsConnected = false;
+	//socketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
+}
+
+void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.PlayerHandID);
+	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
+		return;
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
+	ChangeAni_Index(playercomp.PlayerHandID, VisPred::Game::PlayerAni::ToThrow_Rifle, 4, false);
+
+	auto socketcomp = guncomp.GetComponent<SocketComponent>();
+	//socketcomp->IsConnected = false;
+	//socketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
 }
 
 void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
@@ -766,7 +1102,7 @@ void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
 
 #pragma region Move Logic
 
-void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp)
+void PlayerSystem::Active_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp)
 {
 	controllercomp.InputDir.x = {};
 	controllercomp.InputDir.z = {};
@@ -780,66 +1116,8 @@ void PlayerSystem::Move_Walk(const TransformComponent& transformcomp, PlayerComp
 		controllercomp.InputDir += transformcomp.RightVector;
 
 }
-
-void PlayerSystem::Move_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp)
-{
-	// 컴포넌트 접근을 캐싱
-	// 입력 매니저에서 마우스 델타 값을 미리 가져옴
-	int deltaCurposX = InputManager::GetInstance().GetMouseDeltaX();
-	int deltaCurposY = InputManager::GetInstance().GetMouseDeltaY();
-	float sensitivity = playercomp.Sencitive;
-	// 플레이어의 회전 업데이트
-	float yaw = deltaCurposX * sensitivity;
-	VPMath::Vector3 playerRotation = transformcomp.World_Rotation;
-	playerRotation.y += yaw;
-	transformcomp.SetWorldRotation(playerRotation);
-	// 자식 컴포넌트가 있는 경우에만 처리
-	if (!playercomp.HasComponent<Children>())
-		return;
-	auto children = playercomp.GetComponent<Children>();
-	for (uint32_t childID : children->ChildrenID)
-	{
-		if (!GetSceneManager()->HasComponent<CameraComponent>(childID))
-			continue;
-		auto camera = GetSceneManager()->GetComponent<CameraComponent>(childID);
-		TransformComponent* cameratransform = camera->GetComponent<TransformComponent>();
-		// 카메라 회전 업데이트
-		float pitch = deltaCurposY * sensitivity;
-		VPMath::Vector3 cameraRotation = cameratransform->Local_Rotation;
-		cameraRotation.x += pitch;
-		cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
-		cameratransform->SetLocalRotation(cameraRotation);
-	}
-}
-
-void PlayerSystem::Move_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
-{
-	controllercomp.InputDir.y = {};
-	if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || INPUTKEY(KEYBOARDKEY::SPACE))
-		controllercomp.InputDir += transformcomp.UpVector;
-}
-
-void PlayerSystem::Move_Slide(PlayerComponent& playercomp)
-{
-}
-void PlayerSystem::Attack(PlayerComponent& playercomp)
-{
-	if (INPUTKEY(MOUSEKEY::LBUTTON))
-	{
-		if (playercomp.HasGun && playercomp.ReadyToShoot)
-		{
-			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-			if (!guncomp.IsEmpty)
-				Gun_Shoot(playercomp, guncomp);
-			else
-			{
-				Gun_Throw(playercomp, guncomp);
-			}
-		}
-
-
-	}
-}
+#pragma endregion
+#pragma region IStartable
 void PlayerSystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, playercomp)
@@ -902,7 +1180,8 @@ void PlayerSystem::Finish(uint32_t gameObjectId)
 void PlayerSystem::Finalize()
 {
 }
-
+#pragma endregion
+#pragma region IRenderable
 void PlayerSystem::BeginRenderUpdate(float deltaTime)
 {
 }
@@ -918,5 +1197,4 @@ void PlayerSystem::LateRenderUpdate(float deltaTime)
 void PlayerSystem::EditorRenderUpdate(float deltaTime)
 {
 }
-
 #pragma endregion

@@ -3,7 +3,10 @@
 struct EnemyComponent;
 struct PlayerComponent;
 class EnemySystem :
-	public System,public IFixedUpdatable,public IUpdatable
+	public System
+	, public IFixedUpdatable
+	, public IUpdatable
+	, public IPhysicable
 {
 public:
     EnemySystem(std::shared_ptr<SceneManager> SceneMagener);
@@ -39,6 +42,11 @@ public:
 	void Shoot_ShotGun(EnemyComponent& enemycomp);
 	void Shoot_Rifle(EnemyComponent& enemycomp);
 #pragma endregion
+
+
+	// IPhysicable을(를) 통해 상속됨
+	void PhysicsUpdate(float deltaTime) override;
+	void PhysicsLateUpdate(float deltaTime) override;
 
 
 private:

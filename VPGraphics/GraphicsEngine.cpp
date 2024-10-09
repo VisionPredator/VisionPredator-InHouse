@@ -363,7 +363,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const s
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& Bone = m_Animator->Attachment(socketName);
+		const VPMath::Matrix& Bone = m_Animator->Attachment(entityID,socketName);
 		std::shared_ptr<RenderData> data = (*find);
 		VPMath::Matrix attach = Bone * data->world;
 

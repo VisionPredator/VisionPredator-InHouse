@@ -57,6 +57,16 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMa
 	while (!m_ConeInfos.empty()) { Draw(m_ConeInfos.front()); m_ConeInfos.pop(); }
 
     m_Batch->End();
+#else
+	while (!m_SphereInfos.empty())	{ m_SphereInfos.pop(); }
+	while (!m_BoxInfos.empty())		{ m_BoxInfos.pop(); }
+	while (!m_OBBInfos.empty())		{ m_OBBInfos.pop(); }
+	while (!m_FrustumInfos.empty()) { m_FrustumInfos.pop(); }
+	while (!m_GridInfos.empty())	{ m_GridInfos.pop(); }
+	while (!m_RayInfos.empty())		{ m_RayInfos.pop(); }
+	while (!m_TriangleInfos.empty()){ m_TriangleInfos.pop(); }
+	while (!m_QuadInfos.empty())	{ m_QuadInfos.pop(); }
+	while (!m_RingInfos.empty())	{ m_RingInfos.pop(); }
 #endif
 
     device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);

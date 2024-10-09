@@ -7,6 +7,30 @@ NavMeshSystem::NavMeshSystem(std::shared_ptr<SceneManager> sceneManager) :System
 	//m_NavMeshData.reset();
 }
 
+#pragma region IStartalbe
+void NavMeshSystem::Initialize()
+{
+	if (GetSceneManager()->GetSceneBuildSettrings().UseNavMesh)
+	{
+		MakeNavigationMesh(GetSceneManager()->GetSceneBuildSettrings());
+	}
+}
+void NavMeshSystem::Start(uint32_t gameObjectId)
+{
+}
+void NavMeshSystem::Finish(uint32_t gameObjectId)
+{
+}
+void NavMeshSystem::Finalize()
+{
+	//if (m_NavMeshData != nullptr)
+	//	delete m_NavMeshData;
+	//m_NavMeshData = nullptr;
+	GetSceneManager()->ResetNavMeshData();
+	//m_NavMeshData.reset();
+}
+#pragma endregion
+
 void NavMeshSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 {
 	//if (m_NavMeshData != nullptr)
@@ -21,7 +45,6 @@ void NavMeshSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 	AbleTest(worldVertices, worldFaces, GetSceneManager()->GetSceneBuildSettrings());
 	GetSceneManager()->GetSceneNavMeshData()->m_worldVertices = worldVertices;
 }
-
 void NavMeshSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
@@ -196,11 +219,49 @@ void NavMeshSystem::makeNavMesh(const float* worldVertices, size_t verticesNum, 
 
 void NavMeshSystem::FixedUpdate(float deltaTime)
 {
+
+
+}
+void NavMeshSystem::PhysicsUpdate(float deltaTime)
+{
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
 	if (!navMeshdata)
 		return;
 	if (navMeshdata->crowd == nullptr)
 		return;
+	if (navMeshdata->crowd->getAgentCount() == 0)
+		return;
+	COMPLOOP(NavAgentComponent, agentcomp)
+	{
+		if (!agentcomp.IsChase)
+		{
+			agentcomp.IsChanged = true;
+			continue;
+		}
+
+		auto Transform = agentcomp.GetComponent<TransformComponent>();
+		if (!navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID))
+			continue;
+		auto editAgent = navMeshdata->crowd->getEditableAgent(agentcomp.NavAgent->AgentID);
+		auto [x, y, z] = navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID)->npos;
+		editAgent->npos[0] = Transform->World_Location.x;
+		editAgent->npos[1] = Transform->World_Location.y;
+		editAgent->npos[2] = Transform->World_Location.z;
+
+		if (agentcomp.IsChanged)
+		{
+			const dtQueryFilter* filter = navMeshdata->crowd->getFilter(0);
+			const float* halfExtents = navMeshdata->crowd->getQueryExtents();
+			dtPolyRef targetPoly;
+			navMeshdata->navQuery->findNearestPoly(editAgent->npos, halfExtents, filter, &targetPoly, nullptr);
+
+			// Update the agent's position and NavMesh poly reference
+			editAgent->corridor.reset(targetPoly, editAgent->npos);
+			agentcomp.IsChanged = false;
+		}
+
+	}
+
 	if (navMeshdata->crowd->getAgentCount() != 0)
 	{
 		navMeshdata->crowd->update(deltaTime, nullptr);
@@ -208,46 +269,39 @@ void NavMeshSystem::FixedUpdate(float deltaTime)
 
 	COMPLOOP(NavAgentComponent, agentcomp)
 	{
+		if (!agentcomp.IsChase)
+			continue;
 		auto Transform = agentcomp.GetComponent<TransformComponent>();
 		if (!navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID))
 			continue;
-		auto [x,y,z]=navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID)->npos;
-		Transform->SetWorldLocationX( x);
-		Transform->SetWorldLocationY( y);
-		Transform->SetWorldLocationZ( z);
+		auto [x, y, z] = navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID)->npos;
+
+		if (Transform->HasComponent<ControllerComponent>())
+		{
+			auto prelocation = Transform->World_Location;
+			VPMath::Vector3 newlocation = { x,y,z };
+			VPMath::Vector3 direction = newlocation - prelocation;
+			direction.y = 0;
+			direction.Normalize();
+			Transform->GetComponent<ControllerComponent>()->InputDir = direction;
+		}
+		else
+		{
+			Transform->SetWorldLocationX(x);
+			Transform->SetWorldLocationY(y);
+			Transform->SetWorldLocationZ(z);
+		}
+
 	}
+	EventManager::GetInstance().ImmediateEvent("OnUpdate");
+
 
 }
-
-void NavMeshSystem::PhysicsUpdate(float deltaTime)
+void NavMeshSystem::PhysicsLateUpdate(float deltaTime)
 {
 }
 
-void NavMeshSystem::Initialize()
-{
-	if (GetSceneManager()->GetSceneBuildSettrings().UseNavMesh)
-	{
-	MakeNavigationMesh(GetSceneManager()->GetSceneBuildSettrings());
-	}
-}
-
-void NavMeshSystem::Start(uint32_t gameObjectId)
-{
-}
-
-void NavMeshSystem::Finish(uint32_t gameObjectId)
-{
-}
-
-void NavMeshSystem::Finalize()
-{
-	//if (m_NavMeshData != nullptr)
-	//	delete m_NavMeshData;
-	//m_NavMeshData = nullptr;
-	GetSceneManager()->ResetNavMeshData();
-	//m_NavMeshData.reset();
-}
-
+#pragma region IRenderable
 void NavMeshSystem::BeginRenderUpdate(float deltaTime)
 {
 	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
@@ -289,5 +343,7 @@ void NavMeshSystem::RenderUpdate(float deltaTime)
 void NavMeshSystem::LateRenderUpdate(float deltaTime)
 {
 }
+#pragma endregion
+
 
 

@@ -7,7 +7,7 @@ public:
 	virtual ~RigidBody(); // Make the destructor virtual
 
 	inline const uint32_t GetID() const;
-	uint32_t m_EntityID{};
+	VPPhysics::USERDATA m_UserData{};
 	VPPhysics::EColliderType m_ColliderType{};
 	VPMath::Vector3 mScale{1,1,1};
 	VPPhysics::EPhysicsLayer m_LayerNum{};
@@ -33,5 +33,5 @@ public:
 
 const unsigned int RigidBody::GetID() const
 {
-	return m_EntityID;
+	return m_UserData.entityID;
 }

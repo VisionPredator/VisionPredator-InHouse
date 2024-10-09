@@ -9,6 +9,7 @@ struct NavAgentComponent :
     std::string TargetName{};
     VPMath::Vector3 TargetLocation{};
     bool IsChase{};
+    bool IsChanged{};
     float Distance{};
     std::shared_ptr<NavAgentData> NavAgent{};
 };

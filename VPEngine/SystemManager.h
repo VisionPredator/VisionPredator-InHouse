@@ -25,6 +25,9 @@
 
 		void OnCollisionEnter(std::any pair);
 		void OnCollisionExit(std::any pair);
+		void OnTriggerEnter(std::any pair);
+		void OnTriggerExit(std::any pair);
+
 		void OnAddedComponent(std::any data);
 		void OnReleasedComponent(std::any data);
 		void FixedUpdate(float deltatime);
@@ -97,6 +100,10 @@
 			if constexpr (std::is_base_of_v<IContactable, T>)
 			{
 				m_Contactable.push_back(system);
+			}			
+			if constexpr (std::is_base_of_v<ITriggerable, T>)
+			{
+				m_Triggerable.push_back(system);
 			}
 			if constexpr (std::is_base_of_v<ISoundable, T>)
 			{
@@ -160,6 +167,13 @@
 				if (it != m_Contactable.end())
 					m_Contactable.erase(it);
 			}
+			if constexpr (std::is_base_of_v<ITriggerable, T>)
+			{
+				auto it = std::find_if(m_Triggerable.begin(), m_Triggerable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
+				if (it != m_Triggerable.end())
+					m_Triggerable.erase(it);
+			}
+
 			if constexpr (std::is_base_of_v<ISoundable, T>)
 			{
 				auto it = std::find_if(m_Soundable.begin(), m_Soundable.end(), [](auto* ptr) { return dynamic_cast<T*>(ptr) != nullptr; });
@@ -231,6 +245,7 @@
 		std::vector<IRenderable*> m_Renderables;
 		std::vector<IStartable*> m_Startables;
 		std::vector<IContactable*> m_Contactable;
+		std::vector<ITriggerable*> m_Triggerable;
 		std::vector<ICompAddable*> m_CompAddable;
 		std::vector<ISoundable*> m_Soundable;
 	};

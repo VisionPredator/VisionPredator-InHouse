@@ -20,7 +20,6 @@ PxQueryHitType::Enum ControllerQueryFilterCallback::preFilter(const PxFilterData
 		return PxQueryHitType::eNONE;
 	}
 
-	
 	PxShape* curShape;
 	actor->getShapes(&curShape, 1);
 
@@ -29,13 +28,14 @@ PxQueryHitType::Enum ControllerQueryFilterCallback::preFilter(const PxFilterData
 	if (data.word0 > 32)
 		return PxQueryHitType::eNONE;
 
-	if ((((1 << m_FilterData->word0) & data.word1) > 0) && (((1 << data.word0) & m_FilterData->word1) > 0))
+	if ((((1 << m_FilterData->word0) & data.word1) > 0) && (((1 << data.word0) & m_FilterData->word1) > 0) && data.word2 == 0)
 	{
 		return PxQueryHitType::eBLOCK;
 	}
 
 	return PxQueryHitType::eNONE;
 }
+
 
 PxQueryHitType::Enum ControllerQueryFilterCallback::postFilter(const PxFilterData& filterData, const PxQueryHit& hit, const PxShape* shape, const PxRigidActor* actor)
 {

@@ -88,7 +88,8 @@ void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination
 
 	SceneNavMeshData->navQuery->findNearestPoly(reinterpret_cast<float*>(&destination), halfExtents, filter, &comp->NavAgent->targetRef, comp->NavAgent->targetPos);
 
-	SceneNavMeshData->crowd->requestMoveTarget(comp->NavAgent->AgentID, comp->NavAgent->targetRef, comp->NavAgent->targetPos);
+	bool temp = SceneNavMeshData->crowd->requestMoveTarget(comp->NavAgent->AgentID, comp->NavAgent->targetRef, comp->NavAgent->targetPos);
+
 
 	comp->NavAgent->IsStop = false;
 }
@@ -96,12 +97,16 @@ void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination
 void NavAgentSystem::Stop(NavAgentComponent* comp)
 {
 	auto navmeshdata = GetSceneManager()->GetSceneNavMeshData();
+	if (!navmeshdata)
+		return;
+	if (!navmeshdata->crowd)
+		return;
 	navmeshdata->crowd->resetMoveTarget(comp->NavAgent->AgentID);
 	comp->TargetLocation = {};
 
 	comp->NavAgent->IsStop = true;
 }
-void NavAgentSystem::FixedUpdate(float deltaTime)
+void NavAgentSystem::PhysicsUpdate(float deltaTime)
 {
 	COMPLOOP(NavAgentComponent, navcomp)
 	{
@@ -111,7 +116,13 @@ void NavAgentSystem::FixedUpdate(float deltaTime)
 		if (!navcomp.IsChase)
 		{
 			if (!navcomp.NavAgent->IsStop)
+			{
 				Stop(&navcomp);
+				if (navcomp.HasComponent<ControllerComponent>())
+				{
+					navcomp.GetComponent<ControllerComponent>()->InputDir= {};
+				}
+			}
 
 
 			continue;
@@ -130,7 +141,6 @@ void NavAgentSystem::FixedUpdate(float deltaTime)
 		}
 
 	}
-
 }
 
 
@@ -139,6 +149,10 @@ void NavAgentSystem::AddAgentToCrowd(NavAgentComponent* comp)
 	auto transform = comp->GetComponent<TransformComponent>();
 
 	const float posf[3] = { transform->World_Location.x, transform->World_Location.y, transform->World_Location.z };
+	if (!GetSceneManager()->GetSceneNavMeshData())
+		return;
+	if (!GetSceneManager()->GetSceneNavMeshData()->crowd)
+		return;
 	comp->NavAgent->AgentID = GetSceneManager()->GetSceneNavMeshData()->crowd->addAgent(posf, &comp->NavAgent->agentParams);
 }
 
@@ -159,6 +173,7 @@ void NavAgentSystem::Start(uint32_t gameObjectId)
 	{
 		const auto& controller = GetSceneManager()->GetComponent<ControllerComponent>(gameObjectId);
 		auto agentcomp = controller->GetComponent<NavAgentComponent>();
+		agentcomp->IsChanged= agentcomp->IsChase;
 		agentcomp->NavAgent = std::make_shared<NavAgentData>();
 		this->SetAcceleration(agentcomp, controller->Acceleration);
 		this->SetRadius(agentcomp, controller->CapsuleControllerinfo.radius);
@@ -173,6 +188,8 @@ void NavAgentSystem::Start(uint32_t gameObjectId)
 
 		const auto& transformcomp = GetSceneManager()->GetComponent<TransformComponent>(gameObjectId);
 		auto agentcomp = transformcomp->GetComponent<NavAgentComponent>();
+		agentcomp->IsChanged = agentcomp->IsChase;
+
 		agentcomp->NavAgent = std::make_shared<NavAgentData>();
 		this->SetAcceleration(agentcomp, 20 );
 		this->SetRadius(agentcomp, 2);
@@ -202,3 +219,8 @@ void NavAgentSystem::Finalize()
 		Finish(comp.GetEntityID());
 	}
 }
+
+void NavAgentSystem::PhysicsLateUpdate(float deltaTime)
+{
+}
+

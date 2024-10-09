@@ -258,6 +258,6 @@ physx::PxController* ControllerManager::GetPxController(uint32_t entityID)
 
 uint32_t ControllerManager::GetIDFromActor(physx::PxRigidActor* Actor)
 {
-    auto key = static_cast<uint32_t*>(Actor->userData);
-    return *key;
+    auto key = static_cast<VPPhysics::USERDATA*>(Actor->userData);
+    return key->entityID;
 }

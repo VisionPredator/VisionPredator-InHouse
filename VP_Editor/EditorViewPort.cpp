@@ -181,7 +181,7 @@ void EditorViewPort::ImGuizmoRender()
 		// 매트릭스를 로컬 변환 요소로 분해
 		VPMath::Vector3 scale, translation;
 		VPMath::Quaternion rotation;
-		ImGuizmoMatrix.Decompose(scale, rotation, translation);
+		ImGuizmoMatrix.NewDecompose(scale, rotation, translation);
 
 		switch (m_ImGuizmoMode)
 		{

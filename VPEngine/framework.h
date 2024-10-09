@@ -16,8 +16,8 @@
 #include <string_view>
 #include <entt/entt.hpp>
 #include <d3d11.h>
-#include <PxPhysicsAPI.h>
-
+//#include <PxPhysicsAPI.h>
+#include"../physx/PxPhysicsAPI.h"
 ///Nav Mesh
 #include "recastnavigation/Detour/DetourNavMesh.h"
 #include "recastnavigation/Detour/DetourNavMeshBuilder.h"
