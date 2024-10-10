@@ -76,15 +76,6 @@ namespace debug
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
-	struct ConeInfo
-	{
-		VPMath::Vector3 Apex;		// 꼭대기 좌표
-		VPMath::Vector3 Direction;	// 방향
-		float Height;				// 높이
-		float Radius;				// 밑면의 반경
-		VPMath::Vector4 Color;		// 색상
-	};
-
 }
 
 namespace effect

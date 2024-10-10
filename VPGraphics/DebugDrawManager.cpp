@@ -54,19 +54,8 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMa
     while (!m_TriangleInfos.empty()) { Draw(m_TriangleInfos.front()); m_TriangleInfos.pop(); }
     while (!m_QuadInfos.empty()) { Draw(m_QuadInfos.front()); m_QuadInfos.pop(); }
     while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
-	while (!m_ConeInfos.empty()) { Draw(m_ConeInfos.front()); m_ConeInfos.pop(); }
 
     m_Batch->End();
-#else
-	while (!m_SphereInfos.empty())	{ m_SphereInfos.pop(); }
-	while (!m_BoxInfos.empty())		{ m_BoxInfos.pop(); }
-	while (!m_OBBInfos.empty())		{ m_OBBInfos.pop(); }
-	while (!m_FrustumInfos.empty()) { m_FrustumInfos.pop(); }
-	while (!m_GridInfos.empty())	{ m_GridInfos.pop(); }
-	while (!m_RayInfos.empty())		{ m_RayInfos.pop(); }
-	while (!m_TriangleInfos.empty()){ m_TriangleInfos.pop(); }
-	while (!m_QuadInfos.empty())	{ m_QuadInfos.pop(); }
-	while (!m_RingInfos.empty())	{ m_RingInfos.pop(); }
 #endif
 
     device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
@@ -276,38 +265,6 @@ void DebugDrawManager::Draw(const debug::QuadInfo& info)
 	XMStoreFloat4(&verts[4].color, info.Color);
 
 	m_Batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP, verts, 5);
-}
-
-void DebugDrawManager::Draw(const debug::ConeInfo& info)
-{
-	VPMath::Vector3 apex = info.Apex;
-	auto direction = info.Direction;
-	direction.Normalize();
-
-	float height = info.Height;
-	float radius = info.Radius;
-
-	// 원뿔 밑면의 중심 좌표를 계산
-	VPMath::Vector3 baseCenter = apex + direction * height;
-
-	// 원뿔 밑면의 원 그리기
-	debug::RingInfo ringInfo;
-	ringInfo.Origin = baseCenter;
-	ringInfo.Color = info.Color;
-	ringInfo.MajorAxis = VPMath::Vector3::UnitX * radius;
-	ringInfo.MinorAxis = VPMath::Vector3::UnitZ * radius;
-	DrawRing(ringInfo);
-
-	// 원뿔의 꼭대기에서 밑면 원의 여러 점을 연결하는 선 그리기
-	int numSegments = 4;	// 원을 구성할 점의 개수
-	for (int i = 0; i < numSegments; ++i)
-	{
-		float angle = i * XM_2PI / numSegments;
-		VPMath::Vector3 edgePoint = baseCenter + (ringInfo.MajorAxis * cosf(angle)) + (ringInfo.MinorAxis * sinf(angle));
-
-		// 꼭대기에서 밑면 점으로 선을 그리기
-		DrawLine(apex, edgePoint, info.Color);
-	}
 }
 
 

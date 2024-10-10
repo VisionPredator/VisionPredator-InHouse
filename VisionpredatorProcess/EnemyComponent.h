@@ -7,5 +7,12 @@ struct EnemyComponent :public Component
 	float HP{}; 
 	VisPred::Game::EnemyState CurrentFSM= VisPred::Game::EnemyState::IDLE;
 	VisPred::Game::GunType EnemyType= VisPred::Game::GunType::PISTOL;
+
+	// 시야 관련 변수
+	float HorizontalFOV;
+	float VerticalFOV;
+	float NearZ;
+	float FarZ;
+	bool IsModelFlipped;
 };
 

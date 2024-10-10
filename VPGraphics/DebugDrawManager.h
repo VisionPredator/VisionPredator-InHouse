@@ -34,7 +34,6 @@ public:
 	void AddTask(const debug::TriangleInfo& info) { m_TriangleInfos.push(info); }
 	void AddTask(const debug::QuadInfo& info) { m_QuadInfos.push(info); }
 	void AddTask(const debug::RingInfo& info) { m_RingInfos.push(info); }
-	void AddTask(const debug::ConeInfo& info) { m_ConeInfos.push(info); }
 
 private:
 	void Draw(const debug::SphereInfo& info);
@@ -45,7 +44,6 @@ private:
 	void Draw(const debug::RayInfo& info);
 	void Draw(const debug::TriangleInfo& info);
 	void Draw(const debug::QuadInfo& info);
-	void Draw(const debug::ConeInfo& info);
 
 	void DrawRing(const debug::RingInfo& info);
 	void DrawCube(const VPMath::Matrix& worldTransform, const VPMath::Color& color);
@@ -70,7 +68,6 @@ private:
 	std::queue<debug::TriangleInfo> m_TriangleInfos;
 	std::queue<debug::QuadInfo> m_QuadInfos;
 	std::queue<debug::RingInfo> m_RingInfos;
-	std::queue<debug::ConeInfo> m_ConeInfos;
 	// etc...
 	
 };

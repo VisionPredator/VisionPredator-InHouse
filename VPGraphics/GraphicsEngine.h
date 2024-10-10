@@ -91,7 +91,6 @@ public:
 	void DrawTriangle(const debug::TriangleInfo& info) override;
 	void DrawQuad(const debug::QuadInfo& info) override;
 	void DrawRay(const debug::RayInfo& info) override;
-	void DrawCone(const debug::ConeInfo& info) override;
 
 	///Editor
 	ID3D11ShaderResourceView* GetSRV(std::wstring name) override;

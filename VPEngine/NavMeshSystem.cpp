@@ -326,7 +326,7 @@ void NavMeshSystem::BeginRenderUpdate(float deltaTime)
 		rayInfo.Normalize = false;        // Ensure the direction is normalized
 
 		// Draw the ray using your graphics system
-		m_Graphics->DrawRay(rayInfo);
+		//m_Graphics->DrawRay(rayInfo);
 	}
 
 }

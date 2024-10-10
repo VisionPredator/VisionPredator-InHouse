@@ -7,6 +7,7 @@ class EnemySystem :
 	, public IFixedUpdatable
 	, public IUpdatable
 	, public IPhysicable
+	, public IRenderable
 {
 public:
     EnemySystem(std::shared_ptr<SceneManager> SceneMagener);
@@ -53,7 +54,12 @@ private:
 	void Die(EnemyComponent& enemycomp);
 
 	// 시야 범위 안에 플레이어가 있는지 확인
-	void DetectTarget(const PlayerComponent& playerComp);
+	void DetectTarget(EnemyComponent& enemycomp);
 
+public:
+    void BeginRenderUpdate(float deltaTime) override {};
+    void RenderUpdate(float deltaTime) override {};
+    void LateRenderUpdate(float deltaTime) override {};
+    void EditorRenderUpdate(float deltaTime) override {};
 };
 

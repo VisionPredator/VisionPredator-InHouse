@@ -94,7 +94,6 @@ namespace Graphics
 		virtual void DrawTriangle(const debug::TriangleInfo& info) abstract;
 		virtual void DrawQuad(const debug::QuadInfo& info) abstract;
 		virtual void DrawRay(const debug::RayInfo& info) abstract;
-		virtual void DrawCone(const debug::ConeInfo& info) abstract;
 
 		/// UI
 		virtual void CreateImageObject(uint32_t id, const ui::ImageInfo& info) abstract;

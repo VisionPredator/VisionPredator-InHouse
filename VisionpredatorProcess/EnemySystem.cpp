@@ -2,6 +2,7 @@
 #include "EnemySystem.h"
 #include "VisPredComponents.h"
 #include "EngineStructs.h"
+#include "../VPGraphics/D3DUtill.h"
 EnemySystem::EnemySystem(std::shared_ptr<SceneManager> SceneMagener) :System(SceneMagener)
 {
 }
@@ -15,6 +16,8 @@ void EnemySystem::FixedUpdate(float deltaTime)
 	{
 		Calculate_FSM(enemycomp);
 		Action_FSM(enemycomp);
+
+		DetectTarget(enemycomp);
 	}
 }
 #pragma region FSM Calculate
@@ -239,6 +242,47 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 		auto ani = enemycomp.GetComponent<AnimationComponent>();
 		ani->isLoop = false;
 	}
+}
+
+void EnemySystem::DetectTarget(EnemyComponent& enemycomp)
+{
+	auto transform = enemycomp.GetComponent<TransformComponent>();
+
+	VisPred::SimpleMath::Vector3 enemyPos =
+	{ transform->WorldTransform._41, transform->WorldTransform._42 + 1.8f, transform->WorldTransform._43 };
+
+	// 시야 범위 생성
+	DirectX::BoundingFrustum frustum;
+	D3DUtill::CreateBoundingFrustum(
+		enemyPos,
+		transform->FrontVector,
+		transform->UpVector,
+		60.0f,
+		40.0f,
+		0.2f,
+		13.0f,
+		frustum,
+		true
+	);
+
+#ifdef _DEBUG
+	debug::FrustumInfo frustumInfo;
+	frustumInfo.Frustum = frustum;
+	frustumInfo.Color = VisPred::SimpleMath::Color{ 1, 1, 0, 1 };
+	m_Graphics->DrawFrustum(frustumInfo);
+#endif _DEBUG
+
+	VisPred::SimpleMath::Vector3 playerPos;
+	COMPLOOP(PlayerComponent, comp)
+	{
+		uint32_t playerID = comp.GetEntityID();
+		auto playerTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(playerID);
+
+		playerPos = VisPred::SimpleMath::Vector3{ playerTransform->WorldTransform._41, playerTransform->WorldTransform._42, playerTransform->WorldTransform._43 };
+	}
+
+	bool isPlayerInSight = false;
+	isPlayerInSight = frustum.Contains(playerPos);
 }
 
 void EnemySystem::PhysicsUpdate(float deltaTime)
