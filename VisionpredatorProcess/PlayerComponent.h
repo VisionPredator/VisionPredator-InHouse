@@ -2,49 +2,44 @@
 #include "Component.h"
 #include "VisPredStructs.h"
 struct PlayerComponent :
-    public Component
+	public Component
 {
 	PlayerComponent();
-	VP_JSONBODY(PlayerComponent, PlayerHandName, PlayerCameraName, CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, FirePosition,
-		WalkSoundKey1, WalkSoundKey2, Volume_Walk
-		, RunSoundKey1, RunSoundKey2, Volume_Run
-		, JumpSoundkey, Volume_Jump
-		, SlideSoundkey, Volume_Slide
-		, SitSoundKey, Volume_Sit
-		, HurtSoundKey, Volume_Hurt
-	)
-		std::string PlayerHandName{};
-	std::string PlayerCameraName{};
-	uint32_t PlayerHandID{};
-	uint32_t PlayerCameraID{};
-        uint32_t HP{};
-    VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
-    float Height{};
-    float Radius{};
-    float Sencitive = 1.f;
-    float WalkSpeed{};
-    float RunSpeed{};
-    float SlideDisTance{};
-    float Accel{};
-    float StaticFriction{};
-    float DynamicFriction{};
-    float JumpFoce{};
-    float AirControlPercent{};
-    float GravityPower = 1.f;
-
-
-    /// <summary>
-    /// 게임로직을 위한 변수들
-    /// </summary>
-	std::string FirePosition;
-
-    VPMath::Vector3 SitCameraPos{};
-    float SitHeight{};
-    float SitHeightDiff{};
-    float CamTransDuration=0.07f;
-    float CamTransProgress=0.f;
-    VPMath::Vector3 DefalutCameraPos{};
-    float SlideDuration =0.5f;
+	VP_JSONBODY(PlayerComponent,
+		HandName, CameraPosName, CameraName, FirePositionName,	///EntityNames
+		CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt)
+	std::string HandName{};
+	std::string CameraPosName{};
+	std::string CameraName{};
+	std::string FirePositionName;
+	uint32_t HandID{};
+	uint32_t CameraID{};
+	uint32_t CameraPosID{};
+    uint32_t FirePosEntityID{};
+	uint32_t HP{};
+	VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
+	float Height{};
+	float Radius{};
+	float Sencitive = 1.f;
+	float WalkSpeed{};
+	float RunSpeed{};
+	float SlideDisTance{};
+	float Accel{};
+	float StaticFriction{};
+	float DynamicFriction{};
+	float JumpFoce{};
+	float AirControlPercent{};
+	float GravityPower = 1.f;
+	/// <summary>
+	/// 게임로직을 위한 변수들
+	/// </summary>
+	VPMath::Vector3 SitCameraPos{};
+	float SitHeight{};
+	float SitHeightDiff{};
+	float CamTransDuration = 0.07f;
+	float CamTransProgress = 0.f;
+	VPMath::Vector3 DefalutCameraPos{};
+	float SlideDuration = 0.5f;
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
     
@@ -52,7 +47,6 @@ struct PlayerComponent :
     uint32_t PreSearchedItemID{};
     uint32_t GunEntityID{};
     uint32_t ThrowingGunEntityID{};
-    uint32_t FirePosEntityID{};
 
 
     VisPred::Game::GunType ShootType{};

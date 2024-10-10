@@ -14,13 +14,13 @@ void VispredRegister::Register_Metadata()
 void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, PlayerComponent::PlayerCameraName
-		, PlayerComponent::PlayerHandName, PlayerComponent::HP
+	META_ADD_COMP(PlayerComponent, PlayerComponent::CameraPosName,PlayerComponent::CameraName
+		, PlayerComponent::HandName, PlayerComponent::HP
 		, PlayerComponent::Sencitive, PlayerComponent::StaticFriction
 		, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce
 		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
 		, PlayerComponent::Accel, PlayerComponent::CurrentFSM
-		, PlayerComponent::AirControlPercent, PlayerComponent::FirePosition
+		, PlayerComponent::AirControlPercent, PlayerComponent::FirePositionName
 		, PlayerComponent::GravityPower, PlayerComponent::HasGun
 		, PlayerComponent::WalkSoundKey1, PlayerComponent::WalkSoundKey2, PlayerComponent::Volume_Walk
 		, PlayerComponent::RunSoundKey1, PlayerComponent::RunSoundKey2, PlayerComponent::Volume_Run

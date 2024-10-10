@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 114816420,
+        "EntityID": 2121055366,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -24,38 +24,6 @@
                     "y": 1.0,
                     "z": 0.9999997019767761
                 }
-            },
-            {
-                "Accel": 200.0,
-                "AirControlPercent": 40.0,
-                "ComponentID": 4183631247,
-                "CurrentFSM": 0,
-                "DynamicFriction": 0.0,
-                "FirePosition": "Fireposition",
-                "GravityPower": 1.0,
-                "HP": 90,
-                "HurtSoundKey": "Player_Hurt",
-                "JumpFoce": 4.0,
-                "JumpSoundkey": "Player_Jump",
-                "PlayerCameraName": "PlayerCamera",
-                "PlayerHandName": "PlayerHand",
-                "RunSoundKey1": "Player_Run1",
-                "RunSoundKey2": "Player_Run2",
-                "RunSpeed": 10.0,
-                "Sencitive": 0.10000000149011612,
-                "SitSoundKey": "Player_Sit",
-                "SlideDisTance": 0.0,
-                "SlideSoundkey": "Player_Slide",
-                "StaticFriction": 10.0,
-                "Volume_Hurt": 0.10000000149011612,
-                "Volume_Jump": 0.03999999910593033,
-                "Volume_Run": 0.02500000037252903,
-                "Volume_Sit": 0.4000000059604645,
-                "Volume_Slide": 0.20000000298023224,
-                "Volume_Walk": 0.05000000074505806,
-                "WalkSoundKey1": "Player_Walk1",
-                "WalkSoundKey2": "Player_Walk2",
-                "WalkSpeed": 5.0
             },
             {
                 "Acceleration": 15.0,
@@ -99,8 +67,42 @@
                 "StaticFriction": 10.0
             },
             {
+                "Accel": 200.0,
+                "AirControlPercent": 40.0,
+                "CameraName": "Camera",
+                "CameraPosName": "CameraPos",
+                "ComponentID": 4183631247,
+                "CurrentFSM": 0,
+                "DynamicFriction": 0.0,
+                "FirePositionName": "FirePos",
+                "GravityPower": 1.0,
+                "HP": 90,
+                "HandName": "Hand",
+                "HurtSoundKey": "Player_Hurt",
+                "JumpFoce": 4.0,
+                "JumpSoundkey": "Player_Jump",
+                "RunSoundKey1": "Player_Run1",
+                "RunSoundKey2": "Player_Run2",
+                "RunSpeed": 10.0,
+                "Sencitive": 0.10000000149011612,
+                "SitSoundKey": "Player_Sit",
+                "SlideDisTance": 0.0,
+                "SlideSoundkey": "Player_Slide",
+                "StaticFriction": 10.0,
+                "Volume_Hurt": 0.10000000149011612,
+                "Volume_Jump": 0.03999999910593033,
+                "Volume_Run": 0.02500000037252903,
+                "Volume_Sit": 0.4000000059604645,
+                "Volume_Slide": 0.20000000298023224,
+                "Volume_Walk": 0.05000000074505806,
+                "WalkSoundKey1": "Player_Walk1",
+                "WalkSoundKey2": "Player_Walk2",
+                "WalkSpeed": 5.0
+            },
+            {
                 "ChildrenID": [
-                    888227744
+                    3438775318,
+                    3821271087
                 ],
                 "ComponentID": 188567026
             },
@@ -111,11 +113,11 @@
         ]
     },
     {
-        "EntityID": 888227744,
+        "EntityID": 3438775318,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "PlayerCamera"
+                "Name": "Camera"
             },
             {
                 "ComponentID": 3400599862,
@@ -125,8 +127,8 @@
                     "z": 0.27631568908691406
                 },
                 "Local_Quaternion": {
-                    "w": 0.9661514759063721,
-                    "x": -0.2579755187034607,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -145,23 +147,55 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 114816420
+                "ParentID": 2121055366
             },
             {
                 "ChildrenID": [
-                    3379424905,
-                    3562078941
+                    3010918037,
+                    2285742210
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 3379424905,
+        "EntityID": 3821271087,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "PlayerHand"
+                "Name": "CameraPos"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.6758384704589844,
+                    "z": 0.2763175964355469
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 1.0000001192092896
+                }
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 2121055366
+            }
+        ]
+    },
+    {
+        "EntityID": 3010918037,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "Hand"
             },
             {
                 "ComponentID": 3400599862,
@@ -181,6 +215,10 @@
                     "y": 0.26520001888275146,
                     "z": 0.2651998698711395
                 }
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "PlayerHand"
             },
             {
                 "ComponentID": 2778840952,
@@ -204,10 +242,6 @@
                 "transitionDuration": 0.4000000059604645
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "PlayerHand"
-            },
-            {
                 "ComponentID": 1142749570,
                 "FBX": [
                     112,
@@ -225,16 +259,16 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 888227744
+                "ParentID": 3438775318
             }
         ]
     },
     {
-        "EntityID": 3562078941,
+        "EntityID": 2285742210,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "Fireposition"
+                "Name": "FirePos"
             },
             {
                 "ComponentID": 3400599862,
@@ -257,7 +291,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 888227744
+                "ParentID": 3438775318
             }
         ]
     }

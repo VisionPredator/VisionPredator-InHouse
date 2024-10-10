@@ -21,7 +21,6 @@ public:
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
-	void hptest(PlayerComponent& playercomp, float delta);
 
 
 #pragma region Physics Setting
@@ -80,13 +79,12 @@ public:
 	void Active_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void Active_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp);
 	void Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
-	void Active_Slide(PlayerComponent& playercomp);
+	void Active_Slide(PlayerComponent& playercomp, float deltatime);
 	void Active_Attack(PlayerComponent& playercomp);
 #pragma endregion 
 
 
 #pragma region Animation
-	void Animation(uint32_t entityid, float deltaTime);
 	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
 	void ThrowFinished(PlayerComponent& playercomp);
@@ -97,9 +95,7 @@ public:
 	void Grab_Gun(PlayerComponent& playercomp);
 	void Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
 	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
-	void PlayerShoot(PlayerComponent& playercomp);
 	void GunCooltime(PlayerComponent& playercomp, float deltatime);
-
 #pragma region Shoot Logic
 	void Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
 	void Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
@@ -115,30 +111,15 @@ public:
 
 	// IStartable을(를) 통해 상속됨
 	void Initialize() override;
-
 	void Start(uint32_t gameObjectId) override;
-
 	void Finish(uint32_t gameObjectId) override;
-
 	void Finalize() override;
-
-
-
 	// IRenderable을(를) 통해 상속됨
 	void BeginRenderUpdate(float deltaTime) override;
-
 	void RenderUpdate(float deltaTime) override;
-
 	void LateRenderUpdate(float deltaTime) override;
-
 	void EditorRenderUpdate(float deltaTime) override;
-
-
 	// ISoundable을(를) 통해 상속됨
 	void SoundUpdate(float deltaTime) override;
-
-
-
-
 };
 
