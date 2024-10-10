@@ -181,10 +181,12 @@ void DeferredInstancing::Render()
 			m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), m_InstanceDatas.size(), 0, 0, 0);
 		}
 
+		Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 	///light
 	//Save GBuffer texture
 	{
+		Device->UnBindSRV();
 
 		std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
 		std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
@@ -257,9 +259,11 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 {
 	m_RenderList = renderQueue;
 
+
 	//instance buffer
 	for (auto& object : m_RenderList)
 	{
+
 		//벽인지
 		//바닥인지
 		//어떤 녀석인지 알아야 모아서 한번에 그리지
@@ -276,6 +280,7 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 		}
 	}
 
+	//instance buffer update
 	if (!m_InstanceDatas.empty())
 	{
 
