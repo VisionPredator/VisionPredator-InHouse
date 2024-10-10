@@ -69,17 +69,20 @@ void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, co
 
 		//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
 		//멀티 스레드면 참 좋을듯
+		
+		static int UID = 1;	//0은 아무것도 없는것
 		for (auto& dir : m_ResourceDirectory)
 		{
 			for (auto& file : dir.second)
 			{
-				LoadModel(file, dir.first);
+				LoadModel(file, dir.first, UID);
+				UID++;
 			}
 		}
 	}
 }
 
-bool ModelLoader::LoadModel(std::string filename, Filter filter)
+bool ModelLoader::LoadModel(std::string filename, Filter filter, int UID)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
 
@@ -146,7 +149,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 		return false;
 	}
 
-	ProcessSceneData(filename, scene, filter);
+	ProcessSceneData(filename, scene, filter, UID);
 
 	importer.FreeScene();
 	return true;
@@ -154,7 +157,7 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter)
 }
 
 //데이터 가공이 필요하다
-void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filter filter)
+void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filter filter, int UID)
 {
 	std::shared_ptr<ModelData> newData = std::make_shared<ModelData>();
 	newData->m_name.assign(name.begin(), name.end());
@@ -184,7 +187,7 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 
 	std::wstring key;
 	key.assign(name.begin()/*+ 12*/, name.end());
-
+	newData->UID = UID;
 	m_ResourceManager.lock()->Add<ModelData>(key, newData);
 }
 

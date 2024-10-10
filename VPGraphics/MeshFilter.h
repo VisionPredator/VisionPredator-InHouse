@@ -22,7 +22,7 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L""), FBX(L"")
+	RenderData() :EntityID(0), Name(L""), FBX(L""),ModelID(0)
 		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
 		, duration(0.f), preDuration(0.f), isPlay(false)
 		, color(), useTexture(false), textureName(L"")
@@ -59,6 +59,7 @@ public:
 	std::wstring Name;
 	std::wstring FBX;
 	PassState Pass; 
+	uint32_t ModelID;
 
 	GeoMetryFilter Filter;
 	bool isSkinned = false;
