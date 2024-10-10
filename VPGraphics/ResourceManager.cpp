@@ -106,6 +106,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"Quad", L"QuadPS", "main");
 	Create<PixelShader>(L"VPOutLine", L"VPOutLine", "main");
 	Create<PixelShader>(L"RimLight", L"RimLight", "main");
+	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer

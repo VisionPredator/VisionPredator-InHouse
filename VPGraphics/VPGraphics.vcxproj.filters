@@ -570,6 +570,8 @@
       <Filter>HLSL\PS</Filter>
     </FxCompile>
     <FxCompile Include="InstancingVS.hlsl" />
+    <FxCompile Include="InstancingPS.hlsl" />
+    <FxCompile Include="VertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">
