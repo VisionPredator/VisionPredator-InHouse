@@ -7,7 +7,7 @@ struct PlayerComponent :
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent,
 		HandName, CameraPosName, CameraName, FirePositionName,	///EntityNames
-		CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt)
+		CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, GunRecoilPercent)
 	std::string HandName{};
 	std::string CameraPosName{};
 	std::string CameraName{};
@@ -76,8 +76,9 @@ struct PlayerComponent :
 
 	bool IsRotated=false;
 	bool PlayerCamereShake{};
-	bool GunShake{};
-	VPMath::Quaternion GunColiRot{};
-
+	bool IsGunRecoiling{};
+	float GunRecoilPercent{};
+	VPMath::Quaternion GunRecoilEndQuat{};
+	VPMath::Quaternion GunRecoilStartQuat{};
 };
 

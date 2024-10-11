@@ -5,7 +5,7 @@
 struct GunComponent :
     public Component
 {
-    VP_JSONBODY(GunComponent, Type, ThrowDamage, BulletPrefab, GunSoundPrefab,CurrentBullet, CoolTime, Bullets)
+    VP_JSONBODY(GunComponent, Type, ThrowDamage, BulletPrefab, GunSoundPrefab,CurrentBullet, CoolTime, Bullets, GunRecoil)
     VisPred::Game::GunType Type;
     std::string BulletPrefab{};
     std::string GunSoundPrefab{};

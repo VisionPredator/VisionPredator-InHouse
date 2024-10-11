@@ -27,10 +27,10 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::JumpSoundkey, PlayerComponent::Volume_Jump
 		, PlayerComponent::SlideSoundkey, PlayerComponent::Volume_Slide
 		, PlayerComponent::SitSoundKey, PlayerComponent::Volume_Sit
-		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt
+		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt, PlayerComponent::GunRecoilPercent
 	);
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
-	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets);
+	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets,GunComponent::GunRecoil);
 }
 
 void VispredRegister::Register_EnumClass()

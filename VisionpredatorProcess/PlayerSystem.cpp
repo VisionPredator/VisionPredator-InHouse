@@ -2,6 +2,7 @@
 #include "PlayerSystem.h"
 #include <iostream>
 #include "EngineStructs.h"
+#include <random>
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 }
@@ -13,6 +14,7 @@ void PlayerSystem::Update(float deltaTime)
 	COMPLOOP(PlayerComponent, playercomp)
 	{
 		GunCooltime(playercomp, deltaTime);
+		Gun_Recoiling(playercomp, deltaTime);
 		Calculate_FSM(playercomp);
 		FSM_Sound_FSM(playercomp, deltaTime);
 		FSM_Action_FSM(playercomp, deltaTime);
@@ -37,6 +39,47 @@ void PlayerSystem::PhysicsUpdate(float deltaTime)
 void PlayerSystem::SoundUpdate(float deltaTime)
 {
 }
+float PlayerSystem::Randomfloat(float min, float max) 
+{
+	// Create a random number generator
+	std::random_device rd; // Seed generator
+	std::mt19937 gen(rd()); // Mersenne Twister random engine
+
+	// Create a distribution for floating-point numbers between min and max
+	std::uniform_real_distribution<float> dist(min, max);
+
+	// Return the random number
+	return dist(gen);
+}
+double PlayerSystem::GunRecoilPercent(double x, double a, double percent)
+{
+	// Convert percent into a value between 0 and 1
+	double b = percent / 100.0;
+
+	// Ensure non-negative values
+	if (x <= 0)
+		return 0.0;
+
+	if (x < a * b)
+	{
+		// First half: downward parabola
+		double delta = x - a * b;
+		return -(delta * delta) / (b * b * a * a) + 1;
+	}
+	else if (x >= a) 
+	{
+		// Beyond full recoil
+		return 1.0;
+	}
+	else 
+	{
+		// Second half: upward parabola
+		double delta = x - a;
+		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
+	}
+}
+
+
 void PlayerSystem::PhysicsLateUpdate(float deltaTime)
 {
 }
@@ -88,40 +131,7 @@ void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 }
 void PlayerSystem::CameraShake(PlayerComponent& playercomp,float deltatime)
 {
-
-	if (playercomp.HasGun)
-	{
-		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		gunComp->CoolTime;
-		if (playercomp.GunprogressTime < (gunComp->CoolTime / 2))
-		{
-		}
-		else if (playercomp.GunprogressTime> gunComp->CoolTime)
-		{
-
-		}
-		else if (playercomp.GunprogressTime >= (gunComp->CoolTime / 2))
-		{
-
-		}
-
-	}
-	else
-	{
-		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		if (playercomp.GunprogressTime >= gunComp->CoolTime)
-		{
-			playercomp.GunprogressTime = gunComp->CoolTime;
-			playercomp.ReadyToShoot = true;
-		}
-		else
-		{
-			playercomp.GunprogressTime += deltatime;
-			playercomp.ReadyToShoot = false;
-
-		}
-	}
-
+	Gun_Recoiling(playercomp, deltatime);
 }
 #pragma region Physics Setting
 
@@ -720,7 +730,20 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 		{
 			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 			if (!guncomp.IsEmpty)
-				Gun_Shoot(playercomp, guncomp);
+			{
+				if (Gun_Shoot(playercomp, guncomp))
+				{
+					playercomp.IsGunRecoiling = true;
+					float randfloat = guncomp.GunRecoil.x;
+					randfloat = Randomfloat(-randfloat, randfloat);
+					auto cameratrans = GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);
+					playercomp.GunRecoilStartQuat = cameratrans->Local_Quaternion;
+					playercomp.GunRecoilEndQuat = playercomp.GunRecoilStartQuat;
+					playercomp.GunRecoilEndQuat.RotateYaw(randfloat);
+					playercomp.GunRecoilEndQuat.RotateToUp(guncomp.GunRecoil.y);
+				}
+			}
+
 			else
 				Gun_Throw(playercomp, guncomp);
 		}
@@ -836,6 +859,29 @@ void PlayerSystem::PlayerInterect(PlayerComponent& playercomp)
 
 	}
 }
+
+void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
+{
+	if (playercomp.HasGun && playercomp.IsGunRecoiling)
+	{
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		gunComp->CoolTime;
+		auto cameratrans = GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);
+		VPMath::Quaternion tempquat{};
+		double percent = GunRecoilPercent(playercomp.GunprogressTime, (gunComp->CoolTime * 9 / 10),playercomp.GunRecoilPercent);
+		gunComp->CoolTime;
+		tempquat= tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+		cameratrans->SetLocalQuaternion(tempquat);
+		if (percent>=1.0f)
+		{
+			playercomp.IsGunRecoiling = false;
+			playercomp.GunRecoilStartQuat = {};
+			playercomp.GunRecoilEndQuat = {};
+			cameratrans->SetLocalQuaternion({});
+		}
+	}
+}
+
 void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 {
 	auto& anicomp = *GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
@@ -874,22 +920,25 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 		break;
 	}
 }
-void PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 {
+	bool IsGunShoot = false;
 	switch (playercomp.ShootType)
 	{
 	case VisPred::Game::GunType::PISTOL:
-		Shoot_Pistol(playercomp, guncomp);
+		return Shoot_Pistol(playercomp, guncomp);
 		break;
 	case VisPred::Game::GunType::SHOTGUN:
-		Shoot_ShotGun(playercomp, guncomp);
+		return Shoot_ShotGun(playercomp, guncomp);
 		break;
 	case VisPred::Game::GunType::RIFLE:
-		Shoot_Rifle(playercomp, guncomp);
+		return Shoot_Rifle(playercomp, guncomp);
 		break;
 	default:
 		break;
 	}
+
+
 }
 void PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 {

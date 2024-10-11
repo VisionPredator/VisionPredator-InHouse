@@ -93,7 +93,9 @@ public:
 #pragma region Gun Logic
 	void PlayerInterect(PlayerComponent& playercomp);
 	void Grab_Gun(PlayerComponent& playercomp);
-	void Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
+	void Gun_Recoiling(PlayerComponent& playercomp, float deltatime);
+
+	bool Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
 	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
 	void GunCooltime(PlayerComponent& playercomp, float deltatime);
 #pragma region Shoot Logic
@@ -121,5 +123,7 @@ public:
 	void EditorRenderUpdate(float deltaTime) override;
 	// ISoundable을(를) 통해 상속됨
 	void SoundUpdate(float deltaTime) override;
+	float Randomfloat(float min , float max);
+	double GunRecoilPercent(double curtime ,double time, double percent);
 };
 
