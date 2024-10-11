@@ -21,6 +21,7 @@ class IPhysicable
 public:
 	virtual void SetPhysicEngine(Physic::IPhysx* PhysicEngine) { m_PhysicsEngine = PhysicEngine; }
 	virtual void PhysicsUpdate(float deltaTime) = 0;
+	virtual void PhysicsLateUpdate(float deltaTime) = 0;
 
 	Physic::IPhysx* m_PhysicsEngine = nullptr;
 };
@@ -75,7 +76,12 @@ public:
 	virtual void EnterCollision(std::pair<uint32_t,uint32_t> entitypair) = 0;
 	virtual void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) = 0;
 };
-
+class ITriggerable
+{
+public:
+	virtual void EnterTrigger(std::pair<uint32_t, uint32_t> entitypair) = 0;
+	virtual void ExitTrigger(std::pair<uint32_t, uint32_t> entitypair) = 0;
+};
 class ISoundable
 {
 public:

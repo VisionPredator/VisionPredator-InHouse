@@ -66,6 +66,7 @@ void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 	if (enemycomp.HP <= 0)
 	{
 		Die(enemycomp);
+		m_PhysicsEngine->RemoveController(enemycomp.GetEntityID());
 	}
 	else if (1 == 2)
 		enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
@@ -230,5 +231,13 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 		auto ani = enemycomp.GetComponent<AnimationComponent>();
 		ani->isLoop = false;
 	}
+}
+
+void EnemySystem::PhysicsUpdate(float deltaTime)
+{
+}
+
+void EnemySystem::PhysicsLateUpdate(float deltaTime)
+{
 }
 

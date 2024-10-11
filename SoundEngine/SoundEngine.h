@@ -43,6 +43,6 @@ private:
 
     // ISound을(를) 통해 상속됨
     float GetLength(const std::string& key) override;
-
+    bool IsPlayingSound(uint32_t channelid, const std::string& soundKey = {}) override;
 };
 

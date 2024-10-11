@@ -83,6 +83,7 @@ private:
 	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	bool HasRigidBody(uint32_t entityID) override;
+	bool HasController(uint32_t entityID) override;
 
 
 	// IPhysx을(를) 통해 상속됨

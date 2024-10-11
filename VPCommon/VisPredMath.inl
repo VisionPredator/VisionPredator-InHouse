@@ -915,6 +915,91 @@ inline float Vector3::LengthSquared() const noexcept
     return XMVectorGetX(X);
 }
 
+inline void Vector3::RotateToUp(float degrees) noexcept
+{
+	// Convert degrees to radians
+	float radians = degrees * DirectX::XM_PI / 180.0f;
+
+	// Get the normalized direction towards the UP vector
+	Vector3 up = Vector3::Up;
+	up.Normalize();
+	Vector3 current = *this;
+	current.Normalize();
+
+	// Calculate the dot product to find the angle between the current vector and up vector
+	float dot = current.Dot(up);
+
+	// Clamp the dot product to ensure it's within the valid range of acos
+	dot = std::clamp(dot, -1.0f, 1.0f);
+
+	// Get the current angle between the vectors
+	float currentAngle = std::acos(dot);
+
+	// Calculate the new angle, clamping it to a maximum of 90 degrees in radians
+	float maxRadians = DirectX::XM_PIDIV2; // 90 degrees in radians
+	float newAngle = currentAngle + radians;
+	if (newAngle > maxRadians)
+		newAngle = maxRadians;
+
+	// Calculate the lerp factor to move towards the UP direction
+	float t = newAngle / currentAngle;
+
+	// Linearly interpolate between the current vector and the UP vector
+	Vector3 result = Vector3::Lerp(current, up, t);
+
+	// Normalize and store the result back to the vector
+	result.Normalize();
+	*this = result;
+}
+inline void Vector3::RotateToUp2(float degrees) noexcept
+{
+    // Convert degrees to radians
+    float radians = degrees * DirectX::XM_PI / 180.0f;
+
+    // Get the normalized direction towards the UP vector
+    Vector3 up = Vector3::Up;
+    up.Normalize();
+    Vector3 current = *this;
+    current.Normalize();
+
+    // Calculate the dot product to find the angle between the current vector and up vector
+    float dot = current.Dot(up);
+
+    // Clamp the dot product to ensure it's within the valid range of acos
+    dot = std::clamp(dot, -1.0f, 1.0f);
+
+    // Get the current angle between the vectors
+    float currentAngle = std::acos(dot);
+
+    // Calculate the new angle, ensuring it doesn't exceed 90 degrees in radians
+    float maxRadians = DirectX::XM_PIDIV2; // 90 degrees in radians
+    float targetAngle = currentAngle + radians;
+    if (targetAngle > maxRadians)
+    {
+        targetAngle = maxRadians;
+    }
+
+    // Determine the SLERP factor for smooth rotation towards the up vector
+    float t = (targetAngle - currentAngle) / currentAngle;
+
+    // Calculate the rotation axis (cross product between current and up)
+    Vector3 rotationAxis;
+    current.Cross(up, rotationAxis);
+    rotationAxis.Normalize();
+
+    // Create a quaternion representing the rotation around the axis
+    DirectX::XMVECTOR axis = XMLoadFloat3(&rotationAxis);
+    DirectX::XMVECTOR quaternion = DirectX::XMQuaternionRotationAxis(axis, radians);
+
+    // Apply the quaternion to the current vector
+    DirectX::XMVECTOR currentVec = XMLoadFloat3(this);
+    DirectX::XMVECTOR rotatedVec = DirectX::XMVector3Rotate(currentVec, quaternion);
+
+    // Store the result
+    XMStoreFloat3(this, rotatedVec);
+}
+
+
 inline float Vector3::Dot(const Vector3& V) const noexcept
 {
     using namespace DirectX;
@@ -2336,6 +2421,50 @@ inline bool Matrix::Decompose(Vector3& scale, Quaternion& rotation, Vector3& tra
 
     return true;
 }
+inline bool Matrix::NewDecompose(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept {
+    using namespace DirectX;
+
+    XMVECTOR s, r, t;
+
+    // 먼저 XMMatrixDecompose를 시도
+    if (XMMatrixDecompose(&s, &r, &t, *this)) {
+        // 성공 시, 기본 Decompose 방식으로 처리
+        XMStoreFloat3(&scale, s);
+        XMStoreFloat4(&rotation, r);
+        XMStoreFloat3(&translation, t);
+        return true;
+    }
+    else {
+        // 실패 시, 커스텀 DecomposeWithFallback 방식을 사용
+        // Extract translation
+        translation = { _41, _42, _43 };
+
+        // Extract scale (handle potential zero or irregular scales)
+        scale.x = sqrtf(_11 * _11 + _12 * _12 + _13 * _13);
+        scale.y = sqrtf(_21 * _21 + _22 * _22 + _23 * _23);
+        scale.z = sqrtf(_31 * _31 + _32 * _32 + _33 * _33);
+
+        // Handle cases where scale is very small (near-zero values)
+        if (scale.x < FLT_EPSILON) scale.x = 0.0001f;  // Assign minimal value to avoid division by zero
+        if (scale.y < FLT_EPSILON) scale.y = 0.0001f;
+        if (scale.z < FLT_EPSILON) scale.z = 0.0001f;
+
+        // Remove scale from the matrix to get the rotation part
+        Matrix rotationMatrix = *this;
+
+        // Normalize each row to remove scaling
+        rotationMatrix._11 /= scale.x; rotationMatrix._12 /= scale.x; rotationMatrix._13 /= scale.x;
+        rotationMatrix._21 /= scale.y; rotationMatrix._22 /= scale.y; rotationMatrix._23 /= scale.y;
+        rotationMatrix._31 /= scale.z; rotationMatrix._32 /= scale.z; rotationMatrix._33 /= scale.z;
+
+        // Convert the rotation matrix to a quaternion
+        rotation = Quaternion::CreateFromRotationMatrix(rotationMatrix);
+
+        return false;
+    }
+}
+
+
 // Custom decomposition with fallback for irregular matrices
 inline bool Matrix::DecomposeWithFallback(Vector3& scale, Quaternion& rotation, Vector3& translation) noexcept {
     using namespace DirectX;

@@ -15,16 +15,23 @@ namespace VPPhysics
 		TRIGGER=0,
 		COLLISION
 	};
+	struct USERDATA
+	{
+		uint32_t entityID{};
+		bool IsController{};
+	};
+
 	enum class EPhysicsLayer
 	{
 		GROUND=0,
 		WALL,
 		TOP,
 		PLAYER,
-		OBJECT,
 		ENEMY,
+		WEAPON,
+		PLAYERBULLET,
+		ENEMYBULLET,
 		DOOR,
-		ACTIVEDOOR,
 		TRIGGER,
 		END
 	};

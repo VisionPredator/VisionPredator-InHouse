@@ -10,25 +10,69 @@ HierarchySystem::HierarchySystem(std::shared_ptr<SceneManager> sceneManager) :Sy
 void HierarchySystem::ShowEntitys()
 {
 	std::string lowerSearchingName = ToLower(m_SearchingName);
-		ShowDelete = false;
+	ShowDelete = false;
 
-	for (TransformComponent& transcomp : COMPITER(TransformComponent))
+	if (lowerSearchingName.empty())
 	{
-		//std::string entityName = transcomp.GetComponent<IDComponent>()->Name;
-		//std::string lowerEntityName = ToLower(entityName);
-		if (transcomp.HasComponent<Parent>())
-			continue;
+		COMPLOOP(TransformComponent, transcomp)
+		{
 
-		ShowParentEntity(transcomp.GetEntityID());
-		//// Check if the entity name contains the search string (case-insensitive)
-		//if (lowerSearchingName.empty() || lowerEntityName.find(lowerSearchingName) != std::string::npos)
-		//{
-		//	// Skip if the entity has a parent (not a root entity)
+			if (transcomp.HasComponent<Parent>())
+				continue;
 
-		//}
+			ShowParentEntity(transcomp.GetEntityID());
+
+		}
+	}
+	else
+	{
+		COMPLOOP(IDComponent, idcomp)
+		{
+			std::string entityName = idcomp.Name;
+			std::string lowerEntityName = ToLower(entityName);
+			if (lowerSearchingName.empty() || lowerEntityName.find(lowerSearchingName) != std::string::npos)
+			{
+				ShowEntity(idcomp.GetEntityID());
+			}
+		}
+	}
+}
+
+void HierarchySystem::ShowEntity(uint32_t entityID)
+{
+	auto entity = GetSceneManager()->GetEntity(entityID);
+	if (!entity) return;
+
+	auto IDcomp = entity->GetComponent<IDComponent>();
+
+	ImGui::PushID(entityID);
+
+	// 엔티티 이름을 선택 가능한 형태로 표시
+	if (ImGui::Selectable(IDcomp->Name.c_str(), m_SelectedEntityID == entityID)) {
+		m_SelectedEntityID = entityID;
 	}
 
+	// 마우스 오른쪽 클릭을 통해 컨텍스트 메뉴 표시
+	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+		ImGui::OpenPopup("Entity_Popup");
+		m_RClickedEntityID = entityID;
+		m_IsEntityRClicked = true;
+		ShowDelete = true;
+	}
+
+	if (m_IsEntityRClicked && ImGui::BeginPopup("Entity_Popup")) {
+		if (ImGui::MenuItem("Delete")) {
+			GetSceneManager()->DeleteEntity(m_RClickedEntityID);
+			m_RClickedEntityID = 0;
+			m_IsEntityRClicked = false;
+		}
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopID();
 }
+
+
 
 void HierarchySystem::ShowParentEntity(uint32_t entityID)
 {
@@ -135,3 +179,4 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 		ImGui::TreePop();
 	}
 }
+

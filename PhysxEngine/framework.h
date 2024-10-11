@@ -16,7 +16,7 @@
 #include <string_view>
 #include <entt/entt.hpp>
 #include <d3d11.h>
-#include <PxPhysicsAPI.h>
+#include "../physx/PxPhysicsAPI.h"
 
 #pragma comment(lib, "PhysXFoundation_64.lib")
 #pragma comment(lib, "PhysXCommon_64.lib")
