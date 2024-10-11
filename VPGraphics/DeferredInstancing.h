@@ -20,10 +20,11 @@ public:
 
 private:
 
-	std::vector<InstanceData> m_InstanceDatas;
 	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
-	
 	std::weak_ptr<VertexShader> m_InstancingVS;
+
+	std::vector<InstanceData> m_InstanceDatas;
+	std::queue<std::pair<int, int>> m_instancecount;
 
 private:
 	std::weak_ptr<LightManager> m_LightManager;

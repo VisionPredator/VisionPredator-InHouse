@@ -29,8 +29,8 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	//임시로해놓음..
 	for (int i = 0; i < 1000; i++)
 	{
-	InstanceData temp;
-	m_InstanceDatas.push_back(temp);
+		InstanceData temp;
+		m_InstanceDatas.push_back(temp);
 	}
 	m_InstanceBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceBuffer", m_InstanceDatas, true);
 	m_InstancingVS = m_ResourceManager.lock()->Create<VertexShader>(L"InstancingVS", L"InstancingVS");
@@ -129,10 +129,6 @@ void DeferredInstancing::Render()
 
 	if (!m_InstanceDatas.empty())
 	{
-
-		std::weak_ptr<ModelData> curModel;
-		curModel = m_ResourceManager.lock()->Get<ModelData>(L"floor2_low.fbx");
-
 		UINT strides[2];
 		strides[0] = sizeof(BaseVertex);
 		strides[1] = sizeof(InstanceData);
@@ -144,32 +140,47 @@ void DeferredInstancing::Render()
 		auto lightmap = m_LightManager.lock()->GetLightMaps();
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
 
-		for (auto& mesh : curModel.lock()->m_Meshes)
-		{
-			std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-			std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
-			if (curMaterial != nullptr)
-			{
-				MaterialData data = curMaterial->m_Data;
-				curMaterialData->Update(data);
 
-				Device->BindMaterialSRV(curMaterial);
+		int preInstance = 0;
+		while (!m_instancecount.empty())
+		{
+			std::pair<int, int> curInstance = m_instancecount.front();
+			std::weak_ptr<ModelData> curModel;
+			curModel = m_ResourceManager.lock()->Get(curInstance.first);
+
+			if (curModel.lock() != nullptr)
+			{
+				for (auto& mesh : curModel.lock()->m_Meshes)
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
+					if (curMaterial != nullptr)
+					{
+						MaterialData data = curMaterial->m_Data;
+						curMaterialData->Update(data);
+
+						Device->BindMaterialSRV(curMaterial);
+					}
+
+					std::vector<ID3D11Buffer*> bufferPointers[2];
+					bufferPointers->push_back(mesh->VB());
+					bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
+
+					m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
+					m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+					m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+					m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), curInstance.second, 0, 0, preInstance);
+				}
 			}
 
-			std::vector<ID3D11Buffer*> bufferPointers[2];
-			bufferPointers->push_back(mesh->VB());
-			bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
-
-			m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
-			m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
-			m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-			m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), m_InstanceDatas.size(), 0, 0, 0);
-		}
-
-		Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
+			preInstance = curInstance.second;
+			m_instancecount.pop();
+		}	
 	}
+
+	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
+
 	///light
 	//Save GBuffer texture
 	{
@@ -210,8 +221,6 @@ void DeferredInstancing::Render()
 		}
 
 	}
-	/*
-	*/
 
 	m_InstanceDatas.clear();
 }
@@ -247,35 +256,68 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 	m_RenderList = renderQueue;
 
 
+	std::vector<RenderData> sortingRender;
+
+	sort(m_RenderList.begin(), m_RenderList.end(),
+		[](const std::shared_ptr<RenderData> a, const std::shared_ptr<RenderData> b) {
+			return a->ModelID < b->ModelID; }
+	);
+
+
+	int preModelID = -1;
+	int curModelID = -1;
+	int count = 0;
 	//instance buffer
 	for (auto& object : m_RenderList)
 	{
-
-		//벽인지
-		//바닥인지
-		//어떤 녀석인지 알아야 모아서 한번에 그리지
-		//바리에이션이 많은데...
-
-		//임시로
-		if (object->FBX == L"floor2_low.fbx")
+		if (preModelID < 0 && curModelID < 0)
 		{
-			InstanceData temp;
-			temp.world = object->world.Transpose();
-			temp.worldInverse = object->world.Invert();
-			temp.lightmap_offset = object->offset;
-			temp.lightmap_tiling = object->tiling;
-			temp.lightmap_index.x = object->lightmapindex;
-			temp.lightmap_index.y = 0.f;
+			preModelID = object->ModelID;
+			curModelID = object->ModelID;
 
-			if (object->tiling.x != 0 || object->tiling.y != 0)
+		}
+		else
+		{
+			curModelID = object->ModelID;
+		}
+
+		{
+
+			if (preModelID == curModelID)
 			{
-				temp.lightmap_index.y = 1.f;
+				count++;
+			}
+			else
+			{
+				m_instancecount.push(std::pair<int, int>(preModelID, count));
+				count = 1;
 			}
 
+			{
+				InstanceData temp;
+				temp.world = object->world.Transpose();
+				temp.worldInverse = object->world.Invert();
+				temp.lightmap_offset = object->offset;
+				temp.lightmap_tiling = object->tiling;
+				temp.lightmap_index.x = object->lightmapindex;
+				temp.lightmap_index.y = 0.f;
 
-			m_InstanceDatas.push_back(temp);
+				if (object->tiling.x != 0 || object->tiling.y != 0)
+				{
+					temp.lightmap_index.y = 1.f;
+				}
+
+				m_InstanceDatas.push_back(temp);
+			}
 		}
+
+		preModelID = curModelID;
+
 	}
+
+	m_instancecount.push(std::pair<int, int>(curModelID, count));
+
+
 
 	//instance buffer update
 	if (!m_InstanceDatas.empty())

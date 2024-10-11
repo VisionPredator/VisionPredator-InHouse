@@ -647,7 +647,7 @@ void GraphicsEngine::Culling()
 		}
 		else
 		{
-			object->ModelID = 0;
+			object->ModelID = -1;
 
 			if (object->Filter == GeoMetryFilter::Box)
 			{

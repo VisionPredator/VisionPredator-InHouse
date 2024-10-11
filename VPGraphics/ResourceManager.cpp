@@ -40,6 +40,30 @@ ResourceManager::~ResourceManager()
 }
 
 
+std::weak_ptr<ModelData> ResourceManager::Get(const int modelID)
+{
+	if (modelID > 0)
+	{
+		std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[static_cast<int>(ResourceType::ModelData)];
+
+		for (auto& model : curMap)
+		{
+			auto curmodel = dynamic_pointer_cast<ModelData>(model.second);
+
+			if (curmodel)
+			{
+				if (curmodel->UID == modelID)
+				{
+					return curmodel;
+				}
+			}
+		}
+	}
+
+
+	return {};
+}
+
 void ResourceManager::Initialize(std::weak_ptr<Device> device)
 {
 	m_Device = device;

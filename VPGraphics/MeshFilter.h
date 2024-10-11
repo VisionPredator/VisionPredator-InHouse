@@ -59,7 +59,7 @@ public:
 	std::wstring Name;
 	std::wstring FBX;
 	PassState Pass; 
-	uint32_t ModelID;
+	int ModelID;
 
 	GeoMetryFilter Filter;
 	bool isSkinned = false;
