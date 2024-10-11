@@ -124,8 +124,7 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
     }
     
     float gamma = 2.2f;
-    uint index = (uint(input.tex.z)); // texZ를 uint로 변환
-    output.LightMap = pow(gLightMap.Sample(samLinear, float3(input.lightuv, index)),gamma); // 기본값 설정
+    output.LightMap = pow(gLightMap.Sample(samLinear, float3(input.lightuv, input.tex.z)),gamma); // 기본값 설정
     return output;
     
 }
