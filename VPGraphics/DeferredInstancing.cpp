@@ -26,6 +26,7 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_ResourceManager = resourceManager;
 	m_Device = device;
 
+	//임시로해놓음..
 	for (int i = 0; i < 1000; i++)
 	{
 	InstanceData temp;

@@ -23,7 +23,7 @@ public:
 	ShaderResourceView(const std::shared_ptr<Device>& device, std::vector<std::string> filelist, Directory dir = Directory::Texture);
 	ShaderResourceView(const std::shared_ptr<Device>& device, const std::wstring& filename, Directory dir = Directory::Texture);
 	ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<RenderTargetView>& rtv);
-	ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<Texture2D>& texture2D, Directory dir = Directory::Texture);
+	ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<Texture2D>& texture2D);
 
 	~ShaderResourceView() = default;
 

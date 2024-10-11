@@ -162,7 +162,7 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(rtvTexture.Get(), &srvDesc, m_SRV.GetAddressOf()));
 }
 
-ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<Texture2D>& texture2D, Directory dir)
+ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, const std::shared_ptr<Texture2D>& texture2D)
 	: Resource(device)
 {
 	D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -173,22 +173,7 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = textureDesc.Format;
-
-	switch (dir)
-	{
-		case ShaderResourceView::Directory::Texture:
-			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-			break;
-		case ShaderResourceView::Directory::LightMap:
-			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-			srvDesc.Texture2DArray.MostDetailedMip = 0; // 가장 상세한 Mipmap 레벨
-			srvDesc.Texture2DArray.MipLevels = textureDesc.MipLevels; // Mipmap 레벨 수
-			srvDesc.Texture2DArray.FirstArraySlice = 0; // 첫 번째 배열 슬라이스
-			srvDesc.Texture2DArray.ArraySize = textureDesc.ArraySize; // 배열 크기
-			break;
-		default:
-			break;
-	}
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 
 	HR_CHECK(m_Device.lock()->Get()->CreateShaderResourceView(texture2D->Get(), &srvDesc, m_SRV.GetAddressOf()));
 }
@@ -385,6 +370,9 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, st
 	// SRV 생성
 	//ID3D11ShaderResourceView* textureArraySRV = nullptr;
 	hr = m_Device.lock()->Get()->CreateShaderResourceView(textureArray, &srvDesc, &m_SRV);
+
+	textureArray->Release();
+	loadedTextures.clear();
 }
 
 ID3D11ShaderResourceView* ShaderResourceView::Get() const
