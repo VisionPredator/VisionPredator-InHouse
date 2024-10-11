@@ -75,5 +75,9 @@ struct PlayerComponent :
     bool Played_Run1{};
 
 	bool IsRotated=false;
+	bool PlayerCamereShake{};
+	bool GunShake{};
+	VPMath::Quaternion GunColiRot{};
+
 };
 

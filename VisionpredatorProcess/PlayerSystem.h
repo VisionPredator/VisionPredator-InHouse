@@ -21,7 +21,7 @@ public:
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
-	void CameraShake(PlayerComponent& playercomp);
+	void CameraShake(PlayerComponent& playercomp,float deltatime);
 
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
@@ -97,9 +97,9 @@ public:
 	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
 	void GunCooltime(PlayerComponent& playercomp, float deltatime);
 #pragma region Shoot Logic
-	void Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
-	void Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
-	void Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
 #pragma endregion
 
 

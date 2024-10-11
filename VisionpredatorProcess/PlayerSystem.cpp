@@ -28,7 +28,6 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 		SearchingInterectives(playercomp);
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
-
 	}
 }
 
@@ -86,6 +85,43 @@ void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 		temp = !temp;
 		m_Graphics->SetVP(temp);
 	}
+}
+void PlayerSystem::CameraShake(PlayerComponent& playercomp,float deltatime)
+{
+
+	if (playercomp.HasGun)
+	{
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		gunComp->CoolTime;
+		if (playercomp.GunprogressTime < (gunComp->CoolTime / 2))
+		{
+		}
+		else if (playercomp.GunprogressTime> gunComp->CoolTime)
+		{
+
+		}
+		else if (playercomp.GunprogressTime >= (gunComp->CoolTime / 2))
+		{
+
+		}
+
+	}
+	else
+	{
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		if (playercomp.GunprogressTime >= gunComp->CoolTime)
+		{
+			playercomp.GunprogressTime = gunComp->CoolTime;
+			playercomp.ReadyToShoot = true;
+		}
+		else
+		{
+			playercomp.GunprogressTime += deltatime;
+			playercomp.ReadyToShoot = false;
+
+		}
+	}
+
 }
 #pragma region Physics Setting
 
@@ -777,7 +813,7 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 		{
 			auto& socketcomp = *GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
 			VPMath::Vector3 temp = GetSceneManager()->GetComponent <TransformComponent>(playercomp.FirePosEntityID)->FrontVector;
-			temp.RotateToUp2(6);
+			temp.RotateToUp(6);
 			socketcomp.IsConnected = false;
 			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
 			socketcomp.ConnectedEntityID = 0;
@@ -875,11 +911,11 @@ void PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 #pragma region Gun System Logic
 #pragma region Shoot Logic
 
-void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
 	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
-		return;
+		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
@@ -887,18 +923,19 @@ void PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
-		return;
+		return false;
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
 	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	return true;
 }
-void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
 	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
-		return;
+		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
@@ -906,31 +943,32 @@ void PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
-		return;
+		return false;
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
 	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	return true;
 }
-void PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
 	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
-		return;
+		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
 	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
 	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
 	if (!posEntity)
-		return;
+		return false;
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
 	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
-
+	return true;
 }
 #pragma endregion
 
