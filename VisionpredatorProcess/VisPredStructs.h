@@ -22,7 +22,6 @@ namespace VisPred
 			CROUCH,
 			SLIDE,
 			JUMP,
-			CHARGE,
 			ATTACK,
 			DIE,
 			DESTROY,

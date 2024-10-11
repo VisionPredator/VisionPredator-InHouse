@@ -19,141 +19,167 @@
 	{
 	}
 
-	void TransformComponent::SetLocalLocation(VPMath::Vector3 newlocal)
+	bool TransformComponent::SetLocalLocation(VPMath::Vector3 newlocal)
 	{
 		if (Local_Location == newlocal)
-			return;
+			return false;
 		Local_Location = newlocal;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
-	void TransformComponent::SetLocalQuaternion(VPMath::Quaternion newlocal)
+	bool TransformComponent::SetLocalQuaternion(VPMath::Quaternion newlocal)
 	{
 		if (Local_Quaternion == newlocal)
-			return;
+			return false;
 		Local_Quaternion = newlocal;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::SetLocalRotation(VPMath::Vector3 newlocal)
+	bool TransformComponent::SetLocalRotation(VPMath::Vector3 newlocal)
 	{
 		if (Local_Rotation == newlocal)
-			return;
+			return false;
 		Local_Rotation = newlocal;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
 
-	void TransformComponent::SetLocalScale(VPMath::Vector3 newlocal)
+	bool TransformComponent::SetLocalScale(VPMath::Vector3 newlocal)
 	{
 		if (Local_Scale == newlocal)
-			return;
+			return false;
 		Local_Scale = newlocal;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::AddWorldLocation(VPMath::Vector3 addworld)
+	bool TransformComponent::AddWorldLocation(VPMath::Vector3 addworld)
 	{
 		if (addworld == VPMath::Vector3::Zero)
-			return;
+			return false;
 		World_Location += addworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::SetWorldLocation(VPMath::Vector3 newworld)
+	bool TransformComponent::SetWorldLocation(VPMath::Vector3 newworld)
 	{
 		if (World_Location == newworld)
-			return;
+			return false;
 		World_Location = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::SetWorldLocationX(float newworld)
+	bool TransformComponent::SetWorldLocationX(float newworld)
 	{
 		if (World_Location.x == newworld)
-			return;
+			return false;
 		World_Location.x = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::SetWorldLocationY(float newworld)
+	bool TransformComponent::SetWorldLocationY(float newworld)
 	{
 		if (World_Location.y == newworld)
-			return;
+			return false;
 		World_Location.y = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::SetWorldLocationZ(float newworld)
+	bool TransformComponent::SetWorldLocationZ(float newworld)
 	{
 		if (World_Location.z == newworld)
-			return;
+			return false;
 		World_Location.z = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
+
 	}
 
-	void TransformComponent::SetWorldQuaternion(VPMath::Quaternion newworld)
+	bool TransformComponent::SetWorldQuaternion(VPMath::Quaternion newworld)
 	{
 		if (World_Quaternion == newworld)
-			return;
+			return false;
 		World_Quaternion = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
 
-	void TransformComponent::SetWorldRotation(VPMath::Vector3 newworld)
+	bool TransformComponent::SetWorldRotation(VPMath::Vector3 newworld)
 	{
 		if (World_Rotation == newworld)
-			return;
+			return false;
 		World_Rotation = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
-	void TransformComponent::SetWorldRotationX(float newworld)
+	bool TransformComponent::SetWorldRotationX(float newworld)
 	{										   
 		if (World_Rotation.x == newworld)		   
-			return;							   
+			return false;							   
 		World_Rotation.x = newworld;			   
 		TransformSystem::AddUpdateData(this);  
-	}										   
-	void TransformComponent::SetWorldRotationY(float newworld)
+		return true;
+	}
+	bool TransformComponent::SetWorldRotationY(float newworld)
 	{										   
 		if (World_Rotation.y == newworld)		   
-			return;							   
+			return false;							   
 		World_Rotation.y = newworld;			   
 		TransformSystem::AddUpdateData(this);  
-	}										   
-	void TransformComponent::SetWorldRotationZ(float newworld)
+		return true;
+	}
+	bool TransformComponent::SetWorldRotationZ(float newworld)
 	{
 		if (World_Rotation.z == newworld)
-			return;
+			return false;
 		World_Rotation.z = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
-	void TransformComponent::SetWorldScale(VPMath::Vector3 newworld)
+	bool TransformComponent::SetWorldScale(VPMath::Vector3 newworld)
 	{
 		if (World_Scale == newworld)
-			return;
+			return false;
 		World_Scale = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
 
-	void TransformComponent::SetWorldScaleX(float newworld)
+	bool TransformComponent::SetWorldScaleX(float newworld)
 	{
 		if (World_Scale.x == newworld)
-			return;
+			return false;
 		World_Scale.x = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
 
-	void TransformComponent::SetWorldScaleY(float newworld)
+	bool TransformComponent::SetWorldScaleY(float newworld)
 	{
 		if (World_Scale.y == newworld)
-			return;
+			return false;
 		World_Scale.y = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}
 
-	void TransformComponent::SetWorldScaleZ(float newworld)
+	bool TransformComponent::SetWorldScaleZ(float newworld)
 	{
 		if (World_Scale.z == newworld)
-			return;
+			return false;
 		World_Scale.z = newworld;
 		TransformSystem::AddUpdateData(this);
+		return true;
 	}

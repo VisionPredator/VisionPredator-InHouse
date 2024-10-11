@@ -73,5 +73,7 @@ struct PlayerComponent :
     bool Played_Slide{};
     bool Played_Sit{};
     bool Played_Run1{};
+
+	bool IsRotated=false;
 };
 

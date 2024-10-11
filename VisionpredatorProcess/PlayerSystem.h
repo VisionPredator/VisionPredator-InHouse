@@ -21,7 +21,7 @@ public:
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
-
+	void CameraShake(PlayerComponent& playercomp);
 
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);

@@ -659,7 +659,7 @@ void PlayerSystem::Active_Rotation(PlayerComponent& playercomp, TransformCompone
 	VPMath::Vector3 cameraRotation = posTransComp->Local_Rotation;
 	cameraRotation.x += pitch;
 	cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
-	posTransComp->SetLocalRotation(cameraRotation);
+	playercomp.IsRotated =posTransComp->SetLocalRotation(cameraRotation);
 }
 void PlayerSystem::Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
 {

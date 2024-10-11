@@ -61,25 +61,22 @@ public:
 	VPMath::Matrix		LocalTransform = {}; 
 	VPMath::Matrix		WorldTransform = {};
 
-	void SetLocalLocation(VPMath::Vector3);
-	void SetLocalQuaternion(VPMath::Quaternion);
-	void SetLocalRotation(VPMath::Vector3);
-	void SetLocalScale(VPMath::Vector3);
-	void AddWorldLocation(VPMath::Vector3);
-
-	void SetWorldLocation(VPMath::Vector3);
-	void SetWorldLocationX(float newworld);
-	void SetWorldLocationY(float newworld);
-	void SetWorldLocationZ(float newworld);
-
-	void SetWorldQuaternion(VPMath::Quaternion);
-
-	void SetWorldRotation(VPMath::Vector3);
-	void SetWorldRotationX(float newworld);
-	void SetWorldRotationY(float newworld);
-	void SetWorldRotationZ(float newworld);
-	void SetWorldScale(VPMath::Vector3);
-	void SetWorldScaleX(float newworld);
-	void SetWorldScaleY(float newworld);
-	void SetWorldScaleZ(float newworld);
+	bool SetLocalLocation(VPMath::Vector3);
+	bool SetLocalQuaternion(VPMath::Quaternion);
+	bool SetLocalRotation(VPMath::Vector3);
+	bool SetLocalScale(VPMath::Vector3);
+	bool AddWorldLocation(VPMath::Vector3);
+	bool SetWorldLocation(VPMath::Vector3);
+	bool SetWorldLocationX(float newworld);
+	bool SetWorldLocationY(float newworld);
+	bool SetWorldLocationZ(float newworld);
+	bool SetWorldQuaternion(VPMath::Quaternion);
+	bool SetWorldRotation(VPMath::Vector3);
+	bool SetWorldRotationX(float newworld);
+	bool SetWorldRotationY(float newworld);
+	bool SetWorldRotationZ(float newworld);
+	bool SetWorldScale(VPMath::Vector3);
+	bool SetWorldScaleX(float newworld);
+	bool SetWorldScaleY(float newworld);
+	bool SetWorldScaleZ(float newworld);
 };
