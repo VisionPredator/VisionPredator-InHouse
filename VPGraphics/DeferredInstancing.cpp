@@ -26,7 +26,7 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_ResourceManager = resourceManager;
 	m_Device = device;
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 	InstanceData temp;
 	m_InstanceDatas.push_back(temp);
@@ -121,10 +121,8 @@ void DeferredInstancing::Render()
 		Device->Context()->VSSetConstantBuffers(1, 1, MaterialCB->GetAddress());
 		Device->Context()->PSSetConstantBuffers(1, 1, MaterialCB->GetAddress());
 
-		//Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, light->GetAddress());
 
-		//Device->Context()->VSSetConstantBuffers(2, 1, SkeletalCB->GetAddress());
-		//Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, SkeletalCB->GetAddress());
+		m_Device.lock()->Context()->IASetInputLayout(m_InstancingVS.lock()->InputLayout());
 	}
 
 
@@ -142,6 +140,9 @@ void DeferredInstancing::Render()
 		offsets[0] = 0;
 		offsets[1] = 0;
 
+		auto lightmap = m_LightManager.lock()->GetLightMaps();
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
+
 		for (auto& mesh : curModel.lock()->m_Meshes)
 		{
 			std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
@@ -149,20 +150,6 @@ void DeferredInstancing::Render()
 			if (curMaterial != nullptr)
 			{
 				MaterialData data = curMaterial->m_Data;
-				//data.lightmapdata.y = curData->offset.y;
-				//data.lightmapdata.z = curData->lightmapindex;
-				//data.lightmapdata.w = 1; //curData->scale;
-				//data.lightmaptiling = curData->tiling;
-				//if (data.lightmaptiling.x != 0 || data.lightmaptiling.y != 0)
-				//{
-				//	data.useNEOL.w = 1;
-
-				//	std::shared_ptr<ShaderResourceView> lightmap = m_LightManager.lock()->GetLightMap(curData->lightmapindex).lock();
-				//	if (lightmap != nullptr)
-				//	{
-				//		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap->GetAddress());
-				//	}
-				//}
 				curMaterialData->Update(data);
 
 				Device->BindMaterialSRV(curMaterial);
@@ -176,7 +163,6 @@ void DeferredInstancing::Render()
 			m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
 			m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_Device.lock()->Context()->IASetInputLayout(m_InstancingVS.lock()->InputLayout());
 
 			m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), m_InstanceDatas.size(), 0, 0, 0);
 		}
@@ -275,6 +261,16 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 			InstanceData temp;
 			temp.world = object->world.Transpose();
 			temp.worldInverse = object->world.Invert();
+			temp.lightmap_offset = object->offset;
+			temp.lightmap_tiling = object->tiling;
+			temp.lightmap_index.x = object->lightmapindex;
+			temp.lightmap_index.y = 0.f;
+
+			if (object->tiling.x != 0 || object->tiling.y != 0)
+			{
+				temp.lightmap_index.y = 1.f;
+			}
+
 
 			m_InstanceDatas.push_back(temp);
 		}

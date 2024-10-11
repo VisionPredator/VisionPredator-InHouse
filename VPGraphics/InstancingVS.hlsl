@@ -64,6 +64,9 @@ struct VS_INPUT
     //instancing data
     float4x4 world : WORLD;
     float4x4 worldinverse : WORLDINVERSE;
+    float2 offset : LIGHTMAPOFFSET;
+    float2 tiling : LIGHTMAPTILING;
+    float2 index : LIGHTMAPINDEX;
 };
 
 struct VS_OUTPUT
@@ -73,7 +76,7 @@ struct VS_OUTPUT
     float4 normal : NORMAL;
     float4 tangent : TEXCOORD0;
     float4 bitangent : TEXCOORD1;
-    float2 tex : TEXCOORD2;
+    float4 tex : TEXCOORD2;
     float2 lightuv : TEXCOORD3;
     float4 posWorld : TEXCOORD4;
 };
@@ -117,22 +120,20 @@ VS_OUTPUT main(VS_INPUT input)
     output.normal = input.normal;
     output.tangent = input.tangent;
     output.bitangent = input.bitangent;
-    output.tex = input.tex;
+    output.tex.xy = input.tex.xy;
+    output.tex.z = input.index;
+    
     output.lightuv = input.lightuv;
        
-    if (useNEOL.w > 0)
-    {
-        float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.x;
-        float y = (1 - input.lightuv.y) * lightmaptiling.y + lightmapdata.y;
+    float x = (input.lightuv.x * input.tiling.x) + input.offset.x;
+    float y = (1 - input.lightuv.y) * input.tiling.y + input.offset.y;
     
     
-        //Unity light map은 좌하단이 0,0 dx11 좌상단이 0,0
-        //y 반전 필요
-        float2 uv = float2(x, 1 - y);
+    //Unity light map은 좌하단이 0,0 dx11 좌상단이 0,0
+    //y 반전 필요
+    float2 uv = float2(x , 1 - y);
     
-        output.lightuv = uv;
-        //output.LightMap = (gLightMap.Sample(samLinear, uv));
-    }
+    output.lightuv = uv * input.index.y;
   
     
     

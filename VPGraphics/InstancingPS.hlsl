@@ -36,13 +36,9 @@ Texture2D gAO : register(t6);
 Texture2D gEmissive : register(t7);
 
 Texture2D gOpacity : register(t8);
-Texture2D gLightMap : register(t9);
-Texture2D gGBuffer : register(t10);
-Texture2D gIMGUI : register(t11);
+Texture2DArray gLightMap : register(t9);
 
-//***********************************************
-// Sampler States                               *
-//***********************************************
+
 SamplerState samLinear : register(s0);
     
 struct VS_OUTPUT
@@ -52,7 +48,7 @@ struct VS_OUTPUT
     float4 normal : NORMAL;
     float4 tangent : TEXCOORD0;
     float4 bitangent : TEXCOORD1;
-    float2 tex : TEXCOORD2;
+    float4 tex : TEXCOORD2;
     float2 lightuv : TEXCOORD3;
     float4 posWorld : TEXCOORD4;
 };
@@ -81,34 +77,34 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
        
     if (AMRO.x > 0)
     {
-        output.Albedo = gAlbedo.Sample(samLinear, input.tex);
+        output.Albedo = gAlbedo.Sample(samLinear, input.tex.xy);
     }
     
     output.Metalic_Roughness = float4(0, 0, 0, 1);
     output.Metalic_Roughness.r = 0.04f;
     if (AMRO.y >= 1)
     {
-        output.Metalic_Roughness.r = gMetalic.Sample(samLinear, input.tex).r;
+        output.Metalic_Roughness.r = gMetalic.Sample(samLinear, input.tex.xy).r;
     }
     
     output.Metalic_Roughness.g = 1.f;
     
     if (AMRO.z >= 1)
     {
-        output.Metalic_Roughness.g = gRoughness.Sample(samLinear, input.tex).r;
+        output.Metalic_Roughness.g = gRoughness.Sample(samLinear, input.tex.xy).r;
     }
     
     output.AO = 0.f;
     
     if (AMRO.w >= 1)
     {
-        output.AO = gAO.Sample(samLinear, input.tex);
+        output.AO = gAO.Sample(samLinear, input.tex.xy);
     }
     
     output.Normal = input.normal;
     if (useNEOL.x >= 1)
     {
-        float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex).rgb;
+        float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex.xy).rgb;
         NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
         NormalTangentSpace = normalize(NormalTangentSpace);
 
@@ -119,16 +115,17 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
     output.Emissive = 0;
     if (useNEOL.y >= 1)
     {
-        output.Emissive = gEmissive.Sample(samLinear, input.tex);
+        output.Emissive = gEmissive.Sample(samLinear, input.tex.xy);
     }
     
     if (useNEOL.z >= 1)
     {
-        output.Albedo.a = gOpacity.Sample(samLinear, input.tex).r;
+        output.Albedo.a = gOpacity.Sample(samLinear, input.tex.xy).r;
     }
-        
-    output.LightMap = gLightMap.Sample(samLinear, input.lightuv);
     
+    
+    uint index = (uint(input.tex.z)); // texZ를 uint로 변환
+    output.LightMap = gLightMap.Sample(samLinear, float3(input.lightuv, index)); // 기본값 설정
     return output;
     
 }

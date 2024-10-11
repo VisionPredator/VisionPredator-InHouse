@@ -50,4 +50,7 @@ struct InstanceData
 
 	VPMath::Matrix world;
 	VPMath::Matrix worldInverse;
+	VPMath::XMFLOAT2 lightmap_offset;
+	VPMath::XMFLOAT2 lightmap_tiling;
+	VPMath::XMFLOAT2 lightmap_index;
 };
