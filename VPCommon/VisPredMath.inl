@@ -917,42 +917,6 @@ inline float Vector3::LengthSquared() const noexcept
 
 inline void Vector3::RotateToUp(float degrees) noexcept
 {
-	// Convert degrees to radians
-	float radians = degrees * DirectX::XM_PI / 180.0f;
-
-	// Get the normalized direction towards the UP vector
-	Vector3 up = Vector3::Up;
-	up.Normalize();
-	Vector3 current = *this;
-	current.Normalize();
-
-	// Calculate the dot product to find the angle between the current vector and up vector
-	float dot = current.Dot(up);
-
-	// Clamp the dot product to ensure it's within the valid range of acos
-	dot = std::clamp(dot, -1.0f, 1.0f);
-
-	// Get the current angle between the vectors
-	float currentAngle = std::acos(dot);
-
-	// Calculate the new angle, clamping it to a maximum of 90 degrees in radians
-	float maxRadians = DirectX::XM_PIDIV2; // 90 degrees in radians
-	float newAngle = currentAngle + radians;
-	if (newAngle > maxRadians)
-		newAngle = maxRadians;
-
-	// Calculate the lerp factor to move towards the UP direction
-	float t = newAngle / currentAngle;
-
-	// Linearly interpolate between the current vector and the UP vector
-	Vector3 result = Vector3::Lerp(current, up, t);
-
-	// Normalize and store the result back to the vector
-	result.Normalize();
-	*this = result;
-}
-inline void Vector3::RotateToUp2(float degrees) noexcept
-{
     // Convert degrees to radians
     float radians = degrees * DirectX::XM_PI / 180.0f;
 
@@ -996,6 +960,25 @@ inline void Vector3::RotateToUp2(float degrees) noexcept
     DirectX::XMVECTOR rotatedVec = DirectX::XMVector3Rotate(currentVec, quaternion);
 
     // Store the result
+    XMStoreFloat3(this, rotatedVec);
+}
+inline void Vector3::RotateToYaw(float degrees) noexcept {
+    // Convert degrees to radians
+    float radians = degrees * DirectX::XM_PI / 180.0f;
+
+    // Get the up vector (yaw is rotation around the up vector)
+    Vector3 up = Vector3::Up;
+    up.Normalize();
+
+    // Create a quaternion representing the yaw rotation around the up vector
+    DirectX::XMVECTOR upAxis = XMLoadFloat3(&up);
+    DirectX::XMVECTOR quaternion = DirectX::XMQuaternionRotationAxis(upAxis, radians);
+
+    // Apply the quaternion to the current vector
+    DirectX::XMVECTOR currentVec = XMLoadFloat3(this);
+    DirectX::XMVECTOR rotatedVec = DirectX::XMVector3Rotate(currentVec, quaternion);
+
+    // Store the result back into the current vector
     XMStoreFloat3(this, rotatedVec);
 }
 
@@ -3296,8 +3279,75 @@ inline void Quaternion::Conjugate() noexcept
 inline void Quaternion::Conjugate(Quaternion& result) const noexcept
 {
     using namespace DirectX;
-    const XMVECTOR q = XMLoadFloat4(this);
-    XMStoreFloat4(&result, XMQuaternionConjugate(q));
+	const XMVECTOR q = XMLoadFloat4(this);
+	XMStoreFloat4(&result, XMQuaternionConjugate(q));
+}
+inline void Quaternion::RotateToUp(float degrees) noexcept {
+	// Convert degrees to radians
+	float radians = degrees * DirectX::XM_PI / 180.0f;
+
+	// Get the up vector (assuming Y-axis as up)
+	Vector3 up = Vector3::Up;
+	up.Normalize();
+
+	// Convert the current quaternion to XMVECTOR
+	DirectX::XMVECTOR currentQuat = XMLoadFloat4(this);
+
+	// Get the current forward vector (apply the current quaternion to the forward direction)
+	DirectX::XMVECTOR forwardVec = DirectX::XMVector3Rotate(DirectX::g_XMIdentityR2, currentQuat);
+
+	// Calculate the dot product and the angle between the forward and up vectors
+	float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(forwardVec, XMLoadFloat3(&up)));
+	dot = std::clamp(dot, -1.0f, 1.0f); // Ensure dot product is within valid range for acos
+	float angleBetween = std::acos(dot);
+
+	// Check if the angle is already close to 0 (i.e., vectors are aligned)
+	if (std::abs(angleBetween) < 1e-5f)
+    {
+		return; // No need to rotate
+	}
+
+	// Calculate the axis of rotation (cross product)
+	DirectX::XMVECTOR rotationAxis = DirectX::XMVector3Cross(forwardVec, XMLoadFloat3(&up));
+	if (DirectX::XMVector3LengthSq(rotationAxis).m128_f32[0] < 1e-5f) {
+		// If the vectors are parallel, we don't have a valid axis. Use an arbitrary perpendicular axis.
+		rotationAxis = DirectX::g_XMIdentityR0; // Use X-axis as default
+	}
+
+	// Normalize the rotation axis
+	rotationAxis = DirectX::XMVector3Normalize(rotationAxis);
+
+	// Create a quaternion representing the rotation by the specified radians around the rotation axis
+	DirectX::XMVECTOR rotationQuat = DirectX::XMQuaternionRotationAxis(rotationAxis, radians);
+
+	// Apply the resulting quaternion to the current quaternion
+	DirectX::XMVECTOR newQuat = DirectX::XMQuaternionMultiply(currentQuat, rotationQuat);
+
+	// Store the result back into the quaternion
+	XMStoreFloat4(this, newQuat);
+}
+
+
+inline void Quaternion::RotateYaw(float degrees) noexcept {
+	// Convert degrees to radians
+	float radians = degrees * DirectX::XM_PI / 180.0f;
+
+	// Get the up vector (Y-axis) for yaw rotation
+	Vector3 up = Vector3::Up;
+	up.Normalize();
+
+	// Load the up vector and create a quaternion for yaw rotation
+	DirectX::XMVECTOR upVec = XMLoadFloat3(&up);
+	DirectX::XMVECTOR yawQuat = DirectX::XMQuaternionRotationAxis(upVec, radians);
+
+	// Convert the current quaternion to XMVECTOR
+	DirectX::XMVECTOR currentQuat = XMLoadFloat4(this);
+
+	// Apply the yaw quaternion to the current quaternion
+	DirectX::XMVECTOR newQuat = DirectX::XMQuaternionMultiply(currentQuat, yawQuat);
+
+	// Store the result back into the quaternion
+	XMStoreFloat4(this, newQuat);
 }
 
 inline void Quaternion::Inverse(Quaternion& result) const noexcept
