@@ -27,7 +27,7 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_Device = device;
 
 	//임시로해놓음..
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		InstanceData temp;
 		m_InstanceDatas.push_back(temp);
@@ -174,9 +174,9 @@ void DeferredInstancing::Render()
 				}
 			}
 
-			preInstance = curInstance.second;
+			preInstance += curInstance.second;
 			m_instancecount.pop();
-		}	
+		}
 	}
 
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
@@ -293,22 +293,20 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 				count = 1;
 			}
 
+			InstanceData temp;
+			temp.world = object->world.Transpose();
+			temp.worldInverse = object->world.Invert();
+			temp.lightmap_offset = object->offset;
+			temp.lightmap_tiling = object->tiling;
+			temp.lightmap_index.x = object->lightmapindex;
+			temp.lightmap_index.y = 0.f;
+
+			if (object->tiling.x != 0 || object->tiling.y != 0)
 			{
-				InstanceData temp;
-				temp.world = object->world.Transpose();
-				temp.worldInverse = object->world.Invert();
-				temp.lightmap_offset = object->offset;
-				temp.lightmap_tiling = object->tiling;
-				temp.lightmap_index.x = object->lightmapindex;
-				temp.lightmap_index.y = 0.f;
-
-				if (object->tiling.x != 0 || object->tiling.y != 0)
-				{
-					temp.lightmap_index.y = 1.f;
-				}
-
-				m_InstanceDatas.push_back(temp);
+				temp.lightmap_index.y = 1.f;
 			}
+
+			m_InstanceDatas.push_back(temp);
 		}
 
 		preModelID = curModelID;
