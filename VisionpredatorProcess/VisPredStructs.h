@@ -61,20 +61,39 @@ namespace VisPred
 			,ToVP_run			=27
 			,ToVP_draw			=28
 		};
-		//fbx에 저장된 순서에 맞게 enum을 맞춰놨음
-		enum class EnemyState
+
+		// TODO: Enemy FSM 과 Animation 각각 Enum 만들어서 관리해야한다.
+		enum class EnemyState // 임시 이름. EnemyState 로 교체
 		{
-			ATTACK,
-			IDLE,
-			CHASE,
-			JUMP,
-			WALK,
-			DIE,
-			ATTACKED,
-			BACKWALK,
-			DESTROY,
-			NONE,
-			END
+			Idle,
+			Chase,
+			Patrol,			// 플레이어 추격하다 놓쳣을 경우 일정시간 Patrol 상태를 유지
+			Dead,
+
+			End
+		};
+		// TODO: 하위 행동 EnemyState 를 만들어야 겠다.
+		enum class SecondState	// 임시 이름.
+		{
+			ReturnToSpawn,
+			Hit,
+			// etc...
+		};
+
+		//fbx에 저장된 순서에 맞게 enum을 맞춰놨음
+		enum class EnemyAni
+		{
+			ATTACK = 0
+			, IDLE = 1
+			, CHASE = 2
+			, JUMP = 3
+			, WALK = 4
+			, DIE = 5
+			, ATTACKED = 6
+			, BACKWALK = 7
+			, DESTROY = 8
+			, NONE = 9
+			, END = 10
 		};
 	}
 

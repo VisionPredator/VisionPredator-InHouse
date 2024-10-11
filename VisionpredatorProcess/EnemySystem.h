@@ -18,13 +18,17 @@ public:
 
 #pragma region FSM Calculate
 	void Calculate_FSM(EnemyComponent& enemycomp);
-	void Calculate_Attack(EnemyComponent& enemycomp);
+
 	void Calculate_Idle(EnemyComponent& enemycomp);
 	void Calculate_Chase(EnemyComponent& enemycomp);
-	void Calculate_Walk(EnemyComponent& enemycomp);
+	void Calculate_Patrol(EnemyComponent& enemycomp);
 	void Calculate_Die(EnemyComponent& enemycomp);
-	void Calculate_Attacked(EnemyComponent& enemycomp);
-	void Calculate_BackWalk(EnemyComponent& enemycomp);
+
+	void Calculate_Attack(EnemyComponent& enemycomp);		// 삭제
+	void Calculate_Walk(EnemyComponent& enemycomp);			// 삭제
+	void Calculate_Attacked(EnemyComponent& enemycomp);		// 삭제
+	void Calculate_BackWalk(EnemyComponent& enemycomp);		// 삭제
+
 	void Calculate_Destroy(EnemyComponent& enemycomp);
 #pragma endregion
 
@@ -52,11 +56,14 @@ public:
 
 private:
 	void Die(EnemyComponent& enemycomp);
-
-	// 시야 범위 안에 플레이어가 있는지 확인
-	void DetectTarget(EnemyComponent& enemycomp);
+	
+	/// <summary>
+	///	시야 범위 안에 플레이어가 있는지 확인한후 Enemy의 상태를 처리한다.
+	/// </summary>
+	void DetectTarget(EnemyComponent& enemyComp);
 
 public:
+	// TODO: 그래픽스 이용한 메소드 호출하려고 일단 상속해 놨는데. 수정해야함.
     void BeginRenderUpdate(float deltaTime) override {};
     void RenderUpdate(float deltaTime) override {};
     void LateRenderUpdate(float deltaTime) override {};

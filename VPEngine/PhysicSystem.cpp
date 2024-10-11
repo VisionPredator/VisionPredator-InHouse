@@ -223,7 +223,6 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		obbInfo.zAxisAngle = ControllerTransform->World_Rotation.z;
 		m_Graphics->DrawOBB(obbInfo);
 
-
 		//FrontVector
 		debug::RayInfo frontinfo{};
 		frontinfo.Color = { 0,0,1,1 };
@@ -233,62 +232,6 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 
 		m_Graphics->DrawRay(frontinfo);
 
-		/// TEST --------------------------------------------------------------------------
-
-		//	// To get view matrix, we need to invert the world matrix
-		//VPMath::Vector3 eye = cameraTransform->World_Location;
-		//VPMath::Vector3 target = eye + cameraTransform->FrontVector; // Assuming the camera looks along the FrontVector
-		//VPMath::Vector3 up = cameraTransform->UpVector;
-		//mainCamera.View = VPMath::Matrix::CreateLookAt_LH(eye, target, up);
-
-		//// 플레이어의 위치와 시야 방향
-		//VisPred::SimpleMath::Vector3 playerPosition = XMLoadFloat3(&ControllerTransform->World_Location);  // 플레이어 위치
-		//DirectX::XMVECTOR playerLookAt = playerPosition + ControllerTransform->FrontVector;
-		//DirectX::XMVECTOR playerUp = ControllerTransform->UpVector;
-
-		//// 1. 플레이어 시야에 맞춘 뷰 행렬 생성
-		//DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(
-		//	playerPosition,   // 플레이어의 위치
-		//	playerLookAt,     // 플레이어가 바라보는 목표 지점
-		//	playerUp         // 상단 방향 (일반적으로 Y축)
-		//);
-
-		//// 2. 플레이어 시야각(FOV)와 가시 거리 설정
-		//float horizontalFOV = DirectX::XMConvertToRadians(90.0f);  // 수평 시야각 160도
-		//float verticalFOV = DirectX::XMConvertToRadians(70.0f);    // 수직 시야각 130도
-		//float nearZ = 0.1f;                               // 가까운 클리핑 평면
-		//float farZ = 5.0f;                              // 먼 클리핑 평면
-		//// 종횡비 계산 (수평/수직 시야각 비율)
-		//float aspectRatio = horizontalFOV / verticalFOV;
-
-		//// 3. 플레이어 시야를 위한 프로젝션 행렬 생성
-		//DirectX::XMMATRIX projMatrix = DirectX::XMMatrixPerspectiveFovLH(
-		//	horizontalFOV,   // 수평 시야각
-		//	aspectRatio,     // 화면의 종횡비
-		//	nearZ,           // 가까운 클리핑 평면
-		//	farZ             // 먼 클리핑 평면
-		//);
-
-		//// 4. 프로젝션 행렬을 기반으로 BoundingFrustum 생성
-		//DirectX::BoundingFrustum frustum;
-		//DirectX::BoundingFrustum::CreateFromMatrix(frustum, projMatrix);
-
-		//// 4. 프러스텀을 Y축을 기준으로 180도 회전시킬 행렬 생성
-		//DirectX::XMMATRIX yRotationMatrix = DirectX::XMMatrixRotationY(DirectX::XM_PI);  // Y축 기준 180도 회전
-
-		//// 5. 프러스텀을 플레이어의 뷰 행렬로 변환 (뷰 행렬 적용)
-		//DirectX::XMMATRIX invViewMatrix = XMMatrixInverse(nullptr, viewMatrix); // 뷰 행렬의 역행렬을 적용
-		//DirectX::XMMATRIX finalTransform = yRotationMatrix * invViewMatrix;  // Y축 회전 후 뷰 행렬 적용
-		//frustum.Transform(frustum, finalTransform);  // 프러스텀 변환
-
-		//debug::FrustumInfo frustumInfo;
-		//frustumInfo.Frustum = frustum;
-		//frustumInfo.Color = VPMath::Color{ 1, 1, 0, 1 };
-		//m_Graphics->DrawFrustum(frustumInfo);
-
-		/// TEST END --------------------------------------------------------------------------
-
-
 		//RightVector
 		debug::RayInfo rightinfo{};
 		rightinfo.Color = { 1,0,0,1 };
@@ -296,9 +239,6 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		rightinfo.Direction = 10 * ControllerTransform->RightVector;
 		rightinfo.Normalize = false;
 		//m_Graphics->DrawRay(rightinfo);
-
-
-
 	}
 }
 
