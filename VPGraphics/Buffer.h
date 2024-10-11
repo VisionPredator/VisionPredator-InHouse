@@ -20,7 +20,7 @@ public:
 	Buffer(const std::shared_ptr<Device>& device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data);
 	Buffer(const std::shared_ptr<Device>& device, D3D11_BUFFER_DESC desc, D3D11_SUBRESOURCE_DATA data, int count);
 
-	Buffer(const std::shared_ptr<Device>& device, const D3D11_BUFFER_DESC* desc, const D3D11_SUBRESOURCE_DATA* data, const int& count);
+	//Buffer(const std::shared_ptr<Device>& device, const D3D11_BUFFER_DESC* desc, const D3D11_SUBRESOURCE_DATA* data, const int& count);
 
 	~Buffer() override = default;
 

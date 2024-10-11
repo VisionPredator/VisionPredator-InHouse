@@ -24,6 +24,7 @@ class UIManager;
 class GeoMetryPass;
 class VPOutLinePass;
 class RimLight;
+class DeferredInstancing;
 
 class PassManager
 {
@@ -58,6 +59,7 @@ private:
 	std::shared_ptr<GeoMetryPass> m_GeometryPass;
 	std::shared_ptr<VPOutLinePass> m_VPOutLinePass;
 	std::shared_ptr<RimLight> m_RimLight;
+	std::shared_ptr<DeferredInstancing> m_Instancing;
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;

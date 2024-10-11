@@ -94,6 +94,9 @@
     <Filter Include="Pass\PostProcess\Source">
       <UniqueIdentifier>{fe364d7b-d9a6-4863-a77a-b256f3ae2f37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pass\Deferred\Instancing">
+      <UniqueIdentifier>{9853e868-9b95-4496-95ef-148d64ed878f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsEngine.h">
@@ -303,6 +306,9 @@
       <Filter>GraphicsEngine</Filter>
     </ClInclude>
     <ClInclude Include="Log.h" />
+    <ClInclude Include="DeferredInstancing.h">
+      <Filter>Pass\Deferred\Instancing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -483,6 +489,9 @@
     <ClCompile Include="Log.cpp">
       <Filter>Utils\Source</Filter>
     </ClCompile>
+    <ClCompile Include="DeferredInstancing.cpp">
+      <Filter>Pass\Deferred\Instancing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -560,6 +569,8 @@
     <FxCompile Include="VPOutLine.hlsl">
       <Filter>HLSL\PS</Filter>
     </FxCompile>
+    <FxCompile Include="InstancingVS.hlsl" />
+    <FxCompile Include="InstancingPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

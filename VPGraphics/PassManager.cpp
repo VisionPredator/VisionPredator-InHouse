@@ -27,6 +27,7 @@
 #include "OutlineEdgeDetectPass.h"
 #include "VPOutLinePass.h"
 #include "RimLight.h"
+#include "DeferredInstancing.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -87,6 +88,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_ObjectMaskPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
+	m_Instancing = std::make_shared<DeferredInstancing>();
+	m_Instancing->Initialize(m_Device.lock(), m_ResourceManager.lock(),m_LightManager);
 
 	//VPpasses
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
@@ -101,17 +104,17 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_ParticlePass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_ParticleManager, m_TimeManager);
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 
-
 	//pass push
 	m_BasePasses.push_back(m_GeometryPass);
 	m_BasePasses.push_back(m_DebugPass);
-	m_BasePasses.push_back(m_DeferredPass);
+	m_BasePasses.push_back(m_Instancing);
+	//m_BasePasses.push_back(m_DeferredPass);
 	m_BasePasses.push_back(m_ObjectMaskPass);
 
 	m_BasePasses.push_back(m_TransparencyPass);
 	m_VPPasses.push_back(m_VPOutLinePass);
 	m_VPPasses.push_back(m_RimLight);
-
+	
 	m_IndepentCulling.push_back(m_OutlineEdgeDetectPass);
 	m_IndepentCulling.push_back(m_OutlineBlurPass);
 	m_IndepentCulling.push_back(m_OutlineAddPass);
@@ -152,8 +155,8 @@ void PassManager::Render()
 		}
 	}
 
-	m_ParticlePass->Render();
-	m_UIPass->Render();
+	//m_ParticlePass->Render();
+	//m_UIPass->Render();
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
 	// DrawIMGUI 이렇게 함수로 두지 말고 FinalPass 클래스로 이식하자.
