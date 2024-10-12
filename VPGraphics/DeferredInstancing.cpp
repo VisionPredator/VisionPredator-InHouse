@@ -35,6 +35,14 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_InstanceBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceBuffer", m_InstanceDatas, true);
 	m_InstancingVS = m_ResourceManager.lock()->Create<VertexShader>(L"InstancingVS", L"InstancingVS");
 
+	for (int i = 0; i < 1000; i++)
+	{
+		InstanceSkinnedData temp;
+		m_InstanceSkinnedDatas.push_back(temp);
+	}
+	m_InstanceSkinnedBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceSkinnedBuffer", m_InstanceSkinnedDatas, true);
+
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	m_Device.lock()->Context()->Map(m_InstanceBuffer.lock()->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
 	InstanceData* dataView = reinterpret_cast<InstanceData*>(mappedData.pData);
@@ -126,7 +134,7 @@ void DeferredInstancing::Render()
 		m_Device.lock()->Context()->IASetInputLayout(m_InstancingVS.lock()->InputLayout());
 	}
 
-
+	//draw static
 	if (!m_InstanceDatas.empty())
 	{
 		UINT strides[2];
@@ -139,7 +147,6 @@ void DeferredInstancing::Render()
 
 		auto lightmap = m_LightManager.lock()->GetLightMaps();
 		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
-
 
 		int preInstance = 0;
 		while (!m_instancecount.empty())
@@ -176,6 +183,55 @@ void DeferredInstancing::Render()
 
 			preInstance += curInstance.second;
 			m_instancecount.pop();
+		}
+	}
+
+	//draw skinned
+	if (!m_InstanceSkinnedDatas.empty())
+	{
+		UINT strides[2];
+		strides[0] = sizeof(SkinningVertex);
+		strides[1] = sizeof(InstanceSkinnedData);
+
+		UINT offsets[2];
+		offsets[0] = 0;
+		offsets[1] = 0;
+
+		int preInstance = 0;
+		while (!m_instanceskinnedcount.empty())
+		{
+			std::pair<int, int> curInstance = m_instanceskinnedcount.front();
+			std::weak_ptr<ModelData> curModel;
+			curModel = m_ResourceManager.lock()->Get(curInstance.first);
+
+			if (curModel.lock() != nullptr)
+			{
+				for (auto& mesh : curModel.lock()->m_Meshes)
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
+					if (curMaterial != nullptr)
+					{
+						MaterialData data = curMaterial->m_Data;
+						curMaterialData->Update(data);
+
+						Device->BindMaterialSRV(curMaterial);
+					}
+
+					std::vector<ID3D11Buffer*> bufferPointers[2];
+					bufferPointers->push_back(mesh->VB());
+					bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
+
+					m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
+					m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+					m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+					m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), curInstance.second, 0, 0, preInstance);
+				}
+			}
+
+			preInstance += curInstance.second;
+			m_instanceskinnedcount.pop();
 		}
 	}
 
@@ -281,18 +337,18 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 			curModelID = object->ModelID;
 		}
 
+		if (object->isSkinned)
 		{
+			InstanceSkinnedData temp;
+			temp.world = object->world.Transpose();
+			temp.worldInverse = object->world.Invert();
+			std::wstring id = std::to_wstring(object->EntityID);
+			temp.Bone = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct;
+			m_InstanceSkinnedDatas.push_back(temp);
 
-			if (preModelID == curModelID)
-			{
-				count++;
-			}
-			else
-			{
-				m_instancecount.push(std::pair<int, int>(preModelID, count));
-				count = 1;
-			}
-
+		}
+		else
+		{
 			InstanceData temp;
 			temp.world = object->world.Transpose();
 			temp.worldInverse = object->world.Invert();
@@ -309,8 +365,24 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 			m_InstanceDatas.push_back(temp);
 		}
 
-		preModelID = curModelID;
+		if (preModelID == curModelID)
+		{
+			count++;
+		}
+		else
+		{
+			if (object->isSkinned)
+			{
+				m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
+			}
+			else
+			{
+				m_instancecount.push(std::pair<int, int>(preModelID, count));
+			}
+			count = 1;
+		}
 
+		preModelID = curModelID;
 	}
 
 	m_instancecount.push(std::pair<int, int>(curModelID, count));
@@ -332,5 +404,22 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 		}
 		m_Device.lock()->Context()->Unmap(m_InstanceBuffer.lock()->Get(), 0);
 	}
+
+
+	if (!m_InstanceSkinnedDatas.empty())
+	{
+
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		m_Device.lock()->Context()->Map(m_InstanceSkinnedBuffer.lock()->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+
+		InstanceSkinnedData* dataView = reinterpret_cast<InstanceSkinnedData*>(mappedData.pData);
+
+		for (int i = 0; i < m_InstanceSkinnedDatas.size(); i++)
+		{
+			dataView[i] = m_InstanceSkinnedDatas[i];
+		}
+		m_Device.lock()->Context()->Unmap(m_InstanceSkinnedBuffer.lock()->Get(), 0);
+	}
+
 
 }

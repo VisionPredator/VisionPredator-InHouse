@@ -23,6 +23,8 @@ private:
 	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
 	std::weak_ptr<VertexShader> m_InstancingVS;
 
+	std::weak_ptr<VertexBuffer> m_InstanceSkinnedBuffer;
+
 	std::vector<InstanceData> m_InstanceDatas;
 	std::queue<std::pair<int, int>> m_instancecount;
 

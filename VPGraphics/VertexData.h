@@ -54,3 +54,25 @@ struct InstanceData
 	VPMath::XMFLOAT2 lightmap_tiling;
 	VPMath::XMFLOAT2 lightmap_index;
 };
+
+
+struct InstanceSkinnedData
+{
+	InstanceSkinnedData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity)
+	{
+
+	}
+	/*
+	DirectX::XMFLOAT4 pos;
+	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT4 normal;
+	DirectX::XMFLOAT4 tangent;
+	DirectX::XMFLOAT4 bitangent;
+	DirectX::XMFLOAT2 TexCord;
+	DirectX::XMFLOAT2 LightMapUV;
+	*/
+
+	VPMath::Matrix world;
+	VPMath::Matrix worldInverse;
+	MatrixPallete Bone;
+};
