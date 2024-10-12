@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include "CBuffer.h"
 
 struct BaseVertex
 {
@@ -62,15 +63,6 @@ struct InstanceSkinnedData
 	{
 
 	}
-	/*
-	DirectX::XMFLOAT4 pos;
-	DirectX::XMFLOAT4 color;
-	DirectX::XMFLOAT4 normal;
-	DirectX::XMFLOAT4 tangent;
-	DirectX::XMFLOAT4 bitangent;
-	DirectX::XMFLOAT2 TexCord;
-	DirectX::XMFLOAT2 LightMapUV;
-	*/
 
 	VPMath::Matrix world;
 	VPMath::Matrix worldInverse;

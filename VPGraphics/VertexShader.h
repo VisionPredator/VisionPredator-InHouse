@@ -1,7 +1,7 @@
 #pragma once
 #include "Shader.h"
 #include <string>
-
+#include "Desc.h"
 
 class Device;
 
@@ -19,7 +19,7 @@ public:
 		const D3D_SHADER_MACRO* macro = nullptr);
 
 	//인스턴싱용 생성자
-	VertexShader(std::shared_ptr<Device>device, std::wstring filename = L"need name");
+	VertexShader(std::shared_ptr<Device>device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC* desc = Instancing::Desc,  int count = Instancing::Count);
 
 
 	~VertexShader() override = default;

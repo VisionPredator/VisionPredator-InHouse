@@ -19,22 +19,27 @@ public:
 	void SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue) override;
 
 private:
+	void DrawStatic();
+	void DrawSkinned();
 
-	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
+
 	std::weak_ptr<VertexShader> m_InstancingVS;
-
-	std::weak_ptr<VertexBuffer> m_InstanceSkinnedBuffer;
-
+	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
 	std::vector<InstanceData> m_InstanceDatas;
+
+	std::weak_ptr<VertexShader> m_InstancingSkinnedVS;
+	std::weak_ptr<VertexBuffer> m_InstanceSkinnedBuffer;
+	std::vector<InstanceSkinnedData> m_InstanceSkinnedDatas;
+
 	std::queue<std::pair<int, int>> m_instancecount;
+	std::queue<std::pair<int, int>> m_instanceskinnedcount;
 
 private:
 	std::weak_ptr<LightManager> m_LightManager;
 
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 
-	//GeometryPass
-	std::weak_ptr<PixelShader> m_GeometryPS;
+	std::weak_ptr<PixelShader> m_SkinnePS;
 
 	// Multi Render Target
 	std::weak_ptr<RenderTargetView> m_AlbedoRTV;

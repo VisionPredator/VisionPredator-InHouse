@@ -35,13 +35,25 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_InstanceBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceBuffer", m_InstanceDatas, true);
 	m_InstancingVS = m_ResourceManager.lock()->Create<VertexShader>(L"InstancingVS", L"InstancingVS");
 
-	for (int i = 0; i < 1000; i++)
-	{
-		InstanceSkinnedData temp;
-		m_InstanceSkinnedDatas.push_back(temp);
-	}
-	m_InstanceSkinnedBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceSkinnedBuffer", m_InstanceSkinnedDatas, true);
+	//for (int i = 0; i < 1000; i++)
+	//{
+	//	InstanceSkinnedData temp;
+	//	m_InstanceSkinnedDatas.push_back(temp);
+	//}
 
+	/*for (int i = 0; i < 128; i++)
+	{
+		for (UINT j = 0; j < 4; j++)
+		{
+			int index = Instancing::SkinnedCount + 1 + i * 4 + j;
+			Instancing::SkinnedDesc[index] = {"BONE",j,DXGI_FORMAT_R32G32B32A32_FLOAT,1,128 + 16 * (i+1) * j,D3D11_INPUT_PER_INSTANCE_DATA,1};
+		}
+	}
+
+	Instancing::SkinnedCount += (128 * 4);
+
+	m_InstancingSkinnedVS = m_ResourceManager.lock()->Create<VertexShader>(L"InstancingSkinnedVS", L"InstancingSkinnedVS",Instancing::SkinnedDesc,Instancing::SkinnedCount);
+	m_InstanceSkinnedBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceSkinnedBuffer", m_InstanceSkinnedDatas, true);*/
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	m_Device.lock()->Context()->Map(m_InstanceBuffer.lock()->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
@@ -69,7 +81,7 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_QuadVS = resourceManager->Get<VertexShader>(L"Quad");
 	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
 
-	m_GeometryPS = resourceManager->Get<PixelShader>(L"InstancingPS").lock();
+	m_SkinnePS = resourceManager->Get<PixelShader>(L"InstancingSkinnedPS").lock();
 	m_Deferred = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
 	m_MeshPS = resourceManager->Get<PixelShader>(L"InstancingPS");
 
@@ -112,7 +124,6 @@ void DeferredInstancing::Render()
 
 		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView.lock()->Get());
 
-		Device->Context()->VSSetShader(m_InstancingVS.lock()->GetVS(), nullptr, 0);
 		Device->Context()->PSSetShader(m_MeshPS.lock()->GetPS(), nullptr, 0);
 		Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
@@ -135,105 +146,11 @@ void DeferredInstancing::Render()
 	}
 
 	//draw static
-	if (!m_InstanceDatas.empty())
-	{
-		UINT strides[2];
-		strides[0] = sizeof(BaseVertex);
-		strides[1] = sizeof(InstanceData);
-
-		UINT offsets[2];
-		offsets[0] = 0;
-		offsets[1] = 0;
-
-		auto lightmap = m_LightManager.lock()->GetLightMaps();
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
-
-		int preInstance = 0;
-		while (!m_instancecount.empty())
-		{
-			std::pair<int, int> curInstance = m_instancecount.front();
-			std::weak_ptr<ModelData> curModel;
-			curModel = m_ResourceManager.lock()->Get(curInstance.first);
-
-			if (curModel.lock() != nullptr)
-			{
-				for (auto& mesh : curModel.lock()->m_Meshes)
-				{
-					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
-					if (curMaterial != nullptr)
-					{
-						MaterialData data = curMaterial->m_Data;
-						curMaterialData->Update(data);
-
-						Device->BindMaterialSRV(curMaterial);
-					}
-
-					std::vector<ID3D11Buffer*> bufferPointers[2];
-					bufferPointers->push_back(mesh->VB());
-					bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
-
-					m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
-					m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
-					m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-					m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), curInstance.second, 0, 0, preInstance);
-				}
-			}
-
-			preInstance += curInstance.second;
-			m_instancecount.pop();
-		}
-	}
+	DrawStatic();
 
 	//draw skinned
-	if (!m_InstanceSkinnedDatas.empty())
-	{
-		UINT strides[2];
-		strides[0] = sizeof(SkinningVertex);
-		strides[1] = sizeof(InstanceSkinnedData);
-
-		UINT offsets[2];
-		offsets[0] = 0;
-		offsets[1] = 0;
-
-		int preInstance = 0;
-		while (!m_instanceskinnedcount.empty())
-		{
-			std::pair<int, int> curInstance = m_instanceskinnedcount.front();
-			std::weak_ptr<ModelData> curModel;
-			curModel = m_ResourceManager.lock()->Get(curInstance.first);
-
-			if (curModel.lock() != nullptr)
-			{
-				for (auto& mesh : curModel.lock()->m_Meshes)
-				{
-					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
-					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
-					if (curMaterial != nullptr)
-					{
-						MaterialData data = curMaterial->m_Data;
-						curMaterialData->Update(data);
-
-						Device->BindMaterialSRV(curMaterial);
-					}
-
-					std::vector<ID3D11Buffer*> bufferPointers[2];
-					bufferPointers->push_back(mesh->VB());
-					bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
-
-					m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
-					m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
-					m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-					m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), curInstance.second, 0, 0, preInstance);
-				}
-			}
-
-			preInstance += curInstance.second;
-			m_instanceskinnedcount.pop();
-		}
-	}
+	//DrawSkinned();
+	
 
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 
@@ -406,7 +323,7 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 	}
 
 
-	if (!m_InstanceSkinnedDatas.empty())
+	/*if (!m_InstanceSkinnedDatas.empty())
 	{
 
 		D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -419,7 +336,122 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 			dataView[i] = m_InstanceSkinnedDatas[i];
 		}
 		m_Device.lock()->Context()->Unmap(m_InstanceSkinnedBuffer.lock()->Get(), 0);
+	}*/
+
+
+}
+
+void DeferredInstancing::DrawStatic()
+{
+	std::shared_ptr<Device> Device = m_Device.lock();
+
+	if (!m_InstanceDatas.empty())
+	{
+		Device->Context()->VSSetShader(m_InstancingVS.lock()->GetVS(), nullptr, 0);
+
+		UINT strides[2];
+		strides[0] = sizeof(BaseVertex);
+		strides[1] = sizeof(InstanceData);
+
+		UINT offsets[2];
+		offsets[0] = 0;
+		offsets[1] = 0;
+
+		auto lightmap = m_LightManager.lock()->GetLightMaps();
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
+
+		int preInstance = 0;
+		while (!m_instancecount.empty())
+		{
+			std::pair<int, int> curInstance = m_instancecount.front();
+			std::weak_ptr<ModelData> curModel;
+			curModel = m_ResourceManager.lock()->Get(curInstance.first);
+
+			if (curModel.lock() != nullptr)
+			{
+				for (auto& mesh : curModel.lock()->m_Meshes)
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
+					if (curMaterial != nullptr)
+					{
+						MaterialData data = curMaterial->m_Data;
+						curMaterialData->Update(data);
+
+						Device->BindMaterialSRV(curMaterial);
+					}
+
+					std::vector<ID3D11Buffer*> bufferPointers[2];
+					bufferPointers->push_back(mesh->VB());
+					bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
+
+					m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
+					m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+					m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+					m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), curInstance.second, 0, 0, preInstance);
+				}
+			}
+
+			preInstance += curInstance.second;
+			m_instancecount.pop();
+		}
 	}
+}
+
+void DeferredInstancing::DrawSkinned()
+{
+	std::shared_ptr<Device> Device = m_Device.lock();
+
+	if (!m_InstanceSkinnedDatas.empty())
+	{
+
+		Device->Context()->VSSetShader(m_InstancingSkinnedVS.lock()->GetVS(), nullptr, 0);
 
 
+		UINT strides[2];
+		strides[0] = sizeof(SkinningVertex);
+		strides[1] = sizeof(InstanceSkinnedData);
+
+		UINT offsets[2];
+		offsets[0] = 0;
+		offsets[1] = 0;
+
+		int preInstance = 0;
+		while (!m_instanceskinnedcount.empty())
+		{
+			std::pair<int, int> curInstance = m_instanceskinnedcount.front();
+			std::weak_ptr<ModelData> curModel;
+			curModel = m_ResourceManager.lock()->Get(curInstance.first);
+
+			if (curModel.lock() != nullptr)
+			{
+				for (auto& mesh : curModel.lock()->m_Meshes)
+				{
+					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
+					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
+					if (curMaterial != nullptr)
+					{
+						MaterialData data = curMaterial->m_Data;
+						curMaterialData->Update(data);
+
+						Device->BindMaterialSRV(curMaterial);
+					}
+
+					std::vector<ID3D11Buffer*> bufferPointers[2];
+					bufferPointers->push_back(mesh->VB());
+					bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
+
+					m_Device.lock()->Context()->IASetVertexBuffers(0, 2, bufferPointers->data(), strides, offsets);
+					m_Device.lock()->Context()->IASetIndexBuffer(mesh->IB(), DXGI_FORMAT_R32_UINT, 0);
+					m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+					m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), curInstance.second, 0, 0, preInstance);
+				}
+			}
+
+			preInstance += curInstance.second;
+			m_instanceskinnedcount.pop();
+		}
+	}
 }
