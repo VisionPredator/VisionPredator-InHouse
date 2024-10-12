@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include "CBuffer.h"
 
 struct BaseVertex
 {
@@ -53,4 +54,17 @@ struct InstanceData
 	VPMath::XMFLOAT2 lightmap_offset;
 	VPMath::XMFLOAT2 lightmap_tiling;
 	VPMath::XMFLOAT2 lightmap_index;
+};
+
+
+struct InstanceSkinnedData
+{
+	InstanceSkinnedData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity)
+	{
+
+	}
+
+	VPMath::Matrix world;
+	VPMath::Matrix worldInverse;
+	MatrixPallete Bone;
 };
