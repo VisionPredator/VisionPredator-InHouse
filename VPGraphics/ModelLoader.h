@@ -35,6 +35,9 @@ public:
 	bool LoadModel(std::string filename, Filter filter, int UID);
 	void ProcessSceneData(std::string name, const aiScene* scene, Filter filter, int UID);
 
+private:
+
+	void SaveBoneDataTexture(std::shared_ptr<ModelData> newData);
 
 private:
 	std::vector<const aiScene*> m_SceneList;

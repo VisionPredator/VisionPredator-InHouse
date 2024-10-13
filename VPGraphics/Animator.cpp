@@ -11,6 +11,14 @@
 void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 {
 	m_ResourceManager = manager;
+
+
+
+
+
+
+
+
 }
 
 void Animator::Update(std::vector<std::shared_ptr<RenderData>>& renderlist)
@@ -142,8 +150,6 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			for (auto& ani : curModel->m_Animations[preindex]->m_Channels)
 			{
 				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (ani->totals.end() - 1)->second));
-
-
 			}
 		}
 
