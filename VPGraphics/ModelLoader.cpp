@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "ModelLoader.h"
 
+#include "DirectXTex.h"
 #include "DirectXHelpers.h"
 #include "ResourceManager.h"
 
@@ -13,6 +14,7 @@
 
 #include "ShaderResourceView.h"
 #include "ConstantBuffer.h"
+#include "Texture2D.h"
 
 #include "Desc.h"
 #include "CBuffer.h"
@@ -189,6 +191,59 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 	key.assign(name.begin()/*+ 12*/, name.end());
 	newData->UID = UID;
 	m_ResourceManager.lock()->Add<ModelData>(key, newData);
+	SaveBoneDataTexture(newData);
+
+}
+
+void ModelLoader::SaveBoneDataTexture(std::shared_ptr<ModelData> newData)
+{
+	//model bonedata를 texture에 저장하자
+	//이미 계산된 행렬을 보간하는 작업을 gpu에 넘겨버리면
+	//instancing을 할때 buffer에 담을 데이터 수가 적어진다
+	for (auto& mesh : newData->m_Meshes)
+	{
+		if (mesh->IsSkinned())
+		{
+			std::shared_ptr<SkinnedMesh> skinned = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
+
+			D3D11_TEXTURE2D_DESC texDesc = {};
+			texDesc.Width = 4; // 4 rows for each bone matrix
+			texDesc.Height = skinned->m_BoneData.size(); // 각 인스턴스마다 본 데이터를 포함
+			texDesc.MipLevels = 1;
+			texDesc.ArraySize = 1;
+			texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			texDesc.SampleDesc.Count = 1;
+			texDesc.Usage = D3D11_USAGE_DEFAULT;
+			texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+			std::vector<VPMath::XMFLOAT4> textureData(skinned->m_BoneData.size() * 4);
+			for (int i = 0; i < skinned->m_BoneData.size(); i++)
+			{
+				VPMath::Matrix mat = skinned->m_BoneData[i]->node.lock()->m_World;  // 실제 애니메이션 본 행렬로 대체
+				textureData[i * 4 + 0] = VPMath::XMFLOAT4(mat.m[0]);
+				textureData[i * 4 + 1] = VPMath::XMFLOAT4(mat.m[1]);
+				textureData[i * 4 + 2] = VPMath::XMFLOAT4(mat.m[2]);
+				textureData[i * 4 + 3] = VPMath::XMFLOAT4(mat.m[3]);
+			}
+
+			D3D11_SUBRESOURCE_DATA initData = {};
+			initData.pSysMem = textureData.data();
+			initData.SysMemPitch = texDesc.Width * sizeof(VPMath::XMFLOAT4);
+
+			ID3D11Texture2D* boneTexture;
+			HRESULT hr = m_Device.lock()->Get()->CreateTexture2D(&texDesc, &initData, &boneTexture);
+
+			DirectX::ScratchImage image;
+			hr = DirectX::CaptureTexture(m_Device.lock()->Get(), m_Device.lock()->Context(), boneTexture, image);
+			if (SUCCEEDED(hr)) {
+				hr = DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, L"..//Data//Texture//BoneData.dds");
+				if (FAILED(hr)) {
+					// 파일 저장 실패 처리
+				}
+			}
+
+		}
+	}
 }
 
 //메쉬 저장
