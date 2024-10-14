@@ -98,10 +98,11 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 {
 	playercomp.PreSearchedItemID = playercomp.SearchedItemID;
 
-	auto posEntity = GetSceneManager()->GetEntity(playercomp.CameraID);
-	if (!posEntity || !posEntity->HasComponent<CameraComponent>())
+	//auto posEntity = GetSceneManager()->GetEntity(playercomp.CameraID);
+	auto cameraEntity = playercomp.CameraEntity.lock();
+	if (!cameraEntity || !cameraEntity->HasComponent<CameraComponent>())
 		return;
-	auto cameratransform = posEntity->GetComponent<TransformComponent>();
+	auto cameratransform = cameraEntity->GetComponent<TransformComponent>();
 	auto front = cameratransform->FrontVector;
 	playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(playercomp.GetEntityID(), cameratransform->World_Location, cameratransform->FrontVector, 20.f);
 
@@ -167,7 +168,7 @@ void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
 #pragma region Camera Defalut Pos Setting
 void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 {
-	auto camPoseEntity = GetSceneManager()->GetEntity(playercomp.CameraPosID);
+	auto camPoseEntity = playercomp.CameraPosEntity.lock(); /*GetSceneManager()->GetEntity(playercomp.CameraPosID);*/
 	if (!camPoseEntity)
 		return;
 	auto& posTransComp = *camPoseEntity->GetComponent<TransformComponent>();
@@ -191,7 +192,7 @@ void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 }
 void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 {
-	auto camPoseEntity = GetSceneManager()->GetEntity(playercomp.CameraPosID);
+	auto camPoseEntity = playercomp.CameraPosEntity.lock(); /*GetSceneManager()->GetEntity(playercomp.CameraPosID);*/
 	if (!camPoseEntity)
 		return;
 	auto& posTransComp = *camPoseEntity->GetComponent<TransformComponent>();
@@ -699,7 +700,7 @@ void PlayerSystem::Active_Rotation(PlayerComponent& playercomp, TransformCompone
 	if (!playercomp.HasComponent<Children>())
 		return;
 
-	auto posTransComp = GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraPosID);
+	auto posTransComp = playercomp.CameraPosEntity.lock()->GetComponent<TransformComponent>();/* GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraPosID);*/
 	// 카메라 회전 업데이트
 	float pitch = deltaCurposY * sensitivity;
 	VPMath::Vector3 cameraRotation = posTransComp->Local_Rotation;
@@ -736,7 +737,7 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 					playercomp.IsGunRecoiling = true;
 					float randfloat = guncomp.GunRecoil.x;
 					randfloat = Randomfloat(-randfloat, randfloat);
-					auto cameratrans = GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);
+					auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>(); /*GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);*/
 					playercomp.GunRecoilStartQuat = cameratrans->Local_Quaternion;
 					playercomp.GunRecoilEndQuat = playercomp.GunRecoilStartQuat;
 					playercomp.GunRecoilEndQuat.RotateYaw(randfloat);
@@ -770,10 +771,9 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni p
 
 void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
-	if (!GetSceneManager()->HasComponent<AnimationComponent>(playercomp.HandID))
-		return;
+
 	ThrowFinished(playercomp);
-	ReturnToIdle(*GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID));
+	ReturnToIdle(*playercomp.HandEntity.lock()->GetComponent<AnimationComponent>());
 }
 
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
@@ -821,7 +821,8 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 
 void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 {
-	AnimationComponent& anicomp = *GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
+
+	AnimationComponent& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 
 	using namespace VisPred::Game;
 	if (anicomp.IsBlending || !anicomp.IsFinished)
@@ -835,7 +836,7 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 		if (GetSceneManager()->GetEntity(playercomp.ThrowingGunEntityID))
 		{
 			auto& socketcomp = *GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
-			VPMath::Vector3 temp = GetSceneManager()->GetComponent <TransformComponent>(playercomp.FirePosEntityID)->FrontVector;
+			VPMath::Vector3 temp = playercomp.FirePosEntity.lock()->GetComponent <TransformComponent>()->FrontVector;
 			temp.RotateToUp(6);
 			socketcomp.IsConnected = false;
 			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
@@ -865,11 +866,9 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 	if (playercomp.HasGun && playercomp.IsGunRecoiling)
 	{
 		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		gunComp->CoolTime;
-		auto cameratrans = GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);
+		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 		VPMath::Quaternion tempquat{};
-		double percent = GunRecoilPercent(playercomp.GunprogressTime, (gunComp->CoolTime * 9 / 10),playercomp.GunRecoilPercent);
-		gunComp->CoolTime;
+		double percent = GunRecoilPercent(playercomp.GunprogressTime, gunComp->GunRecoilTime,playercomp.GunRecoilPercent);
 		tempquat= tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
 		cameratrans->SetLocalQuaternion(tempquat);
 		if (percent>=1.0f)
@@ -884,7 +883,7 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 
 void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 {
-	auto& anicomp = *GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();/**GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID)*/
 	if (anicomp.IsBlending || anicomp.PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Sword)
 		return;
 
@@ -897,24 +896,27 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
 	if (!socketentity)
 		return;
+	uint32_t handID = playercomp.HandEntity.lock()->GetEntityID();
+
 	auto guncomp = gunentity->GetComponent<GunComponent>();
 	auto soceketcomp = socketentity->GetComponent<SocketComponent>();
 	soceketcomp->IsConnected = true;
-	soceketcomp->ConnectedEntityID = playercomp.HandID;
+	soceketcomp->ConnectedEntityID = handID;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp->GetEntityID();
 	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
+	///TODO 사운드 로직 추가하기.
 	switch (guncomp->Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
-		ChangeAni_Index(playercomp.HandID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 4, false);
 		break;
 	case VisPred::Game::GunType::SHOTGUN:
-		ChangeAni_Index(playercomp.HandID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 4, false);
 		break;
 	case VisPred::Game::GunType::RIFLE:
-		ChangeAni_Index(playercomp.HandID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 4, false);
 		break;
 	default:
 		break;
@@ -962,15 +964,15 @@ void PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 
 bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
 		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 4, false);
 
-	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
+	auto posEntity = playercomp.FirePosEntity.lock();
 	if (!posEntity)
 		return false;
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
@@ -982,15 +984,15 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
 		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 4, false);
 
-	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
+	auto posEntity = playercomp.FirePosEntity.lock(); 
 	if (!posEntity)
 		return false;
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
@@ -1002,14 +1004,15 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
 		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp->GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
-	auto posEntity = GetSceneManager()->GetEntity(playercomp.FirePosEntityID);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
+	auto posEntity = playercomp.FirePosEntity.lock();
+
 	if (!posEntity)
 		return false;
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
@@ -1024,12 +1027,12 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 #pragma region Throw Logic
 void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(playercomp.HandID, VisPred::Game::PlayerAni::ToThrow_Pistol, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 4, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1041,12 +1044,12 @@ void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 }
 void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(playercomp.HandID, VisPred::Game::PlayerAni::ToThrow_ShotGun, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 4, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1058,12 +1061,13 @@ void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	auto anicomp = GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID);
-	if (anicomp->IsBlending || anicomp->curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(playercomp.HandID, VisPred::Game::PlayerAni::ToThrow_Rifle, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 4, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1087,7 +1091,7 @@ void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
 		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 		if (playercomp.GunprogressTime >= gunComp->CoolTime)
 		{
-			playercomp.GunprogressTime = gunComp->CoolTime;
+			playercomp.GunprogressTime += deltatime;
 			playercomp.ReadyToShoot = true;
 		}
 		else
@@ -1133,18 +1137,19 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePositionName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
 		if (HandEntity)
-			playercomp->HandID = HandEntity->GetEntityID();
+			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
 
 		if (FirePosEntity)
-			playercomp->FirePosEntityID = FirePosEntity->GetEntityID();
+			playercomp->FirePosEntity = FirePosEntity;
+			//playercomp->FirePosEntityID = FirePosEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 FirePos 감지되지 않습니다.");
 
 		if (CameraPosEntity)
 		{
-			playercomp->CameraPosID = CameraPosEntity->GetEntityID();
+			playercomp->CameraPosEntity = CameraPosEntity;
 			auto cameraposcomp = CameraPosEntity->GetComponent<TransformComponent>();
 			playercomp->DefalutCameraPos = cameraposcomp->Local_Location;
 			playercomp->SitCameraPos = playercomp->DefalutCameraPos;
@@ -1153,7 +1158,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			VP_ASSERT(false, "player의 Camerapos가 감지되지 않습니다.");
 
 		if (CameraEntity)
-			playercomp->CameraID = CameraEntity->GetEntityID();
+			playercomp->CameraEntity = CameraEntity;
 		else
 			VP_ASSERT(false, "player의 카메라가 감지되지 않습니다.");
 

@@ -17,5 +17,6 @@ struct GunComponent :
     bool IsEmpty = false;
     uint32_t GrappedEntityID{};
     VPMath::Vector2 GunRecoil{};
+    float GunRecoilTime{};
 };
 

@@ -12,10 +12,11 @@ struct PlayerComponent :
 	std::string CameraPosName{};
 	std::string CameraName{};
 	std::string FirePositionName;
-	uint32_t HandID{};
-	uint32_t CameraID{};
-	uint32_t CameraPosID{};
-    uint32_t FirePosEntityID{};
+	std::weak_ptr<Entity> HandEntity{};
+	std::weak_ptr<Entity> CameraEntity{};
+	std::weak_ptr<Entity> CameraPosEntity{};
+	std::weak_ptr<Entity> FirePosEntity{};
+
 	uint32_t HP{};
 	VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
 	float Height{};
@@ -42,11 +43,15 @@ struct PlayerComponent :
 	float SlideDuration = 0.5f;
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
-    
-    uint32_t SearchedItemID{};
-    uint32_t PreSearchedItemID{};
-    uint32_t GunEntityID{};
-    uint32_t ThrowingGunEntityID{};
+
+	uint32_t SearchedItemID{};
+	uint32_t PreSearchedItemID{};
+	uint32_t GunEntityID{};
+	uint32_t ThrowingGunEntityID{};
+	//std::weak_ptr<Entity> SearchedEntity;
+	//std::weak_ptr<Entity> PreSearchedEntity;
+	//std::weak_ptr<Entity> GunEntity;
+	//std::weak_ptr<Entity>ThrowingGunEntity{};
 
 
     VisPred::Game::GunType ShootType{};
