@@ -116,8 +116,9 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				}
 			}
 		}
-
+		//CalcWorld(curOb->EntityID, curModel->m_Nodes);
 		CalcWorld(curOb->EntityID, curModel->m_RootNode);
+
 	}
 	else
 	{
@@ -164,8 +165,24 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			curAni->m_Local = VPMath::Matrix::Lerp(start->second, preAni[ani->nodename], t).Transpose();
 		}
 
+		//CalcWorld(curOb->EntityID, curModel->m_Nodes);
 		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	}
+}
+
+void Animator::CalcWorld(uint32_t entityID, std::vector< std::shared_ptr<Node>>& Nodes)
+{
+	for (auto& node : Nodes)
+	{
+		auto& parentNode = Nodes[node->parentsindex];
+
+		
+		//node->m_Local = parentNode->m_World * node->m_Local;
+		//node->m_World = node->m_Local * parentNode->m_World;
+
+	}
+
+	
 }
 
 void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
@@ -183,7 +200,7 @@ void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
 
 	//플레이어만 갱신해야댐
 	{
-		if (RootNode->name == L"DEF-palm.02.R")//
+		if (RootNode->name == L"DEF-palm.02.R")
 		{
 			socket = RootNode->m_World;
 			m_socketList.push_back(std::pair(entityID, socket));

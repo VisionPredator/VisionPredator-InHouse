@@ -178,20 +178,20 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 
 	if (Filter::SKINNING == filter)
 	{
-		ProcessNode(nullptr, newData->m_RootNode, scene->mRootNode, newData->m_Meshes);
+		ProcessNode(nullptr, newData->m_RootNode, scene->mRootNode, newData->m_Meshes,newData->m_Nodes);
 		ProcessBoneNodeMapping(newData);
 	}
 
 	for (unsigned int i = 0; i < scene->mNumAnimations; i++)
 	{
 		ProcessAnimation(newData, scene->mAnimations[i]);
-		SaveBoneDataTexture(newData);
 	}
 
 	std::wstring key;
 	key.assign(name.begin()/*+ 12*/, name.end());
 	newData->UID = UID;
 	m_ResourceManager.lock()->Add<ModelData>(key, newData);
+	//SaveBoneDataTexture(newData);
 
 }
 
@@ -207,7 +207,7 @@ void ModelLoader::SaveBoneDataTexture(std::shared_ptr<ModelData> newData)
 	for (auto& Animation : newData->m_Animations)
 	{
 		D3D11_TEXTURE2D_DESC texDesc = {};
-		texDesc.Width = 4; // 4 rows for each bone matrix
+		texDesc.Width = 16; // 4 rows for each bone matrix
 		texDesc.Height = Animation->m_Channels.size() * 2/*totals.size*/; // 각 인스턴스마다 본 데이터를 포함
 		texDesc.MipLevels = 1;
 		texDesc.ArraySize = 1;
@@ -235,7 +235,7 @@ void ModelLoader::SaveBoneDataTexture(std::shared_ptr<ModelData> newData)
 
 
 		D3D11_SUBRESOURCE_DATA initData = {};
-		initData.pSysMem = textureData.data();
+		//initData.pSysMem = textureData.data();
 		initData.SysMemPitch = texDesc.Width * sizeof(VPMath::XMFLOAT4);
 
 		//create texture
@@ -647,7 +647,6 @@ void ModelLoader::ProcessBoneNodeMapping(std::shared_ptr<ModelData> Model)
 				if (temp != nullptr)
 				{
 					bone->node = temp;
-					temp->m_Bones.push_back(bone);
 				}
 			}
 		}
@@ -864,10 +863,11 @@ void ModelLoader::ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace)
 	}
 }
 
-void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes)
+void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Node>>&nodes ,int index/*=0*/)
 {
 	std::string Name = node->mName.C_Str();
 	ob_node->name.assign(Name.begin(), Name.end());
+	nodes.push_back(ob_node);
 
 	//local
 	DirectX::XMFLOAT4X4 temp;
@@ -903,28 +903,31 @@ void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Nod
 
 
 	ob_node->m_LocalInverse = ob_node->m_Local.Invert();
+	ob_node->index = index;
 
 	if (parents != nullptr)
 	{
 		ob_node->HasParents = true;
 		ob_node->m_Parents = parents;
+		ob_node->parentsindex = parents->index;
 
 		//이게 local로써 constantbuffer에 들어가야함 이게 계속 바뀌어야함 물론 원본이 아니라 밖에서 이걸 이용해 만든 것들 그러면 이걸 상수 버퍼로 만들어버려
-		ob_node->m_World = (ob_node->m_Parents.lock()->m_World * ob_node->m_Local);
+		ob_node->m_World = (nodes[ob_node->parentsindex]->m_World * ob_node->m_Local);
 		ob_node->m_WorldInverse = ob_node->m_World.Invert();
 	}
 	else
 	{
 		ob_node->m_World = ob_node->m_Local;
 		ob_node->m_WorldInverse = ob_node->m_World.Invert();
+		ob_node->parentsindex = index;
 	}
 
 	if (node->mNumMeshes != 0)
 	{
 		//ob_node->m_Meshes.resize(node->mNumMeshes);
-		ob_node->index = *node->mMeshes;
+		int meshindex = *node->mMeshes;
 
-		ob_node->m_Meshes.push_back(meshes[ob_node->index]);
+		ob_node->m_Meshes.push_back(meshes[meshindex]);
 
 		for (auto& mesh : ob_node->m_Meshes)
 		{
@@ -932,11 +935,11 @@ void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Nod
 			curMesh->m_node = ob_node;
 		}
 	}
-
+	
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		ob_node->m_Childs.push_back(std::make_shared<Node>());
-		ProcessNode(ob_node, ob_node->m_Childs.back(), node->mChildren[i], meshes);
+		ProcessNode(ob_node, ob_node->m_Childs.back(), node->mChildren[i], meshes, nodes,++index);
 	}
 }
 

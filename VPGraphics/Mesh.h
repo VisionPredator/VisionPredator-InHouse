@@ -20,12 +20,14 @@ public:
 	VPMath::Matrix offsetMatrix;
 	VPMath::Matrix offsetMatrixInverse;
 	VPMath::Matrix NodeMatrix;
+	float weight;
 	int Boneindex;
 	int vertexid;
-	float weight;
+	int ParentsId;
 	std::vector<float> weights;
 	std::vector<int> vertexids;
 	std::weak_ptr<Node> node;
+	
 };
 
 class Mesh 

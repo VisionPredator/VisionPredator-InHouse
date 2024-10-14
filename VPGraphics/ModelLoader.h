@@ -51,7 +51,7 @@ private:
 	void ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* curMesh, unsigned int index);
 
 	void ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace);
-	void ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes);
+	void ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Node>>&nodes ,int index=0);
 
 	void ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, std::shared_ptr<Mesh> curMesh);
 	std::shared_ptr<Node>FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode);

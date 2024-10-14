@@ -26,6 +26,7 @@ private:
 
 
 	void UpdateWorld(std::weak_ptr<RenderData> ob);
+	void CalcWorld(uint32_t entityID, std::vector<std::shared_ptr<Node>>& Nodes);
 	void CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode);
 
 	void UpdateMatrixPallete(std::shared_ptr<RenderData>& curData);
