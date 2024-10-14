@@ -60,7 +60,7 @@ private:
 	/// <summary>
 	///	시야 범위 안에 플레이어가 있는지 확인한후 Enemy의 상태를 처리한다.
 	/// </summary>
-	void DetectTarget(EnemyComponent& enemyComp);
+	void DetectTarget(EnemyComponent& enemyComp, float deltaTime);
 
 public:
 	// TODO: 그래픽스 이용한 메소드 호출하려고 일단 상속해 놨는데. 수정해야함.

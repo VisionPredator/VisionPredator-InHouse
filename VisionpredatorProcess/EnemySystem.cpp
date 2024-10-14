@@ -14,7 +14,7 @@ void EnemySystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(EnemyComponent, enemycomp)
 	{
-		DetectTarget(enemycomp);
+		DetectTarget(enemycomp, deltaTime);
 		Calculate_FSM(enemycomp);
 		Action_FSM(enemycomp);
 	}
@@ -23,6 +23,11 @@ void EnemySystem::FixedUpdate(float deltaTime)
 #pragma region FSM Calculate
 void EnemySystem::Calculate_FSM(EnemyComponent& enemycomp)
 {
+	// 하위 State 들을 만드는데.
+	// 이 State 들을 컨테이너에 넣어놓고
+	// 각 상위 State 들 마다 이것들을 확인하여 그에 맞는 행동을 한다.
+	// ex) 
+
 	switch (enemycomp.CurrentFSM)
 	{
 		case VisPred::Game::EnemyState::Idle:
@@ -74,6 +79,8 @@ void EnemySystem::Calculate_Idle(EnemyComponent& enemycomp)
 	//	enemycomp.CurrentFSM = VisPred::Game::EnemyState::ATTACK;
 
 	//enemycomp.CurrentFSM = VisPred::Game::EnemyState::WALK;
+
+	// TODO: 애니메이션 상태 변경
 }
 
 void EnemySystem::Calculate_Chase(EnemyComponent& enemycomp)
@@ -90,6 +97,8 @@ void EnemySystem::Calculate_Chase(EnemyComponent& enemycomp)
 	{
 		Die(enemycomp);
 	}
+
+	// TODO: 하위 상태에 따라 애니메이션 상태 변경
 }
 
 void EnemySystem::Calculate_Patrol(EnemyComponent& enemycomp)
@@ -246,7 +255,15 @@ void EnemySystem::Die(EnemyComponent& enemycomp)
 	}
 }
 
-void EnemySystem::DetectTarget(EnemyComponent& enemyComp)
+
+float WrapAngle(float angle)
+{
+	while (angle > 180.0f) angle -= 360.0f;
+	while (angle < -180.0f) angle += 360.0f;
+	return angle;
+}
+
+void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 {
 	uint32_t enemyID = enemyComp.GetEntityID();
 	auto transform = enemyComp.GetComponent<TransformComponent>();
@@ -293,6 +310,24 @@ void EnemySystem::DetectTarget(EnemyComponent& enemyComp)
 	{
 		auto targetDir = playerPos - enemyPos;
 		targetDir.Normalize();
+
+		float distanceToPlayer = targetDir.Length();
+
+		VisPred::SimpleMath::Vector3 targetDirTemp = targetDir;
+		targetDirTemp.y = 0; // Y값 고정
+
+		auto targetRotation  = VPMath::Quaternion::LookRotation(targetDirTemp, VPMath::Vector3::Up);
+
+		auto enemyWorldQuaternion = transform->World_Quaternion;
+		// Slerp로 부드럽게 회전 (t는 회전 속도를 제어)
+		// 거리 기반 회전 속도 조정 (가까울수록 빠르게 회전)
+		float baseRotationSpeed = 1.5f;  // 기본 회전 속도
+		float rotationSpeed = baseRotationSpeed + (1.0f / distanceToPlayer) * 10.0f;  // 거리에 비례해 회전 속도 증가
+
+		auto newRotation = VPMath::Quaternion::Slerp(enemyWorldQuaternion, targetRotation, deltaTime * rotationSpeed);
+
+		transform->SetWorldQuaternion(newRotation);
+		//transform->SetWorldQuaternion(targetRotation);
 
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 		uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
