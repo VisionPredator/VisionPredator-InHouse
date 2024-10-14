@@ -39,5 +39,6 @@ public:
 	
 	std::vector<VPMath::Vector3> vertices;
 
+	int UID;
 };
 

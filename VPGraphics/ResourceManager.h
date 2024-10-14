@@ -28,7 +28,6 @@
 
 
 
-
 /// <summary>
 /// 2024.04.17
 /// Device를 이용해 리소스를 생성, 관리 할 클래스
@@ -46,6 +45,8 @@ public:
 	std::weak_ptr <T> Create(const std::wstring path, Types...args);
 
 	template<typename T> std::weak_ptr <T> Get(const std::wstring path);
+
+	std::weak_ptr<ModelData> Get(const int modelID);
 
 	template<typename T> void Add(const std::wstring path, std::shared_ptr<Resource> resource);
 

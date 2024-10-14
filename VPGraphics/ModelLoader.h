@@ -32,8 +32,8 @@ public:
 	~ModelLoader() = default;
 
 	void Initialize(const std::shared_ptr<ResourceManager>& manager, const std::shared_ptr<Device>& device);
-	bool LoadModel(std::string filename, Filter filter);
-	void ProcessSceneData(std::string name, const aiScene* scene, Filter filter);
+	bool LoadModel(std::string filename, Filter filter, int UID);
+	void ProcessSceneData(std::string name, const aiScene* scene, Filter filter, int UID);
 
 
 private:

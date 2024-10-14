@@ -186,6 +186,7 @@
     <ClInclude Include="D3DUtill.h" />
     <ClInclude Include="DebugDrawManager.h" />
     <ClInclude Include="DebugPass.h" />
+    <ClInclude Include="DeferredInstancing.h" />
     <ClInclude Include="DeferredPass.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthStencilState.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="D3DUtill.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />
     <ClCompile Include="DebugPass.cpp" />
+    <ClCompile Include="DeferredInstancing.cpp" />
     <ClCompile Include="DeferredPass.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="DepthStencilView.cpp" />
@@ -350,6 +352,18 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="InstancingPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="InstancingVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="IsOccluded.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>

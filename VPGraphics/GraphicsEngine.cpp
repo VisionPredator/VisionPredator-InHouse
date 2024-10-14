@@ -544,9 +544,12 @@ void GraphicsEngine::Culling()
 	{
 		std::wstring& fbx = object->FBX;
 		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
+		
 
 		if (curFBX != nullptr)
 		{
+			object->ModelID = curFBX->UID;
+
 			{
 				VPMath::Vector3 s;
 				VPMath::Quaternion r;
@@ -644,6 +647,8 @@ void GraphicsEngine::Culling()
 		}
 		else
 		{
+			object->ModelID = -1;
+
 			if (object->Filter == GeoMetryFilter::Box)
 			{
 				m_AfterCulling.push_back(object);
