@@ -8,38 +8,7 @@ PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ 
 }
 #pragma region player Functuions
 
-#pragma endregion
-void PlayerSystem::Update(float deltaTime)
-{
-	COMPLOOP(PlayerComponent, playercomp)
-	{
-		GunCooltime(playercomp, deltaTime);
-		Gun_Recoiling(playercomp, deltaTime);
-		Calculate_FSM(playercomp);
-		FSM_Sound_FSM(playercomp, deltaTime);
-		FSM_Action_FSM(playercomp, deltaTime);
-		ToVPMode(playercomp);
-		PlayerInterect(playercomp);
-		PlayerAnimation(playercomp);
-	}
-}
-void PlayerSystem::FixedUpdate(float deltaTime)
-{
-	COMPLOOP(PlayerComponent, playercomp)
-	{
-		SearchingInterectives(playercomp);
-		UpdateCharDataToController(playercomp);
-		CarmeraPosChange(playercomp, deltaTime);
-	}
-}
-
-void PlayerSystem::PhysicsUpdate(float deltaTime)
-{
-}
-void PlayerSystem::SoundUpdate(float deltaTime)
-{
-}
-float PlayerSystem::Randomfloat(float min, float max) 
+float PlayerSystem::Randomfloat(float min, float max)
 {
 	// Create a random number generator
 	std::random_device rd; // Seed generator
@@ -66,12 +35,12 @@ double PlayerSystem::GunRecoilPercent(double x, double a, double percent)
 		double delta = x - a * b;
 		return -(delta * delta) / (b * b * a * a) + 1;
 	}
-	else if (x >= a) 
+	else if (x >= a)
 	{
 		// Beyond full recoil
 		return 1.0;
 	}
-	else 
+	else
 	{
 		// Second half: upward parabola
 		double delta = x - a;
@@ -80,9 +49,42 @@ double PlayerSystem::GunRecoilPercent(double x, double a, double percent)
 }
 
 
+#pragma endregion
+#pragma region Update
+
+void PlayerSystem::Update(float deltaTime)
+{
+	COMPLOOP(PlayerComponent, playercomp)
+	{
+		GunCooltime(playercomp, deltaTime);
+		Gun_Recoiling(playercomp, deltaTime);
+		Calculate_FSM(playercomp);
+		FSM_Sound_FSM(playercomp, deltaTime);
+		FSM_Action_FSM(playercomp, deltaTime);
+		ToVPMode(playercomp);
+		PlayerInterect(playercomp);
+		PlayerAnimation(playercomp);
+	}
+}
+void PlayerSystem::FixedUpdate(float deltaTime)
+{
+	COMPLOOP(PlayerComponent, playercomp)
+	{
+		SearchingInterectives(playercomp);
+		UpdateCharDataToController(playercomp);
+		CarmeraPosChange(playercomp, deltaTime);
+	}
+}
+void PlayerSystem::PhysicsUpdate(float deltaTime)
+{
+}
+void PlayerSystem::SoundUpdate(float deltaTime)
+{
+}
 void PlayerSystem::PhysicsLateUpdate(float deltaTime)
 {
 }
+#pragma endregion
 
 #pragma region Searching interective
 void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
@@ -129,10 +131,6 @@ void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 		temp = !temp;
 		m_Graphics->SetVP(temp);
 	}
-}
-void PlayerSystem::CameraShake(PlayerComponent& playercomp,float deltatime)
-{
-	Gun_Recoiling(playercomp, deltatime);
 }
 #pragma region Physics Setting
 
@@ -227,6 +225,10 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 		UpCamera(playercomp, deltatime);
 	break;
 	}
+}
+void PlayerSystem::CameraShake(PlayerComponent& playercomp, float deltatime)
+{
+	Gun_Recoiling(playercomp, deltatime);
 }
 #pragma endregion 
 
@@ -796,22 +798,19 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;	/*case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Rifle:	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun:	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun:	break;*/
 	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
 	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;
-	case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword:	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;	/*case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword:	break;*/
 	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;	/*case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_dash:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_jump:			break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_run:			break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_run:			break;*/
 	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
 	default:
 		break;
@@ -883,7 +882,7 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 
 void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 {
-	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();/**GetSceneManager()->GetComponent<AnimationComponent>(playercomp.HandID)*/
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 	if (anicomp.IsBlending || anicomp.PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Sword)
 		return;
 
