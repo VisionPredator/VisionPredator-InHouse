@@ -5,7 +5,7 @@
 struct GunComponent :
     public Component
 {
-    VP_JSONBODY(GunComponent, Type, ThrowDamage, BulletPrefab, GunSoundPrefab,CurrentBullet, CoolTime, Bullets, GunRecoil)
+    VP_JSONBODY(GunComponent, Type, ThrowDamage, BulletPrefab, GunSoundPrefab,CurrentBullet, CoolTime, Bullets, RecoilPos, RecoilMaxXY, RecoilPercent, RecoilTime)
     VisPred::Game::GunType Type;
     std::string BulletPrefab{};
     std::string GunSoundPrefab{};
@@ -16,7 +16,9 @@ struct GunComponent :
     bool IsGrapped{};
     bool IsEmpty = false;
     uint32_t GrappedEntityID{};
-    VPMath::Vector2 GunRecoil{};
-    float GunRecoilTime{};
+    VPMath::Vector2 RecoilPos{};
+    VPMath::Vector2 RecoilMaxXY{};
+    float RecoilPercent{};
+    float RecoilTime{};
 };
 

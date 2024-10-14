@@ -14,23 +14,26 @@ void VispredRegister::Register_Metadata()
 void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, PlayerComponent::CameraPosName,PlayerComponent::CameraName
-		, PlayerComponent::HandName, PlayerComponent::HP
-		, PlayerComponent::Sencitive, PlayerComponent::StaticFriction
-		, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce
-		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
-		, PlayerComponent::Accel, PlayerComponent::CurrentFSM
-		, PlayerComponent::AirControlPercent, PlayerComponent::FirePositionName
-		, PlayerComponent::GravityPower, PlayerComponent::HasGun
+	META_ADD_COMP(PlayerComponent, 
+		PlayerComponent::CameraPosName,PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName,
+		PlayerComponent::HP
+		, PlayerComponent::Sencitive, PlayerComponent::RecoilReturnTime
+		, PlayerComponent::JumpForce
+		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::SlideDuration
+		,  PlayerComponent::CurrentFSM
+		, PlayerComponent::AirControlPercent
+		, PlayerComponent::GravityPower
+		, PlayerComponent::StaticFriction
+		, PlayerComponent::DynamicFriction
 		, PlayerComponent::WalkSoundKey1, PlayerComponent::WalkSoundKey2, PlayerComponent::Volume_Walk
 		, PlayerComponent::RunSoundKey1, PlayerComponent::RunSoundKey2, PlayerComponent::Volume_Run
 		, PlayerComponent::JumpSoundkey, PlayerComponent::Volume_Jump
 		, PlayerComponent::SlideSoundkey, PlayerComponent::Volume_Slide
 		, PlayerComponent::SitSoundKey, PlayerComponent::Volume_Sit
-		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt, PlayerComponent::GunRecoilPercent
+		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt
 	);
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
-	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets,GunComponent::GunRecoil);
+	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets,GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 }
 
 void VispredRegister::Register_EnumClass()

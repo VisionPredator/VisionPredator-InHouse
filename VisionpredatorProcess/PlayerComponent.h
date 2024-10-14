@@ -6,12 +6,12 @@ struct PlayerComponent :
 {
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent,
-		HandName, CameraPosName, CameraName, FirePositionName,	///EntityNames
-		CurrentFSM, HP, Sencitive, Accel, WalkSpeed, RunSpeed, SlideDisTance, StaticFriction, SlideDisTance, DynamicFriction, JumpFoce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, GunRecoilPercent)
+		HandName, CameraPosName, CameraName, FirePosName,	///EntityNames
+		CurrentFSM, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, RecoilProgress, RecoilReturnTime)
 	std::string HandName{};
 	std::string CameraPosName{};
 	std::string CameraName{};
-	std::string FirePositionName;
+	std::string FirePosName;
 	std::weak_ptr<Entity> HandEntity{};
 	std::weak_ptr<Entity> CameraEntity{};
 	std::weak_ptr<Entity> CameraPosEntity{};
@@ -24,11 +24,10 @@ struct PlayerComponent :
 	float Sencitive = 1.f;
 	float WalkSpeed{};
 	float RunSpeed{};
-	float SlideDisTance{};
-	float Accel{};
+	//float SlideDisTance{};
 	float StaticFriction{};
 	float DynamicFriction{};
-	float JumpFoce{};
+	float JumpForce{};
 	float AirControlPercent{};
 	float GravityPower = 1.f;
 	/// <summary>
@@ -82,7 +81,9 @@ struct PlayerComponent :
 	bool IsRotated=false;
 	bool PlayerCamereShake{};
 	bool IsGunRecoiling{};
-	float GunRecoilPercent{};
+	bool IsEndReocilReturn{};
+	float RecoilProgress{};
+	float RecoilReturnTime{};
 	VPMath::Quaternion GunRecoilEndQuat{};
 	VPMath::Quaternion GunRecoilStartQuat{};
 };

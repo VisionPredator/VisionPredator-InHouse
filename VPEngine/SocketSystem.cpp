@@ -72,10 +72,10 @@ void SocketSystem::RenderUpdate(float deltaTime)
 			continue;
 
 		VPMath::Matrix attachmentMatrix = m_Graphics->Attachment(entity->GetEntityID(), socketcomp.SocketName);
-		VPMath::Quaternion rotationQuat = VPMath::Quaternion::CreateFromYawPitchRoll(
-			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.y),
-			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.x),
-			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.z));
+		VPMath::Quaternion rotationQuat = /*socketcomp.offsetQuaternion;*/VPMath::Quaternion::CreateFromYawPitchRoll(
+			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.y),
+			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.x),
+			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.z));
 
 
 		///로컬 매트릭스 만들기
@@ -97,11 +97,7 @@ void SocketSystem::RenderUpdate(float deltaTime)
 
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);
-		if (tempsworld.Length()<1)
-		{
-			int a = 5;
 
-		}
 		temptrnasform->SetWorldQuaternion(tempQuater);
 		if (socketcomp.HasComponent<RigidBodyComponent>())
 		{
@@ -121,33 +117,7 @@ void SocketSystem::LateRenderUpdate(float deltaTime)
 {
 	COMPLOOP(SocketComponent, socketcomp)
 	{
-
 		UpdateSocketRenderData(*socketcomp.GetComponent<TransformComponent>());
-		//std::list<uint32_t> UpdateListID;
-
-		//UpdateListID.push_back(socketcomp.GetEntityID());
-
-		//if (socketcomp.HasComponent<Children>())
-		//{
-		//	auto childcomp = socketcomp.GetComponent<Children>();
-		//	for (auto childID : childcomp->ChildrenID)
-		//	{
-		//		UpdateListID.push_back(childID);
-		//	}
-		//}
-
-		//if (!socketcomp.HasComponent<MeshComponent>())
-		//	return;
-		//auto& meshComp = *socketcomp.GetComponent<MeshComponent>();
-		//const TransformComponent& transform = *socketcomp.GetComponent<TransformComponent>();
-		//bool IsChanged = false;
-		//auto renderdata = meshComp.Renderdata;
-
-		//renderdata->FBX = meshComp.FBX;
-		//renderdata->world = transform.WorldTransform;
-		//renderdata->rotation = transform.World_Rotation;
-		//renderdata->MaskingColor = meshComp.MaskColor;
-
 	}
 
 }

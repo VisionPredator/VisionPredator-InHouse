@@ -124,6 +124,7 @@ public:
 	// ISoundable을(를) 통해 상속됨
 	void SoundUpdate(float deltaTime) override;
 	float Randomfloat(float min , float max);
-	double GunRecoilPercent(double curtime ,double time, double percent);
+	double RecoilPercent(double curtime ,double time, double percent);
+	double EndRecoilPercent(double curtime ,double time);
 };
 

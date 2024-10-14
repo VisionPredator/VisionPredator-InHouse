@@ -20,7 +20,7 @@ float PlayerSystem::Randomfloat(float min, float max)
 	// Return the random number
 	return dist(gen);
 }
-double PlayerSystem::GunRecoilPercent(double x, double a, double percent)
+double PlayerSystem::RecoilPercent(double x, double a, double percent)
 {
 	// Convert percent into a value between 0 and 1
 	double b = percent / 100.0;
@@ -46,6 +46,12 @@ double PlayerSystem::GunRecoilPercent(double x, double a, double percent)
 		double delta = x - a;
 		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
 	}
+}
+
+double PlayerSystem::EndRecoilPercent(double x, double a)
+{
+	double delta = x - a;
+	return (delta * delta) / ( a * a);
 }
 
 
@@ -139,7 +145,7 @@ void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
 	//controllercomp.Acceleration= playercomp.Accel;
 	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
-	controlcomp.JumpSpeed = playercomp.JumpFoce;
+	controlcomp.JumpSpeed = playercomp.JumpForce;
 	controlcomp.StaticFriction = playercomp.StaticFriction;
 	controlcomp.DynamicFriction = playercomp.DynamicFriction;
 	controlcomp.JumpXZAcceleration = controlcomp.Acceleration * playercomp.AirControlPercent / 100;
@@ -303,7 +309,7 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
 	}
 	///มกวม
-	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+	else if (INPUTKEY(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
 		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 
 }
@@ -540,7 +546,7 @@ void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 #pragma endregion
 #pragma region FSM Sound
 void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
-{
+{	
 	switch (playercomp.CurrentFSM)
 	{
 	case VisPred::Game::EFSM::IDLE:
@@ -737,13 +743,28 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 				if (Gun_Shoot(playercomp, guncomp))
 				{
 					playercomp.IsGunRecoiling = true;
-					float randfloat = guncomp.GunRecoil.x;
+					float randfloat = guncomp.RecoilPos.x;
 					randfloat = Randomfloat(-randfloat, randfloat);
 					auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>(); /*GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);*/
 					playercomp.GunRecoilStartQuat = cameratrans->Local_Quaternion;
 					playercomp.GunRecoilEndQuat = playercomp.GunRecoilStartQuat;
 					playercomp.GunRecoilEndQuat.RotateYaw(randfloat);
-					playercomp.GunRecoilEndQuat.RotateToUp(guncomp.GunRecoil.y);
+					playercomp.GunRecoilEndQuat.RotateToUp(guncomp.RecoilPos.y);
+
+					VPMath::Vector3 euler = playercomp.GunRecoilEndQuat.ToEuler();  // Use the ToEuler function to extract pitch
+
+					const float maxPitch = guncomp.RecoilMaxXY.y * (VPMath::XM_PI / 180.0f);
+					const float maxYaw = guncomp.RecoilMaxXY.x * (VPMath::XM_PI / 180.0f);
+					if (euler.x > maxPitch)
+						euler.x = maxPitch;
+					else if (euler.x < -maxPitch)
+						euler.x = -maxPitch;
+					if (euler.y > maxYaw)
+						euler.y = maxYaw;
+					else if (euler.y < -maxYaw)
+						euler.y = -maxYaw;
+
+					playercomp.GunRecoilEndQuat = VPMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z);
 				}
 			}
 
@@ -864,20 +885,51 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 {
 	if (playercomp.HasGun && playercomp.IsGunRecoiling)
 	{
+		playercomp.RecoilProgress += deltatime;
 		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 		VPMath::Quaternion tempquat{};
-		double percent = GunRecoilPercent(playercomp.GunprogressTime, gunComp->GunRecoilTime,playercomp.GunRecoilPercent);
+		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
 		tempquat= tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+		VPMath::Quaternion tempquat1 = { tempquat.x,0,0,tempquat.w };
+		VPMath::Quaternion tempquat2{};
+
+
+
+		// Extract yaw, pitch, roll from quaternion
+
 		cameratrans->SetLocalQuaternion(tempquat);
-		if (percent>=1.0f)
+
+		if (percent >= 1.0f)
 		{
+			VPMath::Quaternion tempquat{};
+			playercomp.RecoilProgress = 0;
 			playercomp.IsGunRecoiling = false;
-			playercomp.GunRecoilStartQuat = {};
-			playercomp.GunRecoilEndQuat = {};
+			playercomp.IsEndReocilReturn = false;
 			cameratrans->SetLocalQuaternion({});
 		}
 	}
+	else if (playercomp.HasGun && !playercomp.IsGunRecoiling && !playercomp.IsEndReocilReturn)
+	{
+		playercomp.RecoilProgress += deltatime;
+		VPMath::Quaternion tempquat{};
+		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
+		if (playercomp.RecoilProgress <= playercomp.RecoilReturnTime)
+		{
+			double temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
+			tempquat = tempquat.Slerp( {},playercomp.GunRecoilStartQuat, temppercent);
+			cameratrans->SetLocalQuaternion(tempquat);
+		}
+		else
+		{
+			cameratrans->SetLocalQuaternion({});
+			playercomp.IsEndReocilReturn = true;
+			playercomp.RecoilProgress = 0;
+			playercomp.GunRecoilStartQuat = {};
+			playercomp.GunRecoilEndQuat = {};
+		}
+	}
+
 }
 
 void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
@@ -1133,7 +1185,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto playercomp = GetSceneManager()->GetComponent<PlayerComponent>(gameObjectId);
 		auto HandEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->HandName);
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
-		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePositionName);
+		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
