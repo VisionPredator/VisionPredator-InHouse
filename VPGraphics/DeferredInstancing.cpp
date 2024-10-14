@@ -236,13 +236,20 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 			return a->ModelID < b->ModelID; }
 	);
 
-
+	bool preSkinned = false;
 	int preModelID = -1;
 	int curModelID = -1;
 	int count = 0;
 	//instance buffer
 	for (auto& object : m_RenderList)
 	{
+		//유효한 모델을 가지고 있지 않음
+		if (object->ModelID < 0)
+		{
+			continue;
+		}
+
+		//첫번째 진행시 초기화
 		if (preModelID < 0 && curModelID < 0)
 		{
 			preModelID = object->ModelID;
@@ -253,6 +260,7 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 		{
 			curModelID = object->ModelID;
 		}
+
 
 		if (object->isSkinned)
 		{
@@ -288,7 +296,7 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 		}
 		else
 		{
-			if (object->isSkinned)
+			if (preSkinned)
 			{
 				m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
 			}
@@ -300,10 +308,18 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 		}
 
 		preModelID = curModelID;
+		preSkinned = object->isSkinned;
 	}
 
-	m_instancecount.push(std::pair<int, int>(curModelID, count));
-
+	//끝나고 마지막 메쉬 담기
+	if (preSkinned)
+	{
+		m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
+	}
+	else
+	{
+		m_instancecount.push(std::pair<int, int>(preModelID, count));
+	}
 
 
 	//instance buffer update
