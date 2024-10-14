@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 2004975999,
+        "EntityID": 114816420,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -28,18 +28,17 @@
             {
                 "Accel": 200.0,
                 "AirControlPercent": 40.0,
-                "CameraName": "Camera",
-                "CameraPosName": "CameraPos",
                 "ComponentID": 4183631247,
                 "CurrentFSM": 0,
                 "DynamicFriction": 0.0,
-                "FirePositionName": "FirePos",
+                "FirePosition": "Fireposition",
                 "GravityPower": 1.0,
                 "HP": 90,
-                "HandName": "Hand",
                 "HurtSoundKey": "Player_Hurt",
                 "JumpFoce": 4.0,
                 "JumpSoundkey": "Player_Jump",
+                "PlayerCameraName": "PlayerCamera",
+                "PlayerHandName": "PlayerHand",
                 "RunSoundKey1": "Player_Run1",
                 "RunSoundKey2": "Player_Run2",
                 "RunSpeed": 10.0,
@@ -101,7 +100,7 @@
             },
             {
                 "ChildrenID": [
-                    897255897
+                    888227744
                 ],
                 "ComponentID": 188567026
             },
@@ -112,67 +111,29 @@
         ]
     },
     {
-        "EntityID": 897255897,
+        "EntityID": 888227744,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "CameraPos"
+                "Name": "PlayerCamera"
             },
             {
                 "ComponentID": 3400599862,
                 "Local_Location": {
                     "x": 0.0,
                     "y": 0.6758384704589844,
-                    "z": 0.2763175964355469
+                    "z": 0.27631568908691406
                 },
                 "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": 0.0,
+                    "w": 0.9661514759063721,
+                    "x": -0.2579755187034607,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "Local_Scale": {
-                    "x": 1.0000001192092896,
+                    "x": 1.0,
                     "y": 1.0,
-                    "z": 1.0000001192092896
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 2004975999
-            },
-            {
-                "ChildrenID": [
-                    1138226331
-                ],
-                "ComponentID": 188567026
-            }
-        ]
-    },
-    {
-        "EntityID": 1138226331,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Camera"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": -3.814697265625e-06
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 1.4901162970204496e-08,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 0.9999998807907104,
-                    "y": 1.0,
-                    "z": 0.9999998807907104
+                    "z": 1.0
                 }
             },
             {
@@ -183,24 +144,24 @@
                 "NearZ": 0.009999999776482582
             },
             {
-                "ChildrenID": [
-                    606290209,
-                    3337761414
-                ],
-                "ComponentID": 188567026
+                "ComponentID": 3243699741,
+                "ParentID": 114816420
             },
             {
-                "ComponentID": 3243699741,
-                "ParentID": 897255897
+                "ChildrenID": [
+                    3379424905,
+                    3562078941
+                ],
+                "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 606290209,
+        "EntityID": 3379424905,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "Hand"
+                "Name": "PlayerHand"
             },
             {
                 "ComponentID": 3400599862,
@@ -264,16 +225,16 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1138226331
+                "ParentID": 888227744
             }
         ]
     },
     {
-        "EntityID": 3337761414,
+        "EntityID": 3562078941,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "FirePos"
+                "Name": "Fireposition"
             },
             {
                 "ComponentID": 3400599862,
@@ -296,7 +257,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1138226331
+                "ParentID": 888227744
             }
         ]
     }

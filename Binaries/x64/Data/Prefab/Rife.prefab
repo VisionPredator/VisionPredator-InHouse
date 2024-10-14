@@ -1,11 +1,7 @@
 [
     {
-        "EntityID": 3374181812,
+        "EntityID": 3686308137,
         "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Rife"
-            },
             {
                 "BoxInfo": {
                     "Extent": {
@@ -50,6 +46,29 @@
                 }
             },
             {
+                "ComponentID": 1365953231,
+                "Name": "Rife"
+            },
+          {
+            "ComponentID": 3400599862,
+            "Local_Location": {
+              "x": 26.941476821899414,
+              "y": -49.25837326049805,
+              "z": -19.251773834228516
+            },
+            "Local_Quaternion": {
+              "w": 0.6822525858879089,
+              "x": -0.18841706216335297,
+              "y": -0.18903283774852753,
+              "z": 0.6806592345237732
+            },
+            "Local_Scale": {
+              "x": 0.27000001072883606,
+              "y": 0.270000159740448,
+              "z": 0.26999998092651367
+            }
+          },
+            {
                 "ComponentID": 3774279003,
                 "FBX": [
                     114,
@@ -73,44 +92,25 @@
                     "y": 0.0
                 },
                 "MaskColor": {
-                    "w": 1.0,
+                    "w": 0.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 }
             },
             {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 26.941476821899414,
-                    "y": -49.25837326049805,
-                    "z": -19.251773834228516
-                },
-                "Local_Quaternion": {
-                    "w": 0.6822527647018433,
-                    "x": -0.18841707706451416,
-                    "y": -0.18903279304504395,
-                    "z": 0.6806591749191284
-                },
-                "Local_Scale": {
-                    "x": 0.26999998092651367,
-                    "y": 0.2700001001358032,
-                    "z": 0.26999998092651367
-                }
-            },
-            {
                 "BulletPrefab": "../Data/Prefab/Pistol_Bullet.prefab",
-                "Bullets": 4,
+                "Bullets": 25,
                 "ComponentID": 3546995328,
                 "CoolTime": 0.009999999776482582,
-                "CurrentBullet": 4,
-                "GunSoundPrefab": "../Data/Prefab/PisTolSound.prefab",
+                "CurrentBullet": 25,
+                "GunSoundPrefab": "../Data/Prefab/Sound_Rifle.prefab",
                 "ThrowDamage": 1,
                 "Type": 2
             },
             {
                 "ComponentID": 2225601387,
-                "ConnectedEntity": "",
+                "ConnectedEntity": "PlayerHand",
                 "IsConnected": false,
                 "Offset": {
                     "x": -0.1599999964237213,

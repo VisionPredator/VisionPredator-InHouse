@@ -1,11 +1,11 @@
 [
     {
-        "EntityID": 1530624844,
+        "EntityID": 3694412887,
         "Component": [
             {
                 "ComponentID": 1783070355,
                 "Loop": false,
-                "SoundPath": "Pistol",
+                "SoundPath": "Pistol_2D",
                 "Volume": 0.10000000149011612
             },
             {
