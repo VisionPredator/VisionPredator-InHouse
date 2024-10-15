@@ -12,6 +12,12 @@ namespace VisPred
 			NONE,
 			END
 
+		};		
+		enum class GunRecoilMode
+		{
+			ReturnToMiddle,
+			ReturnToEndAim
+
 		};
 
 		enum class EFSM

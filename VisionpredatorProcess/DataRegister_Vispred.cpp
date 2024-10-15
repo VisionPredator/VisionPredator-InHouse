@@ -14,7 +14,7 @@ void VispredRegister::Register_Metadata()
 void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, 
+	META_ADD_COMP(PlayerComponent, PlayerComponent::RecoilMode,
 		PlayerComponent::CameraPosName,PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName,
 		PlayerComponent::MaxHP,	PlayerComponent::HP
 		, PlayerComponent::Sencitive, PlayerComponent::RecoilReturnTime
@@ -40,6 +40,7 @@ void VispredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
 	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
+	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyState,EnemyState::IDLE, EnemyState::ATTACK, EnemyState::DIE, EnemyState::DESTROY);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 	META_ADD_ENUMCLASS(PlayerAni

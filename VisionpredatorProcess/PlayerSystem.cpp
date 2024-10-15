@@ -38,7 +38,7 @@ double PlayerSystem::RecoilPercent(double x, double a, double percent)
 	else if (x >= a)
 	{
 		// Beyond full recoil
-		return 1.0;
+		return 0.0;
 	}
 	else
 	{
@@ -46,6 +46,19 @@ double PlayerSystem::RecoilPercent(double x, double a, double percent)
 		double delta = x - a;
 		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
 	}
+}
+
+bool PlayerSystem::RecoilReturn(double x, double a, double percent)
+{
+	// Convert percent into a value between 0 and 1
+	double b = percent / 100.0;
+
+	// Ensure non-negative values
+
+	if (x < a * b)
+		return false;
+	else
+		return true;
 }
 
 double PlayerSystem::EndRecoilPercent(double x, double a)
@@ -63,7 +76,8 @@ void PlayerSystem::Update(float deltaTime)
 	COMPLOOP(PlayerComponent, playercomp)
 	{
 		GunCooltime(playercomp, deltaTime);
-		Gun_Recoiling(playercomp, deltaTime);
+		CameraShake(playercomp, deltaTime);
+		//Gun_Recoiling(playercomp, deltaTime);
 		Calculate_FSM(playercomp);
 		FSM_Sound_FSM(playercomp, deltaTime);
 		FSM_Action_FSM(playercomp, deltaTime);
@@ -234,7 +248,17 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 }
 void PlayerSystem::CameraShake(PlayerComponent& playercomp, float deltatime)
 {
-	Gun_Recoiling(playercomp, deltatime);
+	switch (playercomp.RecoilMode)
+	{
+	case VisPred::Game::GunRecoilMode::ReturnToMiddle:
+	Gun_RecoilingToMiddle(playercomp, deltatime);
+		break;
+	case VisPred::Game::GunRecoilMode::ReturnToEndAim:
+	Gun_RecoilingToEnd(playercomp, deltatime);
+		break;
+	default:
+		break;
+	}
 }
 #pragma endregion 
 
@@ -334,7 +358,6 @@ void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL) || INPUTKEY(KEYBOARDKEY::LCONTROL))
 	{
 		CrouchModeController(playercomp);
-
 		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
 	}
 }
@@ -391,8 +414,6 @@ void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 
 	}
-
-
 }
 void PlayerSystem::Calculate_Jump(PlayerComponent& playercomp)
 {
@@ -405,8 +426,6 @@ void PlayerSystem::Calculate_Jump(PlayerComponent& playercomp)
 		else
 			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
 	}
-
-
 }
 void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 {
@@ -881,7 +900,7 @@ void PlayerSystem::PlayerInterect(PlayerComponent& playercomp)
 	}
 }
 
-void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
+void PlayerSystem::Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime)
 {
 	if (playercomp.HasGun && playercomp.IsGunRecoiling)
 	{
@@ -890,7 +909,8 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 		VPMath::Quaternion tempquat{};
 		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
-		tempquat= tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+
+		tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
 		VPMath::Quaternion tempquat1 = { tempquat.x,0,0,tempquat.w };
 		VPMath::Quaternion tempquat2{};
 
@@ -900,7 +920,7 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 
 		cameratrans->SetLocalQuaternion(tempquat);
 
-		if (percent >= 1.0f)
+		if (playercomp.GunprogressTime> gunComp->RecoilTime)
 		{
 			VPMath::Quaternion tempquat{};
 			playercomp.RecoilProgress = 0;
@@ -917,7 +937,7 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 		if (playercomp.RecoilProgress <= playercomp.RecoilReturnTime)
 		{
 			double temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
-			tempquat = tempquat.Slerp( {},playercomp.GunRecoilStartQuat, temppercent);
+			tempquat = tempquat.Slerp({}, playercomp.GunRecoilStartQuat, temppercent);
 			cameratrans->SetLocalQuaternion(tempquat);
 		}
 		else
@@ -930,6 +950,35 @@ void PlayerSystem::Gun_Recoiling(PlayerComponent& playercomp, float deltatime)
 		}
 	}
 
+}
+void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime)
+{
+	if (playercomp.HasGun && playercomp.IsGunRecoiling)
+	{
+		playercomp.RecoilProgress += deltatime;
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
+		VPMath::Quaternion tempquat{};
+		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
+		if (!RecoilReturn(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent))
+			tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+		else
+			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, percent);
+		VPMath::Quaternion tempquat1 = { tempquat.x,0,0,tempquat.w };
+
+		cameratrans->SetLocalQuaternion(tempquat);
+
+		if (percent >= 1.0f)
+		{
+			VPMath::Quaternion tempquat{};
+			playercomp.RecoilProgress = 0;
+			playercomp.GunRecoilStartQuat = {};
+			playercomp.GunRecoilEndQuat = {};
+			playercomp.IsGunRecoiling = false;
+			//playercomp.IsEndReocilReturn = false;
+			cameratrans->SetLocalQuaternion({});
+		}
+	}
 }
 
 void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
@@ -1187,6 +1236,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
+		playercomp->HP= playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else

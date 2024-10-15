@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 3610428841,
+        "EntityID": 2325747677,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -34,11 +34,12 @@
                 "DynamicFriction": 0.0,
                 "FirePosName": "FirePos",
                 "GravityPower": 1.0,
-                "HP": 90,
+                "HP": 0,
                 "HandName": "Hand",
                 "HurtSoundKey": "Player_Hurt",
                 "JumpForce": 4.0,
                 "JumpSoundkey": "Player_Jump",
+                "MaxHP": 0,
                 "RecoilProgress": 0.0,
                 "RecoilReturnTime": 0.10000000149011612,
                 "RunSoundKey1": "Player_Run1",
@@ -102,7 +103,7 @@
             },
             {
                 "ChildrenID": [
-                    1078091005
+                    2204882994
                 ],
                 "ComponentID": 188567026
             },
@@ -113,7 +114,7 @@
         ]
     },
     {
-        "EntityID": 1078091005,
+        "EntityID": 2204882994,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -140,18 +141,18 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3610428841
+                "ParentID": 2325747677
             },
             {
                 "ChildrenID": [
-                    1467089567
+                    2652074438
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 1467089567,
+        "EntityID": 2652074438,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -185,19 +186,19 @@
             },
             {
                 "ChildrenID": [
-                    3822291796,
-                    1082360865
+                    549418825,
+                    327702120
                 ],
                 "ComponentID": 188567026
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1078091005
+                "ParentID": 2204882994
             }
         ]
     },
     {
-        "EntityID": 3822291796,
+        "EntityID": 549418825,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -265,12 +266,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1467089567
+                "ParentID": 2652074438
             }
         ]
     },
     {
-        "EntityID": 1082360865,
+        "EntityID": 327702120,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -297,7 +298,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 1467089567
+                "ParentID": 2652074438
             }
         ]
     }

@@ -6,8 +6,11 @@ struct PlayerComponent :
 {
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent,
-		HandName, CameraPosName, CameraName, FirePosName,	///EntityNames
-		CurrentFSM, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, RecoilProgress, RecoilReturnTime)
+		RecoilMode
+		,HandName, CameraPosName, CameraName, FirePosName
+		,CurrentFSM, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, RecoilProgress, RecoilReturnTime)
+
+	VisPred::Game::GunRecoilMode RecoilMode{};
 	std::string HandName{};
 	std::string CameraPosName{};
 	std::string CameraName{};

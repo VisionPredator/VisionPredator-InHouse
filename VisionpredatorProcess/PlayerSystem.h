@@ -83,7 +83,6 @@ public:
 	void Active_Attack(PlayerComponent& playercomp);
 #pragma endregion 
 
-
 #pragma region Animation
 	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
@@ -93,7 +92,8 @@ public:
 #pragma region Gun Logic
 	void PlayerInterect(PlayerComponent& playercomp);
 	void Grab_Gun(PlayerComponent& playercomp);
-	void Gun_Recoiling(PlayerComponent& playercomp, float deltatime);
+	void Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime);
+	void Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime);
 
 	bool Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
 	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
@@ -125,6 +125,7 @@ public:
 	void SoundUpdate(float deltaTime) override;
 	float Randomfloat(float min , float max);
 	double RecoilPercent(double curtime ,double time, double percent);
+	bool RecoilReturn(double curtime ,double time, double percent);
 	double EndRecoilPercent(double curtime ,double time);
 };
 
