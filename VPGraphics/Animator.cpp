@@ -68,12 +68,12 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 		//그대로 연속 재생
 		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
 		{
+			end = ani->totals.back();
 			//가지고 있는 애니메이션 정보 순회
 			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
 			{
-				end = ani->totals.end() - 1;
 
-				if (curtick >= end->first )
+				if (curtick >= end->first)
 				{
 					std::shared_ptr<Node> curAni = ani->node.lock();
 					curAni->m_Local = end->second.Transpose();
@@ -116,8 +116,6 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 				}
 			}
 		}
-		//CalcWorld(curOb->EntityID, curModel->m_Nodes);
-		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 
 	}
 	else
@@ -165,24 +163,29 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			curAni->m_Local = VPMath::Matrix::Lerp(start->second, preAni[ani->nodename], t).Transpose();
 		}
 
-		//CalcWorld(curOb->EntityID, curModel->m_Nodes);
-		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	}
+
+	//CalcWorld(curOb->EntityID, curModel->m_RootNode);
+	CalcWorld(curOb->EntityID, curModel->m_Nodes);
 }
 
 void Animator::CalcWorld(uint32_t entityID, std::vector< std::shared_ptr<Node>>& Nodes)
 {
 	for (auto& node : Nodes)
 	{
-		auto& parentNode = Nodes[node->parentsindex];
-
-		
-		//node->m_Local = parentNode->m_World * node->m_Local;
-		//node->m_World = node->m_Local * parentNode->m_World;
-
+		if (!node->HasParents)
+		{
+			node->m_World = node->m_Local;
+			node->m_WorldInverse = node->m_LocalInverse;
+		}
+		else
+		{
+			node->m_World = node->m_Parents.lock()->m_World * node->m_Local;
+			node->m_WorldInverse = node->m_World.Invert();
+		}
 	}
 
-	
+
 }
 
 void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
@@ -228,8 +231,8 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 
 			for (int i = 0; i < skinned->m_BoneData.size(); i++)
 			{
-				VPMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
-				VPMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
+				VPMath::Matrix& nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
+				VPMath::Matrix& offset = skinned->m_BoneData[i]->offsetMatrix;
 				pallete.offset[i] = (nodeworld * offset);
 			}
 		}
