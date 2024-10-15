@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 3561193261,
+        "EntityID": 3036021488,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -27,23 +27,78 @@
             },
             {
                 "ChildrenID": [
-                    2535274535,
-                    1083681190,
-                    1702460445,
-                    3085813012,
-                    2491454896,
-                    632508540
+                    1268290914,
+                    51391632,
+                    379101354,
+                    224999898,
+                    3091776886
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 2535274535,
+        "EntityID": 1268290914,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "WeaponImage"
+                "Name": "AimImage"
+            },
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Local_Quaternion": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                },
+                "Local_Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "ComponentID": 1080109110,
+                "UUID": "AimUI"
+            },
+            {
+                "Billboard": 0,
+                "BottomPercent": 0.0,
+                "Color": {
+                    "w": 0.6901960968971252,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "ComponentID": 2393760569,
+                "Layer": 1,
+                "LeftPercent": 0.0,
+                "PosXPercent": 50.0,
+                "PosYPercent": 50.0,
+                "RenderMode": 1,
+                "RightPercent": 0.0,
+                "Scale": 0.5789999961853027,
+                "TexturePath": "aim_base.png",
+                "TopPercent": 0.0
+            },
+            {
+                "ComponentID": 3243699741,
+                "ParentID": 3036021488
+            }
+        ]
+    },
+    {
+        "EntityID": 51391632,
+        "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "WeaponUI"
             },
             {
                 "ComponentID": 3400599862,
@@ -89,98 +144,6 @@
                 "UUID": "WeaponUI"
             },
             {
-                "ComponentID": 3243699741,
-                "ParentID": 3561193261
-            }
-        ]
-    },
-    {
-        "EntityID": 1083681190,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "AimImage"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "Billboard": 0,
-                "BottomPercent": 0.0,
-                "Color": {
-                    "w": 0.6901960968971252,
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "ComponentID": 2393760569,
-                "Layer": 1,
-                "LeftPercent": 0.0,
-                "PosXPercent": 50.0,
-                "PosYPercent": 50.0,
-                "RenderMode": 1,
-                "RightPercent": 0.0,
-                "Scale": 0.5789999961853027,
-                "TexturePath": "aim_base.png",
-                "TopPercent": 0.0
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "AimUI"
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 3561193261
-            }
-        ]
-    },
-    {
-        "EntityID": 1702460445,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "AmmoText"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "AmmoUI"
-            },
-            {
                 "Angle": 0.0,
                 "Color": {
                     "w": 1.0,
@@ -224,12 +187,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3561193261
+                "ParentID": 3036021488
             }
         ]
     },
     {
-        "EntityID": 3085813012,
+        "EntityID": 379101354,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -256,21 +219,21 @@
             },
             {
                 "ChildrenID": [
-                    3369497467,
-                    2105011665,
-                    3138363492,
-                    2942495719
+                    848435326,
+                    1563303334,
+                    1614518062,
+                    1105908068
                 ],
                 "ComponentID": 188567026
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3561193261
+                "ParentID": 3036021488
             }
         ]
     },
     {
-        "EntityID": 2491454896,
+        "EntityID": 224999898,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -297,23 +260,23 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3561193261
+                "ParentID": 3036021488
             },
             {
                 "ChildrenID": [
-                    492418338,
-                    2357990932
+                    1626541898,
+                    3556775175
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 632508540,
+        "EntityID": 3091776886,
         "Component": [
             {
                 "ComponentID": 1365953231,
-                "Name": "WeaponInfoUI"
+                "Name": "InterectionUI"
             },
             {
                 "ComponentID": 3400599862,
@@ -335,20 +298,58 @@
                 }
             },
             {
-                "ChildrenID": [
-                    2811657670,
-                    1634987588
-                ],
-                "ComponentID": 188567026
+                "ComponentID": 3243699741,
+                "ParentID": 3036021488
             },
             {
-                "ComponentID": 3243699741,
-                "ParentID": 3561193261
+                "ComponentID": 1080109110,
+                "UUID": "InterectionUI"
+            },
+            {
+                "Billboard": 0,
+                "BottomPercent": 0.41999998688697815,
+                "Color": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "ComponentID": 2393760569,
+                "Layer": 1,
+                "LeftPercent": 0.10000000149011612,
+                "PosXPercent": 50.0,
+                "PosYPercent": 40.0,
+                "RenderMode": 1,
+                "RightPercent": 0.10000000149011612,
+                "Scale": 0.7760000228881836,
+                "TexturePath": "",
+                "TopPercent": 0.41999998688697815
+            },
+            {
+                "Angle": 0.0,
+                "Color": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 0.9411764740943909,
+                    "z": 0.0
+                },
+                "ComponentID": 2892956045,
+                "FontPath": [],
+                "Layer": 0,
+                "PosXPercent": 50.0,
+                "PosYPercent": 40.0,
+                "Scale": 0.8610000014305115,
+                "Text": [
+                    84,
+                    101,
+                    120,
+                    116
+                ]
             }
         ]
     },
     {
-        "EntityID": 3369497467,
+        "EntityID": 848435326,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -374,6 +375,10 @@
                 }
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "HPGageUI"
+            },
+            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -394,17 +399,13 @@
                 "TopPercent": 0.0
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "HPGageUI"
-            },
-            {
                 "ComponentID": 3243699741,
-                "ParentID": 3085813012
+                "ParentID": 379101354
             }
         ]
     },
     {
-        "EntityID": 2105011665,
+        "EntityID": 1563303334,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -451,12 +452,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3085813012
+                "ParentID": 379101354
             }
         ]
     },
     {
-        "EntityID": 3138363492,
+        "EntityID": 1614518062,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -503,12 +504,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3085813012
+                "ParentID": 379101354
             }
         ]
     },
     {
-        "EntityID": 2942495719,
+        "EntityID": 1105908068,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -591,12 +592,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 3085813012
+                "ParentID": 379101354
             }
         ]
     },
     {
-        "EntityID": 492418338,
+        "EntityID": 1626541898,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -622,10 +623,6 @@
                 }
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "VPStateUI"
-            },
-            {
                 "Billboard": 0,
                 "BottomPercent": 0.0,
                 "Color": {
@@ -646,13 +643,17 @@
                 "TopPercent": 0.0
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "VPStateUI"
+            },
+            {
                 "ComponentID": 3243699741,
-                "ParentID": 2491454896
+                "ParentID": 224999898
             }
         ]
     },
     {
-        "EntityID": 2357990932,
+        "EntityID": 3556775175,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -679,7 +680,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 2491454896
+                "ParentID": 224999898
             },
             {
                 "Billboard": 0,
@@ -700,137 +701,6 @@
                 "Scale": 1.0,
                 "TexturePath": "eye_side.png",
                 "TopPercent": 0.0
-            }
-        ]
-    },
-    {
-        "EntityID": 2811657670,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Background"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 632508540
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "WeaponInfoBackgroundUI"
-            },
-            {
-                "Billboard": 0,
-                "BottomPercent": 0.41999998688697815,
-                "Color": {
-                    "w": 0.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "ComponentID": 2393760569,
-                "Layer": 1,
-                "LeftPercent": 0.10000000149011612,
-                "PosXPercent": 50.0,
-                "PosYPercent": 40.0,
-                "RenderMode": 1,
-                "RightPercent": 0.10000000149011612,
-                "Scale": 0.7760000228881836,
-                "TexturePath": "",
-                "TopPercent": 0.41999998688697815
-            }
-        ]
-    },
-    {
-        "EntityID": 1634987588,
-        "Component": [
-            {
-                "ComponentID": 1365953231,
-                "Name": "Text"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "Local_Quaternion": {
-                    "w": 1.0,
-                    "x": -0.0,
-                    "y": 0.0,
-                    "z": -0.0
-                },
-                "Local_Scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            {
-                "ComponentID": 3243699741,
-                "ParentID": 632508540
-            },
-            {
-                "Angle": 0.0,
-                "Color": {
-                    "w": 0.0,
-                    "x": 1.0,
-                    "y": 0.9411764740943909,
-                    "z": 0.0
-                },
-                "ComponentID": 2892956045,
-                "FontPath": [
-                    75,
-                    73,
-                    77,
-                    77,
-                    95,
-                    66,
-                    51,
-                    50,
-                    95,
-                    72,
-                    89,
-                    46,
-                    115,
-                    112,
-                    114,
-                    105,
-                    116,
-                    101,
-                    102,
-                    111,
-                    110,
-                    116
-                ],
-                "Layer": 0,
-                "PosXPercent": 50.0,
-                "PosYPercent": 40.0,
-                "Scale": 0.8610000014305115,
-                "Text": []
-            },
-            {
-                "ComponentID": 1080109110,
-                "UUID": "WeaponInfoTextUI"
             }
         ]
     }

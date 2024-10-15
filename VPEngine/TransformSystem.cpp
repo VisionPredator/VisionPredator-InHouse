@@ -78,9 +78,15 @@ void TransformSystem::newUpdate()
 			}
 
 			TransformComponent* current = newupdatevector.at(i); // 안전한 접근을 위해 .at() 사용
+            if (!current->GetEntity())
+            {
+                indicesToRemove[i] = true;          // 제거 대상으로 표시
+                i++;
+                continue; // 이 컴포넌트에 대한 나머지 검사 생략
+            }
+
 			uint32_t currentEntityID = current->GetEntityID();
 			bool HaveParentEntity = false;
-
 			// **새로운 체크**: 현재 컴포넌트에 부모가 없다면, 바로 updateList에 추가
 			if (!current->HasComponent<Parent>())
 			{

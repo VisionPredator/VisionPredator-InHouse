@@ -7,7 +7,7 @@ struct PlayerComponent :
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent,
 		HandName, CameraPosName, CameraName, FirePosName,	///EntityNames
-		CurrentFSM, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, RecoilProgress, RecoilReturnTime)
+		CurrentFSM, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, RecoilProgress, RecoilReturnTime)
 	std::string HandName{};
 	std::string CameraPosName{};
 	std::string CameraName{};
@@ -16,7 +16,7 @@ struct PlayerComponent :
 	std::weak_ptr<Entity> CameraEntity{};
 	std::weak_ptr<Entity> CameraPosEntity{};
 	std::weak_ptr<Entity> FirePosEntity{};
-
+	uint32_t MaxHP{};
 	uint32_t HP{};
 	VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
 	float Height{};

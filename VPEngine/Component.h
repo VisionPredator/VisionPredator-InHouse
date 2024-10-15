@@ -26,7 +26,7 @@ struct Component
 		return OwnedEntity->HasComponent<T>();
 	}
 
-	uint32_t GetEntityID()
+	const uint32_t GetEntityID()
 	{
 		return OwnedEntity->GetEntityID();
 	}
