@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "ModelLoader.h"
 
+#include "DirectXTex.h"
 #include "DirectXHelpers.h"
 #include "ResourceManager.h"
 
@@ -13,6 +14,7 @@
 
 #include "ShaderResourceView.h"
 #include "ConstantBuffer.h"
+#include "Texture2D.h"
 
 #include "Desc.h"
 #include "CBuffer.h"
@@ -69,7 +71,7 @@ void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, co
 
 		//여기서 리소스 많이 들어가면 dt ㅈㄴ 늘어나서 애니메이션이 터짐 - dt값이 튀어서 - 늘어날때마다 매번 함수 넣어줄 수는 없자나
 		//멀티 스레드면 참 좋을듯
-		
+
 		static int UID = 1;	//0은 아무것도 없는것
 		for (auto& dir : m_ResourceDirectory)
 		{
@@ -176,7 +178,7 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 
 	if (Filter::SKINNING == filter)
 	{
-		ProcessNode(nullptr, newData->m_RootNode, scene->mRootNode, newData->m_Meshes);
+		ProcessNode(nullptr, newData->m_RootNode, scene->mRootNode, newData->m_Meshes,newData->m_Nodes);
 		ProcessBoneNodeMapping(newData);
 	}
 
@@ -189,6 +191,74 @@ void ModelLoader::ProcessSceneData(std::string name, const aiScene* scene, Filte
 	key.assign(name.begin()/*+ 12*/, name.end());
 	newData->UID = UID;
 	m_ResourceManager.lock()->Add<ModelData>(key, newData);
+	//SaveBoneDataTexture(newData);
+
+}
+
+void ModelLoader::SaveBoneDataTexture(std::shared_ptr<ModelData> newData)
+{
+	//model bonedata를 texture에 저장하자
+	//이미 계산된 행렬을 보간하는 작업을 gpu에 넘겨버리면
+	//instancing을 할때 buffer에 담을 데이터 수가 적어진다
+
+	//여기서 각 애니메이션에 대한 정보값을 가지고 있어야한다
+
+	//각각의 애니메이션 순회
+	for (auto& Animation : newData->m_Animations)
+	{
+		D3D11_TEXTURE2D_DESC texDesc = {};
+		texDesc.Width = 16; // 4 rows for each bone matrix
+		texDesc.Height = Animation->m_Channels.size() * 2/*totals.size*/; // 각 인스턴스마다 본 데이터를 포함
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		texDesc.SampleDesc.Count = 1;
+		texDesc.Usage = D3D11_USAGE_DEFAULT;
+		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+		for (auto& channel : Animation->m_Channels)
+		{
+			//해당 애니메이션의 각 본의 프레임당 계산된 위치
+
+			//save totals (animation value)
+			std::vector<VPMath::XMFLOAT4> textureData(Animation->m_Channels.size());
+			for (int i = 0; i < channel->totals.size(); i++)
+			{
+				VPMath::Matrix mat = channel->totals[i].second;  // 실제 애니메이션 본 행렬로 대체
+
+				textureData[i * 4 + 0] = VPMath::XMFLOAT4(mat.m[0]);
+				textureData[i * 4 + 1] = VPMath::XMFLOAT4(mat.m[1]);
+				textureData[i * 4 + 2] = VPMath::XMFLOAT4(mat.m[2]);
+				textureData[i * 4 + 3] = VPMath::XMFLOAT4(mat.m[3]);
+			}
+		}
+
+
+		D3D11_SUBRESOURCE_DATA initData = {};
+		//initData.pSysMem = textureData.data();
+		initData.SysMemPitch = texDesc.Width * sizeof(VPMath::XMFLOAT4);
+
+		//create texture
+		ID3D11Texture2D* boneTexture;
+		HRESULT hr = m_Device.lock()->Get()->CreateTexture2D(&texDesc, &initData, &boneTexture);
+
+
+		//save texture to .dds
+		DirectX::ScratchImage image;
+		hr = DirectX::CaptureTexture(m_Device.lock()->Get(), m_Device.lock()->Context(), boneTexture, image);
+		if (SUCCEEDED(hr))
+		{
+			std::wstring path = L"..//Data//Texture//";
+
+			std::wstring finalpath = path + newData->m_name + L".dds";	//어떤 애니메이션인지 구분하기 위한 index 필요
+
+			hr = DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, finalpath.c_str());
+			if (FAILED(hr)) {
+				// 파일 저장 실패 처리
+			}
+		}
+
+	}
 }
 
 //메쉬 저장
@@ -261,7 +331,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			v = XMVector3Transform(v, test);
 
 			float minL = v.Length();
-			if(minL < maxL)
+			if (minL < maxL)
 			{
 				newMesh->MinBounding = { v.x,v.y,v.z };
 			}
@@ -271,7 +341,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				newMesh->MaxBounding = { v.x,v.y,v.z };
 			}
 
-			newMesh->Pivot = VPMath::Vector3(newMesh->MaxBounding.x + newMesh->MinBounding.x, newMesh->MaxBounding.y + newMesh->MinBounding.y, newMesh->MaxBounding.z + newMesh->MinBounding.z)/2;
+			newMesh->Pivot = VPMath::Vector3(newMesh->MaxBounding.x + newMesh->MinBounding.x, newMesh->MaxBounding.y + newMesh->MinBounding.y, newMesh->MaxBounding.z + newMesh->MinBounding.z) / 2;
 
 			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
 			{
@@ -300,7 +370,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			data.pSysMem = &(TextureVertices[0]);
 			newMesh->m_VB = m_ResourceManager.lock()->Create<VertexBuffer>(Model->m_name + L"_" + str_index + L"_VB", desc, data, sizeof(BaseVertex));
 		}
-			break;
+		break;
 
 		case Filter::SKINNING:
 		{
@@ -501,7 +571,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 
 	}
 
-	path = (textureProperties[aiTextureType_SPECULAR].second); 
+	path = (textureProperties[aiTextureType_SPECULAR].second);
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
@@ -577,7 +647,6 @@ void ModelLoader::ProcessBoneNodeMapping(std::shared_ptr<ModelData> Model)
 				if (temp != nullptr)
 				{
 					bone->node = temp;
-					temp->m_Bones.push_back(bone);
 				}
 			}
 		}
@@ -744,9 +813,9 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 	_RotX90._21 = 0; _RotX90._22 = 0; _RotX90._23 = 1;
 	_RotX90._31 = 0; _RotX90._32 = -1; _RotX90._33 = 0;
 
-	VPMath::Vector3 v = { vertex.pos.x,vertex.pos.y,vertex.pos.z};
+	VPMath::Vector3 v = { vertex.pos.x,vertex.pos.y,vertex.pos.z };
 	v = XMVector3Transform(v, _RotX90);
-	vertex.pos = { v.x,v.y,v.z,1};
+	vertex.pos = { v.x,v.y,v.z,1 };
 
 	vertex.normal.x = curMesh->mNormals[index].x;
 	vertex.normal.y = curMesh->mNormals[index].y;
@@ -754,7 +823,7 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 
 	v = { vertex.normal.x,vertex.normal.y,vertex.normal.z };
 	v = XMVector3Transform(v, _RotX90);
-	vertex.normal = { v.x,v.y,v.z,0};
+	vertex.normal = { v.x,v.y,v.z,0 };
 
 	vertex.tangent.x = curMesh->mTangents[index].x;
 	vertex.tangent.y = curMesh->mTangents[index].y;
@@ -762,7 +831,7 @@ void ModelLoader::ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* c
 
 	v = { vertex.tangent.x,vertex.tangent.y,vertex.tangent.z };
 	v = XMVector3Transform(v, _RotX90);
-	vertex.tangent= { v.x,v.y,v.z,0 };
+	vertex.tangent = { v.x,v.y,v.z,0 };
 
 	vertex.bitangent.x = curMesh->mBitangents[index].x;
 	vertex.bitangent.y = curMesh->mBitangents[index].y;
@@ -794,10 +863,11 @@ void ModelLoader::ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace)
 	}
 }
 
-void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes)
+void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Node>>&nodes ,int index/*=0*/)
 {
 	std::string Name = node->mName.C_Str();
 	ob_node->name.assign(Name.begin(), Name.end());
+	nodes.push_back(ob_node);
 
 	//local
 	DirectX::XMFLOAT4X4 temp;
@@ -833,28 +903,31 @@ void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Nod
 
 
 	ob_node->m_LocalInverse = ob_node->m_Local.Invert();
+	ob_node->index = index;
 
 	if (parents != nullptr)
 	{
 		ob_node->HasParents = true;
 		ob_node->m_Parents = parents;
+		ob_node->parentsindex = parents->index;
 
 		//이게 local로써 constantbuffer에 들어가야함 이게 계속 바뀌어야함 물론 원본이 아니라 밖에서 이걸 이용해 만든 것들 그러면 이걸 상수 버퍼로 만들어버려
-		ob_node->m_World = (ob_node->m_Parents.lock()->m_World * ob_node->m_Local);
+		ob_node->m_World = (nodes[ob_node->parentsindex]->m_World * ob_node->m_Local);
 		ob_node->m_WorldInverse = ob_node->m_World.Invert();
 	}
 	else
 	{
 		ob_node->m_World = ob_node->m_Local;
 		ob_node->m_WorldInverse = ob_node->m_World.Invert();
+		ob_node->parentsindex = index;
 	}
 
 	if (node->mNumMeshes != 0)
 	{
 		//ob_node->m_Meshes.resize(node->mNumMeshes);
-		ob_node->index = *node->mMeshes;
+		int meshindex = *node->mMeshes;
 
-		ob_node->m_Meshes.push_back(meshes[ob_node->index]);
+		ob_node->m_Meshes.push_back(meshes[meshindex]);
 
 		for (auto& mesh : ob_node->m_Meshes)
 		{
@@ -862,11 +935,11 @@ void ModelLoader::ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Nod
 			curMesh->m_node = ob_node;
 		}
 	}
-
+	
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		ob_node->m_Childs.push_back(std::make_shared<Node>());
-		ProcessNode(ob_node, ob_node->m_Childs.back(), node->mChildren[i], meshes);
+		ProcessNode(ob_node, ob_node->m_Childs.back(), node->mChildren[i], meshes, nodes,++index);
 	}
 }
 
@@ -935,7 +1008,7 @@ void ModelLoader::ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh
 		}
 
 	}
- 	int a = 3;
+	int a = 3;
 }
 
 std::shared_ptr<Node> ModelLoader::FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode)

@@ -324,7 +324,7 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, st
 		textureArrayDesc.Height = m_Height; // 텍스처의 높이
 		textureArrayDesc.MipLevels = 12; // MipLevels을 1로 설정 -읽어오는 애들이 다 12임
 		textureArrayDesc.ArraySize = numTextures; // 배열의 크기 (담을 텍스처 수)
-		textureArrayDesc.Format = DXGI_FORMAT_BC3_UNORM; // dds 포맷 DXGI_FORMAT_BC3_UNORM //png DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
+		textureArrayDesc.Format = DXGI_FORMAT_BC7_UNORM; // dds 포맷 DXGI_FORMAT_BC3_UNORM or bc7 //png DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
 		textureArrayDesc.SampleDesc.Count = 1; // 멀티 샘플링 비활성화
 		textureArrayDesc.Usage = D3D11_USAGE_DEFAULT;
 		textureArrayDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;

@@ -10,9 +10,8 @@
 
 #include "Defines.h"
 #include "VertexData.h"
-#include "Desc.h"
 
-VertexShader::VertexShader(std::shared_ptr<Device> device, std::wstring filename /*= L"need name"*/) : Shader(device, filename)
+VertexShader::VertexShader(std::shared_ptr<Device>device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC* desc /*= Instancing::Desc*/, int count /*= Instancing::Count*/) : Shader(device, filename)
 {
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
@@ -61,7 +60,7 @@ VertexShader::VertexShader(std::shared_ptr<Device> device, std::wstring filename
 	HRESULT hr;
 
 	hr = (m_Device.lock()->Get()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_VS));
-	hr = (m_Device.lock()->Get()->CreateInputLayout(Instancing::Desc, Instancing::Count, blob->GetBufferPointer(), blob->GetBufferSize(), &m_InputLayout));
+	hr = (m_Device.lock()->Get()->CreateInputLayout(desc, count, blob->GetBufferPointer(), blob->GetBufferSize(), &m_InputLayout));
 
 
 }
