@@ -68,7 +68,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 		//그대로 연속 재생
 		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
 		{
-			end = ani->totals.back();
+			end = ani->totals.end()-1;
 			//가지고 있는 애니메이션 정보 순회
 			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
 			{
@@ -96,7 +96,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 
 					//현재 프레임이 최종 프레임보다 클 경우 다시 시작 점으로
 					//end()가 끝이 아닌 마지막 + 1
-					if (cur == ani->totals.end() - 1)
+					if (cur == end)
 					{
 						auto next = ani->totals.begin();
 						float t = abs(curtick - cur->first) / abs(next->first - cur->first);
@@ -183,6 +183,16 @@ void Animator::CalcWorld(uint32_t entityID, std::vector< std::shared_ptr<Node>>&
 			node->m_World = node->m_Parents.lock()->m_World * node->m_Local;
 			node->m_WorldInverse = node->m_World.Invert();
 		}
+
+		//플레이어만 갱신해야댐
+		{
+			if (node->name == L"DEF-palm.02.R")
+			{
+				socket = node->m_World;
+				m_socketList.push_back(std::pair(entityID, socket));
+			}
+		}
+
 	}
 
 
