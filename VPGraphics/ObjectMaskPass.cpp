@@ -84,7 +84,7 @@ void ObjectMaskPass::Render()
 
 	for (const auto& curData : m_RenderList)
 	{
-		if (!curData->isOverDraw)
+		if (curData->isOverDraw)
 		{
 			continue;
 		}
