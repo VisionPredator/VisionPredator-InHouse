@@ -11,14 +11,6 @@
 void Animator::Initialize(std::weak_ptr<ResourceManager> manager)
 {
 	m_ResourceManager = manager;
-
-
-
-
-
-
-
-
 }
 
 void Animator::Update(std::vector<std::shared_ptr<RenderData>>& renderlist)
@@ -185,7 +177,7 @@ void Animator::CalcWorld(uint32_t entityID, std::vector< std::shared_ptr<Node>>&
 
 		//플레이어만 갱신해야댐
 		{
-			if (node->name == L"DEF-palm.02.R")
+			if (node->name == L"DEF-hand.R")
 			{
 				socket = node->m_World;
 				m_socketList.push_back(std::pair(entityID, socket));
@@ -212,7 +204,7 @@ void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
 
 	//플레이어만 갱신해야댐
 	{
-		if (RootNode->name == L"DEF-palm.02.R")
+		if (RootNode->name == L"DEF-hand.R")//
 		{
 			socket = RootNode->m_World;
 			m_socketList.push_back(std::pair(entityID, socket));

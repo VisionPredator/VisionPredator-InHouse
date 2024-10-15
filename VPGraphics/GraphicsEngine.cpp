@@ -355,12 +355,25 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const s
 		std::shared_ptr<RenderData> data = (*find);
 		VPMath::Matrix attach = Bone * data->world;
 
-		debug::SphereInfo temp;
-		temp.Sphere.Center = { attach._41,attach._42,attach._43 };
-		temp.Sphere.Radius = 1.f;
-		temp.Color = VPMath::Color{ 0,1,0,1 };
-		DrawSphere(temp);
+		VPMath::Vector3 locataion;
+		VPMath::Quaternion quat;
+		VPMath::Vector3 scale;
+		VPMath::Vector3 rotation;
 
+		attach.NewDecompose(scale, quat, locataion);
+		rotation = quat.ToEuler() * 180 / VPMath::XM_PI;
+		debug::OBBInfo temp;
+		temp.xAxisAngle = rotation.x;
+		temp.yAxisAngle = rotation.y;
+		temp.zAxisAngle = rotation.z;
+		temp.OBB.Extents = { 0.1f,0.1f,0.1f };
+		temp.OBB.Center = locataion;
+
+		//temp.Sphere.Center = { attach._41,attach._42,attach._43 };
+		//temp.Sphere.Radius = 1.f;
+		temp.Color = VPMath::Color{ 0,1,0,1 };
+		//DrawSphere(temp);
+		DrawOBB(temp);
 		return attach;
 	}
 

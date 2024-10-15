@@ -13,7 +13,13 @@ FolderTool::FolderTool(std::shared_ptr<SceneManager> sceneManager) :m_SceneManag
 	m_AssetFolderPath = ABPath.string();
 	m_CurrentFolderPath = m_AssetFolderPath;
 }
-
+void OpenFileWithDefaultViewer(const std::string& filePath) 
+{
+#ifdef _WIN32
+	std::string command = "start " + filePath;
+	std::system(command.c_str());  // This will open the file in its default application
+#endif
+}
 void FolderTool::ImGuiRender()
 {
 	ImGui::Begin("Project");
@@ -160,6 +166,10 @@ void FolderTool::FileImGui()
 						m_ShowOpenSceneCaution = true;
 						m_OpenScenePath = entryPathString;
 					}
+				if (entry.path().extension()==".png"|| entry.path().extension() == ".dds" || entry.path().extension() == ".mp3" || entry.path().extension() == ".fbx")
+				{
+					OpenFileWithDefaultViewer(entryPathString);
+				}
 			}
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(1) && !Toolbar::m_IsPlaying)
@@ -168,6 +178,19 @@ void FolderTool::FileImGui()
 			}
 			if (ImGui::BeginPopup("ItemOptions"))
 			{
+				if (ImGui::MenuItem("Open File"))
+				{
+					OpenFileWithDefaultViewer(entryPathString);
+				}
+				if (ImGui::MenuItem("Show in Explorer"))
+				{
+#ifdef _WIN32
+					// Open the file's directory in explorer
+					std::string command = "explorer /select," + entryPathString;
+					system(command.c_str());
+#endif
+				}
+
 				if (entry.path().extension() == ".prefab" || entry.path().extension() == ".scene")
 				{
 					if (ImGui::MenuItem("Copy Filename"))
@@ -180,11 +203,6 @@ void FolderTool::FileImGui()
 
 						ImGui::SetClipboardText(copyFilePath.c_str());
 					}
-					if (ImGui::MenuItem("Delete"))
-					{
-						m_ShowDeleteCaution = true;
-						m_DeleteFilePath = entry.path();
-					}
 				}
 				else if (entry.path().extension() == ".fbx")
 				{
@@ -193,11 +211,6 @@ void FolderTool::FileImGui()
 						// Get the filename with extension
 						std::string filenameWithExtension = entry.path().filename().string();
 						ImGui::SetClipboardText(filenameWithExtension.c_str());
-					}
-					if (ImGui::MenuItem("Delete"))
-					{
-						m_ShowDeleteCaution = true;
-						m_DeleteFilePath = entry.path();
 					}
 				}
 				else if (entry.path().extension() == ".mp3"|| entry.path().extension() == ".wav")
@@ -208,13 +221,8 @@ void FolderTool::FileImGui()
 						std::string filenameWithoutExtension = entry.path().stem().string();
 						ImGui::SetClipboardText(filenameWithoutExtension.c_str());
 					}
-					if (ImGui::MenuItem("Delete"))
-					{
-						m_ShowDeleteCaution = true;
-						m_DeleteFilePath = entry.path();
-					}
 				}
-				else if (entry.path().extension() == ".png"|| entry.path().extension() == ".dds")
+				else if (entry.path().extension() == ".png"|| entry.path().extension() == ".dds" )
 				{
 					if (ImGui::MenuItem("Copy Filename"))
 					{
@@ -222,12 +230,13 @@ void FolderTool::FileImGui()
 						std::string filenameWithExtension = entry.path().filename().string();
 						ImGui::SetClipboardText(filenameWithExtension.c_str());
 					}
-					if (ImGui::MenuItem("Delete"))
-					{
-						m_ShowDeleteCaution = true;
-						m_DeleteFilePath = entry.path();
-					}
 				}
+				if (ImGui::MenuItem("Delete"))
+				{
+					m_ShowDeleteCaution = true;
+					m_DeleteFilePath = entry.path();
+				}
+
 				ImGui::EndPopup();
 			}
 			ImGui::PopID();

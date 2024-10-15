@@ -2,7 +2,7 @@
 #include "Component.h"
 struct SocketComponent :    public Component
 {
-	VP_JSONBODY(SocketComponent, ConnectedEntity, SocketName, IsConnected, Offset, OffsetRotation)
+	VP_JSONBODY(SocketComponent, ConnectedEntity, SocketName, IsConnected, Offset, offsetQuaternion)
 	std::string ConnectedEntity{};
 	std::string PreviewConnectedEntity{};
 	uint32_t ConnectedEntityID{};
@@ -10,6 +10,6 @@ struct SocketComponent :    public Component
 	std::wstring SocketName{};
 	bool IsConnected{};
 	VPMath::Vector3 Offset{};
-	VPMath::Vector3 OffsetRotation{};
+	VPMath::Vector3 offsetQuaternion{};
 };
 

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SocketSystem.h"
+#include <iostream>
 
 SocketSystem::SocketSystem(std::shared_ptr<SceneManager> sceneManager): System { sceneManager }
 {
@@ -72,12 +73,17 @@ void SocketSystem::RenderUpdate(float deltaTime)
 			continue;
 
 		VPMath::Matrix attachmentMatrix = m_Graphics->Attachment(entity->GetEntityID(), socketcomp.SocketName);
-		VPMath::Quaternion rotationQuat = VPMath::Quaternion::CreateFromYawPitchRoll(
-			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.y),
-			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.x),
-			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.z));
-
-
+		VPMath::Quaternion rotationQuat = /*socketcomp.offsetQuaternion;*/VPMath::Quaternion::CreateFromYawPitchRoll(
+			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.y),
+			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.x),
+			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.z));
+		attachmentMatrix.Backward();
+		// Assuming the equality operator is not overloaded for VPMath::Matrix, compare element-wise.
+		bool temp =  attachmentMatrix.IsMatrixIrregular();
+		if (temp)
+		{
+			std::cout << "IsMatrixIrregular";
+		}
 		///로컬 매트릭스 만들기
 		VPMath::Matrix offsetMatrix = VPMath::Matrix::CreateTranslation(socketcomp.Offset);
 
@@ -90,18 +96,8 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		VPMath::Vector3 tempsworld{};
 
 		finalMatrix.NewDecompose(tempscale, tempQuater, tempsworld);
-		//if (!finalMatrix.Decompose(tempscale, tempQuater, tempsworld))
-		//{
-		//	finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
-		//}
-
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);
-		if (tempsworld.Length()<1)
-		{
-			int a = 5;
-
-		}
 		temptrnasform->SetWorldQuaternion(tempQuater);
 		if (socketcomp.HasComponent<RigidBodyComponent>())
 		{
@@ -121,33 +117,7 @@ void SocketSystem::LateRenderUpdate(float deltaTime)
 {
 	COMPLOOP(SocketComponent, socketcomp)
 	{
-
 		UpdateSocketRenderData(*socketcomp.GetComponent<TransformComponent>());
-		//std::list<uint32_t> UpdateListID;
-
-		//UpdateListID.push_back(socketcomp.GetEntityID());
-
-		//if (socketcomp.HasComponent<Children>())
-		//{
-		//	auto childcomp = socketcomp.GetComponent<Children>();
-		//	for (auto childID : childcomp->ChildrenID)
-		//	{
-		//		UpdateListID.push_back(childID);
-		//	}
-		//}
-
-		//if (!socketcomp.HasComponent<MeshComponent>())
-		//	return;
-		//auto& meshComp = *socketcomp.GetComponent<MeshComponent>();
-		//const TransformComponent& transform = *socketcomp.GetComponent<TransformComponent>();
-		//bool IsChanged = false;
-		//auto renderdata = meshComp.Renderdata;
-
-		//renderdata->FBX = meshComp.FBX;
-		//renderdata->world = transform.WorldTransform;
-		//renderdata->rotation = transform.World_Rotation;
-		//renderdata->MaskingColor = meshComp.MaskColor;
-
 	}
 
 }

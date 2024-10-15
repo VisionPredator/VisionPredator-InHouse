@@ -12,6 +12,12 @@ namespace VisPred
 			NONE,
 			END
 
+		};		
+		enum class GunRecoilMode
+		{
+			ReturnToMiddle,
+			ReturnToEndAim
+
 		};
 
 		enum class EFSM
@@ -22,7 +28,6 @@ namespace VisPred
 			CROUCH,
 			SLIDE,
 			JUMP,
-			CHARGE,
 			ATTACK,
 			DIE,
 			DESTROY,

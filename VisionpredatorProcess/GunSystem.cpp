@@ -54,25 +54,6 @@ void GunSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 			//GetSceneManager()->DestroyEntity(entitypair.second);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 void GunSystem::ExitCollision(std::pair<uint32_t, uint32_t> entitypair)

@@ -22,10 +22,42 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) abstract;
 	virtual void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
 	virtual void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
+#pragma region raycast
+	/// <summary>
+	/// Actor를 가진 entity로부터 dir 방향으로 dist거리만큼 raycast를 쏴 가장가까운 entityID를 반환한다.
+	/// </summary>
+	/// <param name="entityID"> : Controller 또는 Rigidbody가 있는 Entity </param> 
+	/// <param name="dir"> : racast 방향</param>
+	/// <param name="distance"> racast 거리</param>
+	/// <returns></returns>
 	virtual uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)abstract;
+	/// <summary>
+	/// Actor를 가진 entity로부터 Offset을 적용시킨 뒤 dir 방향으로 dist거리만큼 raycast를 쏴 가장 가까운 EntityID를 반환한다.
+	/// </summary>
+	/// <param name="entityID"> : Controller 또는 Rigidbody가 있는 Entity</param>
+	/// <param name="offset"> : Entity로부터의 offset </param>
+	/// <param name="dir"> : racast 방향</param>
+	/// <param name="distance"> racast 거리</param>
+	/// <returns></returns>
 	virtual uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)abstract;
+	/// <summary>
+	/// location로부터 dir방향으로 dist거리만큼 raycast를 쏴 가장 가까운 EntityID를 반환한다.
+	/// </summary>
+	/// <param name="location"> : Raycast 시작점</param>
+	/// <param name="dir"> : racast 방향</param>
+	/// <param name="distance"> racast 거리</param>
+	/// <returns></returns>
 	virtual uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)abstract;
+	/// <summary>
+	/// location로부터 dir방향으로 dist거리만큼  raycast를 쏴 해당 entityid를 제외한 가장 가까운 EntityID를 반환한다.
+	/// </summary>
+	/// <param name="entityID"> : 무시할 Controller 또는 Rigidbody가 있는 Entity</param>
+	/// <param name="location"> : Raycast 시작점</param>
+	/// <param name="dir"> : racast 방향</param>
+	/// <param name="distance"> racast 거리</param>
+	/// <returns></returns>
 	virtual uint32_t RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
+#pragma endregion
 
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;
@@ -39,7 +71,7 @@ public:
 	virtual void ResizeCapsuleController(uint32_t entityID, float radius, float height) abstract;
 	virtual void RemoveController(uint32_t entityID) abstract;
 	virtual void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) abstract;
-	virtual void SetControllerVelocity(uint32_t entityID,VPMath::Vector3 velocity) abstract;
+	virtual void SetControllerVelocity(uint32_t entityID, VPMath::Vector3 velocity) abstract;
 	virtual VPMath::Vector3 GetControllerGobalPose(uint32_t entityID) abstract;
 	virtual bool GetControllerIsFall(uint32_t entityID) abstract;
 
