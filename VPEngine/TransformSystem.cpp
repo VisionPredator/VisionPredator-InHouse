@@ -55,40 +55,108 @@ void TransformSystem::UpdateAllEntitys()
 		}
 
 }
-
-void TransformSystem::newUpdate()
+void TransformSystem::newUpdate() 
 {
     if (newupdatevector.empty())
         return;
 
     std::list<TransformComponent*> updateList;
-    for (size_t i = 0; i < newupdatevector.size(); i++)
+
+    // 제거 상태를 추적하기 위한 플래그를 초기화; 처음에는 모두 0 (제거되지 않음)으로 설정
+    std::vector<bool> indicesToRemove(newupdatevector.size(), false);
+
+	size_t i = 0;
+	try 
     {
-
-        bool HaveParentEntity = false;
-        for (size_t j = 0; j < newupdatevector.size(); j++)
+		while (i < newupdatevector.size())
         {
-            if (i == j)
-                continue;
+			// 이미 제거된 엔티티 건너뜀
+			if (indicesToRemove[i])
+			{
+				i++;
+				continue;
+			}
 
-            if (GetSceneManager()->CheckParent(newupdatevector[j]->GetEntityID(), newupdatevector[i]->GetEntityID()))
-            {
-                HaveParentEntity = true;
-                break;
+			TransformComponent* current = newupdatevector.at(i); // 안전한 접근을 위해 .at() 사용
+			uint32_t currentEntityID = current->GetEntityID();
+			bool HaveParentEntity = false;
+
+			// **새로운 체크**: 현재 컴포넌트에 부모가 없다면, 바로 updateList에 추가
+			if (!current->HasComponent<Parent>())
+			{
+				updateList.push_back(current);    // 바로 updateList에 추가
+				indicesToRemove[i] = true;          // 제거 대상으로 표시
+				i++;
+				continue; // 이 컴포넌트에 대한 나머지 검사 생략
             }
 
+            // 부모-자식 관계 확인
+            for (size_t j = 0; j < newupdatevector.size(); j++)
+            {
+                if (i == j || indicesToRemove[j] ) // 자신 또는 이미 제거된 엔티티 건너뜀
+                    continue;
+
+                TransformComponent* other = newupdatevector.at(j); // 안전한 접근을 위해 .at() 사용
+                uint32_t otherEntityID = other->GetEntityID();
+
+                // current가 other의 부모인 경우, other를 제거 대상으로 표시
+                if (GetSceneManager()->CheckParent(currentEntityID, otherEntityID)) 
+                {
+                    HaveParentEntity = true;
+                    indicesToRemove[j] = true; // 자식을 제거 대상으로 표시
+                    break;
+                }
+                // other가 current의 부모인 경우, current를 제거 대상으로 표시
+                else if (GetSceneManager()->CheckParent(otherEntityID, currentEntityID)) 
+                {
+                    HaveParentEntity = true;
+                    indicesToRemove[i] = true; // current를 제거 대상으로 표시
+                    break;
+                }
+            }
+
+            // 부모-자식 관계가 발견되지 않으면, current를 updateList에 추가
+            if (!HaveParentEntity && current->GetEntity()) 
+            {
+                updateList.push_back(current);
+                indicesToRemove[i] = true; // 제거 대상으로 표시
+            }
+
+            i++;
         }
-        if (!HaveParentEntity&& newupdatevector[i]->GetEntity())
-        {
-            updateList.push_back(newupdatevector[i]);
-        }
+
+        // remove_if를 사용하여 플래그에 따라 벡터를 압축하고 나머지 요소를 제거
+        newupdatevector.erase(
+            std::remove_if(newupdatevector.begin(), newupdatevector.end(),
+                [&](TransformComponent* comp) {
+                    size_t index = std::distance(newupdatevector.begin(), std::find(newupdatevector.begin(), newupdatevector.end(), comp));
+                    return indicesToRemove[index] == 1;
+                }),
+            newupdatevector.end());
+
+        // updateList에 있는 컴포넌트들의 변환을 업데이트
+        for (TransformComponent* comp : updateList)
+            CalculateTransform_Parent(comp);
+
+        // 남아있는 요소가 있으면 newupdatevector를 비움
+        newupdatevector.clear();
     }
-    for (TransformComponent* comp : updateList)
+    catch (const std::out_of_range& e) 
     {
-        CalculateTransform_Parent(comp);
+        // .at()으로 벡터 요소에 접근할 때 범위를 초과한 경우 처리
+        std::cerr << "오류: newupdatevector 범위를 초과한 접근: " << e.what() << std::endl;
+        return;  // 오류 발생 시 조기 종료
     }
-    newupdatevector.clear();
+    catch (const std::exception& e) 
+    {
+        // 기타 일반적인 예외 처리
+        std::cerr << "오류: newUpdate에서 예외 발생: " << e.what() << std::endl;
+        return;  // 오류 발생 시 조기 종료
+    }
 }
+
+
+
 
 void TransformSystem::OnSetParentAndChild(std::any parentChild)
 {

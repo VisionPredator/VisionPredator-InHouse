@@ -27,26 +27,24 @@ void PlayerUISystem::UpdateHP(const PlayerComponent& playerComponent)
 	// hp 게이지와 hp 수치 텍스트를 변경.
 	COMPLOOP(IdentityComponent, comp)
 	{
+
+
 		if (comp.UUID == "HPGageUI")
 		{
 			uint32_t id = comp.GetEntityID();
 			auto ui = m_SceneManager.lock()->GetComponent<ImageComponent>(id);
 			ui->RightPercent = 1.f - (playerComponent.HP * 0.01f);
 
-			break;
+			continue;
 		}
-	}
 
-	COMPLOOP(IdentityComponent, comp)
-	{
 		if (comp.UUID == "HPCountUI")
 		{
 			uint32_t id = comp.GetEntityID();
 			auto ui = m_SceneManager.lock()->GetComponent<TextComponent>(id);
 			auto hpStr = Util::ToWideChar(playerComponent.HP);
 			ui->Text = hpStr;
-
-			break;
+			continue;
 		}
 	}
 }
@@ -82,11 +80,7 @@ void PlayerUISystem::UpdateAim(const PlayerComponent& playerComponent)
 
 	if (ui != nullptr)
 	{
-		if (playerComponent.CurrentFSM == VisPred::Game::EFSM::ATTACK)
-		{
-			ui->TexturePath = "aim_attack.png";
-		}
-		else if (true == isInteracting)	// 상호작용 중일 때
+		if (isInteracting)
 		{
 			ui->TexturePath = "aim_interact.png";
 		}

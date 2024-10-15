@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 1097983650,
+        "EntityID": 1909806627,
         "Component": [
             {
                 "BoxInfo": {
@@ -35,7 +35,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "PhysicsLayer": 4,
+                    "PhysicsLayer": 5,
                     "Restitution": 0.0,
                     "StaticFriction": 1.0,
                     "UseGravity": true
@@ -49,25 +49,25 @@
                 "ComponentID": 1365953231,
                 "Name": "Pistol"
             },
-          {
-            "ComponentID": 3400599862,
-            "Local_Location": {
-              "x": 29.17184066772461,
-              "y": -48.34783172607422,
-              "z": -22.013425827026367
+            {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 26.4530029296875,
+                    "y": -48.23899841308594,
+                    "z": -21.535715103149414
+                },
+                "Local_Quaternion": {
+                    "w": 0.6822525858879089,
+                    "x": -0.18841704726219177,
+                    "y": -0.18903283774852753,
+                    "z": 0.6806591749191284
+                },
+                "Local_Scale": {
+                    "x": 0.27000001072883606,
+                    "y": 0.270000159740448,
+                    "z": 0.26999998092651367
+                }
             },
-            "Local_Quaternion": {
-              "w": 0.6822527647018433,
-              "x": -0.18841704726219177,
-              "y": -0.18903277814388275,
-              "z": 0.6806591153144836
-            },
-            "Local_Scale": {
-              "x": 0.26999998092651367,
-              "y": 0.27000004053115845,
-              "z": 0.26999998092651367
-            }
-          },
             {
                 "ComponentID": 3774279003,
                 "FBX": [
@@ -93,7 +93,7 @@
                     "y": 0.0
                 },
                 "MaskColor": {
-                    "w": 0.0,
+                    "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -101,29 +101,39 @@
             },
             {
                 "BulletPrefab": "../Data/Prefab/Pistol_Bullet.prefab",
-                "Bullets": 8,
+                "Bullets": 500,
                 "ComponentID": 3546995328,
-                "CoolTime": 0.30000001192092896,
-                "CurrentBullet": 8,
+                "CoolTime": 0.6000000238418579,
+                "CurrentBullet": 500,
                 "GunSoundPrefab": "../Data/Prefab/Sound_Pistol.prefab",
+                "RecoilMaxXY": {
+                    "x": 0.0,
+                    "y": 1.0
+                },
+                "RecoilPercent": 10.0,
+                "RecoilPos": {
+                    "x": 0.0,
+                    "y": 1.0
+                },
+                "RecoilTime": 0.5,
                 "ThrowDamage": 1,
                 "Type": 0
             },
             {
                 "ComponentID": 2225601387,
-                "ConnectedEntity": "PlayerHand",
+                "ConnectedEntity": "",
                 "IsConnected": false,
                 "Offset": {
-                    "x": -0.33000001311302185,
-                    "y": 0.27000001072883606,
-                    "z": 0.6800000071525574
+                    "x": 0.27000001072883606,
+                    "y": 0.6572999954223633,
+                    "z": 0.04399999976158142
                 },
-                "OffsetRotation": {
-                    "x": -84.16999816894531,
-                    "y": -45.0,
-                    "z": 3.299999952316284
-                },
-                "SocketName": []
+                "SocketName": [],
+                "offsetQuaternion": {
+                    "x": 295.1467590332031,
+                    "y": 118.78900146484375,
+                    "z": 86.24600219726563
+                }
             }
         ]
     }

@@ -107,8 +107,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	//pass push
 	m_BasePasses.push_back(m_GeometryPass);
 	m_BasePasses.push_back(m_DebugPass);
-	m_BasePasses.push_back(m_Instancing);
-	//m_BasePasses.push_back(m_DeferredPass);
+	//m_BasePasses.push_back(m_Instancing);
+	m_BasePasses.push_back(m_DeferredPass);
 	m_BasePasses.push_back(m_ObjectMaskPass);
 
 	m_BasePasses.push_back(m_TransparencyPass);
@@ -155,8 +155,8 @@ void PassManager::Render()
 		}
 	}
 
-	//m_ParticlePass->Render();
-	//m_UIPass->Render();
+	m_ParticlePass->Render();
+	m_UIPass->Render();
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
 	// DrawIMGUI 이렇게 함수로 두지 말고 FinalPass 클래스로 이식하자.
