@@ -8,7 +8,7 @@ class BlendState;
 class RimLight : public RenderPass
 {
 public:
-	RimLight(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> managr);
+	RimLight(std::shared_ptr<Device> device, std::shared_ptr<ResourceManager> manager);
 	~RimLight();
 
 	virtual void Render() override;

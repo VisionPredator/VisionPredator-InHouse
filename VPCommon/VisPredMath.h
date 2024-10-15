@@ -588,7 +588,7 @@ namespace VisPred
 
             Matrix Invert() const noexcept;
             void Invert(Matrix& result) const noexcept;
-
+            bool IsMatrixIrregular() const noexcept;
             float Determinant() const noexcept;
 
             // Computes rotation about y-axis (y), then x-axis (x), then z-axis (z)

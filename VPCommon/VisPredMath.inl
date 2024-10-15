@@ -2503,6 +2503,32 @@ inline Matrix Matrix::Invert() const noexcept
     XMStoreFloat4x4(&R, XMMatrixInverse(&det, M));
     return R;
 }
+bool Matrix::IsMatrixIrregular() const noexcept
+{
+    using namespace DirectX;
+
+    // Load the matrix into an XMMATRIX
+    const XMMATRIX M = XMLoadFloat4x4(this);
+
+    // Check if the matrix contains any NaN or infinity values
+    for (int row = 0; row < 4; ++row) {
+        for (int col = 0; col < 4; ++col) {
+            if (std::isnan(m[row][col]) || std::isinf(m[row][col])) {
+                return true; // Matrix contains invalid values
+            }
+        }
+    }
+
+    // Check if the matrix is singular by calculating the determinant
+    XMVECTOR det = XMMatrixDeterminant(M);
+
+    // If the determinant is zero, the matrix is singular
+    if (XMVector4Equal(det, XMVectorZero())) {
+        return true; // Matrix is singular
+    }
+
+    return false; // Matrix is not irregular
+}
 
 inline void Matrix::Invert(Matrix& result) const noexcept
 {

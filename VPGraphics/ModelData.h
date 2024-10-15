@@ -29,6 +29,8 @@ public:
 
 	std::wstring m_name;
 	std::shared_ptr<Node> m_RootNode;	//node 전체를 담고 있는 컨테이너
+	std::vector<std::shared_ptr<Node>>m_Nodes;
+
 
 	std::vector<std::shared_ptr<Mesh>> m_Meshes; // VB + IB + BONE + PRIMITIVE
 	std::vector<std::shared_ptr<Material>> m_Materials; //SRV

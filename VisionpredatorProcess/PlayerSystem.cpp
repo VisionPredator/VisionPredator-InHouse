@@ -881,6 +881,8 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
 			socketcomp.ConnectedEntityID = 0;
 			playercomp.ThrowingGunEntityID = 0;
+			socketcomp.GetComponent<MeshComponent>()->Renderdata->isOverDraw = false;
+
 		}
 		
 	}
@@ -1006,6 +1008,7 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	playercomp.GunEntityID = guncomp->GetEntityID();
 	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
+	guncomp->GetComponent<MeshComponent>()->Renderdata->isOverDraw = true;
 	///TODO 사운드 로직 추가하기.
 	switch (guncomp->Type)
 	{
@@ -1242,6 +1245,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
 
+		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->Renderdata->isOverDraw = true;
 		if (FirePosEntity)
 			playercomp->FirePosEntity = FirePosEntity;
 			//playercomp->FirePosEntityID = FirePosEntity->GetEntityID();
@@ -1280,6 +1284,9 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		}
 		else
 			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
+
+
+
 	};
 }
 void PlayerSystem::Finish(uint32_t gameObjectId)

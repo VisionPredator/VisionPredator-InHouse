@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SocketSystem.h"
+#include <iostream>
 
 SocketSystem::SocketSystem(std::shared_ptr<SceneManager> sceneManager): System { sceneManager }
 {
@@ -76,8 +77,13 @@ void SocketSystem::RenderUpdate(float deltaTime)
 			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.y),
 			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.x),
 			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.z));
-
-
+		attachmentMatrix.Backward();
+		// Assuming the equality operator is not overloaded for VPMath::Matrix, compare element-wise.
+		bool temp =  attachmentMatrix.IsMatrixIrregular();
+		if (temp)
+		{
+			std::cout << "IsMatrixIrregular";
+		}
 		///로컬 매트릭스 만들기
 		VPMath::Matrix offsetMatrix = VPMath::Matrix::CreateTranslation(socketcomp.Offset);
 
@@ -89,15 +95,9 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		VPMath::Quaternion tempQuater{};
 		VPMath::Vector3 tempsworld{};
 
-		finalMatrix.NewDecompose(tempscale, tempQuater, tempsworld);
-		//if (!finalMatrix.Decompose(tempscale, tempQuater, tempsworld))
-		//{
-		//	finalMatrix.DecomposeWithFallback(tempscale, tempQuater, tempsworld);
-		//}
-
+		attachmentMatrix.NewDecompose(tempscale, tempQuater, tempsworld);
 		TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
 		temptrnasform->SetWorldLocation(tempsworld);
-
 		temptrnasform->SetWorldQuaternion(tempQuater);
 		if (socketcomp.HasComponent<RigidBodyComponent>())
 		{

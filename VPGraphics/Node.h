@@ -4,6 +4,7 @@
 class Mesh;
 class Bone;
 
+//사실상 얘가 본이네... 
 class Node
 {
 public:
@@ -18,6 +19,7 @@ public:
 	VPMath::Matrix m_WorldInverse;
 
 	unsigned int index;
+	unsigned int parentsindex;
 
 	std::vector<std::weak_ptr<Mesh>> m_Meshes;
 
@@ -25,7 +27,5 @@ public:
 	bool HasParents = false;
 
 	std::vector<std::shared_ptr<Node>> m_Childs;
-	std::vector<std::weak_ptr<Bone>> m_Bones;
-
 };
 
