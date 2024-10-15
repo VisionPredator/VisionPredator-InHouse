@@ -309,6 +309,7 @@
     <ClInclude Include="DeferredInstancing.h">
       <Filter>Pass\Deferred\Instancing</Filter>
     </ClInclude>
+    <ClInclude Include="OverDrawPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -492,6 +493,7 @@
     <ClCompile Include="DeferredInstancing.cpp">
       <Filter>Pass\Deferred\Instancing</Filter>
     </ClCompile>
+    <ClCompile Include="OverDrawPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">

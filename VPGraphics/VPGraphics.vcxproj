@@ -194,6 +194,7 @@
     <ClInclude Include="Desc.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="OverDrawPass.h" />
     <ClInclude Include="RimLight.h" />
     <ClInclude Include="FinalPass.h" />
     <ClInclude Include="GeoMetryPass.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="OverDrawPass.cpp" />
     <ClCompile Include="RimLight.cpp" />
     <ClCompile Include="FinalPass.cpp" />
     <ClCompile Include="TextObject.cpp" />

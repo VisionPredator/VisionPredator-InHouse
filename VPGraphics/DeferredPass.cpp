@@ -271,6 +271,11 @@ void DeferredPass::GeometryPass()
 	bool isTranparency = false;
 	for (const auto& curData : m_RenderList)
 	{
+		if (curData->isOverDraw)
+		{
+			continue;
+		}
+
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)

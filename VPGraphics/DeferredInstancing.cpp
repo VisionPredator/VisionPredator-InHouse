@@ -243,6 +243,11 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 	//instance buffer
 	for (auto& object : m_RenderList)
 	{
+		if (object->isOverDraw)
+		{
+			continue;
+		}
+
 		//유효한 모델을 가지고 있지 않음
 		if (object->ModelID < 0)
 		{

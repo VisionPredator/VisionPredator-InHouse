@@ -54,7 +54,6 @@ public:
 	}
 
 	//필수
-
 	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;
@@ -69,6 +68,9 @@ public:
 	VPMath::Matrix local; //캐릭터 자체 로컬
 
 	VPMath::Vector3 rotation;
+
+	//overdraw
+	bool isOverDraw = false;	//벽뒤에 플레이어랑 총 짤리는거 방지 flag
 
 	//애니메이션
 	float duration;

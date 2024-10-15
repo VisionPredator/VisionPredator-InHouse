@@ -165,7 +165,6 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 
 	}
 
-	//CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	CalcWorld(curOb->EntityID, curModel->m_Nodes);
 }
 
