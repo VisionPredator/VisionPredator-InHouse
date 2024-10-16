@@ -976,6 +976,7 @@
                 },
                 {
                     "ComponentID": 1822056614,
+                    "CurrentAni": 1,
                     "CurrentFSM": 1,
                     "EnemyType": 0,
                     "FarZ": 13.0,
@@ -27476,6 +27477,130 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 221990519
+                }
+            ]
+        },
+        {
+            "EntityID": 1031075224,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Enemy2"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -15.585143089294434,
+                        "y": 2.4059998989105225,
+                        "z": 5.036538124084473
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.15000000596046448,
+                        "y": 0.15000000596046448,
+                        "z": 0.15000000596046448
+                    }
+                },
+                {
+                    "ComponentID": 1822056614,
+                    "CurrentAni": 1,
+                    "CurrentFSM": 1,
+                    "EnemyType": 0,
+                    "FarZ": 13.0,
+                    "HP": 5.0,
+                    "HorizontalFOV": 60.0,
+                    "IsModelFlipped": true,
+                    "NearZ": 0.20000000298023224,
+                    "VerticalFOV": 40.0
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": [
+                        112,
+                        105,
+                        115,
+                        116,
+                        111,
+                        108,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ]
+                },
+                {
+                    "Acceleration": 1000000.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 4,
+                            "LocalOffset": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "Pivot": 1
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 5.0,
+                        "position": {
+                            "x": -15.585143089294434,
+                            "y": 2.4059998989105225,
+                            "z": 5.036538124084473
+                        },
+                        "radius": 1.0,
+                        "slopeLimit": 0.30000001192092896,
+                        "stepOffset": 0.0
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 4,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 1
+                    },
+                    "DynamicFriction": 0.10000000149011612,
+                    "GravityWeight": 1.0,
+                    "JumpSpeed": 0.05000000074505806,
+                    "JumpXZAcceleration": 10.0,
+                    "JumpXZDeceleration": 0.10000000149011612,
+                    "MaxSpeed": 3.299999952316284,
+                    "StaticFriction": 10.0
+                },
+                {
+                    "ComponentID": 558863490,
+                    "Distance": 0.0,
+                    "IsChase": false,
+                    "TargetName": "Player"
+                },
+                {
+                    "ComponentID": 2778840952,
+                    "FBX": [
+                        112,
+                        105,
+                        115,
+                        116,
+                        111,
+                        108,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "animationList": [],
+                    "curAni": 1,
+                    "isLoop": true,
+                    "speed": 1.0,
+                    "transitionDuration": 0.20000000298023224
                 }
             ]
         },

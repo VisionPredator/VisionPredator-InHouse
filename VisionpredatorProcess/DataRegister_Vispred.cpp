@@ -38,6 +38,7 @@ void VispredRegister::Register_EnumClass()
 	using namespace VisPred::Game;
 	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::CHARGE, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
 	META_ADD_ENUMCLASS(EnemyState, EnemyState::Idle, EnemyState::Chase, EnemyState::Patrol, EnemyState::Dead);
+	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 	META_ADD_ENUMCLASS(PlayerAni
 		, PlayerAni::ToAttack_Pistol

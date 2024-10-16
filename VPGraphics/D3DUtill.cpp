@@ -182,12 +182,12 @@ void D3DUtill::CreateTexture2DArraySRV(ID3D11Device* device, ID3D11DeviceContext
 
 }
 
-void D3DUtill::CreateBoundingFrustum(DirectX::XMVECTOR pos, DirectX::XMVECTOR frontVector, DirectX::XMVECTOR upVector,
+void D3DUtill::CreateBoundingFrustum(DirectX::XMVECTOR startPos, DirectX::XMVECTOR frontVector, DirectX::XMVECTOR upVector,
 	float horizontalFOV, float verticalFOV, float nearZ, float farZ, DirectX::BoundingFrustum& frustumOutput, bool isFlip)
 {
-	DirectX::XMVECTOR playerLookAt = DirectX::XMVectorAdd(pos, frontVector);
+	DirectX::XMVECTOR playerLookAt = DirectX::XMVectorAdd(startPos, frontVector);
 	DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(
-		pos,
+		startPos,
 		playerLookAt,
 		upVector
 	);

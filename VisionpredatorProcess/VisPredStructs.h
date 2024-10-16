@@ -62,7 +62,6 @@ namespace VisPred
 			,ToVP_draw			=28
 		};
 
-		// TODO: Enemy FSM 과 Animation 각각 Enum 만들어서 관리해야한다.
 		enum class EnemyState // 임시 이름. EnemyState 로 교체
 		{
 			Idle,
@@ -72,7 +71,7 @@ namespace VisPred
 
 			End
 		};
-		// TODO: 하위 행동 EnemyState 를 만들어야 겠다.
+		// TODO: 하위 행동 EnemyState 를 만들어야겠다. 컨테이너에 넣을까?
 		enum class SecondState	// 임시 이름.
 		{
 			ReturnToSpawn,
@@ -80,7 +79,8 @@ namespace VisPred
 			// etc...
 		};
 
-		//fbx에 저장된 순서에 맞게 enum을 맞춰놨음
+		// enum 순서 == fbx에 저장된 애니메이션 순서
+		// NPC 세 타입 모두 애니메이션 순서와 총 애니메이션 수는 동일
 		enum class EnemyAni
 		{
 			ATTACK = 0
@@ -91,9 +91,7 @@ namespace VisPred
 			, DIE = 5
 			, ATTACKED = 6
 			, BACKWALK = 7
-			, DESTROY = 8
-			, NONE = 9
-			, END = 10
+			, END = 8
 		};
 	}
 
