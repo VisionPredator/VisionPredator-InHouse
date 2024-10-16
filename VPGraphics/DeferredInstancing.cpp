@@ -270,7 +270,7 @@ void DeferredInstancing::Render()
 
 	//draw skinned
 	//DrawSkinned();
-	
+
 
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 
@@ -363,7 +363,10 @@ void DeferredInstancing::DrawStatic()
 		offsets[1] = 0;
 
 		auto lightmap = m_LightManager.lock()->GetLightMaps();
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
+		if (lightmap.lock() != nullptr)
+		{
+			Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
+		}
 
 		int preInstance = 0;
 		while (!m_instancecount.empty())

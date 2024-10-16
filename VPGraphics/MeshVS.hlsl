@@ -42,7 +42,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.tex = input.tex;
     output.lightuv = input.lightuv;
         
-    if(useNEOL.w > 0)
+    if (useNEOL.w > 0)
     {
         float x = (input.lightuv.x * lightmaptiling.x) + lightmapdata.x;
         float y = (1 - input.lightuv.y) * lightmaptiling.y + lightmapdata.y;
@@ -55,7 +55,23 @@ VS_OUTPUT main(VS_INPUT input)
         output.lightuv = uv;
         //output.LightMap = (gLightMap.Sample(samLinear, uv));
     }
-       
+    
+    
+    if (useNEOL.x > 0)
+    {
+        float3x3 meshWorld = ExtractRotationMatrix(gWorldInverse); //메쉬의 월드 공간
+        
+        //방향 vector
+        float3 vTangent = normalize(mul((output.tangent.xyz), meshWorld));
+        float3 vBitangent = normalize(mul((output.bitangent.xyz), meshWorld));
+        float3 vNormal = normalize(mul((output.normal.xyz), meshWorld));
+                        
+        //색상 표현을 위해 점으로 저장 w == 1
+        output.normal = float4(vNormal.xyz, 1);
+        output.tangent = float4(vTangent.xyz, 0);
+        output.bitangent = float4(vBitangent.xyz, 0);
+    }
+    
     
 #ifdef SKINNING
     int index[8];
@@ -98,38 +114,25 @@ VS_OUTPUT main(VS_INPUT input)
     
     output.pos = mul(output.posWorld, gWorldViewProj);
     
-    //float3x3 rot = ExtractRotationMatrix(skinning); 
-    //
-    //output.normal.xyz = normalize(mul(input.normal.xyz, rot));
-    //output.tangent.xyz = normalize(mul(input.tangent.xyz, rot));
-    //output.bitangent.xyz = normalize(mul(input.bitangent.xyz, rot));
+    
+    // 두 행렬을 곱한 후, 상위 3x3 회전 성분을 추출
+    float4x4 combinedMatrix = mul(skinning, gWorld);
+
+    // float4x4 행렬에서 상위 3x3 회전 행렬을 추출
+    float3x3 rotationMatrix;
+    rotationMatrix[0] = combinedMatrix[0].xyz;  // 1행
+    rotationMatrix[1] = combinedMatrix[1].xyz;  // 2행
+    rotationMatrix[2] = combinedMatrix[2].xyz;  // 3행
+    
+    //float3x3 rot = ExtractRotationMatrix(transpose(inverse(mul(skinning), gWorld))); 
+    
+    output.normal.xyz = normalize(mul(input.normal.xyz, rotationMatrix));
+    output.tangent.xyz = normalize(mul(input.tangent.xyz, rotationMatrix));
+    output.bitangent.xyz = normalize(mul(input.bitangent.xyz, rotationMatrix));
 #endif     
     
     
 
-    if (useNEOL.x > 0)
-    {
-        float3x3 meshWorld = ExtractRotationMatrix(gWorldInverse); //메쉬의 월드 공간
-        
-        //방향 vector
-        float3 vTangent = normalize(mul((output.tangent.xyz), meshWorld));
-        float3 vBitangent = normalize(mul((output.bitangent.xyz), meshWorld));
-        float3 vNormal = normalize(mul((output.normal.xyz), meshWorld));
-                        
-        //색상 표현을 위해 점으로 저장 w == 1
-        output.normal = float4(vNormal.xyz, 1);
-        output.tangent = float4(vTangent.xyz, 0);
-        output.bitangent = float4(vBitangent.xyz, 0);
-        
-        //float3 NormalTangentSpace = gNormal.SampleLevel(samLinear, input.tex,4).rgb;
-        //NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
-        //NormalTangentSpace = normalize(NormalTangentSpace);
-        
-        //float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
-        //float3 worldNormal = normalize(mul(NormalTangentSpace, WorldTransform));
-        //output.normal = float4(worldNormal, 1);
-        
-    }
     
     
     return output;
