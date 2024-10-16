@@ -61,70 +61,53 @@ struct PS_OUTPUT
     float4 Depth : SV_Target3;
     float4 Metalic_Roughness : SV_Target4;
     float4 AO : SV_Target5;
-    float4 LightMap : SV_Target6;
-    float4 Emissive : SV_Target7;
+    float4 Emissive : SV_Target6;
+    float4 LightMap : SV_Target7;
 };
+
+
+float gamma = 2.2f;
+
 
 PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고 있으므로 한번 더 지정해줄 필요는 없다.
 {
     PS_OUTPUT output;
+    output.Albedo = float4(0,0,0,1);
+    output.Normal = float4(0, 0, 0, 1);
+    output.Position = float4(0,0,0,1);
+    output.Depth= float4(0,0,0,1);
+    output.Metalic_Roughness = float4(0,0,0,1);
+    output.AO = float4(0,0,0,1);
+    output.Emissive = float4(0,0,0,1);
+    output.LightMap = float4(0,0,0,1);
+    
+    
     output.Position = input.posWorld;
 
     float d = input.pos.z / input.pos.w;
     d *= 10;
     output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
-    output.Albedo = input.color;
        
-    if (AMRO.x > 0)
-    {
-        output.Albedo = gAlbedo.Sample(samLinear, input.tex.xy);
-    }
-    
-    output.Metalic_Roughness = float4(0, 0, 0, 1);
-    output.Metalic_Roughness.r = 0.04f;
-    if (AMRO.y >= 1)
-    {
-        output.Metalic_Roughness.r = gMetalic.Sample(samLinear, input.tex.xy).r;
-    }
-    
-    output.Metalic_Roughness.g = 1.f;
-    
-    if (AMRO.z >= 1)
-    {
-        output.Metalic_Roughness.g = gRoughness.Sample(samLinear, input.tex.xy).r;
-    }
-    
-    output.AO = 0.f;
-    
-    if (AMRO.w >= 1)
-    {
-        output.AO = gAO.Sample(samLinear, input.tex.xy);
-    }
-    
-    output.Normal = input.normal;
-    if (useNEOL.x >= 1)
-    {
-        float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex.xy).rgb;
-        NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
-        NormalTangentSpace = normalize(NormalTangentSpace);
 
-        float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
-        output.Normal.xyz = normalize(mul(NormalTangentSpace, (WorldTransform)));
-    }
-	
-    output.Emissive = 0;
-    if (useNEOL.y >= 1)
-    {
-        output.Emissive = gEmissive.Sample(samLinear, input.tex.xy);
-    }
+    output.Albedo = gAlbedo.Sample(samLinear, input.tex.xy) * AMRO.x + input.color * (1 - AMRO.x);
+    output.Albedo.a = useNEOL.z * gOpacity.Sample(samLinear, input.tex.xy).r + (1 - useNEOL.z);
     
-    if (useNEOL.z >= 1)
-    {
-        output.Albedo.a = gOpacity.Sample(samLinear, input.tex.xy).r;
-    }
+    output.Metalic_Roughness.r = AMRO.y * gMetalic.Sample(samLinear, input.tex.xy).r + (1 - AMRO.y) * 0.04f;
+    output.Metalic_Roughness.g = AMRO.z * gRoughness.Sample(samLinear, input.tex.xy).r + (1 - AMRO.z);
     
-    float gamma = 2.2f;
-    output.LightMap = pow(gLightMap.Sample(samLinear, float3(input.lightuv, input.tex.z)),gamma); // 기본값 설정
+    output.Emissive = gEmissive.Sample(samLinear, input.tex.xy) * useNEOL.y;
+    
+    output.AO = AMRO.w * gAO.Sample(samLinear, input.tex.xy);
+    
+    output.LightMap = input.tex.w * pow(gLightMap.Sample(samLinear, float3(input.lightuv, input.tex.z)), gamma); // 기본값 설정
+
+    float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex.xy).rgb;
+    NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
+    NormalTangentSpace = normalize(NormalTangentSpace);
+
+    float3x3 WorldTransform = float3x3(input.tangent.xyz, input.bitangent.xyz, input.normal.xyz); //면의 공간으로 옮기기위한 행렬
+    output.Normal.xyz = normalize(mul(NormalTangentSpace, (WorldTransform))) * useNEOL.x + (1 - useNEOL.x) * input.normal.xyz;
+    
     return output;
     
 }
