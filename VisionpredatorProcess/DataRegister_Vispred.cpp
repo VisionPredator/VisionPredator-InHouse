@@ -32,7 +32,7 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::SitSoundKey, PlayerComponent::Volume_Sit
 		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt
 	);
-	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM);
+	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV, EnemyComponent::NearZ, EnemyComponent::FarZ, EnemyComponent::IsModelFlipped);
 	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets,GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 }
 
@@ -41,7 +41,8 @@ void VispredRegister::Register_EnumClass()
 	using namespace VisPred::Game;
 	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
-	META_ADD_ENUMCLASS(EnemyState,EnemyState::IDLE, EnemyState::ATTACK, EnemyState::DIE, EnemyState::DESTROY);
+	META_ADD_ENUMCLASS(EnemyState, EnemyState::Idle, EnemyState::Chase, EnemyState::Patrol, EnemyState::Dead);
+	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 	META_ADD_ENUMCLASS(PlayerAni
 		, PlayerAni::ToAttack_Pistol

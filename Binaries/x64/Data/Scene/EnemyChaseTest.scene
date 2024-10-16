@@ -21172,19 +21172,12 @@
                         "y": 0.27000001072883606,
                         "z": 0.6800000071525574
                     },
-                    "OffsetQuaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "OffsetRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
                     "SocketName": [],
-                    "UseQuaternion": false
+                    "offsetQuaternion": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             ]
         },
@@ -23264,19 +23257,12 @@
                         "y": 0.23000000417232513,
                         "z": 2.109999895095825
                     },
-                    "OffsetQuaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "OffsetRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
                     "SocketName": [],
-                    "UseQuaternion": false
+                    "offsetQuaternion": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             ]
         },
@@ -27513,10 +27499,10 @@
                         "z": 5.036538124084473
                     },
                     "Local_Quaternion": {
-                        "w": 0.13052645325660706,
-                        "x": 0.0,
-                        "y": 0.9914448261260986,
-                        "z": 0.0
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
                     },
                     "Local_Scale": {
                         "x": 0.15000000596046448,
@@ -30154,10 +30140,11 @@
                     "CameraName": "Camera",
                     "CameraPosName": "CameraPos",
                     "ComponentID": 4183631247,
+                    "CurrentFSM": 0,
                     "DynamicFriction": 0.0,
                     "FirePosName": "FirePos",
                     "GravityPower": 1.0,
-                    "HP": 100,
+                    "HP": 0,
                     "HandName": "Hand",
                     "HurtSoundKey": "Player_Hurt",
                     "JumpForce": 4.0,
@@ -30199,9 +30186,9 @@
                         "contactOffset": 0.0010000000474974513,
                         "height": 1.600000023841858,
                         "position": {
-                            "x": -20.552339553833008,
-                            "y": 3.1629788875579834,
-                            "z": -7.713753700256348
+                            "x": 27.466838836669922,
+                            "y": -47.146827697753906,
+                            "z": -22.957979202270508
                         },
                         "radius": 0.4000000059604645,
                         "slopeLimit": 0.5,

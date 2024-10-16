@@ -1,6 +1,6 @@
 [
     {
-        "EntityID": 2325747677,
+        "EntityID": 555496617,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -24,41 +24,6 @@
                     "y": 1.0,
                     "z": 0.9999997019767761
                 }
-            },
-            {
-                "AirControlPercent": 40.0,
-                "CameraName": "Camera",
-                "CameraPosName": "CameraPos",
-                "ComponentID": 4183631247,
-                "CurrentFSM": 0,
-                "DynamicFriction": 0.0,
-                "FirePosName": "FirePos",
-                "GravityPower": 1.0,
-                "HP": 0,
-                "HandName": "Hand",
-                "HurtSoundKey": "Player_Hurt",
-                "JumpForce": 4.0,
-                "JumpSoundkey": "Player_Jump",
-                "MaxHP": 0,
-                "RecoilProgress": 0.0,
-                "RecoilReturnTime": 0.10000000149011612,
-                "RunSoundKey1": "Player_Run1",
-                "RunSoundKey2": "Player_Run2",
-                "RunSpeed": 10.0,
-                "Sencitive": 0.10000000149011612,
-                "SitSoundKey": "Player_Sit",
-                "SlideDuration": 0.5,
-                "SlideSoundkey": "Player_Slide",
-                "StaticFriction": 10.0,
-                "Volume_Hurt": 0.10000000149011612,
-                "Volume_Jump": 0.03999999910593033,
-                "Volume_Run": 0.02500000037252903,
-                "Volume_Sit": 0.4000000059604645,
-                "Volume_Slide": 0.20000000298023224,
-                "Volume_Walk": 0.05000000074505806,
-                "WalkSoundKey1": "Player_Walk1",
-                "WalkSoundKey2": "Player_Walk2",
-                "WalkSpeed": 5.0
             },
             {
                 "Acceleration": 15.0,
@@ -102,8 +67,44 @@
                 "StaticFriction": 10.0
             },
             {
+                "AirControlPercent": 40.0,
+                "CameraName": "Camera",
+                "CameraPosName": "CameraPos",
+                "ComponentID": 4183631247,
+                "CurrentFSM": 0,
+                "DynamicFriction": 0.0,
+                "FirePosName": "FirePos",
+                "GravityPower": 1.0,
+                "HP": 0,
+                "HandName": "Hand",
+                "HurtSoundKey": "Player_Hurt",
+                "JumpForce": 4.0,
+                "JumpSoundkey": "Player_Jump",
+                "MaxHP": 100,
+                "RecoilMode": 0,
+                "RecoilProgress": 0.0,
+                "RecoilReturnTime": 0.10000000149011612,
+                "RunSoundKey1": "Player_Run1",
+                "RunSoundKey2": "Player_Run2",
+                "RunSpeed": 10.0,
+                "Sencitive": 0.10000000149011612,
+                "SitSoundKey": "Player_Sit",
+                "SlideDuration": 0.5,
+                "SlideSoundkey": "Player_Slide",
+                "StaticFriction": 10.0,
+                "Volume_Hurt": 0.10000000149011612,
+                "Volume_Jump": 0.03999999910593033,
+                "Volume_Run": 0.02500000037252903,
+                "Volume_Sit": 0.4000000059604645,
+                "Volume_Slide": 0.20000000298023224,
+                "Volume_Walk": 0.05000000074505806,
+                "WalkSoundKey1": "Player_Walk1",
+                "WalkSoundKey2": "Player_Walk2",
+                "WalkSpeed": 5.0
+            },
+            {
                 "ChildrenID": [
-                    2204882994
+                    791091316
                 ],
                 "ComponentID": 188567026
             },
@@ -114,7 +115,7 @@
         ]
     },
     {
-        "EntityID": 2204882994,
+        "EntityID": 791091316,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -141,18 +142,18 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 2325747677
+                "ParentID": 555496617
             },
             {
                 "ChildrenID": [
-                    2652074438
+                    468187140
                 ],
                 "ComponentID": 188567026
             }
         ]
     },
     {
-        "EntityID": 2652074438,
+        "EntityID": 468187140,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -186,19 +187,19 @@
             },
             {
                 "ChildrenID": [
-                    549418825,
-                    327702120
+                    3397932683,
+                    2292914663
                 ],
                 "ComponentID": 188567026
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 2204882994
+                "ParentID": 791091316
             }
         ]
     },
     {
-        "EntityID": 549418825,
+        "EntityID": 3397932683,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -224,6 +225,10 @@
                 }
             },
             {
+                "ComponentID": 1080109110,
+                "UUID": "PlayerHand"
+            },
+            {
                 "ComponentID": 2778840952,
                 "FBX": [
                     112,
@@ -245,10 +250,6 @@
                 "transitionDuration": 0.4000000059604645
             },
             {
-                "ComponentID": 1080109110,
-                "UUID": "PlayerHand"
-            },
-            {
                 "ComponentID": 1142749570,
                 "FBX": [
                     112,
@@ -266,12 +267,12 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 2652074438
+                "ParentID": 468187140
             }
         ]
     },
     {
-        "EntityID": 327702120,
+        "EntityID": 2292914663,
         "Component": [
             {
                 "ComponentID": 1365953231,
@@ -298,7 +299,7 @@
             },
             {
                 "ComponentID": 3243699741,
-                "ParentID": 2652074438
+                "ParentID": 468187140
             }
         ]
     }

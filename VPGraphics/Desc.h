@@ -69,52 +69,6 @@ namespace RenderStateDESC
 	}
 }
 
-namespace SamplerDESC
-{
-	//https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_sampler_desc
-	/*
-	 D3D11_FILTER               Filter;
-	D3D11_TEXTURE_ADDRESS_MODE AddressU;
-	D3D11_TEXTURE_ADDRESS_MODE AddressV;
-	D3D11_TEXTURE_ADDRESS_MODE AddressW;
-	FLOAT                      MipLODBias;
-	UINT                       MaxAnisotropy;
-	D3D11_COMPARISON_FUNC      ComparisonFunc;
-	FLOAT                      BorderColor[4];
-	FLOAT                      MinLOD;
-	FLOAT                      MaxLOD;
-	*/
-	static D3D11_SAMPLER_DESC Linear =
-	{
-		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
-		D3D11_TEXTURE_ADDRESS_WRAP,
-		D3D11_TEXTURE_ADDRESS_WRAP,
-		D3D11_TEXTURE_ADDRESS_WRAP,
-		0.0f,
-		1,
-		D3D11_COMPARISON_NEVER,
-		(1.0f, 1.0f, 1.0f, 1.0f),
-		0,
-		D3D11_FLOAT32_MAX,
-	};
-
-	static D3D11_SAMPLER_DESC Point =
-	{
-		D3D11_FILTER_MIN_MAG_MIP_POINT,
-		D3D11_TEXTURE_ADDRESS_CLAMP,
-		D3D11_TEXTURE_ADDRESS_CLAMP,
-		D3D11_TEXTURE_ADDRESS_CLAMP,
-		0.0f,
-		1,
-		D3D11_COMPARISON_NEVER,
-		{1.0f, 1.0f, 1.0f, 1.0f},
-		0,
-		D3D11_FLOAT32_MAX
-	};
-
-}
-
-
 namespace TextureDESC
 {
 	/*UINT Width;

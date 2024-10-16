@@ -109,9 +109,41 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 	{
 		HR_CHECK(DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_NONE, &metadata, scratchImage));
 
-		DirectX::ScratchImage mipChain;
-		HR_CHECK(DirectX::GenerateMipMaps(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipChain));
-		scratchImage = std::move(mipChain);  // 밉맵이 포함된 텍스처로 교체
+		DXGI_FORMAT format = metadata.format;
+
+		bool isHighPrecisionFormat = false;
+		switch (format)
+		{
+			case DXGI_FORMAT_R32G32B32A32_FLOAT:
+			case DXGI_FORMAT_R16G16B16A16_FLOAT:
+			case DXGI_FORMAT_R32G32_FLOAT:
+			case DXGI_FORMAT_R16G16_FLOAT:
+			case DXGI_FORMAT_R32_FLOAT:
+				isHighPrecisionFormat = true;
+				break;
+			default:
+				isHighPrecisionFormat = false;
+				break;
+		}
+
+		if (!isHighPrecisionFormat)
+		{
+			DirectX::ScratchImage mipChain;
+			HR_CHECK(DirectX::GenerateMipMaps(
+				scratchImage.GetImages(),		// 이미지 데이터
+				scratchImage.GetImageCount(),	// 이미지 개수
+				scratchImage.GetMetadata(),		// 메타데이터
+				DirectX::TEX_FILTER_DEFAULT,	// 필터 옵션
+				0,								// 생성할 밉맵 레벨 수
+				mipChain));						// 출력으로 사용할 ScratchImage
+
+			scratchImage = std::move(mipChain);  // 밉맵이 포함된 텍스처로 교체
+		}
+		else
+		{
+			// 정밀도가 높은 포맷일 때 밉맵 생성을 건너뛰거나 별도로 처리
+			Log::GetCoreLogger()->warn("High precision format detected. Skipping mipmap generation.");
+		}
 
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = static_cast<UINT>(metadata.width);
