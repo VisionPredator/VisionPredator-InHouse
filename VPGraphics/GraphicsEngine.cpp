@@ -583,7 +583,7 @@ void GraphicsEngine::Culling()
 						temp.OBB = obbInfo;
 
 						temp.Color = (VPMath::Color{ 1,0,0,1 });
-						DrawOBB(temp);
+						//DrawOBB(temp); //SUMIN ¿·±Ò Off
 
 						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
 						if (contains)
@@ -628,7 +628,7 @@ void GraphicsEngine::Culling()
 					temp.OBB = obbInfo;
 
 					temp.Color = (VPMath::Color{ 1,0,0,1 });
-					DrawOBB(temp);
+					//DrawOBB(temp);	// SUMIN ¿·±Ò Off
 
 					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
 					if (contains)

@@ -246,7 +246,11 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 		auto tempvector = Transform->World_Location;
 		if (Transform->HasComponent<ControllerComponent>())
 		{
-			tempvector = DisApplyPivotAndOffset(*Transform->GetComponent<ControllerComponent>(), tempvector);
+			auto controller = Transform->GetComponent<ControllerComponent>()->Contollerinfo.Pivot;
+			if (controller == VPPhysics::ControllerPivot::CENTER)
+			{
+				tempvector = DisApplyPivotAndOffset(*Transform->GetComponent<ControllerComponent>(), tempvector);
+			}
 		}
 
 		editAgent->npos[0] = tempvector.x;
@@ -289,7 +293,11 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 			auto prelocation = Transform->World_Location;
 			auto controller = Transform->GetComponent<ControllerComponent>();
 			VPMath::Vector3 newlocation = { x,y,z };
-			newlocation = ApplyPivotAndOffset(*controller,newlocation);
+
+			if (controller->Contollerinfo.Pivot == VPPhysics::ControllerPivot::CENTER)
+			{
+				newlocation = ApplyPivotAndOffset(*controller, newlocation);
+			}
 			VPMath::Vector3 direction = newlocation - prelocation;
 			direction.y = 0;
 			direction.Normalize();

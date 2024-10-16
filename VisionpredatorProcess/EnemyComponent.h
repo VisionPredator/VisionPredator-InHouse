@@ -18,7 +18,7 @@ struct EnemyComponent : public Component
 	bool IsModelFlipped = true;
 
 	// 소음 감지 범위
-	float NoiseRangeRadius = 10.f;	// 100m
+	float NoiseRangeRadius = 5.f;	// 100m
 
 	// 추격 범위
 	float ChaseRangeRadius = 40.f;	// 400m

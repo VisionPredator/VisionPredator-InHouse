@@ -142,6 +142,11 @@ void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	frustumInfo.Frustum = viewRange;
 	frustumInfo.Color = VisPred::SimpleMath::Color{ 1, 1, 0, 1 };
 	m_Graphics->DrawFrustum(frustumInfo);
+
+	debug::SphereInfo sphereInfo;
+	sphereInfo.Sphere = noiseRange;
+	sphereInfo.Color = VPMath::Color{ 1, 0, 1, 1 };
+	m_Graphics->DrawSphere(sphereInfo);
 #endif _DEBUG
 
 	if (!m_PlayerComp)
@@ -163,8 +168,16 @@ void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 	/// 시야 범위, 소음 범위, 추격 범위 별로 플레이어 감지 수행.
 
+	// 각 범위에 들어 왔는지를 확인하고
+	// 세부 조건을 확인한다.
+	bool isInViewRange = false, isInNoiseRange = false, isInChaseRange = false;
+
+	isInViewRange = viewRange.Contains(playerPos);
+	isInNoiseRange = (m_PlayerComp->CurrentFSM == VisPred::Game::EFSM::RUN) || (m_PlayerComp->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;
+
 	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
-	if (viewRange.Contains(playerPos))
+	//if (viewRange.Contains(playerPos) || noiseRange.Contains(playerPos))	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
+	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 		const uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
