@@ -1,7 +1,8 @@
 #pragma once
 #include "System.h"
+#include "EventSubscriber.h"
 class SocketSystem :
-    public System,public IUpdatable,public IRenderable,public IPhysicable
+    public System,public IUpdatable,public IRenderable,public IPhysicable,public EventSubscriber
 {
 public:
     SocketSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -18,7 +19,7 @@ public:
     // IRenderable을(를) 통해 상속됨
     void EditorRenderUpdate(float deltaTime) override;
 	void TargetConnectedID(SocketComponent& socketcomp);
-
+    void OnSocketUpdate(std::any);
 
 
 

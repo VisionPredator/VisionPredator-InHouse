@@ -5,6 +5,7 @@
 #include "EventManager.h"
 #include "../PhysxEngine/IPhysx.h"
 bool Toolbar::m_IsPlaying = false;
+bool Toolbar::m_IsPaused = false;
 Toolbar::Toolbar()
 {
 }
@@ -50,12 +51,12 @@ void Toolbar::ImGuiRender()
 		}
 	}
 
-	if (!m_IsPause)
+	if (!m_IsPaused)
 	{
 		if (ImGui::Button("Pause", ImVec2(60, 0)))
 		{
 			EventManager::GetInstance().ScheduleEvent("OnPauseButton");
-			m_IsPause = true;
+			m_IsPaused = true;
 		}
 
 	}
@@ -64,7 +65,7 @@ void Toolbar::ImGuiRender()
 		if (ImGui::Button("Resume", ImVec2(60, 0)))
 		{
 			EventManager::GetInstance().ScheduleEvent("OnResumeButton");
-			m_IsPause = false;
+			m_IsPaused = false;
 
 		}
 	}

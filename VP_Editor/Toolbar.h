@@ -26,7 +26,7 @@ public:
 	void PhysicEngineImGui();
 	void NavMeshImGui();
 	static bool m_IsPlaying;
-	bool m_IsPause = false;
+	static bool m_IsPaused;
 	static std::string m_CurrentScenePath;
 	bool m_ShowPhysicSettings{ false };
 	bool m_ShowNavSettings{ false };
