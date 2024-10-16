@@ -74,7 +74,7 @@ public:
 	virtual void Render() abstract;
 	virtual void OnResize() abstract;
 
-	void SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue);
+	virtual void SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue);
 
 protected:
 

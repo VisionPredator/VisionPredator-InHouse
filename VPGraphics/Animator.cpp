@@ -60,12 +60,12 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 		//그대로 연속 재생
 		for (auto& ani : curModel->m_Animations[curindex]->m_Channels)
 		{
+			end = ani->totals.end()-1;
 			//가지고 있는 애니메이션 정보 순회
 			for (auto tick = ani->totals.begin(); tick != ani->totals.end(); tick++)
 			{
-				end = ani->totals.end() - 1;
 
-				if (curtick >= end->first )
+				if (curtick >= end->first)
 				{
 					std::shared_ptr<Node> curAni = ani->node.lock();
 					curAni->m_Local = end->second.Transpose();
@@ -88,7 +88,7 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 
 					//현재 프레임이 최종 프레임보다 클 경우 다시 시작 점으로
 					//end()가 끝이 아닌 마지막 + 1
-					if (cur == ani->totals.end() - 1)
+					if (cur == end)
 					{
 						auto next = ani->totals.begin();
 						float t = abs(curtick - cur->first) / abs(next->first - cur->first);
@@ -109,7 +109,6 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			}
 		}
 
-		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	}
 	else
 	{
@@ -142,8 +141,6 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			for (auto& ani : curModel->m_Animations[preindex]->m_Channels)
 			{
 				preAni.insert(std::pair<std::wstring, VPMath::Matrix >(ani->nodename, (ani->totals.end() - 1)->second));
-
-
 			}
 		}
 
@@ -158,8 +155,38 @@ void Animator::UpdateWorld(std::weak_ptr<RenderData> ob)
 			curAni->m_Local = VPMath::Matrix::Lerp(start->second, preAni[ani->nodename], t).Transpose();
 		}
 
-		CalcWorld(curOb->EntityID, curModel->m_RootNode);
 	}
+
+	CalcWorld(curOb->EntityID, curModel->m_Nodes);
+}
+
+void Animator::CalcWorld(uint32_t entityID, std::vector< std::shared_ptr<Node>>& Nodes)
+{
+	for (auto& node : Nodes)
+	{
+		if (!node->HasParents)
+		{
+			node->m_World = node->m_Local;
+			node->m_WorldInverse = node->m_LocalInverse;
+		}
+		else
+		{
+			node->m_World = node->m_Parents.lock()->m_World * node->m_Local;
+			node->m_WorldInverse = node->m_World.Invert();
+		}
+
+		//플레이어만 갱신해야댐
+		{
+			if (node->name == L"DEF-hand.R")
+			{
+				socket = node->m_World;
+				m_socketList.push_back(std::pair(entityID, socket));
+			}
+		}
+
+	}
+
+
 }
 
 void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
@@ -177,7 +204,7 @@ void Animator::CalcWorld(uint32_t entityID, std::shared_ptr<Node> RootNode)
 
 	//플레이어만 갱신해야댐
 	{
-		if (RootNode->name == L"DEF-palm.02.R")//
+		if (RootNode->name == L"DEF-hand.R")//
 		{
 			socket = RootNode->m_World;
 			m_socketList.push_back(std::pair(entityID, socket));
@@ -205,13 +232,9 @@ void Animator::UpdateMatrixPallete(std::shared_ptr<RenderData>& curData)
 
 			for (int i = 0; i < skinned->m_BoneData.size(); i++)
 			{
-				VPMath::Matrix nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
-				VPMath::Matrix offset = skinned->m_BoneData[i]->offsetMatrix;
-
-				skinned->Matrix_Pallete->offset[i] = (nodeworld * offset);
-				{
-					pallete.offset[i] = (nodeworld * offset);
-				}
+				VPMath::Matrix& nodeworld = skinned->m_BoneData[i]->node.lock()->m_World; //glocal
+				VPMath::Matrix& offset = skinned->m_BoneData[i]->offsetMatrix;
+				pallete.offset[i] = (nodeworld * offset);
 			}
 		}
 	}

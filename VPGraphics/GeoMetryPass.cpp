@@ -27,6 +27,11 @@ void GeoMetryPass::Render()
 
 	for (const auto& curOb : m_RenderList)
 	{
+		if (curOb->isOverDraw)
+		{
+			continue;
+		}
+
 		if (curOb->Filter == GeoMetryFilter::Box)
 		{
 

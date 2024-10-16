@@ -22,7 +22,7 @@ enum class PassState : unsigned int
 struct RenderData
 {
 public:
-	RenderData() :EntityID(0), Name(L""), FBX(L"")
+	RenderData() :EntityID(0), Name(L""), FBX(L""),ModelID(0)
 		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
 		, duration(0.f), preDuration(0.f), isPlay(false)
 		, color(), useTexture(false), textureName(L"")
@@ -54,11 +54,11 @@ public:
 	}
 
 	//필수
-
 	uint32_t EntityID;
 	std::wstring Name;
 	std::wstring FBX;
 	PassState Pass; 
+	int ModelID;
 
 	GeoMetryFilter Filter;
 	bool isSkinned = false;
@@ -68,6 +68,9 @@ public:
 	VPMath::Matrix local; //캐릭터 자체 로컬
 
 	VPMath::Vector3 rotation;
+
+	//overdraw
+	bool isOverDraw = false;	//벽뒤에 플레이어랑 총 짤리는거 방지 flag
 
 	//애니메이션
 	float duration;

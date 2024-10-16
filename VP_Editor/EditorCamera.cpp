@@ -73,10 +73,11 @@ void EditorCamera::CameraMove(float deltatime)
 
 	m_Location += moveWay;
 
-	if (InputManager::GetInstance().GetKeyDown(KEYBOARDKEY::LSHIFT))
+	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::LSHIFT))
 		m_PressedShift = true;
-	else if (InputManager::GetInstance().GetKeyUp(KEYBOARDKEY::LSHIFT))
+	else
 		m_PressedShift = false;
+
 }
 
 void EditorCamera::MoveableSetting()

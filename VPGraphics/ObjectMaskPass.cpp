@@ -84,6 +84,11 @@ void ObjectMaskPass::Render()
 
 	for (const auto& curData : m_RenderList)
 	{
+		if (curData->isOverDraw)
+		{
+			continue;
+		}
+		
 		// 마스킹 색상을 가지고 있는 오브젝트만 마스킹한다.
 		if (curData->MaskingColor.A() == 0.f)
 			continue;

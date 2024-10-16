@@ -104,14 +104,6 @@ void GraphicsEngine::AnimationUpdate(double dt)
 }
 void GraphicsEngine::Update(double dt)
 {
-	/*
-	m_Animator->Update(dt, m_RenderList);
-	m_PassManager->Update(m_RenderList);
-	m_LightManager->Update(m_Lights);
-	*/
-
-	//Culling();
-	//m_Animator->Update(dt, m_AfterCulling);
 	m_PassManager->Update(m_AfterCulling);
 	m_LightManager->Update(m_Lights);
 
@@ -120,10 +112,6 @@ void GraphicsEngine::EndUpdate(double dt)
 {
 	m_AfterCulling.clear();
 }
-
-
-
-
 
 bool GraphicsEngine::Finalize()
 {
@@ -363,16 +351,29 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const s
 
 	if (find != m_RenderVector.end())
 	{
-		const VPMath::Matrix& Bone = m_Animator->Attachment(entityID,socketName);
+		const VPMath::Matrix& Bone = m_Animator->Attachment(entityID, socketName);
 		std::shared_ptr<RenderData> data = (*find);
 		VPMath::Matrix attach = Bone * data->world;
 
-		debug::SphereInfo temp;
-		temp.Sphere.Center = { attach._41,attach._42,attach._43 };
-		temp.Sphere.Radius = 1.f;
-		temp.Color = VPMath::Color{ 0,1,0,1 };
-		DrawSphere(temp);
+		VPMath::Vector3 locataion;
+		VPMath::Quaternion quat;
+		VPMath::Vector3 scale;
+		VPMath::Vector3 rotation;
 
+		attach.NewDecompose(scale, quat, locataion);
+		rotation = quat.ToEuler() * 180 / VPMath::XM_PI;
+		debug::OBBInfo temp;
+		temp.xAxisAngle = rotation.x;
+		temp.yAxisAngle = rotation.y;
+		temp.zAxisAngle = rotation.z;
+		temp.OBB.Extents = { 0.1f,0.1f,0.1f };
+		temp.OBB.Center = locataion;
+
+		//temp.Sphere.Center = { attach._41,attach._42,attach._43 };
+		//temp.Sphere.Radius = 1.f;
+		temp.Color = VPMath::Color{ 0,1,0,1 };
+		//DrawSphere(temp);
+		DrawOBB(temp);
 		return attach;
 	}
 
@@ -546,8 +547,11 @@ void GraphicsEngine::Culling()
 		std::wstring& fbx = object->FBX;
 		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
 
+
 		if (curFBX != nullptr)
 		{
+			object->ModelID = curFBX->UID;
+
 			{
 				VPMath::Vector3 s;
 				VPMath::Quaternion r;
@@ -591,7 +595,7 @@ void GraphicsEngine::Culling()
 				}
 				else
 				{
-					VPMath::Vector3 max{-1,-1,-1};
+					VPMath::Vector3 max{ -1,-1,-1 };
 
 					for (auto& mesh : curFBX->m_Meshes)
 					{
@@ -614,25 +618,25 @@ void GraphicsEngine::Culling()
 							max.z = afterMax.z;
 						}
 					}
-						DirectX::BoundingOrientedBox obbInfo;
+					DirectX::BoundingOrientedBox obbInfo;
 
-						obbInfo.Center = t;
-						obbInfo.Extents = VPMath::XMFLOAT3(fabs(max.x), fabs(max.y), fabs(max.z));
-						obbInfo.Orientation = r;
+					obbInfo.Center = t;
+					obbInfo.Extents = VPMath::XMFLOAT3(fabs(max.x), fabs(max.y), fabs(max.z));
+					obbInfo.Orientation = r;
 
-						debug::OBBInfo temp;
-						temp.OBB = obbInfo;
+					debug::OBBInfo temp;
+					temp.OBB = obbInfo;
 
-						temp.Color = (VPMath::Color{ 1,0,0,1 });
-						DrawOBB(temp);
+					temp.Color = (VPMath::Color{ 1,0,0,1 });
+					DrawOBB(temp);
 
-						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
-						if (contains)
-						{
-							visible |= contains;
-							//m_AfterCulling.push_back(object);
-							//break;	//바운딩박스보려고 임시 해제
-						}
+					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
+					if (contains)
+					{
+						visible |= contains;
+						//m_AfterCulling.push_back(object);
+						//break;	//바운딩박스보려고 임시 해제
+					}
 				}
 
 				if (visible)
@@ -645,6 +649,8 @@ void GraphicsEngine::Culling()
 		}
 		else
 		{
+			object->ModelID = -1;
+
 			if (object->Filter == GeoMetryFilter::Box)
 			{
 				m_AfterCulling.push_back(object);

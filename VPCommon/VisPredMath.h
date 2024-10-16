@@ -268,7 +268,7 @@ namespace VisPred
             float Length() const noexcept;
             float LengthSquared() const noexcept;
             void RotateToUp(float degrees) noexcept;
-            void RotateToUp2(float degrees) noexcept;
+            void RotateToYaw(float degrees) noexcept;
             float Dot(const Vector3& V) const noexcept;
             void Cross(const Vector3& V, Vector3& result) const noexcept;
             Vector3 Cross(const Vector3& V) const noexcept;
@@ -588,7 +588,7 @@ namespace VisPred
 
             Matrix Invert() const noexcept;
             void Invert(Matrix& result) const noexcept;
-
+            bool IsMatrixIrregular() const noexcept;
             float Determinant() const noexcept;
 
             // Computes rotation about y-axis (y), then x-axis (x), then z-axis (z)
@@ -764,6 +764,11 @@ namespace VisPred
 
             void Conjugate() noexcept;
             void Conjugate(Quaternion& result) const noexcept;
+
+            void RotateToUp(float degrees) noexcept;
+            void RotateYaw(float degrees) noexcept;
+
+
             Vector3 ToYawPitchRoll() const  noexcept; 
             void Inverse(Quaternion& result) const noexcept;
 

@@ -18,10 +18,7 @@
 
 DeferredPass::~DeferredPass()
 {
-	if (!m_AlbedoRTV.expired())
-	{
-		int a = 3;
-	}
+
 }
 
 void DeferredPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
@@ -274,6 +271,11 @@ void DeferredPass::GeometryPass()
 	bool isTranparency = false;
 	for (const auto& curData : m_RenderList)
 	{
+		if (curData->isOverDraw)
+		{
+			continue;
+		}
+
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
@@ -302,17 +304,17 @@ void DeferredPass::GeometryPass()
 				// Static Mesh Data Update & Bind
 				if (!mesh->IsSkinned())
 				{
-					Device->BindVS(m_StaticMeshVS.lock());
+					//Device->BindVS(m_StaticMeshVS.lock());
 
-					// CB Update
-					std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+					//// CB Update
+					//std::shared_ptr<ConstantBuffer<TransformData>> position = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 
-					TransformData renew;
-					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
-					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
-					XMStoreFloat4x4(&renew.localInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
-					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
-					position->Update(renew);	// == Bind
+					//TransformData renew;
+					//XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
+					//XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					//XMStoreFloat4x4(&renew.localInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
+					//XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));//전치 해주지말자 회전의 역행렬은 전치행렬임
+					//position->Update(renew);	// == Bind
 				}
 				else
 				{
@@ -351,7 +353,6 @@ void DeferredPass::GeometryPass()
 					}
 					pallete->Update();
 					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
-				}
 
 				// 텍스처와 샘플러를 셰이더에 바인딩
 				if (!curModel->m_Materials.empty())
@@ -386,6 +387,7 @@ void DeferredPass::GeometryPass()
 				}
 
 				Device->Context()->DrawIndexed(mesh->IBCount(), 0, 0);
+				}
 			}
 		}
 	}

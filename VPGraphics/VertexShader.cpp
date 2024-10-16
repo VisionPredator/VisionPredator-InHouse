@@ -1,11 +1,73 @@
 #include "pch.h"
 #include "VertexShader.h"
-#include "Device.h"
-#include "Defines.h"
 
-VertexShader::VertexShader(const std::shared_ptr<Device>& device, 
-	const std::wstring& filename, 
-	const std::string& entryPoint, 
+#include <d3d11.h>
+#include <d3dcompiler.h>
+
+#include "Device.h"
+
+#include <wrl/client.h>
+
+#include "Defines.h"
+#include "VertexData.h"
+
+VertexShader::VertexShader(std::shared_ptr<Device>device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC* desc /*= Instancing::Desc*/, int count /*= Instancing::Count*/) : Shader(device, filename)
+{
+	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
+
+	std::wstring basePath;
+#ifdef _DEBUG
+	shaderFlag |= D3DCOMPILE_DEBUG;
+	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
+	basePath = L"..\\..\\..\\VPGraphics\\";
+#else
+	basePath = L"..\\Data\\HLSL\\";
+#endif
+
+	const std::string& shaderModel = "vs_5_0";
+	const std::wstring hlslFileBasePath = basePath;
+	const std::wstring hlslFileExtension = L".hlsl";
+	const std::wstring binaryFileExtension = L".cso";
+
+	std::wstring filePath = hlslFileBasePath + filename + hlslFileExtension;
+
+	D3D_SHADER_MACRO macro[] =
+	{
+		{"SKINNING",""}, // 매크로 이름과 값을 설정
+		{nullptr, nullptr}    // 배열의 끝을 나타내기 위해 nullptr로 끝낸다.
+	};
+
+	std::string entryPoint = "main";
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
+
+	// 컴파일 된 것이 있다면 그걸 쓴다.
+	if (FAILED(
+		D3DCompileFromFile(
+			filePath.c_str(),
+			NULL,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryPoint.c_str(),
+			shaderModel.c_str(),
+			shaderFlag,
+			0,
+			&blob,
+			&blob)))
+	{
+		filePath = filename + binaryFileExtension;
+		HR_CHECK(D3DReadFileToBlob(filePath.c_str(), &blob));
+	}
+
+	HRESULT hr;
+
+	hr = (m_Device.lock()->Get()->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_VS));
+	hr = (m_Device.lock()->Get()->CreateInputLayout(desc, count, blob->GetBufferPointer(), blob->GetBufferSize(), &m_InputLayout));
+
+
+}
+
+VertexShader::VertexShader(const std::shared_ptr<Device>& device,
+	const std::wstring& filename,
+	const std::string& entryPoint,
 	const D3D_SHADER_MACRO* macro
 )
 	: Shader(device, filename)
@@ -32,14 +94,14 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device,
 	// 컴파일 된 것이 있다면 그걸 쓴다.
 	if (FAILED(
 		D3DCompileFromFile(
-			filePath.c_str(), 
-			macro, 
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, 
-			entryPoint.c_str(), 
+			filePath.c_str(),
+			macro,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryPoint.c_str(),
 			shaderModel.c_str(),
-			shaderFlag, 
-			0, 
-			&blob, 
+			shaderFlag,
+			0,
+			&blob,
 			&blob)))
 	{
 		filePath = filename + binaryFileExtension;
@@ -50,9 +112,9 @@ VertexShader::VertexShader(const std::shared_ptr<Device>& device,
 	ID3D11ShaderReflection* pReflector = nullptr;
 
 	// Create Reflector
-	D3DReflect(blob->GetBufferPointer(), 
-		blob->GetBufferSize(), 
-		IID_ID3D11ShaderReflection, 
+	D3DReflect(blob->GetBufferPointer(),
+		blob->GetBufferSize(),
+		IID_ID3D11ShaderReflection,
 		(void**)&pReflector);
 
 	// Shader Refection

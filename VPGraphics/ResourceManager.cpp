@@ -40,6 +40,30 @@ ResourceManager::~ResourceManager()
 }
 
 
+std::weak_ptr<ModelData> ResourceManager::Get(const int modelID)
+{
+	if (modelID > 0)
+	{
+		std::unordered_map<std::wstring, std::shared_ptr<Resource>>& curMap = m_ResourceArray[static_cast<int>(ResourceType::ModelData)];
+
+		for (auto& model : curMap)
+		{
+			auto curmodel = dynamic_pointer_cast<ModelData>(model.second);
+
+			if (curmodel)
+			{
+				if (curmodel->UID == modelID)
+				{
+					return curmodel;
+				}
+			}
+		}
+	}
+
+
+	return {};
+}
+
 void ResourceManager::Initialize(std::weak_ptr<Device> device)
 {
 	m_Device = device;
@@ -93,8 +117,8 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	};
 	Create<VertexShader>(L"Base", L"MeshVS", "main");
 	Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
-	Create<VertexShader>(L"Quad", L"QuadVS", "main");
-
+	Create<VertexShader>(L"Quad", L"QuadVS", "main");	
+	Create<VertexShader>(L"InstancingVS", L"InstancingVS");	//Instancing VS
 
 	// ----------------------------------------------------------------------------------------
 	// Pixel Shader
@@ -106,7 +130,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"Quad", L"QuadPS", "main");
 	Create<PixelShader>(L"VPOutLine", L"VPOutLine", "main");
 	Create<PixelShader>(L"RimLight", L"RimLight", "main");
-
+	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer

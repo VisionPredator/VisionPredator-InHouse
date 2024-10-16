@@ -1,7 +1,11 @@
 [
     {
-        "EntityID": 2774812691,
+        "EntityID": 230084790,
         "Component": [
+            {
+                "ComponentID": 1365953231,
+                "Name": "ShotGun"
+            },
             {
                 "BoxInfo": {
                     "Extent": {
@@ -46,29 +50,6 @@
                 }
             },
             {
-                "ComponentID": 1365953231,
-                "Name": "ShotGun"
-            },
-            {
-                "ComponentID": 3400599862,
-                "Local_Location": {
-                    "x": 25.57082176208496,
-                    "y": -48.23942184448242,
-                    "z": -21.713647842407227
-                },
-                "Local_Quaternion": {
-                    "w": 0.6822527647018433,
-                    "x": -0.18841704726219177,
-                    "y": -0.18903277814388275,
-                    "z": 0.6806591153144836
-                },
-                "Local_Scale": {
-                    "x": 0.26999998092651367,
-                    "y": 0.27000007033348083,
-                    "z": 0.26999998092651367
-                }
-            },
-            {
                 "ComponentID": 3774279003,
                 "FBX": [
                     115,
@@ -101,12 +82,41 @@
                 }
             },
             {
+                "ComponentID": 3400599862,
+                "Local_Location": {
+                    "x": 25.57082176208496,
+                    "y": -48.23942184448242,
+                    "z": -21.713647842407227
+                },
+                "Local_Quaternion": {
+                    "w": 0.6822527647018433,
+                    "x": -0.18841707706451416,
+                    "y": -0.18903279304504395,
+                    "z": 0.6806591749191284
+                },
+                "Local_Scale": {
+                    "x": 0.26999998092651367,
+                    "y": 0.2700001001358032,
+                    "z": 0.26999998092651367
+                }
+            },
+            {
                 "BulletPrefab": "../Data/Prefab/Pistol_Bullet.prefab",
                 "Bullets": 100,
                 "ComponentID": 3546995328,
-                "CoolTime": 0.009999999776482582,
-                "CurrentBullet": 100,
-                "GunSoundPrefab": "../Data/Prefab/PisTolSound.prefab",
+                "CoolTime": 1.2000000476837158,
+                "CurrentBullet": 1000,
+                "GunSoundPrefab": "../Data/Prefab/Sound_ShotGun.prefab",
+                "RecoilMaxXY": {
+                    "x": 0.0,
+                    "y": 4.0
+                },
+                "RecoilPercent": 10.0,
+                "RecoilPos": {
+                    "x": 0.0,
+                    "y": 3.0
+                },
+                "RecoilTime": 1.0,
                 "ThrowDamage": 1,
                 "Type": 1
             },
@@ -119,12 +129,12 @@
                     "y": 0.27000001072883606,
                     "z": 0.6800000071525574
                 },
-                "OffsetRotation": {
-                    "x": -84.16999816894531,
-                    "y": -45.0,
-                    "z": 3.299999952316284
-                },
-                "SocketName": []
+                "SocketName": [],
+                "offsetQuaternion": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             }
         ]
     }

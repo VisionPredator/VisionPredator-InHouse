@@ -1,18 +1,9 @@
 #pragma once
 #include "Shader.h"
 #include <string>
-
+#include "Desc.h"
 
 class Device;
-
-enum class VERTEXFILTER	// TODO: 삭제
-{
-	STATIC = 0,
-	SKINNING,
-	QUAD,
-
-	END
-};
 
 class VertexShader : public Shader
 {
@@ -22,7 +13,11 @@ public:
 		const std::wstring& filename,
 		const std::string& entryPoint,
 		const D3D_SHADER_MACRO* macro = nullptr);
-		
+
+	//인스턴싱용 생성자
+	VertexShader(std::shared_ptr<Device>device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC* desc = Instancing::Desc,  int count = Instancing::Count);
+
+
 	~VertexShader() override = default;
 
 	ID3D11PixelShader* GetPS() = delete;
@@ -32,5 +27,4 @@ public:
 	void Release() override;
 
 private:
-	VERTEXFILTER m_Kind_of_Vertex = {};
 };

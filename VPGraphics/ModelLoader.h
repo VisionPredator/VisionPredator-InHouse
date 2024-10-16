@@ -32,9 +32,12 @@ public:
 	~ModelLoader() = default;
 
 	void Initialize(const std::shared_ptr<ResourceManager>& manager, const std::shared_ptr<Device>& device);
-	bool LoadModel(std::string filename, Filter filter);
-	void ProcessSceneData(std::string name, const aiScene* scene, Filter filter);
+	bool LoadModel(std::string filename, Filter filter, int UID);
+	void ProcessSceneData(std::string name, const aiScene* scene, Filter filter, int UID);
 
+private:
+
+	void SaveBoneDataTexture(std::shared_ptr<ModelData> newData);
 
 private:
 	std::vector<const aiScene*> m_SceneList;
@@ -48,7 +51,7 @@ private:
 	void ProcessVertexBuffer(std::vector<BaseVertex>& buffer, aiMesh* curMesh, unsigned int index);
 
 	void ProcessIndexBuffer(std::vector<UINT>& buffer, aiFace* curFace);
-	void ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes);
+	void ProcessNode(std::shared_ptr<Node> parents, std::shared_ptr<Node> ob_node, aiNode* node, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Node>>&nodes ,int index=0);
 
 	void ProcessBoneMapping(std::vector<SkinningVertex>& buffer, aiMesh* curAiMesh, std::shared_ptr<Mesh> curMesh);
 	std::shared_ptr<Node>FindNode(std::wstring nodename, std::shared_ptr<Node> RootNode);

@@ -14,14 +14,17 @@ void VispredRegister::Register_Metadata()
 void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
-	META_ADD_COMP(PlayerComponent, PlayerComponent::PlayerCameraName
-		, PlayerComponent::PlayerHandName, PlayerComponent::HP
-		, PlayerComponent::Sencitive, PlayerComponent::StaticFriction
-		, PlayerComponent::DynamicFriction, PlayerComponent::JumpFoce
-		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
-		, PlayerComponent::Accel, PlayerComponent::CurrentFSM
-		, PlayerComponent::AirControlPercent, PlayerComponent::FirePosition
-		, PlayerComponent::GravityPower, PlayerComponent::HasGun
+	META_ADD_COMP(PlayerComponent, PlayerComponent::RecoilMode,
+		PlayerComponent::CameraPosName,PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName,
+		PlayerComponent::MaxHP,	PlayerComponent::HP
+		, PlayerComponent::Sencitive, PlayerComponent::RecoilReturnTime
+		, PlayerComponent::JumpForce
+		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::SlideDuration
+		,  PlayerComponent::CurrentFSM
+		, PlayerComponent::AirControlPercent
+		, PlayerComponent::GravityPower
+		, PlayerComponent::StaticFriction
+		, PlayerComponent::DynamicFriction
 		, PlayerComponent::WalkSoundKey1, PlayerComponent::WalkSoundKey2, PlayerComponent::Volume_Walk
 		, PlayerComponent::RunSoundKey1, PlayerComponent::RunSoundKey2, PlayerComponent::Volume_Run
 		, PlayerComponent::JumpSoundkey, PlayerComponent::Volume_Jump
@@ -30,13 +33,14 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::HurtSoundKey, PlayerComponent::Volume_Hurt
 	);
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV, EnemyComponent::NearZ, EnemyComponent::FarZ, EnemyComponent::IsModelFlipped);
-	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets);
+	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets,GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 }
 
 void VispredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
-	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::CHARGE, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
+	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
+	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyState, EnemyState::Idle, EnemyState::Chase, EnemyState::Patrol, EnemyState::Dead);
 	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);

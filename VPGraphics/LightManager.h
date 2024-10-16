@@ -3,7 +3,7 @@
 #include <queue>
 
 #include "CBuffer.h"
-
+class Texture2D;
 class ResourceManager;
 template<typename T>
 class ConstantBuffer;
@@ -37,6 +37,7 @@ public:
 	void Update(std::unordered_map<uint32_t, LightData>& usinglight);
 
 	std::weak_ptr<ShaderResourceView> GetLightMap(int index);
+	std::weak_ptr<ShaderResourceView> GetLightMaps();
 
 private:
 	std::weak_ptr<ResourceManager> m_ResourceManager;
@@ -49,6 +50,9 @@ private:
 	LightArray m_BufferStruct;
 
 	std::array<std::unordered_map<uint32_t, LightData>, static_cast<int>(LightType::End)> m_LightList;
-	std::vector<std::weak_ptr<ShaderResourceView>> m_LightMap;
+	std::vector<std::shared_ptr<ShaderResourceView>> m_LightMap;
+	std::vector<ID3D11ShaderResourceView*> m_LightMapArray;
+	std::weak_ptr<ShaderResourceView> m_srvArray;
+	std::weak_ptr<Texture2D> m_texArray;
 };
 

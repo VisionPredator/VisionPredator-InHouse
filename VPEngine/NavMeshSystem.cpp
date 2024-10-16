@@ -243,10 +243,18 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 		if (!navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID))
 			continue;
 		auto editAgent = navMeshdata->crowd->getEditableAgent(agentcomp.NavAgent->AgentID);
-		auto [x, y, z] = navMeshdata->crowd->getAgent(agentcomp.NavAgent->AgentID)->npos;
-		editAgent->npos[0] = Transform->World_Location.x;
-		editAgent->npos[1] = Transform->World_Location.y;
-		editAgent->npos[2] = Transform->World_Location.z;
+		auto tempvector = Transform->World_Location;
+		if (Transform->HasComponent<ControllerComponent>())
+		{
+			tempvector = DisApplyPivotAndOffset(*Transform->GetComponent<ControllerComponent>(), tempvector);
+		}
+
+		editAgent->npos[0] = tempvector.x;
+		editAgent->npos[1] = tempvector.y;
+		editAgent->npos[2] = tempvector.z;
+		//editAgent->npos[0] = Transform->World_Location.x;
+		//editAgent->npos[1] = Transform->World_Location.y;
+		//editAgent->npos[2] = Transform->World_Location.z;
 
 		if (agentcomp.IsChanged)
 		{
@@ -279,11 +287,13 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 		if (Transform->HasComponent<ControllerComponent>())
 		{
 			auto prelocation = Transform->World_Location;
+			auto controller = Transform->GetComponent<ControllerComponent>();
 			VPMath::Vector3 newlocation = { x,y,z };
+			newlocation = ApplyPivotAndOffset(*controller,newlocation);
 			VPMath::Vector3 direction = newlocation - prelocation;
 			direction.y = 0;
 			direction.Normalize();
-			Transform->GetComponent<ControllerComponent>()->InputDir = direction;
+			controller->InputDir = direction;
 		}
 		else
 		{
@@ -347,3 +357,19 @@ void NavMeshSystem::LateRenderUpdate(float deltaTime)
 
 
 
+
+#pragma region Physics Fuction
+VPMath::Vector3 NavMeshSystem::ApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation)
+{
+	VPMath::Vector3 adjustedLocation = baseLocation /*+ controllerComponent.Contollerinfo.LocalOffset*/;
+	adjustedLocation.y += (controllerComponent.CapsuleControllerinfo.radius + controllerComponent.CapsuleControllerinfo.height / 2);
+	return adjustedLocation;
+}
+VPMath::Vector3 NavMeshSystem::DisApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation)
+{
+	VPMath::Vector3 adjustedLocation = baseLocation/* - controllerComponent.Contollerinfo.LocalOffset*/;
+	adjustedLocation.y -= (controllerComponent.CapsuleControllerinfo.radius + controllerComponent.CapsuleControllerinfo.height / 2);
+	return adjustedLocation;
+}
+
+#pragma endregion
