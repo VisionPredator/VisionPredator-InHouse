@@ -72,19 +72,30 @@ float gamma = 2.2f;
 PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고 있으므로 한번 더 지정해줄 필요는 없다.
 {
     PS_OUTPUT output;
+    output.Albedo = float4(0,0,0,1);
+    output.Normal = float4(0, 0, 0, 1);
+    output.Position = float4(0,0,0,1);
+    output.Depth= float4(0,0,0,1);
+    output.Metalic_Roughness = float4(0,0,0,1);
+    output.AO = float4(0,0,0,1);
+    output.Emissive = float4(0,0,0,1);
+    output.LightMap = float4(0,0,0,1);
+    
+    
     output.Position = input.posWorld;
 
     float d = input.pos.z / input.pos.w;
     d *= 10;
     output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
        
-    output.Albedo = AMRO.x * gAlbedo.Sample(samLinear, input.tex.xy) + (1 - AMRO.x) * input.color;
+
+    output.Albedo = gAlbedo.Sample(samLinear, input.tex.xy) * AMRO.x + input.color * (1 - AMRO.x);
+    output.Albedo.a = useNEOL.z * gOpacity.Sample(samLinear, input.tex.xy).r + (1 - useNEOL.z);
+    
     output.Metalic_Roughness.r = AMRO.y * gMetalic.Sample(samLinear, input.tex.xy).r + (1 - AMRO.y) * 0.04f;
     output.Metalic_Roughness.g = AMRO.z * gRoughness.Sample(samLinear, input.tex.xy).r + (1 - AMRO.z);
     
-    output.Emissive = useNEOL.y * gEmissive.Sample(samLinear, input.tex.xy);
-    
-    output.Albedo.a = useNEOL.z * gOpacity.Sample(samLinear, input.tex.xy).r;
+    output.Emissive = gEmissive.Sample(samLinear, input.tex.xy) * useNEOL.y;
     
     output.AO = AMRO.w * gAO.Sample(samLinear, input.tex.xy);
     
