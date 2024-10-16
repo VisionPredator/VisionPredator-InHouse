@@ -816,6 +816,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 
 	ThrowFinished(playercomp);
 	ReturnToIdle(*playercomp.HandEntity.lock()->GetComponent<AnimationComponent>());
+
 }
 
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
@@ -882,6 +883,7 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 			socketcomp.ConnectedEntityID = 0;
 			playercomp.ThrowingGunEntityID = 0;
 			socketcomp.GetComponent<MeshComponent>()->IsOverDraw = false;
+			playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
 
 		}
 		
@@ -1010,6 +1012,8 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
+	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
+
 	switch (guncomp->Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
@@ -1239,11 +1243,18 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
+		auto LongswordEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->LongswordName);
 		playercomp->HP= playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
+
+		if (LongswordEntity)
+			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
+		else
+			VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
+
 
 		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsOverDraw = true;
 		if (FirePosEntity)

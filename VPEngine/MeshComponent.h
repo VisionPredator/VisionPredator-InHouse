@@ -5,7 +5,7 @@ struct MeshComponent :
 	public Component
 {
 	MeshComponent() = default;
-	VP_JSONBODY(MeshComponent, IsVisible, FBX, LightMapOffset, LightMapTiling, LightMapScale, LightMapIndex, MaskColor);
+	VP_JSONBODY(MeshComponent, IsVisible, IsOverDraw, FBX, LightMapOffset, LightMapTiling, LightMapScale, LightMapIndex, MaskColor);
 
 	std::shared_ptr<RenderData> Renderdata{};
 

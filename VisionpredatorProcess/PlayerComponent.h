@@ -7,7 +7,7 @@ struct PlayerComponent :
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent,
 		RecoilMode
-		,HandName, CameraPosName, CameraName, FirePosName
+		,HandName, CameraPosName, CameraName, FirePosName, LongswordName
 		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, WalkSoundKey1, WalkSoundKey2, Volume_Walk, RunSoundKey1, RunSoundKey2, Volume_Run, JumpSoundkey, Volume_Jump, SlideSoundkey, Volume_Slide, SitSoundKey, Volume_Sit, HurtSoundKey, Volume_Hurt, RecoilProgress, RecoilReturnTime)
 
 	VisPred::Game::GunRecoilMode RecoilMode{};
@@ -15,10 +15,12 @@ struct PlayerComponent :
 	std::string CameraPosName{};
 	std::string CameraName{};
 	std::string FirePosName;
+	std::string LongswordName{};
 	std::weak_ptr<Entity> HandEntity{};
 	std::weak_ptr<Entity> CameraEntity{};
 	std::weak_ptr<Entity> CameraPosEntity{};
 	std::weak_ptr<Entity> FirePosEntity{};
+	std::weak_ptr<Entity> LongswordEntity{};
 	uint32_t MaxHP{};
 	uint32_t HP{};
 	VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;

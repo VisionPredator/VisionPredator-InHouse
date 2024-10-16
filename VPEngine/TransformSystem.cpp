@@ -237,24 +237,26 @@ void TransformSystem::CalculateTransform_Child(TransformComponent* transform, bo
 		if (transform->WorldTransform != worldTransform)
 		{
 			UpdateWorldTransform(transform, worldTransform);
-            UpdateDirVector(transform);
+			UpdateDirVector(transform);
 
 			IsParentWorldChanged = true;
 		}
 	}
 
 	if (transform->HasComponent<Children>())
-    {
-        auto children = transform->GetComponent<Children>();
-        for (auto childID : children->ChildrenID)
-        {
-            TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
-            if (childTransform)
-            {
-                CalculateTransform_Child(childTransform, IsParentWorldChanged);
-            }
-        }
-    }
+	{
+		auto children = transform->GetComponent<Children>();
+		for (auto childID : children->ChildrenID)
+		{
+			auto entity = GetSceneManager()->GetEntity(childID);
+
+			if (!entity)
+				return;
+			TransformComponent* childTransform = entity->GetComponent<TransformComponent>();
+			if (childTransform)
+				CalculateTransform_Child(childTransform, IsParentWorldChanged);
+		}
+	}
 }
 
 void TransformSystem::CalculateTransform_Parent(TransformComponent* transform)
