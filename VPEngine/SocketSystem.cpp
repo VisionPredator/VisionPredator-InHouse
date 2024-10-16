@@ -4,6 +4,7 @@
 
 SocketSystem::SocketSystem(std::shared_ptr<SceneManager> sceneManager): System { sceneManager }
 {
+	EventManager::GetInstance().Subscribe("OnSocketUpdate",CreateSubscriber(&SocketSystem::OnSocketUpdate));
 }
 
 void SocketSystem::Update(float deltaTime)
@@ -13,11 +14,12 @@ void SocketSystem::Update(float deltaTime)
 
 void SocketSystem::BeginRenderUpdate(float deltaTime)
 {
-
 }
 
 void SocketSystem::EditorRenderUpdate(float deltaTime)
 {
+	RenderUpdate(deltaTime);
+
 }
 
 void SocketSystem::TargetConnectedID(SocketComponent& socketcomp)
@@ -55,6 +57,59 @@ void SocketSystem::TargetConnectedID(SocketComponent& socketcomp)
 	}
 }
 
+void SocketSystem::OnSocketUpdate(std::any id)
+{
+	uint32_t entityid = std::any_cast<uint32_t>(id);
+
+	auto entity = GetSceneManager()->GetEntity(entityid);
+	if (!entity)
+		return;
+	if (!entity->HasComponent<SocketComponent>())
+		return;
+	auto& socketcomp = *entity->GetComponent<SocketComponent>();
+
+	socketcomp.AttachmentMatrix = m_Graphics->Attachment(entity->GetEntityID(), socketcomp.SocketName);
+	VPMath::Quaternion rotationQuat{};
+	if (socketcomp.UseQuaternion)
+	{
+		rotationQuat = socketcomp.OffsetQuaternion;
+		socketcomp.OffsetRotation = socketcomp.OffsetQuaternion.ToEuler() * 180 / VPMath::XM_PI;
+	}
+	else
+	{
+		rotationQuat = VPMath::Quaternion::CreateFromYawPitchRoll(
+			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.y),
+			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.x),
+			VPMath::XMConvertToRadians(socketcomp.OffsetRotation.z));
+		socketcomp.OffsetQuaternion = rotationQuat;
+	}
+
+
+	///로컬 매트릭스 만들기
+	VPMath::Matrix offsetMatrix = VPMath::Matrix::CreateTranslation(socketcomp.Offset);
+	// 최종 매트릭스 계산 (회전을 먼저 적용한 후 오프셋 매트릭스를 곱함)
+	VPMath::Matrix finalMatrix = VPMath::Matrix::CreateFromQuaternion(rotationQuat) * offsetMatrix * socketcomp.AttachmentMatrix;
+	//finalMatrix = offsetMatrix * finalMatrix;
+
+	VPMath::Vector3 tempscale{};
+	VPMath::Quaternion tempQuater{};
+	VPMath::Vector3 tempsworld{};
+
+	finalMatrix.NewDecompose(tempscale, tempQuater, tempsworld);
+	TransformComponent* temptrnasform = socketcomp.GetComponent<TransformComponent>();
+	temptrnasform->SetWorldLocation(tempsworld);
+	temptrnasform->SetWorldQuaternion(tempQuater);
+	if (socketcomp.HasComponent<RigidBodyComponent>())
+	{
+		auto rigid = socketcomp.GetComponent<RigidBodyComponent>();
+		if (rigid->IsDynamic)
+			m_PhysicsEngine->SetVelocity(rigid->GetEntityID());
+		VPMath::Vector3 speed = m_PhysicsEngine->GetVelocity(rigid->GetEntityID());
+		speed = {};
+	}
+}
+
+
 
 
 
@@ -72,24 +127,28 @@ void SocketSystem::RenderUpdate(float deltaTime)
 		if (!entity || !entity->HasComponent<SkinningMeshComponent>())
 			continue;
 
-		VPMath::Matrix attachmentMatrix = m_Graphics->Attachment(entity->GetEntityID(), socketcomp.SocketName);
-		VPMath::Quaternion rotationQuat = /*socketcomp.offsetQuaternion;*/VPMath::Quaternion::CreateFromYawPitchRoll(
-			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.y),
-			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.x),
-			VPMath::XMConvertToRadians(socketcomp.offsetQuaternion.z));
-		attachmentMatrix.Backward();
-		// Assuming the equality operator is not overloaded for VPMath::Matrix, compare element-wise.
-		bool temp =  attachmentMatrix.IsMatrixIrregular();
-		if (temp)
+		socketcomp.AttachmentMatrix = m_Graphics->Attachment(entity->GetEntityID(), socketcomp.SocketName);
+		VPMath::Quaternion rotationQuat{};
+		if (socketcomp.UseQuaternion)
 		{
-			std::cout << "IsMatrixIrregular";
+			rotationQuat = socketcomp.OffsetQuaternion;
+			socketcomp.OffsetRotation = socketcomp.OffsetQuaternion.ToEuler() * 180 / VPMath::XM_PI;
 		}
+		else
+		{
+			rotationQuat = VPMath::Quaternion::CreateFromYawPitchRoll(
+				VPMath::XMConvertToRadians(socketcomp.OffsetRotation.y),
+				VPMath::XMConvertToRadians(socketcomp.OffsetRotation.x),
+				VPMath::XMConvertToRadians(socketcomp.OffsetRotation.z));
+			socketcomp.OffsetQuaternion = rotationQuat;
+		}
+
+
 		///로컬 매트릭스 만들기
 		VPMath::Matrix offsetMatrix = VPMath::Matrix::CreateTranslation(socketcomp.Offset);
-
 		// 최종 매트릭스 계산 (회전을 먼저 적용한 후 오프셋 매트릭스를 곱함)
-		VPMath::Matrix finalMatrix = VPMath::Matrix::CreateFromQuaternion(rotationQuat) * attachmentMatrix;
-		finalMatrix = offsetMatrix * finalMatrix;
+		VPMath::Matrix finalMatrix = VPMath::Matrix::CreateFromQuaternion(rotationQuat)* offsetMatrix * socketcomp.AttachmentMatrix;
+		//finalMatrix = offsetMatrix * finalMatrix;
 
 		VPMath::Vector3 tempscale{};
 		VPMath::Quaternion tempQuater{};

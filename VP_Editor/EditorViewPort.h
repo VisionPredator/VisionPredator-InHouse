@@ -47,6 +47,7 @@ private:
 	std::weak_ptr<EditorCamera> m_Camera;
 	Graphics::Interface* m_Graphics;
 	ImGuizmo::OPERATION m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
+	bool m_IsSocket{};
 	ImGuizmo::MODE Mode = ImGuizmo::MODE::LOCAL;
 	VPMath::Vector2 m_Rectsize;
 	ImVec2 m_DrawPos{};

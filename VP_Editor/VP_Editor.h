@@ -19,8 +19,11 @@ public:
 	void EditorRenderUpdate();
 	void ImguiRender();
 	bool m_IsEditorMode = true;
+	bool m_IsPauseMode = false;
 	void OnPlayButton(std::any);
 	void OnStopButton(std::any);
+	void OnPauseButton(std::any);
+	void OnResumeButton(std::any);
 	
 };
 

@@ -29,6 +29,8 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
 	m_ImGuis.push_back(std::make_shared<EditorViewPort>(m_SceneManager, m_editorcamera, m_Graphics));
 	m_ImGuis.push_back(m_editorcamera);
 	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&VP_Editor::OnPlayButton));
+	EventManager::GetInstance().Subscribe("OnPauseButton", CreateSubscriber(&VP_Editor::OnPauseButton));
+	EventManager::GetInstance().Subscribe("OnResumeButton", CreateSubscriber(&VP_Editor::OnResumeButton));
 	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&VP_Editor::OnStopButton));
 }
 
@@ -62,6 +64,19 @@ void VP_Editor::Update()
         m_SoundEngine->SetListenerPosition(m_editorcamera->GetPose(), m_editorcamera->GetUp(), m_editorcamera->GetForward());
         m_SoundEngine->Update();
 	}
+    else if (m_IsPauseMode)
+    {
+
+        m_TimeManager->Update();
+        m_DeltaTime = m_TimeManager->GetDeltaTime();
+        EventManager::GetInstance().Update(m_DeltaTime);
+        m_TransformSystem->Update(m_DeltaTime);
+        InputManager::GetInstance().Update();
+        m_editorcamera->Update(m_DeltaTime);
+        m_SoundEngine->SetListenerPosition(m_editorcamera->GetPose(), m_editorcamera->GetUp(), m_editorcamera->GetForward());
+        m_SoundEngine->Update();
+
+    }
 	else
 	{
 		VPEngine::Update();
@@ -71,7 +86,7 @@ void VP_Editor::Update()
 
 void VP_Editor::Render()
 {
-	if (m_IsEditorMode)
+	if (m_IsEditorMode||m_IsPauseMode)
 	{
 		m_Graphics->SetCamera(m_editorcamera->GetView(), m_editorcamera->GetProj(), m_editorcamera->GetOrthoProj());
 		EditorRenderUpdate();
@@ -213,5 +228,15 @@ void VP_Editor::OnStopButton(std::any)
 	m_IsEditorMode = true;
     EventManager::GetInstance().ImmediateEvent("OnEndScene");
 
+}
+
+void VP_Editor::OnPauseButton(std::any)
+{
+    m_IsPauseMode = true;
+}
+
+void VP_Editor::OnResumeButton(std::any)
+{
+    m_IsPauseMode = false;
 }
 
