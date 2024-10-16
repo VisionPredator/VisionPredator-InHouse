@@ -43,7 +43,7 @@ void EditorViewPort::EditingImGui()
 {
 	RenderImGuiViewport();
 	ImGuizmoRender();
-
+	ImGuizmoSettingrender();
 	// RenderMode 버튼 설정
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
@@ -181,7 +181,7 @@ void EditorViewPort::ImGuizmoRender()
 	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::LCONTROL))
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
-
+	
 	if (m_IsSocket&& m_ImGuizmoMode == ImGuizmo::ROTATE)
 	{
 		if (!transformComp->HasComponent<SocketComponent>())
@@ -198,7 +198,7 @@ void EditorViewPort::ImGuizmoRender()
 			&view.m[0][0],
 			&proj.m[0][0],
 			m_ImGuizmoMode,
-			ImGuizmo::LOCAL,
+			m_GuizmoMode,
 			&finalMatrix.m[0][0],  // 회전 매트릭스만 전달
 			nullptr,
 			snapValue
@@ -240,7 +240,7 @@ void EditorViewPort::ImGuizmoRender()
 			&view.m[0][0],
 			&proj.m[0][0],
 			m_ImGuizmoMode,
-			ImGuizmo::LOCAL,
+			m_GuizmoMode,
 			&finalMatrix.m[0][0],  // 회전 매트릭스만 전달
 			nullptr,
 			snapValue
@@ -279,7 +279,7 @@ void EditorViewPort::ImGuizmoRender()
 		&view.m[0][0],
 		&proj.m[0][0],
 		m_ImGuizmoMode,
-		ImGuizmo::LOCAL,
+		m_GuizmoMode,
 		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
 	if (ImGuizmo::IsUsing())
@@ -316,6 +316,40 @@ void EditorViewPort::ImGuizmoRender()
 			break;
 		}
 	}
+}
+
+void EditorViewPort::ImGuizmoSettingrender()
+{
+	ImGuizmo::SetDrawlist();
+
+	// 저장된 크기와 위치를 기반으로 Rect 설정
+	ImGuizmo::SetRect(m_DrawPos.x+50, m_DrawPos.y, m_DrawSize.x+50, m_DrawSize.y);
+
+	VPMath::Matrix view = m_Camera.lock()->GetView();
+	VPMath::Matrix proj = m_Camera.lock()->GetProj();
+
+	// ImGuizmo 모드 선택
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
+	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+	ImGui::BeginChild("imguizosetting", ImVec2{ 120, 0 }, child_flags, window_flags);
+
+	if (ImGui::RadioButton("Local", m_GuizmoMode == ImGuizmo::MODE::LOCAL&& m_IsLocalMode) )
+	{
+				m_GuizmoMode = ImGuizmo::MODE::LOCAL;
+		m_IsLocalMode = true;
+	}
+
+	if (ImGui::RadioButton("World", m_GuizmoMode == ImGuizmo::MODE::WORLD&&!m_IsLocalMode) )
+	{
+		m_GuizmoMode = ImGuizmo::MODE::WORLD;
+		m_IsLocalMode = false;
+	}
+
+	ImGui::EndChild();
+	ImGui::PopStyleVar();
+
+
 }
 
 void EditorViewPort::OnResize(std::any hwnd)
