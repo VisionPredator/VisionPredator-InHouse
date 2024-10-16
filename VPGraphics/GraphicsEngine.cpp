@@ -638,9 +638,8 @@ void GraphicsEngine::Culling()
 					}
 				}
 
-				if (visible)
+				if (visible && object->isVisible)
 				{
-					object->isVisible = visible;
 					m_AfterCulling.push_back(object);
 				}
 				//break;
