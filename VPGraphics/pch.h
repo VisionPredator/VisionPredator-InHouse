@@ -9,18 +9,26 @@
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 #include <windows.h>
 
-
+// STL
 #include <memory>
 #include <string>
 #include <vector>
 #include <array>
 #include <map>
 #include <unordered_map>
+
 #include <filesystem>
 #include <iostream>
 #include <algorithm>
-#include "VisPredMath.h"
+
+// DirectX
 #include <d3d11.h>
+#include <d3dcompiler.h>
+
+#include <wrl/client.h>	// Smart Pointer
+
+#include "VisPredMath.h"
+
 
 #ifdef _DEBUG
 #pragma comment(lib, "assimp-vc143-mtd.lib")

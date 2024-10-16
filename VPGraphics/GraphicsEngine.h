@@ -145,5 +145,4 @@ private:
 	void BeginImGui();
 	void EndImGui();
 	void DestroyImGui();
-
 };

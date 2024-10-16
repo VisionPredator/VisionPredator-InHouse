@@ -181,3 +181,35 @@ void D3DUtill::CreateTexture2DArraySRV(ID3D11Device* device, ID3D11DeviceContext
 	}
 
 }
+
+void D3DUtill::CreateBoundingFrustum(DirectX::XMVECTOR startPos, DirectX::XMVECTOR frontVector, DirectX::XMVECTOR upVector,
+	float horizontalFOV, float verticalFOV, float nearZ, float farZ, DirectX::BoundingFrustum& frustumOutput, bool isFlip)
+{
+	DirectX::XMVECTOR playerLookAt = DirectX::XMVectorAdd(startPos, frontVector);
+	DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(
+		startPos,
+		playerLookAt,
+		upVector
+	);
+
+	if (nearZ < 0.1f)
+		nearZ = 0.1f;
+
+	float aspectRatio = DirectX::XMConvertToRadians(horizontalFOV) / DirectX::XMConvertToRadians(verticalFOV);
+	DirectX::XMMATRIX projMatrix = DirectX::XMMatrixPerspectiveFovLH(
+		DirectX::XMConvertToRadians(horizontalFOV),
+		aspectRatio,
+		nearZ,
+		farZ
+	);
+
+	DirectX::XMMATRIX finalTransform = DirectX::XMMatrixInverse(nullptr, viewMatrix);
+	if (isFlip == true)
+	{
+		DirectX::XMMATRIX yRotationMatrix = DirectX::XMMatrixRotationY(DirectX::XM_PI);
+		finalTransform = yRotationMatrix * finalTransform;
+	}
+
+	DirectX::BoundingFrustum::CreateFromMatrix(frustumOutput, projMatrix);
+	frustumOutput.Transform(frustumOutput, finalTransform);
+}

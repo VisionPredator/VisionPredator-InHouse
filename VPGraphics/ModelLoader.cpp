@@ -1,4 +1,3 @@
-
 #include "pch.h"
 #include "ModelLoader.h"
 
@@ -22,7 +21,9 @@
 #include "pbrmaterial.h"
 
 #include <iostream>
-#include <filesystem>
+
+#include "Log.h"
+#include "Util.h"
 
 void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, const std::shared_ptr<Device>& device)
 {
@@ -512,10 +513,12 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 							break;
 					}
 
+					std::string filePathStr = Util::ToMultiByte(wfilename + texturename);
+					Log::GetCoreLogger()->warn("Failed to load file: \"{}\" path is not valid", filePathStr);
 
-					wfilename = L"Error loading files : " + wfilename + texturename + L" path is not valid";
-					LPCWSTR name = wfilename.c_str();
-					MessageBox(0, name, 0, 0);
+					//wfilename = L"Error loading files : " + wfilename + texturename + L" path is not valid";
+					//LPCWSTR name = wfilename.c_str();
+					//MessageBox(0, name, 0, 0);
 					break;
 				}
 			}

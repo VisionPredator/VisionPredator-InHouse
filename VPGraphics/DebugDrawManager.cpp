@@ -56,16 +56,6 @@ void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMa
     while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
 
     m_Batch->End();
-#else
-	while (!m_SphereInfos.empty())	{ m_SphereInfos.pop(); }
-	while (!m_BoxInfos.empty())		{ m_BoxInfos.pop(); }
-	while (!m_OBBInfos.empty())		{ m_OBBInfos.pop(); }
-	while (!m_FrustumInfos.empty()) { m_FrustumInfos.pop(); }
-	while (!m_GridInfos.empty())	{ m_GridInfos.pop(); }
-	while (!m_RayInfos.empty())		{ m_RayInfos.pop(); }
-	while (!m_TriangleInfos.empty()){ m_TriangleInfos.pop(); }
-	while (!m_QuadInfos.empty())	{ m_QuadInfos.pop(); }
-	while (!m_RingInfos.empty())	{ m_RingInfos.pop(); }
 #endif
 
     device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
@@ -352,5 +342,18 @@ void DebugDrawManager::DrawCube(const VPMath::Matrix& worldTransform, const VPMa
 	}
 
 	m_Batch->DrawIndexed(D3D_PRIMITIVE_TOPOLOGY_LINELIST, s_indices, static_cast<UINT>(std::size(s_indices)), verts, 8);
+}
+
+void DebugDrawManager::DrawLine(const VPMath::Vector3& start, const VPMath::Vector3& end, const VPMath::Vector4& color)
+{
+	VertexPositionColor verts[2];
+
+	XMStoreFloat3(&verts[0].position, start);
+	XMStoreFloat3(&verts[1].position, end);
+
+	verts[0].color = color;
+	verts[1].color = color;
+
+	m_Batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, verts, 2);
 }
 
