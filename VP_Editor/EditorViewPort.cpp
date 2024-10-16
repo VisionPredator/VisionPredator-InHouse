@@ -23,7 +23,7 @@ void EditorViewPort::ImGuiRender()
 	// ImGui 창 설정
 	ImGuiWindowFlags wflags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
 	ImGui::Begin("ViewPort", nullptr, wflags);
-	if (Toolbar::m_IsPlaying&&!Toolbar::m_IsPaused)
+	if (Toolbar::m_IsPlaying && !Toolbar::m_IsPaused)
 	{
 		PlayingImGui();
 	}
@@ -43,11 +43,11 @@ void EditorViewPort::EditingImGui()
 {
 	RenderImGuiViewport();
 	ImGuizmoRender();
-
+	ImGuizmoSettingrender();
 	// RenderMode 버튼 설정
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y+20);
+	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y + 20);
 	ImGui::SetNextWindowPos(childWindowPos);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
@@ -182,7 +182,7 @@ void EditorViewPort::ImGuizmoRender()
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
 
-	if (m_IsSocket&& m_ImGuizmoMode == ImGuizmo::ROTATE)
+	if (m_IsSocket && m_ImGuizmoMode == ImGuizmo::ROTATE)
 	{
 		if (!transformComp->HasComponent<SocketComponent>())
 			return;
@@ -191,14 +191,14 @@ void EditorViewPort::ImGuizmoRender()
 
 		// 회전 매트릭스와 오프셋(위치)을 함께 곱한 매트릭스 생성
 		VPMath::Matrix socketMatrix = VPMath::Matrix::CreateFromQuaternion(socketcomp.OffsetQuaternion) * VPMath::Matrix::CreateTranslation(socketcomp.Offset);
-		VPMath::Matrix finalMatrix = socketMatrix* socketcomp.AttachmentMatrix;
+		VPMath::Matrix finalMatrix = socketMatrix * socketcomp.AttachmentMatrix;
 
 		// ImGuizmo에 회전 매트릭스만 전달
 		ImGuizmo::Manipulate(
 			&view.m[0][0],
 			&proj.m[0][0],
 			m_ImGuizmoMode,
-			ImGuizmo::LOCAL,
+			m_GuizmoMode,
 			&finalMatrix.m[0][0],  // 회전 매트릭스만 전달
 			nullptr,
 			snapValue
@@ -240,7 +240,7 @@ void EditorViewPort::ImGuizmoRender()
 			&view.m[0][0],
 			&proj.m[0][0],
 			m_ImGuizmoMode,
-			ImGuizmo::LOCAL,
+			m_GuizmoMode,
 			&finalMatrix.m[0][0],  // 회전 매트릭스만 전달
 			nullptr,
 			snapValue
@@ -279,14 +279,14 @@ void EditorViewPort::ImGuizmoRender()
 		&view.m[0][0],
 		&proj.m[0][0],
 		m_ImGuizmoMode,
-		ImGuizmo::LOCAL,
+		m_GuizmoMode,
 		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
 	if (ImGuizmo::IsUsing())
 	{
 		TransformComponent* selectedTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 
-		if ( m_SceneManager.lock()->HasComponent<Parent>(HierarchySystem::m_SelectedEntityID) )
+		if (m_SceneManager.lock()->HasComponent<Parent>(HierarchySystem::m_SelectedEntityID))
 		{
 			Parent* parent = m_SceneManager.lock()->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID);
 			TransformComponent* parentTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(parent->ParentID);
@@ -316,6 +316,40 @@ void EditorViewPort::ImGuizmoRender()
 			break;
 		}
 	}
+}
+
+void EditorViewPort::ImGuizmoSettingrender()
+{
+	ImGuizmo::SetDrawlist();
+
+	// 저장된 크기와 위치를 기반으로 Rect 설정
+	ImGuizmo::SetRect(m_DrawPos.x + 50, m_DrawPos.y, m_DrawSize.x + 50, m_DrawSize.y);
+
+	VPMath::Matrix view = m_Camera.lock()->GetView();
+	VPMath::Matrix proj = m_Camera.lock()->GetProj();
+
+	// ImGuizmo 모드 선택
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
+	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+	ImGui::BeginChild("imguizosetting", ImVec2{ 120, 0 }, child_flags, window_flags);
+
+	if (ImGui::RadioButton("Local", m_GuizmoMode == ImGuizmo::MODE::LOCAL && m_IsLocalMode))
+	{
+		m_GuizmoMode = ImGuizmo::MODE::LOCAL;
+		m_IsLocalMode = true;
+	}
+
+	if (ImGui::RadioButton("World", m_GuizmoMode == ImGuizmo::MODE::WORLD && !m_IsLocalMode))
+	{
+		m_GuizmoMode = ImGuizmo::MODE::WORLD;
+		m_IsLocalMode = false;
+	}
+
+	ImGui::EndChild();
+	ImGui::PopStyleVar();
+
+
 }
 
 void EditorViewPort::OnResize(std::any hwnd)
