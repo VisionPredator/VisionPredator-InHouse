@@ -31,6 +31,7 @@ public:
 	void EditingImGui();
 	void EditViewPortImGui(std::wstring mode,ImVec2 pos, ImVec2 size);
 	void ImGuizmoRender();
+	void ImGuizmoSettingrender();
 	void RenderImGuiViewport();
 	void OnResize(std::any hwnd);
 	std::wstring GetRenderModeString(RENDERMODE renderMode);
@@ -47,6 +48,9 @@ private:
 	std::weak_ptr<EditorCamera> m_Camera;
 	Graphics::Interface* m_Graphics;
 	ImGuizmo::OPERATION m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
+	ImGuizmo::MODE m_GuizmoMode= ImGuizmo::WORLD;
+	bool m_IsLocalMode{};
+	bool m_IsSocket{};
 	ImGuizmo::MODE Mode = ImGuizmo::MODE::LOCAL;
 	VPMath::Vector2 m_Rectsize;
 	ImVec2 m_DrawPos{};

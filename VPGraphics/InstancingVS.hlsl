@@ -66,7 +66,7 @@ struct VS_INPUT
     float4x4 worldinverse : WORLDINVERSE;
     float2 offset : LIGHTMAPOFFSET;
     float2 tiling : LIGHTMAPTILING;
-    float2 index : LIGHTMAPINDEX;
+    float2 index : LIGHTMAPINDEX; //index , uselightmap
 };
 
 struct VS_OUTPUT
@@ -76,7 +76,7 @@ struct VS_OUTPUT
     float4 normal : NORMAL;
     float4 tangent : TEXCOORD0;
     float4 bitangent : TEXCOORD1;
-    float4 tex : TEXCOORD2;
+    float4 tex : TEXCOORD2; //uv,lightmapindex,uselightmapflag
     float2 lightuv : TEXCOORD3;
     float4 posWorld : TEXCOORD4;
 };
@@ -117,13 +117,9 @@ VS_OUTPUT main(VS_INPUT input)
     output.pos = mul(output.posWorld, gWorldViewProj);
     
     output.color = input.color;
-    output.normal = input.normal;
-    output.tangent = input.tangent;
-    output.bitangent = input.bitangent;
     output.tex.xy = input.tex.xy;
-    output.tex.z = input.index;
+    output.tex.zw = input.index;
     
-    output.lightuv = input.lightuv;
        
     float x = (input.lightuv.x * input.tiling.x) + input.offset.x;
     float y = (1 - input.lightuv.y) * input.tiling.y + input.offset.y;
@@ -131,26 +127,24 @@ VS_OUTPUT main(VS_INPUT input)
     
     //Unity light map은 좌하단이 0,0 dx11 좌상단이 0,0
     //y 반전 필요
-    float2 uv = float2(x , 1 - y);
+    float2 uv = float2(x, 1 - y);
     
-    output.lightuv = uv * input.index.y;
+    output.lightuv = min(uv, 1);
   
     
     
 
-    if (useNEOL.x > 0)
-    {
-        float3x3 meshWorld = ExtractRotationMatrix(input.worldinverse); //메쉬의 월드 공간
+    float3x3 meshWorld = ExtractRotationMatrix(input.worldinverse); //메쉬의 월드 공간
         
         //방향 vector
-        float3 vTangent = normalize(mul((output.tangent.xyz), meshWorld));
-        float3 vBitangent = normalize(mul((output.bitangent.xyz), meshWorld));
-        float3 vNormal = normalize(mul((output.normal.xyz), meshWorld));
+    float3 vTangent =   useNEOL.x * normalize(mul((input.tangent.xyz), meshWorld))   + (1 - useNEOL.x) * input.tangent.xyz;
+    float3 vBitangent = useNEOL.x * normalize(mul((input.bitangent.xyz), meshWorld)) + (1 - useNEOL.x) * input.bitangent.xyz;
+    float3 vNormal =    useNEOL.x * normalize(mul((input.normal.xyz), meshWorld))    + (1 - useNEOL.x) * input.normal.xyz;
                         
         //색상 표현을 위해 점으로 저장 w == 1
-        output.normal = float4(vNormal.xyz, 1);
-        output.tangent = float4(vTangent.xyz, 0);
-        output.bitangent = float4(vBitangent.xyz, 0);
+    output.normal = float4(vNormal.xyz, 1);
+    output.tangent = float4(vTangent.xyz, 0);
+    output.bitangent = float4(vBitangent.xyz, 0);
         
         //float3 NormalTangentSpace = gNormal.SampleLevel(samLinear, input.tex,4).rgb;
         //NormalTangentSpace = NormalTangentSpace * 2.0f - 1.0f; //-1~1
@@ -159,9 +153,7 @@ VS_OUTPUT main(VS_INPUT input)
         //float3x3 WorldTransform = float3x3(vTangent.xyz, vBitangent.xyz, vNormal.xyz); //면의 공간으로 옮기기위한 행렬
         //float3 worldNormal = normalize(mul(NormalTangentSpace, WorldTransform));
         //output.normal = float4(worldNormal, 1);
-        
-    }
-    
+
     
     return output;
 }
