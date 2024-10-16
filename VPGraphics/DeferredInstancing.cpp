@@ -102,6 +102,125 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 void DeferredInstancing::Render()
 {
 
+	std::vector<RenderData> sortingRender;
+
+	sort(m_RenderList.begin(), m_RenderList.end(),
+		[](const std::shared_ptr<RenderData> a, const std::shared_ptr<RenderData> b) {
+			return a->ModelID < b->ModelID; }
+	);
+
+	bool preSkinned = false;
+	int preModelID = -1;
+	int curModelID = -1;
+	int count = 0;
+	//instance buffer
+	for (auto& object : m_RenderList)
+	{
+		if (object->isOverDraw)
+		{
+			continue;
+		}
+
+		//유효한 모델을 가지고 있지 않음
+		if (object->ModelID < 0)
+		{
+			continue;
+		}
+
+		//첫번째 진행시 초기화
+		if (preModelID < 0 && curModelID < 0)
+		{
+			preModelID = object->ModelID;
+			curModelID = object->ModelID;
+
+		}
+		else
+		{
+			curModelID = object->ModelID;
+		}
+
+
+		if (object->isSkinned)
+		{
+			InstanceSkinnedData temp;
+			temp.world = object->world.Transpose();
+			temp.worldInverse = object->world.Invert();
+			std::wstring id = std::to_wstring(object->EntityID);
+			temp.Bone = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct;
+			m_InstanceSkinnedDatas.push_back(temp);
+
+		}
+		else
+		{
+			InstanceData temp;
+			temp.world = object->world.Transpose();
+			temp.worldInverse = object->world.Invert();
+			temp.lightmap_offset = object->offset;
+			temp.lightmap_tiling = object->tiling;
+			temp.lightmap_index.x = object->lightmapindex;
+			//라이트맵 사용하냐?
+			if (object->tiling.x <= 0 || object->tiling.y <= 0)
+			{
+				temp.lightmap_index.y = 0.f;
+			}
+			else
+			{
+				temp.lightmap_index.y = 1.f;
+			}
+
+
+			m_InstanceDatas.push_back(temp);
+		}
+
+		if (preModelID == curModelID)
+		{
+			count++;
+		}
+		else
+		{
+			if (preSkinned)
+			{
+				m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
+			}
+			else
+			{
+				m_instancecount.push(std::pair<int, int>(preModelID, count));
+			}
+			count = 1;
+		}
+
+		preModelID = curModelID;
+		preSkinned = object->isSkinned;
+	}
+
+	//끝나고 마지막 메쉬 담기
+	if (preSkinned)
+	{
+		m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
+	}
+	else
+	{
+		m_instancecount.push(std::pair<int, int>(preModelID, count));
+	}
+
+
+	//instance buffer update
+	if (!m_InstanceDatas.empty())
+	{
+
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		m_Device.lock()->Context()->Map(m_InstanceBuffer.lock()->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+
+		InstanceData* dataView = reinterpret_cast<InstanceData*>(mappedData.pData);
+
+		for (int i = 0; i < m_InstanceDatas.size(); i++)
+		{
+			dataView[i] = m_InstanceDatas[i];
+		}
+		m_Device.lock()->Context()->Unmap(m_InstanceBuffer.lock()->Get(), 0);
+	}
+
+
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
@@ -345,126 +464,6 @@ void DeferredInstancing::DrawSkinned()
 void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue)
 {
 	m_RenderList = renderQueue;
-
-
-	std::vector<RenderData> sortingRender;
-
-	sort(m_RenderList.begin(), m_RenderList.end(),
-		[](const std::shared_ptr<RenderData> a, const std::shared_ptr<RenderData> b) {
-			return a->ModelID < b->ModelID; }
-	);
-
-	bool preSkinned = false;
-	int preModelID = -1;
-	int curModelID = -1;
-	int count = 0;
-	//instance buffer
-	for (auto& object : m_RenderList)
-	{
-		if (object->isOverDraw)
-		{
-			continue;
-		}
-
-		//유효한 모델을 가지고 있지 않음
-		if (object->ModelID < 0)
-		{
-			continue;
-		}
-
-		//첫번째 진행시 초기화
-		if (preModelID < 0 && curModelID < 0)
-		{
-			preModelID = object->ModelID;
-			curModelID = object->ModelID;
-
-		}
-		else
-		{
-			curModelID = object->ModelID;
-		}
-
-
-		if (object->isSkinned)
-		{
-			InstanceSkinnedData temp;
-			temp.world = object->world.Transpose();
-			temp.worldInverse = object->world.Invert();
-			std::wstring id = std::to_wstring(object->EntityID);
-			temp.Bone = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct;
-			m_InstanceSkinnedDatas.push_back(temp);
-
-		}
-		else
-		{
-			InstanceData temp;
-			temp.world = object->world.Transpose();
-			temp.worldInverse = object->world.Invert();
-			temp.lightmap_offset = object->offset;
-			temp.lightmap_tiling = object->tiling;
-			temp.lightmap_index.x = object->lightmapindex;
-			//라이트맵 사용하냐?
-			if (object->tiling.x <= 0 || object->tiling.y <= 0)
-			{
-				temp.lightmap_index.y = 0.f;
-			}
-			else
-			{
-				temp.lightmap_index.y = 1.f;
-			}
-
-
-			m_InstanceDatas.push_back(temp);
-		}
-
-		if (preModelID == curModelID)
-		{
-			count++;
-		}
-		else
-		{
-			if (preSkinned)
-			{
-				m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
-			}
-			else
-			{
-				m_instancecount.push(std::pair<int, int>(preModelID, count));
-			}
-			count = 1;
-		}
-
-		preModelID = curModelID;
-		preSkinned = object->isSkinned;
-	}
-
-	//끝나고 마지막 메쉬 담기
-	if (preSkinned)
-	{
-		m_instanceskinnedcount.push(std::pair<int, int>(preModelID, count));
-	}
-	else
-	{
-		m_instancecount.push(std::pair<int, int>(preModelID, count));
-	}
-
-
-	//instance buffer update
-	if (!m_InstanceDatas.empty())
-	{
-
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		m_Device.lock()->Context()->Map(m_InstanceBuffer.lock()->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
-
-		InstanceData* dataView = reinterpret_cast<InstanceData*>(mappedData.pData);
-
-		for (int i = 0; i < m_InstanceDatas.size(); i++)
-		{
-			dataView[i] = m_InstanceDatas[i];
-		}
-		m_Device.lock()->Context()->Unmap(m_InstanceBuffer.lock()->Get(), 0);
-	}
-
 
 	/*if (!m_InstanceSkinnedDatas.empty())
 	{
