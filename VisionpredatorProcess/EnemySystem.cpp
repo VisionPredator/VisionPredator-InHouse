@@ -173,7 +173,7 @@ void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	bool isInViewRange = false, isInNoiseRange = false, isInChaseRange = false;
 
 	isInViewRange = viewRange.Contains(playerPos);
-	isInNoiseRange = (m_PlayerComp->CurrentFSM == VisPred::Game::EFSM::RUN) || (m_PlayerComp->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;
+	isInNoiseRange = noiseRange.Contains(playerPos) && (m_PlayerComp->CurrentFSM == VisPred::Game::EFSM::RUN) || (m_PlayerComp->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;	// 최적화 필요.
 
 	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
 	//if (viewRange.Contains(playerPos) || noiseRange.Contains(playerPos))	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
