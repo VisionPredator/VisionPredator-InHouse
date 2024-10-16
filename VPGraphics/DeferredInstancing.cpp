@@ -118,8 +118,8 @@ void DeferredInstancing::Render()
 		RTVs.push_back(m_DepthRTV.lock()->Get());
 		RTVs.push_back(m_MetalicRoughnessRTV.lock()->Get());
 		RTVs.push_back(m_AORTV.lock()->Get());
-		RTVs.push_back(m_LightMapRTV.lock()->Get());
 		RTVs.push_back(m_EmissiveRTV.lock()->Get());
+		RTVs.push_back(m_LightMapRTV.lock()->Get());
 
 
 		Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView.lock()->Get());
@@ -285,12 +285,16 @@ void DeferredInstancing::SetRenderQueue(const std::vector<std::shared_ptr<Render
 			temp.lightmap_offset = object->offset;
 			temp.lightmap_tiling = object->tiling;
 			temp.lightmap_index.x = object->lightmapindex;
-			temp.lightmap_index.y = 0.f;
-
-			if (object->tiling.x != 0 || object->tiling.y != 0)
+			//라이트맵 사용하냐?
+			if (object->tiling.x <= 0 || object->tiling.y <= 0)
+			{
+				temp.lightmap_index.y = 0.f;
+			}
+			else
 			{
 				temp.lightmap_index.y = 1.f;
 			}
+
 
 			m_InstanceDatas.push_back(temp);
 		}

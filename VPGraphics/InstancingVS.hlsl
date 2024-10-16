@@ -66,7 +66,7 @@ struct VS_INPUT
     float4x4 worldinverse : WORLDINVERSE;
     float2 offset : LIGHTMAPOFFSET;
     float2 tiling : LIGHTMAPTILING;
-    float2 index : LIGHTMAPINDEX;
+    float2 index : LIGHTMAPINDEX;   //index , uselightmap
 };
 
 struct VS_OUTPUT
@@ -76,7 +76,7 @@ struct VS_OUTPUT
     float4 normal : NORMAL;
     float4 tangent : TEXCOORD0;
     float4 bitangent : TEXCOORD1;
-    float4 tex : TEXCOORD2;
+    float4 tex : TEXCOORD2; //uv,lightmapindex,uselightmapflag
     float2 lightuv : TEXCOORD3;
     float4 posWorld : TEXCOORD4;
 };
@@ -121,9 +121,8 @@ VS_OUTPUT main(VS_INPUT input)
     output.tangent = input.tangent;
     output.bitangent = input.bitangent;
     output.tex.xy = input.tex.xy;
-    output.tex.z = input.index;
+    output.tex.zw = input.index;
     
-    output.lightuv = input.lightuv;
        
     float x = (input.lightuv.x * input.tiling.x) + input.offset.x;
     float y = (1 - input.lightuv.y) * input.tiling.y + input.offset.y;
@@ -133,7 +132,7 @@ VS_OUTPUT main(VS_INPUT input)
     //y 반전 필요
     float2 uv = float2(x , 1 - y);
     
-    output.lightuv = uv * input.index.y;
+    output.lightuv = min(uv, 1);
   
     
     
