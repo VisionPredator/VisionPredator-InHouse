@@ -170,6 +170,7 @@
     <ClInclude Include="GunSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="PlayerUISystem.h" />
     <ClInclude Include="AreaAttackComponent.h" />
@@ -195,6 +196,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="PlayerSoundComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="PlayerUISystem.cpp" />
     <ClCompile Include="AreaAttackComponent.cpp" />
