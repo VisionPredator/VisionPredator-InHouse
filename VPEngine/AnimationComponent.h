@@ -4,7 +4,7 @@
 #include "..\VisionpredatorProcess\VisPredStructs.h"
 struct AnimationComponent : public Component
 {
-	VP_JSONBODY(AnimationComponent, FBX, animationList, curAni, speed, isLoop, transitionDuration)
+	VP_JSONBODY(AnimationComponent, FBX, AnimationSpeed_Transition, curAni, speed, isLoop, transitionDuration)
 		AnimationComponent();
 
 	std::wstring FBX = L"";
@@ -14,9 +14,6 @@ struct AnimationComponent : public Component
 
 	float duration = 0;	//애니메이션 재생시간
 	float preDuration = 0;
-
-	std::vector<std::wstring> animationList;
-	 
 	bool isPlay = true;
 	bool isLoop = true;
 	bool IsFinished = false;
@@ -24,6 +21,7 @@ struct AnimationComponent : public Component
 	float speed = 1.0f;
 	float transitionDuration = 0.2f;
 	VisPred::Game::PlayerAni PlayerCurAni{};
+	std::vector < std::tuple < std::wstring, float, float >> AnimationSpeed_Transition;
 };
 
 

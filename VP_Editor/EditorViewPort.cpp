@@ -23,7 +23,7 @@ void EditorViewPort::ImGuiRender()
 	// ImGui 창 설정
 	ImGuiWindowFlags wflags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
 	ImGui::Begin("ViewPort", nullptr, wflags);
-	if (Toolbar::m_IsPlaying)
+	if (Toolbar::m_IsPlaying && !Toolbar::m_IsPaused)
 	{
 		PlayingImGui();
 	}
@@ -43,11 +43,11 @@ void EditorViewPort::EditingImGui()
 {
 	RenderImGuiViewport();
 	ImGuizmoRender();
-
+	ImGuizmoSettingrender();
 	// RenderMode 버튼 설정
 	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_None | ImGuiWindowFlags_NoTitleBar;
 	ImGuiChildFlags child_flags2 = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
-	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y+20);
+	ImVec2 childWindowPos = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowSize().x - 125, ImGui::GetWindowPos().y + 20);
 	ImGui::SetNextWindowPos(childWindowPos);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
@@ -130,21 +130,45 @@ void EditorViewPort::ImGuizmoRender()
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 	ImGui::BeginChild("Setting", ImVec2{ 120, 0 }, child_flags, window_flags);
 
-	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE)||(INPUTKEY(KEYBOARDKEY::Q)&& !INPUTKEY(MOUSEKEY::RBUTTON ) && true))
+	if (ImGui::RadioButton("Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE && !m_IsSocket) ||
+		(INPUTKEY(KEYBOARDKEY::Q) && !INPUTKEY(MOUSEKEY::RBUTTON) && true))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
 		m_CurrentModeSnap = &m_TranslationSnapValue;
+		m_IsSocket = false;  // Socket 모드 해제
 	}
-	if (ImGui::RadioButton("Rotate", m_ImGuizmoMode == ImGuizmo::ROTATE) || (INPUTKEY(KEYBOARDKEY::W) && !INPUTKEY(MOUSEKEY::RBUTTON ) && true))
+
+	if (ImGui::RadioButton("Rotate", m_ImGuizmoMode == ImGuizmo::ROTATE && !m_IsSocket) ||
+		(INPUTKEY(KEYBOARDKEY::W) && !INPUTKEY(MOUSEKEY::RBUTTON) && true))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::ROTATE;
 		m_CurrentModeSnap = &m_RotationSnapValue;
+		m_IsSocket = false;  // 일반 회전 모드
 	}
-	if (ImGui::RadioButton("Scale", m_ImGuizmoMode == ImGuizmo::SCALE)|| (INPUTKEY(KEYBOARDKEY::E) && !INPUTKEY(MOUSEKEY::RBUTTON ) && true))
+
+	if (ImGui::RadioButton("Scale", m_ImGuizmoMode == ImGuizmo::SCALE) ||
+		(INPUTKEY(KEYBOARDKEY::E) && !INPUTKEY(MOUSEKEY::RBUTTON) && true))
 	{
 		m_ImGuizmoMode = ImGuizmo::OPERATION::SCALE;
 		m_CurrentModeSnap = &m_ScaleSnapValue;
+		m_IsSocket = false;  // Socket 모드 해제
 	}
+	if (ImGui::RadioButton("Socket_Translate", m_ImGuizmoMode == ImGuizmo::TRANSLATE && m_IsSocket) ||
+		(INPUTKEY(KEYBOARDKEY::R) && !INPUTKEY(MOUSEKEY::RBUTTON) && true))
+	{
+		m_ImGuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
+		m_CurrentModeSnap = &m_RotationSnapValue;
+		m_IsSocket = true;  // Socket 모드 활성화
+	}
+
+	if (ImGui::RadioButton("Socket_Rotate", m_ImGuizmoMode == ImGuizmo::ROTATE && m_IsSocket) ||
+		(INPUTKEY(KEYBOARDKEY::T) && !INPUTKEY(MOUSEKEY::RBUTTON) && true))
+	{
+		m_ImGuizmoMode = ImGuizmo::OPERATION::ROTATE;
+		m_CurrentModeSnap = &m_RotationSnapValue;
+		m_IsSocket = true;  // Socket 모드 활성화
+	}
+
 	ImGui::EndChild();
 	ImGui::PopStyleVar();
 
@@ -157,21 +181,112 @@ void EditorViewPort::ImGuizmoRender()
 	if (InputManager::GetInstance().GetKey(KEYBOARDKEY::LCONTROL))
 		snapValue = reinterpret_cast<float*>(m_CurrentModeSnap);
 
+
+	if (m_IsSocket && m_ImGuizmoMode == ImGuizmo::ROTATE)
+	{
+		if (!transformComp->HasComponent<SocketComponent>())
+			return;
+
+		auto& socketcomp = *transformComp->GetComponent<SocketComponent>();
+
+		// 회전 매트릭스와 오프셋(위치)을 함께 곱한 매트릭스 생성
+		VPMath::Matrix socketMatrix = VPMath::Matrix::CreateFromQuaternion(socketcomp.OffsetQuaternion) * VPMath::Matrix::CreateTranslation(socketcomp.Offset);
+		VPMath::Matrix finalMatrix = socketMatrix * socketcomp.AttachmentMatrix;
+
+		// ImGuizmo에 회전 매트릭스만 전달
+		ImGuizmo::Manipulate(
+			&view.m[0][0],
+			&proj.m[0][0],
+			m_ImGuizmoMode,
+			m_GuizmoMode,
+			&finalMatrix.m[0][0],  // 회전 매트릭스만 전달
+			nullptr,
+			snapValue
+		);
+
+		if (ImGuizmo::IsUsing())
+		{
+			// ImGuizmo가 조작 중일 때만 회전과 위치를 업데이트
+			VPMath::Vector3 scale, translation;
+			VPMath::Quaternion rotation;
+
+			// 현재 finalMatrix에서 회전 및 위치 추출
+			socketMatrix = finalMatrix * socketcomp.AttachmentMatrix.Invert();
+			socketMatrix.NewDecompose(scale, rotation, translation);
+
+			// 회전만 업데이트
+			socketcomp.UseQuaternion = true;
+			socketcomp.OffsetQuaternion = rotation;
+
+			// 업데이트된 소켓 정보 이벤트 전송
+			EventManager::GetInstance().ImmediateEvent("OnSocketUpdate", socketcomp.GetEntityID());
+		}
+
+		return;
+	}
+	else if (m_IsSocket && m_ImGuizmoMode == ImGuizmo::TRANSLATE)
+	{
+		if (!transformComp->HasComponent<SocketComponent>())
+			return;
+
+		auto& socketcomp = *transformComp->GetComponent<SocketComponent>();
+
+		// 회전 매트릭스와 오프셋(위치)을 함께 곱한 매트릭스 생성
+		VPMath::Matrix socketMatrix = VPMath::Matrix::CreateFromQuaternion(socketcomp.OffsetQuaternion) * VPMath::Matrix::CreateTranslation(socketcomp.Offset);
+		VPMath::Matrix finalMatrix = socketMatrix * socketcomp.AttachmentMatrix;
+
+		// ImGuizmo에 회전 매트릭스만 전달
+		ImGuizmo::Manipulate(
+			&view.m[0][0],
+			&proj.m[0][0],
+			m_ImGuizmoMode,
+			m_GuizmoMode,
+			&finalMatrix.m[0][0],  // 회전 매트릭스만 전달
+			nullptr,
+			snapValue
+		);
+
+		if (ImGuizmo::IsUsing())
+		{
+			// ImGuizmo가 조작 중일 때만 회전과 위치를 업데이트
+			VPMath::Vector3 scale, translation;
+			VPMath::Quaternion rotation;
+
+			// 현재 finalMatrix에서 회전 및 위치 추출
+			socketMatrix = finalMatrix * socketcomp.AttachmentMatrix.Invert();
+			socketMatrix.NewDecompose(scale, rotation, translation);
+
+			// 회전만 업데이트
+			//socketcomp.UseQuaternion = true;
+			//socketcomp.OffsetQuaternion = rotation;
+			socketcomp.Offset = translation;
+
+			// 업데이트된 소켓 정보 이벤트 전송
+			EventManager::GetInstance().ImmediateEvent("OnSocketUpdate", socketcomp.GetEntityID());
+		}
+
+		return;
+	}
+
+
+
+
+
+
 	VPMath::Matrix ImGuizmoMatrix = transformComp->WorldTransform;
 
 	ImGuizmo::Manipulate(
 		&view.m[0][0],
 		&proj.m[0][0],
 		m_ImGuizmoMode,
-		ImGuizmo::WORLD,
+		m_GuizmoMode,
 		&ImGuizmoMatrix.m[0][0], nullptr, snapValue
 	);
-
 	if (ImGuizmo::IsUsing())
 	{
 		TransformComponent* selectedTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(HierarchySystem::m_SelectedEntityID);
 
-		if ( m_SceneManager.lock()->HasComponent<Parent>(HierarchySystem::m_SelectedEntityID) )
+		if (m_SceneManager.lock()->HasComponent<Parent>(HierarchySystem::m_SelectedEntityID))
 		{
 			Parent* parent = m_SceneManager.lock()->GetComponent<Parent>(HierarchySystem::m_SelectedEntityID);
 			TransformComponent* parentTransform = m_SceneManager.lock()->GetComponent<TransformComponent>(parent->ParentID);
@@ -201,6 +316,40 @@ void EditorViewPort::ImGuizmoRender()
 			break;
 		}
 	}
+}
+
+void EditorViewPort::ImGuizmoSettingrender()
+{
+	ImGuizmo::SetDrawlist();
+
+	// 저장된 크기와 위치를 기반으로 Rect 설정
+	ImGuizmo::SetRect(m_DrawPos.x + 50, m_DrawPos.y, m_DrawSize.x + 50, m_DrawSize.y);
+
+	VPMath::Matrix view = m_Camera.lock()->GetView();
+	VPMath::Matrix proj = m_Camera.lock()->GetProj();
+
+	// ImGuizmo 모드 선택
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
+	ImGuiChildFlags child_flags = ImGuiWindowFlags_None | ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_FrameStyle;
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+	ImGui::BeginChild("imguizosetting", ImVec2{ 120, 0 }, child_flags, window_flags);
+
+	if (ImGui::RadioButton("Local", m_GuizmoMode == ImGuizmo::MODE::LOCAL && m_IsLocalMode))
+	{
+		m_GuizmoMode = ImGuizmo::MODE::LOCAL;
+		m_IsLocalMode = true;
+	}
+
+	if (ImGui::RadioButton("World", m_GuizmoMode == ImGuizmo::MODE::WORLD && !m_IsLocalMode))
+	{
+		m_GuizmoMode = ImGuizmo::MODE::WORLD;
+		m_IsLocalMode = false;
+	}
+
+	ImGui::EndChild();
+	ImGui::PopStyleVar();
+
+
 }
 
 void EditorViewPort::OnResize(std::any hwnd)

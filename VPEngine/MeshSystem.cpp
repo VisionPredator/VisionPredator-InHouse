@@ -46,7 +46,8 @@ void MeshSystem::BeginRenderUpdate(float deltaTime)
 		const TransformComponent& transform = *meshComp.GetComponent<TransformComponent>();
 		bool IsChanged = false;
 		auto renderdata = meshComp.Renderdata;
-
+		renderdata->isVisible = meshComp.IsVisible;
+		renderdata->isOverDraw = meshComp.IsOverDraw;
 		renderdata->FBX = meshComp.FBX;
 		renderdata->world = transform.WorldTransform;
 		renderdata->rotation = transform.World_Rotation;

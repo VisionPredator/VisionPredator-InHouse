@@ -76,7 +76,6 @@ namespace debug
 		VPMath::Color Color = { 1.f, 1.f, 1.f, 1.f };
 	};
 
-
 }
 
 namespace effect

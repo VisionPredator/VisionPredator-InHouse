@@ -475,6 +475,7 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 	m_DebugDrawManager->AddTask(info);
 }
 
+
 ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
 {
 	std::shared_ptr<ShaderResourceView> srv = m_ResourceManager->Get<ShaderResourceView>(name).lock();
@@ -589,7 +590,7 @@ void GraphicsEngine::Culling()
 						temp.OBB = obbInfo;
 
 						temp.Color = (VPMath::Color{ 1,0,0,1 });
-						DrawOBB(temp);
+						//DrawOBB(temp); //SUMIN Àá±ñ Off
 
 						DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
 						if (contains)
@@ -634,7 +635,7 @@ void GraphicsEngine::Culling()
 					temp.OBB = obbInfo;
 
 					temp.Color = (VPMath::Color{ 1,0,0,1 });
-					DrawOBB(temp);
+					//DrawOBB(temp);	// SUMIN Àá±ñ Off
 
 					DirectX::ContainmentType contains = m_Frustum.Contains(obbInfo);
 					if (contains)
@@ -645,7 +646,7 @@ void GraphicsEngine::Culling()
 					}
 				}
 
-				if (visible)
+				if (visible && object->isVisible)
 				{
 					m_AfterCulling.push_back(object);
 				}

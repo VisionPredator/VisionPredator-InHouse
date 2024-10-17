@@ -8,6 +8,7 @@ namespace VisPred
 			uint32_t EntityID;
 			int Index{};
 			float Speed{};
+			float TransitionTime{};
 			bool Loop;
 		};
 	}

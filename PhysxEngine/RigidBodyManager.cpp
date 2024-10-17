@@ -558,9 +558,8 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
 	if (!temp)
-	{
-		assert(false);
-	}
+		return { 0, 0, 0 };
+
 	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
@@ -571,11 +570,7 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 	{
 		return { 0, 0, 0 };
 	}
-	else
-	{
-		assert(false);
 		return {};
-	}
 }
 
 void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V)

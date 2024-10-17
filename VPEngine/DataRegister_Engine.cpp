@@ -33,6 +33,24 @@ void EngineRegister::Register_Value()
 {
 	META_ADD_VALUE(std::vector<std::string>);
 	META_ADD_VALUE(std::vector<std::wstring>);
+
+	entt::meta<std::pair<std::wstring, float>>().type("std::pair<std::wstring, float>"_hs)
+		.prop("first"_hs, &std::pair<std::wstring, float>::first)
+		.prop("second"_hs, &std::pair<std::wstring, float>::second);
+
+	// std::tuple<std::wstring, float, float> 등록
+	entt::meta<std::tuple<std::wstring, float, float>>()
+		.type("std::tuple<std::wstring, float, float>"_hs)
+		// std::get을 사용하는 대신, tuple의 각 요소에 직접 접근합니다.
+		.prop("first"_hs, [](const std::tuple<std::wstring, float, float>& tuple) { return std::get<0>(tuple); })    // 첫 번째 항목 (std::wstring)
+		.prop("second"_hs, [](const std::tuple<std::wstring, float, float>& tuple) { return std::get<1>(tuple); })   // 두 번째 항목 (float)
+		.prop("third"_hs, [](const std::tuple<std::wstring, float, float>& tuple) { return std::get<2>(tuple); });   // 세 번째 항목 (float)
+
+	// std::vector<std::tuple<std::wstring, float, float>> 등록
+	entt::meta<std::vector<std::tuple<std::wstring, float, float>>>()
+		.type("std::vector<std::tuple<std::wstring, float, float>>"_hs);
+
+
 }
 
 void EngineRegister::Register_VPMath()
@@ -98,22 +116,22 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(IDComponent, IDComponent::Name);
 	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation, TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
-	META_ADD_COMP(MeshComponent, MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::MaskColor);
-	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_COMP(MeshComponent, MeshComponent::IsVisible, MeshComponent::IsOverDraw,MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::MaskColor);
+	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::IsVisible, SkinningMeshComponent::IsOverDraw,SkinningMeshComponent::FBX);
 	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_COMP(Parent, Parent::ParentID);
 	META_ADD_COMP(Children, Children::ChildrenID);
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
-	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay, AnimationComponent::PlayerCurAni,AnimationComponent::IsBlending);
-	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::FBX);
+	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay, AnimationComponent::IsBlending,AnimationComponent::PlayerCurAni, AnimationComponent::AnimationSpeed_Transition);
+	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX);
 	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
-	META_ADD_COMP(GeometryComponent, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
+	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
 	META_ADD_COMP(ImageComponent, ImageComponent::RenderMode, ImageComponent::Billboard, ImageComponent::TexturePath, ImageComponent::PosXPercent, ImageComponent::PosYPercent, ImageComponent::Scale, ImageComponent::Layer, ImageComponent::Color, ImageComponent::LeftPercent, ImageComponent::RightPercent, ImageComponent::TopPercent, ImageComponent::BottomPercent);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
-	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConnected, SocketComponent::Offset, SocketComponent::offsetQuaternion);
+	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConnected, SocketComponent::Offset, SocketComponent::UseQuaternion, SocketComponent::OffsetQuaternion, SocketComponent::OffsetRotation);
 	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::FontPath, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Angle, TextComponent::Layer);
 	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume, SoundComponent::Duration, SoundComponent::Loop);
 }

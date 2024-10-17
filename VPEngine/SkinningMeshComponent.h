@@ -5,7 +5,10 @@ struct SkinningMeshComponent :
 	public Component
 {
 	SkinningMeshComponent() = default;
-	VP_JSONBODY(SkinningMeshComponent, FBX)
+	VP_JSONBODY(SkinningMeshComponent, IsVisible, IsOverDraw, FBX)
+		bool IsVisible = true;
+	bool IsOverDraw = false;
+
 		std::wstring FBX;
 	std::shared_ptr<RenderData> Renderdata;
 

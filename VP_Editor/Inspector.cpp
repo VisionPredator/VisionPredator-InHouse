@@ -362,6 +362,10 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_string(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::wstring>>())
 		TypeImGui_vector_wstring(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>()) 
+		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
+		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
+		TypeImGui_vector_tuple_wstring_float_float(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
 		TypeImGui_ColliderInfo(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
@@ -680,7 +684,133 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 
 	ImGui::PopID();
 }
+void Inspector::TypeImGui_vector_pair_wstring_float(entt::meta_data memberMetaData, Component* component) {
+	// component의 핸들에서 vector<std::pair<std::wstring, float>>를 가져옴
+	auto pairVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::pair<std::wstring, float>>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+
+	// Collapsing Header를 사용하여 UI를 토글할 수 있도록 함 (기본으로 열림 상태)
+	if (ImGui::CollapsingHeader((memberName + " Vector Pairs").c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// 새로운 요소 추가 옵션 (기본적으로 빈 wstring과 0.0 float를 가진 pair 추가)
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("  Add  ")) {
+			pairVector.push_back(std::make_pair(L"", 0.0f));
+		}
+
+		// 마지막 요소 제거 옵션
+		if (!pairVector.empty()) {
+			ImGui::SameLine(); // "Add" 버튼과 같은 줄에 표시
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+			if (ImGui::Button("Remove")) {
+				pairVector.pop_back();
+			}
+		}
+
+		// 벡터의 각 pair 요소를 인덱스와 함께 표시
+		for (size_t i = 0; i < pairVector.size(); ++i) {
+			std::pair<std::wstring, float>& tempPair = pairVector[i];
+
+			// std::wstring을 ImGui에서 사용하기 위해 std::string으로 변환
+			std::string tempSFirst(tempPair.first.begin(), tempPair.first.end());
+			float& tempSecond = tempPair.second;
+
+			// 인덱스 생성 (예: "01", "02" 등)
+			std::string index = (i < 9 ? "0" : "") + std::to_string(i + 1); // 10보다 작은 수에 0을 추가함
+
+			// 인덱스, 문자열 입력, float 입력을 같은 줄에 표시
+			ImGui::Text((index + ":").c_str());
+			ImGui::SameLine(); // 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize);
+			if (ImGui::InputText(("##String Element " + index).c_str(), &tempSFirst)) {
+				// std::string을 다시 std::wstring으로 변환
+				std::wstring newWString(tempSFirst.begin(), tempSFirst.end());
+				tempPair.first = newWString; // 변환된 wstring으로 값 설정
+			}
+
+			ImGui::SameLine(); // float 입력을 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+			ImGui::DragFloat(("##Float Element " + index).c_str(), &tempSecond, 0.1f, -100.0f, 100.0f); // float 값을 조정할 수 있는 슬라이더
+		}
+	}
+
+	// 벡터가 수정된 경우 새로운 값을 적용
+	memberMetaData.set(component->GetHandle(), std::move(pairVector));
+
+	ImGui::PopID();
+}
+void Inspector::TypeImGui_vector_tuple_wstring_float_float(entt::meta_data memberMetaData, Component* component) {
+	// component의 핸들에서 vector<std::tuple<std::wstring, float, float>>를 가져옴
+	auto tupleVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::tuple<std::wstring, float, float>>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+
+	// Collapsing Header를 사용하여 UI를 토글할 수 있도록 함 (기본으로 열림 상태)
+	if (ImGui::CollapsingHeader((memberName + " Vector Tuples").c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// 새로운 요소 추가 옵션 (기본적으로 빈 wstring과 0.0 float를 가진 tuple 추가)
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("  Add  ")) {
+			tupleVector.push_back(std::make_tuple(L"", 0.00000000f, 0.000000f));
+		}
+
+		// 마지막 요소 제거 옵션
+		if (!tupleVector.empty()) {
+			ImGui::SameLine(); // "Add" 버튼과 같은 줄에 표시
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+			if (ImGui::Button("Remove")) {
+				tupleVector.pop_back();
+			}
+		}
+
+		// 벡터의 각 tuple 요소를 인덱스와 함께 표시
+		for (size_t i = 0; i < tupleVector.size(); ++i) {
+			std::tuple<std::wstring, float, float>& tempTuple = tupleVector[i];
+
+			// std::wstring을 ImGui에서 사용하기 위해 std::string으로 변환
+			std::string tempSFirst(std::get<0>(tempTuple).begin(), std::get<0>(tempTuple).end());
+			float& tempSecond = std::get<1>(tempTuple);  // 첫 번째 float 값
+			float& tempThird = std::get<2>(tempTuple);   // 두 번째 float 값
+
+			// 인덱스 생성 (예: "00", "01" 등)
+			std::string index = (i < 10 ? "0" : "") + std::to_string(i); 
+
+			// 인덱스, 문자열 입력, 두 개의 float 입력을 같은 줄에 표시
+			ImGui::Text((index + ":").c_str());
+			ImGui::SameLine(); // 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize);
+			if (ImGui::InputText(("##String Element " + index).c_str(), &tempSFirst)) {
+				// std::string을 다시 std::wstring으로 변환
+				std::wstring newWString(tempSFirst.begin(), tempSFirst.end());
+				std::get<0>(tempTuple) = newWString; // 변환된 wstring으로 값 설정
+			}
+
+			ImGui::SameLine(); // 첫 번째 float 값을 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 3);
+			ImGui::DragFloat(("##Float Element 1 " + index).c_str(), &tempSecond, 0.1f, -100.0f, 100.0f); // 첫 번째 float 값을 조정할 수 있는 슬라이더
+
+			ImGui::SameLine(); // 두 번째 float 값을 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 3);
+			ImGui::DragFloat(("##Float Element 2 " + index).c_str(), &tempThird, 0.1f, -100.0f, 100.0f); // 두 번째 float 값을 조정할 수 있는 슬라이더
+		}
+	}
+
+	// 벡터가 수정된 경우 새로운 값을 적용
+	memberMetaData.set(component->GetHandle(), std::move(tupleVector));
+
+	ImGui::PopID();
+}
+
+
+
+
+
 using namespace VPPhysics;
+
+
 
 void Inspector::TypeImGui_ColliderInfo(entt::meta_data memberMetaData, Component* component)
 {

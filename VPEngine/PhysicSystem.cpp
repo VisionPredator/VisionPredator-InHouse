@@ -177,7 +177,7 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		frontInfo.Origin = rigidTransform->World_Location;
 		frontInfo.Direction = 10 * rigidTransform->FrontVector;
 		frontInfo.Normalize = false;
-		m_Graphics->DrawRay(frontInfo);
+		//m_Graphics->DrawRay(frontInfo);
 
 		switch (rigidBodyComponent.ColliderShape)
 		{
@@ -223,7 +223,6 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		obbInfo.zAxisAngle = ControllerTransform->World_Rotation.z;
 		m_Graphics->DrawOBB(obbInfo);
 
-
 		//FrontVector
 		debug::RayInfo frontinfo{};
 		frontinfo.Color = { 0,0,1,1 };
@@ -239,10 +238,7 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		rightinfo.Origin = ControllerTransform->World_Location;
 		rightinfo.Direction = 10 * ControllerTransform->RightVector;
 		rightinfo.Normalize = false;
-		m_Graphics->DrawRay(rightinfo);
-
-
-
+		//m_Graphics->DrawRay(rightinfo);
 	}
 }
 

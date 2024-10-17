@@ -191,9 +191,9 @@ void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 		return;
 	auto& posTransComp = *camPoseEntity->GetComponent<TransformComponent>();
 	///카메라와 앉은 위치의 pos 와의 거리가 0.01 보다 작을 때.
-	if ((playercomp.SitCameraPos - posTransComp.Local_Location).Length() < 0.01f)
+	if ((playercomp.DownCameraPos - posTransComp.Local_Location).Length() < 0.01f)
 	{
-		playercomp.SitCameraPos = posTransComp.Local_Location;
+		playercomp.DownCameraPos = posTransComp.Local_Location;
 		playercomp.CamTransProgress = 0;
 	}
 	else
@@ -204,10 +204,12 @@ void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 		{
 			playercomp.CamTransProgress = playercomp.CamTransDuration;
 		}
-		Temp = VPMath::Vector3::Lerp(playercomp.DefalutCameraPos, playercomp.SitCameraPos, (playercomp.CamTransProgress / playercomp.CamTransDuration));
+		Temp = VPMath::Vector3::Lerp(playercomp.DefalutCameraPos, playercomp.DownCameraPos, (playercomp.CamTransProgress / playercomp.CamTransDuration));
 		posTransComp.SetLocalLocation(Temp);
 	}
+
 }
+
 void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 {
 	auto camPoseEntity = playercomp.CameraPosEntity.lock(); /*GetSceneManager()->GetEntity(playercomp.CameraPosID);*/
@@ -228,19 +230,29 @@ void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 		{
 			playercomp.CamTransProgress = playercomp.CamTransDuration;
 		}
-		Temp = VPMath::Vector3::Lerp(playercomp.SitCameraPos, playercomp.DefalutCameraPos, (playercomp.CamTransProgress / playercomp.CamTransDuration));
+		Temp = VPMath::Vector3::Lerp(playercomp.DownCameraPos, playercomp.DefalutCameraPos, (playercomp.CamTransProgress / playercomp.CamTransDuration));
 		posTransComp.SetLocalLocation(Temp);
 	}
-
 }
 void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime)
 {
 	switch (playercomp.CurrentFSM)
 	{
 	case VisPred::Game::EFSM::CROUCH:
-	case VisPred::Game::EFSM::SLIDE:
+	{
+		playercomp.DownCameraPos = playercomp.SitCameraPos;
 		DownCamera(playercomp, deltatime);
+	}
+		break;
+	case VisPred::Game::EFSM::SLIDE:
+	{
+		playercomp.DownCameraPos = playercomp.SlideCameraPos;
+		DownCamera(playercomp, deltatime);
+
+		}
+		break;
 	break;
+
 	default:
 		UpCamera(playercomp, deltatime);
 	break;
@@ -601,89 +613,99 @@ void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
 }
 void PlayerSystem::FSM_Sound_Idle(PlayerComponent& playercomp)
 {
-	playercomp.Played_Walk1 = false;
-	playercomp.Played_Jump = false;
-	playercomp.Played_Slide = false;
-	playercomp.Played_Sit = false;
-	playercomp.Played_Run1 = false;
+	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
+
+	playerSoundcomp.Played_Walk1 = false;
+	playerSoundcomp.Played_Jump = false;
+	playerSoundcomp.Played_Slide = false;
+	playerSoundcomp.Played_Sit = false;
+	playerSoundcomp.Played_Run1 = false;
 }
 void PlayerSystem::FSM_Sound_Walk(PlayerComponent& playercomp)
 {
-	playercomp.Played_Jump = false;
-	playercomp.Played_Slide = false;
-	playercomp.Played_Sit = false;
-	playercomp.Played_Run1 = false;
+	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
 
-	if (!m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.WalkSoundKey1) && !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.WalkSoundKey2))
+	playerSoundcomp.Played_Jump = false;
+	playerSoundcomp.Played_Slide = false;
+	playerSoundcomp.Played_Sit = false;
+	playerSoundcomp.Played_Run1 = false;
+
+	if (!m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.WalkSoundKey1) && !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playerSoundcomp.WalkSoundKey2))
 	{
-		m_SoundEngine->Stop(playercomp.GetEntityID());
-		if (!playercomp.Played_Walk1)
-			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.WalkSoundKey1, playercomp.Volume_Walk, playercomp.GetComponent<TransformComponent>()->World_Location);
+		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
+		if (!playerSoundcomp.Played_Walk1)
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.WalkSoundKey1, playerSoundcomp.Volume_Walk, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 		else
-			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.WalkSoundKey2, playercomp.Volume_Walk, playercomp.GetComponent<TransformComponent>()->World_Location);
-		playercomp.Played_Walk1 = !playercomp.Played_Walk1;
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.WalkSoundKey2, playerSoundcomp.Volume_Walk, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+		playerSoundcomp.Played_Walk1 = !playerSoundcomp.Played_Walk1;
 	}
 }
 void PlayerSystem::FSM_Sound_Run(PlayerComponent& playercomp)
 {
-	playercomp.Played_Walk1 = false;
-	playercomp.Played_Jump = false;
-	playercomp.Played_Slide = false;
-	playercomp.Played_Sit = false;
+	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
+	playerSoundcomp.Played_Walk1 = false;
+	playerSoundcomp.Played_Jump = false;
+	playerSoundcomp.Played_Slide = false;
+	playerSoundcomp.Played_Sit = false;
 
-	if (!m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.RunSoundKey1)
-		&& !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playercomp.RunSoundKey2))
+	if (!m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey1)
+		&& !m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey2))
 	{
-		m_SoundEngine->Stop(playercomp.GetEntityID());
-		if (!playercomp.Played_Run1)
-			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.RunSoundKey1, playercomp.Volume_Run, playercomp.GetComponent<TransformComponent>()->World_Location);
+		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
+		if (!playerSoundcomp.Played_Run1)
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey1, playerSoundcomp.Volume_Run, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 		else
-			m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.RunSoundKey2, playercomp.Volume_Run, playercomp.GetComponent<TransformComponent>()->World_Location);
-		playercomp.Played_Run1 = !playercomp.Played_Run1;
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey2, playerSoundcomp.Volume_Run, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+		playerSoundcomp.Played_Run1 = !playerSoundcomp.Played_Run1;
 	}
 }
 void PlayerSystem::FSM_Sound_Crouch(PlayerComponent& playercomp)
 {
-	playercomp.Played_Walk1 = false;
-	playercomp.Played_Jump = false;
-	playercomp.Played_Slide = false;
-	playercomp.Played_Run1 = false;
-	if (playercomp.Played_Sit)
-		return;
-	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
-		m_SoundEngine->Stop(playercomp.GetEntityID());
+	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
 
-	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.SitSoundKey, playercomp.Volume_Sit, playercomp.GetComponent<TransformComponent>()->World_Location);
-	playercomp.Played_Sit = true;
+	playerSoundcomp.Played_Walk1 = false;
+	playerSoundcomp.Played_Jump = false;
+	playerSoundcomp.Played_Slide = false;
+	playerSoundcomp.Played_Run1 = false;
+	if (playerSoundcomp.Played_Sit)
+		return;
+	if (m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID()))
+		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
+
+	m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.SitSoundKey, playerSoundcomp.Volume_Sit, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+	playerSoundcomp.Played_Sit = true;
 }
 void PlayerSystem::FSM_Sound_Slide(PlayerComponent& playercomp)
 {
-	playercomp.Played_Walk1 = false;
-	playercomp.Played_Jump = false;
-	playercomp.Played_Sit = false;
-	playercomp.Played_Run1 = false;
-	if (playercomp.Played_Slide)
-		return;
-	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
-		m_SoundEngine->Stop(playercomp.GetEntityID());
+	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
 
-	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.SlideSoundkey, playercomp.Volume_Slide, playercomp.GetComponent<TransformComponent>()->World_Location);
-	playercomp.Played_Slide = true;
+	playerSoundcomp.Played_Walk1 = false;
+	playerSoundcomp.Played_Jump = false;
+	playerSoundcomp.Played_Sit = false;
+	playerSoundcomp.Played_Run1 = false;
+	if (playerSoundcomp.Played_Slide)
+		return;
+	if (m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID()))
+		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
+
+	m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.SlideSoundkey, playerSoundcomp.Volume_Slide, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+	playerSoundcomp.Played_Slide = true;
 
 }
 void PlayerSystem::FSM_Sound_Jump(PlayerComponent& playercomp)
 {
-	playercomp.Played_Walk1 = false;
-	playercomp.Played_Slide = false;
-	playercomp.Played_Sit = false;
-	playercomp.Played_Run1 = false;
-	if (playercomp.Played_Jump)
+	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
+	playerSoundcomp.Played_Walk1 = false;
+	playerSoundcomp.Played_Slide = false;
+	playerSoundcomp.Played_Sit = false;
+	playerSoundcomp.Played_Run1 = false;
+	if (playerSoundcomp.Played_Jump)
 		return;
-	if (m_SoundEngine->IsPlayingSound(playercomp.GetEntityID()))
-		m_SoundEngine->Stop(playercomp.GetEntityID());
+	if (m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID()))
+		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
 
-	m_SoundEngine->Play(playercomp.GetEntityID(), playercomp.JumpSoundkey, playercomp.Volume_Jump, playercomp.GetComponent<TransformComponent>()->World_Location);
-	playercomp.Played_Jump = true;
+	m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.JumpSoundkey, playerSoundcomp.Volume_Jump, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+	playerSoundcomp.Played_Jump = true;
 }
 void PlayerSystem::FSM_Sound_Attack(PlayerComponent& playercomp)
 {
@@ -800,9 +822,9 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 }
 #pragma endregion
 #pragma region Animation 
-void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, float Speed, bool loop, bool Immidiate)
+void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, float Speed,float transition , bool loop, bool Immidiate)
 {
-	VisPred::Engine::AniBlendData temp{ entityID ,static_cast<int>(playeraniIndex), Speed , loop };
+	VisPred::Engine::AniBlendData temp{ entityID ,static_cast<int>(playeraniIndex), Speed ,transition, loop };
 
 	std::any data = temp;
 	if (Immidiate)
@@ -816,6 +838,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 
 	ThrowFinished(playercomp);
 	ReturnToIdle(*playercomp.HandEntity.lock()->GetComponent<AnimationComponent>());
+
 }
 
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
@@ -826,32 +849,32 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	uint32_t entityID = anicomp.GetEntityID();
 	switch (anicomp.curAni)
 	{
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;	/*case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0,0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0,0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0,0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	/*case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Rifle:	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun:	break;*/
-	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;	/*case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	/*case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword:	break;*/
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;	/*case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;	/*case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_dash:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_jump:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_run:			break;*/
-	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
 	default:
 		break;
 	}
@@ -881,7 +904,8 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
 			socketcomp.ConnectedEntityID = 0;
 			playercomp.ThrowingGunEntityID = 0;
-			socketcomp.GetComponent<MeshComponent>()->Renderdata->isOverDraw = false;
+			socketcomp.GetComponent<MeshComponent>()->IsOverDraw = false;
+			playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
 
 		}
 		
@@ -1008,18 +1032,20 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	playercomp.GunEntityID = guncomp->GetEntityID();
 	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
-	guncomp->GetComponent<MeshComponent>()->Renderdata->isOverDraw = true;
+	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
+	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
+
 	switch (guncomp->Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 0, 0, false);
 		break;
 	case VisPred::Game::GunType::SHOTGUN:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 0, 0, false);
 		break;
 	case VisPred::Game::GunType::RIFLE:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 0, 0, false);
 		break;
 	default:
 		break;
@@ -1073,7 +1099,7 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 0, 0, false);
 
 	auto posEntity = playercomp.FirePosEntity.lock();
 	if (!posEntity)
@@ -1081,8 +1107,8 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1093,7 +1119,7 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 0, 0, false);
 
 	auto posEntity = playercomp.FirePosEntity.lock(); 
 	if (!posEntity)
@@ -1101,8 +1127,8 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1113,7 +1139,7 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 0, 0, false);
 	auto posEntity = playercomp.FirePosEntity.lock();
 
 	if (!posEntity)
@@ -1121,8 +1147,8 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 #pragma endregion
@@ -1135,7 +1161,7 @@ void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 0, 0, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1152,7 +1178,7 @@ void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 0, 0, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1170,7 +1196,7 @@ void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 0, 0, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1239,13 +1265,20 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
+		auto LongswordEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->LongswordName);
 		playercomp->HP= playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
 
-		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->Renderdata->isOverDraw = true;
+		if (LongswordEntity)
+			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
+		else
+			VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
+
+
+		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsOverDraw = true;
 		if (FirePosEntity)
 			playercomp->FirePosEntity = FirePosEntity;
 			//playercomp->FirePosEntityID = FirePosEntity->GetEntityID();
@@ -1258,6 +1291,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			auto cameraposcomp = CameraPosEntity->GetComponent<TransformComponent>();
 			playercomp->DefalutCameraPos = cameraposcomp->Local_Location;
 			playercomp->SitCameraPos = playercomp->DefalutCameraPos;
+			playercomp->SlideCameraPos= playercomp->DefalutCameraPos;
 		}
 		else
 			VP_ASSERT(false, "player의 Camerapos가 감지되지 않습니다.");
@@ -1270,18 +1304,33 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		if (playercomp->HasComponent<ControllerComponent>())
 		{
 			auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
-			// Current full height of the capsule (Total Height = 2 * (radius + height))
+
+			// 캡슐의 현재 전체 높이 (총 높이 = 2 * (반지름 + 높이))
 			float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
-			// New height after crouching (half of the full height)
+			// 앉을 때의 새로운 높이 (전체 높이의 절반)
 			float SitHeight = ((fullHeight / 2) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2;
-			// Ensure the new height doesn't become negative
-			if (SitHeight < 0.01f)  // You can set a reasonable minimum threshold
+			// 새로운 높이가 음수가 되지 않도록 보정
+			if (SitHeight < 0.01f)
 				SitHeight = 0.01f;
+
 			float heightReduction = controllercomp.CapsuleControllerinfo.height - SitHeight;
 			playercomp->SitHeight = SitHeight;
 			playercomp->SitHeightDiff = heightReduction / 2;
 			playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
+
+			// 슬라이딩할 때의 새로운 높이 (전체 높이의 0.25)
+			float SlideHeight = ((fullHeight *0.25) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2;
+
+			// 새로운 슬라이드 높이가 음수가 되지 않도록 보정
+			if (SlideHeight < 0.01f)
+				SlideHeight = 0.01f;
+
+			float slideHeightReduction = controllercomp.CapsuleControllerinfo.height - SlideHeight;
+			playercomp->SlideHeight = SlideHeight;
+			playercomp->SlideHeightDiff = slideHeightReduction / 2;
+			playercomp->SlideCameraPos.y -= playercomp->SlideHeightDiff;
 		}
+
 		else
 			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
 

@@ -30,6 +30,7 @@ public:
 	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void DefalutModeController(PlayerComponent& playercomp);
 	void DownCamera(PlayerComponent& playercomp,float deltatime);
+	//void DownCamera_Slide(PlayerComponent& playercomp,float deltatime);
 	void UpCamera(PlayerComponent& playercomp, float deltatime);
 	void CarmeraPosChange(PlayerComponent& playercomp,float deltatime);
 #pragma endregion 
@@ -72,7 +73,7 @@ public:
 #pragma endregion
 
 #pragma region Animation Change
-	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, bool loop, bool Immidiate = false);
+	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, float transition, bool loop, bool Immidiate = false);
 #pragma endregion
 
 #pragma region Active_Logic

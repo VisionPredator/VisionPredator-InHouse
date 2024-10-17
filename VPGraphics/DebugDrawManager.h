@@ -47,6 +47,7 @@ private:
 
 	void DrawRing(const debug::RingInfo& info);
 	void DrawCube(const VPMath::Matrix& worldTransform, const VPMath::Color& color);
+	void DrawLine(const VPMath::Vector3& start, const VPMath::Vector3& end, const VPMath::Vector4& color);
 
 private:
 	std::shared_ptr<BlendState> m_AlphaBlendBS;
