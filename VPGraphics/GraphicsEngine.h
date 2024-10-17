@@ -52,6 +52,9 @@ public:
 
 	void OnResize(HWND hwnd) override;
 
+	virtual void DebugRenderONOFF(bool isRender) override;
+
+
 	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 	void testCulling(VPMath::Matrix view, VPMath::Matrix proj) override;
 	/// Model
@@ -134,6 +137,8 @@ private:
 
 	// Pipeline
 	std::shared_ptr<PassManager> m_PassManager;
+
+	bool isDebug = false;
 	
 private:
 	void Culling();
@@ -145,5 +150,4 @@ private:
 	void BeginImGui();
 	void EndImGui();
 	void DestroyImGui();
-
 };

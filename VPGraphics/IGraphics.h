@@ -47,6 +47,7 @@ namespace Graphics
 		virtual void ImguiEndRender() abstract;
 		virtual void EndRender() abstract;
 		virtual void OnResize(HWND hwnd) abstract;
+		virtual void DebugRenderONOFF(bool isRender) abstract;
 
 
 		//엔티티가 사라지면 그래픽스 안에 있는 해당 오브젝트도 지워주는 함수

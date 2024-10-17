@@ -539,6 +539,11 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 }
 
+void GraphicsEngine::DebugRenderONOFF(bool isRender)
+{
+	m_PassManager->SetDebugDraw(isRender);
+}
+
 void GraphicsEngine::Culling()
 {
 	for (auto& object : m_RenderVector)
