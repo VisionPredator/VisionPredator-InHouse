@@ -11,7 +11,7 @@
 #include "EditorViewPort.h"
 #include "LightSystem.h"
 #include "ImGuiFileDialog.h"
-
+#include "EditorSystem.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
@@ -19,7 +19,7 @@ VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int heig
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();
 	///Imgui Setting
-
+	m_EditorSystem = m_SystemManager->AddSystem<EditorSystem>();
     m_editorcamera = std::make_shared<EditorCamera>(m_SceneManager);
 	m_HierarchySystem = std::make_shared<HierarchySystem>(m_SceneManager);
 	m_ImGuis.push_back(std::make_shared<Toolbar>(m_SceneManager, m_PhysicEngine));
@@ -46,12 +46,14 @@ VP_Editor::~VP_Editor()
 
 void VP_Editor::Update()
 {
+
 	if (m_IsEditorMode)
 	{
         m_TimeManager->Update();
         m_DeltaTime = m_TimeManager->GetDeltaTime();
         EventManager::GetInstance().Update(m_DeltaTime);
         m_TransformSystem->Update(m_DeltaTime);
+        m_EditorSystem->Update(m_DeltaTime);
         InputManager::GetInstance().Update();
 		m_editorcamera->Update(m_DeltaTime);
         if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())

@@ -5,6 +5,7 @@
 class EditorCamera;
 class IImGui;
 class HierarchySystem;
+class EditorSystem;
 class VP_Editor :public VPProcess
 {
 public:
@@ -13,6 +14,7 @@ public:
 	virtual void Update();
 	virtual void Render();
 	std::shared_ptr<HierarchySystem> m_HierarchySystem;
+	EditorSystem* m_EditorSystem{};
 	std::vector<std::shared_ptr<IImGui>> m_ImGuis;
 	std::shared_ptr<EditorCamera> m_editorcamera;
 	void SetUnityDarkThemeColors();

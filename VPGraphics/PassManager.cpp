@@ -149,6 +149,12 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 
 void PassManager::Render()
 {
+	if (m_isDebugDraw)
+	{
+		m_DebugPass->Render();
+	}
+
+
 	for (auto& pass : m_BasePasses)
 	{
 		pass->Render();
@@ -169,11 +175,7 @@ void PassManager::Render()
 		}
 	}
 
-	if (m_isDebugDraw)
-	{
-		m_DebugPass->Render();
-	}
-
+	
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
