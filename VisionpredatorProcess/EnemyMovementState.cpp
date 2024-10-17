@@ -13,17 +13,17 @@ EnemyRunState EnemyMovementState::s_Run;
 EnemyIdleMovementState EnemyMovementState::s_Idle;
 EnemyBackpedalState EnemyMovementState::s_Backpedal;
 
-void EnemyMovementState::Enter(uint32_t entityID)
+void EnemyMovementState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter MovementState");
 }
 
-void EnemyMovementState::Update(uint32_t entityID, float deltaTime)
+void EnemyMovementState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	Log::GetClientLogger()->info("Update MovementState");
 }
 
-void EnemyMovementState::Exit(uint32_t entityID)
+void EnemyMovementState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit MovementState");
 }

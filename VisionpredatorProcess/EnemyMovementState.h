@@ -1,17 +1,18 @@
 #pragma once
 #include "IState.h"
+#include "EnemyState.h"
 
 class EnemyJumpState;
 class EnemyIdleMovementState;
 class EnemyWalkState;
 class EnemyBackpedalState;
 class EnemyRunState;
-class EnemyMovementState : public IState
+class EnemyMovementState : public virtual EnemyState
 {
 public:
-	virtual void Enter(uint32_t entityID) override;
-	virtual void Update(uint32_t entityID, float deltaTime) override;
-	virtual void Exit(uint32_t entityID) override;
+	virtual void Enter(const std::shared_ptr<Component>& component) override;
+	virtual void Update(const std::shared_ptr<Component>& component, float deltaTime) override;
+	virtual void Exit(const std::shared_ptr<Component>& component) override;
 
 public:
 	static EnemyIdleMovementState s_Idle;

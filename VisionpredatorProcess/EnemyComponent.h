@@ -17,7 +17,7 @@ struct EnemyComponent : public Component
 
 	VP_JSONBODY(EnemyComponent, HP, CurrentFSM, CurrentAni, EnemyType, HorizontalFOV, VerticalFOV, NearZ, FarZ, IsModelFlipped)
 	float HP{}; 
-	VisPred::Game::EnemyState CurrentFSM= VisPred::Game::EnemyState::Idle;
+	VisPred::Game::EnemyStates CurrentFSM= VisPred::Game::EnemyStates::Idle;
 	VisPred::Game::EnemyAni CurrentAni = VisPred::Game::EnemyAni::IDLE;
 	VisPred::Game::GunType EnemyType= VisPred::Game::GunType::PISTOL;
 

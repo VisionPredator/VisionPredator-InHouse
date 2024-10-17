@@ -31,14 +31,21 @@ void EnemySystem::Initialize()
 	}
 }
 
+// 로우 포인터로 받은 객체를 스마트 포인터로 변환하였을 때 메모리 해제 동작을 하지 않도록 설정하기 위한 클래스
+struct null_deleter
+{
+	void operator()(void const *) const {}
+};
+
 void EnemySystem::Start(uint32_t gameObjectId)
 {
 	if (!GetSceneManager()->HasComponent<EnemyComponent>(gameObjectId))
 		return;
 
-	auto enemyComp = GetSceneManager()->GetComponent<EnemyComponent>(gameObjectId);
+	const auto enemyCompRawPtr = GetSceneManager()->GetComponent<EnemyComponent>(gameObjectId);
+	const std::shared_ptr<EnemyComponent> enemyComp(enemyCompRawPtr, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
 
-	enemyComp->MovementState->Enter(gameObjectId);
+	enemyComp->MovementState->Enter(enemyComp);
 }
 
 void EnemySystem::FixedUpdate(float deltaTime)
@@ -65,16 +72,16 @@ void EnemySystem::CalculateFSM(EnemyComponent& enemyComp)
 
 	switch (enemyComp.CurrentFSM)
 	{
-		case VisPred::Game::EnemyState::Idle:
+		case VisPred::Game::EnemyStates::Idle:
 			CalculateIdle(enemyComp);
 			break;
-		case VisPred::Game::EnemyState::Chase:
+		case VisPred::Game::EnemyStates::Chase:
 			CalculateChase(enemyComp);
 			break;
-		case VisPred::Game::EnemyState::Patrol:
+		case VisPred::Game::EnemyStates::Patrol:
 			CalculatePatrol(enemyComp);
 			break;
-		case VisPred::Game::EnemyState::Dead:
+		case VisPred::Game::EnemyStates::Dead:
 			CalculateDie(enemyComp);
 			break;
 		default:
@@ -154,7 +161,7 @@ void EnemySystem::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Gam
 void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 {
 	// 현재 Enemy가 Dead 상태라면 탐지를 수행하지 않음
-	if (enemyComp.CurrentFSM == VisPred::Game::EnemyState::Dead)
+	if (enemyComp.CurrentFSM == VisPred::Game::EnemyStates::Dead)
 		return;
 
 	const uint32_t enemyID = enemyComp.GetEntityID();
@@ -212,13 +219,13 @@ void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		const uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
 		if (detectedObjID == playerID)
 		{
-			ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyState::Chase);
+			ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Chase);
 			RotateToTarget(transform, targetDir, deltaTime);
 		}
 	}
 	else  // TODO: 뭔가.. 수정이 필요.
 	{
-		ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyState::Idle);
+		ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Idle);
 	}
 }
 

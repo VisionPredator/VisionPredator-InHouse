@@ -1,20 +1,27 @@
 #include "pch.h"
 #include "EnemyIdleMovementState.h"
+
+#include "EnemyComponent.h"
 #include "../VPGraphics/Log.h"
 
-void EnemyIdleMovementState::Enter(uint32_t entityID)
+void EnemyIdleMovementState::Enter(const std::shared_ptr<Component>& component)
 {
-	Log::GetClientLogger()->info("Enter IdleMovementState");
+	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 
+	Log::GetClientLogger()->info("Enter IdleMovementState");
+	Log::GetClientLogger()->info("Success to Get EnemyComponent! Entity ID: {}", enemyComp->GetEntityID());
+	Log::GetClientLogger()->info("Entity's HP: {}", enemyComp->HP);
+	enemyComp->HP = 30;
+	Log::GetClientLogger()->info("Edited Entity's HP: {}", enemyComp->HP);
 
 }
 
-void EnemyIdleMovementState::Update(uint32_t entityID, float deltaTime)
+void EnemyIdleMovementState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	Log::GetClientLogger()->info("Update IdleMovementState");
 }
 
-void EnemyIdleMovementState::Exit(uint32_t entityID)
+void EnemyIdleMovementState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit IdleMovementState");
 }

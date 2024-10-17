@@ -2,17 +2,17 @@
 #include "EnemyJumpState.h"
 #include "../VPGraphics/Log.h"
 
-void EnemyJumpState::Enter(uint32_t entityID)
+void EnemyJumpState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter JumpState");
 }
 
-void EnemyJumpState::Update(uint32_t entityID, float deltaTime)
+void EnemyJumpState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	Log::GetClientLogger()->info("Update JumpState");
 }
 
-void EnemyJumpState::Exit(uint32_t entityID)
+void EnemyJumpState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit JumpState");
 }

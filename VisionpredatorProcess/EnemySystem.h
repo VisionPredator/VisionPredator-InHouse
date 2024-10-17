@@ -67,7 +67,7 @@ private:
 	/// <summary>
 	/// 현재 상태 Enum 값 변경 for FSM
 	/// </summary>
-    static void ChangeCurrentStateEnumValue(EnemyComponent& enemyComp, VisPred::Game::EnemyState state) { enemyComp.CurrentFSM = state; }
+    static void ChangeCurrentStateEnumValue(EnemyComponent& enemyComp, VisPred::Game::EnemyStates state) { enemyComp.CurrentFSM = state; }
 
 	/// <summary>
 	/// 현재 애니메이션 변경

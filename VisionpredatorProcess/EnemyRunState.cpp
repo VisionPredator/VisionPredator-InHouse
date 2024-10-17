@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "EnemyRunState.h"
 
-void EnemyRunState::Enter(uint32_t entityID)
+void EnemyRunState::Enter(const std::shared_ptr<Component>& component)
 {
 }
 
-void EnemyRunState::Update(uint32_t entityID, float deltaTime)
+void EnemyRunState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 }
 
-void EnemyRunState::Exit(uint32_t entityID)
+void EnemyRunState::Exit(const std::shared_ptr<Component>& component)
 {
 }
