@@ -60,6 +60,13 @@ void EnemySystem::FixedUpdate(float deltaTime)
 
 		// 상태 변경 예시
 		enemycomp.MovementState = &EnemyMovementState::s_Jumping;
+
+		Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
+
+		enemycomp.MovementState = &EnemyMovementState::s_Idle;
+
+		Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
+
 	}
 }
 
