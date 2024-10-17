@@ -72,7 +72,7 @@ public:
 #pragma endregion
 
 #pragma region Animation Change
-	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, bool loop, bool Immidiate = false);
+	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, float transition, bool loop, bool Immidiate = false);
 #pragma endregion
 
 #pragma region Active_Logic

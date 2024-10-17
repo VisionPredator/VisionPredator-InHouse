@@ -247,18 +247,15 @@ void NavMeshSystem::PhysicsUpdate(float deltaTime)
 		if (Transform->HasComponent<ControllerComponent>())
 		{
 			auto controller = Transform->GetComponent<ControllerComponent>()->Contollerinfo.Pivot;
-			if (controller == VPPhysics::ControllerPivot::CENTER)
+			if (controller==VPPhysics::ControllerPivot::CENTER)
 			{
-				tempvector = DisApplyPivotAndOffset(*Transform->GetComponent<ControllerComponent>(), tempvector);
+			tempvector = DisApplyPivotAndOffset(*Transform->GetComponent<ControllerComponent>(), tempvector);
 			}
 		}
 
 		editAgent->npos[0] = tempvector.x;
 		editAgent->npos[1] = tempvector.y;
 		editAgent->npos[2] = tempvector.z;
-		//editAgent->npos[0] = Transform->World_Location.x;
-		//editAgent->npos[1] = Transform->World_Location.y;
-		//editAgent->npos[2] = Transform->World_Location.z;
 
 		if (agentcomp.IsChanged)
 		{
@@ -344,7 +341,7 @@ void NavMeshSystem::BeginRenderUpdate(float deltaTime)
 		rayInfo.Normalize = false;        // Ensure the direction is normalized
 
 		// Draw the ray using your graphics system
-		//m_Graphics->DrawRay(rayInfo);
+		m_Graphics->DrawRay(rayInfo);
 	}
 
 }

@@ -118,10 +118,9 @@ void SocketSystem::RenderUpdate(float deltaTime)
 	COMPLOOP(SocketComponent, socketcomp)
 	{
 
+		TargetConnectedID(socketcomp);
 		if (!socketcomp.IsConnected)
 			continue;
-
-		TargetConnectedID(socketcomp);
 
 		auto entity = GetSceneManager()->GetEntity(socketcomp.ConnectedEntityID);
 		if (!entity || !entity->HasComponent<SkinningMeshComponent>())
@@ -195,16 +194,16 @@ void SocketSystem::UpdateSocketRenderData(TransformComponent& transformcomp)
 		renderdata->MaskingColor = meshComp.MaskColor;
 	}
 
-	if (transformcomp.HasComponent<Children>())
-	{
-		auto childcomp = transformcomp.GetComponent<Children>();
-		for (auto entityid: childcomp->ChildrenID)
-		{
+	//if (transformcomp.HasComponent<Children>())
+	//{
+	//	auto childcomp = transformcomp.GetComponent<Children>();
+	//	for (auto entityid: childcomp->ChildrenID)
+	//	{
 
-			UpdateSocketRenderData(*GetSceneManager()->GetComponent<TransformComponent>(entityid));
-		}
+	//		UpdateSocketRenderData(*GetSceneManager()->GetComponent<TransformComponent>(entityid));
+	//	}
 
-	}
+	//}
 
 
 }

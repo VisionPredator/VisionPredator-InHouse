@@ -800,9 +800,9 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 }
 #pragma endregion
 #pragma region Animation 
-void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, float Speed, bool loop, bool Immidiate)
+void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, float Speed,float transition , bool loop, bool Immidiate)
 {
-	VisPred::Engine::AniBlendData temp{ entityID ,static_cast<int>(playeraniIndex), Speed , loop };
+	VisPred::Engine::AniBlendData temp{ entityID ,static_cast<int>(playeraniIndex), Speed ,transition, loop };
 
 	std::any data = temp;
 	if (Immidiate)
@@ -816,6 +816,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 
 	ThrowFinished(playercomp);
 	ReturnToIdle(*playercomp.HandEntity.lock()->GetComponent<AnimationComponent>());
+
 }
 
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
@@ -826,32 +827,32 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	uint32_t entityID = anicomp.GetEntityID();
 	switch (anicomp.curAni)
 	{
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 1, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;	/*case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0,0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0,0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0,0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	/*case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Rifle:	break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun:	break;*/
-	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 1, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 1, true);break;	/*case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0,0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	/*case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
 	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword:	break;*/
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;	/*case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;	/*case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_dash:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_jump:			break;
 	case  (int)VisPred::Game::PlayerAni::ToVP_run:			break;*/
-	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 1, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
 	default:
 		break;
 	}
@@ -881,7 +882,8 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 			m_PhysicsEngine->AddVelocity(playercomp.ThrowingGunEntityID, temp,35);
 			socketcomp.ConnectedEntityID = 0;
 			playercomp.ThrowingGunEntityID = 0;
-			socketcomp.GetComponent<MeshComponent>()->Renderdata->isOverDraw = false;
+			socketcomp.GetComponent<MeshComponent>()->IsOverDraw = false;
+			playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
 
 		}
 		
@@ -1008,18 +1010,20 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	playercomp.GunEntityID = guncomp->GetEntityID();
 	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
-	guncomp->GetComponent<MeshComponent>()->Renderdata->isOverDraw = true;
+	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
+	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
+
 	switch (guncomp->Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 0, 0, false);
 		break;
 	case VisPred::Game::GunType::SHOTGUN:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 0, 0, false);
 		break;
 	case VisPred::Game::GunType::RIFLE:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 4, false);
+		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 0, 0, false);
 		break;
 	default:
 		break;
@@ -1073,7 +1077,7 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 0, 0, false);
 
 	auto posEntity = playercomp.FirePosEntity.lock();
 	if (!posEntity)
@@ -1081,8 +1085,8 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1093,7 +1097,7 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 0, 0, false);
 
 	auto posEntity = playercomp.FirePosEntity.lock(); 
 	if (!posEntity)
@@ -1101,8 +1105,8 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1113,7 +1117,7 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 10, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 0, 0, false);
 	auto posEntity = playercomp.FirePosEntity.lock();
 
 	if (!posEntity)
@@ -1121,8 +1125,8 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 #pragma endregion
@@ -1135,7 +1139,7 @@ void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 0, 0, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1152,7 +1156,7 @@ void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 0, 0, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1170,7 +1174,7 @@ void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 		return;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 4, false);
+	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 0, 0, false);
 
 	auto socketcomp = guncomp.GetComponent<SocketComponent>();
 	//socketcomp->IsConnected = false;
@@ -1239,13 +1243,20 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
+		auto LongswordEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->LongswordName);
 		playercomp->HP= playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
 
-		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->Renderdata->isOverDraw = true;
+		if (LongswordEntity)
+			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
+		else
+			VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
+
+
+		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsOverDraw = true;
 		if (FirePosEntity)
 			playercomp->FirePosEntity = FirePosEntity;
 			//playercomp->FirePosEntityID = FirePosEntity->GetEntityID();
