@@ -416,7 +416,87 @@ void SceneManager::SpawnPrefab(std::string prefabname, VPMath::Vector3 pos, VPMa
 	PrefabData temp = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnSpawnPrefab", data);
+	return;
 }
+
+std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Quaternion Quater, VPMath::Vector3 scele)
+{
+	VPMath::Vector3 rot = Quater.ToEuler() * 180 / VPMath::XM_PI;
+	return SpawnEditablePrefab(prefabname, pos, rot, scele);
+}
+
+
+
+std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scele)
+{
+	PrefabData prefabData = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
+
+	std::ifstream inputFile(prefabData.prefabname);
+	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
+	uint32_t mainprefabID{};
+	if (!inputFile.is_open())
+		return nullptr;
+	nlohmann::json prefabJson;
+	inputFile >> prefabJson;
+
+	for (const auto& entityJson : prefabJson)
+	{
+		const uint32_t oldEntityID = entityJson["EntityID"].get<uint32_t>();
+		uint32_t renewEntityID = findOrCreatePair(entityResettingPair, oldEntityID).second;
+		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
+		tempEntity->SetEntityID(renewEntityID);
+		SetEntityMap(renewEntityID, tempEntity);
+		///메인 Entity인가?
+		bool IsMainEntity = true;
+		///컴포넌트 배치.
+		for (const nlohmann::json compJson : entityJson["Component"])
+		{
+			entt::id_type comp_id = (entt::id_type)compJson["ComponentID"];
+			auto metaType = entt::resolve(comp_id);
+			if (metaType)
+			{
+				// 메타 타입으로부터 인스턴스를 생성합니다.
+				auto instance = metaType.construct();
+				// 특정 함수를 찾고 호출합니다.
+				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
+				if (myFunctionMeta)
+				{
+					entt::meta_any result = myFunctionMeta.invoke(instance, compJson, tempEntity.get(), true, false);
+					if (auto compPPtr = result.try_cast<std::shared_ptr<Component>>())
+					{
+						auto compPtr = *compPPtr;
+						if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Children>())
+							for (auto& childID : static_cast<Children*>(compPtr.get())->ChildrenID)
+								childID = findOrCreatePair(entityResettingPair, childID).second;
+						else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
+						{
+							IsMainEntity = false;
+							Parent* parentComponet = static_cast<Parent*>(compPtr.get());
+							parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
+						}
+					}
+				}
+				else
+					VP_ASSERT(false, "Reflection 함수 실패!");
+			}
+		}
+		EventManager::GetInstance().ScheduleEvent("OnAddEntityComponentsToScene", renewEntityID);
+
+		if (IsMainEntity)
+			mainprefabID = renewEntityID;
+	}
+	auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
+	Transform->SetLocalLocation(prefabData.pos);
+	if (prefabData.scale.x > 0)
+		Transform->SetLocalScale(prefabData.scale);
+	Transform->SetLocalRotation(prefabData.rotation);
+
+	for (auto [old, newID] : entityResettingPair)
+		EventManager::GetInstance().ScheduleEvent("OnStart", newID);
+
+	return  GetEntity(mainprefabID);
+}
+
 
 
 void SceneManager::SerializePrefab(uint32_t entityID)

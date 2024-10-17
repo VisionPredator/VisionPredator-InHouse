@@ -172,8 +172,8 @@
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="PlayerUISystem.h" />
-    <ClInclude Include="RangeAttackComponent.h" />
-    <ClInclude Include="RangeAttackSystem.h" />
+    <ClInclude Include="AreaAttackComponent.h" />
+    <ClInclude Include="AreaAttackSystem.h" />
     <ClInclude Include="TestCameraSystem.h" />
     <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
@@ -197,8 +197,8 @@
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="PlayerUISystem.cpp" />
-    <ClCompile Include="RangeAttackComponent.cpp" />
-    <ClCompile Include="RangeAttackSystem.cpp" />
+    <ClCompile Include="AreaAttackComponent.cpp" />
+    <ClCompile Include="AreaAttackSystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />

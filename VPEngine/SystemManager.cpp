@@ -209,6 +209,11 @@
 	void SystemManager::OnTriggerEnter(std::any pair)
 	{
 		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+
+		auto entity_first = m_SceneManager.lock()->GetEntity(entitypair.first);
+		auto entity_second = m_SceneManager.lock()->GetEntity(entitypair.second);
+		if (!entity_first || !entity_second)
+			return;
 		for (auto contactable : m_Triggerable)
 		{
 			contactable->EnterTrigger(entitypair);
@@ -218,6 +223,10 @@
 	void SystemManager::OnTriggerExit(std::any pair)
 	{
 		auto entitypair = std::any_cast<std::pair<uint32_t, uint32_t>>(pair);
+		auto entity_first = m_SceneManager.lock()->GetEntity(entitypair.first);
+		auto entity_second = m_SceneManager.lock()->GetEntity(entitypair.second);
+		if (!entity_first || !entity_second)
+			return;
 		for (auto contactable : m_Triggerable)
 		{
 			contactable->ExitTrigger(entitypair);

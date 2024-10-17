@@ -1085,8 +1085,8 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1105,8 +1105,8 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1125,8 +1125,8 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	auto tempTransform = posEntity->GetComponent<TransformComponent>();
 	auto temppos = tempTransform->World_Location;
 	auto temprotate = tempTransform->World_Rotation;
-	m_SceneManager.lock()->SpawnPrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnPrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 #pragma endregion
