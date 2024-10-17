@@ -90,7 +90,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_ObjectMaskPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
 	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
 	m_Instancing = std::make_shared<DeferredInstancing>();
-	m_Instancing->Initialize(m_Device.lock(), m_ResourceManager.lock(),m_LightManager);
+	m_Instancing->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 
 	//VPpasses
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
@@ -111,7 +111,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 
 	//pass push
 	m_BasePasses.push_back(m_GeometryPass);
-	m_BasePasses.push_back(m_DebugPass);
+	//m_BasePasses.push_back(m_DebugPass);
 	m_BasePasses.push_back(m_Instancing);
 	m_BasePasses.push_back(m_DeferredPass);
 	m_BasePasses.push_back(m_ObjectMaskPass);
@@ -120,7 +120,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_BasePasses.push_back(m_TransparencyPass);
 	m_VPPasses.push_back(m_VPOutLinePass);
 	m_VPPasses.push_back(m_RimLight);
-	
+
 	m_IndepentCulling.push_back(m_OutlineEdgeDetectPass);
 	m_IndepentCulling.push_back(m_OutlineBlurPass);
 	m_IndepentCulling.push_back(m_OutlineAddPass);
@@ -139,10 +139,22 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 		m_VPOutLinePass->SetRenderQueue(afterCulling);
 		m_RimLight->SetRenderQueue(afterCulling);
 	}
+
+	if (!m_isDebugDraw)
+	{
+		m_DebugPass->ClearQueue();
+	}
+
 }
 
 void PassManager::Render()
 {
+	if (m_isDebugDraw)
+	{
+		m_DebugPass->Render();
+	}
+
+
 	for (auto& pass : m_BasePasses)
 	{
 		pass->Render();
@@ -163,6 +175,7 @@ void PassManager::Render()
 		}
 	}
 
+	
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
@@ -188,12 +201,17 @@ void PassManager::OnResize()
 		pass->OnResize();
 	}
 
-	m_OverDraw->OnResize();
+	m_DebugPass->OnResize();
 }
 
 void PassManager::SetVP(bool isVP)
 {
 	m_isVP = isVP;
+}
+
+void PassManager::SetDebugDraw(bool on_off)
+{
+	m_isDebugDraw = on_off;
 }
 
 void PassManager::DrawIMGUI()

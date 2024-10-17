@@ -540,6 +540,11 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 }
 
+void GraphicsEngine::DebugRenderONOFF(bool isRender)
+{
+	m_PassManager->SetDebugDraw(isRender);
+}
+
 void GraphicsEngine::Culling()
 {
 	for (auto& object : m_RenderVector)
@@ -547,6 +552,8 @@ void GraphicsEngine::Culling()
 		std::wstring& fbx = object->FBX;
 		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
 
+		if(!object->isVisible)
+			continue;
 
 		if (curFBX != nullptr)
 		{
@@ -650,9 +657,12 @@ void GraphicsEngine::Culling()
 		{
 			object->ModelID = -1;
 
-			if (object->Filter == GeoMetryFilter::Box)
+			if (object->isVisible)
 			{
-				m_AfterCulling.push_back(object);
+				if (object->Filter == GeoMetryFilter::Box)
+				{
+					m_AfterCulling.push_back(object);
+				}
 			}
 		}
 	}

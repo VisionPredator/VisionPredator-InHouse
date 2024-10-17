@@ -40,6 +40,7 @@ public:
 	void Render();
 	void OnResize();
 	void SetVP(bool isVP);
+	void SetDebugDraw(bool on_off);
 private:
 	void DrawIMGUI();
 
@@ -76,5 +77,6 @@ private:
 
 private:
 	bool m_isVP = false;
+	bool m_isDebugDraw = false;
 };
 
