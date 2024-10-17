@@ -78,6 +78,15 @@
     <ClInclude Include="VisPredComponents.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerUISystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RangeAttackComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RangeAttackSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -121,6 +130,15 @@
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUISystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RangeAttackComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RangeAttackSystem.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
