@@ -92,105 +92,111 @@ void FolderTool::FolderImGui(const std::string& folderPath)
 	}
 	ImGui::PopID();
 }
-
-
-void FolderTool::FileImGui()
+void FolderTool::FileImGui() 
 {
 	float availableSize = ImGui::GetContentRegionAvail().x;
 	if (m_CurrentFolderPath.empty())
 		return;
 
-	ImVec2 buttonSize = ImVec2(80.f, 80.f);
+	ImVec2 buttonSize = ImVec2(100.f, 80.f);
 	float currentImGuiX = 0;
 	std::filesystem::path currentPath(m_CurrentFolderPath);
 	if (!std::filesystem::exists(currentPath) || !std::filesystem::is_directory(currentPath))
 		return;
 
 	// Add "Up" button to navigate to the parent directory
-	if (currentPath.has_parent_path() && m_AssetFolderPath != currentPath)
-	{
+	if (currentPath.has_parent_path() && m_AssetFolderPath != currentPath) {
 		ImGui::PushID("..");
 		currentImGuiX += buttonSize.x;
-		if (ImGui::Button("..", buttonSize))
-		{
+		if (ImGui::Button("..", buttonSize)) {
 			m_CurrentFolderPath = currentPath.parent_path().string();
 		}
 		ImGui::PopID();
-		if (currentImGuiX < availableSize - 80)
+		if (currentImGuiX < availableSize - 130.f)
 			ImGui::SameLine();
 		else
 			currentImGuiX = 0;
 	}
 
-	for (const auto& entry : std::filesystem::directory_iterator(currentPath))
+	// Display folder and file items based on the search term
+	for (const auto& entry : std::filesystem::directory_iterator(currentPath)) 
 	{
 		const auto& entrypath = entry.path();
 		const std::string entryPathString = entrypath.string();
 		const std::string filenameString = entrypath.filename().string();
 
-		if (entry.is_directory())
-		{
-			
+		// Exclude ".SVN" folder
+		if (filenameString == ".svn")
+			continue;
+
+		// Search functionality: only display items that match the search term
+		if (!m_SearchName.empty()) {
+			std::string lowerFilename = filenameString;
+			std::string lowerSearch = m_SearchName;
+
+			// Convert to lowercase for case-insensitive search
+			std::transform(lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), ::tolower);
+			std::transform(lowerSearch.begin(), lowerSearch.end(), lowerSearch.begin(), ::tolower);
+
+			// If the filename doesn't contain the search term, skip it
+			if (lowerFilename.find(lowerSearch) == std::string::npos) {
+				continue;
+			}
+		}
+
+		// Calculate the text size based on current font and handle long names
+		std::string displayName = filenameString;
+		std::string tempLabel = displayName;
+
+		// Insert newlines before the extension period to wrap long names
+		size_t pos = tempLabel.find('.');
+		if (pos != std::string::npos && pos != 0) {
+			tempLabel.insert(pos, "\n");
+		}
+
+		if (entry.is_directory()) {
 			ImGui::PushID(filenameString.c_str());
-			if (currentImGuiX += buttonSize.x; ImGui::Button(filenameString.c_str(), buttonSize))
+			if (currentImGuiX += buttonSize.x; ImGui::Button(tempLabel.c_str(), buttonSize))
 				m_CurrentFolderPath = entryPathString;
 			ImGui::PopID();
 		}
-		else
-		{
-			std::string buttonLabel = filenameString;
-			std::string tempLabel = buttonLabel;
-			size_t pos = tempLabel.find('.');
-			while (pos != std::string::npos)
-			{
-				tempLabel.insert(pos, "\n");
-				pos = tempLabel.find('.', pos + 2); // Skip the inserted newline
-			}
-
+		else {
 			ImGui::PushID(tempLabel.c_str());
-			if (currentImGuiX += buttonSize.x; ImGui::Button(tempLabel.c_str(), buttonSize))
-			{	// Handle button click
+			if (currentImGuiX += buttonSize.x; ImGui::Button(tempLabel.c_str(), buttonSize)) {
+				// Handle button click
 			}
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-			{	// Handle double click
-				if (!Toolbar::m_IsPlaying)
-					if (entry.path().extension() == ".prefab")
-					{
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+				// Handle double click for files
+				if (!Toolbar::m_IsPlaying) {
+					if (entry.path().extension() == ".prefab") {
 						m_SceneManager.lock()->DeSerializePrefab(entryPathString);
-
-						// Handle double click for .prefab files
 					}
-					else if (entry.path().extension() == ".scene")
-					{
-						// Handle double click for .Scene files
+					else if (entry.path().extension() == ".scene") {
 						m_ShowOpenSceneCaution = true;
 						m_OpenScenePath = entryPathString;
 					}
-				if (entry.path().extension()==".png"|| entry.path().extension() == ".dds" || entry.path().extension() == ".mp3" || entry.path().extension() == ".fbx")
-				{
-					OpenFileWithDefaultViewer(entryPathString);
+					if (entry.path().extension() == ".png" || entry.path().extension() == ".dds" || entry.path().extension() == ".mp3" || entry.path().extension() == ".fbx") {
+						OpenFileWithDefaultViewer(entryPathString);
+					}
 				}
 			}
 
+			// Handle right-click context menu
 			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(1) && !Toolbar::m_IsPlaying)
 			{
 				ImGui::OpenPopup("ItemOptions");
 			}
 			if (ImGui::BeginPopup("ItemOptions"))
 			{
-				if (ImGui::MenuItem("Open File"))
-				{
-					OpenFileWithDefaultViewer(entryPathString);
-				}
+				if (ImGui::MenuItem("Open File")) { OpenFileWithDefaultViewer(entryPathString); }
 				if (ImGui::MenuItem("Show in Explorer"))
 				{
-#ifdef _WIN32
-					// Open the file's directory in explorer
+#ifdef _WIN32 					
+					// Open the file's directory in explorer 				
 					std::string command = "explorer /select," + entryPathString;
 					system(command.c_str());
-#endif
+#endif 				
 				}
-
 				if (entry.path().extension() == ".prefab" || entry.path().extension() == ".scene")
 				{
 					if (ImGui::MenuItem("Copy Filename"))
@@ -200,33 +206,29 @@ void FolderTool::FileImGui()
 						std::replace(relativeToString.begin(), relativeToString.end(), '\\', '/');
 						std::string parentFolder = "../Data/";
 						std::string copyFilePath = parentFolder + relativeToString;
-
 						ImGui::SetClipboardText(copyFilePath.c_str());
 					}
 				}
-				else if (entry.path().extension() == ".fbx")
-				{
+				else if (entry.path().extension() == ".fbx") {
 					if (ImGui::MenuItem("Copy Filename"))
 					{
-						// Get the filename with extension
+						//Get the filename with extension 						
 						std::string filenameWithExtension = entry.path().filename().string();
 						ImGui::SetClipboardText(filenameWithExtension.c_str());
 					}
 				}
-				else if (entry.path().extension() == ".mp3"|| entry.path().extension() == ".wav")
+				else if (entry.path().extension() == ".mp3" || entry.path().extension() == ".wav")
 				{
 					if (ImGui::MenuItem("Copy Filename"))
-					{
-						// Get the filename without extension
+					{ 						// Get the filename without extension 
 						std::string filenameWithoutExtension = entry.path().stem().string();
 						ImGui::SetClipboardText(filenameWithoutExtension.c_str());
 					}
 				}
-				else if (entry.path().extension() == ".png"|| entry.path().extension() == ".dds" )
-				{
+				else if (entry.path().extension() == ".png" || entry.path().extension() == ".dds") {
 					if (ImGui::MenuItem("Copy Filename"))
 					{
-						// Get the filename with extension
+						// Get the filename with extension 	
 						std::string filenameWithExtension = entry.path().filename().string();
 						ImGui::SetClipboardText(filenameWithExtension.c_str());
 					}
@@ -236,18 +238,20 @@ void FolderTool::FileImGui()
 					m_ShowDeleteCaution = true;
 					m_DeleteFilePath = entry.path();
 				}
-
 				ImGui::EndPopup();
-			}
-			ImGui::PopID();
+			} 			ImGui::PopID();
 		}
 
-		if (currentImGuiX < availableSize-80)
+		if (currentImGuiX < availableSize - 130.f)
 			ImGui::SameLine();
 		else
 			currentImGuiX = 0;
 	}
 }
+
+
+
+
 
 void FolderTool::DeleteCautionImGui()
 {
