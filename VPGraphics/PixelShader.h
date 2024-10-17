@@ -8,7 +8,7 @@ class PixelShader : public Shader
 {
 public:
 	//PixelShader(std::wstring filename = L"need name");
-	PixelShader(const std::shared_ptr<Device>& device, std::wstring filename = L"need name");
+	//PixelShader(const std::shared_ptr<Device>& device, std::wstring filename = L"need name");
 
 	PixelShader(const std::shared_ptr<Device>& device,
 		const std::wstring& filename,

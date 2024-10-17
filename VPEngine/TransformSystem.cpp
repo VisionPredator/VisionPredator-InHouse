@@ -456,7 +456,7 @@ void TransformSystem::RenderUpdate(float deltaTime)
         obbinfo.xAxisAngle = comp.World_Rotation.x;
         obbinfo.yAxisAngle = comp.World_Rotation.y;
         obbinfo.zAxisAngle = comp.World_Rotation.z;
-        m_Graphics->DrawOBB(obbinfo);
+        //m_Graphics->DrawOBB(obbinfo);
     }
 }
 
