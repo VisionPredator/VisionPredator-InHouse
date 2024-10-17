@@ -1,13 +1,22 @@
 #include "pch.h"
 #include "EnemySystem.h"
+
+#include <memory>
+
 #include "VisPredComponents.h"
 #include "EngineStructs.h"
 #include "../VPGraphics/D3DUtill.h"
+
+#include "EnemyMovementState.h"
+#include "EnemyJumpState.h"
+#include "StatesInclude.h"
 
 void EnemySystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, comp)
 	{
+
+		//Start(comp.GetEntityID());
 		uint32_t playerID = comp.GetEntityID();
 		if (GetSceneManager()->HasComponent<PlayerComponent>(playerID))
 		{
@@ -15,6 +24,21 @@ void EnemySystem::Initialize()
 			break;
 		}
 	}
+
+	COMPLOOP(EnemyComponent, comp)
+	{
+		Start(comp.GetEntityID());
+	}
+}
+
+void EnemySystem::Start(uint32_t gameObjectId)
+{
+	if (!GetSceneManager()->HasComponent<EnemyComponent>(gameObjectId))
+		return;
+
+	auto enemyComp = GetSceneManager()->GetComponent<EnemyComponent>(gameObjectId);
+
+	enemyComp->MovementState->Enter(gameObjectId);
 }
 
 void EnemySystem::FixedUpdate(float deltaTime)
@@ -24,6 +48,11 @@ void EnemySystem::FixedUpdate(float deltaTime)
 		//HPCheck(enemycomp);
 		DetectTarget(enemycomp, deltaTime);
 		CalculateFSM(enemycomp);
+
+		//enemycomp.testState->Update(deltaTime);
+
+		// 상태 변경 예시
+		enemycomp.MovementState = &EnemyMovementState::s_Jumping;
 	}
 }
 

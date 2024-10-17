@@ -2,8 +2,19 @@
 #include "Component.h"
 #include "VisPredStructs.h"
 
+// State
+#include "EnemyBehaviorState.h"
+#include "EnemyCombatState.h"
+#include "EnemyMovementState.h"
+#include "EnemyIdleMovementState.h"
+
 struct EnemyComponent : public Component
 {
+	EnemyComponent()
+	{
+		MovementState = &EnemyMovementState::s_Idle;
+	}
+
 	VP_JSONBODY(EnemyComponent, HP, CurrentFSM, CurrentAni, EnemyType, HorizontalFOV, VerticalFOV, NearZ, FarZ, IsModelFlipped)
 	float HP{}; 
 	VisPred::Game::EnemyState CurrentFSM= VisPred::Game::EnemyState::Idle;
@@ -23,5 +34,7 @@ struct EnemyComponent : public Component
 	// 추격 범위
 	float ChaseRangeRadius = 40.f;	// 400m
 
+	EnemyBehaviorState* BehaviorState;
+	EnemyCombatState* CombatState;
+	EnemyMovementState* MovementState;
 };
-

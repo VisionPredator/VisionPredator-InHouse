@@ -16,7 +16,7 @@ public:
 public:
 	// IStartable
 	void Initialize();
-	void Start(uint32_t gameObjectId) {}
+	void Start(uint32_t gameObjectId);
 	void Finish(uint32_t gameObjectId) {}
 	void Finalize() {}
 
