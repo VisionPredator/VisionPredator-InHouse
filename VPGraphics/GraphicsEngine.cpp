@@ -546,6 +546,8 @@ void GraphicsEngine::Culling()
 		std::wstring& fbx = object->FBX;
 		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
 
+		if(!object->isVisible)
+			continue;
 
 		if (curFBX != nullptr)
 		{
@@ -640,7 +642,6 @@ void GraphicsEngine::Culling()
 
 				if (visible)
 				{
-					object->isVisible = visible;
 					m_AfterCulling.push_back(object);
 				}
 				//break;
@@ -650,9 +651,12 @@ void GraphicsEngine::Culling()
 		{
 			object->ModelID = -1;
 
-			if (object->Filter == GeoMetryFilter::Box)
+			if (object->isVisible)
 			{
-				m_AfterCulling.push_back(object);
+				if (object->Filter == GeoMetryFilter::Box)
+				{
+					m_AfterCulling.push_back(object);
+				}
 			}
 		}
 	}
