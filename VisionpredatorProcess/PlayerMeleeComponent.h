@@ -4,7 +4,7 @@ struct PlayerMeleeComponent :
 	public Component
 {
 	PlayerMeleeComponent();
-	VP_JSONBODY(PlayerMeleeComponent, SwordDamage, SwordLenth, VPDamage, VPLength)
+	VP_JSONBODY(PlayerMeleeComponent, SwordDamage, SwordLength, VPDamage, VPLength)
 		VPMath::Vector2 SwordLength{};
 		VPMath::Vector2 VPLength{};
 	float SwordDamage{};
