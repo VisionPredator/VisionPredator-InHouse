@@ -16,6 +16,16 @@ void DecalSystem::BeginRenderUpdate(float deltaTime)
 		temp.TexturePath = comp.TextureName;
 		temp.WorldTransform = transform->WorldTransform;
 		m_Graphics->DrawDecal(temp);
+
+		debug::OBBInfo box;
+		box.OBB.Center = transform->World_Location;
+		box.OBB.Extents = transform->World_Scale;
+		box.xAxisAngle = transform->World_Rotation.x;
+		box.yAxisAngle = transform->World_Rotation.y;
+		box.zAxisAngle = transform->World_Rotation.z;
+		m_Graphics->DrawOBB(box);
+
+
 	}
 }
 

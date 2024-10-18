@@ -577,6 +577,8 @@
     </FxCompile>
     <FxCompile Include="InstancingVS.hlsl" />
     <FxCompile Include="InstancingPS.hlsl" />
+    <FxCompile Include="DecalVS.hlsl" />
+    <FxCompile Include="DecalPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

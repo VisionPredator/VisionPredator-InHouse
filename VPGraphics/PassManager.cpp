@@ -159,11 +159,11 @@ void PassManager::Render()
 		m_DebugPass->Render();
 	}
 
-
 	for (auto& pass : m_BasePasses)
 	{
 		pass->Render();
 	}
+
 
 	for (auto& pass : m_IndepentCulling)
 	{
