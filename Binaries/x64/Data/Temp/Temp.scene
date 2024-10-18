@@ -89,6 +89,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -182,6 +184,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -313,6 +317,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -406,6 +412,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -518,6 +526,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -633,6 +643,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -764,6 +776,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -888,7 +902,9 @@
                         102,
                         98,
                         120
-                    ]
+                    ],
+                    "IsOverDraw": false,
+                    "IsVisible": true
                 },
                 {
                     "Acceleration": 1000000.0,
@@ -938,6 +954,7 @@
                     "TargetName": "Player"
                 },
                 {
+                    "AnimationSpeed_Transition": [],
                     "ComponentID": 2778840952,
                     "FBX": [
                         112,
@@ -952,7 +969,6 @@
                         98,
                         120
                     ],
-                    "animationList": [],
                     "curAni": 1,
                     "isLoop": true,
                     "speed": 1.0,
@@ -1030,6 +1046,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -1240,6 +1258,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -1352,6 +1372,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -1483,6 +1505,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -1503,44 +1527,6 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 2664902948
-                }
-            ]
-        },
-        {
-            "EntityID": 1915989345,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "CameraPos"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.8500000238418579,
-                        "z": 0.0
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0000001192092896,
-                        "y": 1.0,
-                        "z": 1.0000001192092896
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 563016788
-                },
-                {
-                    "ChildrenID": [
-                        4118508469
-                    ],
-                    "ComponentID": 188567026
                 }
             ]
         },
@@ -1633,6 +1619,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -1796,6 +1784,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2005,6 +1995,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2117,6 +2109,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2229,6 +2223,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2322,6 +2318,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2453,6 +2451,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2567,6 +2567,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2679,6 +2681,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2791,6 +2795,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -2944,6 +2950,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3037,6 +3045,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3149,6 +3159,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3280,6 +3292,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3373,6 +3387,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3504,6 +3520,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3638,6 +3656,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3793,6 +3813,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3864,6 +3886,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -3984,6 +4008,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4139,6 +4165,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4251,6 +4279,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4363,6 +4393,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4494,6 +4526,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4649,6 +4683,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4761,6 +4797,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4854,6 +4892,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -4985,6 +5025,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5138,6 +5180,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5250,6 +5294,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5384,6 +5430,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5515,6 +5563,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5654,6 +5704,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5785,6 +5837,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -5878,6 +5932,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6009,6 +6065,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6102,6 +6160,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6214,6 +6274,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6326,6 +6388,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6457,6 +6521,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6591,6 +6657,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6703,6 +6771,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6834,6 +6904,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -6927,6 +6999,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7058,6 +7132,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7151,6 +7227,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7282,6 +7360,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7394,6 +7474,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7547,6 +7629,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7640,6 +7724,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7752,6 +7838,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7864,6 +7952,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -7976,6 +8066,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8107,6 +8199,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8200,6 +8294,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8312,6 +8408,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8443,6 +8541,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8596,6 +8696,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8689,6 +8791,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8844,6 +8948,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -8956,6 +9062,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -9087,6 +9195,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -9199,6 +9309,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -9311,6 +9423,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -9546,6 +9660,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -9863,6 +9979,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10072,6 +10190,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10288,6 +10408,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10419,6 +10541,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10533,6 +10657,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10626,6 +10752,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10738,6 +10866,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10869,6 +10999,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -10981,6 +11113,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11093,6 +11227,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11205,6 +11341,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11317,6 +11455,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11429,6 +11569,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11522,6 +11664,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11653,6 +11797,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11765,6 +11911,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11858,6 +12006,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -11989,6 +12139,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12082,6 +12234,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12194,6 +12348,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12306,6 +12462,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12418,6 +12576,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12549,6 +12709,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12642,6 +12804,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12773,6 +12937,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12885,6 +13051,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -12978,6 +13146,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13109,6 +13279,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13221,6 +13393,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13314,6 +13488,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13426,6 +13602,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13540,6 +13718,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13671,6 +13851,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13764,6 +13946,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -13876,6 +14060,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14007,6 +14193,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14119,6 +14307,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14212,6 +14402,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14324,6 +14516,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14457,6 +14651,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14569,6 +14765,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14681,6 +14879,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14774,6 +14974,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14886,6 +15088,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -14998,6 +15202,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15129,6 +15335,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15222,6 +15430,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15334,6 +15544,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15465,6 +15677,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15577,6 +15791,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15670,6 +15886,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15801,6 +16019,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -15894,6 +16114,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16006,6 +16228,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16186,6 +16410,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16257,6 +16483,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16358,6 +16586,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16506,6 +16736,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16651,6 +16883,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16763,6 +16997,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16896,6 +17132,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -16989,6 +17227,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17122,6 +17362,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17234,6 +17476,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17286,6 +17530,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17406,6 +17652,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17520,6 +17768,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17651,6 +17901,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17763,6 +18015,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17856,6 +18110,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -17968,6 +18224,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18099,6 +18357,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18192,6 +18452,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18323,6 +18585,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18416,6 +18680,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18547,6 +18813,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18680,6 +18948,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18792,6 +19062,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -18904,6 +19176,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19018,6 +19292,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19111,6 +19387,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19223,6 +19501,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19354,6 +19634,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19466,6 +19748,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19559,6 +19843,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19690,6 +19976,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19823,6 +20111,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -19916,6 +20206,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20047,6 +20339,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20159,6 +20453,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20329,6 +20625,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20441,6 +20739,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20572,6 +20872,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20665,6 +20967,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20777,6 +21081,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -20889,6 +21195,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21001,6 +21309,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21132,6 +21442,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21246,6 +21558,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21352,6 +21666,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21503,6 +21819,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21615,6 +21933,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21708,6 +22028,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21839,6 +22161,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -21951,6 +22275,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22084,6 +22410,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22196,6 +22524,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22289,6 +22619,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22401,6 +22733,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22513,6 +22847,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22644,6 +22980,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22756,6 +23094,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22868,6 +23208,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -22961,6 +23303,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23092,6 +23436,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23206,6 +23552,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23330,6 +23678,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23462,6 +23812,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23574,6 +23926,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23705,6 +24059,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23798,6 +24154,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -23910,6 +24268,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24022,6 +24382,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24153,6 +24515,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24265,6 +24629,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24377,6 +24743,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24489,6 +24857,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24541,6 +24911,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24661,6 +25033,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24773,6 +25147,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24885,6 +25261,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -24997,6 +25375,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25128,6 +25508,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25180,6 +25562,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25300,6 +25684,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25431,6 +25817,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25524,6 +25912,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25655,6 +26045,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25769,6 +26161,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25864,6 +26258,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -25995,6 +26391,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26090,6 +26488,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26221,6 +26621,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26353,6 +26755,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26446,6 +26850,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26558,6 +26964,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26689,6 +27097,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26782,6 +27192,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -26894,6 +27306,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27025,6 +27439,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27137,6 +27553,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27249,6 +27667,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27344,6 +27764,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27438,7 +27860,9 @@
                         102,
                         98,
                         120
-                    ]
+                    ],
+                    "IsOverDraw": false,
+                    "IsVisible": true
                 },
                 {
                     "ComponentID": 558863490,
@@ -27488,6 +27912,7 @@
                     "StaticFriction": 10.0
                 },
                 {
+                    "AnimationSpeed_Transition": [],
                     "ComponentID": 2778840952,
                     "FBX": [
                         112,
@@ -27502,7 +27927,6 @@
                         98,
                         120
                     ],
-                    "animationList": [],
                     "curAni": 1,
                     "isLoop": true,
                     "speed": 1.0,
@@ -27580,6 +28004,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27711,6 +28137,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27806,6 +28234,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -27845,52 +28275,6 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 4040086849
-                }
-            ]
-        },
-        {
-            "EntityID": 4118508469,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Camera"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": -3.814697265625e-06
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 1.4901162970204496e-08,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 0.9999998807907104,
-                        "y": 1.0,
-                        "z": 0.9999998807907104
-                    }
-                },
-                {
-                    "ComponentID": 3575595261,
-                    "FOV": 0.7850000262260437,
-                    "FarZ": 100.0,
-                    "IsMain": true,
-                    "NearZ": 0.009999999776482582
-                },
-                {
-                    "ChildrenID": [
-                        951024892,
-                        2043967831
-                    ],
-                    "ComponentID": 188567026
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 1915989345
                 }
             ]
         },
@@ -27966,6 +28350,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28080,6 +28466,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28213,6 +28601,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28265,6 +28655,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28406,6 +28798,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28520,6 +28914,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28572,6 +28968,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28694,6 +29092,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28827,6 +29227,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -28922,6 +29324,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29012,6 +29416,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29115,6 +29521,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29154,6 +29562,38 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 1439468811
+                }
+            ]
+        },
+        {
+            "EntityID": 1866878129,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "FirePos"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 1.1858882904052734
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 3116918606
                 }
             ]
         },
@@ -29248,6 +29688,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29319,6 +29761,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29422,6 +29866,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29512,6 +29958,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29634,6 +30082,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29729,6 +30179,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29819,6 +30271,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -29941,6 +30395,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -30055,6 +30511,8 @@
                         98,
                         120
                     ],
+                    "IsOverDraw": false,
+                    "IsVisible": true,
                     "LightMapIndex": 0.0,
                     "LightMapOffset": {
                         "x": 0.0,
@@ -30120,225 +30578,6 @@
                         870337259
                     ],
                     "ComponentID": 188567026
-                }
-            ]
-        },
-        {
-            "EntityID": 563016788,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Player"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": -20.552339553833008,
-                        "y": 3.1629788875579834,
-                        "z": -7.713753700256348
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 0.9999997019767761,
-                        "y": 1.0,
-                        "z": 0.9999997019767761
-                    }
-                },
-                {
-                    "Acceleration": 15.0,
-                    "CapsuleControllerinfo": {
-                        "Info": {
-                            "LayerNumber": 3,
-                            "LocalOffset": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
-                            },
-                            "Pivot": 0
-                        },
-                        "contactOffset": 0.0010000000474974513,
-                        "height": 1.600000023841858,
-                        "position": {
-                            "x": -20.552339553833008,
-                            "y": 3.1629788875579834,
-                            "z": -7.713753700256348
-                        },
-                        "radius": 0.4000000059604645,
-                        "slopeLimit": 0.5,
-                        "stepOffset": 0.5
-                    },
-                    "ComponentID": 3341766812,
-                    "Contollerinfo": {
-                        "LayerNumber": 3,
-                        "LocalOffset": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Pivot": 0
-                    },
-                    "DynamicFriction": 0.0,
-                    "GravityWeight": 9.806650161743164,
-                    "JumpSpeed": 4.0,
-                    "JumpXZAcceleration": 6.0,
-                    "JumpXZDeceleration": 0.009999999776482582,
-                    "MaxSpeed": 5.0,
-                    "StaticFriction": 10.0
-                },
-                {
-                    "AirControlPercent": 40.0,
-                    "CameraName": "Camera",
-                    "CameraPosName": "CameraPos",
-                    "ComponentID": 4183631247,
-                    "DynamicFriction": 0.0,
-                    "FirePosName": "FirePos",
-                    "GravityPower": 1.0,
-                    "HP": 100,
-                    "HandName": "Hand",
-                    "HurtSoundKey": "Player_Hurt",
-                    "JumpForce": 4.0,
-                    "JumpSoundkey": "Player_Jump",
-                    "MaxHP": 100,
-                    "RecoilMode": 0,
-                    "RecoilProgress": 0.0,
-                    "RecoilReturnTime": 0.10000000149011612,
-                    "RunSoundKey1": "Player_Run1",
-                    "RunSoundKey2": "Player_Run2",
-                    "RunSpeed": 10.0,
-                    "Sencitive": 0.10000000149011612,
-                    "SitSoundKey": "Player_Sit",
-                    "SlideDuration": 0.5,
-                    "SlideSoundkey": "Player_Slide",
-                    "StaticFriction": 10.0,
-                    "Volume_Hurt": 0.10000000149011612,
-                    "Volume_Jump": 0.03999999910593033,
-                    "Volume_Run": 0.02500000037252903,
-                    "Volume_Sit": 0.4000000059604645,
-                    "Volume_Slide": 0.20000000298023224,
-                    "Volume_Walk": 0.05000000074505806,
-                    "WalkSoundKey1": "Player_Walk1",
-                    "WalkSoundKey2": "Player_Walk2",
-                    "WalkSpeed": 5.0
-                },
-                {
-                    "ChildrenID": [
-                        1915989345
-                    ],
-                    "ComponentID": 188567026
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": "Player"
-                }
-            ]
-        },
-        {
-            "EntityID": 951024892,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "Hand"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": -0.001499176025390625,
-                        "y": -2.1535415649414063,
-                        "z": 0.14999961853027344
-                    },
-                    "Local_Quaternion": {
-                        "w": -1.4342370491249312e-07,
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 0.0
-                    },
-                    "Local_Scale": {
-                        "x": 0.20000000298023224,
-                        "y": 0.20000000298023224,
-                        "z": 0.20000000298023224
-                    }
-                },
-                {
-                    "ComponentID": 1080109110,
-                    "UUID": "PlayerHand"
-                },
-                {
-                    "ComponentID": 2778840952,
-                    "FBX": [
-                        112,
-                        108,
-                        97,
-                        121,
-                        101,
-                        114,
-                        95,
-                        46,
-                        102,
-                        98,
-                        120
-                    ],
-                    "animationList": [],
-                    "curAni": 17,
-                    "isLoop": false,
-                    "speed": 10.0,
-                    "transitionDuration": 0.4000000059604645
-                },
-                {
-                    "ComponentID": 1142749570,
-                    "FBX": [
-                        112,
-                        108,
-                        97,
-                        121,
-                        101,
-                        114,
-                        95,
-                        46,
-                        102,
-                        98,
-                        120
-                    ]
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 4118508469
-                }
-            ]
-        },
-        {
-            "EntityID": 2043967831,
-            "Component": [
-                {
-                    "ComponentID": 1365953231,
-                    "Name": "FirePos"
-                },
-                {
-                    "ComponentID": 3400599862,
-                    "Local_Location": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 1.1858882904052734
-                    },
-                    "Local_Quaternion": {
-                        "w": 1.0,
-                        "x": -0.0,
-                        "y": 0.0,
-                        "z": -0.0
-                    },
-                    "Local_Scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                },
-                {
-                    "ComponentID": 3243699741,
-                    "ParentID": 4118508469
                 }
             ]
         },
@@ -30705,6 +30944,823 @@
                 {
                     "ComponentID": 3243699741,
                     "ParentID": 3525786641
+                }
+            ]
+        },
+        {
+            "EntityID": 4232954518,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Player"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -20.552339553833008,
+                        "y": 3.1629788875579834,
+                        "z": -7.713753700256348
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 0.0,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999996423721313,
+                        "y": 1.0,
+                        "z": 0.9999996423721313
+                    }
+                },
+                {
+                    "Acceleration": 15.0,
+                    "CapsuleControllerinfo": {
+                        "Info": {
+                            "LayerNumber": 3,
+                            "LocalOffset": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "Pivot": 0
+                        },
+                        "contactOffset": 0.0010000000474974513,
+                        "height": 1.600000023841858,
+                        "position": {
+                            "x": -20.552339553833008,
+                            "y": 3.1629788875579834,
+                            "z": -7.713753700256348
+                        },
+                        "radius": 0.4000000059604645,
+                        "slopeLimit": 0.5,
+                        "stepOffset": 0.5
+                    },
+                    "ComponentID": 3341766812,
+                    "Contollerinfo": {
+                        "LayerNumber": 3,
+                        "LocalOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Pivot": 0
+                    },
+                    "DynamicFriction": 0.0,
+                    "GravityWeight": 9.806650161743164,
+                    "JumpSpeed": 4.0,
+                    "JumpXZAcceleration": 6.0,
+                    "JumpXZDeceleration": 0.009999999776482582,
+                    "MaxSpeed": 5.0,
+                    "StaticFriction": 10.0
+                },
+                {
+                    "AirControlPercent": 40.0,
+                    "CameraName": "Camera",
+                    "CameraPosName": "CameraPos",
+                    "ComponentID": 4183631247,
+                    "DynamicFriction": 0.0,
+                    "FirePosName": "FirePos",
+                    "GravityPower": 1.0,
+                    "HP": 100,
+                    "HandName": "PlayerHand",
+                    "JumpForce": 4.0,
+                    "LongswordName": "LongSword",
+                    "MaxHP": 100,
+                    "RecoilMode": 0,
+                    "RecoilProgress": 0.0,
+                    "RecoilReturnTime": 0.10000000149011612,
+                    "RunSpeed": 10.0,
+                    "Sencitive": 0.10000000149011612,
+                    "SlideDuration": 0.5,
+                    "StaticFriction": 10.0,
+                    "WalkSpeed": 5.0
+                },
+                {
+                    "ChildrenID": [
+                        3577941629,
+                        863276293
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "Player"
+                },
+                {
+                    "ComponentID": 3285512202,
+                    "HurtSoundKey": "Player_Hurt",
+                    "JumpSoundkey": "Player_Jump",
+                    "RunSoundKey1": "Player_Run1",
+                    "RunSoundKey2": "Player_Run2",
+                    "SitSoundKey": "Player_Sit",
+                    "SlideSoundkey": "Player_Slide",
+                    "Volume_Hurt": 0.10000000149011612,
+                    "Volume_Jump": 0.03999999910593033,
+                    "Volume_Run": 0.02500000037252903,
+                    "Volume_Sit": 0.4000000059604645,
+                    "Volume_Slide": 0.20000000298023224,
+                    "Volume_Walk": 0.05000000074505806,
+                    "WalkSoundKey1": "Player_Walk1",
+                    "WalkSoundKey2": "Player_Walk2"
+                }
+            ]
+        },
+        {
+            "EntityID": 3577941629,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "CameraPos"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.8500000238418579,
+                        "z": 0.0
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 1.0000001192092896,
+                        "y": 1.0,
+                        "z": 1.0000001192092896
+                    }
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4232954518
+                },
+                {
+                    "ChildrenID": [
+                        3116918606
+                    ],
+                    "ComponentID": 188567026
+                }
+            ]
+        },
+        {
+            "EntityID": 863276293,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "LongSword"
+                },
+                {
+                    "ComponentID": 3774279003,
+                    "FBX": [
+                        76,
+                        111,
+                        110,
+                        103,
+                        115,
+                        119,
+                        111,
+                        114,
+                        100,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "IsOverDraw": true,
+                    "IsVisible": true,
+                    "LightMapIndex": 0.0,
+                    "LightMapOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LightMapScale": 0.0,
+                    "LightMapTiling": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "MaskColor": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.16300582885742188,
+                        "y": -1.1665477752685547,
+                        "z": 0.5262017250061035
+                    },
+                    "Local_Quaternion": {
+                        "w": 0.21818852424621582,
+                        "x": 0.16218002140522003,
+                        "y": 0.04191899299621582,
+                        "z": 0.9614229798316956
+                    },
+                    "Local_Scale": {
+                        "x": 0.20000015199184418,
+                        "y": 0.20000213384628296,
+                        "z": 0.200001522898674
+                    }
+                },
+                {
+                    "ComponentID": 2225601387,
+                    "ConnectedEntity": "Hand",
+                    "IsConnected": true,
+                    "Offset": {
+                        "x": -0.8225250244140625,
+                        "y": 0.684967041015625,
+                        "z": -1.8810272216796875
+                    },
+                    "OffsetQuaternion": {
+                        "w": -0.04191894456744194,
+                        "x": 0.9614229798316956,
+                        "y": 0.21818852424621582,
+                        "z": -0.1621798872947693
+                    },
+                    "OffsetRotation": {
+                        "x": -0.5633465051651001,
+                        "y": -160.72178649902344,
+                        "z": 154.3316650390625
+                    },
+                    "SocketName": [],
+                    "UseQuaternion": true
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 4232954518
+                }
+            ]
+        },
+        {
+            "EntityID": 3116918606,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "Camera"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -3.814697265625e-06
+                    },
+                    "Local_Quaternion": {
+                        "w": 1.0,
+                        "x": -0.0,
+                        "y": 1.4901162970204496e-08,
+                        "z": -0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.9999998807907104,
+                        "y": 1.0,
+                        "z": 0.9999998807907104
+                    }
+                },
+                {
+                    "ComponentID": 3575595261,
+                    "FOV": 0.7850000262260437,
+                    "FarZ": 100.0,
+                    "IsMain": true,
+                    "NearZ": 0.009999999776482582
+                },
+                {
+                    "ChildrenID": [
+                        3997813287,
+                        1866878129
+                    ],
+                    "ComponentID": 188567026
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 3577941629
+                }
+            ]
+        },
+        {
+            "EntityID": 3997813287,
+            "Component": [
+                {
+                    "ComponentID": 1365953231,
+                    "Name": "PlayerHand"
+                },
+                {
+                    "ComponentID": 3400599862,
+                    "Local_Location": {
+                        "x": -0.001499176025390625,
+                        "y": -2.1535415649414063,
+                        "z": 0.14999961853027344
+                    },
+                    "Local_Quaternion": {
+                        "w": -1.4342370491249312e-07,
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.0
+                    },
+                    "Local_Scale": {
+                        "x": 0.20000000298023224,
+                        "y": 0.20000000298023224,
+                        "z": 0.20000000298023224
+                    }
+                },
+                {
+                    "ComponentID": 1080109110,
+                    "UUID": "Hand"
+                },
+                {
+                    "AnimationSpeed_Transition": [
+                        [
+                            [
+                                84,
+                                111,
+                                65,
+                                116,
+                                116,
+                                97,
+                                99,
+                                107,
+                                95,
+                                80,
+                                105,
+                                115,
+                                116,
+                                111,
+                                108
+                            ],
+                            4.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                65,
+                                116,
+                                116,
+                                97,
+                                99,
+                                107,
+                                95,
+                                82,
+                                105,
+                                102,
+                                108,
+                                101
+                            ],
+                            4.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                65,
+                                116,
+                                116,
+                                97,
+                                99,
+                                107,
+                                95,
+                                83,
+                                104,
+                                111,
+                                116,
+                                71,
+                                117,
+                                110
+                            ],
+                            4.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                49,
+                                95,
+                                80,
+                                105,
+                                115,
+                                116,
+                                111,
+                                108
+                            ],
+                            3.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                49,
+                                95,
+                                82,
+                                105,
+                                102,
+                                108,
+                                101
+                            ],
+                            3.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                49,
+                                95,
+                                83,
+                                104,
+                                111,
+                                116,
+                                71,
+                                117,
+                                110
+                            ],
+                            3.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                50,
+                                95,
+                                80,
+                                105,
+                                115,
+                                116,
+                                111,
+                                108
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                50,
+                                95,
+                                82,
+                                105,
+                                102,
+                                108,
+                                101
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                50,
+                                95,
+                                83,
+                                104,
+                                111,
+                                116,
+                                71,
+                                117,
+                                110
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                104,
+                                111,
+                                111,
+                                107,
+                                95,
+                                83,
+                                119,
+                                111,
+                                114,
+                                100
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                104,
+                                111,
+                                111,
+                                107,
+                                95,
+                                80,
+                                105,
+                                115,
+                                116,
+                                111,
+                                108
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                104,
+                                111,
+                                111,
+                                107,
+                                95,
+                                82,
+                                105,
+                                102,
+                                108,
+                                101
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                104,
+                                111,
+                                111,
+                                107,
+                                95,
+                                83,
+                                104,
+                                111,
+                                116,
+                                71,
+                                117,
+                                110
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                105,
+                                110,
+                                116,
+                                101,
+                                114,
+                                97,
+                                99,
+                                116,
+                                105,
+                                111,
+                                110
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                65,
+                                116,
+                                116,
+                                97,
+                                99,
+                                107,
+                                49,
+                                95,
+                                83,
+                                119,
+                                111,
+                                114,
+                                100
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                65,
+                                116,
+                                116,
+                                97,
+                                99,
+                                107,
+                                50,
+                                95,
+                                83,
+                                119,
+                                111,
+                                114,
+                                100
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                65,
+                                116,
+                                116,
+                                97,
+                                99,
+                                107,
+                                51,
+                                95,
+                                83,
+                                119,
+                                111,
+                                114,
+                                100
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                49,
+                                95,
+                                83,
+                                119,
+                                111,
+                                114,
+                                100
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                73,
+                                100,
+                                108,
+                                101,
+                                48,
+                                50,
+                                95,
+                                83,
+                                119,
+                                111,
+                                114,
+                                100
+                            ],
+                            1.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                84,
+                                104,
+                                114,
+                                111,
+                                119,
+                                95,
+                                80,
+                                105,
+                                115,
+                                116,
+                                111,
+                                108
+                            ],
+                            4.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                84,
+                                104,
+                                114,
+                                111,
+                                119,
+                                95,
+                                82,
+                                105,
+                                102,
+                                108,
+                                101
+                            ],
+                            4.0,
+                            0.05000000074505806
+                        ],
+                        [
+                            [
+                                84,
+                                111,
+                                84,
+                                104,
+                                114,
+                                111,
+                                119,
+                                95,
+                                83,
+                                104,
+                                111,
+                                116,
+                                71,
+                                117,
+                                110
+                            ],
+                            4.0,
+                            0.05000000074505806
+                        ]
+                    ],
+                    "ComponentID": 2778840952,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "curAni": 17,
+                    "isLoop": false,
+                    "speed": 10.0,
+                    "transitionDuration": 0.4000000059604645
+                },
+                {
+                    "ComponentID": 1142749570,
+                    "FBX": [
+                        112,
+                        108,
+                        97,
+                        121,
+                        101,
+                        114,
+                        95,
+                        46,
+                        102,
+                        98,
+                        120
+                    ],
+                    "IsOverDraw": true,
+                    "IsVisible": true
+                },
+                {
+                    "ComponentID": 3243699741,
+                    "ParentID": 3116918606
                 }
             ]
         }
