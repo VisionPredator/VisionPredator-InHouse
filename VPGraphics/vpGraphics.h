@@ -146,3 +146,12 @@ namespace ui
 		bool isUnderlined = false;
 	};
 }
+
+namespace decal
+{
+	struct Info
+	{
+		std::string TexturePath;
+		VPMath::Vector3 VolumeSize= VPMath::Vector3(1.0f, 1.0f, 1.0f);
+	};
+}

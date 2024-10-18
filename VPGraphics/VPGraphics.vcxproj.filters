@@ -310,6 +310,8 @@
       <Filter>Pass\Deferred\Instancing</Filter>
     </ClInclude>
     <ClInclude Include="OverDrawPass.h" />
+    <ClInclude Include="DecalManager.h" />
+    <ClInclude Include="DecalPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -494,6 +496,8 @@
       <Filter>Pass\Deferred\Instancing</Filter>
     </ClCompile>
     <ClCompile Include="OverDrawPass.cpp" />
+    <ClCompile Include="DecalManager.cpp" />
+    <ClCompile Include="DecalPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
