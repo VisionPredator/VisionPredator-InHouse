@@ -51,6 +51,10 @@ DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_pt
 	m_Device.lock()->Context()->Unmap(m_InstanceBuffer.lock()->Get(), 0);
 
 
+	m_DecalVB = m_ResourceManager.lock()->Get<VertexBuffer>(L"Decal_VB");
+	m_DecalIB = m_ResourceManager.lock()->Get<IndexBuffer>(L"Decal_IB");
+
+
 }
 
 DecalPass::~DecalPass()

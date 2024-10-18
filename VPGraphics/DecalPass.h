@@ -55,5 +55,9 @@ private:
 	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
 	std::vector<InstanceDecalData> m_InstanceDatas;
 
+	std::weak_ptr<VertexBuffer> m_DecalVB;
+	std::weak_ptr<IndexBuffer> m_DecalIB;
+
+
 };
 

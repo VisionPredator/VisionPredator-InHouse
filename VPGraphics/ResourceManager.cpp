@@ -119,7 +119,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
 	Create<VertexShader>(L"Quad", L"QuadVS", "main");	
 	Create<VertexShader>(L"InstancingVS", L"InstancingVS");	//Instancing VS
-	Create<VertexShader>(L"DecalVS", L"DecalVS");	//Instancing VS
+	Create<VertexShader>(L"DecalVS", L"DecalVS");	//Decal VS
 
 	// ----------------------------------------------------------------------------------------
 	// Pixel Shader
