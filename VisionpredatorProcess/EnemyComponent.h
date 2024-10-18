@@ -4,13 +4,17 @@
 
 // State
 #include "EnemyBehaviorState.h"
+#include "EnemyIdleState.h"
+
 #include "EnemyCombatState.h"
+
 #include "EnemyMovementState.h"
 #include "EnemyIdleMovementState.h"
 
 #include "PlayerComponent.h"
 
 #include "../PhysxEngine/IPhysx.h"
+#include "../VPGraphics/IGraphics.h"
 
 class SceneManager;
 struct EnemyComponent : public Component
@@ -18,6 +22,8 @@ struct EnemyComponent : public Component
 	EnemyComponent()
 	{
 		MovementState = &EnemyMovementState::s_Idle;
+		BehaviorState = &EnemyBehaviorState::s_Idle;
+		//CombatState = &EnemyCombatState::s_Idle;
 	}
 
 	VP_JSONBODY(EnemyComponent, HP, CurrentFSM, CurrentAni, EnemyType, HorizontalFOV, VerticalFOV, NearZ, FarZ, IsModelFlipped)
@@ -47,4 +53,5 @@ struct EnemyComponent : public Component
 
 	std::weak_ptr<SceneManager> SceneManager{};
 	Physic::IPhysx* PhysicsManager = nullptr;
+	Graphics::Interface* Graphics = nullptr;
 };

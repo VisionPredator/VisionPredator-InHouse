@@ -10,6 +10,7 @@
 #include "EnemyMovementState.h"
 #include "EnemyJumpState.h"
 #include "StatesInclude.h"
+#include "EnemyBehaviorState.h"
 
 //#include "SceneManager.h"
 
@@ -27,10 +28,10 @@ void EnemySystem::Initialize()
 		}
 	}
 
-	for (auto& iter : m_SceneManager.lock()->GetComponentPool<IdentityComponent>())
-	{
-		iter.get().UUID;
-	}
+	//for (auto& iter : m_SceneManager.lock()->GetComponentPool<IdentityComponent>())
+	//{
+	//	iter.get().UUID;
+	//}
 
 	COMPLOOP(EnemyComponent, comp)
 	{
@@ -46,6 +47,7 @@ struct null_deleter
 	void operator()(void const *) const {}
 };
 
+// TODO: 이벤트를 만들어서 State 가 바뀌면 호출되게 만들기
 void EnemySystem::Start(uint32_t gameObjectId)
 {
 	if (!GetSceneManager()->HasComponent<EnemyComponent>(gameObjectId))
@@ -56,6 +58,7 @@ void EnemySystem::Start(uint32_t gameObjectId)
 
 	enemyCompRawPtr->SceneManager = m_SceneManager;
 	enemyCompRawPtr->PhysicsManager = m_PhysicsEngine;
+	enemyCompRawPtr->Graphics = m_Graphics;
 	enemyComp->MovementState->Enter(enemyComp);
 }
 
@@ -63,20 +66,27 @@ void EnemySystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(EnemyComponent, enemycomp)
 	{
+		const std::shared_ptr<EnemyComponent> enemyComp(&enemycomp, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
+
+
 		//HPCheck(enemycomp);
-		DetectTarget(enemycomp, deltaTime);
-		CalculateFSM(enemycomp);
+		//DetectTarget(enemycomp, deltaTime);
+		//CalculateFSM(enemycomp);
+
+		enemycomp.BehaviorState->Update(enemyComp, deltaTime);
 
 		//enemycomp.testState->Update(deltaTime);
 
 		// 상태 변경 예시
-		enemycomp.MovementState = &EnemyMovementState::s_Jumping;
+		//enemycomp.MovementState = &EnemyMovementState::s_Jumping;
+		//
+		//Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
+		//
+		//enemycomp.MovementState = &EnemyMovementState::s_Idle;
+		//
+		//Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
 
-		Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
-
-		enemycomp.MovementState = &EnemyMovementState::s_Idle;
-
-		Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
+		Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.BehaviorState).name()).substr(6));
 
 	}
 }

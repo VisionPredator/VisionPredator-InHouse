@@ -27,6 +27,18 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	DirectX::BoundingSphere noiseRange, chaseRange;
 	CreateDetectionAreas(enemyComp, transform, viewRange, noiseRange, chaseRange);
 
+#ifdef _DEBUG 
+	debug::FrustumInfo frustumInfo;
+	frustumInfo.Frustum = viewRange;
+	frustumInfo.Color = VisPred::SimpleMath::Color{ 1, 1, 0, 1 };
+	enemyComp.Graphics->DrawFrustum(frustumInfo);
+
+	debug::SphereInfo sphereInfo;
+	sphereInfo.Sphere = noiseRange;
+	sphereInfo.Color = VPMath::Color{ 1, 0, 1, 1 };
+	enemyComp.Graphics->DrawSphere(sphereInfo);
+#endif _DEBUG
+
 	if (!enemyComp.Player)
 		return;
 
@@ -63,13 +75,13 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		if (detectedObjID == playerID)
 		{
 			//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Chase);
-			enemyComp.MovementState = &EnemyMovementState::s_Run;
+			enemyComp.BehaviorState = &EnemyBehaviorState::s_Chase;
 			RotateToTarget(transform, targetDir, deltaTime);
 		}
 	}
 	else  // TODO: 뭔가.. 수정이 필요.
 	{
-		//enemyComp.
+		enemyComp.BehaviorState = &EnemyBehaviorState::s_Idle;
 		//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Idle);
 	}
 }
