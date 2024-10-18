@@ -33,9 +33,10 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::SlideSoundkey, PlayerSoundComponent::Volume_Slide
 		, PlayerSoundComponent::SitSoundKey, PlayerSoundComponent::Volume_Sit
 		, PlayerSoundComponent::HurtSoundKey, PlayerSoundComponent::Volume_Hurt
-	)
-
-
+	);
+		META_ADD_COMP(TrunComponent, TrunComponent::MoveTime, TrunComponent::Is_X, TrunComponent::Angle, TrunComponent::Finished);
+		META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::Damage);
+		META_ADD_COMP(PlayerMeleeComponent, PlayerMeleeComponent::DefalutPrefab, PlayerMeleeComponent::AttackMode, PlayerMeleeComponent::SwordLength, PlayerMeleeComponent::SwordAngle, PlayerMeleeComponent::SwordDamage, PlayerMeleeComponent::VPLength, PlayerMeleeComponent::VPAngle, PlayerMeleeComponent::VPDamage);
 
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV, EnemyComponent::NearZ, EnemyComponent::FarZ, EnemyComponent::IsModelFlipped);
 	META_ADD_COMP(GunComponent, GunComponent::Type,GunComponent::ThrowDamage, GunComponent::BulletPrefab,GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets,GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
@@ -45,6 +46,7 @@ void VispredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
 	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
+	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyStates, EnemyStates::Idle, EnemyStates::Chase, EnemyStates::Patrol, EnemyStates::Dead);
 	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);

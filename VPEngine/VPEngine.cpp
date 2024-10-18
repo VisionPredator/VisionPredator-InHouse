@@ -88,6 +88,8 @@ VPEngine::~VPEngine()
 }
 void VPEngine::Addsystem()
 {
+	m_TransformSystem = m_SystemManager->AddSystem<TransformSystem>();
+
 	m_SystemManager->AddSystem<SocketSystem>();
 	m_SystemManager->AddSystem<ControllerMovementSystem>();
 	m_SystemManager->AddSystem<PhysicSystem>();
@@ -111,7 +113,6 @@ void VPEngine::OnAddSystemLater(std::any)
 {
 	m_SystemManager->AddSystem<AnimationSystem>();
 
-	m_TransformSystem = m_SystemManager->AddSystem<TransformSystem>();
 	m_SystemManager->AddSystem<RenderSystem>();
 
 }

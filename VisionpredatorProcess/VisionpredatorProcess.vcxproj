@@ -195,6 +195,8 @@
     <ClInclude Include="AreaAttackComponent.h" />
     <ClInclude Include="AreaAttackSystem.h" />
     <ClInclude Include="TestCameraSystem.h" />
+    <ClInclude Include="TrunComponent.h" />
+    <ClInclude Include="TrunSystem.h" />
     <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
     <ClInclude Include="DataRegister_Vispred.h" />
@@ -239,6 +241,8 @@
     <ClCompile Include="AreaAttackComponent.cpp" />
     <ClCompile Include="AreaAttackSystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
+    <ClCompile Include="TrunComponent.cpp" />
+    <ClCompile Include="TrunSystem.cpp" />
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />
     <ClCompile Include="VPProcess.cpp" />
