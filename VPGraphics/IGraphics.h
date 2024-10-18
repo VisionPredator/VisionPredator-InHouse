@@ -16,7 +16,7 @@
 
 
 ///editor 전용으로 쓸때만 쓸거니까 나중에 어케 처리해주자
-#include <d3d11.h>
+//#include <d3d11.h>
 
 /// <summary>
 /// 게임 엔진에서 사용할 인터페이스 클래스
@@ -104,8 +104,12 @@ namespace Graphics
 		virtual void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info) abstract;
 		virtual void DeleteTextObject(uint32_t entityId) abstract;
 
+		///Decal
+		virtual void DrawDecal(decal::Info info) abstract;
+
+
 		///Editor 전용
-		virtual ID3D11ShaderResourceView* GetSRV(std::wstring name) abstract;
+		virtual void* GetSRV(std::wstring name) abstract;
 
 		///물리 전용
 		virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) abstract;

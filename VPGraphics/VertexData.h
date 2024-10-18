@@ -68,3 +68,17 @@ struct InstanceSkinnedData
 	VPMath::Matrix worldInverse;
 	MatrixPallete Bone;
 };
+
+
+
+//¿ŒΩ∫≈œΩÃ
+struct InstanceDecalData
+{
+	InstanceDecalData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity)
+	{
+
+	}
+
+	VPMath::Matrix world;
+	VPMath::Matrix worldInverse;
+};

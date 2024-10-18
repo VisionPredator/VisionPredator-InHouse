@@ -21,6 +21,7 @@ class PassManager;
 
 class LightManager;
 class TimeManager;
+class DecalManager;
 
 class ModelData;
 struct RenderData;
@@ -95,8 +96,12 @@ public:
 	void DrawQuad(const debug::QuadInfo& info) override;
 	void DrawRay(const debug::RayInfo& info) override;
 
+	///Decal
+	virtual void DrawDecal(decal::Info info) override;
+
+
 	///Editor
-	ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
+	void* GetSRV(std::wstring name) override;
 
 	///¹°¸®
 	virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) override;
@@ -124,6 +129,7 @@ private:
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
 	std::shared_ptr<class UIManager> m_UIManager;
+	std::shared_ptr <DecalManager> m_DecalManager;
 
 private:
 	HWND m_hWnd;

@@ -29,6 +29,7 @@
 #include "RimLight.h"
 #include "DeferredInstancing.h"
 #include "OverDrawPass.h"
+#include "DecalPass.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -73,7 +74,7 @@ PassManager::~PassManager()
 }
 
 void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
-	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager)
+	const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager, const std::shared_ptr<DecalManager> decalmanager)
 {
 	m_Device = device;
 	m_ResourceManager = resource;
@@ -81,6 +82,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_ParticleManager = particleManager;
 	m_UIManager = uiManager;
 	m_LightManager = lightmanager;
+	m_DecalManager = decalmanager;
 
 	//BasePasses
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
@@ -91,6 +93,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_GeometryPass = std::make_shared<GeoMetryPass>(m_Device.lock(), m_ResourceManager.lock());
 	m_Instancing = std::make_shared<DeferredInstancing>();
 	m_Instancing->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
+	m_OverDraw = std::make_shared<OverDrawPass>(m_Device.lock(), m_ResourceManager.lock());
+
 
 	//VPpasses
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
@@ -106,8 +110,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_UIPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_UIManager);
 
 
-	//overdraw pass
-	m_OverDraw = std::make_shared<OverDrawPass>(m_Device.lock(), m_ResourceManager.lock());
+	//decal
+	m_Decal = std::make_shared<DecalPass>(m_Device.lock(), m_ResourceManager.lock(),m_DecalManager);
 
 	//pass push
 	m_BasePasses.push_back(m_GeometryPass);
@@ -116,8 +120,9 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_BasePasses.push_back(m_DeferredPass);
 	m_BasePasses.push_back(m_ObjectMaskPass);
 	m_BasePasses.push_back(m_OverDraw);
-
 	m_BasePasses.push_back(m_TransparencyPass);
+	m_BasePasses.push_back(m_Decal);
+
 	m_VPPasses.push_back(m_VPOutLinePass);
 	m_VPPasses.push_back(m_RimLight);
 
@@ -154,11 +159,11 @@ void PassManager::Render()
 		m_DebugPass->Render();
 	}
 
-
 	for (auto& pass : m_BasePasses)
 	{
 		pass->Render();
 	}
+
 
 	for (auto& pass : m_IndepentCulling)
 	{
