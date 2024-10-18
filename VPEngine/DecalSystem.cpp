@@ -3,10 +3,19 @@
 
 void DecalSystem::BeginRenderUpdate(float deltaTime)
 {
+	for (DecalComponent& comp : COMPITER(DecalComponent))
+	{
+		decal::Info temp;
+		temp.TexturePath = comp.TextureName;
+		temp.VolumeSize = comp.VolumeSize;
+		m_Graphics->DrawDecal(temp);
+	}
 }
 
 void DecalSystem::RenderUpdate(float deltaTime)
 {
+
+	
 }
 
 void DecalSystem::LateRenderUpdate(float deltaTime)
@@ -15,6 +24,7 @@ void DecalSystem::LateRenderUpdate(float deltaTime)
 
 void DecalSystem::EditorRenderUpdate(float deltaTime)
 {
+	BeginRenderUpdate(deltaTime);
 }
 
 void DecalSystem::ComponentAdded(Component* comp)
@@ -33,4 +43,10 @@ void DecalSystem::ComponentAdded(Component* comp)
 
 void DecalSystem::ComponentReleased(Component* comp)
 {
+}
+
+void DecalSystem::Update(float deltaTime)
+{
+	
+
 }

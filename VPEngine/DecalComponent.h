@@ -11,6 +11,6 @@ public:
 
 
 
-	std::wstring TextureName{};
+	std::string TextureName{};
 	VPMath::Vector3 VolumeSize{1,1,1};
 };
