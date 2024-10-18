@@ -39,6 +39,7 @@
 #include "ParticleManager.h"
 #include "TimeManager.h"
 #include "UIManager.h"
+#include "DecalManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -62,6 +63,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
 	, m_DebugDrawManager(std::make_shared<DebugDrawManager>())
 	, m_ParticleManager(std::make_shared<ParticleManager>())
 	, m_UIManager(std::make_shared<UIManager>())
+	, m_DecalManager(std::make_shared <DecalManager>())
 	, m_PassManager(std::make_shared <PassManager>())
 {
 }
@@ -478,7 +480,7 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 
 void GraphicsEngine::DrawDecal(decal::Info info)
 {
-
+	m_DecalManager->AddTask(info);
 }
 
 void* GraphicsEngine::GetSRV(std::wstring name)

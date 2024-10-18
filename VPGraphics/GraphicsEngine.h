@@ -21,6 +21,7 @@ class PassManager;
 
 class LightManager;
 class TimeManager;
+class DecalManager;
 
 class ModelData;
 struct RenderData;
@@ -128,6 +129,7 @@ private:
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
 	std::shared_ptr<class UIManager> m_UIManager;
+	std::shared_ptr <DecalManager> m_DeManager;
 
 private:
 	HWND m_hWnd;
