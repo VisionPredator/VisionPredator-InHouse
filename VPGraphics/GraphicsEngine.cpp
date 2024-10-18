@@ -476,7 +476,12 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 }
 
 
-ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
+void GraphicsEngine::DrawDecal(decal::Info info)
+{
+
+}
+
+void* GraphicsEngine::GetSRV(std::wstring name)
 {
 	std::shared_ptr<ShaderResourceView> srv = m_ResourceManager->Get<ShaderResourceView>(name).lock();
 	if (srv != nullptr)
