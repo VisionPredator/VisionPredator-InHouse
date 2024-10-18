@@ -2,11 +2,33 @@
 #include "Component.h"
 #include "VisPredStructs.h"
 
+// State
+#include "EnemyBehaviorState.h"
+#include "EnemyIdleState.h"
+
+#include "EnemyCombatState.h"
+
+#include "EnemyMovementState.h"
+#include "EnemyIdleMovementState.h"
+
+#include "PlayerComponent.h"
+
+#include "../PhysxEngine/IPhysx.h"
+#include "../VPGraphics/IGraphics.h"
+
+class SceneManager;
 struct EnemyComponent : public Component
 {
+	EnemyComponent()
+	{
+		MovementState = &EnemyMovementState::s_Idle;
+		BehaviorState = &EnemyBehaviorState::s_Idle;
+		//CombatState = &EnemyCombatState::s_Idle;
+	}
+
 	VP_JSONBODY(EnemyComponent, HP, CurrentFSM, CurrentAni, EnemyType, HorizontalFOV, VerticalFOV, NearZ, FarZ, IsModelFlipped)
 	float HP{}; 
-	VisPred::Game::EnemyState CurrentFSM= VisPred::Game::EnemyState::Idle;
+	VisPred::Game::EnemyStates CurrentFSM= VisPred::Game::EnemyStates::Idle;
 	VisPred::Game::EnemyAni CurrentAni = VisPred::Game::EnemyAni::IDLE;
 	VisPred::Game::GunType EnemyType= VisPred::Game::GunType::PISTOL;
 
@@ -23,5 +45,13 @@ struct EnemyComponent : public Component
 	// 추격 범위
 	float ChaseRangeRadius = 40.f;	// 400m
 
-};
+	EnemyBehaviorState* BehaviorState;
+	EnemyCombatState* CombatState;
+	EnemyMovementState* MovementState;
 
+	PlayerComponent* Player = nullptr;
+
+	std::weak_ptr<SceneManager> SceneManager{};
+	Physic::IPhysx* PhysicsManager = nullptr;
+	Graphics::Interface* Graphics = nullptr;
+};

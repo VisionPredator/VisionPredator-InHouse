@@ -76,7 +76,7 @@ namespace VisPred
 			,ToVP_draw			=28
 		};
 
-		enum class EnemyState // 임시 이름. EnemyState 로 교체
+		enum class EnemyStates // 임시 이름. EnemyStates 로 교체
 		{
 			Idle,
 			Chase,
@@ -85,7 +85,7 @@ namespace VisPred
 
 			End
 		};
-		// TODO: 하위 행동 EnemyState 를 만들어야겠다. 컨테이너에 넣을까?
+		// TODO: 하위 행동 EnemyStates 를 만들어야겠다. 컨테이너에 넣을까?
 		enum class SecondState	// 임시 이름.
 		{
 			ReturnToSpawn,
