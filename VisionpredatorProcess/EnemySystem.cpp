@@ -25,9 +25,16 @@ void EnemySystem::Initialize()
 		}
 	}
 
+	for (auto& iter : m_SceneManager.lock()->GetComponentPool<IdentityComponent>())
+	{
+		iter.get().UUID;
+	}
+
 	COMPLOOP(EnemyComponent, comp)
 	{
 		Start(comp.GetEntityID());
+
+		comp.Player = m_PlayerComp;
 	}
 }
 
@@ -45,6 +52,7 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	const auto enemyCompRawPtr = GetSceneManager()->GetComponent<EnemyComponent>(gameObjectId);
 	const std::shared_ptr<EnemyComponent> enemyComp(enemyCompRawPtr, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
 
+	//enemyCompRawPtr->SceneManager = m_SceneManager;
 	enemyComp->MovementState->Enter(enemyComp);
 }
 
@@ -194,6 +202,11 @@ void EnemySystem::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 	if (!m_PlayerComp)
 		return;
+
+	for (auto it : m_SceneManager.lock()->GetComponentPool<IdentityComponent>())
+	{
+		
+	}
 
 	// 플레이어 위치 정보 얻어오기
 	const uint32_t playerID = m_PlayerComp->GetEntityID();

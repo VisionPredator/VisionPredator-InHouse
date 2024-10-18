@@ -8,6 +8,10 @@
 #include "EnemyMovementState.h"
 #include "EnemyIdleMovementState.h"
 
+
+#include "PlayerComponent.h"
+//class SceneManager;
+
 struct EnemyComponent : public Component
 {
 	EnemyComponent()
@@ -37,4 +41,7 @@ struct EnemyComponent : public Component
 	EnemyBehaviorState* BehaviorState;
 	EnemyCombatState* CombatState;
 	EnemyMovementState* MovementState;
+
+	PlayerComponent* Player = nullptr;
+	//std::weak_ptr<SceneManager> SceneManager{};
 };
