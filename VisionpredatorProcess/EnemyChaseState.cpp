@@ -4,11 +4,6 @@
 #include "NavAgentComponent.h"
 #include "StatesInclude.h"
 
-struct null_deleter
-{
-	void operator()(void const*) const {}
-};
-
 void EnemyChaseState::Enter(const std::shared_ptr<Component>& component)
 {
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
@@ -16,9 +11,7 @@ void EnemyChaseState::Enter(const std::shared_ptr<Component>& component)
 	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
 	navComp->IsChase = true;
 
-	// ¸¶¹«¸®
-	enemyComp->MovementState = &EnemyMovementState::s_Run;
-	enemyComp->MovementState->Enter(enemyComp);
+	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Run);
 }
 
 void EnemyChaseState::Update(const std::shared_ptr<Component>& component, float deltaTime)

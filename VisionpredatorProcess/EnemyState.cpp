@@ -146,6 +146,31 @@ void EnemyState::RotateToTarget(TransformComponent* transform, VisPred::SimpleMa
 	transform->SetWorldQuaternion(rotation);
 }
 
+void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemyComponent, IState* newState)
+{
+	if (auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+		if (enemyComponent->MovementState != movementState)
+			enemyComponent->MovementState->Exit(enemyComponent);
+
+		enemyComponent->MovementState = movementState;
+		enemyComponent->MovementState->Enter(enemyComponent);
+	}
+	else if (auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+		if (enemyComponent->BehaviorState != behaviorState)
+			enemyComponent->BehaviorState->Exit(enemyComponent);
+
+		enemyComponent->BehaviorState = behaviorState;
+		enemyComponent->BehaviorState->Enter(enemyComponent);
+	}
+	//else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+	//	enemyComponent->CombatState = combatState;
+	//	enemyComponent->CombatState->Enter(enemyComponent);
+	//}
+	else {
+		Log::GetClientLogger()->error("Unknown state type passed to ChangeState.");
+	}
+}
+
 void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, bool isLoop, bool isImmediate)
 {
 	// 변경하려는 애니메이션과 현재 애니메이션이 같다면 애니메이션 변경을 수행하지 않음

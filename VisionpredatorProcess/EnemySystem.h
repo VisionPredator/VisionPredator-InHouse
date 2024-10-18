@@ -4,7 +4,6 @@
 
 class EnemySystem :
 	public System
-	, public EventSubscriber
 	, public IFixedUpdatable
 	, public IUpdatable
 	, public IPhysicable
@@ -12,7 +11,7 @@ class EnemySystem :
 	, public IStartable
 {
 public:
-	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager);
+	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager) : System(sceneManager) {}
 	
 public:
 	// IStartable
@@ -37,47 +36,7 @@ public:
 	void PhysicsUpdate(float deltaTime) override {}
 	void PhysicsLateUpdate(float deltaTime) override {}
 
-	void OnChangeState(std::any state);
-
 private:
-	void CalculateFSM(EnemyComponent& enemyComp);
-	void CalculateIdle(EnemyComponent& enemyComp);
-	void CalculateChase(EnemyComponent& enemyComp);
-	void CalculatePatrol(EnemyComponent& enemyComp);
-	void CalculateDie(EnemyComponent& enemyComp);
-
-private:
-	/// <summary>
-	///	시야 범위, 소음 범위, 추격 범위 안에 플레이어가 있는지 확인한후 Enemy의 상태를 처리
-	/// </summary>
-	void DetectTarget(EnemyComponent& enemyComp, float deltaTime);
-
-	/// <summary>
-	/// 시야 범위, 소음 범위, 추격 범위를 생성하여 반환
-	/// </summary>
-    static void CreateDetectionAreas(const EnemyComponent& enemyComp, const TransformComponent* transform, DirectX::BoundingFrustum& viewRangeOutput, DirectX::BoundingSphere& noiseRangeOutput, DirectX::BoundingSphere& chaseRangeOutput);
-
-	/// <summary>
-	/// 플레이어를 향해 회전
-	/// </summary>
-    static void RotateToTarget(TransformComponent* transform, VisPred::SimpleMath::Vector3 targetDir, float deltaTime);
-
-	/// <summary>
-	///	사망 처리 애니메이션 출력 후 객체 삭제 (ObjectPool이 구현되어 있다면 Pool에 오브젝트 반환)
-	/// </summary>
-	void Die(EnemyComponent& enemyComp);
-
-	/// <summary>
-	/// 현재 상태 Enum 값 변경 for FSM
-	/// </summary>
-    static void ChangeCurrentStateEnumValue(EnemyComponent& enemyComp, VisPred::Game::EnemyStates state) { enemyComp.CurrentFSM = state; }
-
-	/// <summary>
-	/// 현재 애니메이션 변경
-	/// </summary>
-	void ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, bool isLoop = true, bool isImmediate = false);
-
-private:
-	PlayerComponent* m_PlayerComp = nullptr;
+	PlayerComponent* m_PlayerComp = nullptr;	// TODO: 삭제
 };
 
