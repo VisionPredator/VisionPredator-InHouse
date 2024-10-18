@@ -16,9 +16,7 @@ public:
 private:
 	std::shared_ptr<DecalManager> m_DecalManager;
 private:
-	std::weak_ptr<VertexBuffer> m_BoundingVolume;	//depth buffer에서 확인한 영역
-	std::weak_ptr<ShaderResourceView> m_Texture;	//어떤 텍스처를 데칼로 그려낼건지
-	std::weak_ptr<ConstantBuffer<VPMath::XMFLOAT3>> m_VolumeSize;	//bounding volume 각 축에대한 사이즈
+	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 
 	//GBuffer Texture
 	std::weak_ptr<ShaderResourceView> m_AlbedoSRV;
@@ -26,6 +24,9 @@ private:
 	std::weak_ptr<ShaderResourceView> m_PositionSRV;
 	std::weak_ptr<ShaderResourceView> m_DepthSRV;
 	std::weak_ptr<ShaderResourceView> m_MetalicRoughnessSRV;
+	std::weak_ptr<ShaderResourceView> m_AmbientOcclusionSRV;
+	std::weak_ptr<ShaderResourceView> m_EmissiveSRV;
+	std::weak_ptr<ShaderResourceView> m_LightMapSRV;
 
 	//quad
 	std::weak_ptr<VertexBuffer> m_QuadVB;
@@ -38,5 +39,21 @@ private:
 
 	//
 	std::weak_ptr<PixelShader> m_DecalPS;
+
+
+	// Multi Render Target
+	std::weak_ptr<RenderTargetView> m_AlbedoRTV;
+	std::weak_ptr<RenderTargetView> m_NormalRTV;
+	std::weak_ptr<RenderTargetView> m_PositionRTV;
+	std::weak_ptr<RenderTargetView> m_DepthRTV;
+	std::weak_ptr<RenderTargetView> m_MetalicRoughnessRTV;
+	std::weak_ptr<RenderTargetView> m_AORTV;
+	std::weak_ptr<RenderTargetView> m_EmissiveRTV;
+	std::weak_ptr<RenderTargetView> m_LightMapRTV;
+
+
+	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
+	std::vector<InstanceDecalData> m_InstanceDatas;
+
 };
 
