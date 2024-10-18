@@ -75,25 +75,23 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		{
 			if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Chase)
 			{
-				enemyComp.BehaviorState = &EnemyBehaviorState::s_Chase;
-				std::any data = 123;	// TEMP
-				//EventManager::GetInstance().ScheduleEvent("OnChangeState", data);
-				const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
-				enemyComp.BehaviorState->Enter(temp);
+				//enemyComp.BehaviorState = &EnemyBehaviorState::s_Chase;
+				//const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
+				//enemyComp.BehaviorState->Enter(temp);
+				ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Chase);
 			}
 			RotateToTarget(transform, targetDir, deltaTime);	// TODO: MovementState 쪽으로 옮겨야 할듯..?
 
 		}
 	}
-	else  // TODO: 뭔가.. 수정이 필요.
+	else  // TODO: 뭔가.. 수정이 필요.	 // 현재 상태를 유지 -> 현재 상태를 매개변수로 받아오기.
 	{
 		if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Idle)
 		{
-			enemyComp.BehaviorState = &EnemyBehaviorState::s_Idle;
-			std::any data = 123;	// TEMP
-			//EventManager::GetInstance().ScheduleEvent("OnChangeState", data);
-			const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
-			enemyComp.BehaviorState->Enter(temp);
+			//enemyComp.BehaviorState = &EnemyBehaviorState::s_Idle;
+			//const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
+			//enemyComp.BehaviorState->Enter(temp);
+			ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Idle);
 		}
 
 	}
@@ -165,6 +163,33 @@ void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemy
 	//else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
 	//	enemyComponent->CombatState = combatState;
 	//	enemyComponent->CombatState->Enter(enemyComponent);
+	//}
+	else {
+		Log::GetClientLogger()->error("Unknown state type passed to ChangeState.");
+	}
+}
+
+void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newState)
+{
+	const std::shared_ptr<EnemyComponent> temp(&enemyComponent, null_deleter{});
+
+	if (auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+		if (enemyComponent.MovementState != movementState)
+			enemyComponent.MovementState->Exit(temp);
+
+		enemyComponent.MovementState = movementState;
+		enemyComponent.MovementState->Enter(temp);
+	}
+	else if (auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+		if (enemyComponent.BehaviorState != behaviorState)
+			enemyComponent.BehaviorState->Exit(temp);
+
+		enemyComponent.BehaviorState = behaviorState;
+		enemyComponent.BehaviorState->Enter(temp);
+	}
+	//else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+	//	enemyComponent->CombatState = combatState;
+	//	enemyComponent->CombatState->Enter(temp);
 	//}
 	else {
 		Log::GetClientLogger()->error("Unknown state type passed to ChangeState.");

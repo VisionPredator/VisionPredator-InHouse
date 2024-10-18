@@ -20,7 +20,6 @@ void EnemyMovementState::Enter(const std::shared_ptr<Component>& component)
 
 void EnemyMovementState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
-	Log::GetClientLogger()->info("Update MovementState");
 }
 
 void EnemyMovementState::Exit(const std::shared_ptr<Component>& component)

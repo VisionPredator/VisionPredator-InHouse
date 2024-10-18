@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "EnemyChaseState.h"
 #include "EnemyComponent.h"
-#include "NavAgentComponent.h"
 #include "StatesInclude.h"
+#include "NavAgentComponent.h"
 
 void EnemyChaseState::Enter(const std::shared_ptr<Component>& component)
 {
+	Log::GetClientLogger()->info("Enter ChaseState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 
 	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
@@ -22,5 +23,9 @@ void EnemyChaseState::Update(const std::shared_ptr<Component>& component, float 
 
 void EnemyChaseState::Exit(const std::shared_ptr<Component>& component)
 {
+	Log::GetClientLogger()->info("Exit ChaseState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+
+	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
+	navComp->IsChase = false;
 }

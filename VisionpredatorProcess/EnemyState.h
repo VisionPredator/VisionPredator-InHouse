@@ -23,6 +23,7 @@ public:
 	/// 현재 상태를 변환하고 Enter함수를 호출한다. 이전 상태는 Exit 함수를 호출한다.
 	/// </summary>
 	static void ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemyComponent, IState* newState);
+	static void ChangeCurrentState(EnemyComponent& enemyComponent, IState* newState);
 
 	/// <summary>
 	/// 현재 애니메이션 변경
