@@ -70,4 +70,8 @@
         return *this;\
     }
 
-//
+constexpr float DegToRad(float degrees) 
+{
+    return degrees * (VPMath::XM_PI / 180.0f);
+}
+

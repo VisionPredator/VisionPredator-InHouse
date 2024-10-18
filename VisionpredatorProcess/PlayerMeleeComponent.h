@@ -1,14 +1,27 @@
 #pragma once
 #include <Component.h>
+#include "VisPredStructs.h"
 struct PlayerMeleeComponent :
 	public Component
 {
 	PlayerMeleeComponent();
-	VP_JSONBODY(PlayerMeleeComponent, SwordDamage, SwordLength, VPDamage, VPLength)
-		VPMath::Vector2 SwordLength{};
-		VPMath::Vector2 VPLength{};
+	VP_JSONBODY(PlayerMeleeComponent, DefalutPrefab, SwordDamage, SwordLength, SwordAngle, VPDamage, VPLength, VPAngle)
+
+		
+	std::string DefalutPrefab;
+	VisPred::Game::PlayerMelee AttackMode= VisPred::Game::PlayerMelee::Sword_First;
+	bool IsVPMode{};
+	float Length{};
+	float Damage{};
+	float Angle{};
+	float Time{};
+	bool IsLeft{};
+	float SwordLength{};
+	float VPLength{};
 	float SwordDamage{};
 	float VPDamage{};
+	float SwordAngle{};
+	float VPAngle{};
 
 
 

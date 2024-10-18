@@ -13,6 +13,7 @@ struct AnimationComponent : public Component
 	int preAni = 1;	
 
 	float duration = 0;	//애니메이션 재생시간
+	float AniDuration{};
 	float preDuration = 0;
 	bool isPlay = true;
 	bool isLoop = true;

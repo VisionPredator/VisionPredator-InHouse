@@ -19,12 +19,14 @@ void VPProcess::Initialize()
 
 void VPProcess::AddSystems()
 {
+	m_SystemManager->AddSystem<TrunSystem>();
 	m_SystemManager->AddSystem<PlayerUISystem>();
 	m_SystemManager->AddSystem<PlayerSystem>();
 	m_SystemManager->AddSystem<TestCameraSystem>();
 	m_SystemManager->AddSystem<BulletSystem>();
 	m_SystemManager->AddSystem<EnemySystem>();
 	m_SystemManager->AddSystem<GunSystem>();
+	m_SystemManager->AddSystem<AreaAttackSystem>();
 }
 
 VPProcess::~VPProcess()

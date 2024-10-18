@@ -38,6 +38,8 @@ void AnimationSystem::OnChangeAnimation(std::any aniBlendData)
 		{
 			aniComp->preAni = aniComp->curAni;
 			aniComp->curAni = aniblenddata.Index;
+			aniComp->AniDuration = m_Graphics->GetDuration(aniComp->FBX, aniComp->curAni);
+
 			aniComp->preDuration = aniComp->duration;
 			if (aniblenddata.Speed > 0.001f)
 			{
@@ -117,22 +119,23 @@ void AnimationSystem::Update(float deltaTime)
 			return;
 		aniComp.IsFinished = false;
 		aniComp.PlayerCurAni = static_cast<VisPred::Game::PlayerAni>(aniComp.curAni);
+		aniComp.AniDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
+
 		//애니메이션 계속 재생
 		if (aniComp.preAni == aniComp.curAni)
 		{
 			aniComp.IsBlending = false;
-			double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
-			if (aniComp.duration >= curDuration)
+			if (aniComp.duration >= aniComp.AniDuration)
 			{
 				if (aniComp.isLoop)
 				{
-					aniComp.duration -= curDuration;
+					aniComp.duration -= aniComp.AniDuration;
 					aniComp.IsFinished = false;
 				}
 				else
 				{
 					aniComp.IsFinished = true;
-					aniComp.duration = curDuration;
+					aniComp.duration = aniComp.AniDuration;
 				}
 			}
 			aniComp.duration += deltaTime* aniComp.speed;
@@ -148,7 +151,7 @@ void AnimationSystem::Update(float deltaTime)
 				aniComp.preAni = aniComp.curAni;
 				aniComp.duration = 0;
 			}
-		aniComp.duration += deltaTime ;
+			aniComp.duration += deltaTime;
 		}
 	}
 }

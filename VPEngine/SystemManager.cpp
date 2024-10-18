@@ -281,8 +281,10 @@
 
 	void SystemManager::InitializeSystems()
 	{
+		EventManager::GetInstance().ImmediateEvent("OnUpdate");
 		for (auto startable:m_Startables)
 			startable->Initialize();
+
 	}
 
 	void SystemManager::FinalizeSystems()
@@ -299,8 +301,10 @@
 
 	void SystemManager::OnStart(std::any data)
 	{
+
 		uint32_t entityID = std::any_cast<uint32_t>(data);
 		Start(entityID);
+
 	}
 
 	void SystemManager::OnFinish(std::any data)

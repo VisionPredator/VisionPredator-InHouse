@@ -3,4 +3,8 @@
 
 AreaAttackComponent::AreaAttackComponent()
 {
+
+
+
+
 }

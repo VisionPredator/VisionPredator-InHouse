@@ -490,7 +490,7 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 	if (prefabData.scale.x > 0)
 		Transform->SetLocalScale(prefabData.scale);
 	Transform->SetLocalRotation(prefabData.rotation);
-
+	EventManager::GetInstance().ScheduleEvent("OnUpdate");
 	for (auto [old, newID] : entityResettingPair)
 		EventManager::GetInstance().ScheduleEvent("OnStart", newID);
 
