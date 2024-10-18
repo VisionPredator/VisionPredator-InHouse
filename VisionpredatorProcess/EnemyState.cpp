@@ -5,18 +5,17 @@
 #include "TransformComponent.h"
 #include "../VPGraphics/D3DUtill.h"
 
-#include "EnemyMovementState.h"
-#include "EnemyCombatState.h"
-#include "EnemyBehaviorState.h"
-#include "EnemyJumpState.h"
-#include "EnemyRunState.h"
-#include "EnemyIdleState.h"
-#include "EnemyChaseState.h"
+#include "StatesInclude.h"
+
+struct null_deleter
+{
+	void operator()(void const*) const {}
+};
 
 void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 {
 	// 현재 Enemy가 Dead 상태라면 탐지를 수행하지 않음
-	if (enemyComp.CurrentFSM == VisPred::Game::EnemyStates::Dead)
+	if (enemyComp.BehaviorState == &EnemyBehaviorState::s_Dead)
 		return;
 
 	const uint32_t enemyID = enemyComp.GetEntityID();
@@ -27,6 +26,7 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	DirectX::BoundingSphere noiseRange, chaseRange;
 	CreateDetectionAreas(enemyComp, transform, viewRange, noiseRange, chaseRange);
 
+	// draw debug circle, frustum
 #ifdef _DEBUG 
 	debug::FrustumInfo frustumInfo;
 	frustumInfo.Frustum = viewRange;
@@ -66,23 +66,36 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	isInNoiseRange = noiseRange.Contains(playerPos) && (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::RUN) || (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;	// 최적화 필요.
 
 	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
-	//if (viewRange.Contains(playerPos) || noiseRange.Contains(playerPos))	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
-	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
+	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다.
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 
 		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
 		if (detectedObjID == playerID)
 		{
-			//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Chase);
-			enemyComp.BehaviorState = &EnemyBehaviorState::s_Chase;
-			RotateToTarget(transform, targetDir, deltaTime);
+			if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Chase)
+			{
+				enemyComp.BehaviorState = &EnemyBehaviorState::s_Chase;
+				std::any data = 123;	// TEMP
+				//EventManager::GetInstance().ScheduleEvent("OnChangeState", data);
+				const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
+				enemyComp.BehaviorState->Enter(temp);
+			}
+			RotateToTarget(transform, targetDir, deltaTime);	// TODO: MovementState 쪽으로 옮겨야 할듯..?
+
 		}
 	}
 	else  // TODO: 뭔가.. 수정이 필요.
 	{
-		enemyComp.BehaviorState = &EnemyBehaviorState::s_Idle;
-		//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Idle);
+		if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Idle)
+		{
+			enemyComp.BehaviorState = &EnemyBehaviorState::s_Idle;
+			std::any data = 123;	// TEMP
+			//EventManager::GetInstance().ScheduleEvent("OnChangeState", data);
+			const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
+			enemyComp.BehaviorState->Enter(temp);
+		}
+
 	}
 }
 

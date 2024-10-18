@@ -14,6 +14,12 @@
 
 //#include "SceneManager.h"
 
+EnemySystem::EnemySystem(const std::shared_ptr<SceneManager>& sceneManager)
+	: System(sceneManager)
+{
+	EventManager::GetInstance().Subscribe("OnChangeState", CreateSubscriber(&EnemySystem::OnChangeState));
+}
+
 void EnemySystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, comp)
@@ -59,6 +65,8 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	enemyCompRawPtr->SceneManager = m_SceneManager;
 	enemyCompRawPtr->PhysicsManager = m_PhysicsEngine;
 	enemyCompRawPtr->Graphics = m_Graphics;
+	enemyComp->BehaviorState->Enter(enemyComp);
+	//enemyComp->CombatState->Enter(enemyComp);
 	enemyComp->MovementState->Enter(enemyComp);
 }
 
@@ -74,20 +82,19 @@ void EnemySystem::FixedUpdate(float deltaTime)
 		//CalculateFSM(enemycomp);
 
 		enemycomp.BehaviorState->Update(enemyComp, deltaTime);
+		//enemycomp.CombatState->Update(enemyComp, deltaTime);
+		enemycomp.MovementState->Update(enemyComp, deltaTime);
 
-		//enemycomp.testState->Update(deltaTime);
+		Log::GetClientLogger()->info("Current Behavior State: {}", std::string(typeid(*enemycomp.BehaviorState).name()).substr(6));
+		Log::GetClientLogger()->info("Current Movement State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
+	}
+}
 
-		// 상태 변경 예시
-		//enemycomp.MovementState = &EnemyMovementState::s_Jumping;
-		//
-		//Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
-		//
-		//enemycomp.MovementState = &EnemyMovementState::s_Idle;
-		//
-		//Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
-
-		Log::GetClientLogger()->info("Current State: {}", std::string(typeid(*enemycomp.BehaviorState).name()).substr(6));
-
+void EnemySystem::OnChangeState(std::any state)
+{
+	COMPLOOP(EnemyComponent, comp)
+	{
+		Start(comp.GetEntityID());
 	}
 }
 

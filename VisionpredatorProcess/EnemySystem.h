@@ -4,6 +4,7 @@
 
 class EnemySystem :
 	public System
+	, public EventSubscriber
 	, public IFixedUpdatable
 	, public IUpdatable
 	, public IPhysicable
@@ -11,7 +12,7 @@ class EnemySystem :
 	, public IStartable
 {
 public:
-    EnemySystem(const std::shared_ptr<SceneManager>& sceneManager) : System(sceneManager) {}
+	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager);
 	
 public:
 	// IStartable
@@ -35,6 +36,8 @@ public:
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override {}
 	void PhysicsLateUpdate(float deltaTime) override {}
+
+	void OnChangeState(std::any state);
 
 private:
 	void CalculateFSM(EnemyComponent& enemyComp);

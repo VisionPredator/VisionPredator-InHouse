@@ -15,7 +15,6 @@ void EnemyIdleMovementState::Enter(const std::shared_ptr<Component>& component)
 
 void EnemyIdleMovementState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
-	Log::GetClientLogger()->info("Update IdleMovementState");
 }
 
 void EnemyIdleMovementState::Exit(const std::shared_ptr<Component>& component)
