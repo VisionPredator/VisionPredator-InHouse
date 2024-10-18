@@ -11,22 +11,30 @@
 /// 디퍼드 렌더링 기법을 사용한다.
 /// </summary>
 
+class ModelData;
+
+#pragma region Pass
 class ObjectMaskPass;
 class ParticlePass;
 class OutlineEdgeDetectPass;
 class OutlineBlurPass;
 class OutlineAddPass;
-class TimeManager;
-class ParticleManager;
-class ModelData;
-class DebugDrawManager;
-class UIManager;
 class GeoMetryPass;
 class VPOutLinePass;
 class RimLight;
 class DeferredInstancing;
 class OverDrawPass;
+class DecalPass;
+#pragma region Pass
 
+#pragma region Manager
+class UIManager;
+class DecalManager;
+class TimeManager;
+class ParticleManager;
+class DebugDrawManager;
+#pragma endregion
+	
 class PassManager
 {
 public:
@@ -34,7 +42,8 @@ public:
 	~PassManager();
 
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resource, const std::shared_ptr<DebugDrawManager>& debug,
-		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager);
+		const std::shared_ptr<ParticleManager>& particleManager, const std::shared_ptr<UIManager>& uiManager, const std::shared_ptr<LightManager>& lightmanager,
+		const std::shared_ptr<DecalManager> decalmanager);
 	void Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling);
 
 	void Render();
@@ -63,7 +72,9 @@ private:
 	std::shared_ptr<RimLight> m_RimLight;
 	std::shared_ptr<DeferredInstancing> m_Instancing;
 	std::shared_ptr<OverDrawPass> m_OverDraw;
+	std::shared_ptr<DecalPass> m_Decal;
 
+private:
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;
 	std::weak_ptr<DebugDrawManager> m_DebugDrawManager;
@@ -71,6 +82,7 @@ private:
 	TimeManager* m_TimeManager = nullptr;
 	std::shared_ptr<UIManager> m_UIManager;
 	std::shared_ptr<LightManager> m_LightManager;
+	std::shared_ptr<DecalManager> m_DecalManager;
 
 	VPMath::Matrix m_View;
 	VPMath::Matrix m_Proj;

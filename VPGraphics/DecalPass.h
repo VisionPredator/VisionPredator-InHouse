@@ -7,7 +7,7 @@ class DecalPass :
     public RenderPass
 {
 public:
-	DecalPass();
+	DecalPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DecalManager> decalmanager);
 	~DecalPass();
 
 	virtual void Render() override;

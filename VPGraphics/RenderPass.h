@@ -71,6 +71,8 @@ public:
 	RenderPass() = default;
 	virtual ~RenderPass();
 
+	RenderPass(const std::shared_ptr<Device> device, const std::shared_ptr<ResourceManager> resourcemanager);
+
 	virtual void Render() abstract;
 	virtual void OnResize() abstract;
 

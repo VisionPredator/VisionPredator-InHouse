@@ -3,7 +3,6 @@
 
 DecalManager::DecalManager()
 {
-
 }
 
 void DecalManager::Initialize()
@@ -22,13 +21,17 @@ void DecalManager::AddTask(decal::Info info)
 	{
 		std::vector < decal::Info > temp;
 		temp.push_back(info);
-		m_decals.insert(std::pair<std::string, std::vector<decal::Info>>(info.TexturePath,temp));
+		m_decals.insert(std::pair<std::string, std::vector<decal::Info>>(info.TexturePath, temp));
 	}
 }
 
 void DecalManager::ClearDecals()
 {
-	m_decals.clear();
+
+	if (!m_decals.empty())
+	{
+		m_decals.clear();
+	}
 }
 
 std::map<std::string, std::vector<decal::Info>>& DecalManager::GetDecals()
