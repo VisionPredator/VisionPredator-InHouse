@@ -19,6 +19,7 @@ void AreaAttackSystem::EnterTrigger(std::pair<uint32_t, uint32_t> entitypair)
 		TriggerAttack(*entity_first->GetComponent<AreaAttackComponent>(), *entity_second->GetComponent<EnemyComponent>());
 	else if (entity_first->HasComponent<EnemyComponent>() && entity_second->HasComponent<AreaAttackComponent>())
 		TriggerAttack(*entity_second->GetComponent<AreaAttackComponent>(), *entity_first->GetComponent<EnemyComponent>());
+
 }
 
 

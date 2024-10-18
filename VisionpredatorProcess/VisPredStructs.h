@@ -19,7 +19,16 @@ namespace VisPred
 			ReturnToEndAim
 
 		};
-
+		enum class PlayerMelee
+		{
+			Sword_First,
+			Sword_Second,
+			Sword_Third,
+			Sword_Fourth,
+			VP_Left,
+			VP_Right,
+			END
+		};
 		enum class EFSM
 		{
 			IDLE,

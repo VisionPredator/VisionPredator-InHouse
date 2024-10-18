@@ -6,3 +6,4 @@
 #include "AreaAttackComponent.h"
 #include "PlayerSoundComponent.h"
 #include "PlayerMeleeComponent.h"
+#include "TrunComponent.h"
