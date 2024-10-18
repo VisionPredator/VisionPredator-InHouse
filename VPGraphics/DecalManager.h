@@ -13,10 +13,12 @@ public:
 
 	void Initialize();
 	void AddTask(decal::Info info);
-	std::queue<decal::Info> GetTask() const;
+	void ClearDecals();
 
+	std::map<std::string, std::vector<decal::Info>>& GetDecals();
 
 private:
-	std::queue<decal::Info> m_decals;
+
+	std::map<std::string, std::vector<decal::Info>> m_decals;
 };
 

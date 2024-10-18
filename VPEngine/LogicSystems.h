@@ -16,3 +16,4 @@
 #include "SkinnedMeshSystem.h"
 #include "GeometrySystem.h"
 #include "SoundSystem.h"
+#include "DecalSystem.h"

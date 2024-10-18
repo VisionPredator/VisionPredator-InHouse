@@ -7,10 +7,11 @@ class DecalComponent :
 {
 public:
 	DecalComponent() = default;
-	VP_JSONBODY(DecalComponent, TextureName,VolumeSize);
+	VP_JSONBODY(DecalComponent, TextureName,WorldTransform);
 
 
 
 	std::string TextureName{};
-	VPMath::Vector3 VolumeSize{1,1,1};
+	VPMath::Matrix WorldTransform = {};
+
 };

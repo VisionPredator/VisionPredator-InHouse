@@ -13,10 +13,25 @@ void DecalManager::Initialize()
 
 void DecalManager::AddTask(decal::Info info)
 {
-	m_decals.push(info);
+	if (m_decals.find(info.TexturePath) != m_decals.end())
+	{
+		m_decals[info.TexturePath].push_back(info);
+		return;
+	}
+	else
+	{
+		std::vector < decal::Info > temp;
+		temp.push_back(info);
+		m_decals.insert(std::pair<std::string, std::vector<decal::Info>>(info.TexturePath,temp));
+	}
 }
 
-std::queue<decal::Info> DecalManager::GetTask() const
+void DecalManager::ClearDecals()
 {
-	return m_decals;
+	m_decals.clear();
+}
+
+std::map<std::string, std::vector<decal::Info>>& DecalManager::GetDecals()
+{
+	return  m_decals;
 }

@@ -11,6 +11,7 @@
 #include "../PhysxEngine/IPhysx.h"
 #include "../SoundEngine/SoundEngine.h"
 #include "../SoundEngine/ISound.h"
+
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
@@ -102,6 +103,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<CameraSystem>();
 	m_SystemManager->AddSystem<LifeTimeSystem>();
 	m_SystemManager->AddSystem<SoundSystem>();
+	m_SystemManager->AddSystem<DecalSystem>();
 
 
 }

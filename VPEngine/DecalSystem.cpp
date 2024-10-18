@@ -1,13 +1,20 @@
 #include "pch.h"
 #include "DecalSystem.h"
 
+DecalSystem::DecalSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
+{
+
+}
+
 void DecalSystem::BeginRenderUpdate(float deltaTime)
 {
 	for (DecalComponent& comp : COMPITER(DecalComponent))
 	{
+		auto transform = comp.GetComponent<TransformComponent>();
+
 		decal::Info temp;
 		temp.TexturePath = comp.TextureName;
-		temp.VolumeSize = comp.VolumeSize;
+		temp.WorldTransform = transform->WorldTransform;
 		m_Graphics->DrawDecal(temp);
 	}
 }
@@ -33,9 +40,11 @@ void DecalSystem::ComponentAdded(Component* comp)
 	{
 		DecalComponent* component = static_cast<DecalComponent*>(comp);
 
+		auto transform = comp->GetComponent<TransformComponent>();
+
 		decal::Info temp;
 		temp.TexturePath = component->TextureName;
-		temp.VolumeSize = component->VolumeSize;
+		temp.WorldTransform = transform->WorldTransform;
 		m_Graphics->DrawDecal(temp);
 		return;
 	}
