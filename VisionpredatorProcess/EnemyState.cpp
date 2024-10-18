@@ -5,63 +5,74 @@
 #include "TransformComponent.h"
 #include "../VPGraphics/D3DUtill.h"
 
-//void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
-//{
-//	// 현재 Enemy가 Dead 상태라면 탐지를 수행하지 않음
-//	if (enemyComp.CurrentFSM == VisPred::Game::EnemyStates::Dead)
-//		return;
-//
-//	const uint32_t enemyID = enemyComp.GetEntityID();
-//	const auto transform = enemyComp.GetComponent<TransformComponent>();
-//
-//	// 시야 범위, 소음범위, 추격 범위 생성
-//	DirectX::BoundingFrustum viewRange;
-//	DirectX::BoundingSphere noiseRange, chaseRange;
-//	CreateDetectionAreas(enemyComp, transform, viewRange, noiseRange, chaseRange);
-//
-//	if (!enemyComp.Player)
-//		return;
-//
-//	// 플레이어 위치 정보 얻어오기
-//	const uint32_t playerID = enemyComp.Player->GetEntityID();
-//	const auto playerTransform = enemyComp.Player->GetComponent<TransformComponent>();
-//	const VisPred::SimpleMath::Vector3 playerPos = VisPred::SimpleMath::Vector3{
-//		playerTransform->WorldTransform._41, playerTransform->WorldTransform._42, playerTransform->WorldTransform._43
-//	};
-//
-//	constexpr float offsetY = 1.8f;
-//	const VPMath::Vector3 enemyPos =
-//	{ transform->WorldTransform._41, transform->WorldTransform._42 + offsetY, transform->WorldTransform._43 };
-//
-//	auto targetDir = playerPos - enemyPos;
-//	targetDir.Normalize();
-//
-//	/// 시야 범위, 소음 범위, 추격 범위 별로 플레이어 감지 수행.
-//
-//// 각 범위에 들어 왔는지를 확인하고
-//// 세부 조건을 확인한다.
-//	bool isInViewRange = false, isInNoiseRange = false, isInChaseRange = false;
-//
-//	isInViewRange = viewRange.Contains(playerPos);
-//	isInNoiseRange = noiseRange.Contains(playerPos) && (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::RUN) || (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;	// 최적화 필요.
-//
-//	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
-//	//if (viewRange.Contains(playerPos) || noiseRange.Contains(playerPos))	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
-//	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
-//	{
-//		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
-//		const uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
-//		if (detectedObjID == playerID)
-//		{
-//			//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Chase);
-//			RotateToTarget(transform, targetDir, deltaTime);
-//		}
-//	}
-//	else  // TODO: 뭔가.. 수정이 필요.
-//	{
-//		//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Idle);
-//	}
-//}
+#include "EnemyMovementState.h"
+#include "EnemyCombatState.h"
+#include "EnemyBehaviorState.h"
+#include "EnemyJumpState.h"
+#include "EnemyRunState.h"
+#include "EnemyIdleState.h"
+#include "EnemyChaseState.h"
+
+void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
+{
+	// 현재 Enemy가 Dead 상태라면 탐지를 수행하지 않음
+	if (enemyComp.CurrentFSM == VisPred::Game::EnemyStates::Dead)
+		return;
+
+	const uint32_t enemyID = enemyComp.GetEntityID();
+	const auto transform = enemyComp.GetComponent<TransformComponent>();
+
+	// 시야 범위, 소음범위, 추격 범위 생성
+	DirectX::BoundingFrustum viewRange;
+	DirectX::BoundingSphere noiseRange, chaseRange;
+	CreateDetectionAreas(enemyComp, transform, viewRange, noiseRange, chaseRange);
+
+	if (!enemyComp.Player)
+		return;
+
+	// 플레이어 위치 정보 얻어오기
+	const uint32_t playerID = enemyComp.Player->GetEntityID();
+	const auto playerTransform = enemyComp.Player->GetComponent<TransformComponent>();
+	const VisPred::SimpleMath::Vector3 playerPos = VisPred::SimpleMath::Vector3{
+		playerTransform->WorldTransform._41, playerTransform->WorldTransform._42, playerTransform->WorldTransform._43
+	};
+
+	constexpr float offsetY = 1.8f;
+	const VPMath::Vector3 enemyPos =
+	{ transform->WorldTransform._41, transform->WorldTransform._42 + offsetY, transform->WorldTransform._43 };
+
+	auto targetDir = playerPos - enemyPos;
+	targetDir.Normalize();
+
+	/// 시야 범위, 소음 범위, 추격 범위 별로 플레이어 감지 수행.
+
+// 각 범위에 들어 왔는지를 확인하고
+// 세부 조건을 확인한다.
+	bool isInViewRange = false, isInNoiseRange = false, isInChaseRange = false;
+
+	isInViewRange = viewRange.Contains(playerPos);
+	isInNoiseRange = noiseRange.Contains(playerPos) && (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::RUN) || (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;	// 최적화 필요.
+
+	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
+	//if (viewRange.Contains(playerPos) || noiseRange.Contains(playerPos))	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
+	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다. 지금은 원안에 가만히 있기만 해도 감지됨.
+	{
+		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
+
+		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
+		if (detectedObjID == playerID)
+		{
+			//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Chase);
+			enemyComp.MovementState = &EnemyMovementState::s_Run;
+			RotateToTarget(transform, targetDir, deltaTime);
+		}
+	}
+	else  // TODO: 뭔가.. 수정이 필요.
+	{
+		//enemyComp.
+		//ChangeCurrentStateEnumValue(enemyComp, VisPred::Game::EnemyStates::Idle);
+	}
+}
 
 void EnemyState::CreateDetectionAreas(const EnemyComponent& enemyComp, const TransformComponent* transform,
                                       DirectX::BoundingFrustum& viewRangeOutput, DirectX::BoundingSphere& noiseRangeOutput,

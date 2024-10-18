@@ -11,6 +11,8 @@
 #include "EnemyJumpState.h"
 #include "StatesInclude.h"
 
+//#include "SceneManager.h"
+
 void EnemySystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, comp)
@@ -52,7 +54,8 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	const auto enemyCompRawPtr = GetSceneManager()->GetComponent<EnemyComponent>(gameObjectId);
 	const std::shared_ptr<EnemyComponent> enemyComp(enemyCompRawPtr, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
 
-	//enemyCompRawPtr->SceneManager = m_SceneManager;
+	enemyCompRawPtr->SceneManager = m_SceneManager;
+	enemyCompRawPtr->PhysicsManager = m_PhysicsEngine;
 	enemyComp->MovementState->Enter(enemyComp);
 }
 

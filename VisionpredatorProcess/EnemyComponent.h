@@ -8,10 +8,11 @@
 #include "EnemyMovementState.h"
 #include "EnemyIdleMovementState.h"
 
-
 #include "PlayerComponent.h"
-//class SceneManager;
 
+#include "../PhysxEngine/IPhysx.h"
+
+class SceneManager;
 struct EnemyComponent : public Component
 {
 	EnemyComponent()
@@ -43,5 +44,7 @@ struct EnemyComponent : public Component
 	EnemyMovementState* MovementState;
 
 	PlayerComponent* Player = nullptr;
-	//std::weak_ptr<SceneManager> SceneManager{};
+
+	std::weak_ptr<SceneManager> SceneManager{};
+	Physic::IPhysx* PhysicsManager = nullptr;
 };

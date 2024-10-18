@@ -4,6 +4,8 @@
 #include "EnemyComponent.h"
 #include "../VPGraphics/Log.h"
 
+#include "SceneManager.h"
+
 void EnemyIdleMovementState::Enter(const std::shared_ptr<Component>& component)
 {
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
@@ -14,6 +16,7 @@ void EnemyIdleMovementState::Enter(const std::shared_ptr<Component>& component)
 	enemyComp->HP = 30;
 	Log::GetClientLogger()->info("Edited Entity's HP: {}", enemyComp->HP);
 
+	
 }
 
 void EnemyIdleMovementState::Update(const std::shared_ptr<Component>& component, float deltaTime)
