@@ -35,8 +35,5 @@ public:
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override {}
 	void PhysicsLateUpdate(float deltaTime) override {}
-
-private:
-	PlayerComponent* m_PlayerComp = nullptr;	// TODO: 삭제
 };
 

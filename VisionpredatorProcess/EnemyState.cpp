@@ -80,7 +80,7 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 				//enemyComp.BehaviorState->Enter(temp);
 				ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Chase);
 			}
-			RotateToTarget(transform, targetDir, deltaTime);	// TODO: MovementState 쪽으로 옮겨야 할듯..?
+			RotateToTarget(transform, targetDir, deltaTime);
 
 		}
 	}

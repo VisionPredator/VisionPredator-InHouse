@@ -12,18 +12,16 @@
 #include "StatesInclude.h"
 #include "EnemyBehaviorState.h"
 
-//#include "SceneManager.h"
-
 void EnemySystem::Initialize()
 {
+	PlayerComponent* playerComponent = nullptr;
+
 	COMPLOOP(PlayerComponent, comp)
 	{
-
-		//Start(comp.GetEntityID());
 		uint32_t playerID = comp.GetEntityID();
 		if (GetSceneManager()->HasComponent<PlayerComponent>(playerID))
 		{
-			m_PlayerComp = GetSceneManager()->GetComponent<PlayerComponent>(playerID);
+			playerComponent = GetSceneManager()->GetComponent<PlayerComponent>(playerID);
 			break;
 		}
 	}
@@ -37,7 +35,7 @@ void EnemySystem::Initialize()
 	{
 		Start(comp.GetEntityID());
 
-		comp.Player = m_PlayerComp;
+		comp.Player = playerComponent;
 	}
 }
 
