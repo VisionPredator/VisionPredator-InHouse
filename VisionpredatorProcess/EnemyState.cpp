@@ -204,7 +204,7 @@ void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game
 
 	enemyComp.CurrentAni = animation;
 
-	VisPred::Engine::AniBlendData temp{ enemyComp.GetEntityID(), static_cast<int>(animation), speed, isLoop };
+	VisPred::Engine::AniBlendData temp{ enemyComp.GetEntityID(), static_cast<int>(animation), speed, 0, isLoop };
 
 	std::any data = temp;
 	if (true == isImmediate)
