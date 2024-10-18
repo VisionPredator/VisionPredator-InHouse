@@ -85,7 +85,7 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
     output.Position = input.posWorld;
 
     float d = input.pos.z / input.pos.w;
-    d *= 10;
+    d *= 10;    //가시성 향상을 위해 값을 키우기
     output.Depth = float4(1 - d, 1 - d, 1 - d, 1.0f);
        
 

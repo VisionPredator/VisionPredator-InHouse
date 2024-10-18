@@ -18,3 +18,4 @@
 #include "SocketComponent.h"
 #include "TextComponent.h"
 #include "SoundComponent.h"
+#include "DecalComponent.h"

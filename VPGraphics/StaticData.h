@@ -9,7 +9,8 @@ namespace MyColor
 	static DirectX::XMFLOAT4 Green = { 0.0f,1.f,0.f,1.0f };
 	static DirectX::XMFLOAT4 Blue = { 0.0f,0.f,1.f,1.0f };
 	static DirectX::XMFLOAT4 Gray = { 0.5f,0.5f,0.5f,1.0f };
-	static DirectX::XMFLOAT4 Black = { 0.0f,0.0f,0.0f,1.0f };
+	static DirectX::XMFLOAT4 Black = { 0.0f,0.0f,0.0f,0.0f };
+	static DirectX::XMFLOAT4 Zero = { 0.0f,0.0f,0.0f,0.0f };
 }
 
 
@@ -388,6 +389,119 @@ namespace Quad_Deth1
 		};
 
 		static D3D11_SUBRESOURCE_DATA Data = { Quad::Index::Buffer };
+	}
+
+	static D3D11_PRIMITIVE_TOPOLOGY PRIMITIVE_TOPOLOGY = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+}
+
+
+
+namespace DecalVolume
+{
+	namespace Vertex
+	{
+		static float scale = 1;
+		static BaseVertex Buffer[] = {
+			//face 단위로 스플릿
+
+			//윗면 4개 + 아래도 4개 해서 육면체니까 24개
+			//인덱스는 face당 3개씩 12개 * 3개 
+			//8개의 점을 3개의 노말 값으로 분산
+			//앞면
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) },//1 //0
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) },//2 //1
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) },//3 //2
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) },//4 //3
+
+			// 뒷면
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //5 //4
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //6 //5
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //7 //6
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //8 //7
+
+			//// 윗면
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //2 //8
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //3 //9
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //6 //10
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //7 //11
+
+			// 아랫면
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //1 //12
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //4 //13
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //5 //14
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //8 //15
+
+			//왼쪽면
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //1 //16
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //2 //17
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //5 //18
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //6 //19
+
+			// 오른쪽면
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //3 //20
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //4 //21
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //7 //22
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }  //8 //234		
+		};
+
+		static UINT count = 24; // 8 * 3;
+
+
+		static D3D11_BUFFER_DESC Desc =
+		{
+			sizeof(BaseVertex) * DecalVolume::Vertex::count,
+			D3D11_USAGE_IMMUTABLE,
+			D3D11_BIND_VERTEX_BUFFER,
+			0,
+			0,
+			0
+		};
+
+		static D3D11_SUBRESOURCE_DATA Data = { DecalVolume::Vertex::Buffer };
+	}
+
+	namespace Index
+	{
+		static UINT Buffer[] =
+		{
+			// front face
+			1,2,0,
+			2,3,0,
+
+			// back face
+			6,5,7,
+			5,4,7,
+
+			// left face
+			19,17,18,
+			17,16,18,
+
+			// right face
+			20,22,21,
+			22,23,21,
+
+			// top face
+			10,11,8,
+			11,9,8,
+
+			// bottom face
+			12,13,14,
+			13,15,14
+		};
+
+		static UINT count = 36;
+
+		static D3D11_BUFFER_DESC Desc =
+		{
+			sizeof(UINT) * DecalVolume::Index::count,
+			D3D11_USAGE_IMMUTABLE,
+			D3D11_BIND_INDEX_BUFFER,
+			0,
+			0,
+			0
+		};
+
+		static D3D11_SUBRESOURCE_DATA Data = { DecalVolume::Index::Buffer };
 	}
 
 	static D3D11_PRIMITIVE_TOPOLOGY PRIMITIVE_TOPOLOGY = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;

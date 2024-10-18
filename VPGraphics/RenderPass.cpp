@@ -28,6 +28,11 @@ RenderPass::~RenderPass()
 	m_ResourceManager.reset();
 }
 
+RenderPass::RenderPass(const std::shared_ptr<Device> device, const std::shared_ptr<ResourceManager> resourcemanager) : m_Device(device), m_ResourceManager(resourcemanager)
+{
+
+}
+
 void RenderPass::SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue)
 {
 	m_RenderList = renderQueue;

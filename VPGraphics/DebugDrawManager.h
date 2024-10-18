@@ -23,7 +23,7 @@ class DebugDrawManager
 public:
 	void Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager);
 
-	void Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view,const VPMath::Matrix proj);
+	void Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view,const VPMath::Matrix proj, bool isRender = true);
 
 	void AddTask(const debug::SphereInfo& info) { m_SphereInfos.push(info); }
 	void AddTask(const debug::AABBInfo& info) { m_BoxInfos.push(info); }
