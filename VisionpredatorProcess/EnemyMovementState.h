@@ -1,5 +1,4 @@
 #pragma once
-#include "IState.h"
 #include "EnemyState.h"
 
 class EnemyJumpState;
