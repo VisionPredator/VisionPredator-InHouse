@@ -187,9 +187,13 @@
     <ClInclude Include="IState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerMeleeComponent.h" />
+    <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="PlayerUISystem.h" />
     <ClInclude Include="StatesInclude.h" />
+    <ClInclude Include="AreaAttackComponent.h" />
+    <ClInclude Include="AreaAttackSystem.h" />
     <ClInclude Include="TestCameraSystem.h" />
     <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
@@ -228,8 +232,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="PlayerMeleeComponent.cpp" />
+    <ClCompile Include="PlayerSoundComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="PlayerUISystem.cpp" />
+    <ClCompile Include="AreaAttackComponent.cpp" />
+    <ClCompile Include="AreaAttackSystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />

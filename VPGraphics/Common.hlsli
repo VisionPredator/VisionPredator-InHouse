@@ -247,16 +247,6 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0,
     float3 diffuse = float3(0, 0, 0);
     float3 specular = float3(0, 0, 0);
     
-    /*
-    //나중에 깊이 값에 따라 적용안되게 할 수도 있음
-    float DepthFactor = 0;
-    float curDepth = pos.z / pos.w;
-    if (Depth.r < curDepth)
-    {
-        DepthFactor = 1;
-    }
-    */
-    
     float3 L = (lightData.pos - pos.xyz); //표면에서 광원까지
     
     //광원과 표면의 거리
@@ -293,13 +283,17 @@ float3 CalcPoint(LightData lightData,float4 pos , float3 V, float3 N, float3 F0,
     
     specular = n / d;
         
-    float att = 1.0f / dot(lightData.Attenuation, float3(1.0f, distance, distance * distance));
-       
-    diffuse *= att;
-    specular *= att;
+     // 감쇠: 부드럽게 처리된 감쇠 계산
+    float smoothAtt = smoothstep(0, 1.0, lightData.Range - distance); //x가 [min, max] 범위에 있는 경우 0과 1 사이의 매끄러운 Hermite 보간을 반환합 (min,max,x)
+
     
-    result += (specular + diffuse) * lightData.Color/*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0) * lightData.Intensity;
-   
+    //float att = lightData.Intensity / dot(lightData.Attenuation, float3(1.0f, distance, distance * distance));
+    float att = lightData.Intensity / (lightData.Attenuation.x + lightData.Attenuation.y * distance + lightData.Attenuation.z * distance * distance);
+    
+    att *= smoothAtt;
+    float3 radiance = lightData.Color * att;
+    
+    result += (specular + diffuse) * radiance /*radiance 복사-(빛날)휘도*/ * max(dot(N, L), 0.0);    
    return result;    
 }
 

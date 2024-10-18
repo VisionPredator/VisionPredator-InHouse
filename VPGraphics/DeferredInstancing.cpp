@@ -26,7 +26,7 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	m_ResourceManager = resourceManager;
 	m_Device = device;
 
-	//임시로해놓음..
+	//entity 최대 갯수만큼 지정해놓으면 새로 사이즈를 바꿀 일이 없다?
 	for (int i = 0; i < 10000; i++)
 	{
 		InstanceData temp;
@@ -34,26 +34,6 @@ void DeferredInstancing::Initialize(const std::shared_ptr<Device>& device, const
 	}
 	m_InstanceBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceBuffer", m_InstanceDatas, true);
 	m_InstancingVS = m_ResourceManager.lock()->Create<VertexShader>(L"InstancingVS", L"InstancingVS");
-
-	//for (int i = 0; i < 1000; i++)
-	//{
-	//	InstanceSkinnedData temp;
-	//	m_InstanceSkinnedDatas.push_back(temp);
-	//}
-
-	/*for (int i = 0; i < 128; i++)
-	{
-		for (UINT j = 0; j < 4; j++)
-		{
-			int index = Instancing::SkinnedCount + 1 + i * 4 + j;
-			Instancing::SkinnedDesc[index] = {"BONE",j,DXGI_FORMAT_R32G32B32A32_FLOAT,1,128 + 16 * (i+1) * j,D3D11_INPUT_PER_INSTANCE_DATA,1};
-		}
-	}
-
-	Instancing::SkinnedCount += (128 * 4);
-
-	m_InstancingSkinnedVS = m_ResourceManager.lock()->Create<VertexShader>(L"InstancingSkinnedVS", L"InstancingSkinnedVS",Instancing::SkinnedDesc,Instancing::SkinnedCount);
-	m_InstanceSkinnedBuffer = m_ResourceManager.lock()->Create<VertexBuffer>(L"InstanceSkinnedBuffer", m_InstanceSkinnedDatas, true);*/
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	m_Device.lock()->Context()->Map(m_InstanceBuffer.lock()->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
@@ -270,7 +250,7 @@ void DeferredInstancing::Render()
 
 	//draw skinned
 	//DrawSkinned();
-	
+
 
 	Device->Context()->OMSetRenderTargets(0, nullptr, nullptr);
 
@@ -363,11 +343,10 @@ void DeferredInstancing::DrawStatic()
 		offsets[1] = 0;
 
 		auto lightmap = m_LightManager.lock()->GetLightMaps();
-
-		//if (lightmap.lock() == nullptr)	// 터지길래 일단 추가 // SUMIN
-		//	return;
-
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
+		if (lightmap.lock() != nullptr)
+		{
+			Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, lightmap.lock()->GetAddress());
+		}
 
 		int preInstance = 0;
 		while (!m_instancecount.empty())

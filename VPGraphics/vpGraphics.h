@@ -146,3 +146,12 @@ namespace ui
 		bool isUnderlined = false;
 	};
 }
+
+namespace decal
+{
+	struct Info
+	{
+		std::string TexturePath;
+		VPMath::Matrix		WorldTransform;
+	};
+}

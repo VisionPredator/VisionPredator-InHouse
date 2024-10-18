@@ -44,6 +44,8 @@ void GeometrySystem::BeginRenderUpdate(float deltaTime)
 		const TransformComponent& transform = *geometryComp.GetComponent<TransformComponent>();
 
 		auto renderdata = geometryComp.Renderdata;
+		renderdata->isVisible = geometryComp.IsVisible;
+		renderdata->isOverDraw = geometryComp.IsOverDraw;
 		renderdata->color = geometryComp.color;
 		renderdata->color.w = geometryComp.UseTexture;	//shader에서 color의 w값으로 텍스처있는지 판단함
 		renderdata->useTexture = geometryComp.UseTexture;

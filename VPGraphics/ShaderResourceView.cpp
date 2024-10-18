@@ -24,19 +24,6 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 {
 	std::wstring filePath;
 
-#ifdef _DEBUG
-	switch (dir)
-	{
-		case ShaderResourceView::Directory::Texture:
-			filePath = L"..\\..\\..\\Resource\\Texture\\" + filename;
-			break;
-		case ShaderResourceView::Directory::LightMap:
-			filePath = L"..\\..\\..\\Resource\\LightMap\\" + filename;
-			break;
-		default:
-			break;
-	}
-#else
 	switch (dir)
 	{
 		case ShaderResourceView::Directory::Texture:
@@ -48,7 +35,6 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, co
 		default:
 			break;
 	}
-#endif
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
 
@@ -228,20 +214,7 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, st
 		{
 			std::wstring wfilename;
 			wfilename.assign(filename.begin(), filename.end());
-#ifdef _DEBUG
-			switch (dir)
-			{
-				case ShaderResourceView::Directory::Texture:
 
-					filePath = L"..\\..\\..\\Resource\\Texture\\" + wfilename;
-					break;
-				case ShaderResourceView::Directory::LightMap:
-					filePath = L"..\\..\\..\\Resource\\LightMap\\" + wfilename;
-					break;
-				default:
-					break;
-			}
-#else
 			switch (dir)
 			{
 				case ShaderResourceView::Directory::Texture:
@@ -253,7 +226,7 @@ ShaderResourceView::ShaderResourceView(const std::shared_ptr<Device>& device, st
 				default:
 					break;
 			}
-#endif
+
 
 
 			Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;

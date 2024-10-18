@@ -11,56 +11,72 @@ using namespace VPMath;
 
 void DebugDrawManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
-    m_AlphaBlendBS = resourceManager->Get<BlendState>(L"AlphaBlend").lock();
-    m_DefaultDSS = resourceManager->Get<DepthStencilState>(L"DefaultDSS").lock();
-    m_CullNoneRS = std::make_shared<RenderState>(device, RasterizerStateType::CullNone);
+	m_AlphaBlendBS = resourceManager->Get<BlendState>(L"AlphaBlend").lock();
+	m_DefaultDSS = resourceManager->Get<DepthStencilState>(L"DefaultDSS").lock();
+	m_CullNoneRS = std::make_shared<RenderState>(device, RasterizerStateType::CullNone);
 
-    m_Batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(device->Context());
-    m_BatchEffect = std::make_unique<BasicEffect>(device->Get());
-    m_BatchEffect->SetVertexColorEnabled(true);
+	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(device->Context());
+	m_BatchEffect = std::make_unique<BasicEffect>(device->Get());
+	m_BatchEffect->SetVertexColorEnabled(true);
 
-    void const* shaderByteCode;
-    size_t byteCodeLength;
+	void const* shaderByteCode;
+	size_t byteCodeLength;
 
-    m_BatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+	m_BatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 
-    HR_CHECK(device->Get()->CreateInputLayout(VertexPositionColor::InputElements,
-        VertexPositionColor::InputElementCount,
-        shaderByteCode, byteCodeLength,
-        &m_BatchInputLayout));
+	HR_CHECK(device->Get()->CreateInputLayout(VertexPositionColor::InputElements,
+		VertexPositionColor::InputElementCount,
+		shaderByteCode, byteCodeLength,
+		&m_BatchInputLayout));
 }
 
-void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view, const VPMath::Matrix proj)
+void DebugDrawManager::Execute(const std::shared_ptr<Device>& device, const VPMath::Matrix view, const VPMath::Matrix proj, bool isRender/*=true*/)
 {
-#ifdef _DEBUG
-    device->Context()->OMSetBlendState(m_AlphaBlendBS->GetState().Get(), nullptr, 0xFFFFFFFF);
-	device->Context()->OMSetDepthStencilState(m_DefaultDSS->GetState().Get(), 0);
-	device->Context()->RSSetState(m_CullNoneRS->Get());
-    
-    m_BatchEffect->SetView(view);
-    m_BatchEffect->SetProjection(proj);
-    m_BatchEffect->Apply(device->Context());    //최종 멤버들을 적용한다 먼저 해버리면 이전 프레임의 값이 적용된다
 
-    device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
+	if (isRender)
+	{
 
-    m_Batch->Begin();
+		device->Context()->OMSetBlendState(m_AlphaBlendBS->GetState().Get(), nullptr, 0xFFFFFFFF);
+		device->Context()->OMSetDepthStencilState(m_DefaultDSS->GetState().Get(), 0);
+		device->Context()->RSSetState(m_CullNoneRS->Get());
 
-    while (!m_SphereInfos.empty()) { Draw(m_SphereInfos.front()); m_SphereInfos.pop();}
-    while (!m_BoxInfos.empty()) { Draw(m_BoxInfos.front()); m_BoxInfos.pop(); }
-    while (!m_OBBInfos.empty()) { Draw(m_OBBInfos.front()); m_OBBInfos.pop(); }
-    while (!m_FrustumInfos.empty()) { Draw(m_FrustumInfos.front()); m_FrustumInfos.pop(); }
-    while (!m_GridInfos.empty()) { Draw(m_GridInfos.front()); m_GridInfos.pop(); }
-    while (!m_RayInfos.empty()) { Draw(m_RayInfos.front()); m_RayInfos.pop(); }
-    while (!m_TriangleInfos.empty()) { Draw(m_TriangleInfos.front()); m_TriangleInfos.pop(); }
-    while (!m_QuadInfos.empty()) { Draw(m_QuadInfos.front()); m_QuadInfos.pop(); }
-    while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
+		m_BatchEffect->SetView(view);
+		m_BatchEffect->SetProjection(proj);
+		m_BatchEffect->Apply(device->Context());    //최종 멤버들을 적용한다 먼저 해버리면 이전 프레임의 값이 적용된다
 
-    m_Batch->End();
-#endif
+		device->Context()->IASetInputLayout(m_BatchInputLayout.Get());
 
-    device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
-    device->Context()->OMSetDepthStencilState(nullptr, 0);
-    device->Context()->RSSetState(nullptr);
+		m_Batch->Begin();
+
+		while (!m_SphereInfos.empty()) { Draw(m_SphereInfos.front()); m_SphereInfos.pop(); }
+		while (!m_BoxInfos.empty()) { Draw(m_BoxInfos.front()); m_BoxInfos.pop(); }
+		while (!m_OBBInfos.empty()) { Draw(m_OBBInfos.front()); m_OBBInfos.pop(); }
+		while (!m_FrustumInfos.empty()) { Draw(m_FrustumInfos.front()); m_FrustumInfos.pop(); }
+		while (!m_GridInfos.empty()) { Draw(m_GridInfos.front()); m_GridInfos.pop(); }
+		while (!m_RayInfos.empty()) { Draw(m_RayInfos.front()); m_RayInfos.pop(); }
+		while (!m_TriangleInfos.empty()) { Draw(m_TriangleInfos.front()); m_TriangleInfos.pop(); }
+		while (!m_QuadInfos.empty()) { Draw(m_QuadInfos.front()); m_QuadInfos.pop(); }
+		while (!m_RingInfos.empty()) { DrawRing(m_RingInfos.front()); m_RingInfos.pop(); }
+
+		m_Batch->End();
+	}
+	else
+	{
+
+		while (!m_SphereInfos.empty()) { m_SphereInfos.pop(); }
+		while (!m_BoxInfos.empty()) { m_BoxInfos.pop(); }
+		while (!m_OBBInfos.empty()) { m_OBBInfos.pop(); }
+		while (!m_FrustumInfos.empty()) { m_FrustumInfos.pop(); }
+		while (!m_GridInfos.empty()) { m_GridInfos.pop(); }
+		while (!m_RayInfos.empty()) { m_RayInfos.pop(); }
+		while (!m_TriangleInfos.empty()) { m_TriangleInfos.pop(); }
+		while (!m_QuadInfos.empty()) { m_QuadInfos.pop(); }
+		while (!m_RingInfos.empty()) { m_RingInfos.pop(); }
+	}
+
+	device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	device->Context()->OMSetDepthStencilState(nullptr, 0);
+	device->Context()->RSSetState(nullptr);
 }
 
 void DebugDrawManager::Draw(const debug::SphereInfo& info)
@@ -342,18 +358,5 @@ void DebugDrawManager::DrawCube(const VPMath::Matrix& worldTransform, const VPMa
 	}
 
 	m_Batch->DrawIndexed(D3D_PRIMITIVE_TOPOLOGY_LINELIST, s_indices, static_cast<UINT>(std::size(s_indices)), verts, 8);
-}
-
-void DebugDrawManager::DrawLine(const VPMath::Vector3& start, const VPMath::Vector3& end, const VPMath::Vector4& color)
-{
-	VertexPositionColor verts[2];
-
-	XMStoreFloat3(&verts[0].position, start);
-	XMStoreFloat3(&verts[1].position, end);
-
-	verts[0].color = color;
-	verts[1].color = color;
-
-	m_Batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, verts, 2);
 }
 

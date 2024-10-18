@@ -298,6 +298,12 @@
     <ClInclude Include="EngineStructs.h">
       <Filter>Structs</Filter>
     </ClInclude>
+    <ClInclude Include="DecalComponent.h">
+      <Filter>Component\Derived\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DecalSystem.h">
+      <Filter>System\Derived\Graphics\Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -443,6 +449,12 @@
     </ClCompile>
     <ClCompile Include="EngineStructs.cpp">
       <Filter>Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="DecalComponent.cpp">
+      <Filter>Component\Derived\Graphics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DecalSystem.cpp">
+      <Filter>System\Derived\Graphics\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

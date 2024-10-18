@@ -90,3 +90,11 @@ void DebugPass::OnResize()
 	m_DebugPS = m_ResourceManager.lock()->Get<PixelShader>(L"Base");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
 }
+
+void DebugPass::ClearQueue()
+{
+	std::shared_ptr<DebugDrawManager> debugManager = m_DebugDrawManager.lock();
+	std::shared_ptr<Device> Device = m_Device.lock();
+
+	debugManager->Execute(Device, m_View, m_Proj,false);
+}

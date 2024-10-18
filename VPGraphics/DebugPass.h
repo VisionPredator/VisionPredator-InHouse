@@ -15,6 +15,7 @@ public:
 
 	void Render() override;
 	void OnResize() override;
+	void ClearQueue();
 
 private:
 	std::weak_ptr<DebugDrawManager> m_DebugDrawManager;

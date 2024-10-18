@@ -119,6 +119,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
 	Create<VertexShader>(L"Quad", L"QuadVS", "main");	
 	Create<VertexShader>(L"InstancingVS", L"InstancingVS");	//Instancing VS
+	Create<VertexShader>(L"DecalVS", L"DecalVS");	//Decal VS
 
 	// ----------------------------------------------------------------------------------------
 	// Pixel Shader
@@ -131,6 +132,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"VPOutLine", L"VPOutLine", "main");
 	Create<PixelShader>(L"RimLight", L"RimLight", "main");
 	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
+	Create<PixelShader>(L"DecalPS", L"DecalPS", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer
@@ -140,6 +142,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 
 	size = sizeof(BaseVertex);
 	Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
+	
+	size = sizeof(BaseVertex);
+	Create<VertexBuffer>(L"Decal_VB", DecalVolume::Vertex::Desc, DecalVolume::Vertex::Data, size);
 
 
 	// ----------------------------------------------------------------------------------------
@@ -147,6 +152,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// ----------------------------------------------------------------------------------------
 	Create<IndexBuffer>(L"Quad_IB", Quad::Index::Desc, Quad::Index::Data, Quad::Index::count);
 	Create<IndexBuffer>(L"TextureBox_IB", TextureBox::Index::Desc, TextureBox::Index::Data, TextureBox::Index::count);
+	Create<IndexBuffer>(L"Decal_IB", DecalVolume::Index::Desc, DecalVolume::Index::Data, DecalVolume::Index::count);
 
 
 	// ----------------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ void EditorCamera::Initialize()
 	m_view = VPMath::Matrix::Identity;
 	m_proj = VPMath::Matrix::Identity;
 	m_FOV = 0.25f * 3.14f;
-	m_nearZ = 1.f;
+	m_nearZ = 0.001f;
 	m_farZ = 1000;
 	m_proj = VPMath::Matrix::CreatePerspectiveFieldOfView_LH(m_FOV, m_ratio, m_nearZ, m_farZ);
 	m_orthoProj = VPMath::Matrix::CreateOrthographic_LH(static_cast<float>(m_Width), static_cast<float>(m_Height), m_nearZ, m_farZ);

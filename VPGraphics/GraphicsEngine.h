@@ -21,6 +21,7 @@ class PassManager;
 
 class LightManager;
 class TimeManager;
+class DecalManager;
 
 class ModelData;
 struct RenderData;
@@ -51,6 +52,9 @@ public:
 	void EndRender() override;
 
 	void OnResize(HWND hwnd) override;
+
+	virtual void DebugRenderONOFF(bool isRender) override;
+
 
 	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 	void testCulling(VPMath::Matrix view, VPMath::Matrix proj) override;
@@ -92,8 +96,12 @@ public:
 	void DrawQuad(const debug::QuadInfo& info) override;
 	void DrawRay(const debug::RayInfo& info) override;
 
+	///Decal
+	virtual void DrawDecal(decal::Info info) override;
+
+
 	///Editor
-	ID3D11ShaderResourceView* GetSRV(std::wstring name) override;
+	void* GetSRV(std::wstring name) override;
 
 	///¹°¸®
 	virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) override;
@@ -121,6 +129,7 @@ private:
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
 	TimeManager* m_TimeManager;
 	std::shared_ptr<class UIManager> m_UIManager;
+	std::shared_ptr <DecalManager> m_DecalManager;
 
 private:
 	HWND m_hWnd;
@@ -134,6 +143,8 @@ private:
 
 	// Pipeline
 	std::shared_ptr<PassManager> m_PassManager;
+
+	bool isDebug = false;
 	
 private:
 	void Culling();

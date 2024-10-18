@@ -24,7 +24,11 @@ public:
 	// 엔티티를 삭제한다.
 	void DeleteEntity(uint32_t entityID);
 	void ChangeScene(std::string FilePath, bool Immidiate=false);
-	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 direction = {0,0,1}, VPMath::Vector3 scele = { -1,-1,-1 });
+	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 rotation = {0,0,0}, VPMath::Vector3 scele = { -1,-1,-1 });
+	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 rotation = { 0,0,0 }, VPMath::Vector3 scele = { -1,-1,-1 });
+	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Quaternion Quater = VPMath::Quaternion::Identity, VPMath::Vector3 scele = { -1,-1,-1 });
+
+
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
 	

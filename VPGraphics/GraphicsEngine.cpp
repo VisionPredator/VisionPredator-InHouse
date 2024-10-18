@@ -39,6 +39,7 @@
 #include "ParticleManager.h"
 #include "TimeManager.h"
 #include "UIManager.h"
+#include "DecalManager.h"
 #pragma endregion Manager
 
 #pragma region IMGUI
@@ -62,6 +63,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
 	, m_DebugDrawManager(std::make_shared<DebugDrawManager>())
 	, m_ParticleManager(std::make_shared<ParticleManager>())
 	, m_UIManager(std::make_shared<UIManager>())
+	, m_DecalManager(std::make_shared <DecalManager>())
 	, m_PassManager(std::make_shared <PassManager>())
 {
 }
@@ -83,7 +85,7 @@ bool GraphicsEngine::Initialize()
 	m_DebugDrawManager->Initialize(m_Device, m_ResourceManager);
 	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
 	m_UIManager->Initialize(m_Device, m_ResourceManager);
-	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager, m_LightManager);
+	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager, m_LightManager, m_DecalManager);
 
 	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
 
@@ -476,7 +478,12 @@ void GraphicsEngine::DrawRay(const debug::RayInfo& info)
 }
 
 
-ID3D11ShaderResourceView* GraphicsEngine::GetSRV(std::wstring name)
+void GraphicsEngine::DrawDecal(decal::Info info)
+{
+	m_DecalManager->AddTask(info);
+}
+
+void* GraphicsEngine::GetSRV(std::wstring name)
 {
 	std::shared_ptr<ShaderResourceView> srv = m_ResourceManager->Get<ShaderResourceView>(name).lock();
 	if (srv != nullptr)
@@ -540,6 +547,11 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_Device->Context()->RSSetViewports(1, m_CurViewPort->Get());
 }
 
+void GraphicsEngine::DebugRenderONOFF(bool isRender)
+{
+	m_PassManager->SetDebugDraw(isRender);
+}
+
 void GraphicsEngine::Culling()
 {
 	for (auto& object : m_RenderVector)
@@ -547,6 +559,8 @@ void GraphicsEngine::Culling()
 		std::wstring& fbx = object->FBX;
 		std::shared_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx).lock();
 
+		if(!object->isVisible)
+			continue;
 
 		if (curFBX != nullptr)
 		{
@@ -639,9 +653,8 @@ void GraphicsEngine::Culling()
 					}
 				}
 
-				if (visible)
+				if (visible && object->isVisible)
 				{
-					object->isVisible = visible;
 					m_AfterCulling.push_back(object);
 				}
 				//break;
@@ -651,9 +664,12 @@ void GraphicsEngine::Culling()
 		{
 			object->ModelID = -1;
 
-			if (object->Filter == GeoMetryFilter::Box)
+			if (object->isVisible)
 			{
-				m_AfterCulling.push_back(object);
+				if (object->Filter == GeoMetryFilter::Box)
+				{
+					m_AfterCulling.push_back(object);
+				}
 			}
 		}
 	}
