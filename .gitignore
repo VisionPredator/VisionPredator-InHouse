@@ -395,3 +395,4 @@ FodyWeavers.xsd
 *.sln.iml
 *.orig
 Resource
+Binaries
