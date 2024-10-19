@@ -7,7 +7,10 @@ struct TransformComponent;
 class EnemyState : public virtual IState
 {
 public:
-	void DetectTarget(EnemyComponent& enemyComp, float deltaTime);
+	/// <summary>
+	/// 플레이어가 범위 내에 있는지 탐지하고 상태를 변경
+	/// </summary>
+	static void DetectTarget(EnemyComponent& enemyComp, float deltaTime);
 
 	/// <summary>
 	/// 시야 범위, 소음 범위, 추격 범위를 생성하여 반환
@@ -28,5 +31,5 @@ public:
 	/// <summary>
 	/// 현재 애니메이션 변경
 	/// </summary>
-	void ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, bool isLoop = true, bool isImmediate = false);
+	static void ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, bool isLoop = true, bool isImmediate = false);
 };
