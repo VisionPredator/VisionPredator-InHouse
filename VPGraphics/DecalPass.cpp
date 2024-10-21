@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DecalPass.h"
 #include "Slot.h"
+#include "StaticData.h"
 
 DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DecalManager> decalmanager) : RenderPass(device,resourceManager)
 {
@@ -13,12 +14,8 @@ DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_pt
 
 	m_AlbedoRTV = resourceManager->Get<RenderTargetView>(L"Albedo").lock();
 	m_NormalRTV = resourceManager->Get<RenderTargetView>(L"Normal").lock();
-	m_PositionRTV = resourceManager->Get<RenderTargetView>(L"Position").lock();
 	m_DepthRTV = resourceManager->Get<RenderTargetView>(L"Depth").lock();
 	m_MetalicRoughnessRTV = resourceManager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
-	m_AORTV = resourceManager->Get<RenderTargetView>(L"AO").lock();
-	m_EmissiveRTV = resourceManager->Get<RenderTargetView>(L"Emissive").lock();
-	m_LightMapRTV = resourceManager->Get<RenderTargetView>(L"LightMap").lock();
 
 	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quad_VB");
 	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
@@ -49,12 +46,13 @@ DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_pt
 	InstanceDecalData* dataView = reinterpret_cast<InstanceDecalData*>(mappedData.pData);
 	dataView = nullptr;
 	m_Device.lock()->Context()->Unmap(m_InstanceBuffer.lock()->Get(), 0);
-
+	m_InstanceDatas.clear();
 
 	m_DecalVB = m_ResourceManager.lock()->Get<VertexBuffer>(L"Decal_VB");
 	m_DecalIB = m_ResourceManager.lock()->Get<IndexBuffer>(L"Decal_IB");
 
-
+	m_DecalVS = m_ResourceManager.lock()->Get<VertexShader>(L"DecalVS");
+	m_DecalPS = m_ResourceManager.lock()->Get<PixelShader>(L"DecalPS");
 }
 
 DecalPass::~DecalPass()
@@ -64,8 +62,18 @@ DecalPass::~DecalPass()
 
 void DecalPass::Render()
 {
-
 	//instance buffer update
+	std::map<std::string, std::vector<decal::Info>>& curDecals = m_DecalManager->GetDecals();
+	for (auto& decals : curDecals)
+	{
+		for (auto& decal : decals.second)
+		{
+			InstanceDecalData temp;
+			temp.world = decal.WorldTransform.Transpose();
+			m_InstanceDatas.push_back(temp);
+		}
+	}
+
 	if (!m_InstanceDatas.empty())
 	{
 
@@ -88,51 +96,64 @@ void DecalPass::Render()
 	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
+	//set rtv,dsv
+	Device->UnBindSRV();
+	std::vector<ID3D11RenderTargetView*> RTVs;
+	RTVs.push_back(m_AlbedoRTV.lock()->Get());
+	RTVs.push_back(m_NormalRTV.lock()->Get());
+	Device->Context()->OMSetRenderTargets(2, RTVs.data(), m_DepthStencilView.lock()->Get());
+
+
 	//set vb(instance buffer)
-	// UINT strides[2];
-	//strides[0] = sizeof(BaseVertex);
-	//strides[1] = sizeof(InstanceDecalData);
-	//UINT offsets[2];
-	//offsets[0] = 0;
-	//offsets[1] = 0;
-	//m_Device.lock()->Context()->IASetVertexBuffers();
+	 UINT strides[2];
+	strides[0] = sizeof(BaseVertex);
+	strides[1] = sizeof(InstanceDecalData);
+	UINT offsets[2];
+	offsets[0] = 0;
+	offsets[1] = 0;
+
+	std::vector<ID3D11Buffer*> bufferPointers[2];
+	bufferPointers->push_back(m_DecalVB.lock()->Get());
+	bufferPointers->push_back(m_InstanceBuffer.lock()->Get());
+
+	m_Device.lock()->Context()->IASetVertexBuffers(0,2,bufferPointers->data(), strides, offsets);
 	
 	//set inputlayout,ib
-	//m_Device.lock()->Context()->IASetInputLayout();
-	//m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
+	m_Device.lock()->Context()->IASetInputLayout(m_DecalVS.lock()->InputLayout());
+	m_Device.lock()->Context()->IASetIndexBuffer(m_DecalIB.lock()->Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//set primitive
-	//m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
 	//set vs, ps
-	//m_Device.lock()->Context()->VSSetShader();
-	//m_Device.lock()->Context()->PSSetShader();
+	m_Device.lock()->Context()->VSSetShader(m_DecalVS.lock()->GetVS(),nullptr, 0);
+	m_Device.lock()->Context()->PSSetShader(m_DecalPS.lock()->GetPS(),nullptr, 0);
 
 	//set sampler
-	//m_Device.lock()->Context()->PSSetSamplers();
+	m_Device.lock()->Context()->PSSetSamplers(0,1,linear->GetAddress());
 
 	//set cb
-	//Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
-	//Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
 
 	//set srv
-	//m_Device.lock()->Context()->PSSetShaderResources();
-
-	//set rtv,dsv
-	//Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), m_DepthStencilView.lock()->Get());
-
-
+	m_Device.lock()->Context()->PSSetShaderResources(0,1,m_DepthSRV.lock()->GetAddress());
 	
-
 	//render
-	std::map<std::string, std::vector<decal::Info>>& curDecals = m_DecalManager->GetDecals();
-	//m_Device.lock()->Context()->DrawIndexedInstanced(mesh->IBCount(), 인스턴스 수, 0, 0, instance buffer 시작 지점offset);
+	int offset = 0;
+	for (auto& decals : curDecals)
+	{
+		auto& curDecal = decals.second;
+		m_Device.lock()->Context()->DrawIndexedInstanced(DecalVolume::Index::count , curDecal.size(), 0, 0, offset);
+		offset += curDecal.size();
+	}
 
 
 
 
 	m_DecalManager->ClearDecals();
+	m_InstanceDatas.clear();
 }
 
 void DecalPass::OnResize()

@@ -74,11 +74,10 @@ struct InstanceSkinnedData
 //¿ŒΩ∫≈œΩÃ
 struct InstanceDecalData
 {
-	InstanceDecalData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity)
+	InstanceDecalData() : world(VPMath::Matrix::Identity)
 	{
 
 	}
 
 	VPMath::Matrix world;
-	VPMath::Matrix worldInverse;
 };
