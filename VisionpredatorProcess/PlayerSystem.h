@@ -14,9 +14,21 @@ public:
 	// IFixedUpdatable을(를) 통해 상속됨
 	void FixedUpdate(float deltaTime) override;
 	// IPhysicable을(를) 통해 상속됨
-	void PhysicsUpdate(float deltaTime) override;
-	// IPhysicable을(를) 통해 상속됨
-	void PhysicsLateUpdate(float deltaTime) override;
+	void PhysicsUpdate(float deltaTime) override {};
+	void PhysicsLateUpdate(float deltaTime) override {};
+
+	// IRenderable을(를) 통해 상속됨
+	void BeginRenderUpdate(float deltaTime) override {};
+	void RenderUpdate(float deltaTime) override {};
+	void LateRenderUpdate(float deltaTime) override {};
+	void EditorRenderUpdate(float deltaTime) override {};
+
+	// ISoundable을(를) 통해 상속됨
+	void SoundUpdate(float deltaTime) override {};
+
+
+
+
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
@@ -89,46 +101,46 @@ public:
 #pragma region Animation
 	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
-	void ThrowFinished(PlayerComponent& playercomp);
+	void AnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp);
+#pragma endregion
+#pragma region Interection Logic
+	void PlayerInterect(PlayerComponent& playercomp);
+	void Grab_Gun(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Gun Logic
-	void PlayerInterect(PlayerComponent& playercomp);
-	void Grab_Gun(PlayerComponent& playercomp);
+
 	void Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime);
 	void Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime);
 
 	bool Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
-	void Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
-	void GunCooltime(PlayerComponent& playercomp, float deltatime);
+	bool Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
+	void Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& guncomp);
+	void Gun_Cooltime(PlayerComponent& playercomp, float deltatime);
 #pragma region Shoot Logic
-	bool Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
-	bool Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
-	bool Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Shoot_Common(PlayerComponent& playercomp, GunComponent& guncomp, VisPred::Game::PlayerAni idleAnimation, VisPred::Game::PlayerAni attackAnimation);
+	bool Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& TransformComp);
+	bool Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& TransformComp);
+	bool Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp,TransformComponent& TransformComp);
+
 #pragma endregion
 
 
 #pragma region Shoot Logic
-	void Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
-	void Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
-	void Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp);
+	bool Throw_Setting(PlayerComponent& playercomp);
 #pragma endregion
 
 	// IStartable을(를) 통해 상속됨
 	void Initialize() override;
 	void Start(uint32_t gameObjectId) override;
-	void Finish(uint32_t gameObjectId) override;
-	void Finalize() override;
-	// IRenderable을(를) 통해 상속됨
-	void BeginRenderUpdate(float deltaTime) override;
-	void RenderUpdate(float deltaTime) override;
-	void LateRenderUpdate(float deltaTime) override;
-	void EditorRenderUpdate(float deltaTime) override;
-	// ISoundable을(를) 통해 상속됨
-	void SoundUpdate(float deltaTime) override;
-	float Randomfloat(float min , float max);
-	double RecoilPercent(double curtime ,double time, double percent);
-	bool RecoilReturn(double curtime ,double time, double percent);
-	double EndRecoilPercent(double curtime ,double time);
+	void Finish(uint32_t gameObjectId) override {};
+	void Finalize() override {};
+	float Randomfloat(float min, float max);
+	double RecoilPercent(double curtime, double time, double percent);
+	bool RecoilReturn(double curtime, double time, double percent);
+	double EndRecoilPercent(double curtime, double time);
 };
 

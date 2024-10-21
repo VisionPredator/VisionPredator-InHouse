@@ -3,91 +3,24 @@
 #include <iostream>
 #include "EngineStructs.h"
 #include <random>
+using namespace VisPred::Game;
+
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 }
-#pragma region player Functuions
 
-float PlayerSystem::Randomfloat(float min, float max)
-{
-	// Create a random number generator
-	std::random_device rd; // Seed generator
-	std::mt19937 gen(rd()); // Mersenne Twister random engine
-
-	// Create a distribution for floating-point numbers between min and max
-	std::uniform_real_distribution<float> dist(min, max);
-
-	// Return the random number
-	return dist(gen);
-}
-double PlayerSystem::RecoilPercent(double x, double a, double percent)
-{
-	// Convert percent into a value between 0 and 1
-	double b = percent / 100.0;
-
-	// Ensure non-negative values
-	if (x <= 0)
-		return 0.0;
-
-	if (x < a * b)
-	{
-		// First half: downward parabola
-		double delta = x - a * b;
-		return -(delta * delta) / (b * b * a * a) + 1;
-	}
-	else if (x >= a)
-	{
-		// Beyond full recoil
-		return 0.0;
-	}
-	else
-	{
-		// Second half: upward parabola
-		double delta = x - a;
-		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
-	}
-}
-
-bool PlayerSystem::RecoilReturn(double x, double a, double percent)
-{
-	// Convert percent into a value between 0 and 1
-	double b = percent / 100.0;
-
-	// Ensure non-negative values
-
-	if (x < a * b)
-		return false;
-	else
-		return true;
-}
-
-double PlayerSystem::EndRecoilPercent(double x, double a)
-{
-	double delta = x - a;
-	return (delta * delta) / (a * a);
-}
-
-
-#pragma endregion
 #pragma region Update
-
 void PlayerSystem::Update(float deltaTime)
 {
 	COMPLOOP(PlayerComponent, playercomp)
 	{
-		GunCooltime(playercomp, deltaTime);
+		Gun_Cooltime(playercomp, deltaTime);
 		CameraShake(playercomp, deltaTime);
-		//Gun_Recoiling(playercomp, deltaTime);
 		Calculate_FSM(playercomp);
 		FSM_Sound_FSM(playercomp, deltaTime);
 		FSM_Action_FSM(playercomp, deltaTime);
-		ToVPMode(playercomp);
 		PlayerInterect(playercomp);
 		PlayerAnimation(playercomp);
-		if (INPUTKEYDOWN(KEYBOARDKEY::O))
-		{
-			PlayerMeleeAttack(playercomp);
-		}
 	}
 }
 void PlayerSystem::FixedUpdate(float deltaTime)
@@ -98,15 +31,6 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 	}
-}
-void PlayerSystem::PhysicsUpdate(float deltaTime)
-{
-}
-void PlayerSystem::SoundUpdate(float deltaTime)
-{
-}
-void PlayerSystem::PhysicsLateUpdate(float deltaTime)
-{
 }
 #pragma endregion
 
@@ -156,38 +80,7 @@ void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
 		m_Graphics->SetVP(temp);
 	}
 }
-#pragma region Physics Setting
-
-void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
-{
-	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
-	//controllercomp.Acceleration= playercomp.Accel;
-	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
-	controlcomp.JumpSpeed = playercomp.JumpForce;
-	controlcomp.StaticFriction = playercomp.StaticFriction;
-	controlcomp.DynamicFriction = playercomp.DynamicFriction;
-	controlcomp.JumpXZAcceleration = controlcomp.Acceleration * playercomp.AirControlPercent / 100;
-	controlcomp.GravityWeight = playercomp.GravityPower * 9.80665f;
-}
-void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
-{
-	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
-	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controlcomp.CapsuleControllerinfo.height, controlcomp.CapsuleControllerinfo.radius);
-}
-void PlayerSystem::CrouchModeController(PlayerComponent& playercomp)
-{
-	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
-	controlcomp.Contollerinfo.LocalOffset.y = -playercomp.SitHeightDiff;
-	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controlcomp.CapsuleControllerinfo.radius, playercomp.SitHeight);
-}
-void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
-{
-	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
-	controlcomp.Contollerinfo.LocalOffset.y = 0;
-	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controlcomp.CapsuleControllerinfo.radius, controlcomp.CapsuleControllerinfo.height);
-}
-#pragma endregion
-#pragma region Camera Defalut Pos Setting
+#pragma region Camera Setting
 void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 {
 	auto camPoseEntity = playercomp.CameraPosEntity.lock(); /*GetSceneManager()->GetEntity(playercomp.CameraPosID);*/
@@ -213,6 +106,7 @@ void PlayerSystem::DownCamera(PlayerComponent& playercomp, float deltatime)
 	}
 
 }
+
 
 void PlayerSystem::UpCamera(PlayerComponent& playercomp, float deltatime)
 {
@@ -252,11 +146,8 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 	{
 		playercomp.DownCameraPos = playercomp.SlideCameraPos;
 		DownCamera(playercomp, deltatime);
-
 	}
 	break;
-	break;
-
 	default:
 		UpCamera(playercomp, deltatime);
 		break;
@@ -276,6 +167,8 @@ void PlayerSystem::CameraShake(PlayerComponent& playercomp, float deltatime)
 		break;
 	}
 }
+#pragma endregion 
+#pragma region Player Attack
 void PlayerSystem::PlayerMeleeAttack(PlayerComponent& playercomp)
 {
 	auto& meleecomp = *playercomp.GetComponent<PlayerMeleeComponent>();
@@ -284,7 +177,6 @@ void PlayerSystem::PlayerMeleeAttack(PlayerComponent& playercomp)
 	else
 		Melee_VPMode(playercomp);
 }
-
 
 void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 {
@@ -299,15 +191,11 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 	///어택모드 설정하기.
 	int attackmode = static_cast<int>(meleecomp.AttackMode);
 	attackmode++;
-	if (attackmode >3)
-	{
-		meleecomp.AttackMode = VisPred::Game::PlayerMelee::Sword_First;
-	}
-	else
-	{
-		meleecomp.AttackMode = static_cast<VisPred::Game::PlayerMelee>(attackmode);
-	}
 
+	if (attackmode >3)
+		meleecomp.AttackMode = VisPred::Game::PlayerMelee::Sword_First;
+	else
+		meleecomp.AttackMode = static_cast<VisPred::Game::PlayerMelee>(attackmode);
 
 	///meleecomp.AttackMode 에 따른 설정 및 애니메이션 셜정.
 	auto SetAttackDetails = [&](VisPred::Game::PlayerAni aniIndex, float length, float damage, float angle)
@@ -370,13 +258,10 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 	}
 
 }
-
 void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 {
 }
-
-#pragma endregion 
-
+#pragma endregion
 #pragma region FSM_System
 #pragma region FSM Calculate
 #pragma region FSM Calculate Main
@@ -546,19 +431,9 @@ void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 {
 }
 #pragma endregion
-void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
-{
-	if (playercomp.GetEntityID() != controllercomp.GetEntityID())
-		return;
-	if (controllercomp.InputDir.Length() < 0.01f)
-		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
-	else
-		playercomp.SlideDir = controllercomp.InputDir;
-}
 #pragma endregion
-#pragma region FSM Acting
-
 #pragma region FSM Action
+#pragma region FSM Action Main
 void PlayerSystem::FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime)
 {
 	switch (playercomp.CurrentFSM)
@@ -594,6 +469,8 @@ void PlayerSystem::FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime)
 		break;
 	}
 }
+#pragma endregion
+#pragma region FSM Action Logic
 
 void PlayerSystem::FSM_Action_Idle(PlayerComponent& playercomp)
 {
@@ -612,6 +489,8 @@ void PlayerSystem::FSM_Action_Slide(PlayerComponent& playercomp, float deltatime
 	auto& transcomp = *playercomp.GetComponent<TransformComponent>();
 	Active_Slide(playercomp, deltatime);
 	Active_Rotation(playercomp, transcomp);
+	Active_Attack(playercomp);
+
 }
 
 void PlayerSystem::FSM_Action_Walk(PlayerComponent& playercomp)
@@ -678,7 +557,11 @@ void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 }
 
 #pragma endregion
+#pragma endregion
 #pragma region FSM Sound
+#pragma region FSM Sound Main
+
+
 void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
 {
 	switch (playercomp.CurrentFSM)
@@ -714,6 +597,8 @@ void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
 		break;
 	}
 }
+#pragma endregion
+#pragma region FSM Sound Logic
 void PlayerSystem::FSM_Sound_Idle(PlayerComponent& playercomp)
 {
 	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
@@ -823,6 +708,7 @@ void PlayerSystem::FSM_Sound_Destroy(PlayerComponent& playercomp)
 #pragma endregion
 #pragma endregion
 #pragma region Active_logic
+
 void PlayerSystem::Active_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp)
 {
 	controllercomp.InputDir.x = {};
@@ -880,51 +766,25 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 	if (INPUTKEY(MOUSEKEY::LBUTTON))
 	{
 
-		if (playercomp.HasGun && playercomp.ReadyToShoot)
+		if (playercomp.HasGun)
 		{
-			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-			if (!guncomp.IsEmpty)
-			{
-				if (Gun_Shoot(playercomp, guncomp))
-				{
-					playercomp.IsGunRecoiling = true;
-					float randfloat = guncomp.RecoilPos.x;
-					randfloat = Randomfloat(-randfloat, randfloat);
-					auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>(); /*GetSceneManager()->GetComponent<TransformComponent>(playercomp.CameraID);*/
-					playercomp.GunRecoilStartQuat = cameratrans->Local_Quaternion;
-					playercomp.GunRecoilEndQuat = playercomp.GunRecoilStartQuat;
-					playercomp.GunRecoilEndQuat.RotateYaw(randfloat);
-					playercomp.GunRecoilEndQuat.RotateToUp(guncomp.RecoilPos.y);
-
-					VPMath::Vector3 euler = playercomp.GunRecoilEndQuat.ToEuler();  // Use the ToEuler function to extract pitch
-
-					const float maxPitch = guncomp.RecoilMaxXY.y * (VPMath::XM_PI / 180.0f);
-					const float maxYaw = guncomp.RecoilMaxXY.x * (VPMath::XM_PI / 180.0f);
-					if (euler.x > maxPitch)
-						euler.x = maxPitch;
-					else if (euler.x < -maxPitch)
-						euler.x = -maxPitch;
-					if (euler.y > maxYaw)
-						euler.y = maxYaw;
-					else if (euler.y < -maxYaw)
-						euler.y = -maxYaw;
-
-					playercomp.GunRecoilEndQuat = VPMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z);
-				}
-			}
-			else
-				Gun_Throw(playercomp, guncomp);
-
 			playercomp.GetComponent<PlayerMeleeComponent>()->AttackMode = VisPred::Game::PlayerMelee::END;
+			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+			if (guncomp.IsEmpty)
+			{
+				if (Gun_Throw(playercomp, guncomp))
+					Throw_Setting(playercomp);
+			}
+			else if (playercomp.ReadyToShoot)
+				if (Gun_Shoot(playercomp, guncomp))
+					Gun_RecoilSetting(playercomp, guncomp);
 		}
 		else if (!playercomp.HasGun)
-		{
 			PlayerMeleeAttack(playercomp);
-
-		}
 	}
 }
 #pragma endregion
+
 #pragma region Animation 
 void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni playeraniIndex, float Speed, float transition, bool loop, bool Immidiate)
 {
@@ -936,59 +796,18 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni p
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
-
 void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
-
-	ThrowFinished(playercomp);
-	ReturnToIdle(*playercomp.HandEntity.lock()->GetComponent<AnimationComponent>());
-
-}
-
-void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
-{
-	using namespace VisPred::Game;
-	if (anicomp.IsBlending || !anicomp.IsFinished)
-		return;
-	uint32_t entityID = anicomp.GetEntityID();
-	switch (anicomp.curAni)
+	auto& anicomp = *playercomp.GetComponent<AnimationComponent>();
+	if (anicomp.IsFinished)
 	{
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0, 0, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0, 0, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0, 0, false);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	/*case  (int)VisPred::Game::PlayerAni::ToIdle02_Pistol:	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle02_Rifle:	break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle02_ShotGun:	break;*/
-	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	/*case  (int)VisPred::Game::PlayerAni::Tointeraction:		break;
-	case  (int)VisPred::Game::PlayerAni::ToIdle02_Sword:	break;*/
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;	/*case  (int)VisPred::Game::PlayerAni::ToVP_Idle:			break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_dash:			break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_jump:			break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_run:			break;*/
-	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
-	default:
-		break;
+	AnimationFinished(playercomp, anicomp);
+	ReturnToIdle(anicomp);
 	}
+
 }
-#pragma endregion
-
-void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
+void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp)
 {
-
-	AnimationComponent& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 
 	using namespace VisPred::Game;
 	if (anicomp.IsBlending || !anicomp.IsFinished)
@@ -1010,7 +829,6 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 			playercomp.ThrowingGunEntityID = 0;
 			socketcomp.GetComponent<MeshComponent>()->IsOverDraw = false;
 			playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
-
 		}
 
 	}
@@ -1019,95 +837,44 @@ void PlayerSystem::ThrowFinished(PlayerComponent& playercomp)
 		break;
 	}
 }
+void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
+{
+	using namespace VisPred::Game;
 
-#pragma region Gun Logic
+	uint32_t entityID = anicomp.GetEntityID();
+	switch (anicomp.curAni)
+	{
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0, 0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0, 0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle01_Sword, 0, 0, false);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Sword:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Pistol:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_Rifle:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::ToIdle01_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	
+	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
+	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;	
+	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
+	default:
+		break;
+	}
+}
+#pragma endregion
+#pragma region Interect Logic
 void PlayerSystem::PlayerInterect(PlayerComponent& playercomp)
 {
 	if (INPUTKEYDOWN(KEYBOARDKEY::F))
 	{
 		Grab_Gun(playercomp);
-
-	}
-}
-
-void PlayerSystem::Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime)
-{
-	if (playercomp.HasGun && playercomp.IsGunRecoiling)
-	{
-		playercomp.RecoilProgress += deltatime;
-		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
-		VPMath::Quaternion tempquat{};
-		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
-
-		tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
-		VPMath::Quaternion tempquat1 = { tempquat.x,0,0,tempquat.w };
-		VPMath::Quaternion tempquat2{};
-
-
-
-		// Extract yaw, pitch, roll from quaternion
-
-		cameratrans->SetLocalQuaternion(tempquat);
-
-		if (playercomp.GunprogressTime > gunComp->RecoilTime)
-		{
-			VPMath::Quaternion tempquat{};
-			playercomp.RecoilProgress = 0;
-			playercomp.IsGunRecoiling = false;
-			playercomp.IsEndReocilReturn = false;
-			cameratrans->SetLocalQuaternion({});
-		}
-	}
-	else if (playercomp.HasGun && !playercomp.IsGunRecoiling && !playercomp.IsEndReocilReturn)
-	{
-		playercomp.RecoilProgress += deltatime;
-		VPMath::Quaternion tempquat{};
-		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
-		if (playercomp.RecoilProgress <= playercomp.RecoilReturnTime)
-		{
-			float temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
-			tempquat = tempquat.Slerp({}, playercomp.GunRecoilStartQuat, temppercent);
-			cameratrans->SetLocalQuaternion(tempquat);
-		}
-		else
-		{
-			cameratrans->SetLocalQuaternion({});
-			playercomp.IsEndReocilReturn = true;
-			playercomp.RecoilProgress = 0;
-			playercomp.GunRecoilStartQuat = {};
-			playercomp.GunRecoilEndQuat = {};
-		}
-	}
-
-}
-void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime)
-{
-	if (playercomp.HasGun && playercomp.IsGunRecoiling)
-	{
-		playercomp.RecoilProgress += deltatime;
-		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
-		VPMath::Quaternion tempquat{};
-		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
-		if (!RecoilReturn(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent))
-			tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
-		else
-			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, percent);
-		VPMath::Quaternion tempquat1 = { tempquat.x,0,0,tempquat.w };
-
-		cameratrans->SetLocalQuaternion(tempquat);
-
-		if (percent >= 1.0f)
-		{
-			VPMath::Quaternion tempquat{};
-			playercomp.RecoilProgress = 0;
-			playercomp.GunRecoilStartQuat = {};
-			playercomp.GunRecoilEndQuat = {};
-			playercomp.IsGunRecoiling = false;
-			//playercomp.IsEndReocilReturn = false;
-			cameratrans->SetLocalQuaternion({});
-		}
 	}
 }
 
@@ -1155,144 +922,231 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 		break;
 	}
 }
+
+#pragma endregion
+#pragma region Gun Logic
 bool PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	bool IsGunShoot = false;
+	
+	auto& TransformComp =*playercomp.FirePosEntity.lock()->GetComponent<TransformComponent>();
 	switch (playercomp.ShootType)
 	{
 	case VisPred::Game::GunType::PISTOL:
-		return Shoot_Pistol(playercomp, guncomp);
+		return Shoot_Pistol(playercomp, guncomp, TransformComp);
 		break;
 	case VisPred::Game::GunType::SHOTGUN:
-		return Shoot_ShotGun(playercomp, guncomp);
+		return Shoot_ShotGun(playercomp, guncomp, TransformComp);
 		break;
 	case VisPred::Game::GunType::RIFLE:
-		return Shoot_Rifle(playercomp, guncomp);
+		return Shoot_Rifle(playercomp, guncomp, TransformComp);
 		break;
 	default:
+		return false;
 		break;
 	}
-
-
 }
-void PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	switch (playercomp.ShootType)
 	{
 	case VisPred::Game::GunType::PISTOL:
-		Throw_Pistol(playercomp, guncomp);
+		return Throw_Pistol(playercomp, guncomp);
 		break;
 	case VisPred::Game::GunType::SHOTGUN:
-		Throw_ShotGun(playercomp, guncomp);
+		return Throw_ShotGun(playercomp, guncomp);
 		break;
 	case VisPred::Game::GunType::RIFLE:
-		Throw_Rifle(playercomp, guncomp);
+		return Throw_Rifle(playercomp, guncomp);
 		break;
 	default:
+		return false;
 		break;
 	}
+
 }
-#pragma region Gun System Logic
+void PlayerSystem::Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& guncomp)
+{
+	playercomp.IsGunRecoiling = true;
+	// 랜덤한 Yaw 회전 범위 [-RecoilPos.x, RecoilPos.x]에서 값 생성
+	float randfloat = Randomfloat(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
+	// 카메라의 TransformComponent 가져오기
+	auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
+	// 초기 및 최종 반동 Quaternion 설정
+	playercomp.GunRecoilStartQuat = cameratrans->Local_Quaternion;
+	playercomp.GunRecoilEndQuat = playercomp.GunRecoilStartQuat;
+	// 랜덤한 Yaw 회전 및 Pitch 반동 적용
+	playercomp.GunRecoilEndQuat.RotateYaw(randfloat);
+	playercomp.GunRecoilEndQuat.RotateToUp(guncomp.RecoilPos.y);
+	// 반동 Quaternion에서 Euler 각도 추출
+	VPMath::Vector3 euler = playercomp.GunRecoilEndQuat.ToEuler();
+	// 최대 Pitch 및 Yaw 각도 정의 (라디안 단위)
+	const float maxPitch = guncomp.RecoilMaxXY.y * (VPMath::XM_PI / 180.0f);
+	const float maxYaw = guncomp.RecoilMaxXY.x * (VPMath::XM_PI / 180.0f);
+	// Pitch와 Yaw 값을 최대값으로 제한
+	euler.x = std::clamp(euler.x, -maxPitch, maxPitch);
+	euler.y = std::clamp(euler.y, -maxYaw, maxYaw);
+	// 제한된 Euler 각도에서 최종 반동 Quaternion 설정
+	playercomp.GunRecoilEndQuat = VPMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z);
+}
+#pragma region Gun Recoil
+void PlayerSystem::Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime)
+{
+	if (playercomp.HasGun && playercomp.IsGunRecoiling)
+	{
+		playercomp.RecoilProgress += deltatime;
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
+		VPMath::Quaternion tempquat{};
+		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
+
+		tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+
+		// Extract yaw, pitch, roll from quaternion
+
+		cameratrans->SetLocalQuaternion(tempquat);
+
+		if (playercomp.GunprogressTime > gunComp->RecoilTime)
+		{
+			VPMath::Quaternion tempquat{};
+			playercomp.RecoilProgress = 0;
+			playercomp.IsGunRecoiling = false;
+			playercomp.IsEndReocilReturn = false;
+			cameratrans->SetLocalQuaternion({});
+		}
+	}
+	else if (playercomp.HasGun && !playercomp.IsGunRecoiling && !playercomp.IsEndReocilReturn)
+	{
+		playercomp.RecoilProgress += deltatime;
+		VPMath::Quaternion tempquat{};
+		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
+		if (playercomp.RecoilProgress <= playercomp.RecoilReturnTime)
+		{
+			float temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
+			tempquat = tempquat.Slerp({}, playercomp.GunRecoilStartQuat, temppercent);
+			cameratrans->SetLocalQuaternion(tempquat);
+		}
+		else
+		{
+			cameratrans->SetLocalQuaternion({});
+			playercomp.IsEndReocilReturn = true;
+			playercomp.RecoilProgress = 0;
+			playercomp.GunRecoilStartQuat = {};
+			playercomp.GunRecoilEndQuat = {};
+		}
+	}
+
+}
+void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime)
+{
+	if (playercomp.HasGun && playercomp.IsGunRecoiling)
+	{
+		auto& cameratrans = *playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
+		playercomp.RecoilProgress += deltatime;
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+		VPMath::Quaternion tempquat{};
+		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
+		if (!RecoilReturn(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent))
+			tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+		else
+			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, percent);
+
+
+		cameratrans.SetLocalQuaternion(tempquat);
+
+		if (percent >= 1.0f)
+		{
+			VPMath::Quaternion tempquat{};
+			playercomp.RecoilProgress = 0;
+			playercomp.GunRecoilStartQuat = {};
+			playercomp.GunRecoilEndQuat = {};
+			playercomp.IsGunRecoiling = false;
+			//playercomp.IsEndReocilReturn = false;
+			cameratrans.SetLocalQuaternion({});
+		}
+	}
+}
+#pragma endregion
 #pragma region Shoot Logic
-
-bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Shoot_Common(PlayerComponent& playercomp, GunComponent& guncomp, VisPred::Game::PlayerAni idleAnimation, VisPred::Game::PlayerAni attackAnimation)
 {
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
-	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
+
+	// Check if the player is in the correct animation state to shoot
+	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(idleAnimation))
 		return false;
+	// Change animation to attack animation
+	ChangeAni_Index(anicomp.GetEntityID(), attackAnimation, 0, 0, false);
+	// Update gun and player state
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Pistol, 0, 0, false);
-
-	auto posEntity = playercomp.FirePosEntity.lock();
-	if (!posEntity)
+	return true;
+}
+bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
+{
+	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
-	auto tempTransform = posEntity->GetComponent<TransformComponent>();
-	auto temppos = tempTransform->World_Location;
-	auto temprotate = tempTransform->World_Rotation;
+	auto temppos = firetrans.World_Location;
+	auto temprotate = firetrans.World_Rotation;
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
-bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
-	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
+	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
-	playercomp.GunprogressTime = 0;
-	playercomp.ReadyToShoot = false;
-	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_ShotGun, 0, 0, false);
 
-	auto posEntity = playercomp.FirePosEntity.lock();
-	if (!posEntity)
-		return false;
-	auto tempTransform = posEntity->GetComponent<TransformComponent>();
-	auto temppos = tempTransform->World_Location;
-	auto temprotate = tempTransform->World_Rotation;
+	auto temppos = firetrans.World_Location;
+	auto temprotate = firetrans.World_Rotation;
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
-bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
-	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
+	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
-	playercomp.GunprogressTime = 0;
-	playercomp.ReadyToShoot = false;
-	guncomp.CurrentBullet -= 1;
-	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToAttack_Rifle, 0, 0, false);
-	auto posEntity = playercomp.FirePosEntity.lock();
 
-	if (!posEntity)
-		return false;
-	auto tempTransform = posEntity->GetComponent<TransformComponent>();
-	auto temppos = tempTransform->World_Location;
-	auto temprotate = tempTransform->World_Rotation;
+	auto temppos = firetrans.World_Location;
+	auto temprotate = firetrans.World_Rotation;
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
 	return true;
 }
 #pragma endregion
-
 #pragma region Throw Logic
-void PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Throw_Setting(PlayerComponent& playercomp)
+{
+	playercomp.HasGun = false;
+	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
+	playercomp.GunEntityID = 0;
+	playercomp.ShootType = VisPred::Game::GunType::NONE;
+	return true;
+}
+bool PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
-		return;
+		return false;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 0, 0, false);
-
-	auto socketcomp = guncomp.GetComponent<SocketComponent>();
-	//socketcomp->IsConnected = false;
-	//socketcomp->ConnectedEntityID = 0;
-	playercomp.HasGun = false;
-	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
-	playercomp.GunEntityID = 0;
-	playercomp.ShootType = VisPred::Game::GunType::NONE;
+	return true;
 }
-void PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
-		return;
+		return false;
+
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 0, 0, false);
+	return true;
 
-	auto socketcomp = guncomp.GetComponent<SocketComponent>();
-	//socketcomp->IsConnected = false;
-	//socketcomp->ConnectedEntityID = 0;
-	playercomp.HasGun = false;
-	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
-	playercomp.GunEntityID = 0;
-	playercomp.ShootType = VisPred::Game::GunType::NONE;
 }
-void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
+bool PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 
@@ -1301,64 +1155,30 @@ void PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 0, 0, false);
-
-	auto socketcomp = guncomp.GetComponent<SocketComponent>();
-	//socketcomp->IsConnected = false;
-	//socketcomp->ConnectedEntityID = 0;
-	playercomp.HasGun = false;
-	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
-	playercomp.GunEntityID = 0;
-	playercomp.ShootType = VisPred::Game::GunType::NONE;
+	return true;
 }
 #pragma endregion
-void PlayerSystem::GunCooltime(PlayerComponent& playercomp, float deltatime)
+void PlayerSystem::Gun_Cooltime(PlayerComponent& playercomp, float deltatime)
 {
+	playercomp.GunprogressTime += deltatime;
 	if (!playercomp.HasGun)
-	{
-		playercomp.GunprogressTime += deltatime;
 		playercomp.ReadyToShoot = false;
-
-	}
 	else
 	{
 		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		if (playercomp.GunprogressTime >= gunComp->CoolTime)
-		{
-			playercomp.GunprogressTime += deltatime;
-			playercomp.ReadyToShoot = true;
-		}
-		else
-		{
-			playercomp.GunprogressTime += deltatime;
-			playercomp.ReadyToShoot = false;
 
-		}
+		if (playercomp.GunprogressTime >= gunComp->CoolTime)
+			playercomp.ReadyToShoot = true;
+		else
+			playercomp.ReadyToShoot = false;
 	}
 }
-
-#pragma endregion
 #pragma endregion 
-#pragma region IRenderable
-void PlayerSystem::BeginRenderUpdate(float deltaTime)
-{
-}
-void PlayerSystem::RenderUpdate(float deltaTime)
-{
-}
-void PlayerSystem::LateRenderUpdate(float deltaTime)
-{
-}
-void PlayerSystem::EditorRenderUpdate(float deltaTime)
-{
-}
-#pragma endregion
 #pragma region IStartable
 void PlayerSystem::Initialize()
 {
 	COMPLOOP(PlayerComponent, playercomp)
-	{
 		Start(playercomp.GetEntityID());
-	}
 }
 void PlayerSystem::Start(uint32_t gameObjectId)
 {
@@ -1443,10 +1263,106 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 
 	};
 }
-void PlayerSystem::Finish(uint32_t gameObjectId)
+#pragma endregion
+#pragma region player Functuions
+#pragma region Physics Setting
+
+void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
+	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
+	//controllercomp.Acceleration= playercomp.Accel;
+	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
+	controlcomp.JumpSpeed = playercomp.JumpForce;
+	controlcomp.StaticFriction = playercomp.StaticFriction;
+	controlcomp.DynamicFriction = playercomp.DynamicFriction;
+	controlcomp.JumpXZAcceleration = controlcomp.Acceleration * playercomp.AirControlPercent / 100;
+	controlcomp.GravityWeight = playercomp.GravityPower * 9.80665f;
 }
-void PlayerSystem::Finalize()
+void PlayerSystem::UpdateControllerSize(PlayerComponent& playercomp)
 {
+	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controlcomp.CapsuleControllerinfo.height, controlcomp.CapsuleControllerinfo.radius);
 }
+void PlayerSystem::CrouchModeController(PlayerComponent& playercomp)
+{
+	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
+	controlcomp.Contollerinfo.LocalOffset.y = -playercomp.SitHeightDiff;
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controlcomp.CapsuleControllerinfo.radius, playercomp.SitHeight);
+}
+void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
+{
+	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
+	controlcomp.Contollerinfo.LocalOffset.y = 0;
+	m_PhysicsEngine->ResizeCapsuleController(playercomp.GetEntityID(), controlcomp.CapsuleControllerinfo.radius, controlcomp.CapsuleControllerinfo.height);
+}
+#pragma endregion
+
+
+float PlayerSystem::Randomfloat(float min, float max)
+{
+	// Create a random number generator
+	std::random_device rd; // Seed generator
+	std::mt19937 gen(rd()); // Mersenne Twister random engine
+
+	// Create a distribution for floating-point numbers between min and max
+	std::uniform_real_distribution<float> dist(min, max);
+
+	// Return the random number
+	return dist(gen);
+}
+double PlayerSystem::RecoilPercent(double x, double a, double percent)
+{
+	// Convert percent into a value between 0 and 1
+	double b = percent / 100.0;
+
+	// Ensure non-negative values
+	if (x <= 0)
+		return 0.0;
+
+	if (x < a * b)
+	{
+		// First half: downward parabola
+		double delta = x - a * b;
+		return -(delta * delta) / (b * b * a * a) + 1;
+	}
+	else if (x >= a)
+	{
+		// Beyond full recoil
+		return 0.0;
+	}
+	else
+	{
+		// Second half: upward parabola
+		double delta = x - a;
+		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
+	}
+}
+bool PlayerSystem::RecoilReturn(double x, double a, double percent)
+{
+	// Convert percent into a value between 0 and 1
+	double b = percent / 100.0;
+
+	// Ensure non-negative values
+
+	if (x < a * b)
+		return false;
+	else
+		return true;
+}
+double PlayerSystem::EndRecoilPercent(double x, double a)
+{
+	double delta = x - a;
+	return (delta * delta) / (a * a);
+}
+
+void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
+{
+	if (playercomp.GetEntityID() != controllercomp.GetEntityID())
+		return;
+	if (controllercomp.InputDir.Length() < 0.01f)
+		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
+	else
+		playercomp.SlideDir = controllercomp.InputDir;
+}
+
 #pragma endregion
