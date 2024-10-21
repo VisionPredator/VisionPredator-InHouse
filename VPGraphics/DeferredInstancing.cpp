@@ -256,6 +256,7 @@ void DeferredInstancing::Render()
 
 	///light
 	//Save GBuffer texture
+	/*
 	{
 		Device->UnBindSRV();
 
@@ -294,6 +295,7 @@ void DeferredInstancing::Render()
 		}
 
 	}
+	*/
 
 
 	m_InstanceDatas.clear();
