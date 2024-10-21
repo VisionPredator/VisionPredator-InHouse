@@ -67,12 +67,27 @@ void PlayerUISystem::UpdateAim(IdentityComponent& identityComp)
 		return;
 
 	auto& imagecomp = *identityComp.GetComponent<ImageComponent>();
-	if (GetSceneManager()->HasEntity(m_PlayerComp->SearchedItemID))
-		if (GetSceneManager()->GetEntity(m_PlayerComp->SearchedItemID)->HasComponent<GunComponent>())
+	auto entity = GetSceneManager()->GetEntity(m_PlayerComp->SearchedItemID);
+	if (!entity)
+		imagecomp.TexturePath = "aim_base.png";
+	else
+	{
+		if (entity->HasComponent<GunComponent>())
+		{
 			imagecomp.TexturePath = "aim_interact.png";
-		else
-			imagecomp.TexturePath = "aim_base.png";
 
+		}
+		else if (entity->HasComponent<EnemyComponent>())
+		{
+			imagecomp.TexturePath = "aim_kill.png";
+
+		}
+		else
+		{
+			imagecomp.TexturePath = "aim_base.png";
+		}
+
+	}
 }
 
 // OnChangeWeapon 이벤트를 만들까..

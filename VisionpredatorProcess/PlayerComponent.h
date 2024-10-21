@@ -6,23 +6,25 @@ struct PlayerComponent :
 {
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent,RecoilMode
-		,HandName, CameraPosName, CameraName, FirePosName, LongswordName
+		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
 		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, RecoilReturnTime)
 
 	VisPred::Game::GunRecoilMode RecoilMode{};
 	std::string HandName{};
+	std::string VPHandName{};
 	std::string CameraPosName{};
 	std::string CameraName{};
 	std::string FirePosName;
 	std::string LongswordName{};
 	std::weak_ptr<Entity> HandEntity{};
+	std::weak_ptr<Entity> VPHandEntity{};
 	std::weak_ptr<Entity> CameraEntity{};
 	std::weak_ptr<Entity> CameraPosEntity{};
 	std::weak_ptr<Entity> FirePosEntity{};
 	std::weak_ptr<Entity> LongswordEntity{};
 	uint32_t MaxHP{};
 	uint32_t HP{};
-	VisPred::Game::EFSM CurrentFSM = VisPred::Game::EFSM::IDLE;
+	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	float Height{};
 	float Radius{};
 	float Sencitive = 1.f;
@@ -58,10 +60,9 @@ struct PlayerComponent :
 	uint32_t ThrowingGunEntityID{};
     VisPred::Game::GunType ShootType{};
     bool HasGun=false;
+	bool IsVPMode{};
     float GunprogressTime{};
     bool ReadyToShoot{};
-	bool IsRotated=false;
-	bool PlayerCamereShake{};
 	bool IsGunRecoiling{};
 	bool IsEndReocilReturn{};
 	float RecoilProgress{};

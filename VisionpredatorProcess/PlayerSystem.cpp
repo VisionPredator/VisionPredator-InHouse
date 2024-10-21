@@ -19,8 +19,8 @@ void PlayerSystem::Update(float deltaTime)
 		Calculate_FSM(playercomp);
 		FSM_Sound_FSM(playercomp, deltaTime);
 		FSM_Action_FSM(playercomp, deltaTime);
-		PlayerInterect(playercomp);
 		PlayerAnimation(playercomp);
+		Active_VPMode(playercomp);
 	}
 }
 void PlayerSystem::FixedUpdate(float deltaTime)
@@ -70,8 +70,7 @@ void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
 		gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
 }
 #pragma endregion
-
-void PlayerSystem::ToVPMode(PlayerComponent& playercomp)
+void PlayerSystem::Active_VPMode(PlayerComponent& playercomp)
 {
 	static bool temp = false;
 	if (INPUTKEYDOWN(KEYBOARDKEY::R))
@@ -136,13 +135,13 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 {
 	switch (playercomp.CurrentFSM)
 	{
-	case VisPred::Game::EFSM::CROUCH:
+	case VisPred::Game::PlayerFSM::CROUCH:
 	{
 		playercomp.DownCameraPos = playercomp.SitCameraPos;
 		DownCamera(playercomp, deltatime);
 	}
 	break;
-	case VisPred::Game::EFSM::SLIDE:
+	case VisPred::Game::PlayerFSM::SLIDE:
 	{
 		playercomp.DownCameraPos = playercomp.SlideCameraPos;
 		DownCamera(playercomp, deltatime);
@@ -172,7 +171,7 @@ void PlayerSystem::CameraShake(PlayerComponent& playercomp, float deltatime)
 void PlayerSystem::PlayerMeleeAttack(PlayerComponent& playercomp)
 {
 	auto& meleecomp = *playercomp.GetComponent<PlayerMeleeComponent>();
-	if (!meleecomp.IsVPMode)
+	if (!playercomp.IsVPMode)
 		Melee_Default(playercomp);
 	else
 		Melee_VPMode(playercomp);
@@ -260,6 +259,97 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 }
 void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 {
+	auto& meleecomp = *playercomp.GetComponent<PlayerMeleeComponent>();
+	auto& PlayerAni = *playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
+
+	///공격이 가능한 상태인가?
+
+	if (PlayerAni.IsBlending || PlayerAni.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Sword))
+		return;
+
+	///어택모드 설정하기.
+	int attackmode = static_cast<int>(meleecomp.AttackMode);
+	attackmode++;
+
+	if (attackmode > 3)
+		meleecomp.AttackMode = VisPred::Game::PlayerMelee::Sword_First;
+	else
+		meleecomp.AttackMode = static_cast<VisPred::Game::PlayerMelee>(attackmode);
+
+	///meleecomp.AttackMode 에 따른 설정 및 애니메이션 셜정.
+	auto SetAttackDetails = [&](VisPred::Game::PlayerAni aniIndex, float length, float damage, float angle)
+		{
+			ChangeAni_Index(PlayerAni.GetEntityID(), aniIndex, 0, 0, false, false);
+			float duration = m_Graphics->GetDuration(PlayerAni.FBX, static_cast<int>(aniIndex));
+			float speed = std::get<1>(PlayerAni.AnimationSpeed_Transition[static_cast<int>(aniIndex)]);
+			float transitionDuration = std::get<2>(PlayerAni.AnimationSpeed_Transition[static_cast<int>(aniIndex)]);
+			meleecomp.Length = length;
+			meleecomp.Damage = damage;
+			meleecomp.Angle = angle;
+			meleecomp.Time = duration / speed + transitionDuration;
+			meleecomp.IsLeft = true;
+		};
+
+	switch (meleecomp.AttackMode)
+	{
+	case VisPred::Game::PlayerMelee::Sword_First:
+		SetAttackDetails(VisPred::Game::PlayerAni::ToAttack1_Sword, meleecomp.SwordLength, meleecomp.SwordDamage, meleecomp.SwordAngle);
+		break;
+	case VisPred::Game::PlayerMelee::Sword_Third:
+		SetAttackDetails(VisPred::Game::PlayerAni::ToAttack2_Sword, meleecomp.SwordLength, meleecomp.SwordDamage, meleecomp.SwordAngle);
+		break;
+	case VisPred::Game::PlayerMelee::Sword_Second:
+	case VisPred::Game::PlayerMelee::Sword_Fourth:
+		SetAttackDetails(VisPred::Game::PlayerAni::ToAttack3_Sword, meleecomp.SwordLength, meleecomp.SwordDamage, 1);
+		break;
+	default:
+		return;
+	}
+
+	// Spawn the prefab
+	auto& camerapostrans = *playercomp.CameraPosEntity.lock()->GetComponent<TransformComponent>();
+	auto& entity = *GetSceneManager()->SpawnEditablePrefab(meleecomp.DefalutPrefab, camerapostrans.World_Location, camerapostrans.World_Quaternion, { 1, 1, 1 });
+
+	if (!entity.HasComponent<TrunComponent>())
+		return;
+
+	auto turncomp = entity.GetComponent<TrunComponent>();
+	turncomp->Angle = meleecomp.Angle;
+	turncomp->Is_Left = meleecomp.IsLeft;
+	turncomp->MoveTime = meleecomp.Time * 0.6;
+	turncomp->Is_X = true;
+	// Process children for area attack
+	if (entity.HasComponent<Children>())
+	{
+		auto childIDs = entity.GetComponent<Children>()->ChildrenID;
+		for (auto childID : childIDs)
+		{
+			auto childEntity = GetSceneManager()->GetEntity(childID);
+			if (!childEntity || !childEntity->HasComponent<RigidBodyComponent>() || !childEntity->HasComponent<AreaAttackComponent>())
+				continue;
+			auto& transcomp = *childEntity->GetComponent<TransformComponent>();
+			auto& areaattack = *childEntity->GetComponent<AreaAttackComponent>();
+			areaattack.Damage = meleecomp.Damage;
+			transcomp.SetLocalLocation({ 0, 0, (playercomp.Radius + (meleecomp.Length / 2)) });
+			transcomp.SetLocalScale({ 0.01, 0.01, meleecomp.Length / 2 });
+			break;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 #pragma endregion
 #pragma region FSM_System
@@ -269,31 +359,29 @@ void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 {
 	switch (playercomp.CurrentFSM)
 	{
-	case VisPred::Game::EFSM::IDLE:
+	case VisPred::Game::PlayerFSM::IDLE:
 		Calculate_Idle(playercomp);
 		break;
-	case VisPred::Game::EFSM::WALK:
+	case VisPred::Game::PlayerFSM::WALK:
 		Calculate_Walk(playercomp);
 		break;
-	case VisPred::Game::EFSM::RUN:
+	case VisPred::Game::PlayerFSM::RUN:
 		Calculate_Run(playercomp);
 		break;
-	case VisPred::Game::EFSM::JUMP:
+	case VisPred::Game::PlayerFSM::JUMP:
 		Calculate_Jump(playercomp);
 		break;
-	case VisPred::Game::EFSM::CROUCH:
+	case VisPred::Game::PlayerFSM::CROUCH:
 		Calculate_Crouch(playercomp);
 		break;
-	case VisPred::Game::EFSM::SLIDE:
+	case VisPred::Game::PlayerFSM::SLIDE:
 		Calculate_Slide(playercomp);
 		break;
-	case VisPred::Game::EFSM::ATTACK:
-		Calculate_Attack(playercomp);
-		break;
-	case VisPred::Game::EFSM::DIE:
+
+	case VisPred::Game::PlayerFSM::DIE:
 		Calculate_Die(playercomp);
 		break;
-	case VisPred::Game::EFSM::DESTROY:
+	case VisPred::Game::PlayerFSM::DESTROY:
 		Calculate_Destroy(playercomp);
 		break;
 	default:
@@ -304,82 +392,123 @@ void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 #pragma region FSM Calculate Logic
 void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 {
-	///뛰기
-	if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))
-		&& INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+
+	if (playercomp.IsVPMode)
 	{
-		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
-	}
-	///걷기
-	else if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-	{
-		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
-	}
-	///슬라이딩
-	else if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT)) &&
-		INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
-	{
-		CrouchModeController(playercomp);
-		if (playercomp.HasComponent<ControllerComponent>())
+		if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
-			auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
-			SetSlideDir(playercomp, controllercomp);
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 		}
-		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
+		else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
+		{
+			if (playercomp.HasComponent<ControllerComponent>())
+			{
+				auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+				SetSlideDir(playercomp, controllercomp);
+			}
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::SLIDE;
+		}
+		///점프
+		else if (INPUTKEY(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
 	}
-	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+	else
 	{
-		CrouchModeController(playercomp);
-		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
+
+		///뛰기
+		if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))
+			&& INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		{
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
+		}
+		///걷기
+		else if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		{
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+		}
+		///슬라이딩
+		else if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT)) &&
+			INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		{
+			CrouchModeController(playercomp);
+			if (playercomp.HasComponent<ControllerComponent>())
+			{
+				auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+				SetSlideDir(playercomp, controllercomp);
+			}
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::SLIDE;
+		}
+		else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		{
+			CrouchModeController(playercomp);
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
+		}
+		///점프
+		else if (INPUTKEY(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
+
 	}
-	///점프
-	else if (INPUTKEY(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
-		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
 
 }
 void PlayerSystem::Calculate_Die(PlayerComponent& playercomp)
 {
-
-}
-void PlayerSystem::Calculate_Attack(PlayerComponent& playercomp)
-{
-
 }
 void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
 {
 	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-		playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
 	{
-		playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 	}
 	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
-		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
+		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL) || INPUTKEY(KEYBOARDKEY::LCONTROL))
 	{
 		CrouchModeController(playercomp);
-		playercomp.CurrentFSM = VisPred::Game::EFSM::CROUCH;
+		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
 	}
 }
 void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 {
-	if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-		playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
-	else if (INPUTKEYUP(KEYBOARDKEY::LSHIFT))
+	if (playercomp.IsVPMode)
 	{
-		playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
-	}
-	else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
-		playercomp.CurrentFSM = VisPred::Game::EFSM::JUMP;
-	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
-	{
-		CrouchModeController(playercomp);
-		if (playercomp.HasComponent<ControllerComponent>())
+		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+		else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
+		else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
 		{
-			auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
-			SetSlideDir(playercomp, controllercomp);
+			if (playercomp.HasComponent<ControllerComponent>())
+			{
+				auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+				SetSlideDir(playercomp, controllercomp);
+			}
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::SLIDE;
 		}
-		playercomp.CurrentFSM = VisPred::Game::EFSM::SLIDE;
+	}
+	else
+	{
+
+
+		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+		else if (INPUTKEYUP(KEYBOARDKEY::LSHIFT))
+		{
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+		}
+		else if (INPUTKEYDOWN(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
+		else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		{
+			CrouchModeController(playercomp);
+			if (playercomp.HasComponent<ControllerComponent>())
+			{
+				auto& controllercomp = *playercomp.GetComponent<ControllerComponent>();
+				SetSlideDir(playercomp, controllercomp);
+			}
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::SLIDE;
+		}
 	}
 
 }
@@ -390,12 +519,12 @@ void PlayerSystem::Calculate_Crouch(PlayerComponent& playercomp)
 		if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
 			DefalutModeController(playercomp);
-			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
 		}
 		else
 		{
 			DefalutModeController(playercomp);
-			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 		}
 	}
 }
@@ -404,31 +533,54 @@ void PlayerSystem::Calculate_Slide(PlayerComponent& playercomp)
 	if (playercomp.SlideProgress >= playercomp.SlideDuration)
 	{
 		playercomp.SlideProgress = 0;
-		DefalutModeController(playercomp);
-
-		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
-		else if (INPUTKEYS(KEYBOARDKEY::LSHIFT))
-			playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+		if (playercomp.IsVPMode)
+		{
+			if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+			else
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
+		}
 		else
-			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+		{
+			DefalutModeController(playercomp);
+
+			if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+			else if (INPUTKEYS(KEYBOARDKEY::LSHIFT))
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
+			else
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+		}
+
 
 	}
 }
 void PlayerSystem::Calculate_Jump(PlayerComponent& playercomp)
 {
-	if (!playercomp.GetComponent<ControllerComponent>()->IsFall)
+	if (playercomp.GetComponent<ControllerComponent>()->IsFall)
+		return;
+
+	if (playercomp.IsVPMode)
 	{
 		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-			playercomp.CurrentFSM = VisPred::Game::EFSM::IDLE;
-		else if (INPUTKEY(KEYBOARDKEY::LSHIFT))
-			playercomp.CurrentFSM = VisPred::Game::EFSM::RUN;
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 		else
-			playercomp.CurrentFSM = VisPred::Game::EFSM::WALK;
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 	}
+	else
+	{
+		if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+		else if (INPUTKEY(KEYBOARDKEY::LSHIFT))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
+		else
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+	}
+
 }
 void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 {
+
 }
 #pragma endregion
 #pragma endregion
@@ -436,33 +588,31 @@ void PlayerSystem::Calculate_Destroy(PlayerComponent& playercomp)
 #pragma region FSM Action Main
 void PlayerSystem::FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime)
 {
+
 	switch (playercomp.CurrentFSM)
 	{
-	case VisPred::Game::EFSM::IDLE:
+	case VisPred::Game::PlayerFSM::IDLE:
 		FSM_Action_Idle(playercomp);
 		break;
-	case VisPred::Game::EFSM::WALK:
+	case VisPred::Game::PlayerFSM::WALK:
 		FSM_Action_Walk(playercomp);
 		break;
-	case VisPred::Game::EFSM::RUN:
+	case VisPred::Game::PlayerFSM::RUN:
 		FSM_Action_Run(playercomp);
 		break;
-	case VisPred::Game::EFSM::CROUCH:
+	case VisPred::Game::PlayerFSM::CROUCH:
 		FSM_Action_Crouch(playercomp);
 		break;
-	case VisPred::Game::EFSM::SLIDE:
+	case VisPred::Game::PlayerFSM::SLIDE:
 		FSM_Action_Slide(playercomp, deltaTime);
 		break;
-	case VisPred::Game::EFSM::JUMP:
+	case VisPred::Game::PlayerFSM::JUMP:
 		FSM_Action_Jump(playercomp);
 		break;
-	case VisPred::Game::EFSM::ATTACK:
-		FSM_Action_Attack(playercomp);
-		break;
-	case VisPred::Game::EFSM::DIE:
+	case VisPred::Game::PlayerFSM::DIE:
 		FSM_Action_Die(playercomp);
 		break;
-	case VisPred::Game::EFSM::DESTROY:
+	case VisPred::Game::PlayerFSM::DESTROY:
 		FSM_Action_Destroy(playercomp);
 		break;
 	default:
@@ -477,6 +627,7 @@ void PlayerSystem::FSM_Action_Idle(PlayerComponent& playercomp)
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.InputDir = {};
+	Active_Interect(playercomp);
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Attack(playercomp);
 }
@@ -502,6 +653,8 @@ void PlayerSystem::FSM_Action_Walk(PlayerComponent& playercomp)
 
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Interect(playercomp);
+
 	Active_Attack(playercomp);
 }
 
@@ -513,6 +666,8 @@ void PlayerSystem::FSM_Action_Run(PlayerComponent& playercomp)
 	Controller.Acceleration = Controller.MaxSpeed * 3;
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Interect(playercomp);
+
 	Active_Attack(playercomp);
 }
 void PlayerSystem::FSM_Action_Crouch(PlayerComponent& playercomp)
@@ -523,6 +678,8 @@ void PlayerSystem::FSM_Action_Crouch(PlayerComponent& playercomp)
 	Controller.Acceleration = Controller.MaxSpeed * 3;
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Interect(playercomp);
+
 	Active_Attack(playercomp);
 }
 
@@ -532,19 +689,13 @@ void PlayerSystem::FSM_Action_Jump(PlayerComponent& playercomp)
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
+	Active_Interect(playercomp);
+
 	Active_Jump(transfomcomp, Controller);
 	Active_Attack(playercomp);
 }
 
-void PlayerSystem::FSM_Action_Attack(PlayerComponent& playercomp)
-{
 
-	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
-	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Active_Walk(transfomcomp, playercomp, Controller);
-	Active_Rotation(playercomp, transfomcomp);
-
-}
 
 void PlayerSystem::FSM_Action_Die(PlayerComponent& playercomp)
 {
@@ -566,31 +717,29 @@ void PlayerSystem::FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime)
 {
 	switch (playercomp.CurrentFSM)
 	{
-	case VisPred::Game::EFSM::IDLE:
+	case VisPred::Game::PlayerFSM::IDLE:
 		FSM_Sound_Idle(playercomp);
 		break;
-	case VisPred::Game::EFSM::WALK:
+	case VisPred::Game::PlayerFSM::WALK:
 		FSM_Sound_Walk(playercomp);
 		break;
-	case VisPred::Game::EFSM::RUN:
+	case VisPred::Game::PlayerFSM::RUN:
 		FSM_Sound_Run(playercomp);
 		break;
-	case VisPred::Game::EFSM::CROUCH:
+	case VisPred::Game::PlayerFSM::CROUCH:
 		FSM_Sound_Crouch(playercomp);
 		break;
-	case VisPred::Game::EFSM::SLIDE:
+	case VisPred::Game::PlayerFSM::SLIDE:
 		FSM_Sound_Slide(playercomp);
 		break;
-	case VisPred::Game::EFSM::JUMP:
+	case VisPred::Game::PlayerFSM::JUMP:
 		FSM_Sound_Jump(playercomp);
 		break;
-	case VisPred::Game::EFSM::ATTACK:
-		FSM_Sound_Attack(playercomp);
-		break;
-	case VisPred::Game::EFSM::DIE:
+
+	case VisPred::Game::PlayerFSM::DIE:
 		FSM_Sound_Die(playercomp);
 		break;
-	case VisPred::Game::EFSM::DESTROY:
+	case VisPred::Game::PlayerFSM::DESTROY:
 		FSM_Sound_Destroy(playercomp);
 		break;
 	default:
@@ -695,9 +844,7 @@ void PlayerSystem::FSM_Sound_Jump(PlayerComponent& playercomp)
 	m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.JumpSoundkey, playerSoundcomp.Volume_Jump, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 	playerSoundcomp.Played_Jump = true;
 }
-void PlayerSystem::FSM_Sound_Attack(PlayerComponent& playercomp)
-{
-}
+
 void PlayerSystem::FSM_Sound_Die(PlayerComponent& playercomp)
 {
 }
@@ -744,7 +891,7 @@ void PlayerSystem::Active_Rotation(PlayerComponent& playercomp, TransformCompone
 	VPMath::Vector3 cameraRotation = posTransComp->Local_Rotation;
 	cameraRotation.x += pitch;
 	cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
-	playercomp.IsRotated = posTransComp->SetLocalRotation(cameraRotation);
+	/*playercomp.IsRotated =*/ posTransComp->SetLocalRotation(cameraRotation);
 }
 void PlayerSystem::Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
 {
@@ -796,9 +943,19 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni p
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
+void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::VPAni index, float Speed, float transition, bool loop, bool Immidiate)
+{
+	VisPred::Engine::AniBlendData temp{ entityID ,static_cast<int>(index), Speed ,transition, loop };
+
+	std::any data = temp;
+	if (Immidiate)
+		EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
+	else
+		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
+}
 void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
-	auto& anicomp = *playercomp.GetComponent<AnimationComponent>();
+	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 	if (anicomp.IsFinished)
 	{
 	AnimationFinished(playercomp, anicomp);
@@ -860,18 +1017,44 @@ void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 	case  (int)VisPred::Game::PlayerAni::Tohook_Sword:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Sword, 0, 0, true);	break;
 	case  (int)VisPred::Game::PlayerAni::Tohook_Pistol:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Pistol, 0, 0, true);	break;
 	case  (int)VisPred::Game::PlayerAni::Tohook_Rifle:		ChangeAni_Index(entityID, PlayerAni::ToIdle02_Rifle, 0, 0, true);	break;
-	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;	
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_L:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
-	case  (int)VisPred::Game::PlayerAni::ToVP_attack_R:		ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;	
-	case  (int)VisPred::Game::PlayerAni::ToVP_draw:			ChangeAni_Index(entityID, PlayerAni::ToVP_Idle, 0, 0, true);		break;
+	case  (int)VisPred::Game::PlayerAni::Tohook_ShotGun:	ChangeAni_Index(entityID, PlayerAni::ToIdle02_ShotGun, 0, 0, true); break;
+
 	default:
 		break;
 	}
 }
+void PlayerSystem::ReturnToVPIdle(PlayerComponent& playercomp, AnimationComponent& anicomp)
+{
+	uint32_t entityID = anicomp.GetEntityID();
+	switch (anicomp.curAni)
+	{
+	case  (int)VisPred::Game::VPAni::ToVP_attack_L:
+	case  (int)VisPred::Game::VPAni::ToVP_attack_R:
+	{
+		switch (playercomp.CurrentFSM)
+		{
+		case VisPred::Game::PlayerFSM::IDLE:	ChangeAni_Index(entityID, VPAni::ToVP_Idle, 0, 0, true);	break;
+		case VisPred::Game::PlayerFSM::RUN:		ChangeAni_Index(entityID, VPAni::ToVP_run, 0, 0, true);	break;
+		case VisPred::Game::PlayerFSM::JUMP:	ChangeAni_Index(entityID, VPAni::ToVP_jump, 0, 0, true);	break;
+		default:
+			break;
+		}
+	}
+	break;
+	case  (int)VisPred::Game::VPAni::ToVP_jump:
+	{
+		ChangeAni_Index(entityID, VPAni::ToVP_Idle, 0, 0, true);
+	}
+	break;
+	}
+
+}
 #pragma endregion
 #pragma region Interect Logic
-void PlayerSystem::PlayerInterect(PlayerComponent& playercomp)
+void PlayerSystem::Active_Interect(PlayerComponent& playercomp)
 {
+	if (playercomp.IsVPMode)
+		return;
 	if (INPUTKEYDOWN(KEYBOARDKEY::F))
 	{
 		Grab_Gun(playercomp);
@@ -885,18 +1068,19 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 		return;
 
 	if (playercomp.HasGun)
+	{
+		Change_Gun(playercomp);
 		return;
+	}
 	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
 	if (!gunentity || !gunentity->HasComponent<GunComponent>())
 		return;
 
-	auto socketentity = GetSceneManager()->GetEntitySocketEntity(gunentity->GetEntityID());
-	if (!socketentity)
-		return;
+
 	uint32_t handID = playercomp.HandEntity.lock()->GetEntityID();
 
 	auto guncomp = gunentity->GetComponent<GunComponent>();
-	auto soceketcomp = socketentity->GetComponent<SocketComponent>();
+	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
 	soceketcomp->IsConnected = true;
 	soceketcomp->ConnectedEntityID = handID;
 	playercomp.HasGun = true;
@@ -921,6 +1105,46 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	default:
 		break;
 	}
+}
+
+void PlayerSystem::Drop_Gun(PlayerComponent& playercomp)
+{
+	if (!playercomp.HasGun)
+		return;
+	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+
+	auto guncomp = gunentity->GetComponent<GunComponent>();
+	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
+	soceketcomp->IsConnected = false;
+	soceketcomp->ConnectedEntityID = 0;
+	playercomp.HasGun = true;
+	playercomp.GunEntityID = guncomp->GetEntityID();
+	playercomp.ShootType = guncomp->Type;
+	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
+	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
+	///TODO 사운드 로직 추가하기.
+	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
+	switch (guncomp->Type)
+	{
+	case VisPred::Game::GunType::PISTOL:
+	case VisPred::Game::GunType::SHOTGUN:
+	case VisPred::Game::GunType::RIFLE:
+	{
+		ChangeAni_Index(playercomp.HandEntity.lock()->GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Sword, 0, 0, false);
+		break;
+	}
+	default:
+		break;
+	}
+
+
+
+
+}
+void PlayerSystem::Change_Gun(PlayerComponent& playercomp)
+{
+
+
 }
 
 #pragma endregion
@@ -1094,7 +1318,7 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
+	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_ShotGun, PlayerAni::ToAttack_ShotGun))
 		return false;
 
 	auto temppos = firetrans.World_Location;
@@ -1105,7 +1329,7 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
+	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToAttack_Rifle))
 		return false;
 
 	auto temppos = firetrans.World_Location;
@@ -1118,6 +1342,8 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 #pragma region Throw Logic
 bool PlayerSystem::Throw_Setting(PlayerComponent& playercomp)
 {
+	playercomp.GunprogressTime = 0;
+	playercomp.ReadyToShoot = false;
 	playercomp.HasGun = false;
 	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
 	playercomp.GunEntityID = 0;
@@ -1129,8 +1355,7 @@ bool PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Pistol))
 		return false;
-	playercomp.GunprogressTime = 0;
-	playercomp.ReadyToShoot = false;
+
 	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Pistol, 0, 0, false);
 	return true;
 }
@@ -1139,9 +1364,6 @@ bool PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
 	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_ShotGun))
 		return false;
-
-	playercomp.GunprogressTime = 0;
-	playercomp.ReadyToShoot = false;
 	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_ShotGun, 0, 0, false);
 	return true;
 
@@ -1149,11 +1371,8 @@ bool PlayerSystem::Throw_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 bool PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
-
 	if (anicomp.IsBlending || anicomp.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Rifle))
-		return;
-	playercomp.GunprogressTime = 0;
-	playercomp.ReadyToShoot = false;
+		return false;
 	ChangeAni_Index(anicomp.GetEntityID(), VisPred::Game::PlayerAni::ToThrow_Rifle, 0, 0, false);
 	return true;
 }
@@ -1186,6 +1405,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 	{
 		auto playercomp = GetSceneManager()->GetComponent<PlayerComponent>(gameObjectId);
 		auto HandEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->HandName);
+		auto VPHandEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->VPHandName);
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
@@ -1195,6 +1415,10 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 			VP_ASSERT(false, "player의 손이 감지되지 않습니다.");
+		if (VPHandEntity)
+			playercomp->VPHandEntity = VPHandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
+		else
+			VP_ASSERT(false, "player의 VPHand가 감지되지 않습니다.");
 
 		if (LongswordEntity)
 			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
@@ -1203,6 +1427,8 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 
 
 		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsOverDraw = true;
+		playercomp->VPHandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsOverDraw = true;
+		playercomp->VPHandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsVisible = false;
 		if (FirePosEntity)
 			playercomp->FirePosEntity = FirePosEntity;
 		//playercomp->FirePosEntityID = FirePosEntity->GetEntityID();

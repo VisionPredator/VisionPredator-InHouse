@@ -15,7 +15,7 @@ void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
 	META_ADD_COMP(PlayerComponent, PlayerComponent::RecoilMode,
-		PlayerComponent::CameraPosName,PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName,PlayerComponent::LongswordName,
+		PlayerComponent::CameraPosName, PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName, PlayerComponent::VPHandName, PlayerComponent::LongswordName,
 		PlayerComponent::MaxHP,	PlayerComponent::HP
 		, PlayerComponent::Sencitive, PlayerComponent::RecoilReturnTime
 		, PlayerComponent::JumpForce
@@ -45,7 +45,7 @@ void VispredRegister::Register_Components()
 void VispredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
-	META_ADD_ENUMCLASS(EFSM, EFSM::ATTACK, EFSM::DESTROY, EFSM::DIE, EFSM::IDLE, EFSM::JUMP, EFSM::WALK, EFSM::RUN, EFSM::CROUCH,EFSM::SLIDE, EFSM::NONE);
+	META_ADD_ENUMCLASS(PlayerFSM,  PlayerFSM::DESTROY, PlayerFSM::DIE, PlayerFSM::IDLE, PlayerFSM::JUMP, PlayerFSM::WALK, PlayerFSM::RUN, PlayerFSM::CROUCH,PlayerFSM::SLIDE, PlayerFSM::NONE);
 	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyState, EnemyState::Idle, EnemyState::Chase, EnemyState::Patrol, EnemyState::Dead);
@@ -53,34 +53,37 @@ void VispredRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 	META_ADD_ENUMCLASS(PlayerAni
 		, PlayerAni::ToAttack_Pistol
-		,PlayerAni::ToAttack_Rifle
-		,PlayerAni::ToAttack_ShotGun
-		,PlayerAni::ToIdle01_Pistol
-		,PlayerAni::ToIdle01_Rifle
-		,PlayerAni::ToIdle01_ShotGun
-		,PlayerAni::ToIdle02_Pistol
-		,PlayerAni::ToIdle02_Rifle
-		,PlayerAni::ToIdle02_ShotGun
-		,PlayerAni::Tohook_Sword
-		,PlayerAni::Tohook_Pistol
-		,PlayerAni::Tohook_Rifle
-		,PlayerAni::Tohook_ShotGun
-		,PlayerAni::Tointeraction
-		,PlayerAni::ToAttack1_Sword
-		,PlayerAni::ToAttack2_Sword
-		,PlayerAni::ToAttack3_Sword
-		,PlayerAni::ToIdle01_Sword
-		,PlayerAni::ToIdle02_Sword
-		,PlayerAni::ToThrow_Pistol
-		,PlayerAni::ToThrow_Rifle
-		,PlayerAni::ToThrow_ShotGun
-		,PlayerAni::ToVP_attack_L
-		,PlayerAni::ToVP_attack_R
-		,PlayerAni::ToVP_Idle
-		,PlayerAni::ToVP_dash
-		,PlayerAni::ToVP_jump
-		,PlayerAni::ToVP_run
-		,PlayerAni::ToVP_draw);
+		, PlayerAni::ToAttack_Rifle
+		, PlayerAni::ToAttack_ShotGun
+		, PlayerAni::ToIdle01_Pistol
+		, PlayerAni::ToIdle01_Rifle
+		, PlayerAni::ToIdle01_ShotGun
+		, PlayerAni::ToIdle02_Pistol
+		, PlayerAni::ToIdle02_Rifle
+		, PlayerAni::ToIdle02_ShotGun
+		, PlayerAni::Tohook_Sword
+		, PlayerAni::Tohook_Pistol
+		, PlayerAni::Tohook_Rifle
+		, PlayerAni::Tohook_ShotGun
+		, PlayerAni::Tointeraction
+		, PlayerAni::ToAttack1_Sword
+		, PlayerAni::ToAttack2_Sword
+		, PlayerAni::ToAttack3_Sword
+		, PlayerAni::ToIdle01_Sword
+		, PlayerAni::ToIdle02_Sword
+		, PlayerAni::ToThrow_Pistol
+		, PlayerAni::ToThrow_Rifle
+		, PlayerAni::ToThrow_ShotGun
+	);
+	META_ADD_ENUMCLASS(VPAni,
+		VPAni::ToVP_attack_L
+		, VPAni::ToVP_attack_R
+		, VPAni::ToVP_Idle
+		, VPAni::ToVP_dash
+		, VPAni::ToVP_jump
+		, VPAni::ToVP_run
+		, VPAni::ToVP_draw
+	);
 }
 
 void VispredRegister::Register_Structs()

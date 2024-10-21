@@ -29,7 +29,7 @@ namespace VisPred
 			VP_Right,
 			END
 		};
-		enum class EFSM
+		enum class PlayerFSM
 		{
 			IDLE,
 			WALK,
@@ -37,7 +37,6 @@ namespace VisPred
 			CROUCH,
 			SLIDE,
 			JUMP,
-			ATTACK,
 			DIE,
 			DESTROY,
 			NONE,
@@ -67,15 +66,18 @@ namespace VisPred
 			,ToThrow_Pistol		=19
 			,ToThrow_Rifle		=20
 			,ToThrow_ShotGun	=21
-			,ToVP_attack_L		=22
-			,ToVP_attack_R		=23
-			,ToVP_Idle			=24
-			,ToVP_dash			=25
-			,ToVP_jump			=26
-			,ToVP_run			=27
-			,ToVP_draw			=28
-		};
 
+		};
+		enum class VPAni
+		{
+			ToVP_attack_L 
+			, ToVP_attack_R 
+			, ToVP_Idle 
+			, ToVP_dash
+			, ToVP_jump
+			, ToVP_run
+			, ToVP_draw 
+		};
 		enum class EnemyState // 임시 이름. EnemyState 로 교체
 		{
 			Idle,

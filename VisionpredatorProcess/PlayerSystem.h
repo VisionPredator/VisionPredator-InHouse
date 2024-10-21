@@ -32,7 +32,7 @@ public:
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
-	void ToVPMode(PlayerComponent& playercomp);
+	void Active_VPMode(PlayerComponent& playercomp);
 	void CameraShake(PlayerComponent& playercomp,float deltatime);
 	void PlayerMeleeAttack(PlayerComponent& playercomp);
 	void Melee_Default(PlayerComponent& playercomp);
@@ -52,7 +52,6 @@ public:
 	void Calculate_FSM(PlayerComponent& playercomp);
 	void Calculate_Idle(PlayerComponent& playercomp);
 	void Calculate_Die(PlayerComponent& playercomp);
-	void Calculate_Attack(PlayerComponent& playercomp);
 	void Calculate_Walk(PlayerComponent& playercomp);
 	void Calculate_Run(PlayerComponent& playercomp);
 	void Calculate_Crouch(PlayerComponent& playercomp);
@@ -69,7 +68,6 @@ public:
 	void FSM_Action_Crouch(PlayerComponent& playercomp);
 	void FSM_Action_Slide(PlayerComponent& playercomp,float deltatime);
 	void FSM_Action_Jump(PlayerComponent& playercomp);
-	void FSM_Action_Attack(PlayerComponent& playercomp);
 	void FSM_Action_Die(PlayerComponent& playercomp);
 	void FSM_Action_Destroy(PlayerComponent& playercomp);
 #pragma endregion
@@ -81,16 +79,17 @@ public:
 	void FSM_Sound_Crouch(PlayerComponent& playercomp);
 	void FSM_Sound_Slide(PlayerComponent& playercomp);
 	void FSM_Sound_Jump(PlayerComponent& playercomp);
-	void FSM_Sound_Attack(PlayerComponent& playercomp);
 	void FSM_Sound_Die(PlayerComponent& playercomp);
 	void FSM_Sound_Destroy(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Animation Change
 	void ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, float transition, bool loop, bool Immidiate = false);
+	void ChangeAni_Index(uint32_t entityID, VisPred::Game::VPAni index, float Speed, float transition, bool loop, bool Immidiate = false);
 #pragma endregion
 
 #pragma region Active_Logic
+	void Active_Interect(PlayerComponent& playercomp);
 	void Active_Walk(const TransformComponent& transformcomp, PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void Active_Rotation(PlayerComponent& playercomp, TransformComponent& transformcomp);
 	void Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp);
@@ -101,11 +100,17 @@ public:
 #pragma region Animation
 	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
+	void ReturnToVPIdle(PlayerComponent& player, AnimationComponent& anicomp);
 	void AnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp);
 #pragma endregion
 #pragma region Interection Logic
-	void PlayerInterect(PlayerComponent& playercomp);
 	void Grab_Gun(PlayerComponent& playercomp);
+	/// <summary>
+	/// VPMODEChange
+	/// </summary>
+	/// <param name="playercomp"></param>
+	void Drop_Gun(PlayerComponent& playercomp);
+	void Change_Gun(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Gun Logic
