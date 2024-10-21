@@ -5,7 +5,7 @@
 
 struct TransformComponent;
 
-class TransformSystem : public System, public IUpdatable,public ILateUpdatable, public EventSubscriber/*,public IStartable*/,public IRenderable, public IStartable
+class TransformSystem : public System, public IUpdatable,public ILateUpdatable, public EventSubscriber/*,public IStartable*/,public IRenderable, public IStartable,public ICompAddable
 {
 public:
     TransformSystem(std::shared_ptr<SceneManager> entityManager);
@@ -84,5 +84,11 @@ private:
 
     // ILateUpdatable을(를) 통해 상속됨
     void LateUpdate(float deltaTime) override;
+
+
+    // ICompAddable을(를) 통해 상속됨
+    void ComponentAdded(Component* comp) override;
+
+    void ComponentReleased(Component* comp) override;
 
 };

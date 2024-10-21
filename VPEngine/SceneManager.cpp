@@ -20,7 +20,7 @@ SceneManager::SceneManager()
 	EventManager::GetInstance().Subscribe("OnDeleteEntity", CreateSubscriber(&SceneManager::OnDeleteEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnDestroyEntity", CreateSubscriber(&SceneManager::OnDestroyEntity), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnClearAllEntity", CreateSubscriber(&SceneManager::OnClearAllEntity), EventType::ADD_DELETE);
-	EventManager::GetInstance().Subscribe("OnRemoveComp_Scene", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
+	EventManager::GetInstance().Subscribe("OnRemoveComponent", CreateSubscriber(&SceneManager::OnRemoveComponent), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddChild", CreateSubscriber(&SceneManager::OnAddChild), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnAddCompToScene", CreateSubscriber(&SceneManager::OnAddCompToScene), EventType::ADD_DELETE);
 	EventManager::GetInstance().Subscribe("OnRemoveChild", CreateSubscriber(&SceneManager::OnRemoveChild), EventType::ADD_DELETE);
@@ -640,6 +640,12 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson, bool Immidate )
 {
 	uint32_t entityID = entityjson["EntityID"];
+	if (entityID== 2634323861)
+	{
+		int a = 5;
+		a = 7;
+
+	}
 	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 	tempEntity->SetEntityID(entityID);
 	SetEntityMap(entityID, tempEntity);
@@ -741,7 +747,7 @@ void SceneManager::OnRemoveComponent(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", comp);
 
 	// 컴포넌트를 엔티티에서 삭제
-	comp->GetEntity()->ReleaseComponent(comp);
+	comp->GetEntity()->removeComponent(comp);
 
 	// 캐시에서 컴포넌트를 삭제
 	auto it = m_ComponentCache.find({ EntityID, CompID });

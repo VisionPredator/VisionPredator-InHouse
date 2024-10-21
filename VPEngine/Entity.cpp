@@ -74,7 +74,7 @@ std::shared_ptr<Component> Entity::AddComponent(entt::id_type compID)
 }
 
 
-void Entity::ReleaseComponent(std::shared_ptr<Component> comp)
+void Entity::removeComponent(std::shared_ptr<Component> comp)
 {
     auto compID = comp->GetHandle()->type().id();
     auto it = m_OwnedComp.find(compID);
@@ -87,7 +87,7 @@ void Entity::ReleaseComponent(std::shared_ptr<Component> comp)
         VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
     }
 }
-void Entity::ReleaseComponent(Component* comp)
+void Entity::removeComponent(Component* comp)
 {
     auto compID = comp->GetHandle()->type().id();
     auto it = m_OwnedComp.find(compID);

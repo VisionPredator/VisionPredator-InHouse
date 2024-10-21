@@ -52,7 +52,6 @@ public:
 
     const uint32_t GetEntityID() { return m_EntityID; }
 
-    void AddComponentToMap(std::shared_ptr<Component> comp);
 
     template<typename T>
     std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene=true)
@@ -74,20 +73,17 @@ public:
 	}
 
 	std::shared_ptr<Component> AddComponent(entt::id_type compID);
-
     template<typename T>
     void RemoveComponent()
     {
-        EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(Reflection::GetTypeID<T>()));
+        EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", GetComponent(Reflection::GetTypeID<T>()));
     }
-
     void RemoveComponent(entt::id_type compID)
     {
-        EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(compID));
+        EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", GetComponent(compID));
     }
-
+    void AddComponentToMap(std::shared_ptr<Component> comp);
 private:
-
     std::vector<std::shared_ptr<Component>> GetOwnedComponents()
     {
         std::vector<std::shared_ptr<Component>> componentPool;
@@ -102,8 +98,8 @@ private:
 
 
 
-    void ReleaseComponent(std::shared_ptr<Component> comp);
-    void ReleaseComponent(Component* comp);
+    void removeComponent(std::shared_ptr<Component> comp);
+    void removeComponent(Component* comp);
 
     operator bool() const { return m_EntityID; }
     operator uint32_t() const { return m_EntityID; }

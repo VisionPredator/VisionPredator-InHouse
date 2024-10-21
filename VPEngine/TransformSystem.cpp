@@ -10,18 +10,11 @@ TransformSystem::TransformSystem(std::shared_ptr<SceneManager> sceneManager)
     EventManager::GetInstance().Subscribe("OnSetParentAndChild", CreateSubscriber(&TransformSystem::OnSetParentAndChild));
     EventManager::GetInstance().Subscribe("OnRelaseParentAndChild", CreateSubscriber(&TransformSystem::OnRelaseParentAndChild));
     EventManager::GetInstance().Subscribe("OnUpdateTransfomData", CreateSubscriber(&TransformSystem::OnUpdateTransfomData), EventType::SCENE);
-    EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&TransformSystem::OnAddedComponent));
     EventManager::GetInstance().Subscribe("OnUpdate", CreateSubscriber(&TransformSystem::OnUpdate));    
 }
 void TransformSystem::OnAddedComponent(std::any data)
 {
-    auto comp = std::any_cast<Component*>(data);
-    if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
-    {
-        TransformComponent* aniComp = static_cast<TransformComponent*>(comp);
-        AddUpdateData(aniComp);
-        return;
-    }
+
 }
 std::vector<TransformComponent*> TransformSystem::newupdatevector;
 
@@ -492,5 +485,19 @@ void TransformSystem::Finalize()
 void TransformSystem::LateUpdate(float deltaTime)
 {
     newUpdate();
+}
+
+void TransformSystem::ComponentAdded(Component* comp)
+{
+    if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
+    {
+        TransformComponent* aniComp = static_cast<TransformComponent*>(comp);
+        AddUpdateData(aniComp);
+        return;
+    }
+}
+
+void TransformSystem::ComponentReleased(Component* comp)
+{
 }
 

@@ -308,7 +308,8 @@ void Inspector::ComponentImGui(Component* component)
 	{
 		if (ImGui::MenuItem("Delete") && component->GetEntity()->HasComponent(m_ClickedCompID))
 		{
-			component->GetEntity()->RemoveComponent(m_ClickedCompID);
+			EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", component);
+			//component->GetEntity()->RemoveComponent(m_ClickedCompID);
 			IsClicked = false;
 		}
 		ImGui::EndPopup();

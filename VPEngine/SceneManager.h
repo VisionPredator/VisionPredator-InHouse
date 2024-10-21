@@ -202,6 +202,7 @@ private:
 	friend class SceneSerializer;
 	friend class NavMeshSystem;
 	friend class Hierarchy;
+	friend class HierarchySystem;
 };
 
 
