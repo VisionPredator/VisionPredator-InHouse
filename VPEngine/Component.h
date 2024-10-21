@@ -10,9 +10,7 @@ struct Component
     }
 
     virtual void SerializeComponent(nlohmann::json& json) const {}
-    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity, bool Immidiate = false,bool UseAddCompToScene=true) const { return nullptr; }
 
-    virtual std::shared_ptr<Component> AddComponent(Entity* parentEntity) { return nullptr; }
 
     template <typename T>
 	T* GetComponent()
@@ -41,9 +39,22 @@ struct Component
         OwnedEntity = entity;
     }
 
+
+
+
     virtual entt::meta_handle GetHandle() = 0;
 
 protected:
+
+    template <typename T>
+    std::shared_ptr<T> AddComponentToEntity(Entity* parentEntity, bool Immediately = false, bool UseAddCompToScene = true) const{
+        // Call Entity's private AddComponent method
+        return parentEntity->AddComponent<T>(Immediately, UseAddCompToScene);
+    }
+
+
+    virtual std::shared_ptr<Component> AddComponent(Entity* parentEntity) { return nullptr; }
+    virtual std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity, bool Immidiate = false,bool UseAddCompToScene=true) const { return nullptr; }
     Entity* OwnedEntity;
     friend class SceneManager;
 };

@@ -22,15 +22,12 @@ public:
             VP_ASSERT(false, "GetComp를 잘못사용하였습니다.");
             return nullptr;
         }
-
-
 	}
 
 	Component* GetComponent(entt::id_type compID)
 	{
 		auto comp = m_OwnedComp[compID].get();
 		if (comp)
-
 			return comp;
 		else
 		{
@@ -53,25 +50,12 @@ public:
     const uint32_t GetEntityID() { return m_EntityID; }
 
 
-    template<typename T>
-    std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene=true)
-    {
-        if (HasComponent<T>())
-        {
-            VP_ASSERT(false, "이미 있는 Component 입니다.");
-            return nullptr;
-        }
-        std::shared_ptr<T> newcomp = std::make_shared<T>();
-        AddComponentToMap(newcomp);
-		newcomp->SetEntity(this); // Use shared_from_this to set the entity
-		if (UseAddCompToScene)
-			if (!Immediately)
-				EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-			else
-				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-		return newcomp;
-	}
+   
 
+
+    friend struct Component;
+
+private:
 	std::shared_ptr<Component> AddComponent(entt::id_type compID);
     template<typename T>
     void RemoveComponent()
@@ -82,8 +66,26 @@ public:
     {
         EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", GetComponent(compID));
     }
+
+    template<typename T>
+    std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene = true)
+    {
+        if (HasComponent<T>())
+        {
+            VP_ASSERT(false, "이미 있는 Component 입니다.");
+            return nullptr;
+        }
+        std::shared_ptr<T> newcomp = std::make_shared<T>();
+        AddComponentToMap(newcomp);
+        newcomp->SetEntity(this); // Use shared_from_this to set the entity
+        if (UseAddCompToScene)
+            if (!Immediately)
+                EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+            else
+                EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+        return newcomp;
+    }
     void AddComponentToMap(std::shared_ptr<Component> comp);
-private:
     std::vector<std::shared_ptr<Component>> GetOwnedComponents()
     {
         std::vector<std::shared_ptr<Component>> componentPool;
@@ -116,4 +118,5 @@ private:
     std::unordered_map<entt::id_type, std::shared_ptr<Component>> m_OwnedComp;
     friend class SceneSerializer;
     friend class SceneManager;
+    friend class Inspector;
 };

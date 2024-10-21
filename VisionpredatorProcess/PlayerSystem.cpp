@@ -1066,7 +1066,7 @@ void PlayerSystem::Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltati
 		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 		if (playercomp.RecoilProgress <= playercomp.RecoilReturnTime)
 		{
-			double temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
+			float temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
 			tempquat = tempquat.Slerp({}, playercomp.GunRecoilStartQuat, temppercent);
 			cameratrans->SetLocalQuaternion(tempquat);
 		}
