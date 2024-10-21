@@ -45,6 +45,8 @@ struct EnemyComponent : public Component
 	// 추격 범위
 	float ChaseRangeRadius = 40.f;	// 400m
 
+	float DeadTime = 0.f;
+
 	EnemyBehaviorState* BehaviorState;
 	EnemyCombatState* CombatState;
 	EnemyMovementState* MovementState;

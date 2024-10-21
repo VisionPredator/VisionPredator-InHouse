@@ -520,8 +520,8 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 					}
 
 					// 디버깅 출력
-					std::cout << "폴리곤 " << i << " 은(는) " << polygon.mNbVerts << " 개의 정점을 가지고 있습니다.\n";
-					std::cout << "현재까지의 인덱스 개수: " << outIndices.size() << "\n";
+					//std::cout << "폴리곤 " << i << " 은(는) " << polygon.mNbVerts << " 개의 정점을 가지고 있습니다.\n";
+					//std::cout << "현재까지의 인덱스 개수: " << outIndices.size() << "\n";
 				}
 			}
 		}

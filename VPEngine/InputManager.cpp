@@ -187,7 +187,7 @@ bool InputManager::GetKeyUp(KEYBOARDKEY inputkey)
 #ifdef _DEBUG
 	if (result)
 	{
-		std::cout << "GetKeyUp";
+		//std::cout << "GetKeyUp";
 
 	}
 #endif
@@ -212,7 +212,7 @@ bool InputManager::GetKeyDown(MOUSEKEY inputkey)
 #ifdef _DEBUG
 	if (result)
 	{
-		std::cout << "GetKeyDown";
+		//std::cout << "GetKeyDown";
 	}
 #endif
 	return result;
@@ -226,7 +226,7 @@ bool InputManager::GetKeyUp(MOUSEKEY inputkey)
 #ifdef _DEBUG
 	if (result)
 	{
-		std::cout << "GetKeyUp";
+		//std::cout << "GetKeyUp";
 	}
 #endif
 	return result;

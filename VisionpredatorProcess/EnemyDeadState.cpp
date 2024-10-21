@@ -16,7 +16,6 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 		enemyComp->PhysicsManager->RemoveController(enemyComp->GetEntityID());
 	}
 
-	//ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::DIE, 2.f, 0.f, false);
 	ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
 }
@@ -24,6 +23,16 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 void EnemyDeadState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+
+	constexpr float timeToDelete = 20.f;
+
+	enemyComp->DeadTime += deltaTime;
+
+	if (enemyComp->DeadTime >= timeToDelete)
+	{
+		enemyComp->SceneManager.lock()->DeleteEntity(enemyComp->GetEntityID());
+		Log::GetClientLogger()->info("Destroy Enemy");
+	}
 }
 
 void EnemyDeadState::Exit(const std::shared_ptr<Component>& component)

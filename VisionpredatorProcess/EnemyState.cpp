@@ -14,19 +14,16 @@ struct null_deleter
 
 void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 {
-	// 현재 Enemy가 Dead 상태라면 탐지를 수행하지 않음
 	if (enemyComp.BehaviorState == &EnemyBehaviorState::s_Dead)
 		return;
 
 	const uint32_t enemyID = enemyComp.GetEntityID();
 	const auto transform = enemyComp.GetComponent<TransformComponent>();
 
-	// 시야 범위, 소음범위, 추격 범위 생성
 	DirectX::BoundingFrustum viewRange;
 	DirectX::BoundingSphere noiseRange, chaseRange;
 	CreateDetectionAreas(enemyComp, transform, viewRange, noiseRange, chaseRange);
 
-	// draw debug circle, frustum
 #ifdef _DEBUG 
 	debug::FrustumInfo frustumInfo;
 	frustumInfo.Frustum = viewRange;
@@ -42,7 +39,6 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	if (!enemyComp.Player)
 		return;
 
-	// 플레이어 위치 정보 얻어오기
 	const uint32_t playerID = enemyComp.Player->GetEntityID();
 	const auto playerTransform = enemyComp.Player->GetComponent<TransformComponent>();
 	const VisPred::SimpleMath::Vector3 playerPos = VisPred::SimpleMath::Vector3{
@@ -57,40 +53,32 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	targetDir.Normalize();
 
 	/// 시야 범위, 소음 범위, 추격 범위 별로 플레이어 감지 수행.
-
-// 각 범위에 들어 왔는지를 확인하고
-// 세부 조건을 확인한다.
+	// 각 범위에 들어 왔는지를 확인하고 세부 조건을 확인한다.
 	bool isInViewRange = false, isInNoiseRange = false, isInChaseRange = false;
 
 	isInViewRange = viewRange.Contains(playerPos);
-	isInNoiseRange = noiseRange.Contains(playerPos) && (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::RUN) || (enemyComp.Player->CurrentFSM == VisPred::Game::EFSM::JUMP) ? true : false;	// 최적화 필요.
+	bool isInRange = noiseRange.Contains(playerPos);
+	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::CROUCH;
+	isInNoiseRange = isInRange && isPlayerMoving;
 
 	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
 	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다.
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
-
 		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
 		if (detectedObjID == playerID)
 		{
 			if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Chase)
 			{
-				//enemyComp.BehaviorState = &EnemyBehaviorState::s_Chase;
-				//const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
-				//enemyComp.BehaviorState->Enter(temp);
 				ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Chase);
 			}
 			RotateToTarget(transform, targetDir, deltaTime);
-
 		}
 	}
-	else  // TODO: 뭔가.. 수정이 필요.	 // 현재 상태를 유지 -> 현재 상태를 매개변수로 받아오기.
+	else
 	{
 		if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Idle)
 		{
-			//enemyComp.BehaviorState = &EnemyBehaviorState::s_Idle;
-			//const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
-			//enemyComp.BehaviorState->Enter(temp);
 			ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Idle);
 		}
 	}
@@ -195,10 +183,13 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 		enemyComponent.BehaviorState = behaviorState;
 		enemyComponent.BehaviorState->Enter(temp);
 	}
-	//else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
-	//	enemyComponent->CombatState = combatState;
-	//	enemyComponent->CombatState->Enter(temp);
-	//}
+	else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+		if (enemyComponent.CombatState != combatState)
+			enemyComponent.CombatState->Exit(temp);
+
+		enemyComponent.CombatState = combatState;
+		enemyComponent.CombatState->Enter(temp);
+	}
 	else {
 		Log::GetClientLogger()->error("Unknown state type passed to ChangeState.");
 	}
@@ -206,15 +197,14 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 
 void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isImmediate)
 {
-	// 변경하려는 애니메이션과 현재 애니메이션이 같다면 애니메이션 변경을 수행하지 않음
 	if (enemyComp->CurrentAni == animation)
 		return;
 
 	enemyComp->CurrentAni = animation;
 
-	VisPred::Engine::AniBlendData temp{ enemyComp->GetEntityID(), static_cast<int>(animation), speed, 0, isLoop };
+	VisPred::Engine::AniBlendData temp{ enemyComp->GetEntityID(), static_cast<int>(animation), speed, transitionTime, isLoop };
 
-	std::any data = temp;
+	const std::any data = temp;
 	if (true == isImmediate)
 		EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
 	else
@@ -223,15 +213,14 @@ void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& e
 
 void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isImmediate)
 {
-	// 변경하려는 애니메이션과 현재 애니메이션이 같다면 애니메이션 변경을 수행하지 않음
 	if (enemyComp.CurrentAni == animation)
 		return;
 
 	enemyComp.CurrentAni = animation;
 
-	VisPred::Engine::AniBlendData temp{ enemyComp.GetEntityID(), static_cast<int>(animation), speed, 0, isLoop };
+	VisPred::Engine::AniBlendData temp{ enemyComp.GetEntityID(), static_cast<int>(animation), speed, transitionTime, isLoop };
 
-	std::any data = temp;
+	const std::any data = temp;
 	if (true == isImmediate)
 		EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
 	else
