@@ -59,10 +59,15 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	isInViewRange = viewRange.Contains(playerPos);
 	bool isInRange = noiseRange.Contains(playerPos);
 	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::CROUCH;
+
+	if (enemyComp.BehaviorState == &EnemyBehaviorState::s_Chase)
+	{
+		isPlayerMoving = true;
+	}
 	isInNoiseRange = isInRange && isPlayerMoving;
 
 	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
-	if (isInViewRange || isInNoiseRange)	// TODO: 소음감지 범위 안에서 플레이어가 "움직였을 때" 를 확인해야 한다.
+	if (isInViewRange || isInNoiseRange)
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
@@ -142,21 +147,33 @@ void EnemyState::RotateToTarget(TransformComponent* transform, VisPred::SimpleMa
 
 void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemyComponent, IState* newState)
 {
-	if (auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+	if (const auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+		if (enemyComponent->MovementState == movementState)
+			return;
+
 		if (enemyComponent->MovementState != movementState)
 			enemyComponent->MovementState->Exit(enemyComponent);
 
 		enemyComponent->MovementState = movementState;
 		enemyComponent->MovementState->Enter(enemyComponent);
 	}
-	else if (auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+	else if (const auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+		if (enemyComponent->BehaviorState == behaviorState)
+			return;
+
 		if (enemyComponent->BehaviorState != behaviorState)
 			enemyComponent->BehaviorState->Exit(enemyComponent);
 
 		enemyComponent->BehaviorState = behaviorState;
 		enemyComponent->BehaviorState->Enter(enemyComponent);
 	}
-	else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+	else if (const auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+		if (enemyComponent->CombatState == combatState)
+			return;
+
+		if (enemyComponent->CombatState != combatState)
+			enemyComponent->CombatState->Exit(enemyComponent);
+
 		enemyComponent->CombatState = combatState;
 		enemyComponent->CombatState->Enter(enemyComponent);
 	}
@@ -169,21 +186,30 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 {
 	const std::shared_ptr<EnemyComponent> temp(&enemyComponent, null_deleter{});
 
-	if (auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+	if (const auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+		if (enemyComponent.MovementState == movementState)
+			return;
+
 		if (enemyComponent.MovementState != movementState)
 			enemyComponent.MovementState->Exit(temp);
 
 		enemyComponent.MovementState = movementState;
 		enemyComponent.MovementState->Enter(temp);
 	}
-	else if (auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+	else if (const auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+		if (enemyComponent.BehaviorState == behaviorState)
+			return;
+
 		if (enemyComponent.BehaviorState != behaviorState)
 			enemyComponent.BehaviorState->Exit(temp);
 
 		enemyComponent.BehaviorState = behaviorState;
 		enemyComponent.BehaviorState->Enter(temp);
 	}
-	else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+	else if (const auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+		if (enemyComponent.CombatState == combatState)
+			return;
+
 		if (enemyComponent.CombatState != combatState)
 			enemyComponent.CombatState->Exit(temp);
 

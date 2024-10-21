@@ -23,7 +23,7 @@ public:
 	static void CreateDetectionAreas(const EnemyComponent& enemyComp, const TransformComponent* transform, DirectX::BoundingFrustum& viewRangeOutput, DirectX::BoundingSphere& noiseRangeOutput, DirectX::BoundingSphere& chaseRangeOutput);
 
 	/// <summary>
-	/// 플레이어를 향해 회전
+	/// 플레이어를 향해 회전하고 거의 다 회전하였다면 true를 반환
 	/// </summary>
 	static void RotateToTarget(TransformComponent* transform, VisPred::SimpleMath::Vector3 targetDir, float deltaTime);
 

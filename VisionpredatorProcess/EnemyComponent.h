@@ -3,13 +3,7 @@
 #include "VisPredStructs.h"
 
 // State
-#include "EnemyBehaviorState.h"
-#include "EnemyIdleState.h"
-
-#include "EnemyCombatState.h"
-
-#include "EnemyMovementState.h"
-#include "EnemyIdleMovementState.h"
+#include "StatesInclude.h"
 
 #include "PlayerComponent.h"
 
@@ -23,7 +17,7 @@ struct EnemyComponent : public Component
 	{
 		MovementState = &EnemyMovementState::s_Idle;
 		BehaviorState = &EnemyBehaviorState::s_Idle;
-		//CombatState = &EnemyCombatState::s_Idle;
+		CombatState = &EnemyCombatState::s_Idle;
 	}
 
 	VP_JSONBODY(EnemyComponent, HP, CurrentFSM, CurrentAni, EnemyType, HorizontalFOV, VerticalFOV, NearZ, FarZ, IsModelFlipped)
