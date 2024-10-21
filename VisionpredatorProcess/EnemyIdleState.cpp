@@ -14,6 +14,8 @@ void EnemyIdleState::Enter(const std::shared_ptr<Component>& component)
 void EnemyIdleState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	if (CheckIsDead(enemyComp))
+		return;
 	DetectTarget(*enemyComp, deltaTime);
 }
 

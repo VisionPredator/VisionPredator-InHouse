@@ -9,7 +9,7 @@
 #include "EnemyCombatState.h"
 #include "EnemyHitReactionState.h"
 #include "EnemyIdleCombatState.h"
-#include "EnemyRangedAttacState.h"
+#include "EnemyRangedAttackState.h"
 
 #include "EnemyMovementState.h"
 #include "EnemyJumpState.h"

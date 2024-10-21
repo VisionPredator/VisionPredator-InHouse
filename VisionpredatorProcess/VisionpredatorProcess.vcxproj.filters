@@ -129,7 +129,7 @@
     <ClInclude Include="EnemyWalkState.h">
       <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyRangedAttacState.h">
+    <ClInclude Include="EnemyRangedAttackState.h">
       <Filter>Finite State Machine\Enemy\Combat</Filter>
     </ClInclude>
     <ClInclude Include="EnemyCombatState.h">
@@ -248,7 +248,7 @@
     <ClCompile Include="EnemyHitReactionState.cpp">
       <Filter>Finite State Machine\Enemy\Combat</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyRangedAttacState.cpp">
+    <ClCompile Include="EnemyRangedAttackState.cpp">
       <Filter>Finite State Machine\Enemy\Combat</Filter>
     </ClCompile>
     <ClCompile Include="EnemyCombatState.cpp">

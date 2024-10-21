@@ -93,8 +93,16 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 			//enemyComp.BehaviorState->Enter(temp);
 			ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Idle);
 		}
-
 	}
+}
+
+bool EnemyState::CheckIsDead(const std::shared_ptr<EnemyComponent>& enemyComponent)
+{
+	if (enemyComponent->HP > 0)
+		return false;
+
+	ChangeCurrentState(enemyComponent, &EnemyBehaviorState::s_Dead);
+	return true;
 }
 
 void EnemyState::CreateDetectionAreas(const EnemyComponent& enemyComp, const TransformComponent* transform,
@@ -160,10 +168,10 @@ void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemy
 		enemyComponent->BehaviorState = behaviorState;
 		enemyComponent->BehaviorState->Enter(enemyComponent);
 	}
-	//else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
-	//	enemyComponent->CombatState = combatState;
-	//	enemyComponent->CombatState->Enter(enemyComponent);
-	//}
+	else if (auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+		enemyComponent->CombatState = combatState;
+		enemyComponent->CombatState->Enter(enemyComponent);
+	}
 	else {
 		Log::GetClientLogger()->error("Unknown state type passed to ChangeState.");
 	}
@@ -196,7 +204,24 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 	}
 }
 
-void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, bool isLoop, bool isImmediate)
+void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isImmediate)
+{
+	// 변경하려는 애니메이션과 현재 애니메이션이 같다면 애니메이션 변경을 수행하지 않음
+	if (enemyComp->CurrentAni == animation)
+		return;
+
+	enemyComp->CurrentAni = animation;
+
+	VisPred::Engine::AniBlendData temp{ enemyComp->GetEntityID(), static_cast<int>(animation), speed, 0, isLoop };
+
+	std::any data = temp;
+	if (true == isImmediate)
+		EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
+	else
+		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
+}
+
+void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isImmediate)
 {
 	// 변경하려는 애니메이션과 현재 애니메이션이 같다면 애니메이션 변경을 수행하지 않음
 	if (enemyComp.CurrentAni == animation)

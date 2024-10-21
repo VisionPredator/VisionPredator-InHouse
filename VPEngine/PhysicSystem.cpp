@@ -3,6 +3,8 @@
 #include "../PhysxEngine/IPhysx.h"
 #include "TransformSystem.h"
 #include "EventManager.h"
+#include "../VPGraphics/Log.h"
+
 PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {

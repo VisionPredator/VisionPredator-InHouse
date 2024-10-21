@@ -1,7 +1,7 @@
 #pragma once
-#include "EnemyMovementState.h"
+#include "EnemyCombatState.h"
 
-class EnemyIdleMovementState final : public EnemyMovementState
+class EnemyRangedAttackState final : public EnemyCombatState
 {
 public:
 	void Enter(const std::shared_ptr<Component>& component) override;

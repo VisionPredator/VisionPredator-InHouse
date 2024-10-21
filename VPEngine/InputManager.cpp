@@ -171,7 +171,7 @@ bool InputManager::GetKeyDown(KEYBOARDKEY inputkey)
 #ifdef _DEBUG
 	if (result)
 	{
-		std::cout << "GetKeyDown" << std::endl;
+		//std::cout << "GetKeyDown" << std::endl;
 	}
 #endif
 	return result;

@@ -12,6 +12,7 @@
 #include "CollisionManager.h"
 #include <iostream>
 #include "DataRegister_Physics.h"
+#include "../VPGraphics/Log.h"
 
 /// <summary>
 /// 충돌 콜백 함수
@@ -172,6 +173,7 @@ void PhysxEngine::ReleaseActor(uint32_t entityID)
 {
 	m_RigidBodyManager->ReleaseBodyScene(entityID);
 	m_CollisionManager->RemoveEntity(entityID);
+	Log::GetCoreLogger()->warn("Released RigidBody!!");
 }
 
 void PhysxEngine::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)
@@ -302,7 +304,7 @@ void PhysxEngine::CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsul
 void PhysxEngine::RemoveController(uint32_t entityID)
 {
 	m_ControllerManager->RemoveController(entityID);
-
+	Log::GetCoreLogger()->warn("Released CapsuleController!!");
 }
 
 void PhysxEngine::SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P)
