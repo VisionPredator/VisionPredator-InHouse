@@ -7,14 +7,83 @@ using namespace VisPred::Game;
 
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
-}
 
+}
+void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
+{
+
+	if (!playercomp.StopVPGage)
+	{
+		if (playercomp.VPGageProgress < playercomp.VPGageCoolTime)
+		{
+			playercomp.VPGageProgress += deltatime;
+			playercomp.ReadyToTransform = false;
+
+		}
+		else
+		{
+			playercomp.VPGageProgress = playercomp.VPGageCoolTime;
+			playercomp.ReadyToTransform = true;
+		}
+	}
+	else
+	{
+		playercomp.ReadyToTransform = false;
+
+
+	}
+
+}
+void PlayerSystem::Transfomation_Time(PlayerComponent& playercomp, float deltatime)
+{
+	if (!playercomp.StopVPGage)
+		return;
+
+	if (playercomp.TransformationProgress >= playercomp.TransformationTime)
+	{
+		playercomp.TransformationProgress = playercomp.TransformationTime;
+		playercomp.StopVPGage = false;
+	}
+	else
+		playercomp.TransformationProgress += deltatime;
+}
+void PlayerSystem::NonDamage_Time(PlayerComponent& playercomp, float deltatime)
+{
+	if (playercomp.NonDamageProgress > playercomp.MaxNonDamageTime)
+	{
+		playercomp.NonDamageMode = false;
+	}
+	else
+	{
+		playercomp.NonDamageProgress += deltatime;
+		playercomp.NonDamageMode = true;
+
+	}
+}
+void PlayerSystem::Gun_Cooltime(PlayerComponent& playercomp, float deltatime)
+{
+	playercomp.GunprogressTime += deltatime;
+	if (!playercomp.HasGun)
+		playercomp.ReadyToShoot = false;
+	else
+	{
+		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
+
+		if (playercomp.GunprogressTime >= gunComp->CoolTime)
+			playercomp.ReadyToShoot = true;
+		else
+			playercomp.ReadyToShoot = false;
+	}
+}
 #pragma region Update
 void PlayerSystem::Update(float deltaTime)
 {
 	COMPLOOP(PlayerComponent, playercomp)
 	{
+		Transfomation_Time(playercomp, deltaTime);
 		Gun_Cooltime(playercomp, deltaTime);
+		NonDamage_Time(playercomp, deltaTime);
+		VPMode_Cooltime(playercomp, deltaTime);
 		CameraShake(playercomp, deltaTime);
 		Calculate_FSM(playercomp);
 		FSM_Sound_FSM(playercomp, deltaTime);
@@ -31,6 +100,21 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 	}
+}
+
+void PlayerSystem::PlayerTransfomationSetting(PlayerComponent& playercomp, bool VPMode)
+{
+	///상태 저장
+	playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
+	///변신 조절
+	playercomp.StopVPGage = true;
+	playercomp.VPGageProgress = 0;
+	playercomp.ReadyToTransform - false;
+	playercomp.IsVPMode = VPMode;
+	/// 무적 조절
+	playercomp.MaxNonDamageTime = playercomp.TransformationTime + playercomp.NonDamageTime;
+	playercomp.NonDamageProgress = 0;
+	playercomp.NonDamageMode = true;
 }
 #pragma endregion
 
@@ -72,11 +156,12 @@ void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
 #pragma endregion
 void PlayerSystem::Active_VPMode(PlayerComponent& playercomp)
 {
-	static bool temp = false;
-	if (INPUTKEYDOWN(KEYBOARDKEY::R))
+	if (playercomp.ReadyToTransform)
 	{
-		temp = !temp;
-		m_Graphics->SetVP(temp);
+		if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
+		{
+			m_Graphics->SetVP(playercomp.IsVPMode);
+		}
 	}
 }
 #pragma region Camera Setting
@@ -154,17 +239,8 @@ void PlayerSystem::CarmeraPosChange(PlayerComponent& playercomp, float deltatime
 }
 void PlayerSystem::CameraShake(PlayerComponent& playercomp, float deltatime)
 {
-	switch (playercomp.RecoilMode)
-	{
-	case VisPred::Game::GunRecoilMode::ReturnToMiddle:
-		Gun_RecoilingToMiddle(playercomp, deltatime);
-		break;
-	case VisPred::Game::GunRecoilMode::ReturnToEndAim:
-		Gun_RecoilingToEnd(playercomp, deltatime);
-		break;
-	default:
-		break;
-	}
+Gun_RecoilingToMiddle(playercomp, deltatime);
+
 }
 #pragma endregion 
 #pragma region Player Attack
@@ -255,7 +331,6 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 			break;
 		}
 	}
-
 }
 void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 {
@@ -377,7 +452,10 @@ void PlayerSystem::Calculate_FSM(PlayerComponent& playercomp)
 	case VisPred::Game::PlayerFSM::SLIDE:
 		Calculate_Slide(playercomp);
 		break;
-
+	case VisPred::Game::PlayerFSM::Transformation:
+		Calculate_Transformation(playercomp);
+		break;
+		break;
 	case VisPred::Game::PlayerFSM::DIE:
 		Calculate_Die(playercomp);
 		break;
@@ -411,6 +489,11 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		///점프
 		else if (INPUTKEY(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
+		{
+			PlayerTransfomationSetting(playercomp, false);
+		}
+
 	}
 	else
 	{
@@ -446,12 +529,24 @@ void PlayerSystem::Calculate_Idle(PlayerComponent& playercomp)
 		///점프
 		else if (INPUTKEY(KEYBOARDKEY::SPACE) || playercomp.GetComponent<ControllerComponent>()->IsFall)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
-
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
+			PlayerTransfomationSetting(playercomp, true);
 	}
 
 }
 void PlayerSystem::Calculate_Die(PlayerComponent& playercomp)
 {
+}
+void PlayerSystem::Calculate_Transformation(PlayerComponent& playercomp)
+{
+
+	if (playercomp.TransformationProgress >= playercomp.TransformationTime)
+	{
+		playercomp.TransformationProgress = 0;
+		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+	}
+
+
 }
 void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
 {
@@ -467,6 +562,11 @@ void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
 	{
 		CrouchModeController(playercomp);
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
+	}
+	else if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
+	{
+		PlayerTransfomationSetting(playercomp, true);
+
 	}
 }
 void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
@@ -485,6 +585,11 @@ void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 				SetSlideDir(playercomp, controllercomp);
 			}
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::SLIDE;
+		}
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
+		{
+			PlayerTransfomationSetting(playercomp, false);
+
 		}
 	}
 	else
@@ -508,6 +613,12 @@ void PlayerSystem::Calculate_Run(PlayerComponent& playercomp)
 				SetSlideDir(playercomp, controllercomp);
 			}
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::SLIDE;
+		}
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
+		{
+
+			PlayerTransfomationSetting(playercomp, true);
+
 		}
 	}
 
@@ -704,6 +815,12 @@ void PlayerSystem::FSM_Action_Die(PlayerComponent& playercomp)
 
 void PlayerSystem::FSM_Action_Destroy(PlayerComponent& playercomp)
 {
+
+}
+
+void PlayerSystem::FSM_ActionCalculate_Transformation(PlayerComponent& playercomp, float deltatime)
+{
+
 
 }
 
@@ -1085,7 +1202,6 @@ void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
 	soceketcomp->ConnectedEntityID = handID;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp->GetEntityID();
-	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
@@ -1119,7 +1235,6 @@ void PlayerSystem::Drop_Gun(PlayerComponent& playercomp)
 	soceketcomp->ConnectedEntityID = 0;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp->GetEntityID();
-	playercomp.ShootType = guncomp->Type;
 	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
 	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
@@ -1153,7 +1268,7 @@ bool PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 {
 	
 	auto& TransformComp =*playercomp.FirePosEntity.lock()->GetComponent<TransformComponent>();
-	switch (playercomp.ShootType)
+	switch (guncomp.Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
 		return Shoot_Pistol(playercomp, guncomp, TransformComp);
@@ -1171,7 +1286,7 @@ bool PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 }
 bool PlayerSystem::Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp)
 {
-	switch (playercomp.ShootType)
+	switch (guncomp.Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
 		return Throw_Pistol(playercomp, guncomp);
@@ -1213,53 +1328,6 @@ void PlayerSystem::Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& 
 	playercomp.GunRecoilEndQuat = VPMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z);
 }
 #pragma region Gun Recoil
-void PlayerSystem::Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime)
-{
-	if (playercomp.HasGun && playercomp.IsGunRecoiling)
-	{
-		playercomp.RecoilProgress += deltatime;
-		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
-		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
-		VPMath::Quaternion tempquat{};
-		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
-
-		tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
-
-		// Extract yaw, pitch, roll from quaternion
-
-		cameratrans->SetLocalQuaternion(tempquat);
-
-		if (playercomp.GunprogressTime > gunComp->RecoilTime)
-		{
-			VPMath::Quaternion tempquat{};
-			playercomp.RecoilProgress = 0;
-			playercomp.IsGunRecoiling = false;
-			playercomp.IsEndReocilReturn = false;
-			cameratrans->SetLocalQuaternion({});
-		}
-	}
-	else if (playercomp.HasGun && !playercomp.IsGunRecoiling && !playercomp.IsEndReocilReturn)
-	{
-		playercomp.RecoilProgress += deltatime;
-		VPMath::Quaternion tempquat{};
-		auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
-		if (playercomp.RecoilProgress <= playercomp.RecoilReturnTime)
-		{
-			float temppercent = EndRecoilPercent(playercomp.RecoilProgress, playercomp.RecoilReturnTime);
-			tempquat = tempquat.Slerp({}, playercomp.GunRecoilStartQuat, temppercent);
-			cameratrans->SetLocalQuaternion(tempquat);
-		}
-		else
-		{
-			cameratrans->SetLocalQuaternion({});
-			playercomp.IsEndReocilReturn = true;
-			playercomp.RecoilProgress = 0;
-			playercomp.GunRecoilStartQuat = {};
-			playercomp.GunRecoilEndQuat = {};
-		}
-	}
-
-}
 void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime)
 {
 	if (playercomp.HasGun && playercomp.IsGunRecoiling)
@@ -1273,10 +1341,16 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
 		else
 			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, percent);
-
-
 		cameratrans.SetLocalQuaternion(tempquat);
 
+		auto& handtrans = *playercomp.HandEntity.lock()->GetComponent<TransformComponent>();
+		auto temp = handtrans.Local_Location;
+		temp.z = 0;
+		VPMath::Vector3 temp2 = temp ;
+		VPMath::Vector3 temp3 = {};
+		temp2.z = -0.05f;
+		temp3 = temp.Lerp(temp, temp2, percent);
+		handtrans.SetLocalLocation(temp3);
 		if (percent >= 1.0f)
 		{
 			VPMath::Quaternion tempquat{};
@@ -1284,8 +1358,8 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			playercomp.GunRecoilStartQuat = {};
 			playercomp.GunRecoilEndQuat = {};
 			playercomp.IsGunRecoiling = false;
-			//playercomp.IsEndReocilReturn = false;
 			cameratrans.SetLocalQuaternion({});
+			handtrans.SetLocalLocation(temp);
 		}
 	}
 }
@@ -1329,7 +1403,7 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToAttack_Rifle))
+	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToIdle02_Rifle))
 		return false;
 
 	auto temppos = firetrans.World_Location;
@@ -1347,7 +1421,7 @@ bool PlayerSystem::Throw_Setting(PlayerComponent& playercomp)
 	playercomp.HasGun = false;
 	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
 	playercomp.GunEntityID = 0;
-	playercomp.ShootType = VisPred::Game::GunType::NONE;
+	//playercomp.ShootType = VisPred::Game::GunType::NONE;
 	return true;
 }
 bool PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)
@@ -1377,21 +1451,7 @@ bool PlayerSystem::Throw_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	return true;
 }
 #pragma endregion
-void PlayerSystem::Gun_Cooltime(PlayerComponent& playercomp, float deltatime)
-{
-	playercomp.GunprogressTime += deltatime;
-	if (!playercomp.HasGun)
-		playercomp.ReadyToShoot = false;
-	else
-	{
-		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 
-		if (playercomp.GunprogressTime >= gunComp->CoolTime)
-			playercomp.ReadyToShoot = true;
-		else
-			playercomp.ReadyToShoot = false;
-	}
-}
 #pragma endregion 
 #pragma region IStartable
 void PlayerSystem::Initialize()
@@ -1409,7 +1469,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto CameraEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraName);
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
-		auto LongswordEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->LongswordName);
+		auto LongswordEntity = GetSceneManager()->GetEntityByIdentityName(playercomp->LongswordName);
 		playercomp->HP = playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
@@ -1575,11 +1635,7 @@ bool PlayerSystem::RecoilReturn(double x, double a, double percent)
 	else
 		return true;
 }
-double PlayerSystem::EndRecoilPercent(double x, double a)
-{
-	double delta = x - a;
-	return (delta * delta) / (a * a);
-}
+
 
 void PlayerSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
 {

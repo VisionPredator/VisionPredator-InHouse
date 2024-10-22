@@ -5,11 +5,10 @@ struct PlayerComponent :
 	public Component
 {
 	PlayerComponent();
-	VP_JSONBODY(PlayerComponent,RecoilMode
+	VP_JSONBODY(PlayerComponent
 		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
-		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, RecoilReturnTime)
+		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
 
-	VisPred::Game::GunRecoilMode RecoilMode{};
 	std::string HandName{};
 	std::string VPHandName{};
 	std::string CameraPosName{};
@@ -58,15 +57,23 @@ struct PlayerComponent :
 	uint32_t PreSearchedItemID{};
 	uint32_t GunEntityID{};
 	uint32_t ThrowingGunEntityID{};
-    VisPred::Game::GunType ShootType{};
     bool HasGun=false;
-	bool IsVPMode{};
     float GunprogressTime{};
     bool ReadyToShoot{};
 	bool IsGunRecoiling{};
-	bool IsEndReocilReturn{};
 	float RecoilProgress{};
-	float RecoilReturnTime{};
+
+	bool IsVPMode{};
+	bool NonDamageMode =false;
+	bool StopVPGage{};
+	float VPGageProgress{};
+	float VPGageCoolTime{};
+	bool ReadyToTransform{};
+	float TransformationProgress{};
+	float TransformationTime =1;
+	float NonDamageProgress{};
+	float NonDamageTime =1;
+	float MaxNonDamageTime{};
 	VPMath::Quaternion GunRecoilEndQuat{};
 	VPMath::Quaternion GunRecoilStartQuat{};
 };

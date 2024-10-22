@@ -31,16 +31,15 @@ namespace VisPred
 		};
 		enum class PlayerFSM
 		{
-			IDLE,
-			WALK,
-			RUN,
-			CROUCH,
-			SLIDE,
-			JUMP,
-			DIE,
-			DESTROY,
-			NONE,
-			END
+			 IDLE
+			,WALK
+			,RUN
+			,CROUCH
+			,SLIDE
+			,JUMP
+			,DIE
+			,DESTROY
+			,Transformation
 		};
 		enum class PlayerAni
 		{

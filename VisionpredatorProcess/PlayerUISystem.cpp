@@ -59,6 +59,30 @@ void PlayerUISystem::UpdateHP(IdentityComponent& identityComp)
 }
 void PlayerUISystem::UpdateVPState(IdentityComponent& identityComp)
 {
+	if (identityComp.UUID != "VPeyeUI" || !identityComp.HasComponent<ImageComponent>())
+		return;
+	auto& imagecomp = *identityComp.GetComponent<ImageComponent>();
+	auto& VPUI = *identityComp.GetComponent<VPUIComponent>();
+	VPMath::Color White{ 1,1,1,1 };
+	VPMath::Color temp{};
+	float percent = m_PlayerComp->VPGageProgress / m_PlayerComp->VPGageCoolTime;
+	if (percent > 1)
+		percent = 1;
+	temp = VPMath::Color::Lerp(White, VPUI.ChangeColor, percent);
+	if (percent>=1 || m_PlayerComp->ReadyToTransform)
+	{
+		imagecomp.TexturePath = VPUI.FullImage;
+		imagecomp.Color = White;
+		imagecomp.TopPercent = 0;
+
+	}
+	else
+	{
+		imagecomp.TopPercent = 1 - percent;
+
+		imagecomp.TexturePath = VPUI.GageImage;
+		imagecomp.Color = VPMath::Color::Lerp(White, VPUI.ChangeColor, percent);
+	}
 
 }
 void PlayerUISystem::UpdateAim(IdentityComponent& identityComp)
@@ -67,25 +91,19 @@ void PlayerUISystem::UpdateAim(IdentityComponent& identityComp)
 		return;
 
 	auto& imagecomp = *identityComp.GetComponent<ImageComponent>();
+	auto& AimComp = *identityComp.GetComponent<AimUIComponent>();
 	auto entity = GetSceneManager()->GetEntity(m_PlayerComp->SearchedItemID);
+	imagecomp.Color.w = 1;
 	if (!entity)
-		imagecomp.TexturePath = "aim_base.png";
+		imagecomp.Color.w = 0;
 	else
 	{
 		if (entity->HasComponent<GunComponent>())
-		{
-			imagecomp.TexturePath = "aim_interact.png";
-
-		}
+			imagecomp.TexturePath = AimComp.Interected;
 		else if (entity->HasComponent<EnemyComponent>())
-		{
-			imagecomp.TexturePath = "aim_kill.png";
-
-		}
+			imagecomp.TexturePath = AimComp.Aimed;
 		else
-		{
-			imagecomp.TexturePath = "aim_base.png";
-		}
+			imagecomp.Color.w = 0;
 
 	}
 }

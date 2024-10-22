@@ -10,9 +10,9 @@ public:
     ~PlayerSystem()=default;
     // IUpdatable을(를) 통해 상속됨
     void Update(float deltaTime) override;
-
 	// IFixedUpdatable을(를) 통해 상속됨
 	void FixedUpdate(float deltaTime) override;
+	void PlayerTransfomationSetting(PlayerComponent& playercomp,bool VPMode);
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override {};
 	void PhysicsLateUpdate(float deltaTime) override {};
@@ -25,6 +25,10 @@ public:
 
 	// ISoundable을(를) 통해 상속됨
 	void SoundUpdate(float deltaTime) override {};
+	void VPMode_Cooltime(PlayerComponent& playercomp, float deltatime);
+	void Transfomation_Time(PlayerComponent& playercomp, float deltatime);
+	void NonDamage_Time(PlayerComponent& playercomp, float deltatime);
+	void Gun_Cooltime(PlayerComponent& playercomp, float deltatime);
 
 
 
@@ -44,7 +48,6 @@ public:
 	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void DefalutModeController(PlayerComponent& playercomp);
 	void DownCamera(PlayerComponent& playercomp,float deltatime);
-	//void DownCamera_Slide(PlayerComponent& playercomp,float deltatime);
 	void UpCamera(PlayerComponent& playercomp, float deltatime);
 	void CarmeraPosChange(PlayerComponent& playercomp,float deltatime);
 #pragma endregion 
@@ -52,6 +55,7 @@ public:
 	void Calculate_FSM(PlayerComponent& playercomp);
 	void Calculate_Idle(PlayerComponent& playercomp);
 	void Calculate_Die(PlayerComponent& playercomp);
+	void Calculate_Transformation(PlayerComponent& playercomp);
 	void Calculate_Walk(PlayerComponent& playercomp);
 	void Calculate_Run(PlayerComponent& playercomp);
 	void Calculate_Crouch(PlayerComponent& playercomp);
@@ -70,6 +74,7 @@ public:
 	void FSM_Action_Jump(PlayerComponent& playercomp);
 	void FSM_Action_Die(PlayerComponent& playercomp);
 	void FSM_Action_Destroy(PlayerComponent& playercomp);
+	void FSM_ActionCalculate_Transformation(PlayerComponent& playercomp,float deltatime);
 #pragma endregion
 #pragma region FSM Sound
 	void FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime);
@@ -115,13 +120,11 @@ public:
 
 #pragma region Gun Logic
 
-	void Gun_RecoilingToEnd(PlayerComponent& playercomp, float deltatime);
 	void Gun_RecoilingToMiddle(PlayerComponent& playercomp, float deltatime);
 
 	bool Gun_Shoot(PlayerComponent& playercomp,GunComponent& guncomp);
 	bool Gun_Throw(PlayerComponent& playercomp, GunComponent& guncomp);
 	void Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& guncomp);
-	void Gun_Cooltime(PlayerComponent& playercomp, float deltatime);
 #pragma region Shoot Logic
 	bool Shoot_Common(PlayerComponent& playercomp, GunComponent& guncomp, VisPred::Game::PlayerAni idleAnimation, VisPred::Game::PlayerAni attackAnimation);
 	bool Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& TransformComp);
@@ -146,6 +149,5 @@ public:
 	float Randomfloat(float min, float max);
 	double RecoilPercent(double curtime, double time, double percent);
 	bool RecoilReturn(double curtime, double time, double percent);
-	double EndRecoilPercent(double curtime, double time);
 };
 
