@@ -21,5 +21,4 @@ void EnemyRunState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit RunState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-
 }

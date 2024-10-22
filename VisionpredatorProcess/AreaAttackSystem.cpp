@@ -8,6 +8,7 @@ AreaAttackSystem::AreaAttackSystem(std::shared_ptr<SceneManager> sceneManager) :
 void AreaAttackSystem::TriggerAttack(AreaAttackComponent& area, EnemyComponent& enemy)
 {
 	enemy.HP -= area.Damage;
+	enemy.OnHit = true;
 }
 
 void AreaAttackSystem::EnterTrigger(std::pair<uint32_t, uint32_t> entitypair)

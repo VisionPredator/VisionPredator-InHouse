@@ -4,6 +4,8 @@
 #include "SceneManager.h"
 #include <iostream>
 #include "Toolbar.h"
+#include "../VPGraphics/Log.h"
+
 FolderTool::FolderTool(std::shared_ptr<SceneManager> sceneManager) :m_SceneManager{ sceneManager }
 {
 	auto currPath = std::filesystem::current_path();

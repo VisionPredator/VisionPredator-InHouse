@@ -12,6 +12,9 @@ void EnemyPatrolState::Enter(const std::shared_ptr<Component>& component)
 void EnemyPatrolState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	if (CheckIsDead(enemyComp))
+		return;
+	DetectTarget(*enemyComp, deltaTime);
 }
 
 void EnemyPatrolState::Exit(const std::shared_ptr<Component>& component)

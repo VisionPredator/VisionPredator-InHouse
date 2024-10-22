@@ -174,7 +174,7 @@
     <ClInclude Include="EnemyJumpState.h" />
     <ClInclude Include="EnemyMovementState.h" />
     <ClInclude Include="EnemyPatrolState.h" />
-    <ClInclude Include="EnemyRangedAttacState.h" />
+    <ClInclude Include="EnemyRangedAttackState.h" />
     <ClInclude Include="EnemyRunState.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="EnemySystem.h" />
@@ -218,7 +218,7 @@
     <ClCompile Include="EnemyJumpState.cpp" />
     <ClCompile Include="EnemyMovementState.cpp" />
     <ClCompile Include="EnemyPatrolState.cpp" />
-    <ClCompile Include="EnemyRangedAttacState.cpp" />
+    <ClCompile Include="EnemyRangedAttackState.cpp" />
     <ClCompile Include="EnemyRunState.cpp" />
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="EnemySystem.cpp" />

@@ -111,9 +111,6 @@
     <ClInclude Include="EnemyPatrolState.h">
       <Filter>Finite State Machine\Enemy\Behavior</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyHitReactionState.h">
-      <Filter>Finite State Machine\Enemy\Combat</Filter>
-    </ClInclude>
     <ClInclude Include="EnemyDeadState.h">
       <Filter>Finite State Machine\Enemy\Behavior</Filter>
     </ClInclude>
@@ -129,7 +126,7 @@
     <ClInclude Include="EnemyWalkState.h">
       <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyRangedAttacState.h">
+    <ClInclude Include="EnemyRangedAttackState.h">
       <Filter>Finite State Machine\Enemy\Combat</Filter>
     </ClInclude>
     <ClInclude Include="EnemyCombatState.h">
@@ -167,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="TrunSystem.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyHitReactionState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,10 +245,7 @@
     <ClCompile Include="EnemyWalkState.cpp">
       <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyHitReactionState.cpp">
-      <Filter>Finite State Machine\Enemy\Combat</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyRangedAttacState.cpp">
+    <ClCompile Include="EnemyRangedAttackState.cpp">
       <Filter>Finite State Machine\Enemy\Combat</Filter>
     </ClCompile>
     <ClCompile Include="EnemyCombatState.cpp">
@@ -283,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="TrunSystem.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyHitReactionState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
