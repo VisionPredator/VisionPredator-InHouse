@@ -37,8 +37,10 @@ void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
 void PlayerSystem::Transfomation_Time(PlayerComponent& playercomp, float deltatime)
 {
 	if (!playercomp.StopVPGage)
+	{
+		playercomp.TransformationProgress = 0;
 		return;
-
+	}
 	if (playercomp.TransformationProgress >= playercomp.TransformationTime)
 	{
 		playercomp.TransformationProgress = playercomp.TransformationTime;
@@ -109,7 +111,6 @@ void PlayerSystem::PlayerTransfomationSetting(PlayerComponent& playercomp, bool 
 	///변신 조절
 	playercomp.StopVPGage = true;
 	playercomp.VPGageProgress = 0;
-	playercomp.ReadyToTransform - false;
 	playercomp.IsVPMode = VPMode;
 	/// 무적 조절
 	playercomp.MaxNonDamageTime = playercomp.TransformationTime + playercomp.NonDamageTime;
@@ -161,6 +162,7 @@ void PlayerSystem::Active_VPMode(PlayerComponent& playercomp)
 		if (INPUTKEYDOWN(KEYBOARDKEY::R)&& playercomp.ReadyToTransform)
 		{
 			m_Graphics->SetVP(playercomp.IsVPMode);
+			playercomp.ReadyToTransform = false;
 		}
 	}
 }
@@ -542,10 +544,8 @@ void PlayerSystem::Calculate_Transformation(PlayerComponent& playercomp)
 
 	if (playercomp.TransformationProgress >= playercomp.TransformationTime)
 	{
-		playercomp.TransformationProgress = 0;
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	}
-
 
 }
 void PlayerSystem::Calculate_Walk(PlayerComponent& playercomp)
@@ -1599,7 +1599,7 @@ float PlayerSystem::Randomfloat(float min, float max)
 double PlayerSystem::RecoilPercent(double x, double a, double percent)
 {
 	// Convert percent into a value between 0 and 1
-	double b = percent / 100.0;
+	float b = percent / 100.0;
 
 	// Ensure non-negative values
 	if (x <= 0)
@@ -1608,7 +1608,7 @@ double PlayerSystem::RecoilPercent(double x, double a, double percent)
 	if (x < a * b)
 	{
 		// First half: downward parabola
-		double delta = x - a * b;
+		float delta = x - a * b;
 		return -(delta * delta) / (b * b * a * a) + 1;
 	}
 	else if (x >= a)
@@ -1619,14 +1619,14 @@ double PlayerSystem::RecoilPercent(double x, double a, double percent)
 	else
 	{
 		// Second half: upward parabola
-		double delta = x - a;
+		float delta = x - a;
 		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
 	}
 }
 bool PlayerSystem::RecoilReturn(double x, double a, double percent)
 {
 	// Convert percent into a value between 0 and 1
-	double b = percent / 100.0;
+	float b = percent / 100.0;
 
 	// Ensure non-negative values
 
