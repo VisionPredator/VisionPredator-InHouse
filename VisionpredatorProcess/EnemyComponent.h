@@ -39,7 +39,16 @@ struct EnemyComponent : public Component
 	// 추격 범위
 	float ChaseRangeRadius = 40.f;	// 400m
 
-	float DeadTime = 0.f;
+	// 사망 후 소멸 시간
+	float DeadTime = 0.f;	
+
+	// 공격 사정거리
+	float AttackRange = 10.f;	// 사정거리 내에 플레이어가 있으면 더이상 쫓지 않고 멈춰서 사격.
+
+	bool OnHit = false;	// 피격 받는 중인지
+
+	// Chase 상태 중 마지막으로 포착 된 플레이어의 위치
+	VPMath::Vector3 LastDetectedPlayerPos;
 
 	EnemyBehaviorState* BehaviorState;
 	EnemyCombatState* CombatState;

@@ -25,7 +25,7 @@ public:
 	/// <summary>
 	/// 플레이어를 향해 회전하고 거의 다 회전하였다면 true를 반환
 	/// </summary>
-	static void RotateToTarget(TransformComponent* transform, VisPred::SimpleMath::Vector3 targetDir, float deltaTime);
+	static bool RotateToTarget(TransformComponent* transform, VisPred::SimpleMath::Vector3 targetDir, float deltaTime);
 
 	/// <summary>
 	/// 현재 상태를 변환하고 Enter 함수를 호출한다. 이전 상태는 Exit 함수를 호출한다.

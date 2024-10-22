@@ -66,8 +66,20 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	}
 	isInNoiseRange = isInRange && isPlayerMoving;
 
-	// 플레이어가 Enemy의 시야 범위 안에 들어와있을 때에만 레이캐스트 수행
-	if (isInViewRange || isInNoiseRange)
+	// 플레이어로부터 공격을 받았다면 플레이어 방향으로 회전한다.
+	bool isHit = false;
+	if (enemyComp.OnHit)
+	{
+		isHit = RotateToTarget(transform, targetDir, deltaTime);	// 거의 다 회전하였다면 OnHit 를 false로
+
+		if (true == isHit)
+		{
+			enemyComp.OnHit = false;
+			ChangeCurrentState(enemyComp, &EnemyCombatState::s_HitReaction);
+		}
+	}
+
+	if (isInViewRange || isInNoiseRange || isHit)
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ);
@@ -129,7 +141,12 @@ void EnemyState::CreateDetectionAreas(const EnemyComponent& enemyComp, const Tra
 	chaseRangeOutput.Radius = enemyComp.ChaseRangeRadius;
 }
 
-void EnemyState::RotateToTarget(TransformComponent* transform, VisPred::SimpleMath::Vector3 targetDir, float deltaTime)
+float QuaternionDot(const VPMath::Quaternion& q1, const VPMath::Quaternion& q2)
+{
+	return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+}
+
+bool EnemyState::RotateToTarget(TransformComponent* transform, VisPred::SimpleMath::Vector3 targetDir, float deltaTime)
 {
 	const float distance = targetDir.Length();
 	targetDir.y = 0.f;
@@ -143,14 +160,15 @@ void EnemyState::RotateToTarget(TransformComponent* transform, VisPred::SimpleMa
 	const auto rotation = VPMath::Quaternion::Slerp(worldQuaternion, targetRotation, deltaTime * speed);	// 부드럽게 회전
 
 	transform->SetWorldQuaternion(rotation);
+
+	float dot = QuaternionDot(rotation, targetRotation);
+
+	return dot >= 0.95f;
 }
 
 void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemyComponent, IState* newState)
 {
 	if (const auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
-		if (enemyComponent->MovementState == movementState)
-			return;
-
 		if (enemyComponent->MovementState != movementState)
 			enemyComponent->MovementState->Exit(enemyComponent);
 
@@ -158,9 +176,6 @@ void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemy
 		enemyComponent->MovementState->Enter(enemyComponent);
 	}
 	else if (const auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
-		if (enemyComponent->BehaviorState == behaviorState)
-			return;
-
 		if (enemyComponent->BehaviorState != behaviorState)
 			enemyComponent->BehaviorState->Exit(enemyComponent);
 
@@ -168,9 +183,6 @@ void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemy
 		enemyComponent->BehaviorState->Enter(enemyComponent);
 	}
 	else if (const auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
-		if (enemyComponent->CombatState == combatState)
-			return;
-
 		if (enemyComponent->CombatState != combatState)
 			enemyComponent->CombatState->Exit(enemyComponent);
 
@@ -187,9 +199,6 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 	const std::shared_ptr<EnemyComponent> temp(&enemyComponent, null_deleter{});
 
 	if (const auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
-		if (enemyComponent.MovementState == movementState)
-			return;
-
 		if (enemyComponent.MovementState != movementState)
 			enemyComponent.MovementState->Exit(temp);
 
@@ -197,9 +206,6 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 		enemyComponent.MovementState->Enter(temp);
 	}
 	else if (const auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
-		if (enemyComponent.BehaviorState == behaviorState)
-			return;
-
 		if (enemyComponent.BehaviorState != behaviorState)
 			enemyComponent.BehaviorState->Exit(temp);
 
@@ -207,9 +213,6 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 		enemyComponent.BehaviorState->Enter(temp);
 	}
 	else if (const auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
-		if (enemyComponent.CombatState == combatState)
-			return;
-
 		if (enemyComponent.CombatState != combatState)
 			enemyComponent.CombatState->Exit(temp);
 
