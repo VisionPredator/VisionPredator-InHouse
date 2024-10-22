@@ -70,7 +70,12 @@ void DecalPass::Render()
 		{
 			InstanceDecalData temp;
 			temp.world = decal.WorldTransform.Transpose();
-			temp.worldInverse = decal.WorldTransform.Invert();
+			temp.worldInverse = decal.WorldTransform.Invert();//회전 역행렬
+			//위치 역행렬 전치해서 전달
+			temp.worldInverse._14 = temp.worldInverse._41;
+			temp.worldInverse._24 = temp.worldInverse._42;
+			temp.worldInverse._34 = temp.worldInverse._43;
+
 			temp.scale = VPMath::XMFLOAT4(1, 1, 1, 1);
 
 			m_InstanceDatas.push_back(temp);
@@ -97,7 +102,7 @@ void DecalPass::Render()
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearClamp").lock();
 	Device->Context()->PSSetConstantBuffers(0,1,CameraCB->GetAddress());
 
 	Device->Context()->PSSetConstantBuffers(0,1,CameraCB->GetAddress());

@@ -41,8 +41,8 @@ VS_OUTPUT main(VS_INPUT input)
     output.posClip = mul(output.posWorld, gWorldViewProj);
     output.pos = output.posClip;
     
-    float4 maxBox = float4(0.5f * input.scale.x, 0.5f * input.scale.y, 0.5f*input.scale.z, 1);
-    float4 minBox = float4(-0.5f * input.scale.x, -0.5f * input.scale.y, -0.5f * input.scale.z, 1);
+    float4 maxBox = float4(0.5f , 0.5f , 0.5f, 1);
+    float4 minBox = float4(-0.5f , -0.5f , -0.5f, 1);
     
     output.min = mul(minBox, input.world);
     output.max = mul(maxBox, input.world);
@@ -52,7 +52,6 @@ VS_OUTPUT main(VS_INPUT input)
     output.decalInverse1 = input.worldinverse[1];
     output.decalInverse2 = input.worldinverse[2];
     output.decalInverse3 = input.worldinverse[3];
-    
     
     return output;
 }

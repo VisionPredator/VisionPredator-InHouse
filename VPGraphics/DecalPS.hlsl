@@ -57,15 +57,16 @@ float4 main(VS_OUTPUT input) : SV_TARGET
         worldPos.y >= decalBoxMin.y && worldPos.y <= decalBoxMax.y &&
         worldPos.z >= decalBoxMin.z && worldPos.z <= decalBoxMax.z)
     {
-
         float4x4 inversedecal;
         inversedecal[0] = input.decalInverse0;
         inversedecal[1] = input.decalInverse1;
         inversedecal[2] = input.decalInverse2;
         inversedecal[3] = input.decalInverse3;
         
-        float4 posInDecal = mul(worldPos, inversedecal);  
-        //clip(0.5 - abs(posInDecal.xyz));
+        float4 posInDecal = mul(float4(worldPos, 1), inversedecal);
+        
+        //return float4(1, 0, 0, 1);
+        clip(0.5 - abs(posInDecal.xyz));
         
         float2 textureCoordinate = posInDecal.xz + 0.5;
         return Decal.Sample(samLinear, textureCoordinate);
