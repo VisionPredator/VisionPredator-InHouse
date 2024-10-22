@@ -400,48 +400,48 @@ namespace DecalVolume
 {
 	namespace Vertex
 	{
-		static float scale = 1;
-		static BaseVertex Buffer[] = {
+		static float scale = 0.5f;
+		static DecalVertex Buffer[] = {
 			//face 단위로 스플릿
 
 			//윗면 4개 + 아래도 4개 해서 육면체니까 24개
 			//인덱스는 face당 3개씩 12개 * 3개 
 			//8개의 점을 3개의 노말 값으로 분산
 			//앞면
-			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) },//1 //0
-			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) },//2 //1
-			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) },//3 //2
-			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) },//4 //3
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f),DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,DirectX::XMFLOAT4(0.0f,1.0f,0,0) },//1 //0
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f),DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,DirectX::XMFLOAT4(0.0f,0.0f,0,0) },//2 //1
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f),DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,DirectX::XMFLOAT4(1.0f,0.0f,0,0) },//3 //2
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f),DirectX::XMFLOAT4(0.0f, 0.0f,-1.0f,0) ,DirectX::XMFLOAT4(1.0f,1.0f,0,0) },//4 //3
 
 			// 뒷면
-			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //5 //4
-			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //6 //5
-			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //7 //6
-			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //8 //7
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0}}, //5 //4
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0}}, //6 //5
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0}}, //7 //6
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f,0) ,{0,0,0,0}}, //8 //7
 
 			//// 윗면
-			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //2 //8
-			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //3 //9
-			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //6 //10
-			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //7 //11
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0), {0,0,0,0}}, //2 //8
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0), {0,0,0,0}}, //3 //9
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0), {0,0,0,0}}, //6 //10
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f,0), {0,0,0,0}}, //7 //11
 
 			// 아랫면
-			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //1 //12
-			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //4 //13
-			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //5 //14
-			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //8 //15
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0}}, //1 //12
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0}}, //4 //13
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0}}, //5 //14
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(0.0f, -1.0f,0.0f,0) ,{0,0,0,0}}, //8 //15
 
 			//왼쪽면
-			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //1 //16
-			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //2 //17
-			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }, //5 //18
-			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //6 //19
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0} }, //1 //16
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0} }, //2 //17
+			{ DirectX::XMFLOAT4(-1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0} }, //5 //18
+			{ DirectX::XMFLOAT4(-1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(-1.0f, 0.0f,0.0f,0) ,{0,0,0,0} }, //6 //19
 
 			// 오른쪽면
-			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,0.0f) }, //3 //20
-			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,0.0f) }, //4 //21
-			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(1.0f,1.0f) }, //7 //22
-			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), MyColor::Zero, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0},{0,0,0,0},DirectX::XMFLOAT2(0.0f,1.0f) }  //8 //234		
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0}, }, //3 //20
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, -1.0f * scale,1.0f), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0}, }, //4 //21
+			{ DirectX::XMFLOAT4(+1.0f * scale, +1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0}, }, //7 //22
+			{ DirectX::XMFLOAT4(+1.0f * scale, -1.0f * scale, +1.0f * scale,1.0f), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f,0), {0,0,0,0}, }  //8 //234		
 		};
 
 		static UINT count = 24; // 8 * 3;
@@ -449,7 +449,7 @@ namespace DecalVolume
 
 		static D3D11_BUFFER_DESC Desc =
 		{
-			sizeof(BaseVertex) * DecalVolume::Vertex::count,
+			sizeof(DecalVertex) * DecalVolume::Vertex::count,
 			D3D11_USAGE_IMMUTABLE,
 			D3D11_BIND_VERTEX_BUFFER,
 			0,

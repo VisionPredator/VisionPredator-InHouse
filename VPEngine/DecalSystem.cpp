@@ -19,7 +19,7 @@ void DecalSystem::BeginRenderUpdate(float deltaTime)
 
 		debug::OBBInfo box;
 		box.OBB.Center = transform->World_Location;
-		box.OBB.Extents = transform->World_Scale;
+		box.OBB.Extents = transform->World_Scale / 2;
 		box.xAxisAngle = transform->World_Rotation.x;
 		box.yAxisAngle = transform->World_Rotation.y;
 		box.zAxisAngle = transform->World_Rotation.z;

@@ -143,7 +143,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	size = sizeof(BaseVertex);
 	Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
 	
-	size = sizeof(BaseVertex);
+	size = sizeof(DecalVertex);
 	Create<VertexBuffer>(L"Decal_VB", DecalVolume::Vertex::Desc, DecalVolume::Vertex::Data, size);
 
 

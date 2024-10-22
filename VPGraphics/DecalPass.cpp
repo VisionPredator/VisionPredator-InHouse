@@ -70,6 +70,9 @@ void DecalPass::Render()
 		{
 			InstanceDecalData temp;
 			temp.world = decal.WorldTransform.Transpose();
+			temp.worldInverse = decal.WorldTransform.Invert();
+			temp.scale = VPMath::XMFLOAT4(1, 1, 1, 1);
+
 			m_InstanceDatas.push_back(temp);
 		}
 	}
@@ -95,6 +98,9 @@ void DecalPass::Render()
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
+	Device->Context()->PSSetConstantBuffers(0,1,CameraCB->GetAddress());
+
+	Device->Context()->PSSetConstantBuffers(0,1,CameraCB->GetAddress());
 
 	//set rtv,dsv
 	Device->UnBindSRV();
@@ -106,7 +112,7 @@ void DecalPass::Render()
 
 	//set vb(instance buffer)
 	 UINT strides[2];
-	strides[0] = sizeof(BaseVertex);
+	strides[0] = sizeof(DecalVertex);
 	strides[1] = sizeof(InstanceDecalData);
 	UINT offsets[2];
 	offsets[0] = 0;
@@ -138,19 +144,28 @@ void DecalPass::Render()
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
 
 	//set srv
-	m_Device.lock()->Context()->PSSetShaderResources(0,1,m_DepthSRV.lock()->GetAddress());
+	m_Device.lock()->Context()->PSSetShaderResources(0,1, m_PositionSRV.lock()->GetAddress());
+
+	
 	
 	//render
 	int offset = 0;
 	for (auto& decals : curDecals)
 	{
+		std::wstring wDecalName;
+		wDecalName.assign(decals.first.begin(), decals.first.end());
+		std::weak_ptr<ShaderResourceView> decaltex = m_ResourceManager.lock()->Create<ShaderResourceView>(wDecalName);
+		if (decaltex.lock() == nullptr)
+		{
+			decaltex = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png");
+		}
+
+		m_Device.lock()->Context()->PSSetShaderResources(1, 1, decaltex.lock()->GetAddress());
+
 		auto& curDecal = decals.second;
 		m_Device.lock()->Context()->DrawIndexedInstanced(DecalVolume::Index::count , curDecal.size(), 0, 0, offset);
 		offset += curDecal.size();
 	}
-
-
-
 
 	m_DecalManager->ClearDecals();
 	m_InstanceDatas.clear();

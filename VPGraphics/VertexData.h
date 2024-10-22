@@ -71,13 +71,22 @@ struct InstanceSkinnedData
 
 
 
+struct DecalVertex
+{
+	DirectX::XMFLOAT4 pos;
+	DirectX::XMFLOAT4 normal;
+	DirectX::XMFLOAT4 tex;
+};
+
 //¿ŒΩ∫≈œΩÃ
 struct InstanceDecalData
 {
-	InstanceDecalData() : world(VPMath::Matrix::Identity)
+	InstanceDecalData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity),scale(1,1,1,1)
 	{
 
 	}
 
 	VPMath::Matrix world;
+	VPMath::Matrix worldInverse;
+	VPMath::XMFLOAT4 scale;
 };
