@@ -9,6 +9,20 @@ PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ 
 {
 
 }
+void PlayerSystem::PlayerTransfomationSetting(PlayerComponent& playercomp, bool VPMode)
+{
+	///상태 저장
+	playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
+	///변신 조절
+	playercomp.StopVPGage = true;
+	playercomp.TransformationProgress = 0;
+	playercomp.VPGageProgress = 0;
+	playercomp.IsVPMode = VPMode;
+	/// 무적 조절
+	playercomp.MaxNonDamageTime = playercomp.TransformationTime + playercomp.NonDamageTime;
+	playercomp.NonDamageProgress = 0;
+	playercomp.NonDamageMode = true;
+}
 void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
 {
 
@@ -37,11 +51,8 @@ void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
 void PlayerSystem::Transfomation_Time(PlayerComponent& playercomp, float deltatime)
 {
 	if (!playercomp.StopVPGage)
-	{
-		playercomp.TransformationProgress = 0;
 		return;
-	}
-	if (playercomp.TransformationProgress >= playercomp.TransformationTime)
+	if (playercomp.TransformationProgress > playercomp.TransformationTime)
 	{
 		playercomp.TransformationProgress = playercomp.TransformationTime;
 		playercomp.StopVPGage = false;
@@ -51,15 +62,12 @@ void PlayerSystem::Transfomation_Time(PlayerComponent& playercomp, float deltati
 }
 void PlayerSystem::NonDamage_Time(PlayerComponent& playercomp, float deltatime)
 {
-	if (playercomp.NonDamageProgress > playercomp.MaxNonDamageTime)
+	if (playercomp.NonDamageMode)
 	{
-		playercomp.NonDamageMode = false;
-	}
-	else
-	{
-		playercomp.NonDamageProgress += deltatime;
-		playercomp.NonDamageMode = true;
-
+		if (playercomp.NonDamageProgress > playercomp.MaxNonDamageTime)
+			playercomp.NonDamageMode = false;
+		else
+			playercomp.NonDamageProgress += deltatime;
 	}
 }
 void PlayerSystem::Gun_Cooltime(PlayerComponent& playercomp, float deltatime)
@@ -104,19 +112,7 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 	}
 }
 
-void PlayerSystem::PlayerTransfomationSetting(PlayerComponent& playercomp, bool VPMode)
-{
-	///상태 저장
-	playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
-	///변신 조절
-	playercomp.StopVPGage = true;
-	playercomp.VPGageProgress = 0;
-	playercomp.IsVPMode = VPMode;
-	/// 무적 조절
-	playercomp.MaxNonDamageTime = playercomp.TransformationTime + playercomp.NonDamageTime;
-	playercomp.NonDamageProgress = 0;
-	playercomp.NonDamageMode = true;
-}
+
 #pragma endregion
 
 #pragma region Searching interective
