@@ -217,7 +217,11 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 
 		debug::OBBInfo obbInfo{};
 		obbInfo.OBB.Center = ControllerTransform->World_Location;
+
 		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
+		if (ControllerComp.Contollerinfo.Pivot == ControllerPivot::FOOT)
+			obbInfo.OBB.Center.y+= (tempinfo.height / 2 + tempinfo.radius);
+
 		obbInfo.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
 
 		obbInfo.xAxisAngle = ControllerTransform->World_Rotation.x;

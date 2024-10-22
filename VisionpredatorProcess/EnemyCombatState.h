@@ -14,5 +14,5 @@ public:
 
 	static EnemyIdleCombatState s_Idle;
 	static EnemyRangedAttackState s_RangedAttack;
-	static EnemyHitReactionState s_HitReaction;	// 애매한데.
+
 };

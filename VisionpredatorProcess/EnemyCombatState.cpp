@@ -6,7 +6,6 @@
 
 EnemyIdleCombatState EnemyCombatState::s_Idle;
 EnemyRangedAttackState EnemyCombatState::s_RangedAttack;
-EnemyHitReactionState EnemyCombatState::s_HitReaction;
 
 void EnemyCombatState::Enter(const std::shared_ptr<Component>& component)
 {

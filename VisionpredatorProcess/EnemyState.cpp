@@ -75,8 +75,12 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		if (true == isHit)
 		{
 			enemyComp.OnHit = false;
-			ChangeCurrentState(enemyComp, &EnemyCombatState::s_HitReaction);
+			ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
 		}
+		//else
+		//{
+		//	ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
+		//}
 	}
 
 	if (isInViewRange || isInNoiseRange || isHit)
@@ -224,9 +228,9 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 	}
 }
 
-void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isImmediate)
+void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isAgain, bool isImmediate)
 {
-	if (enemyComp->CurrentAni == animation)
+	if (enemyComp->CurrentAni == animation && !isAgain)
 		return;
 
 	enemyComp->CurrentAni = animation;
@@ -240,9 +244,9 @@ void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& e
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
 
-void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isImmediate)
+void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isAgain, bool isImmediate)
 {
-	if (enemyComp.CurrentAni == animation)
+	if (enemyComp.CurrentAni == animation && !isAgain)
 		return;
 
 	enemyComp.CurrentAni = animation;

@@ -36,6 +36,6 @@ public:
 	/// <summary>
 	/// 현재 애니메이션 변경
 	/// </summary>
-	static void ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime = 0.f, bool isLoop = true, bool isImmediate = false);
-	static void ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime = 0.f, bool isLoop = true, bool isImmediate = false);
+	static void ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime = 0.1f, bool isLoop = true, bool isAgain = false, bool isImmediate = false);
+	static void ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime = 0.1f, bool isLoop = true, bool isAgain = false, bool isImmediate = false);
 };
