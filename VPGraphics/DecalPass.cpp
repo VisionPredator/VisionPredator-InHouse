@@ -111,8 +111,8 @@ void DecalPass::Render()
 	Device->UnBindSRV();
 	std::vector<ID3D11RenderTargetView*> RTVs;
 	RTVs.push_back(m_AlbedoRTV.lock()->Get());
-	RTVs.push_back(m_NormalRTV.lock()->Get());
-	Device->Context()->OMSetRenderTargets(2, RTVs.data(), m_DepthStencilView.lock()->Get());
+	//RTVs.push_back(m_NormalRTV.lock()->Get());
+	Device->Context()->OMSetRenderTargets(RTVs.size(), RTVs.data(), m_DepthStencilView.lock()->Get());
 
 
 	//set vb(instance buffer)
@@ -150,6 +150,7 @@ void DecalPass::Render()
 
 	//set srv
 	m_Device.lock()->Context()->PSSetShaderResources(0,1, m_PositionSRV.lock()->GetAddress());
+	m_Device.lock()->Context()->PSSetShaderResources(1,1, m_NormalSRV.lock()->GetAddress());
 
 	
 	
@@ -165,7 +166,7 @@ void DecalPass::Render()
 			decaltex = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png");
 		}
 
-		m_Device.lock()->Context()->PSSetShaderResources(1, 1, decaltex.lock()->GetAddress());
+		m_Device.lock()->Context()->PSSetShaderResources(2, 1, decaltex.lock()->GetAddress());
 
 		auto& curDecal = decals.second;
 		m_Device.lock()->Context()->DrawIndexedInstanced(DecalVolume::Index::count , curDecal.size(), 0, 0, offset);
