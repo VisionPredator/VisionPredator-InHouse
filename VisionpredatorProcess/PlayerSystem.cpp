@@ -747,6 +747,10 @@ void PlayerSystem::Enter_Dash(PlayerComponent& playercomp)
 			return;
 		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
+		auto& melee = *playercomp.GetComponent<PlayerMeleeComponent>();
+		auto& trnasform = *playercomp.GetComponent<TransformComponent>();
+		auto Dastprefab = GetSceneManager()->SpawnEditablePrefab(melee.DashPrefab, trnasform.World_Location, {0,0,0}, {0,0,0});
+		GetSceneManager()->AddChild(playercomp.GetEntityID(), Dastprefab->GetEntityID());
 	}
 	else
 	{

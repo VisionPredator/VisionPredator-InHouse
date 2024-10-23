@@ -967,7 +967,7 @@ void SceneManager::OnDestroyEntity(std::any data)
 	{
 		auto parentEntity = GetEntity(GetComponent<Parent>(mainID)->ParentID);
 		auto parentsChildren = parentEntity->GetComponent<Children>();
-		RemoveParent(mainID);
+		RemoveParent(mainID,true);
 	}
 	while (!DeleteEntityIDs.empty())
 	{
@@ -1007,12 +1007,8 @@ void SceneManager::OnDestroyEntity(std::any data)
 
 			// 마지막으로, entityMap에서 엔티티를 제거합니다.
 			entityMap.erase(entityIter);
-
 		}
-
 	}
-
-
 }
 
 
