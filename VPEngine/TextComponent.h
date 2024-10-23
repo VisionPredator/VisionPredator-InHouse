@@ -12,7 +12,7 @@ struct TextComponent : Component
 	float PosYPercent = 0.f;
 	float Scale = 1.f;
 	float Angle = 0.f; // 0µµ ~ 360µµ
-	uint32_t Layer = 0;
+	float Layer = 0.f;
 
 	// effect
 	bool IsBold = false;

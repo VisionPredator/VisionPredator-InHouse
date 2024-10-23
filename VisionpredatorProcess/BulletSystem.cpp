@@ -8,13 +8,13 @@ BulletSystem::BulletSystem(std::shared_ptr<SceneManager> sceneManager): System(s
 
 void BulletSystem::FixedUpdate(float deltaTime)
 {
-	COMPLOOP(BulletComponent, comp)
-	{
-		auto transform = comp.GetComponent <TransformComponent >();
-		VPMath::Vector3 addlocation{};
-		addlocation = transform->FrontVector * comp.Speed * deltaTime;
-		transform->AddWorldLocation(addlocation);
-	}
+	//COMPLOOP(BulletComponent, comp)
+	//{
+	//	auto transform = comp.GetComponent <TransformComponent >();
+	//	VPMath::Vector3 addlocation{};
+	//	addlocation = transform->FrontVector * comp.Speed * deltaTime;
+	//	transform->AddWorldLocation(addlocation);
+	//}
 }
 
 
@@ -57,4 +57,22 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 
 void BulletSystem::ExitCollision(std::pair<uint32_t, uint32_t> entitypair)
 {
+}
+
+void BulletSystem::Initialize()
+{
+	COMPLOOP(BulletComponent, comp)
+		Start(comp.GetEntityID());
+}
+
+void BulletSystem::Start(uint32_t gameObjectId)
+{
+	auto& entity = *GetSceneManager()->GetEntity(gameObjectId);
+
+	if (!entity.HasComponent<BulletComponent>())
+		return;;
+	auto& bulletcomp = *entity.GetComponent<BulletComponent>();
+	auto& transform = *bulletcomp.GetComponent <TransformComponent >();
+	m_PhysicsEngine->AddVelocity(bulletcomp.GetEntityID(), transform.FrontVector, bulletcomp.Speed);
+
 }
