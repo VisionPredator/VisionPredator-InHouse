@@ -37,10 +37,7 @@ private:
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBufferSRV;
 
-	//
-	std::weak_ptr<PixelShader> m_DecalPS;
-
-
+	
 	// Multi Render Target
 	std::weak_ptr<RenderTargetView> m_AlbedoRTV;
 	std::weak_ptr<RenderTargetView> m_NormalRTV;
@@ -51,13 +48,13 @@ private:
 	std::weak_ptr<RenderTargetView> m_EmissiveRTV;
 	std::weak_ptr<RenderTargetView> m_LightMapRTV;
 
-
 	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
 	std::vector<InstanceDecalData> m_InstanceDatas;
 
 	std::weak_ptr<VertexBuffer> m_DecalVB;
 	std::weak_ptr<IndexBuffer> m_DecalIB;
 
-
+	std::weak_ptr<VertexShader> m_DecalVS;
+	std::weak_ptr<PixelShader> m_DecalPS;
 };
 

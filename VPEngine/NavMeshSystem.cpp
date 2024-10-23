@@ -319,36 +319,36 @@ void NavMeshSystem::PhysicsLateUpdate(float deltaTime)
 #pragma region IRenderable
 void NavMeshSystem::BeginRenderUpdate(float deltaTime)
 {
-	auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
-	if (!navMeshdata)
-		return;
-	// Assuming m_NavMeshData->m_worldVertices is a vector of VPMath::Vector3
-	if (navMeshdata->m_worldVertices.empty())
-		return;
-	for (size_t i = 0; i < navMeshdata->m_worldVertices.size() - 1; ++i)
-	{
-		// Current and next vertex
-		VPMath::Vector3 currentVertex = navMeshdata->m_worldVertices[i];
-		VPMath::Vector3 nextVertex = navMeshdata->m_worldVertices[i + 1];
+	//auto navMeshdata = GetSceneManager()->GetSceneNavMeshData();
+	//if (!navMeshdata)
+	//	return;
+	//// Assuming m_NavMeshData->m_worldVertices is a vector of VPMath::Vector3
+	//if (navMeshdata->m_worldVertices.empty())
+	//	return;
+	//for (size_t i = 0; i < navMeshdata->m_worldVertices.size() - 1; ++i)
+	//{
+	//	// Current and next vertex
+	//	VPMath::Vector3 currentVertex = navMeshdata->m_worldVertices[i];
+	//	VPMath::Vector3 nextVertex = navMeshdata->m_worldVertices[i + 1];
 
-		// Calculate direction as the difference between the next and current vertex
-		VPMath::Vector3 direction = nextVertex - currentVertex;
-		// Create the ray for the current vertex
-		debug::RayInfo rayInfo{};
-		rayInfo.Color = { 1, 1, 0, 1 }; // Blue color for the ray
-		rayInfo.Origin = currentVertex;  // Set the origin to the current vertex
-		rayInfo.Direction = direction;   // Set the direction to point to the next vertex
-		rayInfo.Normalize = false;        // Ensure the direction is normalized
+	//	// Calculate direction as the difference between the next and current vertex
+	//	VPMath::Vector3 direction = nextVertex - currentVertex;
+	//	// Create the ray for the current vertex
+	//	debug::RayInfo rayInfo{};
+	//	rayInfo.Color = { 1, 1, 0, 1 }; // Blue color for the ray
+	//	rayInfo.Origin = currentVertex;  // Set the origin to the current vertex
+	//	rayInfo.Direction = direction;   // Set the direction to point to the next vertex
+	//	rayInfo.Normalize = false;        // Ensure the direction is normalized
 
-		// Draw the ray using your graphics system
-		m_Graphics->DrawRay(rayInfo);
-	}
+	//	// Draw the ray using your graphics system
+	//	m_Graphics->DrawRay(rayInfo);
+	//}
 
 }
 
 void NavMeshSystem::EditorRenderUpdate(float deltaTime)
 {
-	BeginRenderUpdate(deltaTime);
+	//BeginRenderUpdate(deltaTime);
 }
 
 void NavMeshSystem::RenderUpdate(float deltaTime)

@@ -25,6 +25,21 @@
     <Filter Include="Components\Source">
       <UniqueIdentifier>{f1bc4eb1-4705-4eac-97ad-bbc57a274af7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Finite State Machine">
+      <UniqueIdentifier>{2fa92122-942a-49e0-857f-4dc16b70b506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy">
+      <UniqueIdentifier>{55285444-3572-4f67-9b44-7652d668b89c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy\Behavior">
+      <UniqueIdentifier>{b60c7015-f757-439a-b9e8-3a7667162c73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy\Combat">
+      <UniqueIdentifier>{1e5a8a63-91f8-48fd-9d6c-fe8461702e25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy\Movement">
+      <UniqueIdentifier>{d62086a2-e80f-4763-bf59-c656eb213db1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -81,6 +96,57 @@
     <ClInclude Include="PlayerUISystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>Finite State Machine\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBehaviorState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyIdleState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyChaseState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyPatrolState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyDeadState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBackpedalState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyJumpState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyRunState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyWalkState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyRangedAttackState.h">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyCombatState.h">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyMovementState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyIdleMovementState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyIdleCombatState.h">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>Finite State Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="StatesInclude.h">
+      <Filter>Finite State Machine</Filter>
+    </ClInclude>
     <ClInclude Include="AreaAttackComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -98,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="TrunSystem.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyHitReactionState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClInclude>
     <ClInclude Include="AimUIComponent.h">
       <Filter>헤더 파일</Filter>
@@ -117,9 +186,6 @@
       <Filter>소스 파일\Systems</Filter>
     </ClCompile>
     <ClCompile Include="PlayerSystem.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BulletSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="EnemySystem.cpp">
@@ -152,6 +218,57 @@
     <ClCompile Include="PlayerUISystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>Finite State Machine\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBehaviorState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyIdleState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyChaseState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyPatrolState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyDeadState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBackpedalState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyJumpState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRunState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyWalkState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRangedAttackState.cpp">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyCombatState.cpp">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyMovementState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyIdleMovementState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyIdleCombatState.cpp">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="IState.cpp">
+      <Filter>Finite State Machine</Filter>
+    </ClCompile>
     <ClCompile Include="AreaAttackComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -175,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="VPUIComponent.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyHitReactionState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

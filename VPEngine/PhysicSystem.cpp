@@ -3,6 +3,8 @@
 #include "../PhysxEngine/IPhysx.h"
 #include "TransformSystem.h"
 #include "EventManager.h"
+#include "../VPGraphics/Log.h"
+
 PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
@@ -220,6 +222,9 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		{
 			 obbInfo.OBB.Center.y += (tempinfo.height / 2 + tempinfo.radius);
 		}
+		if (ControllerComp.Contollerinfo.Pivot == ControllerPivot::FOOT)
+			obbInfo.OBB.Center.y+= (tempinfo.height / 2 + tempinfo.radius);
+
 		obbInfo.OBB.Extents = { tempinfo.radius,(tempinfo.height / 2 + tempinfo.radius),tempinfo.radius };
 
 		obbInfo.xAxisAngle = ControllerTransform->World_Rotation.x;

@@ -579,6 +579,7 @@
     <FxCompile Include="InstancingPS.hlsl" />
     <FxCompile Include="DecalVS.hlsl" />
     <FxCompile Include="DecalPS.hlsl" />
+    <FxCompile Include="OverDrawPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

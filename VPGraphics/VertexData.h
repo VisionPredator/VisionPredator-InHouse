@@ -66,10 +66,16 @@ struct InstanceSkinnedData
 
 	VPMath::Matrix world;
 	VPMath::Matrix worldInverse;
-	MatrixPallete Bone;
 };
 
 
+
+struct DecalVertex
+{
+	DirectX::XMFLOAT4 pos;
+	DirectX::XMFLOAT4 normal;
+	DirectX::XMFLOAT4 tex;
+};
 
 //¿ŒΩ∫≈œΩÃ
 struct InstanceDecalData

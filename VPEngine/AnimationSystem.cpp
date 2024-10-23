@@ -34,6 +34,7 @@ void AnimationSystem::OnChangeAnimation(std::any aniBlendData)
 	{
 		auto aniComp = GetSceneManager()->GetComponent<AnimationComponent>(aniblenddata.EntityID);
 		aniComp->isLoop = aniblenddata.Loop;
+
 		if (aniComp->curAni != aniblenddata.Index)	//애니메이션이 다를때만 변경 같으면 그대로
 		{
 			aniComp->preAni = aniComp->curAni;
@@ -114,7 +115,6 @@ void AnimationSystem::Update(float deltaTime)
 			}
 		}
 
-
 		if (aniComp.FBX.empty())
 			return;
 		aniComp.IsFinished = false;
@@ -125,6 +125,8 @@ void AnimationSystem::Update(float deltaTime)
 		if (aniComp.preAni == aniComp.curAni)
 		{
 			aniComp.IsBlending = false;
+
+			// 애니메이션이 끝났는지 확인
 			if (aniComp.duration >= aniComp.AniDuration)
 			{
 				if (aniComp.isLoop)
@@ -138,18 +140,21 @@ void AnimationSystem::Update(float deltaTime)
 					aniComp.duration = aniComp.AniDuration;
 				}
 			}
+			else
+			{
+				aniComp.IsFinished = false;
+			}
+
 			aniComp.duration += deltaTime* aniComp.speed;
-
-
 		}
 		else
 		{
 			aniComp.IsBlending = true;
-			//각각 애니메이션 사이 보간
 			if (aniComp.duration > aniComp.transitionDuration)
 			{
 				aniComp.preAni = aniComp.curAni;
 				aniComp.duration = 0;
+				aniComp.IsFinished = false;
 			}
 			aniComp.duration += deltaTime;
 		}
