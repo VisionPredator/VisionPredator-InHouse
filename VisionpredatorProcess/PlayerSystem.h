@@ -12,7 +12,8 @@ public:
     void Update(float deltaTime) override;
 	// IFixedUpdatable을(를) 통해 상속됨
 	void FixedUpdate(float deltaTime) override;
-	void PlayerTransfomationSetting(PlayerComponent& playercomp,bool VPMode);
+	void Enter_Transformation(PlayerComponent& playercomp,bool VPMode);
+	bool ChangeArm(PlayerComponent& playercomp, bool IsVPmode);
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override {};
 	void PhysicsLateUpdate(float deltaTime) override {};
@@ -26,7 +27,7 @@ public:
 	// ISoundable을(를) 통해 상속됨
 	void SoundUpdate(float deltaTime) override {};
 	void VPMode_Cooltime(PlayerComponent& playercomp, float deltatime);
-	void Transfomation_Time(PlayerComponent& playercomp, float deltatime);
+	void Transformation_Time(PlayerComponent& playercomp, float deltatime);
 	void NonDamage_Time(PlayerComponent& playercomp, float deltatime);
 	void Gun_Cooltime(PlayerComponent& playercomp, float deltatime);
 
@@ -45,6 +46,7 @@ public:
 	void UpdateCharDataToController(PlayerComponent& playercomp);
 	void UpdateControllerSize(PlayerComponent& playercomp);
 	void CrouchModeController(PlayerComponent& playercomp);
+	void SlideModeController(PlayerComponent& playercomp);
 	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void DefalutModeController(PlayerComponent& playercomp);
 	void DownCamera(PlayerComponent& playercomp,float deltatime);
@@ -63,18 +65,22 @@ public:
 	void Calculate_Jump(PlayerComponent& playercomp);
 	void Calculate_Destroy(PlayerComponent& playercomp);
 #pragma endregion
+#pragma region FSM Enter
+
+	void Enter_Dash(PlayerComponent& playercomp);
+#pragma endregion
 
 #pragma region FSM Action
-	void FSM_Action_FSM(PlayerComponent& playercomp, float deltaTime);
-	void FSM_Action_Idle(PlayerComponent& playercomp);
-	void FSM_Action_Walk(PlayerComponent& playercomp);
-	void FSM_Action_Run(PlayerComponent& playercomp);
-	void FSM_Action_Crouch(PlayerComponent& playercomp);
-	void FSM_Action_Slide(PlayerComponent& playercomp,float deltatime);
-	void FSM_Action_Jump(PlayerComponent& playercomp);
-	void FSM_Action_Die(PlayerComponent& playercomp);
-	void FSM_Action_Destroy(PlayerComponent& playercomp);
-	void FSM_ActionCalculate_Transformation(PlayerComponent& playercomp,float deltatime);
+	void Action_FSM(PlayerComponent& playercomp, float deltaTime);
+	void Action_Idle(PlayerComponent& playercomp);
+	void Action_Walk(PlayerComponent& playercomp);
+	void Action_Run(PlayerComponent& playercomp);
+	void Action_Crouch(PlayerComponent& playercomp);
+	void Action_Slide(PlayerComponent& playercomp,float deltatime);
+	void Action_Jump(PlayerComponent& playercomp);
+	void Action_Die(PlayerComponent& playercomp);
+	void Action_Destroy(PlayerComponent& playercomp);
+	void Action_Transformation(PlayerComponent& playercomp,float deltatime);
 #pragma endregion
 #pragma region FSM Sound
 	void FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime);
@@ -115,7 +121,6 @@ public:
 	/// </summary>
 	/// <param name="playercomp"></param>
 	void Drop_Gun(PlayerComponent& playercomp);
-	void Change_Gun(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Gun Logic

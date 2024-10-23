@@ -35,7 +35,7 @@ namespace VisPred
 			,WALK
 			,RUN
 			,CROUCH
-			,SLIDE
+			,Dash_Slide
 			,JUMP
 			,DIE
 			,DESTROY

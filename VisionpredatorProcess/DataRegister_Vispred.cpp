@@ -37,7 +37,7 @@ void VispredRegister::Register_Components()
 	);
 	META_ADD_COMP(TrunComponent, TrunComponent::MoveTime, TrunComponent::Is_X, TrunComponent::Angle, TrunComponent::Finished);
 	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::Damage);
-	META_ADD_COMP(PlayerMeleeComponent, PlayerMeleeComponent::DefalutPrefab, PlayerMeleeComponent::AttackMode, PlayerMeleeComponent::SwordLength, PlayerMeleeComponent::SwordAngle, PlayerMeleeComponent::SwordDamage, PlayerMeleeComponent::VPLength, PlayerMeleeComponent::VPAngle, PlayerMeleeComponent::VPDamage);
+	META_ADD_COMP(PlayerMeleeComponent, PlayerMeleeComponent::DefalutPrefab, PlayerMeleeComponent::DashPrefab, PlayerMeleeComponent::AttackMode, PlayerMeleeComponent::SwordLength, PlayerMeleeComponent::SwordAngle, PlayerMeleeComponent::SwordDamage, PlayerMeleeComponent::VPLength, PlayerMeleeComponent::VPAngle, PlayerMeleeComponent::VPDamage);
 
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV, EnemyComponent::NearZ, EnemyComponent::FarZ, EnemyComponent::IsModelFlipped);
 	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::ThrowDamage, GunComponent::BulletPrefab, GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
@@ -62,7 +62,7 @@ void VispredRegister::Register_EnumClass()
 		,PlayerFSM::WALK
 		,PlayerFSM::RUN
 		,PlayerFSM::CROUCH
-		,PlayerFSM::SLIDE
+		,PlayerFSM::Dash_Slide
 		,PlayerFSM::JUMP
 		,PlayerFSM::DIE
 		,PlayerFSM::DESTROY

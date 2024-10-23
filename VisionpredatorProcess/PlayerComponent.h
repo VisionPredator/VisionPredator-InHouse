@@ -71,6 +71,7 @@ struct PlayerComponent :
 	bool ReadyToTransform{};
 	float TransformationProgress{};
 	float TransformationTime =1;
+	bool IsArmChanged{};
 	float NonDamageProgress{};
 	float NonDamageTime =1;
 	float MaxNonDamageTime{};

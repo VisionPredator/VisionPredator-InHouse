@@ -39,7 +39,7 @@ void AnimationSystem::OnChangeAnimation(std::any aniBlendData)
 			aniComp->preAni = aniComp->curAni;
 			aniComp->curAni = aniblenddata.Index;
 			aniComp->AniDuration = m_Graphics->GetDuration(aniComp->FBX, aniComp->curAni);
-
+			aniComp->IsBlending = true;
 			aniComp->preDuration = aniComp->duration;
 			if (aniblenddata.Speed > 0.001f)
 			{
