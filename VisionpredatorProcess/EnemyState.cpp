@@ -58,7 +58,7 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 	isInViewRange = viewRange.Contains(playerPos);
 	bool isInRange = noiseRange.Contains(playerPos);
-	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::CROUCH;
+	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::CROUCH;
 
 	if (enemyComp.BehaviorState == &EnemyBehaviorState::s_Chase)
 	{

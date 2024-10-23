@@ -269,6 +269,7 @@ void PlayerSystem::PlayerMeleeAttack(PlayerComponent& playercomp)
 {
 	auto& meleecomp = *playercomp.GetComponent<PlayerMeleeComponent>();
 	if (!playercomp.IsVPMode)
+
 		Melee_Default(playercomp);
 	else
 		Melee_VPMode(playercomp);
@@ -283,6 +284,7 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 
 	if (PlayerAni.IsBlending || PlayerAni.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Sword))
 		return;
+	playercomp.IsAttacking = true;
 
 	///어택모드 설정하기.
 	int attackmode = static_cast<int>(meleecomp.AttackMode);
@@ -1177,6 +1179,16 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 		return;
 	switch (anicomp.curAni)
 	{
+	case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:
+	case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:
+	case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:
+	case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:
+	case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:
+	{
+		playercomp.IsAttacking = false;
+		break;
+	}
 	case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:
 	case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:
 	case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:
@@ -1199,6 +1211,24 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 	default:
 		break;
 	}
+}
+void PlayerSystem::VPAnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp)
+{
+	using namespace VisPred::Game;
+	if (anicomp.IsBlending || !anicomp.IsFinished)
+		return;
+	switch (anicomp.curAni)
+	{
+	case  (int)VisPred::Game::VPAni::ToVP_attack_L:
+	case  (int)VisPred::Game::VPAni::ToVP_attack_R:
+		playercomp.IsAttacking = false;
+		break;
+	break;
+	default:
+		break;
+	}
+
+
 }
 void PlayerSystem::ReturnToIdle(AnimationComponent& anicomp)
 {
@@ -1426,13 +1456,14 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 		temp2.z = -0.05f;
 		temp3 = temp.Lerp(temp, temp2, percent);
 		handtrans.SetLocalLocation(temp3);
-		if (percent >= 1.0f)
+		if (playercomp.GunprogressTime> gunComp->RecoilTime)
 		{
 			VPMath::Quaternion tempquat{};
 			playercomp.RecoilProgress = 0;
 			playercomp.GunRecoilStartQuat = {};
 			playercomp.GunRecoilEndQuat = {};
 			playercomp.IsGunRecoiling = false;
+			playercomp.IsAttacking = false;
 			cameratrans.SetLocalQuaternion({});
 			handtrans.SetLocalLocation(temp);
 		}
@@ -1456,6 +1487,7 @@ bool PlayerSystem::Shoot_Common(PlayerComponent& playercomp, GunComponent& gunco
 		anicomp.duration = 0;
 	}
 	// Update gun and player state
+	playercomp.IsAttacking = true;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;

@@ -113,6 +113,7 @@ public:
 	void ReturnToIdle(AnimationComponent& anicomp);
 	void ReturnToVPIdle(PlayerComponent& player, AnimationComponent& anicomp);
 	void AnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp);
+	void VPAnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp);
 #pragma endregion
 #pragma region Interection Logic
 	void Grab_Gun(PlayerComponent& playercomp);

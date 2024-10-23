@@ -45,7 +45,7 @@ struct PlayerComponent :
 	float SitHeightDiff{};
 	float SlideHeight{};
 	float SlideHeightDiff{};
-
+	bool IsAttacking{};
 	float CamTransDuration = 0.07f;
 	float CamTransProgress = 0.f;
 	VPMath::Vector3 DefalutCameraPos{};

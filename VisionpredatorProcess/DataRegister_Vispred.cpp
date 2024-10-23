@@ -15,6 +15,7 @@ void VispredRegister::Register_Components()
 {
 	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
 	META_ADD_COMP(PlayerComponent
+		, PlayerComponent::IsAttacking
 		, PlayerComponent::CurrentFSM
 		,PlayerComponent::CameraPosName, PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName, PlayerComponent::VPHandName, PlayerComponent::LongswordName
 		, PlayerComponent::NonDamageTime
