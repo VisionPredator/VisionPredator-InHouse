@@ -2,7 +2,7 @@
 #include "../VPEngine/System.h"
 
 class BulletSystem :
-    public System,public IFixedUpdatable, public IContactable
+	public System,public IFixedUpdatable, public IContactable,public IStartable,public IPhysicable
 {
 public:
 	BulletSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -22,6 +22,11 @@ public:
 	void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
 
 	void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) override;
-
+	void Initialize() override;
+	void Start(uint32_t gameObjectId) override;
+	void Finish(uint32_t gameObjectId) override{};
+	void Finalize() override{}
+	void PhysicsUpdate(float deltaTime) override {};
+	void PhysicsLateUpdate(float deltaTime) override {};
 };
 

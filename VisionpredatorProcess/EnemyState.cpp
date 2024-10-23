@@ -12,10 +12,10 @@ struct null_deleter
 	void operator()(void const*) const {}
 };
 
-void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
+float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 {
 	if (enemyComp.BehaviorState == &EnemyBehaviorState::s_Dead)
-		return;
+		return -1.f;
 
 	const uint32_t enemyID = enemyComp.GetEntityID();
 	const auto transform = enemyComp.GetComponent<TransformComponent>();
@@ -34,10 +34,35 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	sphereInfo.Sphere = noiseRange;
 	sphereInfo.Color = VPMath::Color{ 1, 0, 1, 1 };
 	enemyComp.Graphics->DrawSphere(sphereInfo);
+
+	DirectX::BoundingSphere temp = noiseRange;
+	temp.Radius = enemyComp.AccuracyRangeOne;
+	debug::SphereInfo sphereInfo1;
+	sphereInfo1.Sphere = temp;
+	sphereInfo1.Color = VPMath::Color{ 1.0f, 1.0f, 0.0f, 1.0f }; // 진한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo1);
+
+	temp.Radius = enemyComp.AccuracyRangeTwo;
+	debug::SphereInfo sphereInfo2;
+	sphereInfo2.Sphere = temp;
+	sphereInfo2.Color = VPMath::Color{ 1.0f, 0.9f, 0.2f, 1.0f }; // 약간 연한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo2);
+
+	temp.Radius = enemyComp.AccuracyRangeThree;
+	debug::SphereInfo sphereInfo3;
+	sphereInfo3.Sphere = temp;
+	sphereInfo3.Color = VPMath::Color{ 1.0f, 0.8f, 0.4f, 1.0f }; // 더 연한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo3);
+
+	temp.Radius = enemyComp.AccuracyRangeFour;
+	debug::SphereInfo sphereInfo4;
+	sphereInfo4.Sphere = temp;
+	sphereInfo4.Color = VPMath::Color{ 1.0f, 0.7f, 0.6f, 1.0f }; // 가장 연한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo4);
 #endif _DEBUG
 
 	if (!enemyComp.Player)
-		return;
+		return -1.f;
 
 	const uint32_t playerID = enemyComp.Player->GetEntityID();
 	const auto playerTransform = enemyComp.Player->GetComponent<TransformComponent>();
@@ -94,6 +119,9 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 				ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Chase);
 			}
 			RotateToTarget(transform, targetDir, deltaTime);
+
+			// 플레이어까지의 거리를 계산하고 반환
+			return (playerPos - enemyPos).Length();
 		}
 	}
 	else
@@ -103,6 +131,8 @@ void EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 			ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Idle);
 		}
 	}
+
+	return -1;
 }
 
 bool EnemyState::CheckIsDead(const std::shared_ptr<EnemyComponent>& enemyComponent)

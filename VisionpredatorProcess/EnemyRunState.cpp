@@ -3,6 +3,7 @@
 #include "EnemyComponent.h"
 #include "StatesInclude.h"
 #include "../VPGraphics/Log.h"
+#include "NavAgentComponent.h"
 
 void EnemyRunState::Enter(const std::shared_ptr<Component>& component)
 {
