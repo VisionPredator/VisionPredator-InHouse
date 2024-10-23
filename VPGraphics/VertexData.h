@@ -66,7 +66,6 @@ struct InstanceSkinnedData
 
 	VPMath::Matrix world;
 	VPMath::Matrix worldInverse;
-	MatrixPallete Bone;
 };
 
 
@@ -81,12 +80,11 @@ struct DecalVertex
 //¿ŒΩ∫≈œΩÃ
 struct InstanceDecalData
 {
-	InstanceDecalData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity),scale(1,1,1,1)
+	InstanceDecalData() : world(VPMath::Matrix::Identity), worldInverse(VPMath::Matrix::Identity)
 	{
 
 	}
 
 	VPMath::Matrix world;
 	VPMath::Matrix worldInverse;
-	VPMath::XMFLOAT4 scale;
 };

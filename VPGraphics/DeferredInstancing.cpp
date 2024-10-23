@@ -126,7 +126,6 @@ void DeferredInstancing::Render()
 			temp.world = object->world.Transpose();
 			temp.worldInverse = object->world.Invert();
 			std::wstring id = std::to_wstring(object->EntityID);
-			temp.Bone = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(id).lock()->m_struct;
 			m_InstanceSkinnedDatas.push_back(temp);
 
 		}
@@ -418,6 +417,15 @@ void DeferredInstancing::DrawSkinned()
 			{
 				for (auto& mesh : curModel.lock()->m_Meshes)
 				{
+
+					std::shared_ptr<ConstantBuffer<MatrixPallete>> pallete;
+					{
+						//entity id
+						pallete = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
+					}
+					pallete->Update();
+					Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::MatrixPallete), 1, pallete->GetAddress());
+
 					std::shared_ptr<ConstantBuffer<MaterialData>> curMaterialData = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 					std::shared_ptr<Material> curMaterial = curModel.lock()->m_Materials[mesh->m_material];
 					if (curMaterial != nullptr)

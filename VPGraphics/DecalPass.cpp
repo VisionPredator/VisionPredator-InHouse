@@ -70,13 +70,7 @@ void DecalPass::Render()
 		{
 			InstanceDecalData temp;
 			temp.world = decal.WorldTransform.Transpose();
-			temp.worldInverse = decal.WorldTransform.Invert();//회전 역행렬
-			//위치 역행렬 전치해서 전달
-			temp.worldInverse._14 = temp.worldInverse._41;
-			temp.worldInverse._24 = temp.worldInverse._42;
-			temp.worldInverse._34 = temp.worldInverse._43;
-
-			temp.scale = VPMath::XMFLOAT4(1, 1, 1, 1);
+			temp.worldInverse = temp.world.Invert();//회전 역행렬
 
 			m_InstanceDatas.push_back(temp);
 		}
