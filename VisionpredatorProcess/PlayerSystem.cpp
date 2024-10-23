@@ -18,17 +18,19 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 		{
 			playercomp.HandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = false;
 			playercomp.HandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = false;
+			playercomp.LongswordEntity.lock()->GetComponent<MeshComponent>()->IsVisible = false;
+
 			playercomp.VPHandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = true;
 			playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = true;
 			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_draw, 0, 0, false);
 			m_Graphics->SetVP(playercomp.IsVPMode);
-
-
 		}
 		else
 		{
 			playercomp.HandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = true;
 			playercomp.HandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = true;
+			playercomp.LongswordEntity.lock()->GetComponent<MeshComponent>()->IsVisible = true;
+
 			playercomp.VPHandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = false;
 			playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = false;
 			ChangeAni_Index(playercomp.HandEntity.lock()->GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Sword, 0, 0, false);
@@ -43,7 +45,7 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
 {
 
-	if (!playercomp.StopVPGage)
+	if (!playercomp.IsTransformationing)
 	{
 		if (playercomp.VPGageProgress < playercomp.VPGageCoolTime)
 		{
@@ -67,12 +69,12 @@ void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
 }
 void PlayerSystem::Transformation_Time(PlayerComponent& playercomp, float deltatime)
 {
-	if (!playercomp.StopVPGage)
+	if (!playercomp.IsTransformationing)
 		return;
 	if (playercomp.TransformationProgress > playercomp.TransformationTime)
 	{
 		playercomp.TransformationProgress = playercomp.TransformationTime;
-		playercomp.StopVPGage = false;
+		playercomp.IsTransformationing = false;
 	}
 	else
 		playercomp.TransformationProgress += deltatime;
@@ -136,6 +138,11 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 #pragma region Searching interective
 void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 {
+	if (playercomp.IsVPMode|| playercomp.IsTransformationing)
+	{
+		playercomp.SearchedItemID = 0;
+		return;
+	}
 	/// Raycast 를 통해 오브젝트를 검출. 이전에 찾았던 오브젝트의 마스크를 0 0 0 처리해준다. 
 	SearchInterective(playercomp);
 	///찾아낸 물체가 Guncomp를 가지고있다면 
@@ -153,7 +160,7 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 		return;
 	auto cameratransform = cameraEntity->GetComponent<TransformComponent>();
 	auto front = cameratransform->FrontVector;
-	playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(playercomp.GetEntityID(), cameratransform->World_Location, cameratransform->FrontVector, 20.f);
+	playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(playercomp.GetEntityID(), cameratransform->World_Location, cameratransform->FrontVector,playercomp.SearchDistance).EntityID;
 
 	if (playercomp.PreSearchedItemID != playercomp.SearchedItemID)
 	{
@@ -299,7 +306,7 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 	auto SetAttackDetails = [&](VisPred::Game::PlayerAni aniIndex, float length, float damage, float angle)
 		{
 			ChangeAni_Index(PlayerAni.GetEntityID(), aniIndex, 0, 0, false, false);
-			float duration = m_Graphics->GetDuration(PlayerAni.FBX, static_cast<int>(aniIndex));
+			float duration = static_cast<float>(m_Graphics->GetDuration(PlayerAni.FBX, static_cast<int>(aniIndex)));
 			float speed = std::get<1>(PlayerAni.AnimationSpeed_Transition[static_cast<int>(aniIndex)]);
 			float transitionDuration = std::get<2>(PlayerAni.AnimationSpeed_Transition[static_cast<int>(aniIndex)]);
 			meleecomp.Length = length;
@@ -335,7 +342,7 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 	auto turncomp = entity.GetComponent<TrunComponent>();
 	turncomp->Angle = meleecomp.Angle;
 	turncomp->Is_Left = meleecomp.IsLeft;
-	turncomp->MoveTime = meleecomp.Time*0.6;
+	turncomp->MoveTime = meleecomp.Time*0.6f;
 	turncomp->Is_X = true;
 	// Process children for area attack
 	if (entity.HasComponent<Children>())
@@ -349,8 +356,8 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 			auto& transcomp = *childEntity->GetComponent<TransformComponent>();
 			auto& areaattack = *childEntity->GetComponent<AreaAttackComponent>();
 			areaattack.Damage = meleecomp.Damage;
-			transcomp.SetLocalLocation({ 0, 0, (playercomp.Radius + (meleecomp.Length / 2)) });
-			transcomp.SetLocalScale({ 0.01, 0.01, meleecomp.Length / 2 });
+			transcomp.SetLocalLocation({ 0.f, 0.f, (playercomp.Radius + (meleecomp.Length / 2)) });
+			transcomp.SetLocalScale({ 0.01f, 0.01f, meleecomp.Length / 2 });
 			break;
 		}
 	}
@@ -386,7 +393,7 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 	auto SetAttackDetails = [&](VisPred::Game::VPAni aniIndex, float length, float damage, float angle)
 		{
 			ChangeAni_Index(PlayerAni.GetEntityID(), aniIndex, 0, 0, false, false);
-			float duration = m_Graphics->GetDuration(PlayerAni.FBX, static_cast<int>(aniIndex));
+			float duration = static_cast<float>(m_Graphics->GetDuration(PlayerAni.FBX, static_cast<int>(aniIndex)));
 			float speed = std::get<1>(PlayerAni.AnimationSpeed_Transition[static_cast<int>(aniIndex)]);
 			float transitionDuration = std::get<2>(PlayerAni.AnimationSpeed_Transition[static_cast<int>(aniIndex)]);
 			meleecomp.Length = length;
@@ -421,7 +428,7 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 	auto turncomp = entity.GetComponent<TrunComponent>();
 	turncomp->Angle = meleecomp.Angle;
 	turncomp->Is_Left = meleecomp.IsLeft;
-	turncomp->MoveTime = meleecomp.Time * 0.6;
+	turncomp->MoveTime = meleecomp.Time * 0.6f;
 	turncomp->Is_X = true;
 	// Process children for area attack
 	if (entity.HasComponent<Children>())
@@ -435,8 +442,8 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 			auto& transcomp = *childEntity->GetComponent<TransformComponent>();
 			auto& areaattack = *childEntity->GetComponent<AreaAttackComponent>();
 			areaattack.Damage = meleecomp.Damage;
-			transcomp.SetLocalLocation({ 0, 0, (playercomp.Radius + (meleecomp.Length / 2)) });
-			transcomp.SetLocalScale({ 0.01, 0.01, meleecomp.Length / 2 });
+			transcomp.SetLocalLocation({ 0.f, 0.f, (playercomp.Radius + (meleecomp.Length / 2)) });
+			transcomp.SetLocalScale({ 0.01f, 0.01f, meleecomp.Length / 2 });
 			break;
 		}
 	}
@@ -720,19 +727,11 @@ void PlayerSystem::Enter_Transformation(PlayerComponent& playercomp, bool VPMode
 	///상태 저장
 	playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
 	///변신 조절
-	playercomp.StopVPGage = true;
+	playercomp.IsTransformationing = true;
 	playercomp.TransformationProgress = 0;
 	playercomp.VPGageProgress = 0;
 	playercomp.IsVPMode = VPMode;
-	if (playercomp.IsVPMode)
-	{
-		playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
-	}
-	else
-	{
-		playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
 
-	}
 	/// 무적 조절
 	playercomp.MaxNonDamageTime = playercomp.TransformationTime + playercomp.NonDamageTime;
 	playercomp.NonDamageProgress = 0;
@@ -748,9 +747,14 @@ void PlayerSystem::Enter_Dash(PlayerComponent& playercomp)
 		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
 		auto& melee = *playercomp.GetComponent<PlayerMeleeComponent>();
-		auto& trnasform = *playercomp.GetComponent<TransformComponent>();
-		auto Dastprefab = GetSceneManager()->SpawnEditablePrefab(melee.DashPrefab, trnasform.World_Location, {0,0,0}, {0,0,0});
-		GetSceneManager()->AddChild(playercomp.GetEntityID(), Dastprefab->GetEntityID());
+		auto& transform = *playercomp.GetComponent<TransformComponent>();
+		auto Dastprefab = GetSceneManager()->SpawnEditablePrefab(melee.DashPrefab, transform.World_Location, { 0,0,0 }, { 0,0,0 });
+
+		//GetSceneManager()->AddChild(playercomp.GetEntityID(), Dastprefab->GetEntityID());
+		Dastprefab->GetComponent<RigidBodyComponent>()->CapsuleInfo.Radius = playercomp.Radius * 2.5f;
+		Dastprefab->GetComponent<LifeTimeComponent>()->LifeTime = playercomp.SlideDuration;
+		Dastprefab->GetComponent<AreaAttackComponent>()->IdentityAttach =playercomp.GetComponent<IdentityComponent>()->UUID;
+
 	}
 	else
 	{
@@ -1096,16 +1100,16 @@ void PlayerSystem::Active_Slide(PlayerComponent& playercomp, float deltatime)
 	float slidespeed{};
 	if (playercomp.IsVPMode)
 	{
-		slidespeed = playercomp.RunSpeed * 3;
+		slidespeed = playercomp.RunSpeed * 3.f;
 	}
 	else
 	{
-		slidespeed = playercomp.RunSpeed * 1.5;
+		slidespeed = playercomp.RunSpeed * 1.5f;
 
 	}
 	
 	controller.MaxSpeed = slidespeed;
-	controller.Acceleration = controller.MaxSpeed * 6;
+	controller.Acceleration = controller.MaxSpeed * 6.f;
 	controller.InputDir = playercomp.SlideDir;
 }
 void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
@@ -1297,7 +1301,9 @@ void PlayerSystem::ReturnToVPIdle(PlayerComponent& playercomp, AnimationComponen
 void PlayerSystem::Active_Interect(PlayerComponent& playercomp)
 {
 	if (playercomp.IsVPMode)
+	{
 		return;
+	}
 	if (INPUTKEYDOWN(KEYBOARDKEY::F))
 	{
 		Grab_Gun(playercomp);
@@ -1445,11 +1451,14 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 		playercomp.RecoilProgress += deltatime;
 		auto gunComp = GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 		VPMath::Quaternion tempquat{};
-		double percent = RecoilPercent(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent);
-		if (!RecoilReturn(playercomp.GunprogressTime, gunComp->RecoilTime, gunComp->RecoilPercent))
-			tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, percent);
+		double gunprogresstime = static_cast<double>(playercomp.GunprogressTime);
+		double recoilTime = static_cast<double>(gunComp->RecoilTime);
+		double recoilPercent = static_cast<double>(gunComp->RecoilPercent);
+		double percent = RecoilPercent(gunprogresstime, recoilTime, recoilPercent);
+		if (!RecoilReturn(gunprogresstime, recoilTime, recoilPercent))
+			tempquat = tempquat.Slerp(playercomp.GunRecoilStartQuat, playercomp.GunRecoilEndQuat, static_cast<float>(percent));
 		else
-			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, percent);
+			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, static_cast<float>(percent));
 		cameratrans.SetLocalQuaternion(tempquat);
 
 		auto& handtrans = *playercomp.HandEntity.lock()->GetComponent<TransformComponent>();
@@ -1458,7 +1467,7 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 		VPMath::Vector3 temp2 = temp ;
 		VPMath::Vector3 temp3 = {};
 		temp2.z = -0.05f;
-		temp3 = temp.Lerp(temp, temp2, percent);
+		temp3 = temp.Lerp(temp, temp2, static_cast<float>(percent));
 		handtrans.SetLocalLocation(temp3);
 		if (playercomp.GunprogressTime> gunComp->RecoilTime)
 		{
@@ -1647,7 +1656,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			playercomp->SitCameraPos.y -= playercomp->SitHeightDiff;
 
 			// 슬라이딩할 때의 새로운 높이 (전체 높이의 0.25)
-			float SlideHeight = ((fullHeight * 0.25) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2;
+			float SlideHeight = static_cast<float>(((fullHeight * 0.25) - 2 * controllercomp.CapsuleControllerinfo.radius) / 2);
 
 			// 새로운 슬라이드 높이가 음수가 되지 않도록 보정
 			if (SlideHeight < 0.01f)
@@ -1677,7 +1686,6 @@ void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
 	controlcomp.JumpSpeed = playercomp.JumpForce;
 	controlcomp.StaticFriction = playercomp.StaticFriction;
-	controlcomp.DynamicFriction = playercomp.DynamicFriction;
 	controlcomp.JumpXZAcceleration = controlcomp.Acceleration * playercomp.AirControlPercent / 100;
 	controlcomp.GravityWeight = playercomp.GravityPower * 9.80665f;
 }
@@ -1722,7 +1730,7 @@ float PlayerSystem::Randomfloat(float min, float max)
 double PlayerSystem::RecoilPercent(double x, double a, double percent)
 {
 	// Convert percent into a value between 0 and 1
-	float b = percent / 100.0;
+	double b = percent / 100.0;
 
 	// Ensure non-negative values
 	if (x <= 0)
@@ -1731,7 +1739,7 @@ double PlayerSystem::RecoilPercent(double x, double a, double percent)
 	if (x < a * b)
 	{
 		// First half: downward parabola
-		float delta = x - a * b;
+		double delta = x - a * b;
 		return -(delta * delta) / (b * b * a * a) + 1;
 	}
 	else if (x >= a)
@@ -1742,14 +1750,14 @@ double PlayerSystem::RecoilPercent(double x, double a, double percent)
 	else
 	{
 		// Second half: upward parabola
-		float delta = x - a;
+		double delta = x - a;
 		return (delta * delta) / ((1 - b) * (1 - b) * a * a);
 	}
 }
 bool PlayerSystem::RecoilReturn(double x, double a, double percent)
 {
 	// Convert percent into a value between 0 and 1
-	float b = percent / 100.0;
+	double b = percent / 100.0;
 
 	// Ensure non-negative values
 

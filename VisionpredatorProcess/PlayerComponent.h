@@ -7,7 +7,7 @@ struct PlayerComponent :
 	PlayerComponent();
 	VP_JSONBODY(PlayerComponent
 		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
-		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, StaticFriction, DynamicFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
+		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
 
 	std::string HandName{};
 	std::string VPHandName{};
@@ -31,7 +31,6 @@ struct PlayerComponent :
 	float RunSpeed{};
 	//float SlideDisTance{};
 	float StaticFriction{};
-	float DynamicFriction{};
 	float JumpForce{};
 	float AirControlPercent{};
 	float GravityPower = 1.f;
@@ -52,7 +51,7 @@ struct PlayerComponent :
 	float SlideDuration = 0.5f;
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
-
+	float SearchDistance{};
 	uint32_t SearchedItemID{};
 	uint32_t PreSearchedItemID{};
 	uint32_t GunEntityID{};
@@ -65,7 +64,7 @@ struct PlayerComponent :
 
 	bool IsVPMode{};
 	bool NonDamageMode =false;
-	bool StopVPGage{};
+	bool IsTransformationing{};
 	float VPGageProgress{};
 	float VPGageCoolTime{};
 	bool ReadyToTransform{};

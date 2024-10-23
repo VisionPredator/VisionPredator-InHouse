@@ -21,6 +21,7 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::NonDamageTime
 		, PlayerComponent::MaxHP, PlayerComponent::HP
 		, PlayerComponent::Sencitive
+		, PlayerComponent::SearchDistance
 		, PlayerComponent::JumpForce
 		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
 		, PlayerComponent::AirControlPercent
@@ -28,6 +29,7 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::StaticFriction
 		, PlayerComponent::VPGageCoolTime
 		, PlayerComponent::TransformationTime
+		
 	);
 	META_ADD_COMP(PlayerSoundComponent, PlayerSoundComponent::WalkSoundKey1, PlayerSoundComponent::WalkSoundKey2, PlayerSoundComponent::Volume_Walk
 		, PlayerSoundComponent::RunSoundKey1, PlayerSoundComponent::RunSoundKey2, PlayerSoundComponent::Volume_Run
@@ -37,7 +39,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::HurtSoundKey, PlayerSoundComponent::Volume_Hurt
 	);
 	META_ADD_COMP(TrunComponent, TrunComponent::MoveTime, TrunComponent::Is_X, TrunComponent::Angle, TrunComponent::Finished);
-	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::Damage);
+	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::IdentityAttach, AreaAttackComponent::Damage);
 	META_ADD_COMP(PlayerMeleeComponent, PlayerMeleeComponent::DefalutPrefab, PlayerMeleeComponent::DashPrefab, PlayerMeleeComponent::AttackMode, PlayerMeleeComponent::SwordLength, PlayerMeleeComponent::SwordAngle, PlayerMeleeComponent::SwordDamage, PlayerMeleeComponent::VPLength, PlayerMeleeComponent::VPAngle, PlayerMeleeComponent::VPDamage);
 
 	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV, EnemyComponent::NearZ, EnemyComponent::FarZ, EnemyComponent::IsModelFlipped);

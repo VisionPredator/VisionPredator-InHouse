@@ -30,7 +30,7 @@ public:
 	/// <param name="dir"> : racast 방향</param>
 	/// <param name="distance"> racast 거리</param>
 	/// <returns></returns>
-	virtual uint32_t RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)abstract;
+	virtual RaycastData RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)abstract;
 	/// <summary>
 	/// Actor를 가진 entity로부터 Offset을 적용시킨 뒤 dir 방향으로 dist거리만큼 raycast를 쏴 가장 가까운 EntityID를 반환한다.
 	/// </summary>
@@ -39,7 +39,7 @@ public:
 	/// <param name="dir"> : racast 방향</param>
 	/// <param name="distance"> racast 거리</param>
 	/// <returns></returns>
-	virtual uint32_t RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)abstract;
+	virtual RaycastData RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)abstract;
 	/// <summary>
 	/// location로부터 dir방향으로 dist거리만큼 raycast를 쏴 가장 가까운 EntityID를 반환한다.
 	/// </summary>
@@ -47,7 +47,7 @@ public:
 	/// <param name="dir"> : racast 방향</param>
 	/// <param name="distance"> racast 거리</param>
 	/// <returns></returns>
-	virtual uint32_t RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)abstract;
+	virtual RaycastData RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)abstract;
 	/// <summary>
 	/// location로부터 dir방향으로 dist거리만큼  raycast를 쏴 해당 entityid를 제외한 가장 가까운 EntityID를 반환한다.
 	/// </summary>
@@ -56,7 +56,8 @@ public:
 	/// <param name="dir"> : racast 방향</param>
 	/// <param name="distance"> racast 거리</param>
 	/// <returns></returns>
-	virtual uint32_t RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
+	virtual RaycastData RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
+	virtual RaycastData RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
 #pragma endregion
 
 	virtual void ReleaseActor(uint32_t entityID) abstract;

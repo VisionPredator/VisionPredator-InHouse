@@ -78,14 +78,12 @@ namespace VPPhysics
 	/// <summary>
 	/// 콜리전 : 충돌 데이터
 	/// </summary>
-	struct CollisionData
+	struct RaycastData
 	{
-		uint32_t myId;
-		uint32_t otherId;
-		EPhysicsLayer myLayerNumber;
-		unsigned int otherLayerNumber;
-		std::vector<VPMath::Vector3> ContectPoints;
-		bool isDead = false;
+		uint32_t EntityID{};
+		VPMath::Vector3 Location{};
+		VPMath::Vector3 Normal{};
+		float Distance{};
 	};
 	struct ControllerInfo
 	{
