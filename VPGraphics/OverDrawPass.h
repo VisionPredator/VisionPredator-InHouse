@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderPass.h"
 
+class RenderTargetView;
 
 //사실상 gbuffer위에 forward로 덮어 그린것뿐
 class OverDrawPass :
@@ -16,7 +17,8 @@ private:
 	//Quad
 	std::weak_ptr<PixelShader> m_meshPS;
 
-	std::weak_ptr<ShaderResourceView> m_Gbuffer;
+	std::weak_ptr<RenderTargetView> m_Gbuffer;
+	std::weak_ptr<RenderTargetView> m_Normal;
 
 };
 
