@@ -119,7 +119,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
 	Create<VertexShader>(L"Quad", L"QuadVS", "main");	
 	Create<VertexShader>(L"InstancingVS", L"InstancingVS");	//Instancing VS
-	Create<VertexShader>(L"DecalVS", L"DecalVS");	//Decal VS
+	Create<VertexShader>(L"DecalVS", L"DecalVS",Instancing::DecalDesc,Instancing::DecalCount);	//Decal VS
 
 	// ----------------------------------------------------------------------------------------
 	// Pixel Shader
@@ -143,7 +143,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	size = sizeof(BaseVertex);
 	Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
 	
-	size = sizeof(BaseVertex);
+	size = sizeof(DecalVertex);
 	Create<VertexBuffer>(L"Decal_VB", DecalVolume::Vertex::Desc, DecalVolume::Vertex::Data, size);
 
 
