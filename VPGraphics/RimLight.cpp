@@ -17,7 +17,7 @@ RimLight::RimLight(std::shared_ptr<Device> device, std::shared_ptr<ResourceManag
 	m_Device = device;
 
 	m_RimLightPS = manager->Get<PixelShader>(L"RimLight");
-	m_Gbuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_GbufferSRV = manager->Get<ShaderResourceView>(L"GBuffer").lock();
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
@@ -38,7 +38,6 @@ void RimLight::Render()
 	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer").lock();
 	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 
-	m_Device.lock()->Context()->ClearDepthStencilView(dsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	Device->UnBindSRV();
 	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
@@ -68,6 +67,7 @@ void RimLight::Render()
 		{
 			continue;
 		}
+
 
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 		if (curModel != nullptr)
@@ -141,10 +141,15 @@ void RimLight::Render()
 			}
 		}
 	}
+
+	//overdraw pass랑 같은 depth stencil 사용하기 때문에 나중에 클리어
+	m_Device.lock()->Context()->ClearDepthStencilView(dsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 }
 void RimLight::OnResize()
 {
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
 
-	m_Gbuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_GbufferSRV = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+
 }

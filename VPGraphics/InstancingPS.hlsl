@@ -66,7 +66,6 @@ struct PS_OUTPUT
 };
 
 
-float gamma = 2.2f;
 
 
 PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고 있으므로 한번 더 지정해줄 필요는 없다.
@@ -99,6 +98,7 @@ PS_OUTPUT main(VS_OUTPUT input)     // 출력 구조체에서 이미 Semantic 을 사용하고
     
     output.AO = AMRO.w * gAO.Sample(samLinear, input.tex.xy);
     
+    float gamma = 2.2f;
     output.LightMap = input.tex.w * pow(gLightMap.Sample(samLinear, float3(input.lightuv, input.tex.z)), gamma); // 기본값 설정
 
     float3 NormalTangentSpace = gNormal.Sample(samLinear, input.tex.xy).rgb;
