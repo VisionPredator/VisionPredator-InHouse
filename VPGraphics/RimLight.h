@@ -17,7 +17,7 @@ private:
 	//Quad
 	std::weak_ptr<PixelShader> m_RimLightPS;
 
-	std::weak_ptr<ShaderResourceView> m_Gbuffer;
+	std::weak_ptr<ShaderResourceView> m_GbufferSRV;
 
 };
 

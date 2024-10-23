@@ -8,9 +8,10 @@ class EnemyState : public virtual IState
 {
 public:
 	/// <summary>
-	/// 플레이어가 범위 내에 있는지 탐지하고 상태를 변경
+	/// 플레이어가 범위 내에 있는지 탐지하고 상태를 변경한다.
+	///	플레이어가 감지 되었다면 플레이어 까지의 거리를 반환한다. 감지하지 못하엿을 경우는 0을 반환
 	/// </summary>
-	static void DetectTarget(EnemyComponent& enemyComp, float deltaTime);
+	static float DetectTarget(EnemyComponent& enemyComp, float deltaTime);
 
 	/// <summary>
 	///	Enemy의 HP를 확인하고 0 이하이면 true 를 반환
