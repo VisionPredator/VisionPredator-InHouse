@@ -4,39 +4,6 @@
 LightSystem::LightSystem(std::shared_ptr<SceneManager> sceneManager)
 	: System(sceneManager)
 {
-	EventManager::GetInstance().Subscribe("OnAddedComponent", CreateSubscriber(&LightSystem::OnAddedComponent));
-	EventManager::GetInstance().Subscribe("OnReleasedComponent", CreateSubscriber(&LightSystem::OnReleasedComponent));
-}
-
-void LightSystem::OnAddedComponent(std::any data)
-{
-	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<LightComponent>())
-	{
-		LightComponent* lightComp = static_cast<LightComponent*>(comp);
-		LightData temp;
-		temp.attenuation= lightComp->attenuation;
-		temp.color = { lightComp->color .x,lightComp->color .y,lightComp->color .z};
-		temp.direction = lightComp->direction;
-		temp.intensity = lightComp->intensity;
-		temp.pos = lightComp->GetComponent<TransformComponent>()->World_Location;
-		temp.range= lightComp->range;
-		temp.spot= lightComp->spot;
-		m_Graphics->AddLight(lightComp->GetEntityID(), lightComp->type, temp);
-		return;
-	}
-}
-
-void LightSystem::OnReleasedComponent(std::any data)
-{
-	auto comp = std::any_cast<Component*>(data);
-	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<LightComponent>())
-	{
-		LightComponent* lightComp = static_cast<LightComponent*>(comp);
-		m_Graphics->EraseLight(lightComp->GetEntityID(), lightComp->type);
-
-		return;
-	}
 }
 
 
@@ -95,4 +62,33 @@ void LightSystem::RenderUpdate(float deltaTime)
 
 void LightSystem::LateRenderUpdate(float deltaTime)
 {
+}
+
+void LightSystem::ComponentAdded(Component* comp)
+{
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<LightComponent>())
+	{
+		LightComponent* lightComp = static_cast<LightComponent*>(comp);
+		LightData temp;
+		temp.attenuation = lightComp->attenuation;
+		temp.color = { lightComp->color.x,lightComp->color.y,lightComp->color.z };
+		temp.direction = lightComp->direction;
+		temp.intensity = lightComp->intensity;
+		temp.pos = lightComp->GetComponent<TransformComponent>()->World_Location;
+		temp.range = lightComp->range;
+		temp.spot = lightComp->spot;
+		m_Graphics->AddLight(lightComp->GetEntityID(), lightComp->type, temp);
+		return;
+	}
+}
+
+void LightSystem::ComponentReleased(Component* comp)
+{
+	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<LightComponent>())
+	{
+		LightComponent* lightComp = static_cast<LightComponent*>(comp);
+		m_Graphics->EraseLight(lightComp->GetEntityID(), lightComp->type);
+
+		return;
+	}
 }

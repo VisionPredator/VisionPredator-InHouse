@@ -21,6 +21,7 @@ public:
 	inline static bool IsItemDoubleClicked = false;
 	bool ShowDelete{};
 	std::string m_SearchingName{};
+	uint32_t m_EntityCount{};
 	bool m_IsEntityRClicked = false;
 };
 

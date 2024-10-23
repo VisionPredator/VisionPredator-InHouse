@@ -14,6 +14,10 @@ void HierarchySystem::ShowEntitys()
 
 	if (lowerSearchingName.empty())
 	{
+		auto Entitymap = GetSceneManager()->GetEntityMap();
+		m_EntityCount = static_cast<uint32_t>(Entitymap.size());
+		// Display the total number of entities
+		ImGui::Text("Total Entities: %zu", m_EntityCount);
 		COMPLOOP(TransformComponent, transcomp)
 		{
 
@@ -26,15 +30,23 @@ void HierarchySystem::ShowEntitys()
 	}
 	else
 	{
+		std::vector<uint32_t> showingEntitIDs;
+		m_EntityCount = 0;
 		COMPLOOP(IDComponent, idcomp)
 		{
 			std::string entityName = idcomp.Name;
 			std::string lowerEntityName = ToLower(entityName);
 			if (lowerSearchingName.empty() || lowerEntityName.find(lowerSearchingName) != std::string::npos)
 			{
-				ShowEntity(idcomp.GetEntityID());
+				showingEntitIDs.push_back(idcomp.GetEntityID());
+				m_EntityCount++;
 			}
 		}
+		ImGui::Text("Total Searched Entitys: %zu", m_EntityCount);
+		for (const auto& entityid : showingEntitIDs)
+			ShowEntity(entityid);
+
+		showingEntitIDs.clear();
 	}
 }
 
@@ -51,6 +63,18 @@ void HierarchySystem::ShowEntity(uint32_t entityID)
 	if (ImGui::Selectable(IDcomp->Name.c_str(), m_SelectedEntityID == entityID)) {
 		m_SelectedEntityID = entityID;
 	}
+
+	if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered())
+	{
+		IsItemDoubleClicked = true;
+	}
+
+	//if (ImGui::IsItemClicked())
+	//{
+	//	m_SelectedEntityID = entityID;
+	//}
+
+
 
 	// 마우스 오른쪽 클릭을 통해 컨텍스트 메뉴 표시
 	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {

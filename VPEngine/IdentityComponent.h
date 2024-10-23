@@ -4,8 +4,8 @@
 struct IdentityComponent :
 	public Component
 {
-	VP_JSONBODY(IdentityComponent, UUID)
 		IdentityComponent();
+	VP_JSONBODY(IdentityComponent, UUID)
 	std::string UUID;
 };
 

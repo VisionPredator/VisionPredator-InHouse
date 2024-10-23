@@ -65,6 +65,7 @@ void SceneSerializer::OnSerializeScene(std::any data)
 	}
 	catch (const std::exception&)
 	{
+		std::cout << "JsonError" << std::endl;
 		VP_ASSERT(false, "Json 입력 중 에러가 났습니다.");
 	}
 
@@ -145,6 +146,7 @@ void SceneSerializer::OnDeSerializeScene(std::any data)
 	}
 	catch (const std::exception& e)
 	{
+		std::cout << "JsonError" << std::endl;
 		VP_ASSERT(false, "전체 JSON 처리 중 오류가 발생했습니다: " + std::string(e.what()));
 	}
 

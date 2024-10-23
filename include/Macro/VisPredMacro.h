@@ -51,7 +51,7 @@
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CLASSNAME, __VA_ARGS__)\
     std::shared_ptr<Component> AddComponent(Entity*  parentEntity) override\
     {\
-        auto component = parentEntity->AddComponent<CLASSNAME>();\
+        auto component = AddComponentToEntity<CLASSNAME>(parentEntity);\
         return component;\
     }\
     void SerializeComponent(nlohmann::json& json) const override\
@@ -60,7 +60,7 @@
     }\
     std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity*  parentEntity,bool Immidiate=false,bool UseAddCompToScene=true) const override\
     {\
-        auto component = parentEntity->AddComponent<CLASSNAME>(Immidiate,UseAddCompToScene);\
+        auto component = AddComponentToEntity<CLASSNAME>(parentEntity,Immidiate,UseAddCompToScene);\
         *component = json.get<CLASSNAME>();\
         component->SetEntity(parentEntity);\
         return component;\

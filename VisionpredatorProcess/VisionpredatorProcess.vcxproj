@@ -159,6 +159,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AimUIComponent.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="EnemyBackpedalState.h" />
@@ -201,8 +202,10 @@
     <ClInclude Include="VisPredComponents.h" />
     <ClInclude Include="DataRegister_Vispred.h" />
     <ClInclude Include="VPProcess.h" />
+    <ClInclude Include="VPUIComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AimUIComponent.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="EnemyBackpedalState.cpp" />
@@ -246,6 +249,7 @@
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />
     <ClCompile Include="VPProcess.cpp" />
+    <ClCompile Include="VPUIComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VPEngine\VPEngine.vcxproj">

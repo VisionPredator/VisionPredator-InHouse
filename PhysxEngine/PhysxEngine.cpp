@@ -208,31 +208,36 @@ bool PhysxEngine::HasController(uint32_t entityID)
 	return m_ControllerManager->HasController(entityID);
 }
 
-uint32_t PhysxEngine::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
 	if (m_RigidBodyManager->HasRigidBody(entityID))
 		return m_RigidBodyManager->RaycastToHitActor(entityID, dir, distance);
 	else if (m_ControllerManager->HasController(entityID))
 		return 	m_ControllerManager->RaycastToHitActor(entityID, dir, distance);
-	return 0;
+	return {};
 }
 
-uint32_t PhysxEngine::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
 	if (m_RigidBodyManager->HasRigidBody(entityID))
 		return m_RigidBodyManager->RaycastToHitActor_Offset(entityID, offset, dir, distance);
 	else if (m_ControllerManager->HasController(entityID))
 		return m_ControllerManager->RaycastToHitActor_Offset(entityID, offset, dir, distance);
-	return 0;
+	return {};
 }
 
-uint32_t PhysxEngine::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
 	return m_RigidBodyManager->RaycastToHitActorFromLocation(location, dir, distance);
 }
-uint32_t PhysxEngine::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
 	return  m_RigidBodyManager->RaycastToHitActorFromLocation_Ignore(entityID, location, dir, distance);
+}
+
+RaycastData PhysxEngine::RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	return  m_RigidBodyManager->RaycastToHitActorFromLocation_Ignore(entityIDs, location, dir, distance);
 }
 
 

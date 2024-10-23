@@ -216,9 +216,12 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
 
 		debug::OBBInfo obbInfo{};
-		obbInfo.OBB.Center = ControllerTransform->World_Location;
-
 		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
+		obbInfo.OBB.Center = ControllerTransform->World_Location;
+		 if(ControllerComp.Contollerinfo.Pivot == ControllerPivot::FOOT)
+		{
+			 obbInfo.OBB.Center.y += (tempinfo.height / 2 + tempinfo.radius);
+		}
 		if (ControllerComp.Contollerinfo.Pivot == ControllerPivot::FOOT)
 			obbInfo.OBB.Center.y+= (tempinfo.height / 2 + tempinfo.radius);
 

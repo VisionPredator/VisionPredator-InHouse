@@ -25,6 +25,8 @@ public:
 	void UpdateWeaponUI(IdentityComponent& identityComp);
 
 	void UpdateInterectionUI(IdentityComponent& identityComp);
+	void UpdateFadeUI(IdentityComponent& identityComp);
+	double TrasnformationFadePercent();
 	bool InterectUIReset(IdentityComponent& identityComp);
 	bool InterectingGun(IdentityComponent& identityComp,Entity* selectedentity);
 	bool InterectingDoor(IdentityComponent& identityComp,Entity* selectedentity);

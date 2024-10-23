@@ -22,15 +22,12 @@ public:
             VP_ASSERT(false, "GetComp를 잘못사용하였습니다.");
             return nullptr;
         }
-
-
 	}
 
 	Component* GetComponent(entt::id_type compID)
 	{
 		auto comp = m_OwnedComp[compID].get();
 		if (comp)
-
 			return comp;
 		else
 		{
@@ -52,10 +49,26 @@ public:
 
     const uint32_t GetEntityID() { return m_EntityID; }
 
-    void AddComponentToMap(std::shared_ptr<Component> comp);
+
+   
+
+
+    friend struct Component;
+
+private:
+	std::shared_ptr<Component> AddComponent(entt::id_type compID);
+    template<typename T>
+    void RemoveComponent()
+    {
+        EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", GetComponent(Reflection::GetTypeID<T>()));
+    }
+    void RemoveComponent(entt::id_type compID)
+    {
+        EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", GetComponent(compID));
+    }
 
     template<typename T>
-    std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene=true)
+    std::shared_ptr<T> AddComponent(bool Immediately = false, bool UseAddCompToScene = true)
     {
         if (HasComponent<T>())
         {
@@ -64,30 +77,15 @@ public:
         }
         std::shared_ptr<T> newcomp = std::make_shared<T>();
         AddComponentToMap(newcomp);
-		newcomp->SetEntity(this); // Use shared_from_this to set the entity
-		if (UseAddCompToScene)
-			if (!Immediately)
-				EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-			else
-				EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
-		return newcomp;
-	}
-
-	std::shared_ptr<Component> AddComponent(entt::id_type compID);
-
-    template<typename T>
-    void RemoveComponent()
-    {
-        EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(Reflection::GetTypeID<T>()));
+        newcomp->SetEntity(this); // Use shared_from_this to set the entity
+        if (UseAddCompToScene)
+            if (!Immediately)
+                EventManager::GetInstance().ScheduleEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+            else
+                EventManager::GetInstance().ImmediateEvent("OnAddCompToScene", std::static_pointer_cast<Component>(newcomp));
+        return newcomp;
     }
-
-    void RemoveComponent(entt::id_type compID)
-    {
-        EventManager::GetInstance().ScheduleEvent("OnRemoveComp_Scene", GetComponent(compID));
-    }
-
-private:
-
+    void AddComponentToMap(std::shared_ptr<Component> comp);
     std::vector<std::shared_ptr<Component>> GetOwnedComponents()
     {
         std::vector<std::shared_ptr<Component>> componentPool;
@@ -102,8 +100,8 @@ private:
 
 
 
-    void ReleaseComponent(std::shared_ptr<Component> comp);
-    void ReleaseComponent(Component* comp);
+    void removeComponent(std::shared_ptr<Component> comp);
+    void removeComponent(Component* comp);
 
     operator bool() const { return m_EntityID; }
     operator uint32_t() const { return m_EntityID; }
@@ -120,4 +118,5 @@ private:
     std::unordered_map<entt::id_type, std::shared_ptr<Component>> m_OwnedComp;
     friend class SceneSerializer;
     friend class SceneManager;
+    friend class Inspector;
 };

@@ -7,3 +7,5 @@
 #include "PlayerSoundComponent.h"
 #include "PlayerMeleeComponent.h"
 #include "TrunComponent.h"
+#include "AimUIComponent.h"
+#include "VPUIComponent.h"

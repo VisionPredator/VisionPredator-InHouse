@@ -5,10 +5,11 @@ struct PlayerMeleeComponent :
 	public Component
 {
 	PlayerMeleeComponent();
-	VP_JSONBODY(PlayerMeleeComponent, DefalutPrefab, SwordDamage, SwordLength, SwordAngle, VPDamage, VPLength, VPAngle)
+	VP_JSONBODY(PlayerMeleeComponent, DefalutPrefab, DashPrefab, SwordDamage, SwordLength, SwordAngle, VPDamage, VPLength, VPAngle)
 
 		
-	std::string DefalutPrefab;
+		std::string DefalutPrefab{};
+	std::string DashPrefab{};
 	VisPred::Game::PlayerMelee AttackMode= VisPred::Game::PlayerMelee::Sword_First;
 	bool IsVPMode{};
 	float Length{};

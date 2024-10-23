@@ -679,8 +679,9 @@ uint32_t RigidBodyManager::FindIDByActor(physx::PxRigidActor* Actor)
 	return key->entityID;
 }
 
-uint32_t RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
+	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);
 	physx::PxVec3 tempDir = { dir.x,dir.y,dir.z };
 	tempDir.normalize();
@@ -689,7 +690,7 @@ uint32_t RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 
 	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
 	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
 	if (tempDir.isZero())
-		return 0;
+		return raycastresult;
 
 	bool find = m_Scene->raycast(
 		tempActor->getGlobalPose().p,				// 시작점
@@ -698,27 +699,32 @@ uint32_t RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 
 		buf);										// PxRaycastCallback& hitCall
 
 	if (!find)
-		return 0;
+		return raycastresult;
 	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
 		return a.distance < b.distance;
 		});
 	for (PxU32 i = 0; i < buf.nbTouches; i++)
 	{
-
 		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
 		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
 		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+
 		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
 		if (tempID == entityID)
 			continue;
 		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
-			return tempID;
+		{
+
+			raycastresult ={ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d };
+			return raycastresult;
+		}
 	}
-	return 0;
+	return raycastresult;
 }
 
-uint32_t RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
+	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);			// entityID를 통해 물리 액터를 찾아옴
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };	// 입력된 방향 벡터를 PhysX의 PxVec3로 변환
 	tempDir.normalize();								// 방향 벡터를 단위 벡터로 정규화
@@ -728,7 +734,7 @@ uint32_t RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::V
 	PxRaycastBuffer buf(hitBuffer, bufferSize);			// 레이캐스트 결과를 저장할 버퍼 객체 생성
 
 	if (tempDir.isZero())	// 방향 벡터가 0인 경우(정규화 실패), 0을 반환
-		return 0;
+		return raycastresult;
 
 	// 레이캐스트 시작점 설정: 액터의 전역 위치에 오프셋을 더한 값
 	PxVec3 raypos = PxVec3{ offset.x, offset.y, offset.z } + tempActor->getGlobalPose().p;
@@ -741,7 +747,7 @@ uint32_t RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::V
 		buf);                 // 레이캐스트 결과를 저장할 버퍼
 
 	if (!find)  // 레이캐스트로 아무것도 찾지 못한 경우 0을 반환
-		return 0;
+		return raycastresult;
 	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
 		return a.distance < b.distance;
 		});
@@ -758,15 +764,20 @@ uint32_t RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::V
 
 		// 트리거가 아닌 충돌체에 대해서만 해당 엔티티 ID를 반환
 		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
-			return tempID;
+		{
+
+			 raycastresult={ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d };
+			return raycastresult;
+		}
 	}
 
-	return 0;  // 트리거가 아닌 충돌체를 찾지 못한 경우 0을 반환
+	return 	 raycastresult;  // 트리거가 아닌 충돌체를 찾지 못한 경우 0을 반환
 }
 
 
-uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
+	RaycastData raycastresult{};
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
 	tempDir.normalize();  // 단위 벡터로 정규화
 	PxF32 max = (PxF32)distance;
@@ -775,7 +786,7 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 locatio
 	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
 
 	if (tempDir.isZero())
-		return 0;
+		return raycastresult;
 
 	// 주어진 위치를 PhysX의 PxVec3로 변환
 	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
@@ -788,7 +799,7 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 locatio
 		buf);                                     // PxRaycastCallback& hitCall
 
 	if (!find)
-		return 0;
+		return raycastresult;
 	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
 		return a.distance < b.distance;
 		});
@@ -802,14 +813,19 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 locatio
 
 		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
 		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
-			return tempID;
+		{
+
+			raycastresult ={ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d };
+			return raycastresult;
+		}
 	}
 
-	return 0;
+	return raycastresult;
 }
 
-uint32_t RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
+	RaycastData raycastresult{};
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
 	tempDir.normalize();  // 단위 벡터로 정규화
 	PxF32 max = (PxF32)distance;
@@ -818,7 +834,7 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t entityI
 	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
 
 	if (tempDir.isZero())
-		return 0;
+		return raycastresult;
 
 	// 주어진 위치를 PhysX의 PxVec3로 변환
 	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
@@ -831,26 +847,86 @@ uint32_t RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t entityI
 		buf);                                     // PxRaycastCallback& hitCall
 
 	if (!find)
-		return 0;
+		return raycastresult;
 	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
 		return a.distance < b.distance;
 		});
 	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
 	for (PxU32 i = 0; i < buf.nbTouches; i++)
 	{
+
+		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+
 		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
 		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
 		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
-		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
-
 		if (tempID == entityID)  // 자신과 동일한 엔티티 ID는 무시하고 다음 반복으로 넘어감
 			continue;
 		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
 		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
-			return tempID;
+		{
+
+			raycastresult={ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d };
+			return raycastresult;
+		}
 	}
 
-	return 0;
+	return raycastresult;
+}
+
+RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	RaycastData temp{};
+
+	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+	tempDir.normalize();  // 단위 벡터로 정규화
+	PxF32 max = (PxF32)distance;
+	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+
+	if (tempDir.isZero())
+		return temp;
+
+	// 주어진 위치를 PhysX의 PxVec3로 변환
+	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
+
+	// 레이캐스트 수행
+	bool find = m_Scene->raycast(
+		raypos,                                   // 시작점
+		tempDir,                                  // 단위벡터
+		max,                                      // 거리
+		buf);                                     // PxRaycastCallback& hitCall
+
+	if (!find)
+		return temp;
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
+	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
+	for (PxU32 i = 0; i < buf.nbTouches; i++)
+	{
+
+		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+
+		for (auto entityID : entityIDs)
+		{
+			if (tempID == entityID)  // 자신과 동일한 엔티티 ID는 무시하고 다음 반복으로 넘어감
+				continue;
+		}
+
+		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+		{
+			PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+			PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
+			PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+			temp={ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d };
+			return temp;
+		}
+	}
+
+	return temp;
 }
 
 
