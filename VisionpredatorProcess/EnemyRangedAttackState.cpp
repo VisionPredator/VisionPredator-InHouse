@@ -60,7 +60,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 		// 명중률에 따라 사격
 		if (randomValue <= enemyComp->AttackAccuracy)
 		{
-			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ);
+			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 			if (detectedObjID == enemyComp->Player->GetEntityID())
 			{
 				enemyComp->Player->HP += -1;
@@ -92,7 +92,7 @@ float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
 {
 	float accuracy = 100.f; // 기본 명중률
 
-	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::EFSM::CROUCH;
+	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::CROUCH;
 
 	// 플레이어가 이동 중일 때 명중률 감소
 	if (isPlayerMoving)
