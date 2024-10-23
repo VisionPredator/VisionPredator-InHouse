@@ -16,8 +16,9 @@ OverDrawPass::OverDrawPass(std::shared_ptr<Device> device, std::shared_ptr<Resou
 	m_ResourceManager = manager;
 	m_Device = device;
 
-	m_meshPS = manager->Get<PixelShader>(L"Mesh");
-	m_Gbuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_meshPS = manager->Get<PixelShader>(L"OverDrawPS");
+	m_Gbuffer = manager->Get<RenderTargetView>(L"GBuffer").lock();
+	m_Normal = manager->Get<RenderTargetView>(L"Normal").lock();
 
 	m_SkeletalMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Skinning");
 	m_StaticMeshVS = m_ResourceManager.lock()->Get<VertexShader>(L"Base");
@@ -35,13 +36,21 @@ void OverDrawPass::Render()
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
 	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer").lock();
-	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
+	std::shared_ptr<RenderTargetView> normal = m_ResourceManager.lock()->Get<RenderTargetView>(L"Normal").lock();
 
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
 	m_Device.lock()->Context()->ClearDepthStencilView(dsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	Device->UnBindSRV();
-	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
 	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
+
+	std::vector<ID3D11RenderTargetView*> RTVs;
+	int GBufferSize = 2;//최대 8개 밖에 안됨
+	RTVs.reserve(GBufferSize);
+	RTVs.push_back(m_Gbuffer.lock()->Get());
+	RTVs.push_back(m_Normal.lock()->Get());
+
+	Device->Context()->OMSetRenderTargets(GBufferSize, RTVs.data(), dsv->Get());
 
 	Device->Context()->PSSetShader(m_meshPS.lock()->GetPS(), nullptr, 0);
 	Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
@@ -156,5 +165,6 @@ void OverDrawPass::OnResize()
 {
 	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
 
-	m_Gbuffer = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_Gbuffer = manager->Get<RenderTargetView>(L"GBuffer").lock();
+	m_Normal = manager->Get<RenderTargetView>(L"Normal").lock();
 }
