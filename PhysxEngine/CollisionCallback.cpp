@@ -62,15 +62,18 @@ void CollisionCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 	for (PxU32 i = 0; i < count; i++)
 	{
 		/// ENTER_OVERLAP 충돌 이벤트 실행
-		if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
+ 		if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 		{
+			std::cout << "EnterTrigger" << std::endl;
+
 			auto entitypair = SortEntityPair(pairs[i]);
 			EventManager::GetInstance().ImmediateEvent("OnAddEnter_Trigger", entitypair);
 		}
-
 		/// END_OVERLAP 충돌 이벤트 실행
-		if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
+		else if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
 		{
+			std::cout << "ExitTrigger" << std::endl;
+
 			auto entitypair = SortEntityPair(pairs[i]);
 			EventManager::GetInstance().ImmediateEvent("OnMoveContactToExit_Trigger", entitypair);
 		}

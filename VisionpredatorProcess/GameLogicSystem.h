@@ -5,3 +5,5 @@
 #include "EnemySystem.h"
 #include "GunSystem.h"
 #include "PlayerUISystem.h"
+#include "TrunSystem.h"
+#include "AreaAttackSystem.h"

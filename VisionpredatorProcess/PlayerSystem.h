@@ -22,7 +22,9 @@ public:
 	void SearchedGun(PlayerComponent& playercomp);
 	void ToVPMode(PlayerComponent& playercomp);
 	void CameraShake(PlayerComponent& playercomp,float deltatime);
-
+	void PlayerMeleeAttack(PlayerComponent& playercomp);
+	void Melee_Default(PlayerComponent& playercomp);
+	void Melee_VPMode(PlayerComponent& playercomp);
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
 	void UpdateControllerSize(PlayerComponent& playercomp);

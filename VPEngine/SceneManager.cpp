@@ -5,6 +5,7 @@
 #include <random>
 #include <queue>
 #include "TransformSystem.h"
+#include "../VPGraphics/Log.h"
 
 SceneManager::SceneManager()
 {
@@ -363,6 +364,8 @@ void SceneManager::OnOpenScene(std::any data)
 	EventManager::GetInstance().ImmediateEvent("OnNewScene");
 	//씬 디시리얼라이즈 이벤트 즉시 실행
 	EventManager::GetInstance().ImmediateEvent("OnDeSerializeScene", data);
+
+	Log::GetClientLogger()->info("Open " + m_CurrentScene->SceneName + " scene.");
 }
 
 void SceneManager::OnOverwriteTempToCurrent(std::any Null)
@@ -490,7 +493,7 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 	if (prefabData.scale.x > 0)
 		Transform->SetLocalScale(prefabData.scale);
 	Transform->SetLocalRotation(prefabData.rotation);
-
+	EventManager::GetInstance().ScheduleEvent("OnUpdate");
 	for (auto [old, newID] : entityResettingPair)
 		EventManager::GetInstance().ScheduleEvent("OnStart", newID);
 

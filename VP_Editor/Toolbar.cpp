@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "EventManager.h"
 #include "../PhysxEngine/IPhysx.h"
+#include "../VPGraphics/Log.h"
 bool Toolbar::m_IsPlaying = false;
 bool Toolbar::m_IsPaused = false;
 Toolbar::Toolbar()
@@ -38,6 +39,7 @@ void Toolbar::ImGuiRender()
 
 
 			m_IsPlaying = true;
+			Log::GetClientLogger()->info("Start the Game");
 		}
 
 	}
@@ -48,6 +50,7 @@ void Toolbar::ImGuiRender()
 			EventManager::GetInstance().ImmediateEvent("OnStopButton");
 			EventManager::GetInstance().ScheduleEvent("OnOverwriteTempToCurrent");
 			m_IsPlaying = false;
+			Log::GetClientLogger()->info("Stop the Game");
 		}
 	}
 
@@ -57,6 +60,7 @@ void Toolbar::ImGuiRender()
 		{
 			EventManager::GetInstance().ScheduleEvent("OnPauseButton");
 			m_IsPaused = true;
+			Log::GetClientLogger()->info("Pause the Game");
 		}
 
 	}

@@ -29,6 +29,7 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 			{
 				auto damage = GetSceneManager()->GetComponent<BulletComponent>(entitypair.first)->Damage;
 				GetSceneManager()->GetEntity(entitypair.second)->GetComponent<EnemyComponent>()->HP -= damage;
+				GetSceneManager()->GetEntity(entitypair.second)->GetComponent<EnemyComponent>()->OnHit = true;
 			}
 
 			GetSceneManager()->DestroyEntity(entitypair.first);
@@ -44,6 +45,7 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 			{
 				auto damage = GetSceneManager()->GetComponent<BulletComponent>(entitypair.second)->Damage;
 				GetSceneManager()->GetEntity(entitypair.first)->GetComponent<EnemyComponent>()->HP -= damage;
+				GetSceneManager()->GetEntity(entitypair.first)->GetComponent<EnemyComponent>()->OnHit = true;
 			}
 
 			GetSceneManager()->DestroyEntity(entitypair.second);

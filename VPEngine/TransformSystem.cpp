@@ -489,3 +489,8 @@ void TransformSystem::Finalize()
     newupdatevector.clear();
 }
 
+void TransformSystem::LateUpdate(float deltaTime)
+{
+    newUpdate();
+}
+

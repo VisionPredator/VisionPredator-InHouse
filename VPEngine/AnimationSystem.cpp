@@ -34,10 +34,13 @@ void AnimationSystem::OnChangeAnimation(std::any aniBlendData)
 	{
 		auto aniComp = GetSceneManager()->GetComponent<AnimationComponent>(aniblenddata.EntityID);
 		aniComp->isLoop = aniblenddata.Loop;
+
 		if (aniComp->curAni != aniblenddata.Index)	//애니메이션이 다를때만 변경 같으면 그대로
 		{
 			aniComp->preAni = aniComp->curAni;
 			aniComp->curAni = aniblenddata.Index;
+			aniComp->AniDuration = m_Graphics->GetDuration(aniComp->FBX, aniComp->curAni);
+
 			aniComp->preDuration = aniComp->duration;
 			if (aniblenddata.Speed > 0.001f)
 			{
@@ -112,43 +115,48 @@ void AnimationSystem::Update(float deltaTime)
 			}
 		}
 
-
 		if (aniComp.FBX.empty())
 			return;
 		aniComp.IsFinished = false;
 		aniComp.PlayerCurAni = static_cast<VisPred::Game::PlayerAni>(aniComp.curAni);
+		aniComp.AniDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
+
 		//애니메이션 계속 재생
 		if (aniComp.preAni == aniComp.curAni)
 		{
 			aniComp.IsBlending = false;
-			double curDuration = m_Graphics->GetDuration(aniComp.FBX, aniComp.curAni);
-			if (aniComp.duration >= curDuration)
+
+			// 애니메이션이 끝났는지 확인
+			if (aniComp.duration >= aniComp.AniDuration)
 			{
 				if (aniComp.isLoop)
 				{
-					aniComp.duration -= curDuration;
+					aniComp.duration -= aniComp.AniDuration;
 					aniComp.IsFinished = false;
 				}
 				else
 				{
 					aniComp.IsFinished = true;
-					aniComp.duration = curDuration;
+					aniComp.duration = aniComp.AniDuration;
 				}
 			}
+			else
+			{
+				aniComp.IsFinished = false;
+			}
+
 			aniComp.duration += deltaTime* aniComp.speed;
-
-
 		}
 		else
 		{
 			aniComp.IsBlending = true;
-			//각각 애니메이션 사이 보간
 			if (aniComp.duration > aniComp.transitionDuration)
 			{
 				aniComp.preAni = aniComp.curAni;
 				aniComp.duration = 0;
+				aniComp.IsFinished = false;
 			}
-		aniComp.duration += deltaTime ;
+			aniComp.duration += deltaTime;
 		}
 	}
 }
