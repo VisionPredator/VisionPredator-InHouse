@@ -164,13 +164,6 @@ void PassManager::Render()
 		pass->Render();
 	}
 
-
-	for (auto& pass : m_IndepentCulling)
-	{
-		pass->Render();
-	}
-
-
 	if (m_isVP)
 	{
 		for (auto& pass : m_VPPasses)
@@ -179,7 +172,11 @@ void PassManager::Render()
 		}
 	}
 
-	
+	for (auto& pass : m_IndepentCulling)
+	{
+		pass->Render();
+	}
+
 	m_ParticlePass->Render();
 	m_UIPass->Render();
 
