@@ -170,7 +170,6 @@ void PassManager::Render()
 		pass->Render();
 	}
 
-	m_OverDraw->Render();
 
 	if (m_isVP)
 	{
