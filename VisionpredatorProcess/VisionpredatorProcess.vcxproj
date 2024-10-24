@@ -162,6 +162,8 @@
     <ClInclude Include="AimUIComponent.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
+    <ClInclude Include="EnemyAttackState.h" />
+    <ClInclude Include="EnemyIdleAttack.h" />
     <ClInclude Include="EnemyBackpedalState.h" />
     <ClInclude Include="EnemyBehaviorState.h" />
     <ClInclude Include="EnemyChaseState.h" />
@@ -208,6 +210,8 @@
     <ClCompile Include="AimUIComponent.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
+    <ClCompile Include="EnemyAttackState.cpp" />
+    <ClCompile Include="EnemyIdleAttack.cpp" />
     <ClCompile Include="EnemyBackpedalState.cpp" />
     <ClCompile Include="EnemyBehaviorState.cpp" />
     <ClCompile Include="EnemyChaseState.cpp" />
