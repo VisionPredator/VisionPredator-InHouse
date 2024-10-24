@@ -244,6 +244,10 @@ bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume,
 	channel->setPaused(false); // 재생을 시작합니다.
 	return true;
 }
+bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume, bool Is2D, bool IsLoop, VPMath::Vector3 pose)
+{
+	return false;
+}
 void SoundEngine::Stop(const uint32_t& id, const std::string& soundKey)
 {
 	auto channelIter = m_EntityChannels.find(id);

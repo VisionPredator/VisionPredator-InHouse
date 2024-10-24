@@ -188,6 +188,7 @@
     <ClInclude Include="IState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerFSMSystem.h" />
     <ClInclude Include="PlayerMeleeComponent.h" />
     <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
@@ -237,6 +238,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="PlayerFSMSystem.cpp" />
     <ClCompile Include="PlayerMeleeComponent.cpp" />
     <ClCompile Include="PlayerSoundComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />

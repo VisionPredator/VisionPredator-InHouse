@@ -505,6 +505,7 @@ std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, fl
 	soundcomp->Volume = volume;
 	soundcomp->Loop= isloop;
 	entity->GetComponent<TransformComponent>()->Local_Location = pos;
+	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
 	return std::shared_ptr<Entity>();
 }
 

@@ -187,8 +187,8 @@ void VPEngine::Update()
 	m_SystemManager->PhysicUpdate(m_DeltaTime);
 	m_SystemManager->FixedUpdate(m_DeltaTime);
 	m_SystemManager->Update(m_DeltaTime);
-	m_SystemManager->LateUpdate(m_DeltaTime);
 	m_SystemManager->SoundUpdate(m_DeltaTime);
+	m_SystemManager->LateUpdate(m_DeltaTime);
 
 	if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
 	{

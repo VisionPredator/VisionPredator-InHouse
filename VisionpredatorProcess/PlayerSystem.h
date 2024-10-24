@@ -1,8 +1,9 @@
 #pragma once
 #include <System.h>
 #include "VisPredComponents.h"
+#include "EventSubscriber.h"
 class PlayerSystem :
-    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable,public IRenderable,public ISoundable
+    public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable,public IRenderable,public ISoundable,public EventSubscriber
 {
 
 public:
@@ -36,6 +37,7 @@ public:
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
+	//void Active_VPMode(PlayerComponent& playercomp);
 	void CameraShake(PlayerComponent& playercomp,float deltatime);
 	void PlayerMeleeAttack(PlayerComponent& playercomp);
 	void Melee_Default(PlayerComponent& playercomp);
@@ -43,40 +45,20 @@ public:
 #pragma region Physics Setting
 	void UpdateCharDataToController(PlayerComponent& playercomp);
 	void UpdateControllerSize(PlayerComponent& playercomp);
+	void OnCrouchModeController(std::any playercomp);
+	void OnSlideModeController(std::any playercomp);
+	void OnDefalutModeController(std::any playercomp);
+
+
 	void CrouchModeController(PlayerComponent& playercomp);
 	void SlideModeController(PlayerComponent& playercomp);
-	void SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp);
 	void DefalutModeController(PlayerComponent& playercomp);
 	void DownCamera(PlayerComponent& playercomp,float deltatime);
 	void UpCamera(PlayerComponent& playercomp, float deltatime);
 	void CarmeraPosChange(PlayerComponent& playercomp,float deltatime);
 #pragma endregion 
-#pragma region FSM Calculate
-	void Calculate_FSM(PlayerComponent& playercomp);
-	void Calculate_Idle(PlayerComponent& playercomp);
-	void Calculate_Transformation(PlayerComponent& playercomp);
-	void Calculate_Walk(PlayerComponent& playercomp);
-	void Calculate_Run(PlayerComponent& playercomp);
-	void Calculate_Crouch(PlayerComponent& playercomp);
-	void Calculate_Slide(PlayerComponent& playercomp);
-	void Calculate_Jump(PlayerComponent& playercomp);
-	void Calculate_Die(PlayerComponent& playercomp);
-	void Calculate_Die_end(PlayerComponent& playercomp);
-#pragma endregion
-#pragma region FSM Enter
-	void Enter_FSM(PlayerComponent& playercomp);
-	void Enter_Idle(PlayerComponent& playercomp);
-	void Enter_Walk(PlayerComponent& playercomp);
-	void Enter_Run(PlayerComponent& playercomp);
-	void Enter_Jump(PlayerComponent& playercomp);
-	void Enter_Crouch(PlayerComponent& playercomp);
-	void Enter_Dash_Slide(PlayerComponent& playercomp);
-	void Enter_Transformation(PlayerComponent& playercomp);
-	void Enter_Die(PlayerComponent& playercomp);
-	void Enter_Die_end(PlayerComponent& playercomp);
-	//void Enter_Transformation(PlayerComponent& playercomp, bool VPMode);
 
-#pragma endregion
+
 
 #pragma region FSM Action
 	void Action_FSM(PlayerComponent& playercomp, float deltaTime);
@@ -90,31 +72,18 @@ public:
 	void Action_Destroy(PlayerComponent& playercomp);
 	void Action_Transformation(PlayerComponent& playercomp,float deltatime);
 #pragma endregion
-#pragma region FSM Sound
-	void Enter_Sound_FSM(PlayerComponent& playercomp, float deltaTime);
-	void Enter_Sound_Idle(PlayerComponent& playercomp);
-	void Enter_Sound_Walk(PlayerComponent& playercomp);
-	void Enter_Sound_Run(PlayerComponent& playercomp);
-	void Enter_Sound_Crouch(PlayerComponent& playercomp);
-	void Enter_Sound_Dash_Slide(PlayerComponent& playercomp);
-	void Enter_Sound_Transformation(PlayerComponent& playercomp);
-	void Enter_Sound_Jump(PlayerComponent& playercomp);
-	void Enter_Sound_Die(PlayerComponent& playercomp);
-	void Enter_Sound_Destroy(PlayerComponent& playercomp);
-	void Enter_Sound_Die_end(PlayerComponent& playercomp);
-#pragma endregion
-
 
 #pragma region FSM Sound
 	void Sound_FSM(PlayerComponent& playercomp, float deltaTime);
-	void Sound_Idle(PlayerComponent& playercomp);
+	void Sound_Idle(PlayerComponent& playercomp) {};
 	void Sound_Walk(PlayerComponent& playercomp);
 	void Sound_Run(PlayerComponent& playercomp);
-	void Sound_Crouch(PlayerComponent& playercomp);
-	void Sound_Slide(PlayerComponent& playercomp);
-	void Sound_Jump(PlayerComponent& playercomp);
-	void Sound_Die(PlayerComponent& playercomp);
-	void Sound_Destroy(PlayerComponent& playercomp);
+	void Sound_Crouch(PlayerComponent& playercomp) {};
+	void Sound_Slide(PlayerComponent& playercomp) {};
+	void Sound_Transformation(PlayerComponent& playercomp) {};
+	void Sound_Jump(PlayerComponent& playercomp) {};
+	void Sound_Die(PlayerComponent& playercomp) {};
+	void Sound_Destroy(PlayerComponent& playercomp) {};
 #pragma endregion
 
 #pragma region Animation Change
@@ -144,6 +113,7 @@ public:
 	/// VPMODEChange
 	/// </summary>
 	/// <param name="playercomp"></param>
+	void OnDrop_Gun(std::any playercomp);
 	void Drop_Gun(PlayerComponent& playercomp);
 #pragma endregion
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 //#include <Windows.h> // MessageBox 함수를 사용하기 위해 필요
 //#include <iostream>
 //#include <sstream> // std::stringstream을 사용하기 위해 필요
@@ -74,4 +75,5 @@ constexpr float DegToRad(float degrees)
 {
     return degrees * (VPMath::XM_PI / 180.0f);
 }
+
 
