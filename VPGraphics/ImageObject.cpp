@@ -195,6 +195,11 @@ void ImageObject::UpdateBuffers()
 		float sizeX = static_cast<float>(m_CanvasWidth) * 0.001f;
 		float sizeY = static_cast<float>(m_CanvasHeight) * 0.001f;
 
+		m_ImageRect.left = -sizeX;
+		m_ImageRect.top = sizeY;
+		m_ImageRect.right = sizeX;
+		m_ImageRect.bottom = -sizeY;
+
 		left = -sizeX;
 		top = sizeY;
 		right = sizeX;
@@ -235,6 +240,11 @@ void ImageObject::UpdateBuffers()
 		// 이미지 중심 기준으로 좌측 상단 좌표를 계산
 		m_ImagePosX = m_ImageCenterPosX - (scaledWidth / 2.0f);
 		m_ImagePosY = m_ImageCenterPosY - (scaledHeight / 2.0f);
+
+		m_ImageRect.left = static_cast<LONG>(m_ImagePosX);
+		m_ImageRect.right = static_cast<LONG>(m_ImagePosX + scaledWidth);
+		m_ImageRect.top = static_cast<LONG>(m_ImagePosY);
+		m_ImageRect.bottom = static_cast<LONG>(m_ImagePosY + scaledHeight);
 
 		// 비트맵의 좌표 계산
 		left = static_cast<float>(m_CanvasWidth) / 2 * -1 + m_ImagePosX;
