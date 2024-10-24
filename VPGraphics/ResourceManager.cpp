@@ -213,18 +213,13 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
 }
 
-void ResourceManager::OnResize(RECT& wndsize)
+void ResourceManager::OnResize(RECT& wndsize, bool isFullScreen)
 {
 	UINT width = wndsize.right - wndsize.left;
 	UINT height = wndsize.bottom - wndsize.top;
 
 	Erase<ViewPort>(L"Main");
 	Create<ViewPort>(L"Main", wndsize);
-
-	/*for (auto tex : m_OffScreenName)
-	{
-		Erase<Texture2D>(tex);
-	}*/
 
 	Erase<RenderTargetView>(L"RTV_Main");
 
@@ -233,16 +228,8 @@ void ResourceManager::OnResize(RECT& wndsize)
 		Erase<RenderTargetView>(tex);
 	}
 
-	//	/*
-	//	auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
-	//	int numRTV = static_cast<int>(RTVmap.size());
+	m_Device.lock()->OnResize(isFullScreen);
 
-	//	for (auto& rtv : RTVmap)
-	//	{
-	//		rtv.second->Release();
-	//	}
-	//	RTVmap.clear();
-	//	*/
 	//	//Ãâ·Â¿ë backbuffer
 	Create<RenderTargetView>(L"RTV_Main", RenderTargetViewType::BackBuffer, width, height);
 

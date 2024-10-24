@@ -46,7 +46,7 @@ namespace Graphics
 		virtual void ImguiBeginRender() abstract;
 		virtual void ImguiEndRender() abstract;
 		virtual void EndRender() abstract;
-		virtual void OnResize(HWND hwnd) abstract;
+		virtual void OnResize(HWND hwnd,bool isFullScreen) abstract;
 		virtual void DebugRenderONOFF(bool isRender) abstract;
 
 

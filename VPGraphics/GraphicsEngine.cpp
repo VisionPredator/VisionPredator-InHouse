@@ -89,7 +89,7 @@ bool GraphicsEngine::Initialize()
 
 	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
 
-	OnResize(m_hWnd);
+	OnResize(m_hWnd,false);
 
 	InitializeImGui();
 
@@ -508,7 +508,7 @@ std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
 	return {};
 }
 
-void GraphicsEngine::OnResize(HWND hwnd)
+void GraphicsEngine::OnResize(HWND hwnd, bool isFullScreen)
 {
 	/// TODO: 매니저들의 OnResize 함수 불러오기. 실제로 Resize 되도록 고치기.
 
@@ -518,8 +518,7 @@ void GraphicsEngine::OnResize(HWND hwnd)
 	m_RTVs.clear();
 	m_DSVs.clear();
 
-	m_Device->OnResize();	//alt enter 누르면 create swapchain 터짐
-	m_ResourceManager->OnResize(m_wndSize);
+	m_ResourceManager->OnResize(m_wndSize,isFullScreen);
 	m_CurViewPort = m_ResourceManager->Create<ViewPort>(L"Main", m_wndSize).lock();
 
 
@@ -536,9 +535,6 @@ void GraphicsEngine::OnResize(HWND hwnd)
 
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Main"));
 	m_DSVs.push_back(m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred"));
-	/*
-	*/
-
 
 	m_PassManager->OnResize();
 

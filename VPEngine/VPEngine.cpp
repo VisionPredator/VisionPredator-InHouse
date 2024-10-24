@@ -17,6 +17,7 @@
 #endif
 
 bool VPEngine::isResize = false;
+bool VPEngine::isFullScreen = false;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
@@ -67,7 +68,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
-	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine,m_SoundEngine.get());
+	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine, m_SoundEngine.get());
 	/// 다 초기화 되고 윈도우 만들기
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
@@ -126,7 +127,7 @@ void VPEngine::Loop()
 
 		if (VPEngine::isResize)
 		{
-			m_Graphics->OnResize(m_hWnd);
+			m_Graphics->OnResize(m_hWnd, VPEngine::isFullScreen);
 			EventManager::GetInstance().ImmediateEvent("OnResize", m_hWnd);
 			VPEngine::isResize = false;
 		}
@@ -147,7 +148,7 @@ void VPEngine::Loop()
 			/*
 			//Fixed
 			//Update
-			//소켓 
+			//소켓
 			//static float tempTime = 0;
 			//tempTime += m_DeltaTime;
 			//while (tempTime > (1 / 60.f))
@@ -237,20 +238,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	switch (message)
 	{
+
+		case WM_ENTERSIZEMOVE:
+		{
+			VPEngine::isResize = true;
+		}
+		break;
+
+		case WM_DISPLAYCHANGE:
+		{
+			if (VPEngine::isFullScreen)
+			{
+				VPEngine::isFullScreen = false;
+			}
+			else
+			{
+				VPEngine::isFullScreen = true;
+			}
+		}
+		break;
+
 		case WM_SIZE:
 		{
 			int wmId = LOWORD(wParam);
 
-
 			// 메뉴 선택을 구문 분석합니다:
 			switch (wmId)
 			{
-
 				case SIZE_RESTORED:
 				case SIZE_MAXIMIZED:
 					VPEngine::isResize = true;
 					break;
-
 				case IDM_ABOUT:
 
 					break;
@@ -263,6 +281,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}
 		break;
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;

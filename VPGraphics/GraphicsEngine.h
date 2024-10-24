@@ -51,7 +51,7 @@ public:
 	void ImguiEndRender() override;
 	void EndRender() override;
 
-	void OnResize(HWND hwnd) override;
+	void OnResize(HWND hwnd, bool isFullScreen) override;
 
 	virtual void DebugRenderONOFF(bool isRender) override;
 
