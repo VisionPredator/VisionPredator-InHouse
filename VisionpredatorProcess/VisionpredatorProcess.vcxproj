@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{c685a604-1265-412a-a168-1e3b3f691064}</ProjectGuid>
+    <RootNamespace>VisionpredatorProcess</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;$(SolutionDir)include\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Recast.lib;Detour.lib;DetourCrowd.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;$(SolutionDir)include\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)Binaries\$(Platform)\$(Configuration)\;$(SolutionDir)Library\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Recast.lib;Detour.lib;DetourCrowd.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AimUIComponent.h" />
+    <ClInclude Include="BulletComponent.h" />
+    <ClInclude Include="BulletSystem.h" />
+    <ClInclude Include="EnemyBackpedalState.h" />
+    <ClInclude Include="EnemyBehaviorState.h" />
+    <ClInclude Include="EnemyChaseState.h" />
+    <ClInclude Include="EnemyCombatState.h" />
+    <ClInclude Include="EnemyComponent.h" />
+    <ClInclude Include="EnemyDeadState.h" />
+    <ClInclude Include="EnemyHitReactionState.h" />
+    <ClInclude Include="EnemyIdleCombatState.h" />
+    <ClInclude Include="EnemyIdleMovementState.h" />
+    <ClInclude Include="EnemyIdleState.h" />
+    <ClInclude Include="EnemyJumpState.h" />
+    <ClInclude Include="EnemyMovementState.h" />
+    <ClInclude Include="EnemyPatrolState.h" />
+    <ClInclude Include="EnemyRangedAttackState.h" />
+    <ClInclude Include="EnemyRunState.h" />
+    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="EnemySystem.h" />
+    <ClInclude Include="EnemyWalkState.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="FSMComponent.h" />
+    <ClInclude Include="GameLogicSystem.h" />
+    <ClInclude Include="GunComponent.h" />
+    <ClInclude Include="GunSystem.h" />
+    <ClInclude Include="IState.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerMeleeComponent.h" />
+    <ClInclude Include="PlayerSoundComponent.h" />
+    <ClInclude Include="PlayerSystem.h" />
+    <ClInclude Include="PlayerUISystem.h" />
+    <ClInclude Include="StatesInclude.h" />
+    <ClInclude Include="AreaAttackComponent.h" />
+    <ClInclude Include="AreaAttackSystem.h" />
+    <ClInclude Include="TestCameraSystem.h" />
+    <ClInclude Include="TrunComponent.h" />
+    <ClInclude Include="TrunSystem.h" />
+    <ClInclude Include="VisPredStructs.h" />
+    <ClInclude Include="VisPredComponents.h" />
+    <ClInclude Include="DataRegister_Vispred.h" />
+    <ClInclude Include="VPProcess.h" />
+    <ClInclude Include="VPUIComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AimUIComponent.cpp" />
+    <ClCompile Include="BulletComponent.cpp" />
+    <ClCompile Include="BulletSystem.cpp" />
+    <ClCompile Include="EnemyBackpedalState.cpp" />
+    <ClCompile Include="EnemyBehaviorState.cpp" />
+    <ClCompile Include="EnemyChaseState.cpp" />
+    <ClCompile Include="EnemyCombatState.cpp" />
+    <ClCompile Include="EnemyComponent.cpp" />
+    <ClCompile Include="EnemyDeadState.cpp" />
+    <ClCompile Include="EnemyHitReactionState.cpp" />
+    <ClCompile Include="EnemyIdleCombatState.cpp" />
+    <ClCompile Include="EnemyIdleMovementState.cpp" />
+    <ClCompile Include="EnemyIdleState.cpp" />
+    <ClCompile Include="EnemyJumpState.cpp" />
+    <ClCompile Include="EnemyMovementState.cpp" />
+    <ClCompile Include="EnemyPatrolState.cpp" />
+    <ClCompile Include="EnemyRangedAttackState.cpp" />
+    <ClCompile Include="EnemyRunState.cpp" />
+    <ClCompile Include="EnemyState.cpp" />
+    <ClCompile Include="EnemySystem.cpp" />
+    <ClCompile Include="EnemyWalkState.cpp" />
+    <ClCompile Include="FSMComponent.cpp" />
+    <ClCompile Include="GunComponent.cpp" />
+    <ClCompile Include="GunSystem.cpp" />
+    <ClCompile Include="IState.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="PlayerMeleeComponent.cpp" />
+    <ClCompile Include="PlayerSoundComponent.cpp" />
+    <ClCompile Include="PlayerSystem.cpp" />
+    <ClCompile Include="PlayerUISystem.cpp" />
+    <ClCompile Include="AreaAttackComponent.cpp" />
+    <ClCompile Include="AreaAttackSystem.cpp" />
+    <ClCompile Include="TestCameraSystem.cpp" />
+    <ClCompile Include="TrunComponent.cpp" />
+    <ClCompile Include="TrunSystem.cpp" />
+    <ClCompile Include="VisPredStructs.cpp" />
+    <ClCompile Include="DataRegister_Vispred.cpp" />
+    <ClCompile Include="VPProcess.cpp" />
+    <ClCompile Include="VPUIComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VPEngine\VPEngine.vcxproj">
+      <Project>{2c00f534-01bf-4232-bd17-a5ac02072aac}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

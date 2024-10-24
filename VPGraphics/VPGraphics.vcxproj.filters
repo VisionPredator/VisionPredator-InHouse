@@ -1,0 +1,592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GraphicsEngine">
+      <UniqueIdentifier>{89297b2b-da77-48bc-9a83-34647083fbb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\Animator">
+      <UniqueIdentifier>{80bed82e-0fff-45f6-9c9b-393d40f497a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\ModelLoader">
+      <UniqueIdentifier>{765b35ec-6ac2-4506-acfc-b6f7a7fad902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{5957083e-e3b2-4880-a1ce-6ebb37b165e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Interface">
+      <UniqueIdentifier>{4cf1d488-1aff-4aa8-8158-a7f9eee9d96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StaticData">
+      <UniqueIdentifier>{80928033-658b-4d31-a345-bc861c5fdf02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\Interface">
+      <UniqueIdentifier>{f84c9c2c-0828-4506-951c-6b757cc418fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{4ae7f061-e687-4787-8c31-8a318539e8e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{2644191c-0089-450a-83a0-e4b574d48fd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Header">
+      <UniqueIdentifier>{046dd9ee-14e0-454d-a71b-9bc325ac1f92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\VS">
+      <UniqueIdentifier>{e1a9206e-9e12-4076-84de-e092dcfee0b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\PS">
+      <UniqueIdentifier>{e5d0da06-f72f-4857-aa80-1b34397a30e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object">
+      <UniqueIdentifier>{bba3c6b3-38cd-45e9-8f0f-a607e71bc20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documents">
+      <UniqueIdentifier>{00b75016-11a9-440c-82a0-ed8574f24721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass">
+      <UniqueIdentifier>{843efb03-28cc-4e23-a3bc-734b3ff128c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Common">
+      <UniqueIdentifier>{d5002172-4996-4d87-89b0-062e69ac76cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\Common">
+      <UniqueIdentifier>{50d90ac0-98ae-4fa5-8425-f9e4847a21e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\GS">
+      <UniqueIdentifier>{97d743dc-a32d-4f85-9f7b-a8d1dfbda007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{ae0ccb03-7af8-4c0a-86a0-57af8217d746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\CS">
+      <UniqueIdentifier>{9438a78e-f698-4aa4-9138-4ea8a9ad32fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Forward">
+      <UniqueIdentifier>{d8c8d760-b0e3-40bd-979f-4568e2c9989d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Deferred">
+      <UniqueIdentifier>{0fbcd319-41e0-40a5-b224-f118e303742f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Source">
+      <UniqueIdentifier>{39426c84-4b4b-476d-a79e-57da6561f1a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Geometry">
+      <UniqueIdentifier>{48f817f3-1536-469d-bbf3-86d893abb472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Source">
+      <UniqueIdentifier>{a9f68f90-3555-47d5-8714-f3a05f033ed9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Interface\Source">
+      <UniqueIdentifier>{b02ee04b-1427-49b2-b54b-9400bd789c16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Source">
+      <UniqueIdentifier>{d4dd875c-e90b-4c4e-b74d-77649d590103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Source">
+      <UniqueIdentifier>{389af529-35c7-44c0-853a-5f833afa4644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\PostProcess">
+      <UniqueIdentifier>{9c8c86ab-3eb0-4211-bb63-2a5710b06c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Common\Source">
+      <UniqueIdentifier>{159eceed-1dc6-422b-b854-912b08452e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\PostProcess\Source">
+      <UniqueIdentifier>{fe364d7b-d9a6-4863-a77a-b256f3ae2f37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pass\Deferred\Instancing">
+      <UniqueIdentifier>{9853e868-9b95-4496-95ef-148d64ed878f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphicsEngine.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>GraphicsEngine\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>GraphicsEngine\ModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexData.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="Desc.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="CBuffer.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticData.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFilter.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphics.h">
+      <Filter>GraphicsEngine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparentPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticlePass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelData.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Resource\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resource\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Resource\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="vpGraphics.h">
+      <Filter>GraphicsEngine\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>GraphicsEngine\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>GraphicsEngine\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonInclude.h">
+      <Filter>GraphicsEngine\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Slot.h">
+      <Filter>StaticData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="FinalPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DUtill.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleObject.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparencyPass.h">
+      <Filter>Pass\Forward</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPass.h">
+      <Filter>Pass\Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDrawManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="PassManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GeoMetryPass.h">
+      <Filter>Pass\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderResourceView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderState.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h" />
+    <ClInclude Include="ImageObject.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShader.h" />
+    <ClInclude Include="DebugPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="OutlineEdgeDetectPass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="OutlineBlurPass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="OutlineAddPass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMaskPass.h">
+      <Filter>Pass\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="UnorderedAccessView.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RimLight.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="VPOutLinePass.h">
+      <Filter>Pass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="TextObject.h">
+      <Filter>GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="DeferredInstancing.h">
+      <Filter>Pass\Deferred\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="OverDrawPass.h" />
+    <ClInclude Include="DecalManager.h" />
+    <ClInclude Include="DecalPass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GraphicsEngine.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>GraphicsEngine\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>GraphicsEngine\ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>GraphicsEngine\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleObject.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPass.cpp">
+      <Filter>Pass\Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDrawManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PassManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparencyPass.cpp">
+      <Filter>Pass\Forward</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResourceView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Resource\Interface\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resource\Interface\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Resource\Interface\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelData.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Resource\Object\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderState.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DUtill.cpp">
+      <Filter>Utils\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Utils\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp" />
+    <ClCompile Include="GeoMetryPass.cpp">
+      <Filter>Pass\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageObject.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FinalPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticlePass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparentPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutlineAddPass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutlineBlurPass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutlineEdgeDetectPass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectMaskPass.cpp">
+      <Filter>Pass\Common\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeShader.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnorderedAccessView.cpp">
+      <Filter>Resource\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessManager.cpp">
+      <Filter>Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RimLight.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VPOutLinePass.cpp">
+      <Filter>Pass\PostProcess\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextObject.cpp">
+      <Filter>GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Utils\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredInstancing.cpp">
+      <Filter>Pass\Deferred\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="OverDrawPass.cpp" />
+    <ClCompile Include="DecalManager.cpp" />
+    <ClCompile Include="DecalPass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BasePS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshDeferredGeometryPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshDeferredLightPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="QuadVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="QuadPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleGS.hlsl">
+      <Filter>HLSL\GS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticlePS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="Sprite2DPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="Sprite2DVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineAddVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineEdgeDetectPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineAddPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineBlurPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskVS.hlsl">
+      <Filter>HLSL\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjectMaskPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurCS.hlsl">
+      <Filter>HLSL\CS</Filter>
+    </FxCompile>
+    <FxCompile Include="IsOccluded.hlsl">
+      <Filter>HLSL\CS</Filter>
+    </FxCompile>
+    <FxCompile Include="PreDepthPS.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="RimLight.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="VPOutLine.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="InstancingVS.hlsl" />
+    <FxCompile Include="InstancingPS.hlsl" />
+    <FxCompile Include="DecalVS.hlsl" />
+    <FxCompile Include="DecalPS.hlsl" />
+    <FxCompile Include="OverDrawPS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common.hlsli">
+      <Filter>HLSL\Header</Filter>
+    </None>
+    <None Include="ResourceDiagram.cd">
+      <Filter>Documents</Filter>
+    </None>
+  </ItemGroup>
+</Project>

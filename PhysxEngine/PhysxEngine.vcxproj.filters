@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="struct">
+      <UniqueIdentifier>{deb1d896-80ae-4bdc-ac41-e756886a8229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Struct">
+      <UniqueIdentifier>{5a4b698c-e9be-42dd-b641-452835e84897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\RigidBody">
+      <UniqueIdentifier>{c742ed13-7d01-4957-aad8-ce7a340a566e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\RigidBody\Dynamic">
+      <UniqueIdentifier>{58f4f41f-e07b-40de-8e4f-08dda7f9eeb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\RigidBody\Static">
+      <UniqueIdentifier>{ed0d3259-b3dd-4863-9a46-f1cd6367cb1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{324c4a4b-88ba-4a2f-8ba1-9c9d35df9fd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\CCT">
+      <UniqueIdentifier>{b40d58f1-8b10-42cd-baae-4e487b4ef929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Coll">
+      <UniqueIdentifier>{8fae600b-81c8-459c-97b5-90b61ff7d69b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Rigid">
+      <UniqueIdentifier>{81737889-0531-4cdf-85dc-717aa0a51b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{ca3fcbf7-7e58-4294-a845-670db89160a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Basic">
+      <UniqueIdentifier>{c27636a7-9844-4a97-bd5b-10303e986760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Engine">
+      <UniqueIdentifier>{bc19eddc-5ba7-4b86-b706-3ef1edcc50ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Callback">
+      <UniqueIdentifier>{7ac34f1d-97e0-4846-b8a7-b6f9751b505a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{bb88fb99-45b0-4b69-a5b2-a0c6b898afe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Controller">
+      <UniqueIdentifier>{b2173a4e-ed1c-46fc-b702-d797ef469356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Controller\Capsule">
+      <UniqueIdentifier>{2af42363-2950-4bbe-b5ee-3419ae5049ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Resource">
+      <UniqueIdentifier>{ea4ce6dd-56dc-40d2-8595-bf8c01ee83d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="struct\Resource">
+      <UniqueIdentifier>{188a47b9-9503-4cc3-9eba-65ba7cec31a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataRegist">
+      <UniqueIdentifier>{e7659d13-625c-4aa3-9488-7e056fb8b284}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VPPhysicsStructs.h">
+      <Filter>struct\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>struct\RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicRigidBody.h">
+      <Filter>struct\RigidBody\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticRigidBody.h">
+      <Filter>struct\RigidBody\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerManager.h">
+      <Filter>Manager\CCT</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Manager\Coll</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyManager.h">
+      <Filter>Manager\Rigid</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>struct\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Main\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="IPhysx.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysxEngine.h">
+      <Filter>Main\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionCallback.h">
+      <Filter>struct\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleController.h">
+      <Filter>struct\Controller\Capsule</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonInclude.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysichResourceManager.h">
+      <Filter>Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerHitCallback.h">
+      <Filter>struct\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerQueryFilterCallback.h">
+      <Filter>struct\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexMeshResource.h">
+      <Filter>struct\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicModelLoader.h">
+      <Filter>struct\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DataRegister_Physics.h">
+      <Filter>DataRegist</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VPPhysicsStructs.cpp">
+      <Filter>struct\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>struct\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicRigidBody.cpp">
+      <Filter>struct\RigidBody\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticRigidBody.cpp">
+      <Filter>struct\RigidBody\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerManager.cpp">
+      <Filter>Manager\CCT</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Manager\Coll</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyManager.cpp">
+      <Filter>Manager\Rigid</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>struct\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Main\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysxEngine.cpp">
+      <Filter>Main\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="IPhysx.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionCallback.cpp">
+      <Filter>struct\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleController.cpp">
+      <Filter>struct\Controller\Capsule</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysichResourceManager.cpp">
+      <Filter>Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerHitCallback.cpp">
+      <Filter>struct\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerQueryFilterCallback.cpp">
+      <Filter>struct\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexMeshResource.cpp">
+      <Filter>struct\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicModelLoader.cpp">
+      <Filter>struct\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister_Physics.cpp">
+      <Filter>DataRegist</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

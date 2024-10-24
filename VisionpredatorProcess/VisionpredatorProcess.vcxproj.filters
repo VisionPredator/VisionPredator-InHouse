@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Systems">
+      <UniqueIdentifier>{3b6abd0c-26b6-48dd-bc04-30f4cbbafd58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataRegist">
+      <UniqueIdentifier>{79705368-ab84-4f9e-8f32-87cff26474d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{888a3034-ac31-4f3c-ac2d-4c2847c60009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Source">
+      <UniqueIdentifier>{f1bc4eb1-4705-4eac-97ad-bbc57a274af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine">
+      <UniqueIdentifier>{2fa92122-942a-49e0-857f-4dc16b70b506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy">
+      <UniqueIdentifier>{55285444-3572-4f67-9b44-7652d668b89c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy\Behavior">
+      <UniqueIdentifier>{b60c7015-f757-439a-b9e8-3a7667162c73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy\Combat">
+      <UniqueIdentifier>{1e5a8a63-91f8-48fd-9d6c-fe8461702e25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Finite State Machine\Enemy\Movement">
+      <UniqueIdentifier>{d62086a2-e80f-4763-bf59-c656eb213db1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VPProcess.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCameraSystem.h">
+      <Filter>소스 파일\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VisPredStructs.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DataRegister_Vispred.h">
+      <Filter>DataRegist</Filter>
+    </ClInclude>
+    <ClInclude Include="GunSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLogicSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FSMComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GunComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="VisPredComponents.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUISystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>Finite State Machine\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBehaviorState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyIdleState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyChaseState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyPatrolState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyDeadState.h">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBackpedalState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyJumpState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyRunState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyWalkState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyRangedAttackState.h">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyCombatState.h">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyMovementState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyIdleMovementState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyIdleCombatState.h">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>Finite State Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="StatesInclude.h">
+      <Filter>Finite State Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="AreaAttackComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AreaAttackSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSoundComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMeleeComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TrunComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TrunSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyHitReactionState.h">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="AimUIComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VPUIComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VPProcess.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCameraSystem.cpp">
+      <Filter>소스 파일\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemySystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VisPredStructs.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRegister_Vispred.cpp">
+      <Filter>DataRegist</Filter>
+    </ClCompile>
+    <ClCompile Include="GunSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FSMComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GunComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUISystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>Finite State Machine\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBehaviorState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyIdleState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyChaseState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyPatrolState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyDeadState.cpp">
+      <Filter>Finite State Machine\Enemy\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBackpedalState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyJumpState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRunState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyWalkState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRangedAttackState.cpp">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyCombatState.cpp">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyMovementState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyIdleMovementState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyIdleCombatState.cpp">
+      <Filter>Finite State Machine\Enemy\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="IState.cpp">
+      <Filter>Finite State Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaAttackComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaAttackSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSoundComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMeleeComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TrunComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TrunSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AimUIComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VPUIComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyHitReactionState.cpp">
+      <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
