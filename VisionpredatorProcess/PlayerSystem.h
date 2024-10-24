@@ -12,7 +12,6 @@ public:
     void Update(float deltaTime) override;
 	// IFixedUpdatable을(를) 통해 상속됨
 	void FixedUpdate(float deltaTime) override;
-	void Enter_Transformation(PlayerComponent& playercomp,bool VPMode);
 	bool ChangeArm(PlayerComponent& playercomp, bool IsVPmode);
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override {};
@@ -25,7 +24,7 @@ public:
 	void EditorRenderUpdate(float deltaTime) override {};
 
 	// ISoundable을(를) 통해 상속됨
-	void SoundUpdate(float deltaTime) override {};
+	void SoundUpdate(float deltaTime) override;
 	void VPMode_Cooltime(PlayerComponent& playercomp, float deltatime);
 	void Transformation_Time(PlayerComponent& playercomp, float deltatime);
 	void NonDamage_Time(PlayerComponent& playercomp, float deltatime);
@@ -37,7 +36,6 @@ public:
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
-	void Active_VPMode(PlayerComponent& playercomp);
 	void CameraShake(PlayerComponent& playercomp,float deltatime);
 	void PlayerMeleeAttack(PlayerComponent& playercomp);
 	void Melee_Default(PlayerComponent& playercomp);
@@ -56,18 +54,28 @@ public:
 #pragma region FSM Calculate
 	void Calculate_FSM(PlayerComponent& playercomp);
 	void Calculate_Idle(PlayerComponent& playercomp);
-	void Calculate_Die(PlayerComponent& playercomp);
 	void Calculate_Transformation(PlayerComponent& playercomp);
 	void Calculate_Walk(PlayerComponent& playercomp);
 	void Calculate_Run(PlayerComponent& playercomp);
 	void Calculate_Crouch(PlayerComponent& playercomp);
 	void Calculate_Slide(PlayerComponent& playercomp);
 	void Calculate_Jump(PlayerComponent& playercomp);
-	void Calculate_Destroy(PlayerComponent& playercomp);
+	void Calculate_Die(PlayerComponent& playercomp);
+	void Calculate_Die_end(PlayerComponent& playercomp);
 #pragma endregion
 #pragma region FSM Enter
+	void Enter_FSM(PlayerComponent& playercomp);
+	void Enter_Idle(PlayerComponent& playercomp);
+	void Enter_Walk(PlayerComponent& playercomp);
+	void Enter_Run(PlayerComponent& playercomp);
+	void Enter_Jump(PlayerComponent& playercomp);
+	void Enter_Crouch(PlayerComponent& playercomp);
+	void Enter_Dash_Slide(PlayerComponent& playercomp);
+	void Enter_Transformation(PlayerComponent& playercomp);
+	void Enter_Die(PlayerComponent& playercomp);
+	void Enter_Die_end(PlayerComponent& playercomp);
+	//void Enter_Transformation(PlayerComponent& playercomp, bool VPMode);
 
-	void Enter_Dash(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region FSM Action
@@ -78,20 +86,35 @@ public:
 	void Action_Crouch(PlayerComponent& playercomp);
 	void Action_Slide(PlayerComponent& playercomp,float deltatime);
 	void Action_Jump(PlayerComponent& playercomp);
-	void Action_Die(PlayerComponent& playercomp);
+	void Action_Die(PlayerComponent& playercomp, float deltatime);
 	void Action_Destroy(PlayerComponent& playercomp);
 	void Action_Transformation(PlayerComponent& playercomp,float deltatime);
 #pragma endregion
 #pragma region FSM Sound
-	void FSM_Sound_FSM(PlayerComponent& playercomp, float deltaTime);
-	void FSM_Sound_Idle(PlayerComponent& playercomp);
-	void FSM_Sound_Walk(PlayerComponent& playercomp);
-	void FSM_Sound_Run(PlayerComponent& playercomp);
-	void FSM_Sound_Crouch(PlayerComponent& playercomp);
-	void FSM_Sound_Slide(PlayerComponent& playercomp);
-	void FSM_Sound_Jump(PlayerComponent& playercomp);
-	void FSM_Sound_Die(PlayerComponent& playercomp);
-	void FSM_Sound_Destroy(PlayerComponent& playercomp);
+	void Enter_Sound_FSM(PlayerComponent& playercomp, float deltaTime);
+	void Enter_Sound_Idle(PlayerComponent& playercomp);
+	void Enter_Sound_Walk(PlayerComponent& playercomp);
+	void Enter_Sound_Run(PlayerComponent& playercomp);
+	void Enter_Sound_Crouch(PlayerComponent& playercomp);
+	void Enter_Sound_Dash_Slide(PlayerComponent& playercomp);
+	void Enter_Sound_Transformation(PlayerComponent& playercomp);
+	void Enter_Sound_Jump(PlayerComponent& playercomp);
+	void Enter_Sound_Die(PlayerComponent& playercomp);
+	void Enter_Sound_Destroy(PlayerComponent& playercomp);
+	void Enter_Sound_Die_end(PlayerComponent& playercomp);
+#pragma endregion
+
+
+#pragma region FSM Sound
+	void Sound_FSM(PlayerComponent& playercomp, float deltaTime);
+	void Sound_Idle(PlayerComponent& playercomp);
+	void Sound_Walk(PlayerComponent& playercomp);
+	void Sound_Run(PlayerComponent& playercomp);
+	void Sound_Crouch(PlayerComponent& playercomp);
+	void Sound_Slide(PlayerComponent& playercomp);
+	void Sound_Jump(PlayerComponent& playercomp);
+	void Sound_Die(PlayerComponent& playercomp);
+	void Sound_Destroy(PlayerComponent& playercomp);
 #pragma endregion
 
 #pragma region Animation Change
@@ -151,7 +174,7 @@ public:
 	void Initialize() override;
 	void Start(uint32_t gameObjectId) override;
 	void Finish(uint32_t gameObjectId) override {};
-	void Finalize() override {};
+	void Finalize() override;
 	float Randomfloat(float min, float max);
 	double RecoilPercent(double curtime, double time, double percent);
 	bool RecoilReturn(double curtime, double time, double percent);

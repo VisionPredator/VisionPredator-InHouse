@@ -11,7 +11,16 @@ PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager
 void PlayerUISystem::Update(float deltaTime)
 {
 	if (!m_PlayerComp)
-		return;
+	{
+		m_PlayerComp = nullptr;
+		auto entity = GetSceneManager()->GetEntityByIdentityName("Player");
+		if (entity&&entity->HasComponent<PlayerComponent>())
+		{
+			m_PlayerComp = entity->GetComponent<PlayerComponent>();
+		}
+		else
+			return;
+	}
 
 	COMPLOOP(IdentityComponent, comp)
 	{
@@ -178,9 +187,17 @@ void PlayerUISystem::UpdateFadeUI(IdentityComponent& identityComp)
 {
 	if (identityComp.UUID != "FadeUI")
 		return;
-	auto& fadeui = *identityComp.GetComponent<ImageComponent>();
-	fadeui.Color.w= TrasnformationFadePercent();
-	TrasnformationFadePercent();
+	if (m_PlayerComp->CurrentFSM== VisPred::Game::PlayerFSM::DIE|| m_PlayerComp->CurrentFSM == VisPred::Game::PlayerFSM::DIE_END)
+	{
+		auto& fadeui = *identityComp.GetComponent<ImageComponent>();
+		fadeui.Color.w = m_PlayerComp->DieProgress * 2 / m_PlayerComp->DieTime;
+	}
+	else
+	{
+		auto& fadeui = *identityComp.GetComponent<ImageComponent>();
+		fadeui.Color.w = TrasnformationFadePercent();
+	}
+
 
 
 }

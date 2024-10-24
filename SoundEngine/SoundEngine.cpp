@@ -210,9 +210,9 @@ bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume,
 		FMOD::Channel* existingChannel = channelIter->second;
 		existingChannel->stop();  // 기존 채널을 정지합니다.
 	}
-
 	// 새로운 채널을 생성하고 사운드를 재생합니다.
 	FMOD::Channel* channel = nullptr;
+
 	m_System->playSound(sound, nullptr, true, &channel);
 
 	// 사운드의 반복 여부를 설정합니다.

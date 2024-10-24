@@ -68,7 +68,7 @@ void VispredRegister::Register_EnumClass()
 		,PlayerFSM::Dash_Slide
 		,PlayerFSM::JUMP
 		,PlayerFSM::DIE
-		,PlayerFSM::DESTROY
+		,PlayerFSM::DIE_END
 		,PlayerFSM::Transformation);
 	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);

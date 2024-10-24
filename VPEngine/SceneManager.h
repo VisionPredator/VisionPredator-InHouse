@@ -26,14 +26,11 @@ public:
 	void ChangeScene(std::string FilePath, bool Immidiate=false);
 	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 rotation = {0,0,0}, VPMath::Vector3 scele = { -1,-1,-1 });
 	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 rotation = { 0,0,0 }, VPMath::Vector3 scele = { -1,-1,-1 });
+	std::shared_ptr<Entity> SpawnSoundEntity(std::string soundName,float volume,bool isloop=false, VPMath::Vector3 pos = { 0,0,0 });
 	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Quaternion Quater = VPMath::Quaternion::Identity, VPMath::Vector3 scele = { -1,-1,-1 });
-
 
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
-	
-
-
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
 
@@ -114,6 +111,7 @@ private:
 	/// 해당 json를 Deserialize 한다.
 // 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();
+	std::shared_ptr<Entity> CreateEntity(std::string entityName);
 	uint32_t CreateRandomEntityID();
 	std::shared_ptr<NavMeshData> GetSceneNavMeshData() { return m_CurrentScene->SceneNavData; }
 	void SetSceneNavMeshData(std::shared_ptr<NavMeshData> navMeshdata) { m_CurrentScene->SceneNavData = navMeshdata; }
