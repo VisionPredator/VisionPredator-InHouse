@@ -19,3 +19,4 @@
 #include "TextComponent.h"
 #include "SoundComponent.h"
 #include "DecalComponent.h"
+#include "ButtonComponent.h"
