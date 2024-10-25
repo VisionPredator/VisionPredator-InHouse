@@ -18,11 +18,13 @@ void EngineRegister::Register_Metadata()
 void EngineRegister::Register_EnumClass()
 {
 	using namespace  ui;
+	using namespace  VisPred::Engine;
 	META_ADD_ENUMCLASS(GeoMetryFilter, GeoMetryFilter::Axis, GeoMetryFilter::Box, GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
 	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
 	META_ADD_ENUMCLASS(BillboardType, BillboardType::None, BillboardType::Full, BillboardType::AxisY);
+	META_ADD_ENUMCLASS(Skill, Skill::START,Skill::OPTION,Skill::EXIT);
 }
 
 void EngineRegister::Register_Structs()
@@ -135,5 +137,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::FontPath, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Angle, TextComponent::Layer);
 	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume, SoundComponent::Duration, SoundComponent::Loop);
 	META_ADD_COMP(DecalComponent, DecalComponent::TextureName);
+	META_ADD_COMP(ButtonComponent,ButtonComponent::skill);
 }
 

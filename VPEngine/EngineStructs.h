@@ -11,5 +11,12 @@ namespace VisPred
 			float TransitionTime{};
 			bool Loop;
 		};
+
+		enum class Skill
+		{
+			START = 0,
+			OPTION,
+			EXIT
+		};
 	}
 }

@@ -1,13 +1,16 @@
 #pragma once
 #include "Component.h"
+#include "EngineStructs.h"
 
 
-class ButtonComponent :
+struct ButtonComponent :
     public Component
 {
-	VP_JSONBODY(ButtonComponent,)
+public:
+	VP_JSONBODY(ButtonComponent, skill)
 		ButtonComponent();
 
-
+	
+	VisPred::Engine::Skill skill;
 };
 

@@ -166,6 +166,8 @@
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationSystem.h" />
+    <ClInclude Include="ButtonComponent.h" />
+    <ClInclude Include="ButtonSystem.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Component.h" />
@@ -227,6 +229,8 @@
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AnimationSystem.cpp" />
+    <ClCompile Include="ButtonComponent.cpp" />
+    <ClCompile Include="ButtonSystem.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Component.cpp" />
