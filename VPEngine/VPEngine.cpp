@@ -53,7 +53,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	SetFocus(m_hWnd);
 	m_ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	m_ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
-	InputManager::GetInstance().Initialize(m_hinstance, m_hWnd, m_ScreenWidth, m_ScreenHeight);
+	InputManager::GetInstance().Initialize(m_hinstance, &m_hWnd);
 
 
 	m_TimeManager = new TimeManager;
@@ -233,6 +233,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 		return 0;
 	switch (message)
@@ -263,6 +264,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}
 		break;
+		case WM_ENTERSIZEMOVE:
+			// When the user starts resizing or moving the window, release the cursor clipping
+			ClipCursor(NULL);
+			break;
+
+		case WM_EXITSIZEMOVE:
+			// When the user finishes resizing or moving the window, reapply the cursor clipping
+			EventManager::GetInstance().ImmediateEvent("OnClipMouse", hWnd);
+			break;
+
+		case WM_ACTIVATE:
+			if (wParam != WA_INACTIVE) {
+				// Reapply clipping when the window becomes active
+				EventManager::GetInstance().ImmediateEvent("OnClipMouse", hWnd);
+			}
+			else {
+				// Release the cursor when the window becomes inactive
+				ClipCursor(NULL);
+			}
+			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;

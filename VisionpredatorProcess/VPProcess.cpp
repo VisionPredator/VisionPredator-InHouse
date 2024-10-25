@@ -28,6 +28,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<EnemySystem>();
 	m_SystemManager->AddSystem<GunSystem>();
 	m_SystemManager->AddSystem<AreaAttackSystem>();
+	m_SystemManager->AddSystem<InterectiveSystem>();
 }
 
 VPProcess::~VPProcess()

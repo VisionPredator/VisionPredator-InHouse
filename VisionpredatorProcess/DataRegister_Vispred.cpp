@@ -29,8 +29,8 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::StaticFriction
 		, PlayerComponent::VPGageCoolTime
 		, PlayerComponent::TransformationTime
-		
 	);
+	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor);
 	META_ADD_COMP(PlayerSoundComponent, PlayerSoundComponent::WalkSoundKey1, PlayerSoundComponent::WalkSoundKey2, PlayerSoundComponent::Volume_Walk
 		, PlayerSoundComponent::RunSoundKey1, PlayerSoundComponent::RunSoundKey2, PlayerSoundComponent::Volume_Run
 		, PlayerSoundComponent::JumpSoundkey, PlayerSoundComponent::Volume_Jump

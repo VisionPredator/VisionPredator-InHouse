@@ -185,6 +185,8 @@
     <ClInclude Include="GameLogicSystem.h" />
     <ClInclude Include="GunComponent.h" />
     <ClInclude Include="GunSystem.h" />
+    <ClInclude Include="InterectiveComponent.h" />
+    <ClInclude Include="InterectiveSystem.h" />
     <ClInclude Include="IState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
@@ -230,6 +232,8 @@
     <ClCompile Include="FSMComponent.cpp" />
     <ClCompile Include="GunComponent.cpp" />
     <ClCompile Include="GunSystem.cpp" />
+    <ClCompile Include="InterectiveComponent.cpp" />
+    <ClCompile Include="InterectiveSystem.cpp" />
     <ClCompile Include="IState.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

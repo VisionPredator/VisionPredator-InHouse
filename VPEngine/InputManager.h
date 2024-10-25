@@ -184,7 +184,7 @@ public:
 	InputManager();
 	static InputManager* instance;
 	~InputManager() = default;
-	bool Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight);
+	bool Initialize(HINSTANCE hinstance, HWND* hwnd);
 	bool Update();
 	static InputManager& GetInstance()
 	{
@@ -211,13 +211,16 @@ public:
 	bool GetKeyUp(MOUSEKEY inputkey);
 	bool GetKey(MOUSEKEY);
 	bool IsEscapePressed();
+	bool GetClipmode();
+	void SetClipMode(bool IsWindowMode);
+
 private:
 	void CopyKeyStateToPrevious();
 	void CopyMouseStateToPrevious();
 	void CalculateMouseDelta(); // 마우스의 델타 이동을 계산하는 함수
 	void ProcessMouseInput();
-
-
+	void OnResize(std::any hwnd);
+	void OnClipMouse(std::any hwnd);
 	IDirectInput8* m_directInput = nullptr;
 	IDirectInputDevice8* m_keyboard = nullptr;
 	IDirectInputDevice8* m_mouse = nullptr;
@@ -233,6 +236,9 @@ private:
 	int m_mouseY = 0;
 	int m_mouseDeltaX=0;
 	int m_mouseDeltaY=0;
+	RECT m_mouseRect{};
+	HWND* m_hwnd{};
+	bool m_IsWindowMode=true;
 };
 
 template <typename T>

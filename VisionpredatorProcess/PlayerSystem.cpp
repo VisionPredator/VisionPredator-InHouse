@@ -171,9 +171,10 @@ void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 	{
 		if (playercomp.SearchedItemID!=0)
 		{
-			auto presearchedentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-			if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
-				presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
+			EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.SearchedItemID);
+			//auto presearchedentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+			//if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
+			//	presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
 		}
 
 		playercomp.SearchedItemID = 0;
@@ -188,7 +189,6 @@ void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 }
 void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 {
-	playercomp.PreSearchedItemID = playercomp.SearchedItemID;
 
 	//auto posEntity = GetSceneManager()->GetEntity(playercomp.CameraID);
 	auto cameraEntity = playercomp.CameraEntity.lock();
@@ -203,16 +203,25 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 
 	if (playercomp.PreSearchedItemID != playercomp.SearchedItemID)
 	{
-		auto presearchedentity = GetSceneManager()->GetEntity(playercomp.PreSearchedItemID);
-		if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
-			presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
+		EventManager::GetInstance().ImmediateEvent("OnSearched", playercomp.SearchedItemID);
+		EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.PreSearchedItemID);
+		//auto presearchedentity = GetSceneManager()->GetEntity(playercomp.PreSearchedItemID);
+		//if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
+		//	presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
+		playercomp.PreSearchedItemID = playercomp.SearchedItemID;
+
+
 	}
 }
 void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
 {
-	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-	if (gunentity && gunentity->HasComponent<GunComponent>() && gunentity->GetEntityID() != playercomp.GunEntityID)
-		gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
+	//auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
+	//if (gunentity && gunentity->HasComponent<GunComponent>() && gunentity->GetEntityID() != playercomp.GunEntityID)
+	//	gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
+}
+void PlayerSystem::SearchedInterective(PlayerComponent& playercomp)
+{
+	EventManager::GetInstance().ImmediateEvent("OnSearched", playercomp.SearchedItemID);
 }
 #pragma endregion
 

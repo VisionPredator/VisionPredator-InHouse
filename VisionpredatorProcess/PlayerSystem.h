@@ -37,6 +37,7 @@ public:
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
 	void SearchedGun(PlayerComponent& playercomp);
+	void SearchedInterective(PlayerComponent& playercomp);
 	//void Active_VPMode(PlayerComponent& playercomp);
 	void CameraShake(PlayerComponent& playercomp,float deltatime);
 	void PlayerMeleeAttack(PlayerComponent& playercomp);
