@@ -4,7 +4,8 @@
 #include "TransformComponent.h"
 #include "SceneManager.h"
 #include "../PhysxEngine/IPhysx.h"
-
+#include  "Components.h"
+#include  "VisPredComponents.h"
 void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter RangedAttackState");
@@ -17,7 +18,7 @@ void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-
+	DetectTarget(*enemyComp, deltaTime);	/// TEMP!!!!!!!
 	// 일정시간 마다 플레이어를 공격
 // 명중률에 따라 피격 정도를 다르게한다.
 	auto transform = enemyComp->GetComponent<TransformComponent>();
@@ -52,6 +53,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 		//ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 		//ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::CHASE, 0.005f, 0.005, false);	// Attack Idle 이 있었으면 넣었는데 없어서 이걸로 대체. 근데 어색해서 Attack 애니메이션은 안넣기..
 
+
 		enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
 		// 난수 생성 (0 ~ 100 범위)
 		float randomValue = static_cast<float>(rand() % 101);
@@ -70,14 +72,19 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 				Log::GetClientLogger()->warn("Missed Target !!!!!!!!!!!");
 			}
 		}
-
-		Exit(component);
-
-		ChangeCurrentState(enemyComp, &EnemyMovementState::s_IdleAttack);
-	}
-
-	if (enemyComp->GetComponent<NavAgentComponent>()->IsChase)
+		// ChangeCurrentState(enemyComp, &EnemyMovementState::s_Attack);
 		ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
+		return;
+	}
+	/*else
+	{
+		if (enemyComp->GetComponent<NavAgentComponent>()->IsChase == false)
+			ChangeCurrentState(enemyComp, &EnemyMovementState::s_IdleAttack);
+	}*/
+
+
+	//if (enemyComp->GetComponent<NavAgentComponent>()->IsChase)
+	//	
 }
 
 void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
@@ -85,8 +92,7 @@ void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 	Log::GetClientLogger()->info("Exit RangedAttackState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 
-	if (enemyComp->BehaviorState != &EnemyBehaviorState::s_Dead)
-		enemyComp->BehaviorState->Enter(component);
+	//ChangeCurrentState(enemyComp, &EnemyMovementState::s_IdleAttack);
 }
 
 float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
