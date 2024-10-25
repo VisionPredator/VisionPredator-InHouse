@@ -199,10 +199,10 @@ public:
 		Shutdown();
 		delete instance;
 	}
-	int GetMouseX() const { return m_mouseX; }
-	int GetMouseY() const { return m_mouseY; }
-	int GetMouseDeltaX() const { return m_mouseDeltaX; }
-	int GetMouseDeltaY() const { return m_mouseDeltaY; }
+	int GetMouseX() const { return m_curPos.x; }
+	int GetMouseY() const { return m_curPos.y; }
+	int GetMouseDeltaX() const { return m_mouseDelta.x; }
+	int GetMouseDeltaY() const { return m_mouseDelta.y; }
 	void Shutdown();
 	bool GetKeyDown(KEYBOARDKEY inputkey);
 	bool GetKeyUp(KEYBOARDKEY inputkey);
@@ -217,7 +217,6 @@ public:
 private:
 	void CopyKeyStateToPrevious();
 	void CopyMouseStateToPrevious();
-	void CalculateMouseDelta(); // 마우스의 델타 이동을 계산하는 함수
 	void ProcessMouseInput();
 	void OnResize(std::any hwnd);
 	void OnClipMouse(std::any hwnd);
@@ -230,15 +229,13 @@ private:
 	DIMOUSESTATE m_previousMouseState; // 이전 마우스 상태
 	bool ReadKeyboard();
 	bool ReadMouse();
-	int m_screenWidth = 0;
-	int m_screenHeight = 0;
-	int m_mouseX = 0;
-	int m_mouseY = 0;
-	int m_mouseDeltaX=0;
-	int m_mouseDeltaY=0;
-	RECT m_mouseRect{};
+	RECT m_clientRect{};
+
+	POINT m_curPos = {};
+	POINT m_lastPos = {};
+	POINT m_mouseDelta = {};
 	HWND* m_hwnd{};
-	bool m_IsWindowMode=true;
+	bool m_IsWindowMode=false;
 };
 
 template <typename T>

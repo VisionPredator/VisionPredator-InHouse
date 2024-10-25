@@ -203,14 +203,9 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 
 	if (playercomp.PreSearchedItemID != playercomp.SearchedItemID)
 	{
-		EventManager::GetInstance().ImmediateEvent("OnSearched", playercomp.SearchedItemID);
 		EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.PreSearchedItemID);
-		//auto presearchedentity = GetSceneManager()->GetEntity(playercomp.PreSearchedItemID);
-		//if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
-		//	presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
+		EventManager::GetInstance().ImmediateEvent("OnSearched", playercomp.SearchedItemID);
 		playercomp.PreSearchedItemID = playercomp.SearchedItemID;
-
-
 	}
 }
 void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
@@ -976,60 +971,11 @@ void PlayerSystem::Active_Interect(PlayerComponent& playercomp)
 	}
 	if (INPUTKEYDOWN(KEYBOARDKEY::F))
 	{
-		Grab_Gun(playercomp);
+		std::any data = std::pair<uint32_t, uint32_t >(playercomp.GetEntityID(), playercomp.SearchedItemID);
+		EventManager::GetInstance().ImmediateEvent("OnInterective", data);
+		//Grab_Gun(playercomp);
 	}
 }
-
-void PlayerSystem::Grab_Gun(PlayerComponent& playercomp)
-{
-	auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
-	if (anicomp.IsBlending)
-		return;
-	if (anicomp.PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Sword
-		&& anicomp.PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Pistol
-		&& anicomp.PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Rifle
-		&& anicomp.PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_ShotGun)
-		return;
-
-
-	auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-	if (!gunentity || !gunentity->HasComponent<GunComponent>())
-		return;
-	if (playercomp.HasGun)
-	{
-		Drop_Gun(playercomp);
-	}
-
-
-	uint32_t handID = playercomp.HandEntity.lock()->GetEntityID();
-
-	auto guncomp = gunentity->GetComponent<GunComponent>();
-	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
-	soceketcomp->IsConnected = true;
-	soceketcomp->ConnectedEntityID = handID;
-	playercomp.HasGun = true;
-	playercomp.GunEntityID = guncomp->GetEntityID();
-	guncomp->GetComponent<MeshComponent>()->MaskColor = {};
-	guncomp->GetComponent<MeshComponent>()->IsOverDraw = true;
-	///TODO 사운드 로직 추가하기.
-	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
-
-	switch (guncomp->Type)
-	{
-	case VisPred::Game::GunType::PISTOL:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Pistol, 0, 0, false);
-		break;
-	case VisPred::Game::GunType::SHOTGUN:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_ShotGun, 0, 0, false);
-		break;
-	case VisPred::Game::GunType::RIFLE:
-		ChangeAni_Index(handID, VisPred::Game::PlayerAni::ToIdle01_Rifle, 0, 0, false);
-		break;
-	default:
-		break;
-	}
-}
-
 void PlayerSystem::OnDrop_Gun(std::any playercomp)
 {
 	auto& comp = std::any_cast<std::reference_wrapper<PlayerComponent>>(playercomp).get();  // 참조로 캐스트
@@ -1356,7 +1302,6 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 #pragma endregion
 #pragma region player Functuions
 #pragma region Physics Setting
-
 void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
 	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
@@ -1411,18 +1356,14 @@ void PlayerSystem::DefalutModeController(PlayerComponent& playercomp)
 void PlayerSystem::Finalize()
 {
 	m_Graphics->SetVP(false);
-
 }
-
 double PlayerSystem::RecoilPercent(double x, double a, double percent)
 {
 	// Convert percent into a value between 0 and 1
 	double b = percent / 100.0;
-
 	// Ensure non-negative values
 	if (x <= 0)
 		return 0.0;
-
 	if (x < a * b)
 	{
 		// First half: downward parabola
@@ -1453,6 +1394,4 @@ bool PlayerSystem::RecoilReturn(double x, double a, double percent)
 	else
 		return true;
 }
-
-
 #pragma endregion

@@ -111,39 +111,34 @@ void InputManager::OnClipMouse(std::any hwnd)
 	else
 	{
 		RECT clientRect{};
-		GetClientRect(*m_hwnd, &clientRect);
+		GetClientRect(*m_hwnd, &m_clientRect);
 
 		// Convert client coordinates to screen coordinates
-		POINT topLeft = { clientRect.left, clientRect.top };
-		POINT bottomRight = { clientRect.right, clientRect.bottom };
+		POINT topLeft = { m_clientRect.left, m_clientRect.top };
+		POINT bottomRight = { m_clientRect.right, m_clientRect.bottom };
 		ClientToScreen(*m_hwnd, &topLeft);
 		ClientToScreen(*m_hwnd, &bottomRight);
 
 		// Update clientRect with screen coordinates
-		clientRect.left = topLeft.x;
-		clientRect.top = topLeft.y;
-		clientRect.right = bottomRight.x;
-		clientRect.bottom = bottomRight.y;
+		m_clientRect.left = topLeft.x;
+		m_clientRect.top = topLeft.y;
+		m_clientRect.right = bottomRight.x;
+		m_clientRect.bottom = bottomRight.y;
 
 		// Apply the clipping
-		ClipCursor(&clientRect);
+		ClipCursor(&m_clientRect);
 	}
 }
 bool InputManager::Update() {
 	// Store previous key and mouse states
 	CopyKeyStateToPrevious();
 	CopyMouseStateToPrevious();
-
 	// Read current keyboard state
 	if (!ReadKeyboard()) return false;
-
 	// Read current mouse state
 	if (!ReadMouse()) return false;
-
 	// Process mouse input
 	ProcessMouseInput();
-
-
 
 	return true;
 }
@@ -176,19 +171,34 @@ void InputManager::Shutdown()
 }
 void InputManager::ProcessMouseInput()
 {
-	CalculateMouseDelta();
 
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
-	//프레임 동안 마우스 위치의 변경을 기반으로 마우스 커서의 위치를 업데이트한다.
-	if (m_mouseX < 0) { m_mouseX = 0; }
-	if (m_mouseY < 0) { m_mouseY = 0; }
-	//마우스 위치가 화면 너비 또는 높이를 초과하지 않는지 확인한다.
-	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
-	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
+	if (m_hwnd)
+	{
+	// Get the current cursor position in screen coordinates
+	GetCursorPos(&m_curPos);
+		// Convert screen coordinates to client area coordinates
+		ScreenToClient(*m_hwnd, &m_curPos);
+
+		// Ensure the mouse position stays within the bounds of the client area using m_clientRect
+		if (m_curPos.x < 0) m_curPos.x = 0;
+		if (m_curPos.y < 0) m_curPos.y = 0;
+		if (m_curPos.x > m_clientRect.right) m_curPos.x = m_clientRect.right;
+		if (m_curPos.y > m_clientRect.bottom) m_curPos.y = m_clientRect.bottom;
+
+		// Calculate the delta
+		m_mouseDelta.x = m_mouseState.lX;
+		m_mouseDelta.y = m_mouseState.lY;
+
+	/*	m_mouseDelta.x = m_curPos.x - m_lastPos.x;
+		m_mouseDelta.y = m_curPos.y - m_lastPos.y;*/
+
+		// Update the last position for the next frame
+		m_lastPos = m_curPos;
+	}
 }
 
-void InputManager::OnResize(std::any hwnd) 
+
+void InputManager::OnResize(std::any hwnd)
 {
 	OnClipMouse(hwnd);
 }
@@ -344,8 +354,3 @@ bool InputManager::ReadMouse()
 	return true;
 }
 
-void InputManager::CalculateMouseDelta()
-{
-	m_mouseDeltaX = m_mouseState.lX;
-	m_mouseDeltaY = m_mouseState.lY;
-}

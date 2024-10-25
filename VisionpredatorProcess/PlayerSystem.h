@@ -109,7 +109,6 @@ public:
 	void VPAnimationFinished(PlayerComponent& playercomp, AnimationComponent& anicomp);
 #pragma endregion
 #pragma region Interection Logic
-	void Grab_Gun(PlayerComponent& playercomp);
 	/// <summary>
 	/// VPMODEChange
 	/// </summary>

@@ -6,6 +6,8 @@ PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager
 	: System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnGunShoot", CreateSubscriber(&PlayerUISystem::OnGunShoot));
+	EventManager::GetInstance().Subscribe("OnUpdateSearchUI", CreateSubscriber(&PlayerUISystem::OnUpdateSearchUI));
+	EventManager::GetInstance().Subscribe("OnResetInterectionUI", CreateSubscriber(&PlayerUISystem::OnResetInterectionUI));
 }
 
 void PlayerUISystem::Update(float deltaTime)
@@ -28,7 +30,6 @@ void PlayerUISystem::Update(float deltaTime)
 		UpdateVPState(comp);
 		UpdateAim(comp);
 		UpdateWeaponUI(comp);
-		UpdateInterectionUI(comp);
 		UpdateFadeUI(comp);
 	}
 }
@@ -108,8 +109,10 @@ void PlayerUISystem::UpdateAim(IdentityComponent& identityComp)
 		imagecomp.Color.w = 0;
 	else
 	{
-		if (entity->HasComponent<GunComponent>())
-			imagecomp.TexturePath = AimComp.Interected;
+		if (entity->HasComponent<InterectiveComponent>()&& entity->GetComponent<InterectiveComponent>()->IsInterective)
+		{
+					imagecomp.TexturePath = AimComp.Interected;
+		}
 		else if (entity->HasComponent<EnemyComponent>())
 			imagecomp.TexturePath = AimComp.Aimed;
 		else
@@ -166,23 +169,7 @@ void PlayerUISystem::UpdateWeaponUI(IdentityComponent& identityComp)
 	}
 }
 
-void PlayerUISystem::UpdateInterectionUI(IdentityComponent& identityComp)
-{
-	if (identityComp.UUID != "InterectionUI")
-		return;
-	if (!identityComp.HasComponent<TextComponent>() || !identityComp.HasComponent<TextComponent>())
-		return;
-	if (!GetSceneManager()->HasEntity(m_PlayerComp->SearchedItemID))
-	{
-		InterectUIReset(identityComp);
-		return;
-	}
-	InterectUIReset(identityComp);
-	auto entity = GetSceneManager()->GetEntity(m_PlayerComp->SearchedItemID).get();
-	if (InterectingGun(identityComp, entity)) {}
-	else if (InterectingCloset(identityComp, entity)) {}
-	else if (InterectingDoor(identityComp, entity)) {}
-}
+
 void PlayerUISystem::UpdateFadeUI(IdentityComponent& identityComp)
 {
 	if (identityComp.UUID != "FadeUI")
@@ -229,7 +216,7 @@ double PlayerUISystem::TrasnformationFadePercent() {
 	return 0.0;
 }
 
-bool PlayerUISystem::InterectUIReset(IdentityComponent& identitycomp)
+bool PlayerUISystem::ResetInterectionUI(IdentityComponent& identitycomp)
 {
 	auto& textUI = *identitycomp.GetComponent<TextComponent>();
 	auto& imageUI = *identitycomp.GetComponent<ImageComponent>();
@@ -237,6 +224,45 @@ bool PlayerUISystem::InterectUIReset(IdentityComponent& identitycomp)
 	imageUI.Color.w = 0;
 	return true;
 }
+void PlayerUISystem::OnUpdateSearchUI(std::any data)
+{
+	auto entity = GetSceneManager()->GetEntityByIdentityName("InterectionUI");
+	if (!entity)
+		return;
+	auto& identitycomp = *entity->GetComponent<IdentityComponent>();
+	UpdateInterectionUI(identitycomp);
+
+}
+void PlayerUISystem::OnResetInterectionUI(std::any null)
+{
+	auto entity = GetSceneManager()->GetEntityByIdentityName("InterectionUI");
+	if (!entity)
+		return;
+	auto& identitycomp = *entity->GetComponent<IdentityComponent>();
+	ResetInterectionUI(identitycomp);
+}
+
+
+void PlayerUISystem::UpdateInterectionUI(IdentityComponent& identityComp)
+{
+	if (!identityComp.HasComponent<TextComponent>() || !identityComp.HasComponent<TextComponent>())
+		return;
+
+	if (!GetSceneManager()->HasEntity(m_PlayerComp->SearchedItemID))
+	{
+		ResetInterectionUI(identityComp);
+		return;
+	}
+	auto entity = GetSceneManager()->GetEntity(m_PlayerComp->SearchedItemID).get();
+	if (!entity)
+		return;
+
+	if (InterectingGun(identityComp, entity)) {}
+	else if (InterectingCloset(identityComp, entity)) {}
+	else if (InterectingDoor(identityComp, entity)) {}
+}
+
+
 bool PlayerUISystem::InterectingGun(IdentityComponent& identitycomp, Entity* selectedentity)
 {
 	if (!selectedentity->HasComponent<GunComponent>())
@@ -254,23 +280,30 @@ bool PlayerUISystem::InterectingGun(IdentityComponent& identitycomp, Entity* sel
 	case VisPred::Game::GunType::PISTOL:
 	{
 		textUI.Text = L"Pistol";
+		return true;
 		break;
 	}
 	case VisPred::Game::GunType::SHOTGUN:
 	{
 		textUI.Text = L"Shotgun";
+		return true;
 
 		break;
 	}
 	case VisPred::Game::GunType::RIFLE:
 	{
-		textUI.Text = L"Assault rifle";
+		textUI.Text = L"Rifle";
+		return true;
+
 		break;
 	}
 	default:
+		return false;
+
 		break;
 	}
 }
+
 bool PlayerUISystem::InterectingDoor(IdentityComponent& playerComponent, Entity* selectedentity)
 {
 	return false;
