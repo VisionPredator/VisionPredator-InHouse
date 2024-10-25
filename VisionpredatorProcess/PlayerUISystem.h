@@ -24,10 +24,12 @@ public:
 	void UpdateAim(IdentityComponent& identityComp);
 	void UpdateWeaponUI(IdentityComponent& identityComp);
 
-	void UpdateInterectionUI(IdentityComponent& identityComp);
 	void UpdateFadeUI(IdentityComponent& identityComp);
 	double TrasnformationFadePercent();
-	bool InterectUIReset(IdentityComponent& identityComp);
+	void OnUpdateSearchUI(std::any null);
+	void OnResetInterectionUI(std::any null);
+	bool ResetInterectionUI(IdentityComponent& identityComp);
+	void UpdateInterectionUI(IdentityComponent& identityComp);
 	bool InterectingGun(IdentityComponent& identityComp,Entity* selectedentity);
 	bool InterectingDoor(IdentityComponent& identityComp,Entity* selectedentity);
 	bool InterectingCloset(IdentityComponent& identityComp,Entity* selectedentity);

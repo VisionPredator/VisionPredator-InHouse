@@ -81,7 +81,6 @@ public:
 	float transitionDuration;
 
 	//디버그박스용 - 나중에 지울거
-	DirectX::XMFLOAT4 color;
 	bool useTexture;
 	std::wstring textureName;
 
@@ -93,6 +92,8 @@ public:
 
 	// 아웃라인 관련 변수
 	VPMath::Color MaskingColor = VPMath::Color{ 0, 0, 0, 0 };
+	// 인터랙티브 COLOR
+	DirectX::XMFLOAT4 color;
 };
 
 

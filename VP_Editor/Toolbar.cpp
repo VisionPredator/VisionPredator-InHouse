@@ -5,10 +5,12 @@
 #include "EventManager.h"
 #include "../PhysxEngine/IPhysx.h"
 #include "../VPGraphics/Log.h"
+#include "InputManager.h"
 bool Toolbar::m_IsPlaying = false;
 bool Toolbar::m_IsPaused = false;
 Toolbar::Toolbar()
 {
+	
 }
 Toolbar::Toolbar(std::shared_ptr<SceneManager> sceneManager, Physic::IPhysx* physicinterface) :m_SceneManager{ sceneManager }, m_PhysicEngine{ physicinterface }
 {
@@ -24,9 +26,9 @@ void Toolbar::ImGuiRender()
 		Menu();
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Help"))
+	if (ImGui::BeginMenu("Setting"))
 	{
-		Help();
+		Setting();
 		ImGui::EndMenu();
 	}
 	ImGui::SameLine(ImGui::GetWindowWidth() / 2 - 63);
@@ -152,7 +154,7 @@ void Toolbar::Menu()
 	}
 }
 
-void Toolbar::Help()
+void Toolbar::Setting()
 {
 	if (ImGui::MenuItem("PhysicSetting"))
 	{
@@ -163,6 +165,26 @@ void Toolbar::Help()
 	{
 		m_ShowNavSettings = true;
 	}
+	if (InputManager::GetInstance().GetClipmode())
+	{
+		if (ImGui::MenuItem("SetClientClipMode"))
+		{
+			InputManager::GetInstance().SetClipMode(false);
+
+		}
+
+	}
+	else
+	{
+		if (ImGui::MenuItem("SetWindowClipMode"))
+		{
+			InputManager::GetInstance().SetClipMode(true);
+		}
+	}
+
+
+
+
 }
 
 void Toolbar::Serialize()

@@ -29,8 +29,8 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::StaticFriction
 		, PlayerComponent::VPGageCoolTime
 		, PlayerComponent::TransformationTime
-
 	);
+	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor);
 	META_ADD_COMP(PlayerSoundComponent, PlayerSoundComponent::WalkSoundKey1, PlayerSoundComponent::WalkSoundKey2, PlayerSoundComponent::Volume_Walk
 		, PlayerSoundComponent::RunSoundKey1, PlayerSoundComponent::RunSoundKey2, PlayerSoundComponent::Volume_Run
 		, PlayerSoundComponent::JumpSoundkey, PlayerSoundComponent::Volume_Jump
@@ -74,15 +74,16 @@ void VispredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
 	META_ADD_ENUMCLASS(PlayerFSM
-		, PlayerFSM::IDLE
-		, PlayerFSM::WALK
-		, PlayerFSM::RUN
-		, PlayerFSM::CROUCH
-		, PlayerFSM::Dash_Slide
-		, PlayerFSM::JUMP
-		, PlayerFSM::DIE
-		, PlayerFSM::DESTROY
-		, PlayerFSM::Transformation);
+		,PlayerFSM::IDLE
+		,PlayerFSM::WALK
+		,PlayerFSM::RUN
+		,PlayerFSM::CROUCH
+		,PlayerFSM::Dash_Slide
+		,PlayerFSM::JUMP
+		,PlayerFSM::DIE
+		,PlayerFSM::DIE_END
+		,PlayerFSM::Transformation);
+	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right, PlayerMelee::END);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyStates, EnemyStates::Idle, EnemyStates::Chase, EnemyStates::Patrol, EnemyStates::Dead);
 	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);
@@ -120,15 +121,6 @@ void VispredRegister::Register_EnumClass()
 		, VPAni::ToVP_run
 		, VPAni::ToVP_draw
 	);
-
-	META_ADD_ENUMCLASS(PlayerMelee
-		, PlayerMelee::Sword_First
-		, PlayerMelee::Sword_Second
-		, PlayerMelee::Sword_Third
-		, PlayerMelee::Sword_Fourth
-		, PlayerMelee::VP_Left
-		, PlayerMelee::VP_Right
-		, PlayerMelee::END);
 }
 
 void VispredRegister::Register_Structs()

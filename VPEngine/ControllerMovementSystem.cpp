@@ -7,13 +7,6 @@ ControllerMovementSystem::ControllerMovementSystem(std::shared_ptr<SceneManager>
 {
 }
 
-void ControllerMovementSystem::Update(float deltaTime)
-{
-	///전체적인 컨트롤러 시스템 업데이트
-
-
-	///인풋을 통해 데이터를 저장.
-}
 
 void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, ControllerComponent& comp)
 {

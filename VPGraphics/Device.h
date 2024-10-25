@@ -21,7 +21,7 @@ public:
 	~Device();
 
 	void Initialize(HWND hWnd);
-	void OnResize();
+	void OnResize(bool isFullScreen);
 
 	ID3D11DeviceContext* Context() const;
 	ID3D11Device* Get() const;
@@ -58,5 +58,6 @@ private:
 
 	HWND m_hWnd = nullptr;
 	RECT m_wndSize;
+	bool m_isFullScreen = false;
 };
 

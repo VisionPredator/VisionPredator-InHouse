@@ -32,6 +32,7 @@ public:
 	int m_ScreenWidth {};
 	int m_ScreenHeight{};
 	static bool isResize;
+	static bool isFullScreen;
 protected:
 	void Addsystem();
 	virtual void Update();

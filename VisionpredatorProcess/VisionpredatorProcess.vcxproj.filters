@@ -180,6 +180,15 @@
     <ClInclude Include="EnemyAttackState.h">
       <Filter>Finite State Machine\Enemy\Movement</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerFSMSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InterectiveSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InterectiveComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -307,6 +316,15 @@
     </ClCompile>
     <ClCompile Include="EnemyAttackState.cpp">
       <Filter>Finite State Machine\Enemy\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerFSMSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InterectiveSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InterectiveComponent.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
