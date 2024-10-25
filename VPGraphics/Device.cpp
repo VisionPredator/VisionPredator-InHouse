@@ -120,20 +120,47 @@ void Device::Initialize(HWND hWnd)
 	CreateSwapChain();
 
 
-	
+
 }
 
-void Device::OnResize()
+void Device::OnResize(bool isFullScreen)
 {
 	GetClientRect(m_hWnd, &m_wndSize);
-	m_SwapChain->Release();
+	//m_SwapChain->Release();
 
 	float Width = static_cast<float>(m_wndSize.right - m_wndSize.left);
 	float Height = static_cast<float>(m_wndSize.bottom - m_wndSize.top);
 	//m_SwapChain->ResizeBuffers(1, Width, Height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
 
-	CreateSwapChain();
+	//기존 바인된 rtv srv 해제
+	const int num = static_cast<int>(Slot_T::End);
+	ID3D11ShaderResourceView* pSRV[num] = {};
+
+	for (int i = 0; i < num; i++)
+	{
+		pSRV[i] = nullptr;
+	}
+
+	const int numRTV = 8; //최대 8개까지 지원하기때문
+	ID3D11RenderTargetView* pRTV[numRTV] = {};
+	for (int i = 0; i < numRTV; i++)
+	{
+		pRTV[i] = nullptr;
+	}
+
+	m_Context->PSSetShaderResources(0, num, pSRV);//최대128
+	m_Context->OMSetRenderTargets(numRTV, pRTV, nullptr);
+
+	HRESULT hr;
+	hr = m_SwapChain->SetFullscreenState(isFullScreen, NULL);
+	hr = m_SwapChain->ResizeBuffers(0, static_cast<UINT>(Width), static_cast<UINT>(Height), DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	if (FAILED(hr))
+	{
+		std::cout << "SwapChain Resize Failed\n";
+	}
+
+	//CreateSwapChain();
 }
 
 ID3D11DeviceContext* Device::Context() const
@@ -257,7 +284,6 @@ bool Device::CreateSwapChain()
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
 	/*
 	//디퍼드땜에 안쓰는중
 	if (ableMSAA)
@@ -306,7 +332,6 @@ bool Device::CreateSwapChain()
 	}
 
 	hr = dxgiFactory->CreateSwapChain(m_Device, &sd, &m_SwapChain);
-	//hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &sd, &m_SwapChain);
 	if (FAILED(hr))
 	{
 		MessageBox(0, L"Factory CreateSwapChain Failed", 0, 0);

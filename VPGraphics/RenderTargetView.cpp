@@ -17,7 +17,7 @@ RenderTargetView::RenderTargetView(const std::shared_ptr<Device>& device, const 
 	OnResize();
 }
 
-void RenderTargetView::CreateDownscaledView(const unsigned& scaleRatio)
+void RenderTargetView::CreateDownscaledView(const unsigned int& scaleRatio)
 {
 	Release();
 
