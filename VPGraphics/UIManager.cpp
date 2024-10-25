@@ -95,6 +95,19 @@ void UIManager::DeleteTextObject(uint32_t entityId)
 	}
 }
 
+RECT UIManager::GetImageRect(uint32_t entityID) const
+{
+	for (const auto& image : m_Images)
+	{
+		if (image->GetID() == entityID)
+		{
+			return image->GetRect();
+		}
+	}
+
+	return RECT{};
+}
+
 void UIManager::DrawAllImages()
 {
 	// Image 의 Layer 값에 따라 정렬하고 그린다.
