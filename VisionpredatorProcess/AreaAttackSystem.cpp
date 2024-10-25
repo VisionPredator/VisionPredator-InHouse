@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "AreaAttackSystem.h"
 
+#include "StatesInclude.h"
+
 AreaAttackSystem::AreaAttackSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {
 }
