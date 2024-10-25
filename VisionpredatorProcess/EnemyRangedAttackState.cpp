@@ -72,6 +72,8 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 		}
 
 		Exit(component);
+
+		ChangeCurrentState(enemyComp, &EnemyMovementState::s_IdleAttack);
 	}
 
 	if (enemyComp->GetComponent<NavAgentComponent>()->IsChase)
