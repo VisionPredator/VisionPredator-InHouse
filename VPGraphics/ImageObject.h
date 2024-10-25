@@ -42,8 +42,10 @@ public:
 
 	void SetID(uint32_t entityID) { m_ID = entityID; }
 	void SetImageInfo(const ui::ImageInfo& info);
+
 	uint32_t GetID() const { return m_ID; }
 	uint32_t GetLayer() const { return m_Info.Layer; }
+	RECT GetRect() const { return m_ImageRect; }
 
 private:
 	bool InitializeBuffers();
@@ -87,4 +89,6 @@ private:
 	float m_ImageCenterPosY = 0;
 	float m_ImagePosX = 0;
 	float m_ImagePosY = 0;
+
+	RECT m_ImageRect{};
 };

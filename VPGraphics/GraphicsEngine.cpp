@@ -432,6 +432,11 @@ void GraphicsEngine::DeleteTextObject(uint32_t entityId)
 	m_UIManager->DeleteTextObject(entityId);
 }
 
+RECT GraphicsEngine::GetImageRect(uint32_t entityID) const
+{
+	return m_UIManager->GetImageRect(entityID);
+}
+
 void GraphicsEngine::DrawSphere(const debug::SphereInfo& info)
 {
 	m_DebugDrawManager->AddTask(info);
