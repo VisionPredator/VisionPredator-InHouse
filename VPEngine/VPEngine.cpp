@@ -17,6 +17,7 @@
 #endif
 
 bool VPEngine::isResize = false;
+bool VPEngine::isFullScreen = false;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
@@ -67,7 +68,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_Graphics->Initialize();
 	m_SceneManager->Initialize();
 	m_PhysicEngine->Initialize();
-	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine,m_SoundEngine.get());
+	m_SystemManager->Initialize(m_SceneManager, m_Graphics, m_PhysicEngine, m_SoundEngine.get());
 	/// 다 초기화 되고 윈도우 만들기
 	this->Addsystem();
 	EventManager::GetInstance().Subscribe("OnAddSystemLater", CreateSubscriber(&VPEngine::OnAddSystemLater));
@@ -126,7 +127,7 @@ void VPEngine::Loop()
 
 		if (VPEngine::isResize)
 		{
-			m_Graphics->OnResize(m_hWnd);
+			m_Graphics->OnResize(m_hWnd, VPEngine::isFullScreen);
 			EventManager::GetInstance().ImmediateEvent("OnResize", m_hWnd);
 			VPEngine::isResize = false;
 		}
@@ -147,7 +148,7 @@ void VPEngine::Loop()
 			/*
 			//Fixed
 			//Update
-			//소켓 
+			//소켓
 			//static float tempTime = 0;
 			//tempTime += m_DeltaTime;
 			//while (tempTime > (1 / 60.f))
@@ -238,20 +239,66 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	switch (message)
 	{
+		case WM_ENTERSIZEMOVE:
+		{
+			ClipCursor(NULL);
+
+		}
+		break;
+		case WM_EXITSIZEMOVE:
+			VPEngine::isResize = true;
+			break;
+		case WM_DISPLAYCHANGE:
+		{
+			if (VPEngine::isFullScreen)
+			{
+				VPEngine::isFullScreen = false;
+
+				LONG style = GetWindowLong(hWnd, GWL_STYLE);
+				style &= ~(WS_POPUP);  // 기존 창 스타일 제거
+				style |= WS_OVERLAPPEDWINDOW;                // WS_OVERLAPPEDWINDOW 스타일 적용
+				SetWindowLong(hWnd, GWL_STYLE, style);
+				// 2. 화면 크기에 맞게 창 크기 설정
+				int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+				int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+				SetWindowPos(hWnd, HWND_TOP, 0, 0, screenWidth, screenHeight, SWP_FRAMECHANGED | SWP_NOOWNERZORDER);
+
+			}
+			else
+			{
+				VPEngine::isFullScreen = true; 
+
+				LONG style = GetWindowLong(hWnd, GWL_STYLE);
+				style &= ~(WS_OVERLAPPEDWINDOW);  // 기존 창 스타일 제거
+				style |= WS_POPUP;                // WS_POPUP 스타일 적용
+				SetWindowLong(hWnd, GWL_STYLE, style);
+
+				// 2. 화면 크기에 맞게 창 크기 설정
+				int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+				int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+				// 창을 전체 화면으로 설정 (화면 크기 및 위치 설정)
+				SetWindowPos(hWnd, HWND_TOP, 0, 0, screenWidth, screenHeight, SWP_FRAMECHANGED | SWP_NOOWNERZORDER);
+			}
+		}
+		break;
+
 		case WM_SIZE:
 		{
 			int wmId = LOWORD(wParam);
 
-
 			// 메뉴 선택을 구문 분석합니다:
 			switch (wmId)
 			{
-
 				case SIZE_RESTORED:
 				case SIZE_MAXIMIZED:
 					VPEngine::isResize = true;
 					break;
+				case SIZE_MINIMIZED:
+				{
 
+				}
+					break;
 				case IDM_ABOUT:
 
 					break;
@@ -264,15 +311,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}
 		break;
-		case WM_ENTERSIZEMOVE:
-			// When the user starts resizing or moving the window, release the cursor clipping
-			ClipCursor(NULL);
-			break;
-
-		case WM_EXITSIZEMOVE:
-			// When the user finishes resizing or moving the window, reapply the cursor clipping
-			EventManager::GetInstance().ImmediateEvent("OnClipMouse", hWnd);
-			break;
 
 		case WM_ACTIVATE:
 			if (wParam != WA_INACTIVE) {

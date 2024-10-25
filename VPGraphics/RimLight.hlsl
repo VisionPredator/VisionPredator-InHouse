@@ -13,8 +13,8 @@ struct VS_OUTPUT
 };
 
 
-Texture2D gBuffer : register(t0);
-Texture2D gNormal : register(t1);
+//Texture2D gBuffer : register(t0);
+Texture2D gNormal : register(t0);
 
 sampler gLinear : register(s0);
 
@@ -42,10 +42,14 @@ cbuffer Material : register(b1)
     float2 lightmaptiling; // x y
 };
 
+cbuffer Color: register(b2)
+{
+    float4 color;
+}
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {   
-    float4 baseColor = float4(1, 0, 0, 1.f);     
+    float4 baseColor = color;     
     
    
     float4 Normal = input.normal;
@@ -70,6 +74,6 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     rim = smoothstep(0, 1.0f, rim);
     
     float4 result = rim * baseColor;
-    result.w = 1; //우리는 림라이트로만 보여줄거라 alpha 1로 고정함
+    //result.w = 1; //우리는 림라이트로만 보여줄거라 alpha 1로 고정함
     return result;
 }

@@ -304,6 +304,10 @@
     <ClInclude Include="DecalSystem.h">
       <Filter>System\Derived\Graphics\Source</Filter>
     </ClInclude>
+    <ClInclude Include="ButtonComponent.h">
+      <Filter>Component\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -456,6 +460,10 @@
     <ClCompile Include="DecalSystem.cpp">
       <Filter>System\Derived\Graphics\Source</Filter>
     </ClCompile>
+    <ClCompile Include="ButtonComponent.cpp">
+      <Filter>Component\etc\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">
