@@ -96,6 +96,14 @@ void DeferredInstancing::Render()
 	//instance buffer
 	for (auto& object : m_RenderList)
 	{
+
+		if (object->color.x != 0.f ||
+			object->color.y != 0.f ||
+			object->color.z != 0.f)
+		{
+			continue;
+		}
+
 		if (object->isOverDraw)
 		{
 			continue;

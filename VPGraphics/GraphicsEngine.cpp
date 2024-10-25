@@ -656,18 +656,6 @@ void GraphicsEngine::Culling()
 				//break;
 			}
 		}
-		else
-		{
-			object->ModelID = -1;
-
-			if (object->isVisible)
-			{
-				if (object->Filter == GeoMetryFilter::Box)
-				{
-					m_AfterCulling.push_back(object);
-				}
-			}
-		}
 	}
 }
 

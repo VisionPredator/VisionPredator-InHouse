@@ -21,6 +21,7 @@ void SkinnedMeshSystem::ComponentAdded(Component* comp)
 		meshComponent->Renderdata->world = Transform.WorldTransform;
 		meshComponent->Renderdata->duration = 0;
 		meshComponent->Renderdata->isSkinned = true;
+		meshComponent->Renderdata->color = meshComponent->InteractiveColor;
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
@@ -48,6 +49,7 @@ void SkinnedMeshSystem::BeginRenderUpdate(float deltaTime)
 		auto renderdata = skinComp.Renderdata;
 		renderdata->isVisible = skinComp.IsVisible;
 		renderdata->isOverDraw = skinComp.IsOverDraw;
+		renderdata->color = skinComp.InteractiveColor;
 
 		renderdata->FBX = skinComp.FBX;
 		renderdata->world = transform.WorldTransform;

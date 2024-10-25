@@ -202,6 +202,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_UsingMaterial = Create<ConstantBuffer<MaterialData>>(L"MaterialData", ConstantBufferType::Default);
  	m_Pallete = Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete", ConstantBufferType::Default);
 	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize", ConstantBufferType::Default);
+	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"Color", ConstantBufferType::Default);
 
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, (m_Camera.lock()->GetAddress()));
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());

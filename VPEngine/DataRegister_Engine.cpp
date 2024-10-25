@@ -116,14 +116,14 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(IDComponent, IDComponent::Name);
 	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation, TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
-	META_ADD_COMP(MeshComponent, MeshComponent::IsVisible, MeshComponent::IsOverDraw,MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::MaskColor);
+	META_ADD_COMP(MeshComponent, MeshComponent::IsVisible, MeshComponent::IsOverDraw,MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::MaskColor,MeshComponent::InteractiveColor);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::IsVisible, SkinningMeshComponent::IsOverDraw,SkinningMeshComponent::FBX);
 	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_COMP(Parent, Parent::ParentID);
 	META_ADD_COMP(Children, Children::ChildrenID);
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
 	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay, AnimationComponent::IsBlending,AnimationComponent::PlayerCurAni, AnimationComponent::AnimationSpeed_Transition);
-	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX);
+	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX,SkinningMeshComponent::InteractiveColor);
 	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
