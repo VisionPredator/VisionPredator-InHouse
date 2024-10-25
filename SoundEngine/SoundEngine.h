@@ -15,6 +15,7 @@ public:
     void Load2DSound(const std::string& path, const std::string& key, SoundType type);
     void Load3DSound(const std::string& path, const std::string& key, SoundType type);
     bool Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose) override;
+    bool Play(const uint32_t& id, const std::string& key, float volume,bool Is2D, bool IsLoop, VPMath::Vector3 pose) override;
     void Stop(const uint32_t& id, const std::string& soundKey) override;
     void Stop(const uint32_t& id) override;
     void SetListenerPosition(VPMath::Vector3 pos , VPMath::Vector3 Up, VPMath::Vector3 Forward) override;

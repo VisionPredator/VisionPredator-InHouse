@@ -10,17 +10,17 @@ InputManager* InputManager::instance = nullptr;
 
 InputManager::InputManager()
 {
-
+	EventManager::GetInstance().Subscribe("OnResize", CreateSubscriber(&InputManager::OnResize));
+	EventManager::GetInstance().Subscribe("OnClipMouse", CreateSubscriber(&InputManager::OnClipMouse));
 }
 
 
 
-bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight)
+bool InputManager::Initialize(HINSTANCE hinstance, HWND* hwnd)
 {
+	m_hwnd = hwnd;
 	// 마우스 커서의 위치 지정에 사용될 화면 크기를 설정합니다.
-	m_screenWidth = screenWidth;
-	m_screenHeight = screenHeight;
-
+	OnResize(hwnd);
 	// Direct Input 인터페이스를 초기화 합니다.
 	HRESULT result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
 	//if (FAILED(result))
@@ -46,7 +46,7 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 		returnbool = false;
 	}
 	// 다른 프로그램과 공유하지 않도록 키보드의 협조 수준을 설정합니다
-	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	result = m_keyboard->SetCooperativeLevel(*m_hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
 	{
 		VP_ASSERT(false, "m_keyboard->SetCooperativeLevel");
@@ -70,7 +70,7 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 		returnbool = false;
 	}
 	// 다른 프로그램과 공유 할 수 있도록 마우스의 협력 수준을 설정합니다.
-	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	result = m_mouse->SetCooperativeLevel(*m_hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
 	{
 		VP_ASSERT(false, " m_mouse->SetCooperativeLevel");
@@ -94,24 +94,54 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 
 	return returnbool;
 }
-
-bool InputManager::Update()
+void InputManager::SetClipMode(bool IsWindowMode) {
+	m_IsWindowMode = IsWindowMode;
+	std::any data;
+	OnClipMouse(data);
+}
+void InputManager::OnClipMouse(std::any hwnd)
 {
-	//이전 키 설정을 저장하여 Key Down/Up/Hold 를 구별하는데 쓰입니다.
+	// Apply clipping if enabled
+	if (m_IsWindowMode)
+	{
+		RECT clientRect{};
+		GetWindowRect(*m_hwnd, &clientRect);
+		ClipCursor(&clientRect);
+	}
+	else
+	{
+		RECT clientRect{};
+		GetClientRect(*m_hwnd, &m_clientRect);
+
+		// Convert client coordinates to screen coordinates
+		POINT topLeft = { m_clientRect.left, m_clientRect.top };
+		POINT bottomRight = { m_clientRect.right, m_clientRect.bottom };
+		ClientToScreen(*m_hwnd, &topLeft);
+		ClientToScreen(*m_hwnd, &bottomRight);
+
+		// Update clientRect with screen coordinates
+		m_clientRect.left = topLeft.x;
+		m_clientRect.top = topLeft.y;
+		m_clientRect.right = bottomRight.x;
+		m_clientRect.bottom = bottomRight.y;
+
+		// Apply the clipping
+		ClipCursor(&m_clientRect);
+	}
+}
+bool InputManager::Update() {
+	// Store previous key and mouse states
 	CopyKeyStateToPrevious();
 	CopyMouseStateToPrevious();
-
-	// 키보드의 현재 상태를 읽는다.
-	if (!ReadKeyboard())
-		return false;
-	// 마우스의 현재 상태를 읽는다.
-	if (!ReadMouse())
-		return false;
-	//마우스의 변경상태를 처리합니다.
+	// Read current keyboard state
+	if (!ReadKeyboard()) return false;
+	// Read current mouse state
+	if (!ReadMouse()) return false;
+	// Process mouse input
 	ProcessMouseInput();
+
 	return true;
 }
-
 
 
 void InputManager::Shutdown()
@@ -141,18 +171,37 @@ void InputManager::Shutdown()
 }
 void InputManager::ProcessMouseInput()
 {
-	CalculateMouseDelta();
 
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
-	//프레임 동안 마우스 위치의 변경을 기반으로 마우스 커서의 위치를 업데이트한다.
-	if (m_mouseX < 0) { m_mouseX = 0; }
-	if (m_mouseY < 0) { m_mouseY = 0; }
-	//마우스 위치가 화면 너비 또는 높이를 초과하지 않는지 확인한다.
-	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
-	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
+	if (m_hwnd)
+	{
+	// Get the current cursor position in screen coordinates
+	GetCursorPos(&m_curPos);
+		// Convert screen coordinates to client area coordinates
+		ScreenToClient(*m_hwnd, &m_curPos);
+
+		// Ensure the mouse position stays within the bounds of the client area using m_clientRect
+		if (m_curPos.x < 0) m_curPos.x = 0;
+		if (m_curPos.y < 0) m_curPos.y = 0;
+		if (m_curPos.x > m_clientRect.right) m_curPos.x = m_clientRect.right;
+		if (m_curPos.y > m_clientRect.bottom) m_curPos.y = m_clientRect.bottom;
+
+		// Calculate the delta
+		m_mouseDelta.x = m_mouseState.lX;
+		m_mouseDelta.y = m_mouseState.lY;
+
+	/*	m_mouseDelta.x = m_curPos.x - m_lastPos.x;
+		m_mouseDelta.y = m_curPos.y - m_lastPos.y;*/
+
+		// Update the last position for the next frame
+		m_lastPos = m_curPos;
+	}
 }
 
+
+void InputManager::OnResize(std::any hwnd)
+{
+	OnClipMouse(hwnd);
+}
 void InputManager::CopyKeyStateToPrevious()
 {
 	std::copy(std::begin(m_keyboardState), std::end(m_keyboardState), std::begin(m_previousKeyboardState));
@@ -254,6 +303,11 @@ bool InputManager::IsEscapePressed()
 	return false;
 }
 
+bool InputManager::GetClipmode()
+{
+	return m_IsWindowMode;
+}
+
 bool InputManager::ReadKeyboard()
 {
 	HRESULT result = m_keyboard->GetDeviceState(sizeof(m_keyboardState), (LPVOID)&m_keyboardState);
@@ -300,8 +354,3 @@ bool InputManager::ReadMouse()
 	return true;
 }
 
-void InputManager::CalculateMouseDelta()
-{
-	m_mouseDeltaX = m_mouseState.lX;
-	m_mouseDeltaY = m_mouseState.lY;
-}

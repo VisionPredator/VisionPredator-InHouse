@@ -37,9 +37,9 @@ namespace VisPred
 			,CROUCH
 			,Dash_Slide
 			,JUMP
-			,DIE
-			,DESTROY
 			,Transformation
+			,DIE
+			,DIE_END
 		};
 		enum class PlayerAni
 		{

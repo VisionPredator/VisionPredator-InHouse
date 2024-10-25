@@ -21,9 +21,10 @@ struct PlayerComponent :
 	std::weak_ptr<Entity> CameraPosEntity{};
 	std::weak_ptr<Entity> FirePosEntity{};
 	std::weak_ptr<Entity> LongswordEntity{};
-	uint32_t MaxHP{};
-	uint32_t HP{};
+	int MaxHP{};
+	int HP{};
 	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+	VisPred::Game::PlayerFSM PreFSM = VisPred::Game::PlayerFSM::IDLE;
 	float Height{};
 	float Radius{};
 	float Sencitive = 1.f;
@@ -74,6 +75,9 @@ struct PlayerComponent :
 	float NonDamageProgress{};
 	float NonDamageTime =1;
 	float MaxNonDamageTime{};
+
+	float DieProgress{};
+	float DieTime=3;
 	VPMath::Quaternion GunRecoilEndQuat{};
 	VPMath::Quaternion GunRecoilStartQuat{};
 };

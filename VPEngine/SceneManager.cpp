@@ -427,9 +427,6 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 	VPMath::Vector3 rot = Quater.ToEuler() * 180 / VPMath::XM_PI;
 	return SpawnEditablePrefab(prefabname, pos, rot, scele);
 }
-
-
-
 std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scele)
 {
 	PrefabData prefabData = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
@@ -499,6 +496,19 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 
 	return  GetEntity(mainprefabID);
 }
+
+std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, float volume, bool isloop, VPMath::Vector3 pos)
+{
+	auto entity = CreateEntity(soundName);
+	auto soundcomp = entity->AddComponent<SoundComponent>();
+	soundcomp->SoundPath = soundName;
+	soundcomp->Volume = volume;
+	soundcomp->Loop= isloop;
+	entity->GetComponent<TransformComponent>()->Local_Location = pos;
+	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
+	return std::shared_ptr<Entity>();
+}
+
 
 
 
@@ -676,6 +686,10 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 }
 std::shared_ptr<Entity> SceneManager::CreateEntity()
 {
+	return CreateEntity("Entity");
+}
+std::shared_ptr<Entity> SceneManager::CreateEntity(std::string entityName)
+{
 	// 난수 생성기를 사용하여 엔티티 ID를 생성합니다.
 	std::random_device rd;  // 난수 생성기
 	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
@@ -697,6 +711,7 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 	std::shared_ptr<IDComponent> IDComp = tempEntity->AddComponent<IDComponent>();
 	std::shared_ptr<TransformComponent> TransformComp = tempEntity->AddComponent<TransformComponent>();
 
+	IDComp->Name = entityName;
 	// IDComponent의 이름을 설정합니다.
 	if (IDComp->Name == "Entity")
 	{
@@ -704,7 +719,6 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 		IDComp->Name = IDComp->Name + std::to_string(a);
 		a++;
 	}
-
 	return tempEntity;
 }
 uint32_t SceneManager::CreateRandomEntityID()
