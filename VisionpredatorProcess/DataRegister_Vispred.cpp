@@ -17,7 +17,7 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(PlayerComponent
 		, PlayerComponent::IsAttacking
 		, PlayerComponent::CurrentFSM
-		,PlayerComponent::CameraPosName, PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName, PlayerComponent::VPHandName, PlayerComponent::LongswordName
+		, PlayerComponent::CameraPosName, PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName, PlayerComponent::VPHandName, PlayerComponent::LongswordName
 		, PlayerComponent::NonDamageTime
 		, PlayerComponent::MaxHP, PlayerComponent::HP
 		, PlayerComponent::Sencitive
@@ -42,7 +42,20 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::IdentityAttach, AreaAttackComponent::Damage);
 	META_ADD_COMP(PlayerMeleeComponent, PlayerMeleeComponent::DefalutPrefab, PlayerMeleeComponent::DashPrefab, PlayerMeleeComponent::AttackMode, PlayerMeleeComponent::SwordLength, PlayerMeleeComponent::SwordAngle, PlayerMeleeComponent::SwordDamage, PlayerMeleeComponent::VPLength, PlayerMeleeComponent::VPAngle, PlayerMeleeComponent::VPDamage);
 
-	META_ADD_COMP(EnemyComponent, EnemyComponent::HP, EnemyComponent::CurrentFSM, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV, EnemyComponent::NearZ, EnemyComponent::FarZ, EnemyComponent::IsModelFlipped, EnemyComponent::NoiseRangeRadius, EnemyComponent::ChaseRangeRadius, EnemyComponent::DeadTime, EnemyComponent::AttackRange, EnemyComponent::AttackSpeed, EnemyComponent::AttackCooldown, EnemyComponent::OnHit, EnemyComponent::AttackAccuracy, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour);
+	META_ADD_COMP(EnemyComponent
+		, EnemyComponent::HP
+		, EnemyComponent::CurrentFSM
+		, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV
+		, EnemyComponent::NearZ, EnemyComponent::FarZ
+		, EnemyComponent::IsModelFlipped
+		, EnemyComponent::NoiseRangeRadius, EnemyComponent::ChaseRangeRadius
+		, EnemyComponent::DeadTime
+		, EnemyComponent::AttackRange, EnemyComponent::AttackSpeed, EnemyComponent::AttackCooldown
+		, EnemyComponent::OnHit
+		, EnemyComponent::AttackAccuracy
+		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
+		, EnemyComponent::AttackPower
+	);
 	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::ThrowDamage, GunComponent::BulletPrefab, GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 	META_ADD_COMP(AimUIComponent
 		, AimUIComponent::Killed
@@ -51,7 +64,7 @@ void VispredRegister::Register_Components()
 		, AimUIComponent::Interected
 	);
 	META_ADD_COMP(VPUIComponent
-		,VPUIComponent::ChangeColor
+		, VPUIComponent::ChangeColor
 		, VPUIComponent::FullImage
 		, VPUIComponent::GageImage
 	)
@@ -112,7 +125,7 @@ void VispredRegister::Register_EnumClass()
 
 void VispredRegister::Register_Structs()
 {
-	
+
 }
 
 void VispredRegister::Register_Value()

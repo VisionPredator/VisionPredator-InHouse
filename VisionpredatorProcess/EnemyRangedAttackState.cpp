@@ -52,7 +52,6 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 		//ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 		//ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::CHASE, 0.005f, 0.005, false);	// Attack Idle 이 있었으면 넣었는데 없어서 이걸로 대체. 근데 어색해서 Attack 애니메이션은 안넣기..
 
-
 		enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
 		// 난수 생성 (0 ~ 100 범위)
 		float randomValue = static_cast<float>(rand() % 101);
@@ -63,7 +62,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 			if (detectedObjID == enemyComp->Player->GetEntityID())
 			{
-				enemyComp->Player->HP += -1;
+				enemyComp->Player->HP -= enemyComp->AttackPower;
 				Log::GetClientLogger()->warn("Attack Succeed!!!");
 			}
 			else
@@ -73,6 +72,8 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 		}
 
 		Exit(component);
+
+		ChangeCurrentState(enemyComp, &EnemyMovementState::s_IdleAttack);
 	}
 
 	if (enemyComp->GetComponent<NavAgentComponent>()->IsChase)

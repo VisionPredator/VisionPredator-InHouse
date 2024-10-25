@@ -79,6 +79,7 @@ public:
 	void CreateTextObject(uint32_t entityID, const ui::TextInfo& info) override;
 	void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info) override;
 	void DeleteTextObject(uint32_t entityId) override;
+	RECT GetImageRect(uint32_t entityID) const override;
 
 	/// Light
 	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;

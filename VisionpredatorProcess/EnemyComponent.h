@@ -21,7 +21,7 @@ struct EnemyComponent : public Component
 	}
 
 	VP_JSONBODY(EnemyComponent, HP, CurrentFSM, CurrentAni, EnemyType, HorizontalFOV, VerticalFOV, NearZ, FarZ, 
-		IsModelFlipped, NoiseRangeRadius, ChaseRangeRadius, DeadTime, AttackRange, AttackSpeed, AttackCooldown, OnHit, AttackAccuracy, AccuracyRangeOne, AccuracyRangeTwo, AccuracyRangeThree, AccuracyRangeFour)
+		IsModelFlipped, NoiseRangeRadius, ChaseRangeRadius, DeadTime, AttackRange, AttackSpeed, AttackCooldown, OnHit, AttackAccuracy, AccuracyRangeOne, AccuracyRangeTwo, AccuracyRangeThree, AccuracyRangeFour, AttackPower)
 	float HP{}; 
 	VisPred::Game::EnemyStates CurrentFSM= VisPred::Game::EnemyStates::Idle;
 	VisPred::Game::EnemyAni CurrentAni = VisPred::Game::EnemyAni::IDLE;
@@ -42,31 +42,19 @@ struct EnemyComponent : public Component
 	// 사망 후 소멸 시간
 	float DeadTime = 0.f;	
 
-	/// 아직 쓰이지 않는 변수. 연결해야한다.
-
+	// 명중률에 관여하는 거리범위들
 	float AccuracyRangeOne = 1.f;
 	float AccuracyRangeTwo = 3.f;
 	float AccuracyRangeThree = 5.f;
 	float AccuracyRangeFour = 7.f;
 
-	// 공격 사정거리
+	// 공격력
+	uint32_t AttackPower = 1.f;
+
 	float AttackRange = 10.f;	// 사정거리 내에 플레이어가 있으면 더이상 쫓지 않고 멈춰서 사격.
-	// 공격 속도
-	float AttackSpeed = 0.f;	// 여러 공격/투사체를 연달아 발사하는 공격 사이의 시간
-	// 공격 쿨다운 시간
-	float AttackCooldown = 0.f;		// 사이클의 마지막 공격과 다음 사이클의 첫 번째 공격 사이의 시간
-
-	float currentAttackTime = 0.f;  // 공격이 가능한지 확인하기 위한 타이머
-	bool IsCoolingDown = false;		// 쿨다운 상태를 관리
-
-	float AttackAccuracy = 100.f;	// 공격 명중률
-
 	bool OnHit = false;	// 피격 받는 중인지
 
-
-	float DistanceToPlayer = -1.f;	// 플레이어 까지의 거리
-
-	// Chase 상태 중 마지막으로 포착 된 플레이어의 위치
+	// Chase 상태 중 마지막으로 포착된 플레이어의 위치
 	VPMath::Vector3 LastDetectedPlayerPos;
 
 	EnemyBehaviorState* BehaviorState;
@@ -78,4 +66,14 @@ struct EnemyComponent : public Component
 	std::weak_ptr<SceneManager> SceneManager{};
 	Physic::IPhysx* PhysicsManager = nullptr;
 	Graphics::Interface* Graphics = nullptr;
+
+	/// 아직 쓰이지 않는 변수. 연결해야한다.
+	// 공격 속도
+	float AttackSpeed = 0.f;	// 여러 공격/투사체를 연달아 발사하는 공격 사이의 시간
+	// 공격 쿨다운 시간
+	float AttackCooldown = 0.f;		// 사이클의 마지막 공격과 다음 사이클의 첫 번째 공격 사이의 시간
+	float currentAttackTime = 0.f;  // 공격이 가능한지 확인하기 위한 타이머
+	bool IsCoolingDown = false;		// 쿨다운 상태를 관리
+	float AttackAccuracy = 100.f;	// 공격 명중률
+	float DistanceToPlayer = -1.f;	// 플레이어 까지의 거리
 };

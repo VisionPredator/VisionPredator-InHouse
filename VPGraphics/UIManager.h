@@ -29,6 +29,8 @@ public:
 	void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info);
 	void DeleteTextObject(uint32_t entityId);
 
+	RECT GetImageRect(uint32_t entityID) const;
+
 private: 
 	void DrawAllImages();
 	void DrawAllTexts();

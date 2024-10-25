@@ -1233,7 +1233,11 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		if (LongswordEntity)
 			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
-			VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
+		{
+			auto entity = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Longsword.prefab", {}, VPMath::Vector3{}, {0.2,0.2,0.2});
+			playercomp->LongswordEntity = entity;
+			//VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
+		}
 
 
 		playercomp->HandEntity.lock().get()->GetComponent<SkinningMeshComponent>()->IsOverDraw = true;
