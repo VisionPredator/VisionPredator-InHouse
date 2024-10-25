@@ -27,6 +27,7 @@ void GunSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 				if (guncomp.IsEmpty&& guncomp.GetComponent<RigidBodyComponent>()->Speed.Length() > 1.f)
 				{
 					GetSceneManager()->GetEntity(entitypair.second)->GetComponent<EnemyComponent>()->HP -= guncomp.ThrowDamage;
+					GetSceneManager()->GetEntity(entitypair.second)->GetComponent<EnemyComponent>()->OnHit = true;
 				}
 			}
 
@@ -44,7 +45,8 @@ void GunSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 				auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(entitypair.second);
 				if (guncomp.IsEmpty && guncomp.GetComponent<RigidBodyComponent>()->Speed.Length() > 1.f)
 				{
-				GetSceneManager()->GetEntity(entitypair.first)->GetComponent<EnemyComponent>()->HP -= guncomp.ThrowDamage;
+					GetSceneManager()->GetEntity(entitypair.first)->GetComponent<EnemyComponent>()->HP -= guncomp.ThrowDamage;
+					GetSceneManager()->GetEntity(entitypair.first)->GetComponent<EnemyComponent>()->OnHit = true;
 				}
 			}
 

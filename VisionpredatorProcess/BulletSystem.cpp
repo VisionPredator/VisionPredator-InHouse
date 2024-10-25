@@ -24,7 +24,6 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 		auto damage = bullet.GetComponent<BulletComponent>()->Damage;
 		Other.GetComponent<EnemyComponent>()->HP -= damage;
 		Other.GetComponent<EnemyComponent>()->OnHit = true;
-		Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 	GetSceneManager()->DestroyEntity(bullet.GetEntityID());
 
