@@ -238,7 +238,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	switch (message)
 	{
-
 		case WM_ENTERSIZEMOVE:
 		{
 			VPEngine::isResize = true;
@@ -250,10 +249,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (VPEngine::isFullScreen)
 			{
 				VPEngine::isFullScreen = false;
+
+				LONG style = GetWindowLong(hWnd, GWL_STYLE);
+				style &= ~(WS_POPUP);  // 기존 창 스타일 제거
+				style |= WS_OVERLAPPEDWINDOW;                // WS_OVERLAPPEDWINDOW 스타일 적용
+				SetWindowLong(hWnd, GWL_STYLE, style);
+				// 2. 화면 크기에 맞게 창 크기 설정
+				int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+				int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+				SetWindowPos(hWnd, HWND_TOP, 0, 0, screenWidth, screenHeight, SWP_FRAMECHANGED | SWP_NOOWNERZORDER);
+
 			}
 			else
 			{
-				VPEngine::isFullScreen = true;
+				VPEngine::isFullScreen = true; 
+
+				LONG style = GetWindowLong(hWnd, GWL_STYLE);
+				style &= ~(WS_OVERLAPPEDWINDOW);  // 기존 창 스타일 제거
+				style |= WS_POPUP;                // WS_POPUP 스타일 적용
+				SetWindowLong(hWnd, GWL_STYLE, style);
+
+				// 2. 화면 크기에 맞게 창 크기 설정
+				int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+				int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+				// 창을 전체 화면으로 설정 (화면 크기 및 위치 설정)
+				SetWindowPos(hWnd, HWND_TOP, 0, 0, screenWidth, screenHeight, SWP_FRAMECHANGED | SWP_NOOWNERZORDER);
 			}
 		}
 		break;
@@ -268,6 +289,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case SIZE_RESTORED:
 				case SIZE_MAXIMIZED:
 					VPEngine::isResize = true;
+					break;
+				case SIZE_MINIMIZED:
+				{
+
+				}
 					break;
 				case IDM_ABOUT:
 

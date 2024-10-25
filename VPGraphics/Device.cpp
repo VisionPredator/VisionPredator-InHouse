@@ -120,7 +120,7 @@ void Device::Initialize(HWND hWnd)
 	CreateSwapChain();
 
 
-	
+
 }
 
 void Device::OnResize(bool isFullScreen)
@@ -154,7 +154,7 @@ void Device::OnResize(bool isFullScreen)
 
 	HRESULT hr;
 	hr = m_SwapChain->SetFullscreenState(isFullScreen, NULL);
-	hr = m_SwapChain->ResizeBuffers(0,static_cast<UINT>(Width), static_cast<UINT>(Height), DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	hr = m_SwapChain->ResizeBuffers(0, static_cast<UINT>(Width), static_cast<UINT>(Height), DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 	if (FAILED(hr))
 	{
 		std::cout << "SwapChain Resize Failed\n";
