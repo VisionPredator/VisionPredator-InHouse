@@ -1,4 +1,4 @@
-#include "pch.h"
+	#include "pch.h"
 #include "ButtonSystem.h"
 #include "InputManager.h"
 #include "..\VPGraphics\Log.h"
@@ -30,7 +30,22 @@ void ButtonSystem::Update(float deltaTime)
 				
 				if (INPUTKEYUP(MOUSEKEY::LBUTTON))
 				{
-					comp.skill;
+
+					switch (comp.skill)	
+					{
+						case VisPred::Engine::Skill::START:
+							m_SceneManager.lock()->ChangeScene("../Data/Scene/level10.scene");
+							break;
+						case VisPred::Engine::Skill::OPTION:
+							break;
+						case VisPred::Engine::Skill::EXIT:
+							break;
+
+						default:
+							break;
+					}
+
+
 				}
 
 			}
