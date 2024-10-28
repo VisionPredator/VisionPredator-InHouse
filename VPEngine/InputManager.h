@@ -235,7 +235,7 @@ private:
 	POINT m_lastPos = {};
 	POINT m_mouseDelta = {};
 	HWND* m_hwnd{};
-	bool m_IsWindowMode=false;
+	bool m_IsWindowMode= false;
 };
 
 template <typename T>
