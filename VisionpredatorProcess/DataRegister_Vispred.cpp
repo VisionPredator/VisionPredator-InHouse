@@ -31,13 +31,41 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::TransformationTime
 	);
 	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor);
-	META_ADD_COMP(PlayerSoundComponent, PlayerSoundComponent::WalkSoundKey1, PlayerSoundComponent::WalkSoundKey2, PlayerSoundComponent::Volume_Walk
-		, PlayerSoundComponent::RunSoundKey1, PlayerSoundComponent::RunSoundKey2, PlayerSoundComponent::Volume_Run
-		, PlayerSoundComponent::JumpSoundkey, PlayerSoundComponent::Volume_Jump
-		, PlayerSoundComponent::SlideSoundkey, PlayerSoundComponent::Volume_Slide
-		, PlayerSoundComponent::SitSoundKey, PlayerSoundComponent::Volume_Sit
-		, PlayerSoundComponent::HurtSoundKey, PlayerSoundComponent::Volume_Hurt
-	);
+	META_ADD_COMP(PlayerSoundComponent
+		, PlayerSoundComponent::Volume_Walk
+		, PlayerSoundComponent::Volume_Run
+		, PlayerSoundComponent::Volume_Jump
+		, PlayerSoundComponent::Volume_Slide
+		, PlayerSoundComponent::Volume_Dash
+		, PlayerSoundComponent::Volume_Sit
+		, PlayerSoundComponent::Volume_Hurt
+		, PlayerSoundComponent::Volume_Death
+		, PlayerSoundComponent::Volume_GunDraw
+		, PlayerSoundComponent::Volume_GunThrow
+		, PlayerSoundComponent::Volume_Sword1
+		, PlayerSoundComponent::Volume_Sword2
+		, PlayerSoundComponent::Volume_Sword3
+		, PlayerSoundComponent::Volume_VPAttack1
+		, PlayerSoundComponent::Volume_VPAttack2
+		, PlayerSoundComponent::Volume_Transformation
+		, PlayerSoundComponent::SoundKey_Walk1
+		, PlayerSoundComponent::SoundKey_Walk2
+		, PlayerSoundComponent::SoundKey_Run1
+		, PlayerSoundComponent::SoundKey_Run2
+		, PlayerSoundComponent::SoundKey_Jump
+		, PlayerSoundComponent::SoundKey_Slide
+		, PlayerSoundComponent::SoundKey_Dash
+		, PlayerSoundComponent::SoundKey_Sit
+		, PlayerSoundComponent::SoundKey_Hurt
+		, PlayerSoundComponent::SoundKey_Death
+		, PlayerSoundComponent::SoundKey_GunDraw
+		, PlayerSoundComponent::SoundKey_GunThrow
+		, PlayerSoundComponent::SoundKey_Sword1
+		, PlayerSoundComponent::SoundKey_Sword2
+		, PlayerSoundComponent::SoundKey_Sword3
+		, PlayerSoundComponent::SoundKey_VPAttack1
+		, PlayerSoundComponent::SoundKey_VPAttack2
+		, PlayerSoundComponent::SoundKey_Transformation);
 	META_ADD_COMP(TrunComponent, TrunComponent::MoveTime, TrunComponent::Is_X, TrunComponent::Angle, TrunComponent::Finished);
 	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::IdentityAttach, AreaAttackComponent::Damage);
 	META_ADD_COMP(PlayerMeleeComponent, PlayerMeleeComponent::DefalutPrefab, PlayerMeleeComponent::DashPrefab, PlayerMeleeComponent::AttackMode, PlayerMeleeComponent::SwordLength, PlayerMeleeComponent::SwordAngle, PlayerMeleeComponent::SwordDamage, PlayerMeleeComponent::VPLength, PlayerMeleeComponent::VPAngle, PlayerMeleeComponent::VPDamage);
@@ -56,7 +84,7 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
 		, EnemyComponent::AttackPower
 	);
-	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::ThrowDamage, GunComponent::BulletPrefab, GunComponent::GunSoundPrefab, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
+	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::ThrowDamage, GunComponent::BulletPrefab, GunComponent::GunSoundKey, GunComponent::GunSoundVolume, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 	META_ADD_COMP(AimUIComponent
 		, AimUIComponent::Killed
 		, AimUIComponent::Aimed

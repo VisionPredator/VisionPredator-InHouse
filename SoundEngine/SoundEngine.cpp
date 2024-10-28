@@ -51,11 +51,22 @@ void SoundEngine::Initialize()
 	m_2DEffectPath= "../Data/Sound/Effect_2D/";
 	m_3DEffectPath = "../Data/Sound/Effect_3D/";
 
-
 }
 void SoundEngine::Update()
 {
 	m_System->update();
+
+	for (auto it = m_EntityChannels.begin(); it != m_EntityChannels.end(); )
+	{
+		bool isPlaying = false;
+		// Check if the channel is still playing
+		if (it->second->isPlaying(&isPlaying) == FMOD_OK && !isPlaying)
+			// If the channel has stopped, erase it from the map
+			it = m_EntityChannels.erase(it);
+		else
+			// Move to the next channel if it is still playing
+			++it;
+	}
 
 }
 
@@ -122,7 +133,7 @@ void SoundEngine::All2DSound()
 				{
 					auto fileName = entry.path().string();
 					auto fileKey = entry.path().filename().replace_extension().string();
-					Load2DSound(fileName, fileKey, SoundType::EFFECT);
+					LoadSound(fileName, fileKey);
 				}
 			}
 		}
@@ -148,13 +159,72 @@ void SoundEngine::All3DSound()
 			{
 				auto fileName = entry.path().string();
 				auto fileKey = entry.path().filename().replace_extension().string();
-				Load3DSound(fileName, fileKey, SoundType::EFFECT);
+				LoadSound(fileName, fileKey);
 			}
 		}
 	}
 }
 
+void SoundEngine::SetSystemVolume(int master, int bgm, int effect) 
+{
+	float masterpercent = static_cast<float> (master / 100.f);
+	float bgmrpercent = static_cast<float> (bgm / 100.f);
+	float effectpercent = static_cast<float> (effect / 100.f);
 
+
+	for (auto& [id, channel] : m_EntityChannels) 
+	{
+		float currentVolume = 0.0f;
+		channel->getVolume(&currentVolume);
+
+		FMOD_MODE mode;
+		channel->getMode(&mode);
+
+		// Determine which percent to use based on loop mode
+		float previousVolumePercent = (mode & FMOD_LOOP_NORMAL) ? m_BgmPercent : m_EffectPercent;
+
+		// Reverse-calculate original volume
+		float originalVolume = currentVolume / (m_MasterPercent * previousVolumePercent);
+
+		// Calculate new volume using updated master, bgm, and effect percentages
+		float newVolumePercent = (mode & FMOD_LOOP_NORMAL) ? bgmrpercent : effectpercent;
+		float newVolume = originalVolume * masterpercent * newVolumePercent;
+
+		// Apply new volume to the channel
+		channel->setVolume(newVolume);
+	}
+
+	// Update stored volume percentages
+	m_MasterPercent = masterpercent;
+	m_BgmPercent = bgmrpercent;
+	m_EffectPercent = effectpercent;
+}
+
+int SoundEngine::GetMasterVolume()
+{
+	return static_cast<int> (m_MasterPercent * 100);
+}
+
+int SoundEngine::GetBGMVolume()
+{
+	return static_cast<int> (m_BgmPercent * 100);
+}
+
+int SoundEngine::GetEffectVolume()
+{
+	return static_cast<int> (m_EffectPercent * 100);
+}
+
+
+void SoundEngine::LoadSound(const std::string& path, const std::string& key)
+{
+	if (m_SoundMap.find(key) != m_SoundMap.end())
+		return;
+
+	FMOD::Sound* sound = nullptr;
+	m_System->createSound(path.c_str(), FMOD_DEFAULT, nullptr, &sound);
+	m_SoundMap.insert({ key, sound });
+}
 
 void SoundEngine::Load2DSound(const std::string& path, const std::string& key, SoundType type)
 {
@@ -180,22 +250,23 @@ void SoundEngine::Load3DSound(const std::string& path, const std::string& key, S
 {
 	if (m_SoundMap.find(key) != m_SoundMap.end())
 		return;
-
 	FMOD::Sound* sound = nullptr;
-	/// TODO : 이것도 모드 바꿔서 들고올수 있는데 고민하기
-	switch (type)
-	{
+	FMOD_MODE mode = FMOD_DEFAULT;
+
+	switch (type) {
 	case SoundType::BGM:
-		m_System->createStream(path.c_str(), FMOD_LOOP_NORMAL | FMOD_3D, nullptr, &sound);
+		mode = FMOD_LOOP_NORMAL | FMOD_3D;
+		m_System->createStream(path.c_str(), mode, nullptr, &sound);
 		break;
 	case SoundType::EFFECT:
-		m_System->createSound(path.c_str(), FMOD_DEFAULT | FMOD_3D, nullptr, &sound);
+		mode = FMOD_DEFAULT | FMOD_3D;
+		m_System->createSound(path.c_str(), mode, nullptr, &sound);
 		break;
 	}
 	m_SoundMap.insert(std::make_pair(key, sound));
 }
 
-bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose)
+bool SoundEngine::Play(const uint32_t& id, const std::string& key, int volume, VPMath::Vector3 pose)
 {
 	// 사운드 맵에서 사운드를 찾습니다.
 	auto soundIter = m_SoundMap.find(key);
@@ -244,37 +315,74 @@ bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume,
 	channel->setPaused(false); // 재생을 시작합니다.
 	return true;
 }
-bool SoundEngine::Play(const uint32_t& id, const std::string& key, float volume, bool Is2D, bool IsLoop, VPMath::Vector3 pose)
+
+bool SoundEngine::Play(const uint32_t& id, const std::string& key, int baseVolume, bool Is2D, bool IsLoop, VPMath::Vector3 pose)
 {
-	return false;
+
+	float basevolumPercent = baseVolume / 100.f;
+	// Find the sound in the sound map
+	auto soundIter = m_SoundMap.find(key);
+	if (soundIter == m_SoundMap.end())
+		return false;
+
+	FMOD::Sound* sound = soundIter->second;
+
+	// Adjust mode based on Is2D and IsLoop parameters
+	FMOD_MODE mode = FMOD_DEFAULT;
+	mode |= (Is2D ? FMOD_2D : FMOD_3D);
+	mode |= (IsLoop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+	sound->setMode(mode);
+
+	// Stop existing channel for this entity if it exists
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end()) {
+		FMOD::Channel* existingChannel = channelIter->second;
+		existingChannel->stop();
+	}
+
+	// Play sound on a new channel
+	FMOD::Channel* channel = nullptr;
+	m_System->playSound(sound, nullptr, true, &channel);
+
+	// Calculate volume based on master, bgm, and effect percentages
+	float volumeMultiplier = m_MasterPercent * (IsLoop ? m_BgmPercent : m_EffectPercent);
+	float finalVolume = basevolumPercent * volumeMultiplier;
+	channel->setVolume(finalVolume);
+
+	// Set 3D position if in 3D mode
+	if (!Is2D) {
+		FMOD_VECTOR fmodPos = { pose.x, pose.y, pose.z };
+		FMOD_VECTOR fmodVel = { 0.0f, 0.0f, 0.0f }; // Assuming stationary object
+		channel->set3DAttributes(&fmodPos, &fmodVel);
+	}
+
+	// Assign new channel to entity and start playback
+	m_EntityChannels[id] = channel;
+	channel->setPaused(false); // Start playback
+
+	return true;
 }
-void SoundEngine::Stop(const uint32_t& id, const std::string& soundKey)
+
+void SoundEngine::Stop(const uint32_t& id, const std::string& soundKey) 
 {
+	// Check if the sound exists in the map
+	auto soundIter = m_SoundMap.find(soundKey);
+	if (soundIter == m_SoundMap.end())
+		return;  // Sound not found
+
+	// Check if there's a channel associated with the given id
 	auto channelIter = m_EntityChannels.find(id);
 	if (channelIter != m_EntityChannels.end()) {
 		FMOD::Channel* channel = channelIter->second;
 
-		if (channel != nullptr)
-		{
-			// 채널의 사운드가 해당 키와 일치하는지 확인
-			FMOD::Sound* currentSound = nullptr;
-			channel->getCurrentSound(&currentSound);
+		// Stop the channel
+		channel->stop();
 
-			if (currentSound != nullptr)
-			{
-				char currentKey[256];
-				currentSound->getName(currentKey, sizeof(currentKey));
-
-				// 사운드 키가 일치할 경우 채널 정지
-				if (soundKey == std::string(currentKey))
-				{
-					channel->stop();
-					m_EntityChannels.erase(channelIter); // 맵에서 채널 제거
-				}
-			}
-		}
+		// Remove the channel from the entity channels map
+		m_EntityChannels.erase(channelIter);
 	}
 }
+
 
 void SoundEngine::Stop(const uint32_t& id) 
 {
@@ -303,31 +411,62 @@ void SoundEngine::SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, V
 
 }
 
-bool SoundEngine::ChannelMusicFinished(const uint32_t& id) 
+void SoundEngine::SetChannelPosition(const uint32_t& id, VPMath::Vector3 pos)
+{
+	// Check if the channel exists in m_EntityChannels
+	auto channelIter = m_EntityChannels.find(id);
+	if (channelIter != m_EntityChannels.end())
+	{
+		FMOD::Channel* channel = channelIter->second;
+		if (channel != nullptr)
+		{
+			// Convert VPMath::Vector3 to FMOD_VECTOR
+			FMOD_VECTOR fmodPos = { pos.x, pos.y, pos.z };
+			FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f }; // Assume zero velocity for now
+
+			// Set the 3D position of the channel
+			channel->set3DAttributes(&fmodPos, &velocity);
+		}
+	}
+}
+
+
+bool SoundEngine::ChannelMusicFinished(const uint32_t& id)
 {
 	// Check if m_EntityChannels is empty
-	if (m_EntityChannels.empty()) 
+	if (m_EntityChannels.empty())
 	{
-		return true; // If no channels exist, we assume no music is playing
+		return true; // If no channels exist, assume no music is playing 
 	}
 
 	// Find the channel for the given ID
 	auto channelIter = m_EntityChannels.find(id);
-	if (channelIter != m_EntityChannels.end()) 
+	if (channelIter != m_EntityChannels.end())
 	{
 		FMOD::Channel* channel = channelIter->second;
-		if (channel != nullptr) 
+		if (channel != nullptr)
 		{
 			bool isPlaying = false;
 			channel->isPlaying(&isPlaying);
-			if (!isPlaying) 
+			if (!isPlaying)
+			{
 				// The channel is no longer playing, meaning the music has finished
+				m_EntityChannels.erase(channelIter); // Remove the channel from the map
 				return true;
+			}
 		}
 	}
-	// If the channel wasn't found or is still playing
+	else
+	{
+		// Return true if the channel ID is not found
+		return true;
+	}
+
+	// If the channel was found and is still playing
 	return false;
 }
+
+
 void SoundEngine::CleanAllChannel()
 {
 	// Check if m_EntityChannels is empty
@@ -404,7 +543,7 @@ bool SoundEngine::IsPlayingSound(uint32_t channelid, const std::string& soundKey
 
 	FMOD::Channel* channel = channelIter->second;
 	if (channel != nullptr)
-	{
+	{	
 		// 채널이 유효한지 확인
 		bool isPlaying = false;
 		channel->isPlaying(&isPlaying);

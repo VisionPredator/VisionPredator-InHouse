@@ -378,33 +378,37 @@ void PlayerFSMSystem::Enter_Sound_Run(PlayerSoundComponent& soundcomp)
 
 void PlayerFSMSystem::Enter_Sound_Crouch(PlayerSoundComponent& soundcomp)
 {
-	auto& transform =*soundcomp.GetComponent<TransformComponent>();
-	GetSceneManager()->SpawnSoundEntity(soundcomp.SitSoundKey, soundcomp.Volume_Sit,false, transform.World_Location);
+	auto& transform = *soundcomp.GetComponent<TransformComponent>();
+	GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Sit, soundcomp.Volume_Sit, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Dash_Slide(PlayerSoundComponent& soundcomp)
 {
 	auto& transform = *soundcomp.GetComponent<TransformComponent>();
-	GetSceneManager()->SpawnSoundEntity(soundcomp.SlideSoundkey, soundcomp.Volume_Slide, false, transform.World_Location);
+	if (soundcomp.HasComponent<PlayerComponent>()&&soundcomp.GetComponent<PlayerComponent>()->IsVPMode)
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Dash, soundcomp.Volume_Dash, true, false, transform.World_Location);
+	else
+	GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Slide, soundcomp.Volume_Slide, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Transformation(PlayerSoundComponent& soundcomp)
 {
+	auto& transform = *soundcomp.GetComponent<TransformComponent>();
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Transformation, soundcomp.Volume_Transformation, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Jump(PlayerSoundComponent& soundcomp)
 {
+	if (!INPUTKEY(KEYBOARDKEY::SPACE))
+		return;
 	auto& transform = *soundcomp.GetComponent<TransformComponent>();
-	if (INPUTKEY(KEYBOARDKEY::SPACE))
-	{
-	GetSceneManager()->SpawnSoundEntity(soundcomp.JumpSoundkey, soundcomp.Volume_Jump, false, transform.World_Location);
-
-	}
+	GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Jump, soundcomp.Volume_Jump, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Die(PlayerSoundComponent& soundcomp)
 {
-
+	auto& transform = *soundcomp.GetComponent<TransformComponent>();
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Death, soundcomp.Volume_Death, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Destroy(PlayerSoundComponent& soundcomp)

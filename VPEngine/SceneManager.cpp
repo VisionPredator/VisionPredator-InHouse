@@ -496,14 +496,27 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 
 	return  GetEntity(mainprefabID);
 }
+//
+//std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, float volume, bool isloop, VPMath::Vector3 pos)
+//{
+//	auto entity = CreateEntity(soundName);
+//	auto soundcomp = entity->AddComponent<SoundComponent>();
+//	soundcomp->SoundPath = soundName;
+//	soundcomp->Volume = volume;
+//	soundcomp->Loop= isloop;
+//	entity->GetComponent<TransformComponent>()->Local_Location = pos;
+//	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
+//	return std::shared_ptr<Entity>();
+//}
 
-std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, float volume, bool isloop, VPMath::Vector3 pos)
+std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, int volume, bool Is2D, bool isloop, VPMath::Vector3 pos)
 {
 	auto entity = CreateEntity(soundName);
 	auto soundcomp = entity->AddComponent<SoundComponent>();
 	soundcomp->SoundPath = soundName;
+	soundcomp->Is2D = Is2D;
 	soundcomp->Volume = volume;
-	soundcomp->Loop= isloop;
+	soundcomp->Loop = isloop;
 	entity->GetComponent<TransformComponent>()->Local_Location = pos;
 	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
 	return std::shared_ptr<Entity>();
