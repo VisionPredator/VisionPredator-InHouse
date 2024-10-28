@@ -904,28 +904,22 @@ RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(std::vector<u
 		return a.distance < b.distance;
 		});
 	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
-	for (PxU32 i = 0; i < buf.nbTouches; i++)
-	{
+	for (PxU32 i = 0; i < buf.nbTouches; i++) {
+		auto tempID = FindIDByActor(buf.touches[i].actor); // i번째 접촉된 액터와 관련된 엔티티 ID
 
-		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+		// entityIDs에 포함된 ID는 무시
+		if (std::find(entityIDs.begin(), entityIDs.end(), tempID) != entityIDs.end())
+			continue;
 
-		for (auto entityID : entityIDs)
-		{
-			if (tempID == entityID)  // 자신과 동일한 엔티티 ID는 무시하고 다음 반복으로 넘어감
-				continue;
-		}
-
-		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
-		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
-		{
-			PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
-			PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
-			PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
-			temp={ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d };
+		// 트리거가 아닌 충돌체인 경우에만 처리
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE)) {
+			PxVec3 p = buf.getTouch(i).position;  // 접촉된 지점의 위치
+			PxVec3 n = buf.getTouch(i).normal;    // 접촉된 지점의 법선 벡터
+			PxF32 d = buf.getTouch(i).distance;   // 접촉된 지점까지의 거리
+			temp = { tempID, {p.x, p.y, p.z}, {n.x, n.y, n.z}, d };
 			return temp;
 		}
 	}
-
 	return temp;
 }
 

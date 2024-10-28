@@ -9,3 +9,4 @@
 #include "TrunComponent.h"
 #include "AimUIComponent.h"
 #include "VPUIComponent.h"
+#include "InterectiveComponent.h"

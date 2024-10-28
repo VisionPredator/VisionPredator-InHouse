@@ -100,6 +100,7 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		if (true == isHit)
 		{
 			enemyComp.OnHit = false;
+
 			ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
 		}
 		//else
@@ -203,6 +204,9 @@ bool EnemyState::RotateToTarget(TransformComponent* transform, VisPred::SimpleMa
 void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemyComponent, IState* newState)
 {
 	if (const auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+		if (enemyComponent->MovementState == movementState)
+			return;
+
 		if (enemyComponent->MovementState != movementState)
 			enemyComponent->MovementState->Exit(enemyComponent);
 
@@ -210,6 +214,9 @@ void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemy
 		enemyComponent->MovementState->Enter(enemyComponent);
 	}
 	else if (const auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+		if (enemyComponent->BehaviorState == behaviorState)
+			return;
+
 		if (enemyComponent->BehaviorState != behaviorState)
 			enemyComponent->BehaviorState->Exit(enemyComponent);
 
@@ -217,6 +224,9 @@ void EnemyState::ChangeCurrentState(const std::shared_ptr<EnemyComponent>& enemy
 		enemyComponent->BehaviorState->Enter(enemyComponent);
 	}
 	else if (const auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+		if (enemyComponent->CombatState == combatState)
+			return;
+
 		if (enemyComponent->CombatState != combatState)
 			enemyComponent->CombatState->Exit(enemyComponent);
 
@@ -233,6 +243,9 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 	const std::shared_ptr<EnemyComponent> temp(&enemyComponent, null_deleter{});
 
 	if (const auto movementState = dynamic_cast<EnemyMovementState*>(newState)) {
+		if (enemyComponent.MovementState == movementState)
+			return;
+
 		if (enemyComponent.MovementState != movementState)
 			enemyComponent.MovementState->Exit(temp);
 
@@ -240,6 +253,9 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 		enemyComponent.MovementState->Enter(temp);
 	}
 	else if (const auto behaviorState = dynamic_cast<EnemyBehaviorState*>(newState)) {
+		if (enemyComponent.BehaviorState == behaviorState)
+			return;
+
 		if (enemyComponent.BehaviorState != behaviorState)
 			enemyComponent.BehaviorState->Exit(temp);
 
@@ -247,6 +263,9 @@ void EnemyState::ChangeCurrentState(EnemyComponent& enemyComponent, IState* newS
 		enemyComponent.BehaviorState->Enter(temp);
 	}
 	else if (const auto combatState = dynamic_cast<EnemyCombatState*>(newState)) {
+		if (enemyComponent.CombatState == combatState)
+			return;
+
 		if (enemyComponent.CombatState != combatState)
 			enemyComponent.CombatState->Exit(temp);
 

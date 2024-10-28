@@ -76,4 +76,8 @@ struct EnemyComponent : public Component
 	bool IsCoolingDown = false;		// 쿨다운 상태를 관리
 	float AttackAccuracy = 100.f;	// 공격 명중률
 	float DistanceToPlayer = -1.f;	// 플레이어 까지의 거리
+
+
+	/// 에이
+	bool HeatComplete = true;
 };

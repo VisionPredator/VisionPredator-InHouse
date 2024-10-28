@@ -22,6 +22,7 @@
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
 #include "nlohmann/json.hpp"
+#include <random>
 
 
 #ifdef __clang__
@@ -36,6 +37,8 @@ namespace VisPred
 {
     namespace SimpleMath
     {
+
+
         using namespace DirectX;
 
         struct Vector2;
@@ -43,6 +46,10 @@ namespace VisPred
         struct Matrix;
         struct Quaternion;
         struct Plane;
+
+        float Randomfloat(float min, float max) noexcept;
+
+
 
         //------------------------------------------------------------------------------
         // 2D rectangle

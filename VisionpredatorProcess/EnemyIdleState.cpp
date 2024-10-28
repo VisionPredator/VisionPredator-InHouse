@@ -19,7 +19,6 @@ void EnemyIdleState::Update(const std::shared_ptr<Component>& component, float d
 	if (CheckIsDead(enemyComp))
 		return;
 	DetectTarget(*enemyComp, deltaTime);
-
 }
 
 void EnemyIdleState::Exit(const std::shared_ptr<Component>& component)

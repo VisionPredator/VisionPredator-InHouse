@@ -20,6 +20,8 @@ public:
 	//virtual void Load3DSound(const std::string& path, const std::string& key, SoundType type) = 0;
 
 	virtual bool Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose = {}) = 0;
+	virtual bool Play(const uint32_t& id, const std::string& key, float volume, bool Is2D, bool IsLoop, VPMath::Vector3 pose = {}) = 0;
+
 	virtual float GetLength( const std::string& key) = 0;
 
 	virtual void Stop(const uint32_t& id, const std::string& soundKey) = 0;
