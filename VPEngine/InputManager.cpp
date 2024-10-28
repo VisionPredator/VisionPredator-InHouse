@@ -104,9 +104,8 @@ void InputManager::OnClipMouse(std::any hwnd)
 	// Apply clipping if enabled
 	if (m_IsWindowMode)
 	{
-		RECT clientRect{};
-		GetWindowRect(*m_hwnd, &clientRect);
-		ClipCursor(&clientRect);
+		GetWindowRect(*m_hwnd, &m_clientRect);
+		ClipCursor(&m_clientRect);
 	}
 	else
 	{
