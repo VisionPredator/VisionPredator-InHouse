@@ -2503,7 +2503,7 @@ inline Matrix Matrix::Invert() const noexcept
     XMStoreFloat4x4(&R, XMMatrixInverse(&det, M));
     return R;
 }
-bool Matrix::IsMatrixIrregular() const noexcept
+inline  bool Matrix::IsMatrixIrregular() const noexcept
 {
     using namespace DirectX;
 

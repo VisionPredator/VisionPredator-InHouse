@@ -46,9 +46,11 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->currentAttackTime >= 1.f)
 	{
 		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Pistol_Bullet.prefab", enemyPos, rotation);
-		enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Sound_Pistol.prefab", enemyPos, rotation);
-		enemyComp->currentAttackTime = 0.f;
+		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Sound_Pistol.prefab", enemyPos, rotation);
+		enemyComp->SceneManager.lock()->SpawnSoundEntity("Sound_Pistol",10,false,false , enemyPos);
 
+		enemyComp->currentAttackTime = 0.f;
+		   
 		//ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 		//ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::CHASE, 0.005f, 0.005, false);	// Attack Idle 이 있었으면 넣었는데 없어서 이걸로 대체. 근데 어색해서 Attack 애니메이션은 안넣기..
 
