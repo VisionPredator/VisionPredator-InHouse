@@ -48,7 +48,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	{
 		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Pistol_Bullet.prefab", enemyPos, rotation);
 		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Sound_Pistol.prefab", enemyPos, rotation);
-		enemyComp->SceneManager.lock()->SpawnSoundEntity("Sound_Pistol",10,false,false , enemyPos);
+		enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
 
 		enemyComp->currentAttackTime = 0.f;
 		   
@@ -66,7 +66,9 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 			if (detectedObjID == enemyComp->Player->GetEntityID())
 			{
-				enemyComp->Player->HP -= enemyComp->AttackPower;
+
+				//enemyComp->Player->HP -= enemyComp->AttackPower;  				
+				EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
 				Log::GetClientLogger()->warn("Attack Succeed!!!");
 			}
 			else

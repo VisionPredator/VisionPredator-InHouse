@@ -7,6 +7,7 @@ using namespace VisPred::Game;
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 	EventManager::GetInstance().Subscribe("OnDrop_Gun", CreateSubscriber(&PlayerSystem::OnDrop_Gun));
+	EventManager::GetInstance().Subscribe("OnDamaged", CreateSubscriber(&PlayerSystem::OnDamaged));
 	EventManager::GetInstance().Subscribe("OnCrouchModeController", CreateSubscriber(&PlayerSystem::OnCrouchModeController));
 	EventManager::GetInstance().Subscribe("OnSlideModeController", CreateSubscriber(&PlayerSystem::OnSlideModeController));
 	EventManager::GetInstance().Subscribe("OnDefalutModeController", CreateSubscriber(&PlayerSystem::OnDefalutModeController));
@@ -113,7 +114,7 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 	if (entity && entity->HasComponent<PlayerComponent>())
 	{
 		auto playercomp = entity->GetComponent<PlayerComponent>();
-		if (!playercomp->NonDamageMode)
+		if (playercomp->NonDamageMode)
 			return;
 		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
 		{

@@ -364,15 +364,32 @@ void PlayerFSMSystem::Enter_Sound_FSM(PlayerComponent& playercomp, float deltaTi
 
 void PlayerFSMSystem::Enter_Sound_Idle(PlayerSoundComponent& soundcomp)
 {
+	auto player = soundcomp.GetComponent<PlayerComponent>();
+	if (player->PreFSM ==VisPred::Game::PlayerFSM::JUMP)
+	{
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+	}
+
 }
 
 void PlayerFSMSystem::Enter_Sound_Walk(PlayerSoundComponent& soundcomp)
 {
+	auto player = soundcomp.GetComponent<PlayerComponent>();
+	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
+	{
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+	}
 	soundcomp.Played_Walk1 = false;
+
 }
 
 void PlayerFSMSystem::Enter_Sound_Run(PlayerSoundComponent& soundcomp)
 {
+	auto player = soundcomp.GetComponent<PlayerComponent>();
+	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
+	{
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+	}
 	soundcomp.Played_Run1 = false;
 }
 
