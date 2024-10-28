@@ -47,9 +47,11 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->currentAttackTime >= 1.f)
 	{
 		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Pistol_Bullet.prefab", enemyPos, rotation);
-		enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Sound_Pistol.prefab", enemyPos, rotation);
-		enemyComp->currentAttackTime = 0.f;
+		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Sound_Pistol.prefab", enemyPos, rotation);
+		enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
 
+		enemyComp->currentAttackTime = 0.f;
+		   
 		//ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 		//ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::CHASE, 0.005f, 0.005, false);	// Attack Idle 이 있었으면 넣었는데 없어서 이걸로 대체. 근데 어색해서 Attack 애니메이션은 안넣기..
 
@@ -64,7 +66,9 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 			if (detectedObjID == enemyComp->Player->GetEntityID())
 			{
-				enemyComp->Player->HP -= enemyComp->AttackPower;
+
+				//enemyComp->Player->HP -= enemyComp->AttackPower;  				
+				EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
 				Log::GetClientLogger()->warn("Attack Succeed!!!");
 			}
 			else
