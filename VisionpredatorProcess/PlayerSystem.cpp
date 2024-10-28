@@ -106,6 +106,30 @@ void PlayerSystem::Gun_Cooltime(PlayerComponent& playercomp, float deltatime)
 			playercomp.ReadyToShoot = false;
 	}
 }
+void PlayerSystem::OnDamaged(std::any entityid_Damage)
+{
+	auto [entityid, damage] = std::any_cast<std::pair<uint32_t, int>>(entityid_Damage);
+	auto entity = GetSceneManager()->GetEntity(entityid);
+	if (entity && entity->HasComponent<PlayerComponent>())
+	{
+		auto playercomp = entity->GetComponent<PlayerComponent>();
+		if (!playercomp->NonDamageMode)
+			return;
+		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
+		{
+			if (playercomp->HP > damage)
+			{
+				playercomp->HP = playercomp->HP - damage;
+				auto soundcomp = playercomp->GetComponent<PlayerSoundComponent>();
+				GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_Hurt, soundcomp->Volume_Hurt, true, false, {});
+			}
+			else
+				playercomp->HP = 0;
+		}
+
+	}
+
+}
 #pragma region Update
 void PlayerSystem::Update(float deltaTime)
 {

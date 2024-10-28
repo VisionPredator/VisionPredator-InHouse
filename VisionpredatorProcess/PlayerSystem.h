@@ -31,6 +31,7 @@ public:
 	void NonDamage_Time(PlayerComponent& playercomp, float deltatime);
 	void Gun_Cooltime(PlayerComponent& playercomp, float deltatime);
 
+	void OnDamaged(std::any entityid_Damage);
 
 
 
