@@ -268,9 +268,10 @@ void DeferredPass::GeometryPass()
 
 	}
 
-	bool isTranparency = false;
-	for (const auto& curData : m_RenderList)
+	for(const auto& curData : m_RenderList)
 	{
+		bool isTranparency = false;
+
 		if (curData->isOverDraw)
 		{
 			continue;
@@ -294,7 +295,7 @@ void DeferredPass::GeometryPass()
 
 			if (isTranparency)
 			{
-				break;
+				continue;
 			}
 
 			for (const auto& mesh : curModel->m_Meshes)

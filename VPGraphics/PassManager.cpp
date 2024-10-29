@@ -115,7 +115,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 
 	//pass push
 	//m_BasePasses.push_back(m_GeometryPass);
-	//m_BasePasses.push_back(m_DebugPass);
+	m_BasePasses.push_back(m_DebugPass);
 	m_BasePasses.push_back(m_Instancing);
 	m_BasePasses.push_back(m_Decal);
 	m_BasePasses.push_back(m_DeferredPass);
