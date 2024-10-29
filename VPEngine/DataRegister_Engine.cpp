@@ -24,7 +24,7 @@ void EngineRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
 	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
 	META_ADD_ENUMCLASS(BillboardType, BillboardType::None, BillboardType::Full, BillboardType::AxisY);
-	META_ADD_ENUMCLASS(Skill, Skill::START,Skill::OPTION,Skill::EXIT);
+	META_ADD_ENUMCLASS(Skill, Skill::SCENECHANGE,Skill::SPAWNPREFAB,Skill::DESTORYPREFAB,Skill::DRAGBAR,Skill::UION,Skill::UIOFFSELF,Skill::UIOFF);
 }
 
 void EngineRegister::Register_Structs()
@@ -131,12 +131,12 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
 	META_ADD_COMP(LifeTimeComponent, LifeTimeComponent::LifeTime);
-	META_ADD_COMP(ImageComponent, ImageComponent::RenderMode, ImageComponent::Billboard, ImageComponent::TexturePath, ImageComponent::PosXPercent, ImageComponent::PosYPercent, ImageComponent::Scale, ImageComponent::Layer, ImageComponent::Color, ImageComponent::LeftPercent, ImageComponent::RightPercent, ImageComponent::TopPercent, ImageComponent::BottomPercent);
+	META_ADD_COMP(ImageComponent, ImageComponent::RenderMode, ImageComponent::Billboard, ImageComponent::TexturePath, ImageComponent::PosXPercent, ImageComponent::PosYPercent, ImageComponent::Scale, ImageComponent::Layer, ImageComponent::Color, ImageComponent::LeftPercent, ImageComponent::RightPercent, ImageComponent::TopPercent, ImageComponent::BottomPercent, ImageComponent::isAlwaysOn);
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
 	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConnected, SocketComponent::Offset, SocketComponent::UseQuaternion, SocketComponent::OffsetQuaternion, SocketComponent::OffsetRotation);
 	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::FontPath, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Angle, TextComponent::Layer);
 	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume, SoundComponent::Duration, SoundComponent::Loop);
 	META_ADD_COMP(DecalComponent, DecalComponent::TextureName);
-	META_ADD_COMP(ButtonComponent,ButtonComponent::skill);
+	META_ADD_COMP(ButtonComponent,ButtonComponent::skill,ButtonComponent::name);
 }
 
