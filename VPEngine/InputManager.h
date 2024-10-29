@@ -203,6 +203,8 @@ public:
 	int GetMouseY() const { return m_curPos.y; }
 	int GetMouseDeltaX() const { return m_mouseDelta.x; }
 	int GetMouseDeltaY() const { return m_mouseDelta.y; }
+	int GetUIMouseDeltaX() const { return m_UImouseDelta.x; }
+	int GetUIMouseDeltaY() const { return m_UImouseDelta.y; }
 	void Shutdown();
 	bool GetKeyDown(KEYBOARDKEY inputkey);
 	bool GetKeyUp(KEYBOARDKEY inputkey);
@@ -234,6 +236,7 @@ private:
 	POINT m_curPos = {};
 	POINT m_lastPos = {};
 	POINT m_mouseDelta = {};
+	POINT m_UImouseDelta = {};
 	HWND* m_hwnd{};
 	bool m_IsWindowMode= false;
 };
