@@ -955,21 +955,6 @@ std::shared_ptr<Entity> SceneManager::GetEntityByIdentityName( std::string name)
 	return nullptr;
 }
 
-std::shared_ptr<Entity> SceneManager::GetEntitySocketEntity(uint32_t entityID)
-{
-	auto mainentity = GetEntity(entityID);
-	while (mainentity)
-	{
-		if (mainentity->HasComponent<SocketComponent>())
-			return mainentity;
-		else if (mainentity->HasComponent<Parent>())
-			mainentity = GetEntity(mainentity->GetComponent<Parent>()->ParentID);
-		else
-			return nullptr; 
-	}
-	return nullptr;
-}
-
 
 void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
 {

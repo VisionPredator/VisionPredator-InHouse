@@ -6,6 +6,5 @@ struct SectorClearComponent :
     VP_JSONBODY(SectorClearComponent, DoorIdentity);
     std::string DoorIdentity{};
 
-
 };
 

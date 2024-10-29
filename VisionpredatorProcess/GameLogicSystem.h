@@ -11,3 +11,4 @@
 #include "AreaAttackSystem.h"
 #include "InterectiveSystem.h"
 #include "DoorSystem.h"
+#include "SectorSystem.h"

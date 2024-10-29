@@ -3,7 +3,7 @@
 #include "EnemyComponent.h"
 #include "RigidBodyComponent.h"
 #include "StatesInclude.h"
-
+#include "EventManager.h"
 #include "../VPEngine/SceneManager.h"
 
 void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
@@ -18,6 +18,7 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 
 	ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
+	EventManager::GetInstance().ImmediateEvent("OnUpdateSector", enemyComp->GetEntityID());
 }
 
 void EnemyDeadState::Update(const std::shared_ptr<Component>& component, float deltaTime)

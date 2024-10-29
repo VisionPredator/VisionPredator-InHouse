@@ -89,7 +89,8 @@ public:
 	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetRelationEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetEntityByIdentityName(std::string name);
-	std::shared_ptr<Entity> GetEntitySocketEntity(uint32_t entityID);
+	template<typename T>
+	std::shared_ptr<Entity> GetParentEntity_HasComp(uint32_t entityID);
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
@@ -204,6 +205,22 @@ private:
 	friend class HierarchySystem;
 };
 
+
+template<typename T>
+inline std::shared_ptr<Entity> SceneManager::GetParentEntity_HasComp(uint32_t entityID)
+{
+	auto mainentity = GetEntity(entityID);
+	while (mainentity)
+	{
+		if (mainentity->HasComponent<T>())
+			return mainentity;
+		else if (mainentity->HasComponent<Parent>())
+			mainentity = GetEntity(mainentity->GetComponent<Parent>()->ParentID);
+		else
+			return nullptr;
+	}
+	return nullptr;
+}
 
 template<typename T>
 inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
