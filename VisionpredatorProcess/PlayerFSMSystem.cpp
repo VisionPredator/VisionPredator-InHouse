@@ -364,47 +364,68 @@ void PlayerFSMSystem::Enter_Sound_FSM(PlayerComponent& playercomp, float deltaTi
 
 void PlayerFSMSystem::Enter_Sound_Idle(PlayerSoundComponent& soundcomp)
 {
+	auto player = soundcomp.GetComponent<PlayerComponent>();
+	if (player->PreFSM ==VisPred::Game::PlayerFSM::JUMP)
+	{
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+	}
+
 }
 
 void PlayerFSMSystem::Enter_Sound_Walk(PlayerSoundComponent& soundcomp)
 {
+	auto player = soundcomp.GetComponent<PlayerComponent>();
+	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
+	{
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+	}
 	soundcomp.Played_Walk1 = false;
+
 }
 
 void PlayerFSMSystem::Enter_Sound_Run(PlayerSoundComponent& soundcomp)
 {
+	auto player = soundcomp.GetComponent<PlayerComponent>();
+	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
+	{
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+	}
 	soundcomp.Played_Run1 = false;
 }
 
 void PlayerFSMSystem::Enter_Sound_Crouch(PlayerSoundComponent& soundcomp)
 {
-	auto& transform =*soundcomp.GetComponent<TransformComponent>();
-	GetSceneManager()->SpawnSoundEntity(soundcomp.SitSoundKey, soundcomp.Volume_Sit,false, transform.World_Location);
+	auto& transform = *soundcomp.GetComponent<TransformComponent>();
+	GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Sit, soundcomp.Volume_Sit, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Dash_Slide(PlayerSoundComponent& soundcomp)
 {
 	auto& transform = *soundcomp.GetComponent<TransformComponent>();
-	GetSceneManager()->SpawnSoundEntity(soundcomp.SlideSoundkey, soundcomp.Volume_Slide, false, transform.World_Location);
+	if (soundcomp.HasComponent<PlayerComponent>()&&soundcomp.GetComponent<PlayerComponent>()->IsVPMode)
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Dash, soundcomp.Volume_Dash, true, false, transform.World_Location);
+	else
+	GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Slide, soundcomp.Volume_Slide, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Transformation(PlayerSoundComponent& soundcomp)
 {
+	auto& transform = *soundcomp.GetComponent<TransformComponent>();
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Transformation, soundcomp.Volume_Transformation, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Jump(PlayerSoundComponent& soundcomp)
 {
+	if (!INPUTKEY(KEYBOARDKEY::SPACE))
+		return;
 	auto& transform = *soundcomp.GetComponent<TransformComponent>();
-	if (INPUTKEY(KEYBOARDKEY::SPACE))
-	{
-	GetSceneManager()->SpawnSoundEntity(soundcomp.JumpSoundkey, soundcomp.Volume_Jump, false, transform.World_Location);
-
-	}
+	GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Jump, soundcomp.Volume_Jump, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Die(PlayerSoundComponent& soundcomp)
 {
-
+	auto& transform = *soundcomp.GetComponent<TransformComponent>();
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Death, soundcomp.Volume_Death, true, false, transform.World_Location);
 }
 
 void PlayerFSMSystem::Enter_Sound_Destroy(PlayerSoundComponent& soundcomp)
@@ -575,6 +596,7 @@ void PlayerFSMSystem::Enter_Die(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 {
+	GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
 }
 
 void PlayerFSMSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
