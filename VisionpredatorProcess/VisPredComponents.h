@@ -10,3 +10,6 @@
 #include "AimUIComponent.h"
 #include "VPUIComponent.h"
 #include "InterectiveComponent.h"
+#include "DoorComponent.h"
+#include "DoorOpenerComponent.h"
+#include "SectorClearComponent.h"

@@ -31,11 +31,8 @@ void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, co
 	m_Device = device;
 
 	std::string path;
-#ifdef _DEBUG
-	path = "..\\..\\..\\Resource\\FBX\\";
-#else
+
 	path = "..\\Data\\FBX\\";
-#endif
 
 	if (!std::filesystem::exists(path))
 	{
@@ -89,11 +86,8 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter, int UID)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
 
-#ifdef _DEBUG
-	std::string filePath = "..\\..\\..\\Resource\\FBX\\";
-#else
+
 	std::string filePath = "..\\Data\\FBX\\";
-#endif
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
@@ -447,11 +441,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
 
 	// Diffuse
-#ifdef _DEBUG
-	const std::wstring basePath = L"..\\..\\..\\Resource\\FBX\\";
-#else
+
 	const std::wstring basePath = L"..\\Data\\FBX\\";
-#endif
 	std::filesystem::path path;
 	std::wstring finalPath;
 	std::string name = material->GetName().C_Str();

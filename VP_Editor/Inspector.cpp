@@ -281,8 +281,7 @@ void Inspector::TransformComponentImGui(Component* component)
 
 
 }
-
-void Inspector::ComponentImGui(Component* component)
+void Inspector::ComponentImGui(Component* component) 
 {
 	entt::id_type compID = component->GetHandle()->type().id();
 	if (ShouldSkipComponent(compID)) return;
@@ -290,33 +289,28 @@ void Inspector::ComponentImGui(Component* component)
 	std::string componentName = Reflection::GetName_Class(component->GetHandle()->type());
 	ImGui::PushID(componentName.c_str());
 
-	if (ImGui::TreeNode(componentName.c_str()))
-	{
+	if (ImGui::TreeNode(componentName.c_str())) {
 		for (auto [MemberID, memberMetaData] : component->GetHandle()->type().data())
 			MemberImGui(memberMetaData, component);
 		ImGui::TreePop();
 	}
 
-	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
-	{
+	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
 		ImGui::OpenPopup("Component_Option");
-		IsClicked = true;
-		m_ClickedCompID = compID;
+		m_ClickedCompID = compID;  // 오른쪽 클릭 시 compID만 설정
 	}
 
-	if (IsClicked && ImGui::BeginPopupContextWindow("Component_Option"))
-	{
-		if (ImGui::MenuItem("Delete") && component->GetEntity()->HasComponent(m_ClickedCompID))
-		{
+	if (m_ClickedCompID == compID && ImGui::BeginPopupContextWindow("Component_Option")) {
+		if (ImGui::MenuItem("Delete") && component->GetEntity()->HasComponent(m_ClickedCompID)) {
 			EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", component);
-			//component->GetEntity()->RemoveComponent(m_ClickedCompID);
-			IsClicked = false;
+			m_ClickedCompID = 0;  // 처리 후 리셋
 		}
 		ImGui::EndPopup();
 	}
-	ImGui::PopID();
 
+	ImGui::PopID();
 }
+
 
 std::string Inspector::RemoveComponentSuffix(const std::string& className)
 {

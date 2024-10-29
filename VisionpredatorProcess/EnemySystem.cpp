@@ -21,7 +21,7 @@ void EnemySystem::Initialize()
 		uint32_t playerID = comp.GetEntityID();
 		if (GetSceneManager()->HasComponent<PlayerComponent>(playerID))
 		{
-			playerComponent = GetSceneManager()->GetComponent<PlayerComponent>(playerID);
+			m_playercomponent = GetSceneManager()->GetComponent<PlayerComponent>(playerID);
 			break;
 		}
 	}
@@ -34,8 +34,6 @@ void EnemySystem::Initialize()
 	COMPLOOP(EnemyComponent, comp)
 	{
 		Start(comp.GetEntityID());
-
-		comp.Player = playerComponent;
 	}
 }
 
@@ -53,6 +51,7 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	const auto enemyCompRawPtr = GetSceneManager()->GetComponent<EnemyComponent>(gameObjectId);
 	const std::shared_ptr<EnemyComponent> enemyComp(enemyCompRawPtr, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
 
+	enemyCompRawPtr->Player = m_playercomponent;
 	enemyCompRawPtr->SceneManager = m_SceneManager;
 	enemyCompRawPtr->PhysicsManager = m_PhysicsEngine;
 	enemyCompRawPtr->Graphics = m_Graphics;
@@ -74,5 +73,11 @@ void EnemySystem::FixedUpdate(float deltaTime)
 		//Log::GetClientLogger()->info("Current Behavior State: {}", std::string(typeid(*enemycomp.BehaviorState).name()).substr(6));
 		//Log::GetClientLogger()->info("Current Movement State: {}", std::string(typeid(*enemycomp.MovementState).name()).substr(6));
 	}
+}
+
+void EnemySystem::OnDamaged(std::any entityid_Damage)
+{
+	auto [entityid, damage] = std::any_cast<std::pair <uint32_t, int>>(entityid_Damage);
+
 }
 

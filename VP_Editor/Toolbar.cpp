@@ -37,7 +37,7 @@ void Toolbar::ImGuiRender()
 		if (ImGui::Button("Play", ImVec2(60, 0)))
 		{
 			EventManager::GetInstance().ScheduleEvent("OnPlayButton");
-			EventManager::GetInstance().ScheduleEvent("OnSaveCurrentToTemp");
+			EventManager::GetInstance().ImmediateEvent("OnSaveCurrentToTemp");
 
 
 			m_IsPlaying = true;

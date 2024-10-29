@@ -96,6 +96,10 @@ void VispredRegister::Register_Components()
 		, VPUIComponent::FullImage
 		, VPUIComponent::GageImage
 	)
+
+	META_ADD_COMP(DoorComponent, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
+	META_ADD_COMP(SectorClearComponent, SectorClearComponent::DoorIdentity);
+	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::DoorIdentity);
 }
 
 void VispredRegister::Register_EnumClass()

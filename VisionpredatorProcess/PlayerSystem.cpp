@@ -775,7 +775,11 @@ void PlayerSystem::Active_Rotation(PlayerComponent& playercomp, TransformCompone
 	VPMath::Vector3 cameraRotation = posTransComp->Local_Rotation;
 	cameraRotation.x += pitch;
 	cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
-	/*playercomp.IsRotated =*/ posTransComp->SetLocalRotation(cameraRotation);
+ bool temp = posTransComp->SetLocalRotation(cameraRotation);
+ if (temp)
+ {
+	 int a = 5; a = 6;
+ }
 }
 void PlayerSystem::Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
 {
@@ -1274,7 +1278,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 		{
-			auto entity = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Longsword.prefab", {}, VPMath::Vector3{}, {0.2,0.2,0.2});
+			auto entity = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Longsword.prefab", {}, VPMath::Vector3{}, {0.2f,0.2f,0.2f});
 			playercomp->LongswordEntity = entity;
 			//VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
 		}

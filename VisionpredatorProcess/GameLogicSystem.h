@@ -10,3 +10,4 @@
 #include "TrunSystem.h"
 #include "AreaAttackSystem.h"
 #include "InterectiveSystem.h"
+#include "DoorSystem.h"
