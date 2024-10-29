@@ -435,7 +435,7 @@ void PlayerFSMSystem::Enter_Sound_Destroy(PlayerSoundComponent& soundcomp)
 
 void PlayerFSMSystem::Enter_Sound_Die_end(PlayerSoundComponent& soundcomp)
 {
-
+	//GetSceneManager()->SpawnEditablePrefab("asdsad", {}, VPMath::Vector3{});
 }
 
 void PlayerFSMSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::PlayerAni index, float Speed, float transition, bool loop, bool Immidiate)
