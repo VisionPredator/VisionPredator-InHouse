@@ -337,7 +337,13 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				newMesh->MaxBounding = { v.x,v.y,v.z };
 			}
 
+			//각 메쉬에대한 pivot
 			newMesh->Pivot = VPMath::Vector3(newMesh->MaxBounding.x + newMesh->MinBounding.x, newMesh->MaxBounding.y + newMesh->MinBounding.y, newMesh->MaxBounding.z + newMesh->MinBounding.z) / 2;
+			//특정 메쉬를 기준으로 각각의 위치를 맞춰야 메쉬를 통으로 그렸을때 맞음
+			if (index < 1)
+			{
+				Model->Pivot = newMesh->Pivot;
+			}
 
 			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
 			{
@@ -348,7 +354,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				curPos.y = TextureVertices.back().pos.y;
 				curPos.z = TextureVertices.back().pos.z;
 
-				curPos -= newMesh->Pivot;
+				curPos -= Model->Pivot;
 
 				Model->vertices.push_back(curPos);
 			}
@@ -356,10 +362,12 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			for (auto& ver : TextureVertices)
 			{
 				DirectX::XMFLOAT4& curPos = ver.pos;
-				curPos.x -= newMesh->Pivot.x;
-				curPos.y -= newMesh->Pivot.y;
-				curPos.z -= newMesh->Pivot.z;
+				curPos.x -= Model->Pivot.x;
+				curPos.y -= Model->Pivot.y;
+				curPos.z -= Model->Pivot.z;
 			}
+			/*
+			*/
 
 
 			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
