@@ -22,6 +22,7 @@ void RenderSystem::ComponentAdded(Component* comp)
 		effect::ParticleInfo info;
 		info.PosW = transform.World_Location;
 		info.Direction = transform.FrontVector;
+		info.IsLoop = component->IsLoop;
 		info.TexturePath = Path;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
@@ -101,6 +102,7 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		const TransformComponent& transform = *component.GetComponent<TransformComponent>();
 
 		effect::ParticleInfo info;
+		info.IsLoop = component.IsLoop;
 		info.PosW = transform.World_Location;
 		info.Direction = transform.FrontVector;
 		info.TexturePath = component.TexturePath;

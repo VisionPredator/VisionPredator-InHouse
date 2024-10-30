@@ -72,8 +72,8 @@ void StreamOutGS(point Particle gin[1],
 	// emitter 파티클인 경우
 	if (gin[0].Type == PT_EMITTER)
 	{
-		// 새로운 파티클을 생성해야 하는 경우
-		if (gin[0].Age > 0.005f)
+		// 새로운 파티클을 생성
+		if ((gIsLoop == 1) && (gin[0].Age > 0.005f))
 		{
 			// 3D 공간에서 무작위 방향 벡터 생성
 			float3 vRandom = RandUnitVec3(0.0f);

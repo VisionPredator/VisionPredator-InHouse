@@ -115,6 +115,7 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_PerFrame.TimeStep = m_TimeStep;
 	m_FrameCB->Update(m_PerFrame);
 
+	m_Data.IsLoop = m_Info.IsLoop;
 	m_Data.EmitDirW = m_Info.Direction;
 	m_Data.EmitPosW = m_Info.PosW;
 	m_DataCB->Update(m_Data);
@@ -218,5 +219,6 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.PosW = info.PosW;
 	m_Info.Duration = info.Duration;
 	m_Info.TexturePath = info.TexturePath;
+	m_Info.IsLoop = info.IsLoop;
 	//m_Info.
 }
