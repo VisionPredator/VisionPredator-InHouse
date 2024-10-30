@@ -5,7 +5,7 @@
 struct GunComponent :
     public Component
 {
-	VP_JSONBODY(GunComponent, Type, ThrowDamage, Damage1, Damage2, Damage3, BulletSpeed, BulletSize, ShotGunDistance, BulletPrefab, SoundKey_GunSound, SoundKey_GunDrop, Volume_GunDrop, Volume_GunSound, CurrentBullet, CoolTime, Bullets, RecoilPos, RecoilMaxXY, RecoilPercent, RecoilTime)
+	VP_JSONBODY(GunComponent, Type, ThrowDamage, Damage1, Damage2, Damage3, BulletSpeed, BulletSize, ShotGunDistance, BulletPrefab, SoundKey_GunSound, SoundKey_GunDrop, Volume_GunDrop, Volume_GunSound, CurrentBullet, CoolTime, Bullets, RecoilPos, RecoilMaxXY, RecoilBack, RecoilPercent, RecoilTime)
         VisPred::Game::GunType Type;
 
     std::weak_ptr<Entity> SoundEntity{};
@@ -29,6 +29,7 @@ struct GunComponent :
     uint32_t GrappedEntityID{};
     VPMath::Vector2 RecoilPos{};
     VPMath::Vector2 RecoilMaxXY{};
+    float RecoilBack{};
     float RecoilPercent{};
     float RecoilTime{};
 };

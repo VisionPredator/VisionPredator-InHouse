@@ -1130,7 +1130,8 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 		temp.z = 0;
 		VPMath::Vector3 temp2 = temp;
 		VPMath::Vector3 temp3 = {};
-		temp2.z = -0.05f;
+
+		temp2.z = -GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID)->RecoilBack;
 		temp3 = temp.Lerp(temp, temp2, static_cast<float>(percent));
 		handtrans.SetLocalLocation(temp3);
 		if (playercomp.GunprogressTime > gunComp->RecoilTime)
