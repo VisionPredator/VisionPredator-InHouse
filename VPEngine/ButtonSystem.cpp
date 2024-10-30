@@ -143,6 +143,10 @@ void ButtonSystem::Update(float deltaTime)
 						}
 						break;
 
+						case VisPred::Engine::Skill::EXIT:
+							PostQuitMessage(0);
+							break;
+
 						default:
 							break;
 					}

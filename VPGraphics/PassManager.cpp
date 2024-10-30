@@ -120,8 +120,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_BasePasses.push_back(m_Decal);
 	m_BasePasses.push_back(m_DeferredPass);
 	m_BasePasses.push_back(m_ObjectMaskPass);
-	m_BasePasses.push_back(m_OverDraw);
 	m_BasePasses.push_back(m_TransparencyPass);
+	m_BasePasses.push_back(m_OverDraw);
 
 	m_VPPasses.push_back(m_VPOutLinePass);
 	m_VPPasses.push_back(m_RimLight);
