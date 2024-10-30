@@ -12,3 +12,4 @@
 #include "InterectiveSystem.h"
 #include "DoorSystem.h"
 #include "SectorSystem.h"
+#include "WeaponBoxSystem.h"

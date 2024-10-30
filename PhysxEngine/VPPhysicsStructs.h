@@ -66,9 +66,9 @@ namespace VPPhysics
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(PhysicsInfo, Gravity, FrameRate, CollisionMatrix)
 
 
-		VPMath::Vector3 Gravity{};
+		VPMath::Vector3 Gravity = {0.f,-9.81f,0.f};
 		uint32_t FrameRate = 60;
-		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ };
+		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ 511, 511, 511, 7, 7, 7, 7, 7, 7, 0 };
 	};
 	struct ConvexMeshResourceInfo
 	{

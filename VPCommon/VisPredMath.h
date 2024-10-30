@@ -47,8 +47,8 @@ namespace VisPred
         struct Quaternion;
         struct Plane;
 
-        float Randomfloat(float min, float max) noexcept;
-
+        float Random_float(float min, float max) noexcept;
+        int Random_int(int min, int max) noexcept;
 
 
         //------------------------------------------------------------------------------

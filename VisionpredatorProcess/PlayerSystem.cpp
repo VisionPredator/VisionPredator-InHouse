@@ -1086,7 +1086,7 @@ void PlayerSystem::Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& 
 {
 	playercomp.IsGunRecoiling = true;
 	// 랜덤한 Yaw 회전 범위 [-RecoilPos.x, RecoilPos.x]에서 값 생성
-	float randfloat =VPMath::Randomfloat(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
+	float randfloat =VPMath::Random_float(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
 	// 카메라의 TransformComponent 가져오기
 	auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 	// 초기 및 최종 반동 Quaternion 설정

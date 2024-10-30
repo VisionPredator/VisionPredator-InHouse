@@ -101,6 +101,7 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(DoorComponent, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
 	META_ADD_COMP(SectorClearComponent, SectorClearComponent::DoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
+	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopEntity, WeaponBoxComponent::OpenDegree, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
 }
 
 void VispredRegister::Register_EnumClass()

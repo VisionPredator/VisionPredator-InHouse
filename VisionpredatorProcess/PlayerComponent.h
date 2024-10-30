@@ -4,7 +4,6 @@
 struct PlayerComponent :
 	public Component
 {
-	PlayerComponent();
 	VP_JSONBODY(PlayerComponent
 		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
 		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)

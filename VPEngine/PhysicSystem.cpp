@@ -8,6 +8,7 @@
 PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
+	EventManager::GetInstance().Subscribe("OnAddVelecity", CreateSubscriber(&PhysicSystem::OnAddVelecity));
 }
 
 #pragma region IStartable
@@ -257,6 +258,11 @@ void PhysicSystem::LateRenderUpdate(float deltaTime)
 void PhysicSystem::EditorRenderUpdate(float deltaTime)
 {
 	BeginRenderUpdate(deltaTime);
+}
+void PhysicSystem::OnAddVelecity(std::any ID_Vector3_power)
+{
+	auto [entityid, dir, power] = std::any_cast<std::tuple<uint32_t, VPMath::Vector3,float>>(ID_Vector3_power);
+	m_PhysicsEngine->AddVelocity(entityid, dir, power);
 }
 #pragma endregion
 #pragma region Create

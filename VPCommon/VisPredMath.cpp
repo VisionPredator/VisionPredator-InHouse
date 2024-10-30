@@ -49,7 +49,7 @@ namespace VisPred
 										  0.f, 0.f, 0.f, 1.f };
 
 		const Quaternion Quaternion::Identity = { 0.f, 0.f, 0.f, 1.f };
-		float Randomfloat(float min, float max) noexcept
+		float Random_float(float min, float max) noexcept
 		{
 			// Create a random number generator
 			std::random_device rd; // Seed generator
@@ -60,7 +60,20 @@ namespace VisPred
 
 			// Return the random number
 			return dist(gen);
-		};
+		}
+		int Random_int(int min, int max) noexcept
+		{
+			// Create a random number generator
+			std::random_device rd; // Seed generator
+			std::mt19937 gen(rd()); // Mersenne Twister random engine 
+
+			// Create a distribution for integer numbers between min and max
+			std::uniform_int_distribution<int> dist(min, max);
+
+			// Return the random number
+			return dist(gen);
+		}
+
 	}
 }
 

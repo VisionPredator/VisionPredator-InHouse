@@ -14,3 +14,4 @@
 #include "DoorOpenerComponent.h"
 #include "SectorClearComponent.h"
 #include "ShotGunBulletComponent.h"
+#include "WeaponBoxComponent.h"

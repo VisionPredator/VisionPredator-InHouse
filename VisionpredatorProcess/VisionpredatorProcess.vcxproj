@@ -186,7 +186,6 @@
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="EnemyWalkState.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="FSMComponent.h" />
     <ClInclude Include="GameLogicSystem.h" />
     <ClInclude Include="GunComponent.h" />
     <ClInclude Include="GunSystem.h" />
@@ -214,6 +213,8 @@
     <ClInclude Include="DataRegister_Vispred.h" />
     <ClInclude Include="VPProcess.h" />
     <ClInclude Include="VPUIComponent.h" />
+    <ClInclude Include="WeaponBoxComponent.h" />
+    <ClInclude Include="WeaponBoxSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AimUIComponent.cpp" />
@@ -242,7 +243,6 @@
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="EnemySystem.cpp" />
     <ClCompile Include="EnemyWalkState.cpp" />
-    <ClCompile Include="FSMComponent.cpp" />
     <ClCompile Include="GunComponent.cpp" />
     <ClCompile Include="GunSystem.cpp" />
     <ClCompile Include="InterectiveComponent.cpp" />
@@ -272,6 +272,8 @@
     <ClCompile Include="DataRegister_Vispred.cpp" />
     <ClCompile Include="VPProcess.cpp" />
     <ClCompile Include="VPUIComponent.cpp" />
+    <ClCompile Include="WeaponBoxComponent.cpp" />
+    <ClCompile Include="WeaponBoxSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VPEngine\VPEngine.vcxproj">
