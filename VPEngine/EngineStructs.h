@@ -14,9 +14,14 @@ namespace VisPred
 
 		enum class Skill
 		{
-			START = 0,
-			OPTION,
-			EXIT
+			SCENECHANGE = 0,
+			SPAWNPREFAB,
+			DESTORYPREFAB,
+			DRAGBAR,
+			UION,
+			UIOFFSELF,
+			UIOFF,
+
 		};
 	}
 }

@@ -36,7 +36,7 @@ struct RenderData;
 class GraphicsEngine : public Graphics::Interface
 {
 public:
-	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
+	GraphicsEngine(HWND hWnd);
 	~GraphicsEngine() = default;
 
 	bool Initialize() override;
@@ -46,7 +46,7 @@ public:
 	void EndUpdate(double dt) override;
 	bool Finalize() override;
 	void BeginRender() override;
-	void Render() override;
+	void Render(float deltaTime) override;
 	void ImguiBeginRender() override;
 	void ImguiEndRender() override;
 	void EndRender() override;
@@ -128,7 +128,6 @@ private:
 	std::shared_ptr<LightManager> m_LightManager;
 	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
-	TimeManager* m_TimeManager;
 	std::shared_ptr<class UIManager> m_UIManager;
 	std::shared_ptr <DecalManager> m_DecalManager;
 

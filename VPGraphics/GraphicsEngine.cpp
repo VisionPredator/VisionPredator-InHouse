@@ -51,9 +51,8 @@
 #include <memory>
 
 #include "Animation.h"
-GraphicsEngine::GraphicsEngine(HWND hWnd, TimeManager* timeManager)
-	: m_TimeManager(timeManager)
-	, m_hWnd(hWnd)
+GraphicsEngine::GraphicsEngine(HWND hWnd)
+	: m_hWnd(hWnd)
 	, m_wndSize()
 	, m_Device(std::make_shared<Device>())
 	, m_ResourceManager(std::make_shared<ResourceManager>())
@@ -83,7 +82,7 @@ bool GraphicsEngine::Initialize()
 	m_LightManager->Initialize(m_ResourceManager);
 	m_Animator->Initialize(m_ResourceManager);
 	m_DebugDrawManager->Initialize(m_Device, m_ResourceManager);
-	m_ParticleManager->Initialize(m_Device, m_ResourceManager, m_TimeManager);
+	m_ParticleManager->Initialize(m_Device, m_ResourceManager);
 	m_UIManager->Initialize(m_Device, m_ResourceManager);
 	m_PassManager->Initialize(m_Device, m_ResourceManager, m_DebugDrawManager, m_ParticleManager, m_UIManager, m_LightManager, m_DecalManager);
 
@@ -167,9 +166,9 @@ void GraphicsEngine::BeginRender()
 	}
 }
 
-void GraphicsEngine::Render()
+void GraphicsEngine::Render(float deltaTime)
 {
-	m_PassManager->Render();
+	m_PassManager->Render(deltaTime);
 }
 
 void GraphicsEngine::ImguiBeginRender()
@@ -236,12 +235,12 @@ void GraphicsEngine::SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const V
 	VPMath::Matrix cb_projInverse;
 	cb_worldviewproj = m_ViewProj;
 
-	VPMath::Matrix viewInverse = view.Invert();
 	//상수 버퍼는 계산 순서때문에 전치한다
 	cb_worldviewproj = m_ViewProj.Transpose();
 	cb_view = m_View.Transpose();
 	cb_proj = m_Proj.Transpose();
 
+	VPMath::Matrix viewInverse = view.Invert();
 	cb_viewInverse = viewInverse.Transpose();
 	VPMath::Matrix projInverse = proj.Invert();
 	cb_projInverse = projInverse.Transpose();

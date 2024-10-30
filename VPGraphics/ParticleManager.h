@@ -10,9 +10,9 @@ public:
 	ParticleManager() = default;
 
 	void Initialize(const std::shared_ptr<class Device>& device, 
-		const std::shared_ptr<class ResourceManager>& resourceManager, TimeManager* timeManager);
+		const std::shared_ptr<class ResourceManager>& resourceManager);
 
-	void Render();
+	void Render(float deltaTime);
 
 	void CreateParticleObject(const uint32_t& id, const effect::ParticleInfo& info);
 	void UpdateParticleInfoByID(const uint32_t& id, const effect::ParticleInfo& info);

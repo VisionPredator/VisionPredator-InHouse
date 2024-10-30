@@ -34,6 +34,7 @@ void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, co
 
 	path = "..\\Data\\FBX\\";
 
+
 	if (!std::filesystem::exists(path))
 	{
 		//디렉토리 없으면 만들기
@@ -441,7 +442,6 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
 
 	// Diffuse
-
 	const std::wstring basePath = L"..\\Data\\FBX\\";
 	std::filesystem::path path;
 	std::wstring finalPath;

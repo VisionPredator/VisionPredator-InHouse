@@ -11,7 +11,7 @@ struct SkinningMeshComponent :
 
 	std::wstring FBX;
 	std::shared_ptr<RenderData> Renderdata;
-	VPMath::Color InteractiveColor;
+	VPMath::Color InteractiveColor = {1,0,0,1};
 
 };
 

@@ -10,19 +10,21 @@
 
 
 
-void ParticleManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, TimeManager* timeManager)
+void ParticleManager::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager)
 {
 	m_Device = device;
 	m_ResourceManager = resourceManager;
-	m_TimeManager = timeManager;
 }
 
-void ParticleManager::Render()
+void ParticleManager::Render(float deltaTime)
 {
+	static float totalGameTime = 0.f;
+	totalGameTime += deltaTime;
+
 	for (const auto& object : m_ParticleObjects)
 	{
-		object.second->Update(m_TimeManager->GetDeltaTime(), m_TimeManager->GetTotalGameTime());
-		object.second->Draw();
+		object.second->Update();
+		object.second->Draw(deltaTime, totalGameTime);
 	}
 }
 

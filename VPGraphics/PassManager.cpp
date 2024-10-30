@@ -115,7 +115,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 
 	//pass push
 	//m_BasePasses.push_back(m_GeometryPass);
-	//m_BasePasses.push_back(m_DebugPass);
+	m_BasePasses.push_back(m_DebugPass);
 	m_BasePasses.push_back(m_Instancing);
 	m_BasePasses.push_back(m_Decal);
 	m_BasePasses.push_back(m_DeferredPass);
@@ -152,7 +152,7 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 
 }
 
-void PassManager::Render()
+void PassManager::Render(float deltaTime)
 {
 	if (m_isDebugDraw)
 	{
@@ -177,7 +177,7 @@ void PassManager::Render()
 		pass->Render();
 	}
 
-	m_ParticlePass->Render();
+	m_ParticlePass->Render(deltaTime);
 	m_UIPass->Render();
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
