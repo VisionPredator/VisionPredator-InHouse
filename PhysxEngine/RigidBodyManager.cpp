@@ -380,6 +380,20 @@ std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
 	return it->second;
 }
 
+void RigidBodyManager::ChangeDynamicToStatic(uint32_t EntityID)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+		return;
+}
+
+void RigidBodyManager::ChangeStaticToDynamic(uint32_t EntityID)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+		return;
+}
+
 bool RigidBodyManager::HasRigidBody(uint32_t entityID)
 {
 	return m_RigidBodyMap.count(entityID) > 0;
