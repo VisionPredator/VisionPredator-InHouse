@@ -45,16 +45,7 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_StreamOutVB));
 
 		m_FrameCB = m_ResourceManager->Create<ConstantBuffer<PerFrame>>(L"FrameCB", ConstantBufferType::Default).lock();
-
-		/*D3D11_BUFFER_DESC cbd;
-		cbd.Usage = D3D11_USAGE_DEFAULT;
-		static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
-		cbd.ByteWidth = sizeof(PerFrame);
-		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbd.CPUAccessFlags = 0;
-		cbd.MiscFlags = 0;
-
-		HR_CHECK(device->Get()->CreateBuffer(&cbd, NULL, m_FrameCB->GetAddress()));*/
+		m_DataCB = m_ResourceManager->Create<ConstantBuffer<DataCB>>(L"DataCB", ConstantBufferType::Default).lock();
 	}
 
 	// Create Shaders
@@ -122,14 +113,11 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_PerFrame.EyePosW = cameraPos;
 	m_PerFrame.GameTime = m_TotalGameTime;
 	m_PerFrame.TimeStep = m_TimeStep;
-
-	// TODO: 이 두개를 옮기기
-	//m_PerFrame.EmitPosW = m_EmitPosW;
-	m_PerFrame.EmitPosW = m_Info.PosW;
-	//m_PerFrame.EmitDirW = m_EmitDirW;
-	m_PerFrame.EmitDirW = m_Info.Direction;
-
 	m_FrameCB->Update(m_PerFrame);
+
+	m_Data.EmitDirW = m_Info.Direction;
+	m_Data.EmitPosW = m_Info.PosW;
+	m_DataCB->Update(m_Data);
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
 	ID3D11Buffer* nullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
@@ -149,16 +137,19 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	// Bind Shader's resources
 	context->VSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->VSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
+	context->VSSetConstantBuffers(1, 1, m_DataCB->GetAddress());
 	context->VSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->VSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->GSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->GSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
+	context->GSSetConstantBuffers(1, 1, m_DataCB->GetAddress());
 	context->GSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->GSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->PSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->PSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
+	context->PSSetConstantBuffers(1, 1, m_DataCB->GetAddress());
 	context->PSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->PSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 

@@ -6,10 +6,29 @@ cbuffer cbPerFrame : register(b0)
 	float4x4 gViewProj;
 	float3 gEyePosW;
 	float gGameTime;
-	float3 gEmitPosW;
 	float gTimeStep;
-	float3 gEmitDirW;
 };
+
+cbuffer cbData : register(b1)
+{
+	float3 gEmitPosW;
+	float3 gEmitDirW;
+
+	float2 gStartSizeA;
+	float2 gStartSizeB;
+
+	float gDuration;
+	int gIsLoop;
+
+	float gStartLifetimeA;
+	float gStartLifetimeB;
+
+	float gAngle;
+	float gRadius;
+
+	unsigned int gParticleShape;
+	unsigned int gRenderMode;
+}
 
 Texture2DArray gTexArray : register(t0);
 Texture1D gRandomTex : register(t1);
