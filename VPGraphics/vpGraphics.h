@@ -82,10 +82,47 @@ namespace effect
 {
 	struct ParticleInfo
 	{
-		std::string TexturePath;
-		UINT MaxParticles = 0;
+		VPMath::Vector3 PosW = VPMath::Vector3{};
+		std::string TexturePath = {};
 		VPMath::Vector2 Size = { 1.0f, 1.0f };
 		VPMath::Vector3 Direction = VPMath::Vector3(0.0f, 1.0f, 0.0f);
+
+		float Duration = 5.f;
+		bool IsLoop = true;
+		float StartLifetimeA = 5.f;
+		float StartLifetimeB = 5.f;
+		float StartSizeA = 4.f;
+		float StartSizeB = 4.f;
+		UINT MaxParticles = 0;		// TODO: 삭제. 값 고정.
+
+		struct Shape
+		{
+			enum class ShapeType
+			{
+				Cone,
+				Sphere
+			};
+
+			ShapeType ParticleShape = ShapeType::Cone;
+
+			float Angle = 30.f;
+			float Radius = 1.f;
+		};
+
+		struct Renderer
+		{
+			enum class BillBoardType
+			{
+				Billboard,
+				StretchedBillboard,
+				// etc..
+			};
+
+			BillBoardType RenderMode = BillBoardType::Billboard;
+
+			// etc..
+		};
+		
 	};
 
 }

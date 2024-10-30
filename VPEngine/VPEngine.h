@@ -47,7 +47,7 @@ protected:
 	std::shared_ptr<SystemManager> m_SystemManager;
 	std::shared_ptr<SceneManager> m_SceneManager;
 	float m_DeltaTime;
-
+	float m_TotalGameTime;
 	Physic::IPhysx* m_PhysicEngine;
 	Graphics::Interface* m_Graphics;
 	std::shared_ptr<Sound::ISound> m_SoundEngine;

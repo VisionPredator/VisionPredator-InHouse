@@ -17,45 +17,43 @@ void GunSystem::Update(float deltaTime)
 
 void GunSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 {
-	if (GetSceneManager()->HasComponent<GunComponent>(entitypair.first))
-	{
-		if (GetSceneManager()->HasComponent<ControllerComponent>(entitypair.second))
-		{
-			if (GetSceneManager()->GetEntity(entitypair.second)->HasComponent<EnemyComponent>())
-			{
-				auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(entitypair.first);
-				if (guncomp.IsEmpty&& guncomp.GetComponent<RigidBodyComponent>()->Speed.Length() > 1.f)
-				{
-					GetSceneManager()->GetEntity(entitypair.second)->GetComponent<EnemyComponent>()->HP -= guncomp.ThrowDamage;
-				}
-			}
 
-			//GetSceneManager()->DestroyEntity(entitypair.first);
-		}
-		//else
-			//GetSceneManager()->DestroyEntity(entitypair.first);
-	}
-	else if (GetSceneManager()->HasComponent<GunComponent>(entitypair.second))
-	{
-		if (GetSceneManager()->HasComponent<ControllerComponent>(entitypair.first))
-		{
-			if (GetSceneManager()->GetEntity(entitypair.first)->HasComponent<EnemyComponent>())
-			{
-				auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(entitypair.second);
-				if (guncomp.IsEmpty && guncomp.GetComponent<RigidBodyComponent>()->Speed.Length() > 1.f)
-				{
-				GetSceneManager()->GetEntity(entitypair.first)->GetComponent<EnemyComponent>()->HP -= guncomp.ThrowDamage;
-				}
-			}
+	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
+	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
+	if (Firstentity.HasComponent<GunComponent>())
+		ApplyDamage(Firstentity, Secondentity);
+	else if (Secondentity.HasComponent<GunComponent>())
+		ApplyDamage(Secondentity, Firstentity);
 
-			//GetSceneManager()->DestroyEntity(entitypair.second);
-		}
-		//else
-			//GetSceneManager()->DestroyEntity(entitypair.second);
-	}
 
 }
 
 void GunSystem::ExitCollision(std::pair<uint32_t, uint32_t> entitypair)
 {
+}
+
+
+void GunSystem::ApplyDamage(Entity& gun, Entity& Other)
+{
+	auto guncomp = gun.GetComponent<GunComponent>();
+	if (!guncomp->SoundEntity.lock())
+	{
+		guncomp->SoundEntity = GetSceneManager()->SpawnSoundEntity(guncomp->SoundKey_GunDrop, guncomp->Volume_GunDrop, false, false, guncomp->GetComponent<TransformComponent>()->World_Location);
+	}
+	else
+	{
+		int a = 5;
+		a = 6;
+	}
+
+	if (Other.HasComponent<EnemyComponent>())
+	{
+		if (guncomp->IsEmpty && guncomp->GetComponent<RigidBodyComponent>()->Speed.Length() > 1.f)
+		{
+			EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), gun.GetComponent<GunComponent>()->ThrowDamage));
+			GetSceneManager()->DestroyEntity(gun.GetEntityID());
+		}
+
+	}
+
 }

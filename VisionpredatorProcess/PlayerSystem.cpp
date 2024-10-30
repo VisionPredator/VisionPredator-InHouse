@@ -775,7 +775,11 @@ void PlayerSystem::Active_Rotation(PlayerComponent& playercomp, TransformCompone
 	VPMath::Vector3 cameraRotation = posTransComp->Local_Rotation;
 	cameraRotation.x += pitch;
 	cameraRotation.x = std::clamp(cameraRotation.x, -89.9f, 89.9f);
-	/*playercomp.IsRotated =*/ posTransComp->SetLocalRotation(cameraRotation);
+ bool temp = posTransComp->SetLocalRotation(cameraRotation);
+ if (temp)
+ {
+	 int a = 5; a = 6;
+ }
 }
 void PlayerSystem::Active_Jump(const TransformComponent& transformcomp, ControllerComponent& controllercomp)
 {
@@ -1126,7 +1130,8 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 		temp.z = 0;
 		VPMath::Vector3 temp2 = temp;
 		VPMath::Vector3 temp3 = {};
-		temp2.z = -0.05f;
+
+		temp2.z = -GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID)->RecoilBack;
 		temp3 = temp.Lerp(temp, temp2, static_cast<float>(percent));
 		handtrans.SetLocalLocation(temp3);
 		if (playercomp.GunprogressTime > gunComp->RecoilTime)
@@ -1173,8 +1178,13 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
 
-	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	GetSceneManager()->SpawnSoundEntity(guncomp.GunSoundKey, guncomp.GunSoundVolume, true, false, temppos);
+	auto bulletentity =m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	if (!bulletentity)
+		return false;
+	auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
+	bulletcomp->Damage = guncomp.Damage1;
+	bulletcomp->Speed = guncomp.BulletSpeed;
+	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
 	return true;
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
@@ -1184,8 +1194,27 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
-	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	GetSceneManager()->SpawnSoundEntity(guncomp.GunSoundKey, guncomp.GunSoundVolume, true, false, temppos);
+	auto bulletentity = m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	if (!bulletentity)
+		return false;
+	auto shotbullet = bulletentity->GetComponent<ShotGunBulletComponent>();
+	auto bullettrans = bulletentity->GetComponent<TransformComponent>();
+	if (guncomp.BulletSize.x<=0)
+	{
+		guncomp.BulletSize.x = 0.01f;
+	}
+	if (guncomp.BulletSize.y<=0)
+	{
+		guncomp.BulletSize.y = 0.01f;
+
+	}
+	bullettrans->SetLocalScale({ guncomp.BulletSize.x,guncomp .BulletSize.y,0.5f});
+	shotbullet->Speed = guncomp.BulletSpeed;
+	shotbullet->Damage1=guncomp.Damage1;
+	shotbullet->Damage2=guncomp.Damage2;
+	shotbullet->Damage3=guncomp.Damage3;
+	shotbullet->Distance = guncomp.ShotGunDistance;
+	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
 
 	return true;
 }
@@ -1196,8 +1225,13 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
-	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	GetSceneManager()->SpawnSoundEntity(guncomp.GunSoundKey, guncomp.GunSoundVolume, true, false, temppos);
+	auto bulletentity = m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
+	if (!bulletentity)
+		return false;
+	auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
+	bulletcomp->Damage = guncomp.Damage1;
+	bulletcomp->Speed = guncomp.BulletSpeed;
+	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
 
 	return true;
 }
@@ -1274,7 +1308,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			playercomp->LongswordEntity = LongswordEntity;			//playercomp->HandID = HandEntity->GetEntityID();
 		else
 		{
-			auto entity = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Longsword.prefab", {}, VPMath::Vector3{}, {0.2,0.2,0.2});
+			auto entity = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Longsword.prefab", {}, VPMath::Vector3{}, {0.2f,0.2f,0.2f});
 			playercomp->LongswordEntity = entity;
 			//VP_ASSERT(false, "LongswordEntity가 감지되지 않습니다.");
 		}

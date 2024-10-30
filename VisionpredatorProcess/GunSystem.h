@@ -13,5 +13,6 @@ public:
     // IContactable을(를) 통해 상속됨
     void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
     void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) override;
+    void ApplyDamage(Entity& gun, Entity& Other);
 };
 

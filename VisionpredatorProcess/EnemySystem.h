@@ -1,7 +1,7 @@
 #pragma once
 #include "../VPEngine/System.h"
 #include "VisPredComponents.h"
-
+#include "EventSubscriber.h"
 class EnemySystem :
 	public System
 	, public IFixedUpdatable
@@ -9,9 +9,10 @@ class EnemySystem :
 	, public IPhysicable
 	, public IRenderable
 	, public IStartable
+	,public EventSubscriber
 {
 public:
-	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager) : System(sceneManager) {}
+	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager);
 	
 public:
 	// IStartable
@@ -35,5 +36,9 @@ public:
 	// IPhysicable을(를) 통해 상속됨
 	void PhysicsUpdate(float deltaTime) override {}
 	void PhysicsLateUpdate(float deltaTime) override {}
+	void OnDamaged(std::any entityid_Damage);
+	PlayerComponent* m_playercomponent =nullptr;
+
+	
 };
 

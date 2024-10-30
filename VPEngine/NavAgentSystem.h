@@ -1,7 +1,8 @@
 #pragma once
 #include "System.h"
 #include "NavMeshData.h"
-class NavAgentSystem :public System,public IStartable,public IPhysicable
+#include "EventSubscriber.h"
+class NavAgentSystem :public System,public IStartable,public IPhysicable,public EventSubscriber
 {
 public:
     NavAgentSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -37,7 +38,7 @@ public:
 
     void Finalize() override;
 
-
+    void OnRemoveNavAgent(std::any entityid);
 private:
 
     friend class SceneManager;

@@ -41,7 +41,7 @@ namespace Graphics
 		virtual void EndUpdate(double dt) abstract;
 		virtual bool Finalize() abstract;
 		virtual void BeginRender() abstract;
-		virtual void Render() abstract;
+		virtual void Render(float deltaTime) abstract;
 		virtual void ImguiBeginRender() abstract;
 		virtual void ImguiEndRender() abstract;
 		virtual void EndRender() abstract;

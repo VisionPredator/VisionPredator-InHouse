@@ -93,7 +93,7 @@
 		if (m_RenderProgressTime > m_RenderDeltatime)
 		{
 			m_Graphics->BeginRender();
-			m_Graphics->Render();
+			m_Graphics->Render(m_RenderDeltatime);
 		}
 	}
 	bool SystemManager::ImguiBeginRender()
