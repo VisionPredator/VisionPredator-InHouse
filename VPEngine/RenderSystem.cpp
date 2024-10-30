@@ -14,10 +14,14 @@ void RenderSystem::ComponentAdded(Component* comp)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
 	{
 		ParticleComponent* component = static_cast<ParticleComponent*>(comp);
+		const TransformComponent& transform = *component->GetComponent<TransformComponent>();
+
 		std::string Path;
 		Path.assign(component->TexturePath.begin(), component->TexturePath.end());
 
 		effect::ParticleInfo info;
+		info.PosW = transform.World_Location;
+		info.Direction = transform.FrontVector;
 		info.TexturePath = Path;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
@@ -94,7 +98,11 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 	///렌더데이터 업데이트 정보 업데이트 하기.
 	for (ParticleComponent& component : COMPITER(ParticleComponent))
 	{
+		const TransformComponent& transform = *component.GetComponent<TransformComponent>();
+
 		effect::ParticleInfo info;
+		info.PosW = transform.World_Location;
+		info.Direction = transform.FrontVector;
 		info.TexturePath = component.TexturePath;
 		info.MaxParticles = component.MaxParticle;
 

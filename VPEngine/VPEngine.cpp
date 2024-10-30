@@ -62,7 +62,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_SceneManager = std::make_shared< SceneManager>();
 	m_SystemManager = std::make_shared<SystemManager>();
 	m_SoundEngine = std::make_shared<SoundEngine>();
-	m_Graphics = new GraphicsEngine(m_hWnd, m_TimeManager);
+	m_Graphics = new GraphicsEngine(m_hWnd);
 	m_SoundEngine->Initialize();
 	m_SoundEngine->LoadAllSound();
 	m_Graphics->Initialize();
@@ -180,6 +180,7 @@ void VPEngine::Update()
 {
 	m_TimeManager->Update();
 	m_DeltaTime = m_TimeManager->GetDeltaTime();
+	m_TotalGameTime = m_TimeManager->GetTotalGameTime();
 	if (m_DeltaTime > 1)
 		m_DeltaTime = 1 / 165.f;
 	EventManager::GetInstance().Update(m_DeltaTime);

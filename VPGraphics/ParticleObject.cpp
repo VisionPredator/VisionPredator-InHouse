@@ -19,7 +19,7 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 	: m_Device(device), m_ResourceManager(resourceManager), m_Info(info)
 {
 #pragma region 임시
-	m_Info.MaxParticles = 500;
+	m_Info.MaxParticles = 5000;
 #pragma endregion
 
 	// Create Buffers
@@ -80,12 +80,12 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		}
 		else
 		{
-			flares.push_back(Util::ToWideChar("../../../Resource/Texture/flare0.dds"));	
+			flares.push_back(Util::ToWideChar("../../../Resource/Texture/Smoke.png"));	
 		}
 		D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
 
 		if (m_Info.TexturePath.empty())
-			m_Info.TexturePath = "flare0.dds";
+			m_Info.TexturePath = "Smoke.png";
 		m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 		
 		// 랜덤 텍스처 생성
@@ -95,21 +95,19 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 	}
 }
 
-void ParticleObject::Update(const float& deltaTime, const float& totalGameTime)
+void ParticleObject::Update()
 {
-	m_TotalGameTime = totalGameTime;
-	m_TimeStep = deltaTime;
-	m_Age += deltaTime;
-
 	if (m_Info.TexturePath.empty())
-		m_Info.TexturePath = "flare0.dds";
+		m_Info.TexturePath = "Smoke.png";	// 기본 파티클 이미지 세팅
+
 	m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 }
 
-void ParticleObject::Draw()
+void ParticleObject::Draw(float deltaTime, float totalGameTime)
 {
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context = m_Device->Context();
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+	DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(CameraCB->m_struct.viewInverse.Transpose()._41, CameraCB->m_struct.viewInverse.Transpose()._42, CameraCB->m_struct.viewInverse.Transpose()._43);
 
 	UINT stride = sizeof(ParticleVertex);
 	UINT offset = 0;
@@ -117,15 +115,29 @@ void ParticleObject::Draw()
 	VPMath::Matrix viewInvert = CameraCB->m_struct.view.Invert().Transpose();
 	VPMath::Matrix VP = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
 
+	m_TotalGameTime = totalGameTime;
+	m_TimeStep = deltaTime;
+	m_Age += deltaTime;
+
 	// CB data 갱신
-	m_PerFrame.ViewProj = VP.Transpose();
+	m_PerFrame.ViewProj = CameraCB->m_struct.worldviewproj;
+	m_PerFrame.EyePosW = cameraPos;
 	m_PerFrame.GameTime = m_TotalGameTime;
 	m_PerFrame.TimeStep = m_TimeStep;
-	m_PerFrame.EyePosW = viewInvert.Translation();
-	m_PerFrame.EmitPosW = m_EmitPosW;
-	m_PerFrame.EmitDirW = m_EmitDirW;
+
+	// TODO: 이 두개를 옮기기
+	//m_PerFrame.EmitPosW = m_EmitPosW;
+	m_PerFrame.EmitPosW = m_Info.PosW;
+	//m_PerFrame.EmitDirW = m_EmitDirW;
+	m_PerFrame.EmitDirW = m_Info.Direction;
 
 	m_FrameCB->Update(m_PerFrame);
+
+	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
+	ID3D11Buffer* nullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
+	UINT strides[4] = { 0, 0, 0, 0 };
+	UINT offsets[4] = { 0, 0, 0, 0 };
+	context->IASetVertexBuffers(0, 4, nullBuffers, strides, offsets);
 
 	// Bind
 	context->IASetInputLayout(m_DrawVS->InputLayout());
@@ -209,4 +221,13 @@ void ParticleObject::Draw()
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
+}
+
+void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
+{
+	m_Info.Direction = info.Direction;
+	m_Info.PosW = info.PosW;
+	m_Info.Duration = info.Duration;
+	m_Info.TexturePath = info.TexturePath;
+	//m_Info.
 }

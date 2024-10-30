@@ -15,7 +15,7 @@ public:
 		const std::shared_ptr<class ParticleManager>& particleManager,
 		TimeManager* timeManager);
 
-	void Render();
+	void Render(float deltaTime);
 
 private:
 	std::shared_ptr<Device> m_Device;

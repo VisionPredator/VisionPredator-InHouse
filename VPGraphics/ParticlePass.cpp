@@ -17,7 +17,7 @@ void ParticlePass::Initialize(const std::shared_ptr<Device>& device,
 	m_TimeManager = timeManager;
 }
 
-void ParticlePass::Render()
+void ParticlePass::Render(float deltaTime)
 {
-	m_ParticleManager->Render();
+	m_ParticleManager->Render(deltaTime);
 }
