@@ -36,21 +36,20 @@ public:
 		VPMath::Vector3 EmitDirW;	// 오브젝트이 Front Vector 값을 준다.
 		float dummy2;
 
-		VPMath::Vector2 StartSizeA;
-		VPMath::Vector2 StartSizeB;
-
+		VPMath::Vector2 StartSize;
 		float Duration;
 		int IsLoop;
 
-		float StartLifetimeA;
-		float StartLifetimeB;
+		float StartLifetime;
+		float dummy3;
 
 		float Angle;
 		float Radius;
-
 		unsigned int ParticleShape;
 		unsigned int RenderMode;
 
+		float dummy4;
+		float dummy5;
 	};
 	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
 

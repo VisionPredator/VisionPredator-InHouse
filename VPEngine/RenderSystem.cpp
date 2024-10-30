@@ -20,10 +20,15 @@ void RenderSystem::ComponentAdded(Component* comp)
 		Path.assign(component->TexturePath.begin(), component->TexturePath.end());
 
 		effect::ParticleInfo info;
+		info.TexturePath = Path;
 		info.PosW = transform.World_Location;
 		info.Direction = transform.FrontVector;
 		info.IsLoop = component->IsLoop;
-		info.TexturePath = Path;
+		info.StartLifetimeA = component->StartLifetimeA;
+		info.StartLifetimeB = component->StartLifetimeB;
+		info.StartSizeA = component->StartSizeA;
+		info.StartSizeB = component->StartSizeB;
+		info.Duration = component->Duration;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
 	}
@@ -106,7 +111,11 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.PosW = transform.World_Location;
 		info.Direction = transform.FrontVector;
 		info.TexturePath = component.TexturePath;
-
+		info.StartLifetimeA = component.StartLifetimeA;
+		info.StartLifetimeB = component.StartLifetimeB;
+		info.StartSizeA = component.StartSizeA;
+		info.StartSizeB = component.StartSizeB;
+		info.Duration = component.Duration;
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 

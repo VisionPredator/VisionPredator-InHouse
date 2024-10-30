@@ -14,14 +14,12 @@ cbuffer cbData : register(b1)
 	float3 gEmitPosW;
 	float3 gEmitDirW;
 
-	float2 gStartSizeA;
-	float2 gStartSizeB;
+	float2 gStartSize;
 
 	float gDuration;
 	int gIsLoop;
 
-	float gStartLifetimeA;
-	float gStartLifetimeB;
+	float gStartLifetime;
 
 	float gAngle;
 	float gRadius;
@@ -73,7 +71,7 @@ void StreamOutGS(point Particle gin[1],
 	if (gin[0].Type == PT_EMITTER)
 	{
 		// 새로운 파티클을 생성
-		if ((gIsLoop == 1) && (gin[0].Age > 0.005f))
+		if (gIsLoop && gin[0].Age > 0.005f)
 		{
 			// 3D 공간에서 무작위 방향 벡터 생성
 			float3 vRandom = RandUnitVec3(0.0f);
@@ -85,7 +83,7 @@ void StreamOutGS(point Particle gin[1],
 			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
 			p.InitialVelW = 4.0f * vRandom;
-			p.SizeW = float2(3.0f, 3.0f);	// 크기 설정
+			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_FLARE;				// 파티클 유형 설정
 			ptStream.Append(p);
@@ -100,7 +98,7 @@ void StreamOutGS(point Particle gin[1],
 	else
 	{
 		// emitter 가 아닌 경우, 파티클의 나이가 1.0보다 작거나 같은 경우에만 현재 스트림에 추가한다.
-		if (gin[0].Age <= 1.0f)
+		if (gin[0].Age <= gStartLifetime)
 			ptStream.Append(gin[0]);
 	}
 }

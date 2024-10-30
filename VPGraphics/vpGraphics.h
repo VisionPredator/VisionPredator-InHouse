@@ -91,8 +91,8 @@ namespace effect
 		bool IsLoop = true;
 		float StartLifetimeA = 5.f;
 		float StartLifetimeB = 5.f;
-		float StartSizeA = 4.f;
-		float StartSizeB = 4.f;
+		float StartSizeA = 3.f;
+		float StartSizeB = 3.f;
 
 		struct ParticleShape
 		{

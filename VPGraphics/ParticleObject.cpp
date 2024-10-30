@@ -115,9 +115,14 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_PerFrame.TimeStep = m_TimeStep;
 	m_FrameCB->Update(m_PerFrame);
 
+	const float lifetime = m_Info.StartLifetimeA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartLifetimeB - m_Info.StartLifetimeA));
+	m_Data.StartLifetime = lifetime;
+	const float size = m_Info.StartSizeA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSizeB - m_Info.StartSizeA));
+	m_Data.StartSize = VPMath::Vector2{size, size};	// TODO: 가로세로 사이즈 조절할수 있도록 열어두면 좋을듯
 	m_Data.IsLoop = m_Info.IsLoop;
 	m_Data.EmitDirW = m_Info.Direction;
 	m_Data.EmitPosW = m_Info.PosW;
+	m_Data.Duration = m_Info.Duration;
 	m_DataCB->Update(m_Data);
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
@@ -220,5 +225,10 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Duration = info.Duration;
 	m_Info.TexturePath = info.TexturePath;
 	m_Info.IsLoop = info.IsLoop;
+	m_Info.StartLifetimeA = info.StartLifetimeA;
+	m_Info.StartLifetimeB = info.StartLifetimeB;
+	m_Info.StartSizeA = info.StartSizeA;
+	m_Info.StartSizeB = info.StartSizeB;
+	m_Info.Duration = info.Duration;
 	//m_Info.
 }
