@@ -6,42 +6,109 @@ BulletSystem::BulletSystem(std::shared_ptr<SceneManager> sceneManager) : System(
 {
 }
 
+void BulletSystem::FixedUpdate(float deltaTime)
+{
+	COMPLOOP(ShotGunBulletComponent, bulletcomp)
+	{
+		float distance = (bulletcomp.GetComponent<TransformComponent>()->World_Location - bulletcomp.StartPoint).Length();
+		if (distance> bulletcomp.Distance)
+		{
+		GetSceneManager()->DestroyEntity(bulletcomp.GetEntityID(),false);
+		}
+	}
+}
+
 
 void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 {
 	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
 	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
 	if (Firstentity.HasComponent<BulletComponent>())
+	{
 		ApplyDamage(Firstentity, Secondentity);
+		return;
+	}
 	else if (Secondentity.HasComponent<BulletComponent>())
+	{
 		ApplyDamage(Secondentity, Firstentity);
+		return;
+	}
+
 }
 
 void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 {
 	if (Other.HasComponent<EnemyComponent>())
 	{
-		auto damage = bullet.GetComponent<BulletComponent>()->Damage;
-		Other.GetComponent<EnemyComponent>()->HP -= damage;
-		Other.GetComponent<EnemyComponent>()->OnHit = true;
+		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), bullet.GetComponent<BulletComponent>()->Damage));
+
 	}
 	GetSceneManager()->DestroyEntity(bullet.GetEntityID());
 
+}
+
+void BulletSystem::ApplyShotGunDamage(Entity& bullet, Entity& Other)
+{
+	if (Other.HasComponent<EnemyComponent>())
+	{
+		auto bullettrans = bullet.GetComponent<TransformComponent>();
+		auto shotgunbullet = bullet.GetComponent<ShotGunBulletComponent>();
+
+		shotgunbullet->Distance;
+		float distance = (bullettrans->World_Location - shotgunbullet->StartPoint).Length();
+		int applyDamage{};
+		if (distance < shotgunbullet->Distance / 3)
+			applyDamage = shotgunbullet->Damage1;
+		else if (distance < shotgunbullet->Distance * 2 / 3)
+			applyDamage = shotgunbullet->Damage2;
+
+		else if (distance < shotgunbullet->Distance)
+			applyDamage = shotgunbullet->Damage3;
+
+		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(Other.GetEntityID(), applyDamage));
+	}
 }
 
 void BulletSystem::Initialize()
 {
 	COMPLOOP(BulletComponent, bulletcomp)
 		Start(bulletcomp.GetEntityID());
+	COMPLOOP(ShotGunBulletComponent, bulletcomp)
+		Start(bulletcomp.GetEntityID());
 }
 
 void BulletSystem::Start(uint32_t gameObjectId)
 {
 	auto& entity = *GetSceneManager()->GetEntity(gameObjectId);
-	if (!entity.HasComponent<BulletComponent>() || !entity.HasComponent<RigidBodyComponent>())
+	if ( !entity.HasComponent<RigidBodyComponent>())
 		return;
-	const auto& bulletcomp = *entity.GetComponent<BulletComponent>();;
-	const auto& transform = *entity.GetComponent <TransformComponent >();
-	m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
+	if (entity.HasComponent<BulletComponent>() )
+	{
+		const auto& bulletcomp = *entity.GetComponent<BulletComponent>();;
+		const auto& transform = *entity.GetComponent <TransformComponent >();
+		m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
+	}
+	else if	(entity.HasComponent<ShotGunBulletComponent>())
+	{
+		auto& bulletcomp = *entity.GetComponent<ShotGunBulletComponent>();;
+		const auto& transform = *entity.GetComponent <TransformComponent >();
+		m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
+		bulletcomp.StartPoint = transform.World_Location;
+	}
+
+}
+
+void BulletSystem::EnterTrigger(std::pair<uint32_t, uint32_t> entitypair)
+{
+	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
+	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
+	if (Firstentity.HasComponent<ShotGunBulletComponent>())
+		ApplyShotGunDamage(Firstentity, Secondentity);
+	else if (Secondentity.HasComponent<ShotGunBulletComponent>())
+		ApplyShotGunDamage(Secondentity, Firstentity);
+}
+
+void BulletSystem::ExitTrigger(std::pair<uint32_t, uint32_t> entitypair)
+{
 }
 

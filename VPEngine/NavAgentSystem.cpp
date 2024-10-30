@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "NavAgentSystem.h"
 #include <iostream>
+#include "EventManager.h"
 
 NavAgentSystem::NavAgentSystem(std::shared_ptr<SceneManager> sceneManager):System{ sceneManager }
 {
+	EventManager::GetInstance().Subscribe("OnRemoveNavAgent", CreateSubscriber(&NavAgentSystem::OnRemoveNavAgent));
 }
 
 
@@ -218,6 +220,23 @@ void NavAgentSystem::Finalize()
 	{
 		Finish(comp.GetEntityID());
 	}
+}
+
+void NavAgentSystem::OnRemoveNavAgent(std::any id)
+{
+	auto entityid = std::any_cast<uint32_t>(id);
+	auto entity = GetSceneManager()->GetEntity(entityid);
+	if (!entity || !entity->HasComponent<NavAgentComponent>())
+		return;
+	auto agentcomp = entity->GetComponent<NavAgentComponent>();
+	auto navmeshdata = GetSceneManager()->GetSceneNavMeshData();
+	if (!navmeshdata)
+		return;
+
+	auto agent = navmeshdata->crowd->getEditableAgent(agentcomp->NavAgent->AgentID);
+	if (!agent)
+		return;
+	navmeshdata->crowd->removeAgent(agentcomp->NavAgent->AgentID);
 }
 
 void NavAgentSystem::PhysicsLateUpdate(float deltaTime)

@@ -9,8 +9,8 @@ AreaAttackSystem::AreaAttackSystem(std::shared_ptr<SceneManager> sceneManager) :
 
 void AreaAttackSystem::TriggerAttack(AreaAttackComponent& area, EnemyComponent& enemy)
 {
-	enemy.HP -= area.Damage;
-	enemy.OnHit = true;
+	EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemy.GetEntityID(), area.Damage));
+
 }
 
 void AreaAttackSystem::FixedUpdate(float deltaTime)

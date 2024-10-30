@@ -2,7 +2,7 @@
 #include "../VPEngine/System.h"
 
 class BulletSystem :
-    public System,public IFixedUpdatable, public IContactable,public IStartable,public IPhysicable
+    public System,public IFixedUpdatable, public IContactable,public IStartable,public IPhysicable,public ITriggerable
 {
 public:
 	BulletSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -10,7 +10,7 @@ public:
 
 
 	// IFixedUpdatable을(를) 통해 상속됨
-	void FixedUpdate(float deltaTime) override {};
+	void FixedUpdate(float deltaTime) override;
 
 
 	//void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
@@ -21,6 +21,7 @@ public:
 	// IContactable을(를) 통해 상속됨
 	void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
 	void ApplyDamage(Entity& bullet, Entity& Other);
+	void ApplyShotGunDamage(Entity& bullet, Entity& Other);
 	void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) override {};
 
 
@@ -38,6 +39,12 @@ public:
 	void PhysicsUpdate(float deltaTime) override {};
 
 	void PhysicsLateUpdate(float deltaTime) override {};
+
+
+	// ITriggerable을(를) 통해 상속됨
+	void EnterTrigger(std::pair<uint32_t, uint32_t> entitypair) override;
+
+	void ExitTrigger(std::pair<uint32_t, uint32_t> entitypair) override;
 
 };
 

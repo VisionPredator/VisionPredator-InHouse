@@ -21,11 +21,13 @@ void InterectiveSystem::OnSearched(std::any searchedEntityID)
 	if (!interective->IsInterective)
 		return;
 	EventManager::GetInstance().ImmediateEvent("OnUpdateSearchUI");
-	if (interectedEntity->HasComponent<MeshComponent>())
-	{
-		auto meshcomp = interectedEntity->GetComponent<MeshComponent>();
+
+	auto meshcompvec = GetSceneManager()->GetChildEntityComps_HasComp<MeshComponent>(interectedEntity->GetEntityID());
+	if (meshcompvec.empty())
+		return;
+	for (auto meshcomp : meshcompvec)
 		meshcomp->MaskColor = interective->SearcehdColor;
-	}
+
 }
 
 void InterectiveSystem::OnUnSearched(std::any searchedEntityID)
@@ -41,12 +43,16 @@ void InterectiveSystem::OnUnSearched(std::any searchedEntityID)
 
 	//if (!interective->IsInterective)
 	//	return;
-
-	if (interectedEntity->HasComponent<MeshComponent>())
-	{
-		auto meshcomp = interectedEntity->GetComponent<MeshComponent>();
+	auto meshcompvec = GetSceneManager()->GetChildEntityComps_HasComp<MeshComponent>(interectedEntity->GetEntityID());
+	if (meshcompvec.empty())
+		return;
+	for (auto meshcomp : meshcompvec)
 		meshcomp->MaskColor = {};
-	}
+	//if (interectedEntity->HasComponent<MeshComponent>())
+	//{
+	//	auto meshcomp = interectedEntity->GetComponent<MeshComponent>();
+	//	meshcomp->MaskColor = {};
+	//}
 
 }
 
