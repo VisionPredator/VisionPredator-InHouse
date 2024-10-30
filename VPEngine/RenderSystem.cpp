@@ -104,7 +104,6 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.PosW = transform.World_Location;
 		info.Direction = transform.FrontVector;
 		info.TexturePath = component.TexturePath;
-		info.MaxParticles = component.MaxParticle;
 
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}

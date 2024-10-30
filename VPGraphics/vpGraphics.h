@@ -93,9 +93,8 @@ namespace effect
 		float StartLifetimeB = 5.f;
 		float StartSizeA = 4.f;
 		float StartSizeB = 4.f;
-		UINT MaxParticles = 0;		// TODO: 삭제. 값 고정.
 
-		struct Shape
+		struct ParticleShape
 		{
 			enum class ShapeType
 			{
@@ -103,13 +102,14 @@ namespace effect
 				Sphere
 			};
 
-			ShapeType ParticleShape = ShapeType::Cone;
+			ShapeType Shape = ShapeType::Cone;
 
 			float Angle = 30.f;
 			float Radius = 1.f;
 		};
+		ParticleShape Shape{};
 
-		struct Renderer
+		struct ParticleRenderer
 		{
 			enum class BillBoardType
 			{
@@ -122,6 +122,7 @@ namespace effect
 
 			// etc..
 		};
+		ParticleRenderer Renderer{};
 		
 	};
 

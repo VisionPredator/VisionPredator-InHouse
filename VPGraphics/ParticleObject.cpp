@@ -18,9 +18,7 @@
 ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const effect::ParticleInfo& info)
 	: m_Device(device), m_ResourceManager(resourceManager), m_Info(info)
 {
-#pragma region 임시
-	m_Info.MaxParticles = 5000;
-#pragma endregion
+	constexpr uint32_t MaxParticles = 1000.f;
 
 	// Create Buffers
 	{
@@ -41,7 +39,7 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, &vinitData, &m_InitVB));			// 스트림 출력용 버퍼
 
-		vbd.ByteWidth = sizeof(ParticleVertex) * m_Info.MaxParticles; // 최대로 다룰 버퍼 크기. 넘어가면 안된다.
+		vbd.ByteWidth = sizeof(ParticleVertex) * MaxParticles; // 최대로 다룰 버퍼 크기. 넘어가면 안된다.
 		vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT; // 플래그 중요!
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_DrawVB));			// 
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_StreamOutVB));
