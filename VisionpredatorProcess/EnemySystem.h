@@ -12,7 +12,7 @@ class EnemySystem :
 	,public EventSubscriber
 {
 public:
-	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager) : System(sceneManager) {}
+	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager);
 	
 public:
 	// IStartable

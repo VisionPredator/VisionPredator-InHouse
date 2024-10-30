@@ -15,9 +15,10 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 	{
 		enemyComp->PhysicsManager->RemoveController(enemyComp->GetEntityID());
 	}
-
+	EventManager::GetInstance().ImmediateEvent("OnRemoveNavAgent", enemyComp->GetEntityID());
 	ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
+	enemyComp->MovementState->Enter(enemyComp);
 	EventManager::GetInstance().ImmediateEvent("OnUpdateSector", enemyComp->GetEntityID());
 }
 

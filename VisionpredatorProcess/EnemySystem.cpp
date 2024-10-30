@@ -12,6 +12,11 @@
 #include "StatesInclude.h"
 #include "EnemyBehaviorState.h"
 
+EnemySystem::EnemySystem(const std::shared_ptr<SceneManager>& sceneManager): System(sceneManager)
+{
+	EventManager::GetInstance().Subscribe("OnDamaged", CreateSubscriber(&EnemySystem::OnDamaged));
+}
+
 void EnemySystem::Initialize()
 {
 	PlayerComponent* playerComponent = nullptr;
@@ -78,6 +83,37 @@ void EnemySystem::FixedUpdate(float deltaTime)
 void EnemySystem::OnDamaged(std::any entityid_Damage)
 {
 	auto [entityid, damage] = std::any_cast<std::pair <uint32_t, int>>(entityid_Damage);
+
+	auto entity = GetSceneManager()->GetEntity(entityid);
+	if (!entity->HasComponent<EnemyComponent>())
+		return;
+	auto enemycomponent = entity->GetComponent<EnemyComponent>();
+	if (enemycomponent->HP == 0)
+		return;
+		enemycomponent->OnHit = true;
+	if (enemycomponent->HP > damage)
+	{
+		enemycomponent->HP -= damage;
+
+	}
+	else
+	{
+		enemycomponent->HP = 0;
+
+		int healthup{};
+		if (m_playercomponent->IsVPMode)
+			healthup = 20;
+		else
+			healthup = 10;
+		if (m_playercomponent->CurrentFSM == VisPred::Game::PlayerFSM::DIE)
+			return;
+		if ((m_playercomponent->HP + healthup) > m_playercomponent->MaxHP)
+			m_playercomponent->HP = m_playercomponent->MaxHP;
+		else
+			m_playercomponent->HP += healthup;
+
+	}
+	Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 }
 

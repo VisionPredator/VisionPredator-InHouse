@@ -84,13 +84,14 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
 		, EnemyComponent::AttackPower
 	);
-	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::ThrowDamage, GunComponent::BulletPrefab, GunComponent::GunSoundKey, GunComponent::GunSoundVolume, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
+	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound,GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound,GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 	META_ADD_COMP(AimUIComponent
 		, AimUIComponent::Killed
 		, AimUIComponent::Aimed
 		, AimUIComponent::Attacked
 		, AimUIComponent::Interected
 	);
+	META_ADD_COMP(ShotGunBulletComponent, ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3, ShotGunBulletComponent::Distance, ShotGunBulletComponent::Speed);
 	META_ADD_COMP(VPUIComponent
 		, VPUIComponent::ChangeColor
 		, VPUIComponent::FullImage
@@ -99,7 +100,7 @@ void VispredRegister::Register_Components()
 
 	META_ADD_COMP(DoorComponent, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
 	META_ADD_COMP(SectorClearComponent, SectorClearComponent::DoorIdentity);
-	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::DoorIdentity);
+	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 }
 
 void VispredRegister::Register_EnumClass()

@@ -202,6 +202,7 @@
     <ClInclude Include="PlayerUISystem.h" />
     <ClInclude Include="SectorClearComponent.h" />
     <ClInclude Include="SectorSystem.h" />
+    <ClInclude Include="ShotGunBulletComponent.h" />
     <ClInclude Include="StatesInclude.h" />
     <ClInclude Include="AreaAttackComponent.h" />
     <ClInclude Include="AreaAttackSystem.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="AreaAttackSystem.cpp" />
     <ClCompile Include="SectorClearComponent.cpp" />
     <ClCompile Include="SectorSystem.cpp" />
+    <ClCompile Include="ShotGunBulletComponent.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="TrunComponent.cpp" />
     <ClCompile Include="TrunSystem.cpp" />

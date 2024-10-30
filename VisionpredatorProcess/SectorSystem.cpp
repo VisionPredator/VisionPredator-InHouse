@@ -10,10 +10,10 @@ SectorSystem::SectorSystem(std::shared_ptr<SceneManager> scenemanager) :System(s
 void SectorSystem::OnUpdateSector(std::any enemyid)
 {
 	auto entityid = std::any_cast<uint32_t>(enemyid);
-	auto sectorentity = GetSceneManager()->GetParentEntity_HasComp<SectorClearComponent>(entityid);
-	if (!sectorentity)
+	auto sectorcomp = GetSceneManager()->GetParentEntityComp_HasComp<SectorClearComponent>(entityid);
+	if (!sectorcomp)
 		return;
-	auto sectorcomp = sectorentity->GetComponent<SectorClearComponent>();
+	//auto sectorcomp = sectorentity->GetComponent<SectorClearComponent>();
 	CheckSectorClear(sectorcomp);
 }
 

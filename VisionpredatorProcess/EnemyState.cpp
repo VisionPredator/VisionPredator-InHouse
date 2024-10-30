@@ -115,6 +115,8 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ).EntityID;
 		if (detectedObjID == playerID)
 		{
+			enemyComp.DistanceToPlayer = (playerPos - enemyPos).Length();
+
 			if (enemyComp.BehaviorState != &EnemyBehaviorState::s_Chase)
 			{
 				ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Chase);

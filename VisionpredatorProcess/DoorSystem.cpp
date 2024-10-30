@@ -110,12 +110,20 @@ void DoorSystem::OnChangeDoorUseable(std::any entityid_bool)
 		doorcomp->GetComponent<MeshComponent>()->FBX = doorcomp->UseableFBX;
 	else
 		doorcomp->GetComponent<MeshComponent>()->FBX = doorcomp->UnUseableFBX;
-	std::string dooridentity = doorcomp->GetComponent<IdentityComponent>()->UUID;
-	COMPLOOP(DoorOpenerComponent, opencomp)
+	//std::string dooridentity = doorcomp->GetComponent<IdentityComponent>()->UUID;
+
+	//auto components = GetSceneManager()->GetParentEntityComp_HasComp<DoorComponent>();
+
+		//if (opencomp.Dummy != dooridentity || !opencomp.HasComponent<InterectiveComponent>())
+		//	continue;
+
+	auto compvec = GetSceneManager()->GetChildEntityComps_HasComp<DoorOpenerComponent>(doorcomp->GetEntityID());
+	if (compvec.empty())
+		return;
+
+	for (auto dooropen : compvec)
 	{
-		if (opencomp.DoorIdentity != dooridentity || !opencomp.HasComponent<InterectiveComponent>())
-			continue;
-		opencomp.GetComponent<InterectiveComponent>()->IsInterective = doorcomp->IsUseserble;
+		dooropen->GetComponent<InterectiveComponent>()->IsInterective = doorcomp->IsUseserble;
 	}
 }
 
@@ -129,13 +137,14 @@ void DoorSystem::OnInterected(std::any interective_interector) {
 	auto doorOpencomp = interected->GetComponent<DoorOpenerComponent>();
 
 	// DoorIdentitys 벡터가 비어있을 경우 예외 처리
-	if (doorOpencomp->DoorIdentity.empty())
-		return;
-	auto doorentity = GetSceneManager()->GetEntityByIdentityName(doorOpencomp->DoorIdentity);
+	//if (doorOpencomp->Dummy.empty())
+	//	return;
+	//auto doorentity = GetSceneManager()->GetEntityByIdentityName(doorOpencomp->Dummy);
+	auto doorcomp = GetSceneManager()->GetParentEntityComp_HasComp<DoorComponent>(doorOpencomp->GetEntityID());
 	// doorentity가 유효하지 않거나 DoorComponent가 없을 경우, 현재 루프 스킵
-	if (!doorentity || !doorentity->HasComponent<DoorComponent>())
+	if (!doorcomp)
 		return;
-	auto doorcomp = doorentity->GetComponent<DoorComponent>();
+	//auto doorcomp = doorentity->GetComponent<DoorComponent>();
 	// DoorComponent가 이미 활성화되어 있으면 함수 종료
 	if (doorcomp->IsActivated)
 		return;

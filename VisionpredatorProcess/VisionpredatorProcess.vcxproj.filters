@@ -204,6 +204,9 @@
     <ClInclude Include="SectorSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ShotGunBulletComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -354,6 +357,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SectorSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShotGunBulletComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

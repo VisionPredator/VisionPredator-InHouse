@@ -2,8 +2,8 @@
 #include "Component.h"
 struct DoorOpenerComponent :public Component
 {
-	VP_JSONBODY(DoorOpenerComponent , DoorIdentity);
+	VP_JSONBODY(DoorOpenerComponent , Dummy);
 
-	std::string DoorIdentity{};
+	int Dummy{};
 };
 

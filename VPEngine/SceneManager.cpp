@@ -519,7 +519,7 @@ std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, in
 	soundcomp->Loop = isloop;
 	entity->GetComponent<TransformComponent>()->Local_Location = pos;
 	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
-	return std::shared_ptr<Entity>();
+	return entity;
 }
 
 
@@ -970,6 +970,9 @@ void SceneManager::OnDestroyEntity(std::any data)
 {
 	uint32_t mainID = std::any_cast<uint32_t>(data);
 	auto& entityMap = GetEntityMap();
+	auto temp = GetEntity(mainID);
+	if (!temp)
+		return;
 	std::list<uint32_t> DeleteEntityIDs;
 	DeleteEntityIDs.push_back(mainID);
 
