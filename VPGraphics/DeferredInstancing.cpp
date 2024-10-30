@@ -96,6 +96,7 @@ void DeferredInstancing::Render()
 	//instance buffer
 	for (auto& object : m_RenderList)
 	{
+		bool isTranparency = false;
 
 		if (object->color.x != 0.f ||
 			object->color.y != 0.f ||
@@ -113,6 +114,29 @@ void DeferredInstancing::Render()
 		if (object->ModelID < 0)
 		{
 			continue;
+		}
+
+
+		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(object->FBX).lock();
+
+		if (curModel != nullptr)
+		{
+			if (!curModel->m_Materials.empty())
+			{
+				for (auto material : curModel->m_Materials)
+				{
+					if (material->m_OpacitySRV.lock() != nullptr)
+					{
+						isTranparency = true;
+						break;
+					}
+				}
+			}
+
+			if (isTranparency)
+			{
+				continue;
+			}
 		}
 
 		//첫번째 진행시 초기화

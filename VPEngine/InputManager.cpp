@@ -104,9 +104,8 @@ void InputManager::OnClipMouse(std::any hwnd)
 	// Apply clipping if enabled
 	if (m_IsWindowMode)
 	{
-		RECT clientRect{};
-		GetWindowRect(*m_hwnd, &clientRect);
-		ClipCursor(&clientRect);
+		GetWindowRect(*m_hwnd, &m_clientRect);
+		ClipCursor(&m_clientRect);
 	}
 	else
 	{
@@ -175,6 +174,7 @@ void InputManager::ProcessMouseInput()
 	if (m_hwnd)
 	{
 	// Get the current cursor position in screen coordinates
+
 	GetCursorPos(&m_curPos);
 		// Convert screen coordinates to client area coordinates
 		ScreenToClient(*m_hwnd, &m_curPos);
@@ -188,9 +188,9 @@ void InputManager::ProcessMouseInput()
 		// Calculate the delta
 		m_mouseDelta.x = m_mouseState.lX;
 		m_mouseDelta.y = m_mouseState.lY;
-
-	/*	m_mouseDelta.x = m_curPos.x - m_lastPos.x;
-		m_mouseDelta.y = m_curPos.y - m_lastPos.y;*/
+		// Calculate Windows (win) mouse delta
+		m_UImouseDelta.x = m_curPos.x - m_lastPos.x;
+		m_UImouseDelta.y = m_curPos.y - m_lastPos.y;
 
 		// Update the last position for the next frame
 		m_lastPos = m_curPos;

@@ -7,6 +7,7 @@ using namespace VisPred::Game;
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
 	EventManager::GetInstance().Subscribe("OnDrop_Gun", CreateSubscriber(&PlayerSystem::OnDrop_Gun));
+	EventManager::GetInstance().Subscribe("OnDamaged", CreateSubscriber(&PlayerSystem::OnDamaged));
 	EventManager::GetInstance().Subscribe("OnCrouchModeController", CreateSubscriber(&PlayerSystem::OnCrouchModeController));
 	EventManager::GetInstance().Subscribe("OnSlideModeController", CreateSubscriber(&PlayerSystem::OnSlideModeController));
 	EventManager::GetInstance().Subscribe("OnDefalutModeController", CreateSubscriber(&PlayerSystem::OnDefalutModeController));
@@ -105,6 +106,30 @@ void PlayerSystem::Gun_Cooltime(PlayerComponent& playercomp, float deltatime)
 		else
 			playercomp.ReadyToShoot = false;
 	}
+}
+void PlayerSystem::OnDamaged(std::any entityid_Damage)
+{
+	auto [entityid, damage] = std::any_cast<std::pair<uint32_t, int>>(entityid_Damage);
+	auto entity = GetSceneManager()->GetEntity(entityid);
+	if (entity && entity->HasComponent<PlayerComponent>())
+	{
+		auto playercomp = entity->GetComponent<PlayerComponent>();
+		if (playercomp->NonDamageMode)
+			return;
+		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
+		{
+			if (playercomp->HP > damage)
+			{
+				playercomp->HP = playercomp->HP - damage;
+				auto soundcomp = playercomp->GetComponent<PlayerSoundComponent>();
+				GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_Hurt, soundcomp->Volume_Hurt, true, false, {});
+			}
+			else
+				playercomp->HP = 0;
+		}
+
+	}
+
 }
 #pragma region Update
 void PlayerSystem::Update(float deltaTime)
@@ -318,7 +343,8 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 {
 	auto& meleecomp = *playercomp.GetComponent<PlayerMeleeComponent>();
 	auto& PlayerAni = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
-
+	auto& soundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
+	
 	///공격이 가능한 상태인가?
 
 	if (PlayerAni.IsBlending || PlayerAni.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Sword))
@@ -351,13 +377,17 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 	switch (meleecomp.AttackMode)
 	{
 	case VisPred::Game::PlayerMelee::Sword_First:
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Sword1, soundcomp.Volume_Sword1, true, false, {});
 		SetAttackDetails(VisPred::Game::PlayerAni::ToAttack1_Sword, meleecomp.SwordLength, meleecomp.SwordDamage, meleecomp.SwordAngle);
 		break;
 	case VisPred::Game::PlayerMelee::Sword_Third:
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Sword3, soundcomp.Volume_Sword3, true, false, {});
+
 		SetAttackDetails(VisPred::Game::PlayerAni::ToAttack2_Sword, meleecomp.SwordLength, meleecomp.SwordDamage, meleecomp.SwordAngle);
 		break;
 	case VisPred::Game::PlayerMelee::Sword_Second:
 	case VisPred::Game::PlayerMelee::Sword_Fourth:
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Sword2, soundcomp.Volume_Sword2, true, false, {});
 		SetAttackDetails(VisPred::Game::PlayerAni::ToAttack3_Sword, meleecomp.SwordLength, meleecomp.SwordDamage, 1);
 		break;
 	default:
@@ -398,6 +428,7 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 {
 	auto& meleecomp = *playercomp.GetComponent<PlayerMeleeComponent>();
 	auto& PlayerAni = *playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
+	auto& soundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
 
 	///공격이 가능한 상태인가?
 
@@ -442,9 +473,11 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 	{
 	case VisPred::Game::PlayerMelee::VP_Left:
 		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.SwordAngle);
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack1, soundcomp.Volume_VPAttack1, true, false, {});
 		break;
 	case VisPred::Game::PlayerMelee::VP_Right:
 		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.SwordAngle);
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack2, soundcomp.Volume_VPAttack2, true, false, {});
 		break;
 	default:
 		return;
@@ -676,13 +709,13 @@ void PlayerSystem::Sound_Walk(PlayerComponent& playercomp)
 	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
 
 
-	if (!m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.WalkSoundKey1) && !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playerSoundcomp.WalkSoundKey2))
+	if (!m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Walk1) && !m_SoundEngine->IsPlayingSound(playercomp.GetEntityID(), playerSoundcomp.SoundKey_Walk2))
 	{
 		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
 		if (!playerSoundcomp.Played_Walk1)
-			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.WalkSoundKey1, playerSoundcomp.Volume_Walk, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Walk1, playerSoundcomp.Volume_Walk, true, false, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 		else
-			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.WalkSoundKey2, playerSoundcomp.Volume_Walk, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Walk2, playerSoundcomp.Volume_Walk, true, false, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 		playerSoundcomp.Played_Walk1 = !playerSoundcomp.Played_Walk1;
 	}
 }
@@ -690,14 +723,14 @@ void PlayerSystem::Sound_Run(PlayerComponent& playercomp)
 {
 	auto& playerSoundcomp = *playercomp.GetComponent<PlayerSoundComponent>();
 
-	if (!m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey1)
-		&& !m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey2))
+	if (!m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Run1)
+		&& !m_SoundEngine->IsPlayingSound(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Run2))
 	{
 		m_SoundEngine->Stop(playerSoundcomp.GetEntityID());
 		if (!playerSoundcomp.Played_Run1)
-			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey1, playerSoundcomp.Volume_Run, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Run1, playerSoundcomp.Volume_Run, true, false, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 		else
-			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.RunSoundKey2, playerSoundcomp.Volume_Run, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
+			m_SoundEngine->Play(playerSoundcomp.GetEntityID(), playerSoundcomp.SoundKey_Run2, playerSoundcomp.Volume_Run, true, false, playerSoundcomp.GetComponent<TransformComponent>()->World_Location);
 		playerSoundcomp.Played_Run1 = !playerSoundcomp.Played_Run1;
 	}
 }
@@ -780,8 +813,12 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 			if (guncomp.IsEmpty)
 			{
+				auto sound =playercomp.GetComponent<PlayerSoundComponent>();
 				if (Gun_Throw(playercomp, guncomp))
+				{
+					GetSceneManager()->SpawnSoundEntity(sound->SoundKey_GunThrow, sound->Volume_GunThrow, true, false, {});
 					Throw_Setting(playercomp);
+				}
 			}
 			else if (playercomp.ReadyToShoot)
 				if (Gun_Shoot(playercomp, guncomp))
@@ -1135,8 +1172,9 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 		return false;
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
+
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	GetSceneManager()->SpawnSoundEntity(guncomp.GunSoundKey, guncomp.GunSoundVolume, true, false, temppos);
 	return true;
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
@@ -1147,7 +1185,8 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	GetSceneManager()->SpawnSoundEntity(guncomp.GunSoundKey, guncomp.GunSoundVolume, true, false, temppos);
+
 	return true;
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
@@ -1158,7 +1197,8 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
 	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	m_SceneManager.lock()->SpawnEditablePrefab(guncomp.GunSoundPrefab, temppos, temprotate);
+	GetSceneManager()->SpawnSoundEntity(guncomp.GunSoundKey, guncomp.GunSoundVolume, true, false, temppos);
+
 	return true;
 }
 #pragma endregion

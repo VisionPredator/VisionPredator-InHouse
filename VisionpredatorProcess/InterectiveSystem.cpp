@@ -98,6 +98,7 @@ void InterectiveSystem::OnInterected(std::any interective_interector)
 void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& playercomp)
 {
 	auto anicomp = playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	auto soundcomp = playercomp.GetComponent<PlayerSoundComponent>();
 	if (anicomp->IsBlending)
 		return;
 	if (anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Sword
@@ -142,6 +143,6 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 	}
 	std::any data = temp;
 	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
-
+	GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_GunDraw, soundcomp->Volume_GunDraw, true, false, {});
 
 }

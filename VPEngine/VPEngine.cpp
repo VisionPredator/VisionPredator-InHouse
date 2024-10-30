@@ -98,6 +98,7 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<NavAgentSystem>();
 	m_SystemManager->AddSystem<SceneSerializer>();
 	m_SystemManager->AddSystem<LightSystem>();
+	m_SystemManager->AddSystem<ButtonSystem>();
 	///그래픽스
 	m_SystemManager->AddSystem<MeshSystem>();
 	m_SystemManager->AddSystem<SkinnedMeshSystem>();
