@@ -46,7 +46,7 @@ public:
 		const std::shared_ptr<DecalManager> decalmanager);
 	void Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling);
 
-	void Render();
+	void Render(float deltaTime);
 	void OnResize();
 	void SetVP(bool isVP);
 	void SetDebugDraw(bool on_off);

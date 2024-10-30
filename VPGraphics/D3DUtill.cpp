@@ -2,8 +2,11 @@
 #include "D3DUtill.h"
 
 #include <DDSTextureLoader.h>
+#include <DirectXTex.h>
+#include <WICTextureLoader.h>
 
 #include "Defines.h"
+#include "Log.h"
 
 // [0, 1] 구간의 부동소수점 난수를 돌려준다.
 float D3DUtill::RandF()
@@ -106,18 +109,37 @@ void D3DUtill::CreateTexture2DArraySRV(ID3D11Device* device, ID3D11DeviceContext
 	const UINT SIZE = filename.size();
 	std::vector<ID3D11Texture2D*> srcTex(SIZE);
 
+
 	for (UINT i = 0; i < SIZE; ++i)
 	{
-		DirectX::CreateDDSTextureFromFileEx(device,
-			filename[i].c_str(),
-			1024 * 1024,
-			D3D11_USAGE_STAGING,
-			0,
-			D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ,
-			0,
-			DirectX::DDS_LOADER_FORCE_SRGB,
-			(ID3D11Resource**)&srcTex[i],
-			nullptr);
+		std::filesystem::path _path(filename[i]);
+		std::wstring strExtension = _path.extension();
+		std::transform(strExtension.begin(), strExtension.end(), strExtension.begin(), ::towlower);
+
+		DirectX::TexMetadata metadata;
+		DirectX::ScratchImage scratchImage;
+
+		if (strExtension == L".dds")
+		{
+			DirectX::CreateDDSTextureFromFileEx(device,
+				filename[i].c_str(),
+				1024 * 1024,
+				D3D11_USAGE_STAGING,
+				0,
+				D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ,
+				0,
+				DirectX::DDS_LOADER_FORCE_SRGB,
+				(ID3D11Resource**)&srcTex[i],
+				nullptr);
+		}
+		else // 기타..
+		{
+			HR_CHECK(DirectX::LoadFromWICFile(filename[i].c_str(), DirectX::WIC_FLAGS_NONE, &metadata, scratchImage));
+
+			DirectX::CreateWICTextureFromFileEx(device,
+				context, filename[i].c_str(), 1024 * 1024, D3D11_USAGE_STAGING, 0, D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ,
+				0, DirectX::WIC_LOADER_FORCE_SRGB, (ID3D11Resource**)&srcTex[i], nullptr);
+		}
 	}
 
 	D3D11_TEXTURE2D_DESC texElementDesc;

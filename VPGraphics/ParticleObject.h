@@ -27,6 +27,32 @@ public:
 		VPMath::Vector3 EmitDirW;
 		float Unused;
 	};
+	static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
+
+	struct InfoCB
+	{
+		VPMath::Vector3 EmitPosW;	// Transform 에서 위치값을 뽑아와서 준다.
+		VPMath::Vector3 EmitDirW;	// 오브젝트이 Front Vector 값을 준다.
+
+		VPMath::Vector2 StartSizeA;
+		VPMath::Vector2 StartSizeB;
+
+		float Duration;
+		int IsLoop;
+
+		float StartLifetimeA;
+		float StartLifetimeB;
+
+		float Angle;
+		float Radius;
+
+		int ParticleShape;
+		int RenderMode;
+
+		float dummy1;
+		float dummy2;
+	};
+	static_assert(sizeof(InfoCB) % 16 == 0, "must be align");
 
 	struct ParticleVertex
 	{
@@ -41,10 +67,10 @@ public:
 	ParticleObject(const std::shared_ptr<class Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const effect::ParticleInfo& info);
 	~ParticleObject() = default;
 
-	void Update(const float& deltaTime, const float& totalGameTime);
-	void Draw();
+	void Update();
+	void Draw(float deltaTime, float totalGameTime);
 	
-	void SetParticleInfo(const effect::ParticleInfo& info) { m_Info = info; }
+	void SetParticleInfo(const effect::ParticleInfo& info);
 
 private:
 	std::shared_ptr<Device> m_Device;
@@ -84,5 +110,8 @@ private:
 	VPMath::Vector3 m_EyePosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
 	VPMath::Vector3 m_EmitPosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
 	VPMath::Vector3 m_EmitDirW = VPMath::Vector3(0.0f, 1.0f, 0.0f);
+
+
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_SamplerState;
 };
 
