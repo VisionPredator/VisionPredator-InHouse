@@ -26,9 +26,11 @@ public:
 	void OnSetPhysicInfo(std::any PhysicInfo);
 	void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
-	// IPhysx을(를) 통해 상속됨
-	void ChangeDynamicToStatic(uint32_t entityID) override;
-	void ChangeStaticToDynamic(uint32_t entityID) override;
+
+	void ConvertToStaticWithLayer(uint32_t entityID, EPhysicsLayer layer) override;
+	void ConvertToDynamicWithLayer(uint32_t entityID, EPhysicsLayer layer) override;
+	void ConvertToStatic(uint32_t entityID) override;
+	void ConvertToDynamic(uint32_t entityID) override;
 	void ReleaseActor(uint32_t entityID) override;
 
 	// IPhysx을(를) 통해 상속됨
@@ -101,7 +103,6 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	void ResizeCapsuleController(uint32_t entityID, float radius, float height) override;
-
 
 
 

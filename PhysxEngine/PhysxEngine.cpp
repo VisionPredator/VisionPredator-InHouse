@@ -138,31 +138,31 @@ void PhysxEngine::OnSetPhysicInfo(std::any data)
 
 }
 
-void PhysxEngine::ChangeDynamicToStatic(uint32_t entityID, EPhysicsLayer layer)
+void PhysxEngine::ConvertToStaticWithLayer(uint32_t entityID, EPhysicsLayer layer)
 {
-	m_RigidBodyManager->ChangeDynamicToStatic(entityID);
+	m_RigidBodyManager->ConvertToStaticWithLayer(entityID, layer);
 	m_CollisionManager->RemoveEntity(entityID);
 	Log::GetCoreLogger()->warn("Changed RigidBody!!");
 
 }
 
-void PhysxEngine::ChangeStaticToDynamic(uint32_t entityID, EPhysicsLayer layer)
+void PhysxEngine::ConvertToDynamicWithLayer(uint32_t entityID, EPhysicsLayer layer)
 {
-	m_RigidBodyManager->ChangeStaticToDynamic(entityID);
+	m_RigidBodyManager->ConvertToDynamicWithLayer(entityID, layer);
 	m_CollisionManager->RemoveEntity(entityID);
 	Log::GetCoreLogger()->warn("Changed RigidBody!!");
 }
 
-void PhysxEngine::ChangeDynamicToStatic(uint32_t entityID)
+void PhysxEngine::ConvertToStatic(uint32_t entityID)
 {
-	m_RigidBodyManager->ChangeDynamicToStatic(entityID);
+	m_RigidBodyManager->ConvertToStatic(entityID);
 	m_CollisionManager->RemoveEntity(entityID);
 	Log::GetCoreLogger()->warn("Changed RigidBody!!");
 }
 
-void PhysxEngine::ChangeStaticToDynamic(uint32_t entityID)
+void PhysxEngine::ConvertToDynamic(uint32_t entityID)
 {
-	m_RigidBodyManager->ChangeStaticToDynamic(entityID);
+	m_RigidBodyManager->ConvertToDynamic(entityID);
 	m_CollisionManager->RemoveEntity(entityID);
 	Log::GetCoreLogger()->warn("Changed RigidBody!!");
 }

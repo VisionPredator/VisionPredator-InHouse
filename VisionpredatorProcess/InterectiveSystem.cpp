@@ -126,7 +126,7 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 	soceketcomp->ConnectedEntityID = handID;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp.GetEntityID();
-	m_PhysicsEngine->ChangeDynamicToStatic(playercomp.GunEntityID);
+	m_PhysicsEngine->ConvertToStaticWithLayer(playercomp.GunEntityID, VPPhysics::EPhysicsLayer::TRIGGER);
 	guncomp.GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
 	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;

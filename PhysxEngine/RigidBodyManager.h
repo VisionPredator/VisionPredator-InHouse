@@ -35,8 +35,10 @@ public:
 	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
-	void ChangeDynamicToStatic(uint32_t EntityID);
-	void ChangeStaticToDynamic(uint32_t EntityID);
+	void ConvertToStatic(uint32_t EntityID);
+	void ConvertToDynamic(uint32_t EntityID);
+	void ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer);
+	void ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer);
 	bool HasRigidBody(uint32_t EntityID);
 	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);

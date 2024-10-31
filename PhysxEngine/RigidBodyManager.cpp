@@ -411,7 +411,7 @@ std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
 		return nullptr;
 	return it->second;
 }
-void RigidBodyManager::ChangeDynamicToStatic(uint32_t EntityID)
+void RigidBodyManager::ConvertToStatic(uint32_t EntityID)
 {
 	auto rigidbody = GetRigidBody(EntityID);
 	if (!rigidbody)
@@ -432,7 +432,7 @@ void RigidBodyManager::ChangeDynamicToStatic(uint32_t EntityID)
 	else if (rigidbody->m_Convexinfo)
 		CreateStaticBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 }
-void RigidBodyManager::ChangeStaticToDynamic(uint32_t EntityID)
+void RigidBodyManager::ConvertToDynamic(uint32_t EntityID)
 {
 	auto rigidbody = GetRigidBody(EntityID);
 	if (!rigidbody)
@@ -450,6 +450,69 @@ void RigidBodyManager::ChangeStaticToDynamic(uint32_t EntityID)
 		CreateDynamicBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 	else if (rigidbody->m_Convexinfo)
 		CreateDynamicBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+}
+void RigidBodyManager::ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (!rigidbody)
+		return;
+	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+		return;
+	// Remove the dynamic actor from the scene
+	if (auto dynamicActor = std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody))
+		m_Scene->removeActor(*dynamicActor->GetPxDynamicRigid());
+
+	if (rigidbody->m_Boxinfo)
+	{
+		rigidbody->m_Boxinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Sphereinfo)
+	{
+		rigidbody->m_Sphereinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Sphereinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Capulseinfo)
+	{
+		rigidbody->m_Capulseinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Convexinfo)
+	{
+		rigidbody->m_Convexinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+}
+void RigidBodyManager::ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (!rigidbody)
+		return;
+	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+		return;
+	// Remove the dynamic actor from the scene
+	if (auto dynamicActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
+		m_Scene->removeActor(*dynamicActor->GetPxStaticRigid());
+	if (rigidbody->m_Boxinfo)
+	{
+		rigidbody->m_Boxinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Sphereinfo)
+	{
+		rigidbody->m_Sphereinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Sphereinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Capulseinfo)
+	{
+		rigidbody->m_Capulseinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Convexinfo)
+	{
+		rigidbody->m_Convexinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
 }
 bool RigidBodyManager::HasRigidBody(uint32_t entityID)
 {

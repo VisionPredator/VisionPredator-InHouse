@@ -902,7 +902,7 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 		if (GetSceneManager()->GetEntity(playercomp.ThrowingGunEntityID))
 		{
 			SocketComponent* socketcomp = GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
-			m_PhysicsEngine->ChangeStaticToDynamic(playercomp.ThrowingGunEntityID);
+			m_PhysicsEngine->ConvertToDynamicWithLayer(playercomp.ThrowingGunEntityID,VPPhysics::EPhysicsLayer::WEAPON);
 			VPMath::Vector3 temp = playercomp.FirePosEntity.lock()->GetComponent <TransformComponent>()->FrontVector;
 			temp.RotateToUp(6);
 			socketcomp->IsConnected = false;
@@ -1030,7 +1030,7 @@ void PlayerSystem::Drop_Gun(PlayerComponent& playercomp)
 	auto gunentity = GetSceneManager()->GetEntity(playercomp.GunEntityID);
 	auto guncomp = gunentity->GetComponent<GunComponent>();
 	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
-	m_PhysicsEngine->ChangeStaticToDynamic(gunentity->GetEntityID());
+	m_PhysicsEngine->ConvertToDynamicWithLayer(gunentity->GetEntityID(), VPPhysics::EPhysicsLayer::WEAPON);
 	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), {});
 	soceketcomp->IsConnected = false;
 	soceketcomp->ConnectedEntityID = 0;
