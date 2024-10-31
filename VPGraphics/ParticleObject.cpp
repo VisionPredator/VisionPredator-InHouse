@@ -116,16 +116,16 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_FrameCB->Update(m_PerFrame);
 
 	// TODO: 이거 lerp ? 인가 쉐이더 코드 상에서 수행해도 된다.
-	const float lifetime = m_Info.StartLifetimeA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartLifetimeB - m_Info.StartLifetimeA));
+	const float lifetime = m_Info.StartLifetime.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartLifetime.y - m_Info.StartLifetime.x));
 	m_Data.StartLifetime = lifetime;
-	const float size = m_Info.StartSizeA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSizeB - m_Info.StartSizeA));
+	const float size = m_Info.StartSize.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSize.y - m_Info.StartSize.x));
 	m_Data.StartSize = VPMath::Vector2{size, size};	// TODO: 가로세로 사이즈 조절할수 있도록 열어두면 좋을듯
 	m_Data.IsLoop = m_Info.IsLoop;
 	m_Data.EmitDirW = m_Info.Direction;
 	m_Data.EmitPosW = m_Info.PosW;
 	m_Data.Duration = m_Info.Duration;
 	m_Data.Restart = m_Info.Restart;
-	const float speed = m_Info.StartSpeedA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSpeedB - m_Info.StartSpeedA));
+	const float speed = m_Info.StartSpeed.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSpeed.y - m_Info.StartSpeed.x));
 	m_Data.StartSpeed = speed;
 	m_DataCB->Update(m_Data);
 
@@ -229,13 +229,10 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Duration = info.Duration;
 	m_Info.TexturePath = info.TexturePath;
 	m_Info.IsLoop = info.IsLoop;
-	m_Info.StartLifetimeA = info.StartLifetimeA;
-	m_Info.StartLifetimeB = info.StartLifetimeB;
-	m_Info.StartSizeA = info.StartSizeA;
-	m_Info.StartSizeB = info.StartSizeB;
+	m_Info.StartLifetime = info.StartLifetime;
+	m_Info.StartSize = info.StartSize;
+	m_Info.StartSpeed = info.StartSpeed;
 	m_Info.Duration = info.Duration;
 	m_Info.Restart = info.Restart;
-	m_Info.StartSpeedA = info.StartSpeedA;
-	m_Info.StartSpeedB = info.StartSpeedB;
 	//m_Info.
 }

@@ -73,7 +73,7 @@ void StreamOutGS(point Particle gin[1],
 	{
 		if (gRestart)
 		{
-			gin[0].Age = 0.0f;        // 파티클 나이를 초기화
+			gin[0].Age = 0.0f;        // emitter 나이를 초기화
 		}
 
 		// gIsLoop가 false일 때 Duration 동안만 파티클 생성

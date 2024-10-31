@@ -33,12 +33,9 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.Restart = component->Restart;
 		component->RestartPrev = component->Restart;
 
-		info.StartLifetimeA = component->StartLifetimeA;
-		info.StartLifetimeB = component->StartLifetimeB;
-		info.StartSizeA = component->StartSizeA;
-		info.StartSizeB = component->StartSizeB;
-		info.StartSpeedA = component->StartSpeedA;
-		info.StartSpeedB = component->StartSpeedB;
+		info.StartLifetime = component->StartLifetime;
+		info.StartSize = component->StartSize;
+		info.StartSpeed = component->StartSpeed;
 		info.Duration = component->Duration;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
@@ -127,12 +124,11 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.PosW = transform.World_Location;
 		info.Direction = transform.FrontVector;
 		info.TexturePath = component.TexturePath;
-		info.StartLifetimeA = component.StartLifetimeA;
-		info.StartLifetimeB = component.StartLifetimeB;
-		info.StartSizeA = component.StartSizeA;
-		info.StartSizeB = component.StartSizeB;
-		info.StartSpeedA = component.StartSpeedA;
-		info.StartSpeedB = component.StartSpeedB;
+
+		info.StartLifetime = component.StartLifetime;
+		info.StartSize = component.StartSize;
+		info.StartSpeed = component.StartSpeed;
+
 		info.Duration = component.Duration;
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}

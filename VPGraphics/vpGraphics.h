@@ -90,12 +90,10 @@ namespace effect
 		float Duration = 5.f;
 		bool IsLoop = true;
 		bool Restart = false;
-		float StartLifetimeA = 5.f;
-		float StartLifetimeB = 5.f;
-		float StartSizeA = 3.f;
-		float StartSizeB = 3.f;
-		float StartSpeedA = 5.f;
-		float StartSpeedB = 5.f;
+
+		VPMath::Vector2 StartLifetime = { 5.f, 5.f };
+		VPMath::Vector2 StartSize = { 3.f, 3.f };
+		VPMath::Vector2 StartSpeed = { 5.f, 5.f };
 
 		struct ParticleShape
 		{

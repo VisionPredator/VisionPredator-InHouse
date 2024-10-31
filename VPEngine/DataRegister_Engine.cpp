@@ -130,9 +130,7 @@ void EngineRegister::Register_Components()
 		ParticleComponent::TexturePath,
 		ParticleComponent::IsLoop,
 		ParticleComponent::Restart,
-		ParticleComponent::StartLifetimeA, ParticleComponent::StartLifetimeB,
-		ParticleComponent::StartSizeA, ParticleComponent::StartSizeB,
-		ParticleComponent::StartSpeedA, ParticleComponent::StartSpeedB,
+		ParticleComponent::StartLifetime, ParticleComponent::StartSize, ParticleComponent::StartSpeed,
 		ParticleComponent::Duration);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
