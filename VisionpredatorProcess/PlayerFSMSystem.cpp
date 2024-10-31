@@ -600,7 +600,8 @@ void PlayerFSMSystem::Enter_Die(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 {
-	GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
+	GetSceneManager()->SpawnPrefab("../Data/Prefab/DieUI.prefab", {}, VPMath::Vector3{});
+	//GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
 }
 
 void PlayerFSMSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)

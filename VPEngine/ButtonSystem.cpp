@@ -6,7 +6,7 @@
 ButtonSystem::ButtonSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnSceneChange", CreateSubscriber(&ButtonSystem::OnSceneChange));
-	EventManager::GetInstance().Subscribe("OnSpawnPrefab", CreateSubscriber(&ButtonSystem::OnSpawnPrefab));
+	//EventManager::GetInstance().Subscribe("OnSpawnPrefabButton", CreateSubscriber(&ButtonSystem::OnSpawnPrefab));
 	EventManager::GetInstance().Subscribe("OnDestrorPrefab", CreateSubscriber(&ButtonSystem::OnDestrorPrefab));
 	EventManager::GetInstance().Subscribe("OnOffUI", CreateSubscriber(&ButtonSystem::OnOffUI));
 	EventManager::GetInstance().Subscribe("OnOffUISelf", CreateSubscriber(&ButtonSystem::OnOffUISelf));
