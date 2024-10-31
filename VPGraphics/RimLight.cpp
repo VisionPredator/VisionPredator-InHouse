@@ -97,7 +97,7 @@ void RimLight::Render()
 					Device->Context()->VSSetShader(m_StaticMeshVS.lock()->GetVS(), nullptr, 0);
 					Device->Context()->PSSetShader(m_RimLightPS.lock()->GetPS(), nullptr, 0);
 
-					
+
 					TransformData renew;
 					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
 					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
@@ -105,7 +105,6 @@ void RimLight::Render()
 					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));
 					TransformCB->Update(renew);
 					Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), deferredDsv->Get());
-
 				}
 				else
 				{
@@ -172,6 +171,7 @@ void RimLight::Render()
 
 	//overdraw pass랑 같은 depth stencil 사용하기 때문에 나중에 클리어
 	m_Device.lock()->Context()->ClearDepthStencilView(dsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_Device.lock()->Context()->ClearDepthStencilView(deferredDsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 }
 void RimLight::OnResize()

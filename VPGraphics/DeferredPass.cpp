@@ -68,7 +68,7 @@ void DeferredPass::Render()
 {
 	//PreDepth();
 	GeometryPass();
-	LightPass();
+	//LightPass();
 }
 
 void DeferredPass::OnResize()
@@ -271,11 +271,6 @@ void DeferredPass::GeometryPass()
 	for(const auto& curData : m_RenderList)
 	{
 		bool isTranparency = false;
-
-		if (curData->isOverDraw)
-		{
-			continue;
-		}
 
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 

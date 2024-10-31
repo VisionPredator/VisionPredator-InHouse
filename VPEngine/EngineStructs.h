@@ -21,6 +21,7 @@ namespace VisPred
 			UION,
 			UIOFFSELF,
 			UIOFF,
+			EXIT,
 
 		};
 	}
