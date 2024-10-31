@@ -100,7 +100,10 @@ namespace effect
 			enum class ShapeType
 			{
 				Cone,
-				Sphere
+				Sphere,
+				Box,
+				Circle
+				// etc..
 			};
 
 			ShapeType Shape = ShapeType::Cone;
@@ -112,19 +115,18 @@ namespace effect
 
 		struct ParticleRenderer
 		{
-			enum class BillBoardType
+			enum class ParticleBillBoardType
 			{
 				Billboard,
 				StretchedBillboard,
 				// etc..
 			};
 
-			BillBoardType RenderMode = BillBoardType::Billboard;
+			ParticleBillBoardType RenderMode = ParticleBillBoardType::Billboard;
 
 			// etc..
 		};
 		ParticleRenderer Renderer{};
-		
 	};
 
 }
