@@ -3,9 +3,10 @@
 struct WeaponBoxComponent :
     public Component
 {
-    VP_JSONBODY(WeaponBoxComponent, SpawnPrefabs, TopEntity, SpawnOffset, SpawnSpeed, SpawnDirection, OpenDegree, OpenTime)
+    VP_JSONBODY(WeaponBoxComponent, SpawnPrefabs, TopMesh, SpawnOffset, SpawnSpeed, SpawnDirection, OpenAngle, OpenTime)
         bool IsOpen = false;
-    std::string TopEntity{  };
+    std::string TopMesh{  };
+    std::shared_ptr<Entity> TopEntity{  };
     std::vector<std::string> SpawnPrefabs{};
     VPMath::Vector3 SpawnOffset{};
     VPMath::Vector3 SpawnPos{};
@@ -13,7 +14,7 @@ struct WeaponBoxComponent :
     VPMath::Vector3 StartRotation = {};
     VPMath::Vector3 EndRotation = {};
     float SpawnSpeed{};
-    float OpenDegree{};
+    float OpenAngle{};
     float OpenTime{};
     float OpenProgress{};
 };

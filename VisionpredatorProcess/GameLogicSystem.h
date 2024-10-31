@@ -5,7 +5,6 @@
 #include "EnemySystem.h"
 #include "GunSystem.h"
 #include "PlayerFSMSystem.h"
-
 #include "PlayerUISystem.h"
 #include "TrunSystem.h"
 #include "AreaAttackSystem.h"
@@ -13,3 +12,4 @@
 #include "DoorSystem.h"
 #include "SectorSystem.h"
 #include "WeaponBoxSystem.h"
+#include "CabinetSystem.h"

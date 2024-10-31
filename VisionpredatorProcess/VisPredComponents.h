@@ -15,3 +15,4 @@
 #include "SectorClearComponent.h"
 #include "ShotGunBulletComponent.h"
 #include "WeaponBoxComponent.h"
+#include "CabinetComponent.h"

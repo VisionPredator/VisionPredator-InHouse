@@ -32,6 +32,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<SectorSystem>();
 	m_SystemManager->AddSystem<DoorSystem>();
 	m_SystemManager->AddSystem<WeaponBoxSystem>();
+	m_SystemManager->AddSystem<CabinetSystem>();
 }
 
 VPProcess::~VPProcess()

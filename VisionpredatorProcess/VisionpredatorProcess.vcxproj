@@ -162,6 +162,8 @@
     <ClInclude Include="AimUIComponent.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
+    <ClInclude Include="CabinetComponent.h" />
+    <ClInclude Include="CabinetSystem.h" />
     <ClInclude Include="DoorComponent.h" />
     <ClInclude Include="DoorOpenerComponent.h" />
     <ClInclude Include="DoorSystem.h" />
@@ -220,6 +222,8 @@
     <ClCompile Include="AimUIComponent.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
+    <ClCompile Include="CabinetComponent.cpp" />
+    <ClCompile Include="CabinetSystem.cpp" />
     <ClCompile Include="DoorComponent.cpp" />
     <ClCompile Include="DoorOpenerComponent.cpp" />
     <ClCompile Include="DoorSystem.cpp" />

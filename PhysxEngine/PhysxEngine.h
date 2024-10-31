@@ -91,11 +91,11 @@ private:
 
 
 	// IPhysx을(를) 통해 상속됨
-	RaycastData RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActorAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActorAtPose_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActorAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
 
 
@@ -108,6 +108,12 @@ private:
 
 
 
+
+
+	// IPhysx을(를) 통해 상속됨
+	std::vector<RaycastData> RaycastActorsAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+
+	std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
 };
 

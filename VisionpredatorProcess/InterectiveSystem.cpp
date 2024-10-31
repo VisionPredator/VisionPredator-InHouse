@@ -121,6 +121,11 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 
 	uint32_t handID = playercomp.HandEntity.lock()->GetEntityID();
 
+	if (guncomp.HasComponent<Parent>())
+	{
+		GetSceneManager()->RemoveParent(guncomp.GetEntityID());
+	}
+
 	auto soceketcomp = guncomp.GetComponent<SocketComponent>();
 	soceketcomp->IsConnected = true;
 	soceketcomp->ConnectedEntityID = handID;

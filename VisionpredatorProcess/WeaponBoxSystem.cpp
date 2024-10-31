@@ -24,13 +24,13 @@ void WeaponBoxSystem::FixedUpdate(float deltaTime)
 	{
 		if (!boxcomp.IsOpen)
 			continue;
+	
 		boxcomp.OpenProgress += deltaTime;
 		if (boxcomp.OpenProgress > boxcomp.OpenTime)
 		{
-			auto topentity = GetSceneManager()->GetChildEntityByName(boxcomp.GetEntityID(), boxcomp.TopEntity);
-			if (!topentity)
+			if (!boxcomp.TopEntity)
 				continue;
-			auto toptrans = topentity->GetComponent<TransformComponent>();
+			auto toptrans = boxcomp.TopEntity->GetComponent<TransformComponent>();
 			toptrans->SetLocalRotation(VPMath::Vector3::Lerp(boxcomp.StartRotation, boxcomp.EndRotation, 1));
 			boxcomp.IsOpen = false;
 			
@@ -41,10 +41,9 @@ void WeaponBoxSystem::FixedUpdate(float deltaTime)
 			EventManager::GetInstance().ScheduleEvent("OnAddVelecity", std::make_tuple(weapon->GetEntityID(), (VPMath::Vector3{ 0.f,1.f,0.f } + (boxcomp.GetComponent<TransformComponent>()->FrontVector / 3)), boxcomp.SpawnSpeed));
 			continue;
 		}
-		auto topentity = GetSceneManager()->GetChildEntityByName(boxcomp.GetEntityID(), boxcomp.TopEntity);
-		if (!topentity)
+		if (!boxcomp.TopEntity)
 			continue;
-		auto toptrans = topentity->GetComponent<TransformComponent>();
+		auto toptrans = boxcomp.TopEntity->GetComponent<TransformComponent>();
 		toptrans->SetLocalRotation(VPMath::Vector3::Lerp(boxcomp.StartRotation, boxcomp.EndRotation, (boxcomp.OpenProgress / boxcomp.OpenTime)));
 	}
 }
@@ -63,8 +62,14 @@ void WeaponBoxSystem::Start(uint32_t gameObjectId)
 	if (!GetSceneManager()->GetEntity(gameObjectId)->HasComponent<WeaponBoxComponent>())
 		return;
 	auto weaponboxcomp = GetSceneManager()->GetEntity(gameObjectId)->GetComponent<WeaponBoxComponent>();
+	auto topentity = GetSceneManager()->GetChildEntityByName(weaponboxcomp->GetEntityID(), weaponboxcomp->TopMesh);
+	if (!topentity)
+		return;
+	weaponboxcomp->TopEntity = topentity;
+	auto transform = topentity->GetComponent < TransformComponent>();
+	weaponboxcomp->StartRotation = transform->Local_Location;
 	weaponboxcomp->EndRotation = weaponboxcomp->StartRotation;
-	weaponboxcomp->EndRotation.x -= weaponboxcomp->OpenDegree;
+	weaponboxcomp->EndRotation.x -= weaponboxcomp->OpenAngle;
 	auto trans = weaponboxcomp->GetComponent<TransformComponent>();
 	weaponboxcomp->SpawnPos = trans->World_Location + weaponboxcomp->SpawnOffset;
 }

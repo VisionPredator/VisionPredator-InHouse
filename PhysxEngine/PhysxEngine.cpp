@@ -239,36 +239,36 @@ bool PhysxEngine::HasController(uint32_t entityID)
 	return m_ControllerManager->HasController(entityID);
 }
 
-RaycastData PhysxEngine::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
 	if (m_RigidBodyManager->HasRigidBody(entityID))
-		return m_RigidBodyManager->RaycastToHitActor(entityID, dir, distance);
+		return m_RigidBodyManager->RaycastActor(entityID, dir, distance);
 	else if (m_ControllerManager->HasController(entityID))
-		return 	m_ControllerManager->RaycastToHitActor(entityID, dir, distance);
+		return 	m_ControllerManager->RaycastActor(entityID, dir, distance);
 	return {};
 }
 
-RaycastData PhysxEngine::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
 	if (m_RigidBodyManager->HasRigidBody(entityID))
-		return m_RigidBodyManager->RaycastToHitActor_Offset(entityID, offset, dir, distance);
+		return m_RigidBodyManager->RaycastActor_Offset(entityID, offset, dir, distance);
 	else if (m_ControllerManager->HasController(entityID))
-		return m_ControllerManager->RaycastToHitActor_Offset(entityID, offset, dir, distance);
+		return m_ControllerManager->RaycastActor_Offset(entityID, offset, dir, distance);
 	return {};
 }
 
-RaycastData PhysxEngine::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastActorAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
-	return m_RigidBodyManager->RaycastToHitActorFromLocation(location, dir, distance);
+	return m_RigidBodyManager->RaycastActorAtPose(location, dir, distance);
 }
-RaycastData PhysxEngine::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastActorAtPose_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
-	return  m_RigidBodyManager->RaycastToHitActorFromLocation_Ignore(entityID, location, dir, distance);
+	return  m_RigidBodyManager->RaycastActorAtPose_Ignore(entityID, location, dir, distance);
 }
 
-RaycastData PhysxEngine::RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData PhysxEngine::RaycastActorAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
-	return  m_RigidBodyManager->RaycastToHitActorFromLocation_Ignore(entityIDs, location, dir, distance);
+	return  m_RigidBodyManager->RaycastActorAtPose_Ignores(entityIDs, location, dir, distance);
 }
 
 
@@ -278,6 +278,16 @@ void PhysxEngine::ResizeCapsuleController(uint32_t entityID, float radius, float
 	{
 		m_ControllerManager->ResizeCapsuleControllerSize(entityID, radius, height);
 	}
+}
+
+std::vector<RaycastData> PhysxEngine::RaycastActorsAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	return m_RigidBodyManager->RaycastActorsAtPose(location, dir, distance);
+}
+
+std::vector<RaycastData> PhysxEngine::RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	return m_RigidBodyManager->RaycastActorsAtPose_Ignores(entityIDs, location, dir, distance);
 }
 
 

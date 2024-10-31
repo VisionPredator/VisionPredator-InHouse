@@ -197,20 +197,14 @@ void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 		if (playercomp.SearchedItemID!=0)
 		{
 			EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.SearchedItemID);
-			//auto presearchedentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-			//if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
-			//	presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
 		}
-
 		playercomp.SearchedItemID = 0;
 		return;
 	}
 	/// Raycast 를 통해 오브젝트를 검출. 이전에 찾았던 오브젝트의 마스크를 0 0 0 처리해준다. 
 	SearchInterective(playercomp);
 	///찾아낸 물체가 Guncomp를 가지고있다면 
-	SearchedGun(playercomp);
-	//SearchedDoor(playercomp);
-	//SearchedButton(playercomp);
+
 }
 void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 {
@@ -221,11 +215,27 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 		return;
 	auto cameratransform = cameraEntity->GetComponent<TransformComponent>();
 	auto front = cameratransform->FrontVector;
-	std::vector<uint32_t> ignorevec{};
-	ignorevec.push_back(playercomp.GetEntityID());
-	ignorevec.push_back(playercomp.GunEntityID);
-	playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(ignorevec, cameratransform->World_Location, cameratransform->FrontVector, playercomp.SearchDistance).EntityID;
 
+	std::vector<VPPhysics::RaycastData> raycastedEntitys = m_PhysicsEngine->RaycastActorsAtPose(cameratransform->World_Location, cameratransform->FrontVector, playercomp.SearchDistance);
+	playercomp.SearchedItemID = 0;
+	if (!raycastedEntitys.empty())
+	{
+		for (auto [entityid, pos, normal, dist] : raycastedEntitys)
+		{
+			if (entityid == playercomp.GunEntityID || entityid == playercomp.GetEntityID())
+				continue;
+
+			if (GetSceneManager()->HasComponent<CabinetComponent>(entityid) &&
+				(!GetSceneManager()->HasComponent<InterectiveComponent>(entityid) ||
+					!GetSceneManager()->GetComponent<InterectiveComponent>(entityid)->IsInterective))
+			{
+				continue;
+			}
+
+			playercomp.SearchedItemID = entityid;
+			break;
+		}
+	}
 	if (playercomp.PreSearchedItemID != playercomp.SearchedItemID)
 	{
 		EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.PreSearchedItemID);
@@ -233,16 +243,8 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 		playercomp.PreSearchedItemID = playercomp.SearchedItemID;
 	}
 }
-void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
-{
-	//auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-	//if (gunentity && gunentity->HasComponent<GunComponent>() && gunentity->GetEntityID() != playercomp.GunEntityID)
-	//	gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
-}
-void PlayerSystem::SearchedInterective(PlayerComponent& playercomp)
-{
-	EventManager::GetInstance().ImmediateEvent("OnSearched", playercomp.SearchedItemID);
-}
+
+
 #pragma endregion
 
 #pragma region Camera Setting

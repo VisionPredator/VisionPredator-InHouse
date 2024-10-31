@@ -24,8 +24,8 @@ public:
 	bool CreatController();
 	bool CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo, VPPhysics::PhysicsInfo physicsinfo);
 	bool Update(float deltatime);
-	VPPhysics::RaycastData RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
-	VPPhysics::RaycastData RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
+	VPPhysics::RaycastData RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
+	VPPhysics::RaycastData RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
 	//void UpdateCapsuleSize(uint32_t entityID, const VPPhysics::CapsuleControllerInfo& info);
 	void ResizeCapsuleControllerSize(uint32_t entityID, float radius, float height);
 	/// <summary>
