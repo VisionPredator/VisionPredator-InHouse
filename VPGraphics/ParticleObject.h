@@ -39,6 +39,7 @@ public:
 		VPMath::Vector2 StartSize;
 		float Duration;
 		int IsLoop;
+		int Restart;
 
 		float StartLifetime;
 		float padding3;
@@ -47,7 +48,7 @@ public:
 
 		unsigned int ParticleShape;
 		unsigned int RenderMode;
-		float padding4[2];
+		float padding4;
 	};
 	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
 

@@ -123,8 +123,8 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.EmitDirW = m_Info.Direction;
 	m_Data.EmitPosW = m_Info.PosW;
 	m_Data.Duration = m_Info.Duration;
+	m_Data.Restart = m_Info.Restart;
 	m_DataCB->Update(m_Data);
-
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
 	ID3D11Buffer* nullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
@@ -231,5 +231,6 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.StartSizeA = info.StartSizeA;
 	m_Info.StartSizeB = info.StartSizeB;
 	m_Info.Duration = info.Duration;
+	m_Info.Restart = info.Restart;
 	//m_Info.
 }

@@ -89,6 +89,7 @@ namespace effect
 
 		float Duration = 5.f;
 		bool IsLoop = true;
+		bool Restart = false;
 		float StartLifetimeA = 5.f;
 		float StartLifetimeB = 5.f;
 		float StartSizeA = 3.f;

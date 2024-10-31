@@ -128,7 +128,8 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX,SkinningMeshComponent::InteractiveColor);
 	META_ADD_COMP(ParticleComponent, 
 		ParticleComponent::TexturePath, 
-		ParticleComponent::IsLoop, 
+		ParticleComponent::IsLoop,
+		ParticleComponent::Restart,
 		ParticleComponent::StartLifetimeA, ParticleComponent::StartLifetimeB,
 		ParticleComponent::StartSizeA, ParticleComponent::StartSizeB,
 		ParticleComponent::Duration);

@@ -18,6 +18,7 @@ cbuffer cbData : register(b1)
 
 	float gDuration;
 	int gIsLoop;
+	int gRestart;
 
 	float gStartLifetime;
 
@@ -70,6 +71,11 @@ void StreamOutGS(point Particle gin[1],
 	// emitter 파티클인 경우
 	if (gin[0].Type == PT_EMITTER)
 	{
+		if (gRestart)
+		{
+			gin[0].Age = 0.0f;        // 파티클 나이를 초기화
+		}
+
 		// gIsLoop가 false일 때 Duration 동안만 파티클 생성
 		if (gin[0].Age >= gDuration && !gIsLoop)
 		{
