@@ -99,10 +99,10 @@ namespace effect
 		{
 			enum class ShapeType
 			{
-				Cone,
-				Sphere,
-				Box,
-				Circle
+				Cone = 0,
+				Sphere = 1,
+				Box = 2,
+				Circle = 3
 				// etc..
 			};
 
@@ -117,8 +117,8 @@ namespace effect
 		{
 			enum class ParticleBillBoardType
 			{
-				Billboard,
-				StretchedBillboard,
+				Billboard = 0,
+				StretchedBillboard = 1,
 				// etc..
 			};
 
@@ -161,12 +161,12 @@ namespace ui
 		// 2D
 		float PosXPercent = 0.f;
 		float PosYPercent = 0.f;
-		float Scale = 1.f;		
+		float Scale = 1.f;
 		uint32_t Layer = 0;		// 이미지 깊이값
 
 		// 3D
 		VPMath::Matrix World = VPMath::Matrix::Identity;
-		
+
 	};
 
 	struct TextInfo

@@ -24,8 +24,6 @@ void RenderSystem::ComponentAdded(Component* comp)
 
 		effect::ParticleInfo info;
 		info.TexturePath = Path;
-		info.PosW = transform.World_Location;
-		info.Direction = transform.FrontVector;
 		info.IsLoop = component->IsLoop;
 
 		if (component->RestartPrev == true)
@@ -33,10 +31,20 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.Restart = component->Restart;
 		component->RestartPrev = component->Restart;
 
+		info.Duration = component->Duration;
+
 		info.StartLifetime = component->StartLifetime;
 		info.StartSize = component->StartSize;
 		info.StartSpeed = component->StartSpeed;
-		info.Duration = component->Duration;
+
+		info.Shape.Shape = component->Shape;
+		info.Shape.Angle = component->Angle;
+		info.Shape.Radius = component->Radius;
+
+		info.Renderer.RenderMode = component->RenderMode;
+
+		info.PosW = transform.World_Location;
+		info.Direction = transform.FrontVector;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
 	}
@@ -115,21 +123,28 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		const TransformComponent& transform = *component.GetComponent<TransformComponent>();
 
 		effect::ParticleInfo info;
+		info.TexturePath = component.TexturePath;
 		info.IsLoop = component.IsLoop;
+
 		if (component.RestartPrev == true)
 			component.Restart = false;
 		info.Restart = component.Restart;
 		component.RestartPrev = component.Restart;
 
-		info.PosW = transform.World_Location;
-		info.Direction = transform.FrontVector;
-		info.TexturePath = component.TexturePath;
+		info.Duration = component.Duration;
 
 		info.StartLifetime = component.StartLifetime;
 		info.StartSize = component.StartSize;
 		info.StartSpeed = component.StartSpeed;
 
-		info.Duration = component.Duration;
+		info.Shape.Shape = component.Shape;
+		info.Shape.Angle = component.Angle;
+		info.Shape.Radius = component.Radius;
+
+		info.Renderer.RenderMode = component.RenderMode;
+
+		info.PosW = transform.World_Location;
+		info.Direction = transform.FrontVector;
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 

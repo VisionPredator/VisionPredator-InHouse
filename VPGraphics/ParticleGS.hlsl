@@ -1,6 +1,8 @@
 #define PT_EMITTER 0
 #define PT_FLARE 1
 
+static const float PI = 3.141592;
+
 cbuffer cbPerFrame : register(b0)
 {
 	float4x4 gViewProj;
@@ -15,7 +17,7 @@ cbuffer cbData : register(b1)
 	float3 gEmitDirW;
 
 	float2 gStartSize;
-	float StartSpeed;
+	float gStartSpeed;
 	float gDuration;
 	int gIsLoop;
 
@@ -32,6 +34,8 @@ cbuffer cbData : register(b1)
 Texture2DArray gTexArray : register(t0);
 Texture1D gRandomTex : register(t1);
 SamplerState samLinear : register(s0);
+
+
 
 // 게임 시간과 직접 전달한 offset을 기반으로 랜덤 벡터를 샘플링해준다.
 float3 RandUnitVec3(float offset)
@@ -55,6 +59,11 @@ struct Particle
 	float	Age				: AGE;
 	uint	Type			: TYPE;
 };
+
+#define SHAPE_CONE 0
+#define SHAPE_SPHERE 1
+#define SHAPE_BOX 2
+#define SHAPE_CIRCLE 3
 
 // The stream-out GS is just responsible for emitting 
 // new particles and destroying old particles.  The logic
@@ -87,7 +96,7 @@ void StreamOutGS(point Particle gin[1],
 			return;
 		}
 
-		// 새로운 파티클을 생성
+		// 새로운 파티클을 생성하여 스트림에 추가
 		//if (gin[0].Age > 0.005f)
 		if (gin[0].Age < gDuration || gIsLoop)
 		{
@@ -99,9 +108,39 @@ void StreamOutGS(point Particle gin[1],
 			vRandom.x *= 0.5f;
 			vRandom.z *= 0.5f;
 
-			// 새로운 파티클을 생성하여 스트림에 추가
-			p.InitialPosW = gEmitPosW.xyz;
-			p.InitialVelW = StartSpeed * vRandom;
+
+			// 파티클 모양 설정
+			if (gParticleShape == SHAPE_SPHERE)
+			{
+				p.InitialPosW = gEmitPosW.xyz;
+				p.InitialVelW = gStartSpeed * vRandom;
+			}
+			else if (gParticleShape == SHAPE_CIRCLE)
+			{
+				// XZ 평면에서 무작위 방향 벡터를 생성 및 정규화
+				float2 randomDir = normalize(float2(vRandom.x, vRandom.z)); // 방향 벡터를 정규화
+				float radius = gRadius * sqrt(saturate((vRandom.y + 1.0f) * 0.5f)); // 반지름을 랜덤하게 설정, sqrt를 사용하여 균일한 분포
+
+				// 원의 중심에서 반지름까지 랜덤한 위치 계산
+				float2 pos = randomDir * radius;
+
+				// 파티클의 초기 위치를 XZ 평면에 설정 (Y축은 고정)
+				p.InitialPosW = gEmitPosW + float3(pos.x, 0.0f, pos.y);
+
+				// 속도 벡터를 바깥쪽으로 설정 (Y축 성분은 0)
+				p.InitialVelW = normalize(float3(randomDir.x, 0.0f, randomDir.y)) * gStartSpeed;
+			}
+			else if (gParticleShape == SHAPE_BOX)
+			{
+				p.InitialPosW = gEmitPosW.xyz;
+				p.InitialVelW = gStartSpeed * vRandom;
+			}
+			else if (gParticleShape == SHAPE_CONE)
+			{
+				p.InitialPosW = gEmitPosW.xyz;
+				p.InitialVelW = gStartSpeed * vRandom;
+			}
+
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_FLARE;				// 파티클 유형 설정

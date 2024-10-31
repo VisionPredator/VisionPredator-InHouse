@@ -52,8 +52,10 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 	{
 		m_StreamOutVS = std::make_shared<VertexShader>(device, L"ParticleVS", "StreamOutVS");
 		m_DrawVS = std::make_shared<VertexShader>(device, L"ParticleVS", "DrawVS");
+
 		m_StreamOutGS = std::make_shared<GeometryShader>(device, L"ParticleGS", "StreamOutGS", "gs_5_0");
 		m_DrawGS = std::make_shared<GeometryShader>(device, L"ParticleGS", "DrawGS", "gs_5_0");
+
 		m_DrawPS = std::make_shared<PixelShader>(device, L"ParticlePS", "DrawPS");
 
 		m_SamLinear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
@@ -127,6 +129,11 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.Restart = m_Info.Restart;
 	const float speed = m_Info.StartSpeed.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSpeed.y - m_Info.StartSpeed.x));
 	m_Data.StartSpeed = speed;
+	m_Data.ParticleShape = static_cast<unsigned int>(m_Info.Shape.Shape);
+	m_Data.Angle = m_Info.Shape.Angle;
+	m_Data.Radius = m_Info.Shape.Radius;
+
+	m_Data.RenderMode = static_cast<unsigned int>(m_Info.Renderer.RenderMode);
 	m_DataCB->Update(m_Data);
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
@@ -234,5 +241,11 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.StartSpeed = info.StartSpeed;
 	m_Info.Duration = info.Duration;
 	m_Info.Restart = info.Restart;
+	m_Info.Shape.Shape = info.Shape.Shape;
+	m_Info.Shape.Angle = info.Shape.Angle;
+	m_Info.Shape.Radius = info.Shape.Radius;
+
+	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
+
 	//m_Info.
 }

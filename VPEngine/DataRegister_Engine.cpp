@@ -135,7 +135,9 @@ void EngineRegister::Register_Components()
 		ParticleComponent::Restart,
 		ParticleComponent::Duration,
 		ParticleComponent::StartLifetime, ParticleComponent::StartSize, ParticleComponent::StartSpeed,
-		ParticleComponent::Shape, 
+		ParticleComponent::Shape,
+		ParticleComponent::Angle,
+		ParticleComponent::Radius,
 		ParticleComponent::RenderMode
 		);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
