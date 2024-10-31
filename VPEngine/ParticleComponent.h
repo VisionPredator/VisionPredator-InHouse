@@ -5,7 +5,7 @@ struct ParticleComponent : Component
 {
 	ParticleComponent() = default;
 
-	VP_JSONBODY(ParticleComponent, TexturePath, IsLoop, Restart, StartLifetimeA, StartLifetimeB, StartSizeA, StartSizeB, Duration);
+	VP_JSONBODY(ParticleComponent, TexturePath, IsLoop, Restart, StartLifetimeA, StartLifetimeB, StartSizeA, StartSizeB, StartSpeedA, StartSpeedB, Duration);
 
 	// TODO: Base 텍스처 Path 집어넣기. 아니면 ParticleObject 상에서 null이면 분기타도록 바꾸기.
 	std::string TexturePath;
@@ -15,6 +15,8 @@ struct ParticleComponent : Component
 	float StartLifetimeB = 1.f;
 	float StartSizeA = 3.f;
 	float StartSizeB = 3.f;
+	float StartSpeedA = 5.f;
+	float StartSpeedB = 5.f;
 
 	bool RestartPrev = false;
 

@@ -115,6 +115,7 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_PerFrame.TimeStep = m_TimeStep;
 	m_FrameCB->Update(m_PerFrame);
 
+	// TODO: 이거 lerp ? 인가 쉐이더 코드 상에서 수행해도 된다.
 	const float lifetime = m_Info.StartLifetimeA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartLifetimeB - m_Info.StartLifetimeA));
 	m_Data.StartLifetime = lifetime;
 	const float size = m_Info.StartSizeA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSizeB - m_Info.StartSizeA));
@@ -124,6 +125,8 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.EmitPosW = m_Info.PosW;
 	m_Data.Duration = m_Info.Duration;
 	m_Data.Restart = m_Info.Restart;
+	const float speed = m_Info.StartSpeedA + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSpeedB - m_Info.StartSpeedA));
+	m_Data.StartSpeed = speed;
 	m_DataCB->Update(m_Data);
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
@@ -232,5 +235,7 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.StartSizeB = info.StartSizeB;
 	m_Info.Duration = info.Duration;
 	m_Info.Restart = info.Restart;
+	m_Info.StartSpeedA = info.StartSpeedA;
+	m_Info.StartSpeedB = info.StartSpeedB;
 	//m_Info.
 }

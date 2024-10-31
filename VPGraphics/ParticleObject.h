@@ -23,9 +23,7 @@ public:
 		VPMath::Vector3 EyePosW;
 		float GameTime;
 		float TimeStep;
-		float dummy1;
-		float dummy2;
-		float dummy3;
+		float dummy1[3];
 	};
 	static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
 
@@ -37,18 +35,19 @@ public:
 		float padding2;
 
 		VPMath::Vector2 StartSize;
+		float StartSpeed;
 		float Duration;
 		int IsLoop;
-		int Restart;
 
+
+		int Restart;
 		float StartLifetime;
-		float padding3;
 		float Angle;
 		float Radius;
 
 		unsigned int ParticleShape;
 		unsigned int RenderMode;
-		float padding4;
+		float padding3;
 	};
 	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
 

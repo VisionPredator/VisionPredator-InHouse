@@ -37,6 +37,8 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.StartLifetimeB = component->StartLifetimeB;
 		info.StartSizeA = component->StartSizeA;
 		info.StartSizeB = component->StartSizeB;
+		info.StartSpeedA = component->StartSpeedA;
+		info.StartSpeedB = component->StartSpeedB;
 		info.Duration = component->Duration;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
@@ -129,6 +131,8 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.StartLifetimeB = component.StartLifetimeB;
 		info.StartSizeA = component.StartSizeA;
 		info.StartSizeB = component.StartSizeB;
+		info.StartSpeedA = component.StartSpeedA;
+		info.StartSpeedB = component.StartSpeedB;
 		info.Duration = component.Duration;
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}

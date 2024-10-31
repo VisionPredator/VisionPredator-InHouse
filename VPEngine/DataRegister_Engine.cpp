@@ -126,12 +126,13 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
 	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay, AnimationComponent::IsBlending,AnimationComponent::PlayerCurAni, AnimationComponent::AnimationSpeed_Transition);
 	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX,SkinningMeshComponent::InteractiveColor);
-	META_ADD_COMP(ParticleComponent, 
-		ParticleComponent::TexturePath, 
+	META_ADD_COMP(ParticleComponent,
+		ParticleComponent::TexturePath,
 		ParticleComponent::IsLoop,
 		ParticleComponent::Restart,
 		ParticleComponent::StartLifetimeA, ParticleComponent::StartLifetimeB,
 		ParticleComponent::StartSizeA, ParticleComponent::StartSizeB,
+		ParticleComponent::StartSpeedA, ParticleComponent::StartSpeedB,
 		ParticleComponent::Duration);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);

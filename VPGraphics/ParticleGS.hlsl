@@ -15,11 +15,11 @@ cbuffer cbData : register(b1)
 	float3 gEmitDirW;
 
 	float2 gStartSize;
-
+	float StartSpeed;
 	float gDuration;
 	int gIsLoop;
-	int gRestart;
 
+	int gRestart;
 	float gStartLifetime;
 
 	float gAngle;
@@ -101,7 +101,7 @@ void StreamOutGS(point Particle gin[1],
 
 			// 새로운 파티클을 생성하여 스트림에 추가
 			p.InitialPosW = gEmitPosW.xyz;
-			p.InitialVelW = 4.0f * vRandom;
+			p.InitialVelW = StartSpeed * vRandom;
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_FLARE;				// 파티클 유형 설정

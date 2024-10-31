@@ -94,6 +94,8 @@ namespace effect
 		float StartLifetimeB = 5.f;
 		float StartSizeA = 3.f;
 		float StartSizeB = 3.f;
+		float StartSpeedA = 5.f;
+		float StartSpeedB = 5.f;
 
 		struct ParticleShape
 		{
