@@ -7,155 +7,118 @@
 #include"StaticData.h"
 #include "Slot.h"
 
-void DeferredLightPass::Initialize(const std::shared_ptr<Device>& device,
-	const std::shared_ptr<ResourceManager>& resourceManager)
+DeferredLightPass::~DeferredLightPass()
+{
+
+}
+
+void DeferredLightPass::Initialize(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager,
+	const std::shared_ptr<LightManager>& lightManager)
 {
 	m_Device = device;
 	m_ResourceManager = resourceManager;
+	m_LightManager = lightManager;
 
-	m_DepthStencilView = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
+	m_DepthStencilView = resourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
-	m_Albedo = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Albedo").lock();
-	m_Normal = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Normal").lock();
-	m_Position = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Position").lock();
-	m_Depth = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Depth").lock();
-	m_Metalic = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Metalic").lock();
-	m_Roughness = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Roughness").lock();
-	m_AO = m_ResourceManager.lock()->Get<ShaderResourceView>(L"AO").lock();
-	m_Emissive = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Emissive").lock();
-	m_GBuffer = m_ResourceManager.lock()->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_AlbedoRTV = resourceManager->Get<RenderTargetView>(L"Albedo").lock();
+	m_NormalRTV = resourceManager->Get<RenderTargetView>(L"Normal").lock();
+	m_PositionRTV = resourceManager->Get<RenderTargetView>(L"Position").lock();
+	m_DepthRTV = resourceManager->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRoughnessRTV = resourceManager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
+	m_AORTV = resourceManager->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = resourceManager->Get<RenderTargetView>(L"Emissive").lock();
+	m_LightMapRTV = resourceManager->Get<RenderTargetView>(L"LightMap").lock();
 
-
-	m_PS = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
-	m_VS = resourceManager->Get<VertexShader>(L"Quad");
-
-	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quad_VB");
-	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
-	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
-
-
-#pragma region TEST
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
-	depthStencilDesc.DepthEnable = TRUE;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	depthStencilDesc.StencilEnable = FALSE;
-
-	m_Device.lock()->Get()->CreateDepthStencilState(&depthStencilDesc, &m_DSS_Null);
-
-	D3D11_BLEND_DESC blendDesc = {};
-	blendDesc.RenderTarget[0].BlendEnable = FALSE;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	m_Device.lock()->Get()->CreateBlendState(&blendDesc, &m_BS_Null);
-
-#pragma endregion TEST
-}
-
-
-DeferredLightPass::DeferredLightPass(std::shared_ptr<Device>& device, std::shared_ptr<ResourceManager>& resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
-{
-	m_DepthStencilView = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
-
-	m_Albedo = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Albedo").lock();
-	m_Normal = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Normal").lock();
-	m_Position = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Position").lock();
-	m_Depth = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Depth").lock();
-	m_Metalic = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Metalic").lock();
-	m_Roughness = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Roughness").lock();
-	m_AO = m_ResourceManager.lock()->Get<ShaderResourceView>(L"AO").lock();
-	m_Emissive = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Emissive").lock();
-	m_GBuffer = m_ResourceManager.lock()->Get<ShaderResourceView>(L"GBuffer").lock();
-
-
-	m_PS = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
-	m_VS = resourceManager->Get<VertexShader>(L"Quad");
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base").lock();
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Skinning").lock();
+	m_GeometryPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
 
 	m_QuadVB = resourceManager->Get<VertexBuffer>(L"Quad_VB");
 	m_QuadIB = resourceManager->Get<IndexBuffer>(L"Quad_IB");
+	m_QuadVS = resourceManager->Get<VertexShader>(L"Quad");
 	m_QuadPS = resourceManager->Get<PixelShader>(L"Quad");
 
+	m_Deferred = resourceManager->Get<PixelShader>(L"MeshDeferredLight");
 
+	m_AlbedoSRV = resourceManager->Get<ShaderResourceView>(L"Albedo").lock();
+	m_NormalSRV = resourceManager->Get<ShaderResourceView>(L"Normal").lock();
+	m_PositionSRV = resourceManager->Get<ShaderResourceView>(L"Position").lock();
+	m_DepthSRV = resourceManager->Get<ShaderResourceView>(L"Depth").lock();
+	m_MetalicRoughnessSRV = resourceManager->Get<ShaderResourceView>(L"Metalic_Roughness").lock();
+	m_AmbientOcclusionSRV = resourceManager->Get<ShaderResourceView>(L"AO").lock();
+	m_EmissiveSRV = resourceManager->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBufferSRV = resourceManager->Get<ShaderResourceView>(L"GBuffer").lock();
+
+	m_SkeletalMeshVS = resourceManager->Get<VertexShader>(L"Skinning");
+	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base");
+	m_MeshPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry");
 }
+
 
 void DeferredLightPass::Render()
 {
 
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ResourceManager> resourcemanager = m_ResourceManager.lock();
-	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"Linear").lock();
+	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 	std::shared_ptr<VertexBuffer> vb = m_QuadVB.lock();
 	std::shared_ptr<IndexBuffer> ib = m_QuadIB.lock();
 
 	//Save GBuffer texture
 	{
-		//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
-		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
-		//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
+		std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"GBuffer").lock();
 		std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Deferred").lock();
-		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
-		m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		Device->Context()->IASetInputLayout(m_VS.lock()->InputLayout());
-		Device->Context()->VSSetShader(m_VS.lock()->GetVS(), nullptr, 0);
-		Device->Context()->PSSetShader(m_PS.lock()->GetPS(), nullptr, 0);
+		Device->BindVS(m_QuadVS.lock());
+		Device->Context()->PSSetShader(m_Deferred.lock()->GetPS(), nullptr, 0);
 
 		Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
 		m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
 		m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
 
+		m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		ID3D11ShaderResourceView* NullSRVs[10] = { NULL, };
-		Device->Context()->PSSetShaderResources(0, ARRAYSIZE(NullSRVs), NullSRVs);
-		//Device->UnBindSRV();
-
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, m_Albedo->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, m_Normal->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Position), 1, m_Position->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Depth), 1, m_Depth->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, m_Metalic->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Roughness), 1, m_Roughness->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, m_AO->GetAddress());
-		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, m_Emissive->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Albedo), 1, m_AlbedoSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Normal), 1, m_NormalSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Position), 1, m_PositionSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Depth), 1, m_DepthSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Metalic), 1, m_MetalicRoughnessSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::AO), 1, m_AmbientOcclusionSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::Emissive), 1, m_EmissiveSRV.lock()->GetAddress());
+		Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::LightMap), 1, m_LightMapSRV.lock()->GetAddress());
 
 		Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
 
-		Device->Context()->OMSetDepthStencilState(m_DSS_Null.Get(), 0);
-		Device->Context()->OMSetBlendState(m_BS_Null.Get(), nullptr, 0xFFFFFFFF);
-
-		//std::shared_ptr<ShaderResourceView> testbackbufferSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(Device->Get(), L"DeferredLightSRV", rtv)
+		Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 		Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
 	}
+}
 
+void DeferredLightPass::OnResize()
+{
+	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
 
-	////draw quad
-	//{
-	//	//std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"RTV_Main").lock();
-	//	std::shared_ptr<RenderTargetView> rtv = resourcemanager->Get<RenderTargetView>(L"IMGUI").lock();
-	//	std::shared_ptr<DepthStencilView> dsv = resourcemanager->Get<DepthStencilView>(L"DSV_Main").lock();
+	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
-	//	Device->UnBindSRV();
+	m_AlbedoRTV = manager->Get<RenderTargetView>(L"Albedo").lock();
+	m_NormalRTV = manager->Get<RenderTargetView>(L"Normal").lock();
+	m_PositionRTV = manager->Get<RenderTargetView>(L"Position").lock();
+	m_DepthRTV = manager->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRoughnessRTV = manager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
+	m_AORTV = manager->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = manager->Get<RenderTargetView>(L"Emissive").lock();
+	m_LightMapRTV = manager->Get<RenderTargetView>(L"LightMap").lock();
 
-	//	Device->Context()->IASetInputLayout(m_VS.lock()->InputLayout());
-	//	Device->Context()->VSSetShader(m_VS.lock()->GetVS(), nullptr, 0);
-	//	Device->Context()->PSSetShader(m_QuadPS.lock()->GetPS(), nullptr, 0);
-
-	//	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
-
-	//	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
-	//	m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);
-
-	//	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//	
-	//	Device->Context()->PSSetShaderResources(static_cast<UINT>(Slot_T::GBuffer), 1, m_GBuffer->GetAddress());
-
-	//	Device->Context()->PSSetSamplers(static_cast<UINT>(Slot_S::Linear), 1, linear->GetAddress());
-
-	//	Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
-	//	Device->Context()->DrawIndexed(Quad::Index::count, 0, 0);
-	//}
-
-
+	m_AlbedoSRV = manager->Get<ShaderResourceView>(L"Albedo").lock();
+	m_NormalSRV = manager->Get<ShaderResourceView>(L"Normal").lock();
+	m_PositionSRV = manager->Get<ShaderResourceView>(L"Position").lock();
+	m_DepthSRV = manager->Get<ShaderResourceView>(L"Depth").lock();
+	m_MetalicRoughnessSRV = manager->Get<ShaderResourceView>(L"Metalic_Roughness").lock();
+	m_AmbientOcclusionSRV = manager->Get<ShaderResourceView>(L"AO").lock();
+	m_EmissiveSRV = manager->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBufferSRV = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_LightMapSRV = manager->Get<ShaderResourceView>(L"LightMap").lock();
 }
 
