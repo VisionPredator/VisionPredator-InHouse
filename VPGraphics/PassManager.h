@@ -25,6 +25,7 @@ class RimLight;
 class DeferredInstancing;
 class OverDrawPass;
 class DecalPass;
+class DeferredLightPass;
 #pragma region Pass
 
 #pragma region Manager
@@ -54,7 +55,8 @@ private:
 	void DrawIMGUI();
 
 private:
-	std::vector<std::shared_ptr<RenderPass>> m_BasePasses;
+	std::vector<std::shared_ptr<RenderPass>> m_OffScreenPasses;	//기본 depth, normal... offscreen
+	std::vector<std::shared_ptr<RenderPass>> m_AfterLightPasses;	//postProcessing
 	std::vector<std::shared_ptr<RenderPass>> m_VPPasses;	//vp 상태일떄만 쓰는 패스
 	std::vector<std::shared_ptr<RenderPass>> m_IndepentCulling;
 
@@ -73,6 +75,7 @@ private:
 	std::shared_ptr<DeferredInstancing> m_Instancing;
 	std::shared_ptr<OverDrawPass> m_OverDraw;
 	std::shared_ptr<DecalPass> m_Decal;
+	std::shared_ptr<DeferredLightPass> m_DeferredLight;
 
 private:
 	std::weak_ptr<Device> m_Device;

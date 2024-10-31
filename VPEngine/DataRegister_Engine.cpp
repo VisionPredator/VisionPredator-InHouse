@@ -24,7 +24,7 @@ void EngineRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
 	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
 	META_ADD_ENUMCLASS(BillboardType, BillboardType::None, BillboardType::Full, BillboardType::AxisY);
-	META_ADD_ENUMCLASS(Skill, Skill::SCENECHANGE,Skill::SPAWNPREFAB,Skill::DESTORYPREFAB,Skill::DRAGBAR,Skill::UION,Skill::UIOFFSELF,Skill::UIOFF);
+	META_ADD_ENUMCLASS(Skill, Skill::SCENECHANGE,Skill::SPAWNPREFAB,Skill::DESTORYPREFAB,Skill::DRAGBAR,Skill::UION,Skill::UIOFFSELF,Skill::UIOFF,Skill::EXIT);
 }
 
 void EngineRegister::Register_Structs()
