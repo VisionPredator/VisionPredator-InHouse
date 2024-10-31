@@ -26,16 +26,20 @@ public:
 	void OnSetPhysicInfo(std::any PhysicInfo);
 	void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
-
+	// IPhysx을(를) 통해 상속됨
+	void ChangeDynamicToStatic(uint32_t entityID) override;
+	void ChangeStaticToDynamic(uint32_t entityID) override;
+	void ReleaseActor(uint32_t entityID) override;
 
 	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
-	void ReleaseActor(uint32_t entityID) override;
+	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
+	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
 	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
@@ -80,8 +84,6 @@ private:
 	bool GetControllerIsFall(uint32_t entityID) override;
 	void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) override;
 	bool HasConvexMeshResource(const std::wstring& key) override;
-	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
-	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	bool HasRigidBody(uint32_t entityID) override;
 	bool HasController(uint32_t entityID) override;
 
@@ -99,6 +101,9 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	void ResizeCapsuleController(uint32_t entityID, float radius, float height) override;
+
+
+
 
 
 

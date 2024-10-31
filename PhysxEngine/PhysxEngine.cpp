@@ -138,6 +138,37 @@ void PhysxEngine::OnSetPhysicInfo(std::any data)
 
 }
 
+void PhysxEngine::ChangeDynamicToStatic(uint32_t entityID, EPhysicsLayer layer)
+{
+	m_RigidBodyManager->ChangeDynamicToStatic(entityID);
+	m_CollisionManager->RemoveEntity(entityID);
+	Log::GetCoreLogger()->warn("Changed RigidBody!!");
+
+}
+
+void PhysxEngine::ChangeStaticToDynamic(uint32_t entityID, EPhysicsLayer layer)
+{
+	m_RigidBodyManager->ChangeStaticToDynamic(entityID);
+	m_CollisionManager->RemoveEntity(entityID);
+	Log::GetCoreLogger()->warn("Changed RigidBody!!");
+}
+
+void PhysxEngine::ChangeDynamicToStatic(uint32_t entityID)
+{
+	m_RigidBodyManager->ChangeDynamicToStatic(entityID);
+	m_CollisionManager->RemoveEntity(entityID);
+	Log::GetCoreLogger()->warn("Changed RigidBody!!");
+}
+
+void PhysxEngine::ChangeStaticToDynamic(uint32_t entityID)
+{
+	m_RigidBodyManager->ChangeStaticToDynamic(entityID);
+	m_CollisionManager->RemoveEntity(entityID);
+	Log::GetCoreLogger()->warn("Changed RigidBody!!");
+}
+
+
+
 void PhysxEngine::ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	m_RigidBodyManager->ExtractSceneVerticesAndFacesByLayer(m_PxScene, layer, outVertices, outIndices);
@@ -248,7 +279,6 @@ void PhysxEngine::ResizeCapsuleController(uint32_t entityID, float radius, float
 		m_ControllerManager->ResizeCapsuleControllerSize(entityID, radius, height);
 	}
 }
-
 
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)

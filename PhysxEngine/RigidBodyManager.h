@@ -14,16 +14,25 @@ public:
 	~RigidBodyManager();
 	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene, std::shared_ptr<PhysichResourceManager> resourceManager);
 	void Update();
-	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const VPPhysics::PhysicsInfo& engininfo );
-	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	void CreateStaticBody(const BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const PhysicsInfo& engininfo );
+	void CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateStaticBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+
+	void CreateDynamicBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
 	void ChangeDynamicToStatic(uint32_t EntityID);

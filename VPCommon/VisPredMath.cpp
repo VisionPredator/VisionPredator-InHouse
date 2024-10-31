@@ -73,6 +73,18 @@ namespace VisPred
 			// Return the random number
 			return dist(gen);
 		}
+		unsigned int Random_uint(unsigned int min, unsigned int max) noexcept
+		{
+			// 시드 생성기
+			std::random_device rd;
+			// Mersenne Twister 엔진 초기화
+			std::mt19937 gen(rd());
+			// min과 max 사이의 unsigned int 값 분포 생성
+			std::uniform_int_distribution<unsigned int> dist(min, max);
+			// 난수 반환
+			return dist(gen);
+		}
+
 
 	}
 }

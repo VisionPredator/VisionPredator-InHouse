@@ -1,8 +1,20 @@
 #include "pch.h"
 #include "DynamicRigidBody.h"
 using namespace VPPhysics;
-DynamicRigidBody::DynamicRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber)
-	:RigidBody(colltype, entityId, layerNumber)
+
+DynamicRigidBody::DynamicRigidBody(BoxColliderInfo info, EColliderType type, const PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
+{
+}
+
+DynamicRigidBody::DynamicRigidBody(CapsuleColliderInfo info, EColliderType type, const PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
+{
+}
+
+DynamicRigidBody::DynamicRigidBody(SphereColliderInfo info, EColliderType type, const PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
+{
+}
+
+DynamicRigidBody::DynamicRigidBody(ConvexColliderInfo info, EColliderType type, const PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
 {
 }
 
@@ -26,7 +38,8 @@ DynamicRigidBody::~DynamicRigidBody()
 	m_DynamicRigid->release();
 }
 
-bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics)
+
+bool DynamicRigidBody::Initialize(physx::PxShape* shape, physx::PxPhysics* physics)
 {
 	if (m_ColliderType == EColliderType::COLLISION)
 	{
@@ -44,6 +57,18 @@ bool DynamicRigidBody::Initialize(VPPhysics::ColliderInfo colliderInfo, physx::P
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);
 	physx::PxTransform transform;
+	VPPhysics::ColliderInfo colliderInfo{};
+	if (m_Boxinfo)
+		colliderInfo = m_Boxinfo->colliderInfo;
+	else if (m_Sphereinfo)
+		colliderInfo = m_Sphereinfo->colliderInfo;
+	else if (m_Convexinfo)
+		colliderInfo = m_Convexinfo->colliderInfo;
+	else if (m_Capulseinfo)
+		colliderInfo = m_Capulseinfo->colliderInfo;
+	else
+		VP_ASSERT(false, "rigidbody 초기화 오류!");
+
 	transform.p = {
 		colliderInfo.WorldLocation.x,
 		colliderInfo.WorldLocation.y,

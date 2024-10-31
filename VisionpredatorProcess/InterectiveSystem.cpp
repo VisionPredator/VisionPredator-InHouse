@@ -113,7 +113,6 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_ShotGun)
 		return;
 
-
 	if (playercomp.HasGun)
 	{
 		std::any data = std::ref(playercomp);
@@ -127,6 +126,7 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 	soceketcomp->ConnectedEntityID = handID;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp.GetEntityID();
+	m_PhysicsEngine->ChangeDynamicToStatic(playercomp.GunEntityID);
 	guncomp.GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
 	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
@@ -152,3 +152,4 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 	GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_GunDraw, soundcomp->Volume_GunDraw, true, false, {});
 
 }
+

@@ -49,7 +49,7 @@ namespace VisPred
 
         float Random_float(float min, float max) noexcept;
         int Random_int(int min, int max) noexcept;
-
+        unsigned int Random_uint(unsigned int min, unsigned int max) noexcept;
 
         //------------------------------------------------------------------------------
         // 2D rectangle
