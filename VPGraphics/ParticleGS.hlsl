@@ -70,9 +70,23 @@ void StreamOutGS(point Particle gin[1],
 	// emitter 파티클인 경우
 	if (gin[0].Type == PT_EMITTER)
 	{
-		// 새로운 파티클을 생성
-		if (gIsLoop && gin[0].Age > 0.005f)
+		// gIsLoop가 false일 때 Duration 동안만 파티클 생성
+		if (gin[0].Age >= gDuration && !gIsLoop)
 		{
+			// Emitter 파티클을 스트림에 유지하면서 더 이상 새 파티클 생성 안 함
+			ptStream.Append(gin[0]);
+			// emitter 파티클 나이 초기화
+			gin[0].Age = 0.0f;
+
+			return;
+		}
+
+		// 새로운 파티클을 생성
+		//if (gin[0].Age > 0.005f)
+		if (gin[0].Age < gDuration || gIsLoop)
+		{
+			Particle p;
+
 			// 3D 공간에서 무작위 방향 벡터 생성
 			float3 vRandom = RandUnitVec3(0.0f);
 			// x및 y성분을 축소하여 범위를 제한
@@ -80,16 +94,12 @@ void StreamOutGS(point Particle gin[1],
 			vRandom.z *= 0.5f;
 
 			// 새로운 파티클을 생성하여 스트림에 추가
-			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
 			p.InitialVelW = 4.0f * vRandom;
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_FLARE;				// 파티클 유형 설정
 			ptStream.Append(p);
-
-			// emitter 파티클 나이 초기화
-			gin[0].Age = 0.0f;
 		}
 
 		// 방출기 입자 하나는 항상 유지한다.
@@ -97,7 +107,7 @@ void StreamOutGS(point Particle gin[1],
 	}
 	else
 	{
-		// emitter 가 아닌 경우, 파티클의 나이가 1.0보다 작거나 같은 경우에만 현재 스트림에 추가한다.
+		// emitter 가 아닌 경우, 파티클의 나이가 Lifetime 보다 작거나 같은 경우에만 현재 스트림에 추가한다.
 		if (gin[0].Age <= gStartLifetime)
 			ptStream.Append(gin[0]);
 	}

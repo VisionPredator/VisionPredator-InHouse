@@ -125,6 +125,7 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.Duration = m_Info.Duration;
 	m_DataCB->Update(m_Data);
 
+
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
 	ID3D11Buffer* nullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
 	UINT strides[4] = { 0, 0, 0, 0 };

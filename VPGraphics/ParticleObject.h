@@ -32,24 +32,22 @@ public:
 	struct DataCB
 	{
 		VPMath::Vector3 EmitPosW;	// Transform 에서 위치값을 뽑아와서 준다.
-		float dummy1;
+		float padding1;
 		VPMath::Vector3 EmitDirW;	// 오브젝트이 Front Vector 값을 준다.
-		float dummy2;
+		float padding2;
 
 		VPMath::Vector2 StartSize;
 		float Duration;
 		int IsLoop;
 
 		float StartLifetime;
-		float dummy3;
-
+		float padding3;
 		float Angle;
 		float Radius;
+
 		unsigned int ParticleShape;
 		unsigned int RenderMode;
-
-		float dummy4;
-		float dummy5;
+		float padding4[2];
 	};
 	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
 
