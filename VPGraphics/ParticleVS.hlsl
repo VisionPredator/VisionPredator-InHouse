@@ -38,7 +38,7 @@ VertexOut DrawVS(Particle vin)
 	VertexOut vout;
 
 	// 중력 설정.
-	float3 gAccelW = { 0.0f, 0.0f, 0.0f };
+	float3 gAccelW = { 0.0f, -7.8f, 0.0f };
 	//float3 gAccelW = { 0.0f, 7.8f, 0.0f };
 
 	const float t = vin.Age;

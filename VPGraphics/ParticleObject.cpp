@@ -61,19 +61,18 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		m_SamLinear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
 	}
 
-	// TODO: SRV 이용하는 걸로 바꿔야 한다.
 	// Create Textures
 	{
-		std::vector<std::wstring> flares;
-		if (!m_Info.TexturePath.empty())
-		{
-			flares.push_back(Util::ToWideChar(m_Info.TexturePath));
-		}
-		else
-		{
-			flares.push_back(Util::ToWideChar("../../../Resource/Texture/Smoke.png"));	
-		}
-		D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
+		//std::vector<std::wstring> flares;
+		//if (!m_Info.TexturePath.empty())
+		//{
+		//	flares.push_back(Util::ToWideChar("../../../Resource/Texture/" + m_Info.TexturePath));
+		//}
+		//else
+		//{
+		//	flares.push_back(Util::ToWideChar("../../../Resource/Texture/Smoke.png"));	
+		//}
+		//D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
 
 		if (m_Info.TexturePath.empty())
 			m_Info.TexturePath = "Smoke.png";
