@@ -290,6 +290,11 @@ std::vector<RaycastData> PhysxEngine::RaycastActorsAtPose_Ignores(std::vector<ui
 	return m_RigidBodyManager->RaycastActorsAtPose_Ignores(entityIDs, location, dir, distance);
 }
 
+bool PhysxEngine::IsDynamic(uint32_t entityID)
+{
+	return m_RigidBodyManager->IsDynamic(entityID);
+}
+
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
 {

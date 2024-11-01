@@ -115,5 +115,9 @@ private:
 
 	std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
+
+	// IPhysx을(를) 통해 상속됨
+	bool IsDynamic(uint32_t entityID) override;
+
 };
 

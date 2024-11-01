@@ -99,9 +99,14 @@ void PhysicSystem::PhysicsLateUpdate(float deltaTime)
 			continue;
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
+		if (!m_PhysicsEngine->IsDynamic(entityID))
+			continue;
+		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
+		if (rigidBodyComponent.Speed.Length()<0.001f)
+			continue;
+
 		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
 		rigidBodyTransform->SetWorldQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
-		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
 	}
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))

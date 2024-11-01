@@ -16,3 +16,5 @@
 #include "ShotGunBulletComponent.h"
 #include "WeaponBoxComponent.h"
 #include "CabinetComponent.h"
+#include "VPDetectionComponent.h"
+#include "DetectableComponent.h"

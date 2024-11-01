@@ -110,13 +110,13 @@ void DoorSystem::OnChangeDoorUseable(std::any entityid_bool)
 		doorcomp->GetComponent<MeshComponent>()->FBX = doorcomp->UseableFBX;
 	else
 		doorcomp->GetComponent<MeshComponent>()->FBX = doorcomp->UnUseableFBX;
-	//std::string dooridentity = doorcomp->GetComponent<IdentityComponent>()->UUID;
 
-	//auto components = GetSceneManager()->GetParentEntityComp_HasComp<DoorComponent>();
-
-		//if (opencomp.Dummy != dooridentity || !opencomp.HasComponent<InterectiveComponent>())
-		//	continue;
-
+	if (!doorcomp->IsUseserble&& doorcomp->IsOpen)
+	{
+	doorcomp->IsActivated = true;
+	doorcomp->IsOpen = false;
+	}
+	
 	auto compvec = GetSceneManager()->GetChildEntityComps_HasComp<DoorOpenerComponent>(doorcomp->GetEntityID());
 	if (compvec.empty())
 		return;

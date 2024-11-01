@@ -39,7 +39,7 @@ void PhysicsRegister::Register_EnumClass()
 		EPhysicsLayer::WEAPON,
 		EPhysicsLayer::PLAYERBULLET,
 		EPhysicsLayer::ENEMYBULLET,
-		EPhysicsLayer::DOOR,
+		EPhysicsLayer::INTERECTIVE,
 		EPhysicsLayer::TRIGGER);
 	META_ADD_ENUMCLASS(ControllerPivot,
 		ControllerPivot::CENTER,

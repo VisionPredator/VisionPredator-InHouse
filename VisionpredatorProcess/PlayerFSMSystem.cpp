@@ -566,7 +566,7 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 		if (tempindex == VisPred::Game::VPAni::ToVP_attack_L || tempindex == VisPred::Game::VPAni::ToVP_attack_R)
 			return;
 		if (!INPUTKEY(KEYBOARDKEY::SPACE))
-			return;
+			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_Idle, 0, 0, false);
 		ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_jump, 0, 0, false);
 
 		if (playercomp.PreFSM == VisPred::Game::PlayerFSM::RUN

@@ -134,8 +134,18 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 #pragma region Update
 void PlayerSystem::Update(float deltaTime)
 {
+	if (INPUTKEYDOWN(KEYBOARDKEY::NUM0))
+	{
+	auto entity = 	GetSceneManager()->GetEntityByIdentityName("RoomB");
+	auto trans = entity->GetComponent<TransformComponent>();
+	VPMath::Vector3 pos = trans->World_Location;
+	pos.y += 3;
+	GetSceneManager()->SpawnPrefab("../Data/Prefab/SectorB.prefab", pos, VPMath::Vector3{}, {});
+	}
 	COMPLOOP(PlayerComponent, playercomp)
 	{
+		
+
 		if (!playercomp.CameraEntity.lock()
 			|| !playercomp.CameraPosEntity.lock()
 			|| !playercomp.FirePosEntity.lock()

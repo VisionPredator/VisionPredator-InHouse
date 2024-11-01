@@ -164,6 +164,7 @@
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CabinetComponent.h" />
     <ClInclude Include="CabinetSystem.h" />
+    <ClInclude Include="DetectableComponent.h" />
     <ClInclude Include="DoorComponent.h" />
     <ClInclude Include="DoorOpenerComponent.h" />
     <ClInclude Include="DoorSystem.h" />
@@ -213,6 +214,8 @@
     <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
     <ClInclude Include="DataRegister_Vispred.h" />
+    <ClInclude Include="VPDetectionSystem.h" />
+    <ClInclude Include="VPDetectionComponent.h" />
     <ClInclude Include="VPProcess.h" />
     <ClInclude Include="VPUIComponent.h" />
     <ClInclude Include="WeaponBoxComponent.h" />
@@ -224,6 +227,7 @@
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="CabinetComponent.cpp" />
     <ClCompile Include="CabinetSystem.cpp" />
+    <ClCompile Include="DetectableComponent.cpp" />
     <ClCompile Include="DoorComponent.cpp" />
     <ClCompile Include="DoorOpenerComponent.cpp" />
     <ClCompile Include="DoorSystem.cpp" />
@@ -274,6 +278,8 @@
     <ClCompile Include="TrunSystem.cpp" />
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />
+    <ClCompile Include="VPDetectionSystem.cpp" />
+    <ClCompile Include="VPDetectionComponent.cpp" />
     <ClCompile Include="VPProcess.cpp" />
     <ClCompile Include="VPUIComponent.cpp" />
     <ClCompile Include="WeaponBoxComponent.cpp" />

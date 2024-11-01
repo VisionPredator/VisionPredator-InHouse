@@ -31,7 +31,7 @@ namespace VPPhysics
 		WEAPON,
 		PLAYERBULLET,
 		ENEMYBULLET,
-		DOOR,
+		INTERECTIVE,
 		TRIGGER,
 		END
 	};

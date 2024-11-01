@@ -40,6 +40,7 @@ public:
 	void ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer);
 	void ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer);
 	bool HasRigidBody(uint32_t EntityID);
+	bool IsDynamic(uint32_t EntityID);
 	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);

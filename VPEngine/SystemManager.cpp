@@ -216,7 +216,7 @@
 			return;
 		for (auto contactable : m_Triggerable)
 		{
-			contactable->EnterTrigger(entitypair);
+			contactable->EnterTrigger(entity_first, entity_second);
 		}
 	}
 
@@ -229,7 +229,7 @@
 			return;
 		for (auto contactable : m_Triggerable)
 		{
-			contactable->ExitTrigger(entitypair);
+			contactable->ExitTrigger(entity_first, entity_second);
 		}
 	}
 

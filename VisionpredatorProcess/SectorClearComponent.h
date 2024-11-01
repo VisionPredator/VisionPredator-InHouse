@@ -3,8 +3,9 @@
 struct SectorClearComponent :
     public Component
 {
-    VP_JSONBODY(SectorClearComponent, DoorIdentity);
+    VP_JSONBODY(SectorClearComponent, DoorIdentity, PreDoorIdentity);
     std::string DoorIdentity{};
+    std::string PreDoorIdentity{};
 
 };
 

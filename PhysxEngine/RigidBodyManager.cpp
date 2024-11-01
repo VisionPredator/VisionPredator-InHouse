@@ -518,6 +518,17 @@ bool RigidBodyManager::HasRigidBody(uint32_t entityID)
 {
 	return m_RigidBodyMap.count(entityID) > 0;
 }
+bool RigidBodyManager::IsDynamic(uint32_t EntityID)
+{
+	auto rigid = GetRigidBody(EntityID);
+	if (!rigid)
+		return false;
+	if (Reflection::IsSameType<DynamicRigidBody>(rigid->GetTypeID()))
+		return true;
+
+	return false;
+
+}
 void RigidBodyManager::ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!scene)
