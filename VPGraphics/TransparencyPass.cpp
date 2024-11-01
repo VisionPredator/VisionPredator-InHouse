@@ -165,6 +165,10 @@ void TransparencyPass::Render()
 			}
 		}
 	}
+
+	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	Device->Context()->OMSetDepthStencilState(nullptr, 1);
+
 }
 
 void TransparencyPass::OnResize()

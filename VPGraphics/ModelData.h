@@ -42,5 +42,6 @@ public:
 	std::vector<VPMath::Vector3> vertices;
 
 	int UID;
+	VPMath::Vector3 Pivot;
 };
 

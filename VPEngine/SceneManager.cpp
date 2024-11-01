@@ -519,7 +519,7 @@ std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, in
 	soundcomp->Loop = isloop;
 	entity->GetComponent<TransformComponent>()->Local_Location = pos;
 	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
-	return std::shared_ptr<Entity>();
+	return entity;
 }
 
 
@@ -955,21 +955,6 @@ std::shared_ptr<Entity> SceneManager::GetEntityByIdentityName( std::string name)
 	return nullptr;
 }
 
-std::shared_ptr<Entity> SceneManager::GetEntitySocketEntity(uint32_t entityID)
-{
-	auto mainentity = GetEntity(entityID);
-	while (mainentity)
-	{
-		if (mainentity->HasComponent<SocketComponent>())
-			return mainentity;
-		else if (mainentity->HasComponent<Parent>())
-			mainentity = GetEntity(mainentity->GetComponent<Parent>()->ParentID);
-		else
-			return nullptr; 
-	}
-	return nullptr;
-}
-
 
 void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
 {
@@ -985,6 +970,9 @@ void SceneManager::OnDestroyEntity(std::any data)
 {
 	uint32_t mainID = std::any_cast<uint32_t>(data);
 	auto& entityMap = GetEntityMap();
+	auto temp = GetEntity(mainID);
+	if (!temp)
+		return;
 	std::list<uint32_t> DeleteEntityIDs;
 	DeleteEntityIDs.push_back(mainID);
 

@@ -39,12 +39,12 @@ public:
 
 
 	template<typename T>
-	bool HasComponent(uint32_t entityID)
+	bool HasComponent(uint32_t entityID) requires std::derived_from<T, Component>
 	{
 		auto entity = GetEntity(entityID);
 		return entity ? entity->HasComponent<T>() : false;
 	}
-	bool HasComponent(uint32_t EntityID, entt::id_type compid)
+	bool HasComponent(uint32_t EntityID, entt::id_type compid) 
 	{
 		if (!HasEntity(EntityID))
 			return false;
@@ -52,8 +52,8 @@ public:
 	}
 	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }	///이거 체크
 
-	template<typename T>
-	T* GetComponent(uint32_t EntityID)
+	template<typename T> 
+	T* GetComponent(uint32_t EntityID)requires std::derived_from<T, Component>
 	{
 		//return GetEntity(EntityID)->GetComponent<T>();
 
@@ -89,7 +89,10 @@ public:
 	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetRelationEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetEntityByIdentityName(std::string name);
-	std::shared_ptr<Entity> GetEntitySocketEntity(uint32_t entityID);
+	template<typename T>
+	T* GetParentEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
+	template<typename T>
+	std::vector<T*>  GetChildEntityComps_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
@@ -206,6 +209,68 @@ private:
 
 
 template<typename T>
+inline T* SceneManager::GetParentEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>
+{
+	auto mainentity = GetEntity(entityID);
+	while (mainentity)
+	{
+		if (mainentity->HasComponent<T>())
+			return mainentity->GetComponent<T>();
+		else if (mainentity->HasComponent<Parent>())
+			mainentity = GetEntity(mainentity->GetComponent<Parent>()->ParentID);
+		else
+			return nullptr;
+	}
+	return nullptr;
+}
+template<typename T>
+inline std::vector<T*>  SceneManager::GetChildEntityComps_HasComp(uint32_t entityID) requires std::derived_from<T, Component>
+{
+	std::vector<T*> components;
+
+	// Retrieve the main entity
+	auto mainEntity = GetEntity(entityID);
+
+	if (!mainEntity)
+		return components;  // No children to process
+
+	if (mainEntity->HasComponent<T>())
+		components.push_back(mainEntity->GetComponent<T>());
+
+	if (!mainEntity->HasComponent<Children>())
+		return components;
+	// Function to recursively collect components from child entities
+	std::function<void(uint32_t)> collectComponents = [&](uint32_t currentEntityID) 
+		{
+		auto currentEntity = GetEntity(currentEntityID);
+		if (!currentEntity)
+			return;
+
+		// If the current entity has the component T, add it to the list
+		if (currentEntity->HasComponent<T>())
+			components.push_back(currentEntity->GetComponent<T>());
+
+		// If the current entity has children, continue recursively
+		if (currentEntity->HasComponent<Children>()) 
+		{
+			for (auto childID : currentEntity->GetComponent<Children>()->ChildrenID)
+			{
+				collectComponents(childID);
+			}
+		}
+		};
+
+	// Start collecting from the main entity's children
+	for (auto childID : mainEntity->GetComponent<Children>()->ChildrenID)
+	{
+		collectComponents(childID);
+	}
+
+	return components;
+}
+
+
+template<typename T>
 inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 {
 	std::vector<std::reference_wrapper<T>> result;
@@ -240,6 +305,11 @@ inline void SceneManager::ReleaseCompFromPool(std::shared_ptr<T> comp)
 			return false;
 		}), pool.end());
 }
+
+
+
+
+
 inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, std::shared_ptr<Component> comp)
 {
 	auto& pool = m_CurrentScene->m_ComponentPool[compID];

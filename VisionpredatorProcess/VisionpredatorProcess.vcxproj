@@ -162,6 +162,9 @@
     <ClInclude Include="AimUIComponent.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
+    <ClInclude Include="DoorComponent.h" />
+    <ClInclude Include="DoorOpenerComponent.h" />
+    <ClInclude Include="DoorSystem.h" />
     <ClInclude Include="EnemyAttackState.h" />
     <ClInclude Include="EnemyIdleAttack.h" />
     <ClInclude Include="EnemyBackpedalState.h" />
@@ -197,6 +200,9 @@
     <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="PlayerUISystem.h" />
+    <ClInclude Include="SectorClearComponent.h" />
+    <ClInclude Include="SectorSystem.h" />
+    <ClInclude Include="ShotGunBulletComponent.h" />
     <ClInclude Include="StatesInclude.h" />
     <ClInclude Include="AreaAttackComponent.h" />
     <ClInclude Include="AreaAttackSystem.h" />
@@ -213,6 +219,9 @@
     <ClCompile Include="AimUIComponent.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
+    <ClCompile Include="DoorComponent.cpp" />
+    <ClCompile Include="DoorOpenerComponent.cpp" />
+    <ClCompile Include="DoorSystem.cpp" />
     <ClCompile Include="EnemyAttackState.cpp" />
     <ClCompile Include="EnemyIdleAttack.cpp" />
     <ClCompile Include="EnemyBackpedalState.cpp" />
@@ -253,6 +262,9 @@
     <ClCompile Include="PlayerUISystem.cpp" />
     <ClCompile Include="AreaAttackComponent.cpp" />
     <ClCompile Include="AreaAttackSystem.cpp" />
+    <ClCompile Include="SectorClearComponent.cpp" />
+    <ClCompile Include="SectorSystem.cpp" />
+    <ClCompile Include="ShotGunBulletComponent.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="TrunComponent.cpp" />
     <ClCompile Include="TrunSystem.cpp" />

@@ -189,6 +189,7 @@
     <ClInclude Include="DecalManager.h" />
     <ClInclude Include="DecalPass.h" />
     <ClInclude Include="DeferredInstancing.h" />
+    <ClInclude Include="DeferredLightPass.h" />
     <ClInclude Include="DeferredPass.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthStencilState.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="DecalManager.cpp" />
     <ClCompile Include="DecalPass.cpp" />
     <ClCompile Include="DeferredInstancing.cpp" />
+    <ClCompile Include="DeferredLightPass.cpp" />
     <ClCompile Include="DeferredPass.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="DepthStencilView.cpp" />

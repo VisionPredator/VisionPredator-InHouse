@@ -518,6 +518,8 @@ void PlayerFSMSystem::Enter_Idle(PlayerComponent& playercomp)
 	else if (playercomp.PreFSM == VisPred::Game::PlayerFSM::CROUCH || playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 		DefalutModeController(playercomp);
 
+
+
 }
 void PlayerFSMSystem::Enter_Walk(PlayerComponent & playercomp)
 {
@@ -550,7 +552,9 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 		auto tempindex = static_cast<VisPred::Game::VPAni>(anicomp->curAni);
 		if (tempindex == VisPred::Game::VPAni::ToVP_attack_L || tempindex == VisPred::Game::VPAni::ToVP_attack_R)
 			return;
-		ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_Idle, 0, 0, true);
+		if (!INPUTKEY(KEYBOARDKEY::SPACE))
+			return;
+		ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_jump, 0, 0, false);
 	}
 }
 void PlayerFSMSystem::Enter_Crouch(PlayerComponent& playercomp)
@@ -596,7 +600,8 @@ void PlayerFSMSystem::Enter_Die(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 {
-	GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
+	GetSceneManager()->SpawnPrefab("../Data/Prefab/DieUI.prefab", {}, VPMath::Vector3{});
+	//GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
 }
 
 void PlayerFSMSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)

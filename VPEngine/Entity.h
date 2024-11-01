@@ -38,7 +38,7 @@ public:
 	}
 
 	template<typename T>
-	bool HasComponent() const
+	bool HasComponent() const requires std::derived_from<T, Component>
     {
         return m_OwnedComp.find(Reflection::GetTypeID<T>()) != m_OwnedComp.end();
     }
