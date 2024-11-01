@@ -1,5 +1,5 @@
 #define PT_EMITTER 0
-#define PT_FLARE 1
+#define PT_SIMULATER 1
 
 Texture2DArray gTexArray : register(t0);
 Texture1D gRandomTex : register(t1);

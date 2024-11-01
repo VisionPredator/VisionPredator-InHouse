@@ -1,5 +1,5 @@
 #define PT_EMITTER 0
-#define PT_FLARE 1
+#define PT_SIMULATER 1
 
 #define SHAPE_CONE 0
 #define SHAPE_SPHERE 1
@@ -8,6 +8,8 @@
 
 #define BILLBOARD 0
 #define STRETCHED_BILLBOARD 1
+
+#define PI 3.14159265359
 
 cbuffer cbPerFrame : register(b0)
 {
@@ -69,8 +71,13 @@ void ProcessShape(float3 random, out float3 posW, out float3 velocity)
 	}
 	else if (gParticleShape == SHAPE_SPHERE)
 	{
-		posW = gEmitPosW.xyz;
-		velocity = gStartSpeed * random;
+		const float3 randomDir = normalize(random);
+
+		// 파티클의 위치를 구의 중심(gEmitPosW)에서 시작하도록 설정
+		posW = gEmitPosW + randomDir * gRadius; // 구의 표면에서 시작
+
+		// 속도 벡터를 randomDir을 기반으로 설정
+		velocity = randomDir * gStartSpeed; // 구의 표면에서 바깥쪽으로 방출
 	}
 	else if (gParticleShape == SHAPE_BOX)
 	{
@@ -79,8 +86,22 @@ void ProcessShape(float3 random, out float3 posW, out float3 velocity)
 	}
 	else if (gParticleShape == SHAPE_CONE)
 	{
-		posW = gEmitPosW.xyz;
-		velocity = gStartSpeed * random;
+		// 원뿔의 높이와 밑면 반지름을 설정
+		float coneHeight = gRadius; // 원뿔의 높이
+		float baseRadius = coneHeight * tan(radians(gAngle)); // 밑면의 반지름 계산 (radians 함수로 각도를 라디안 값으로 변환)
+
+		// 무작위로 밑면에서 위치를 선택
+		float2 disk = float2(random.x, random.z) * baseRadius;
+
+		// 각도에 따라 파티클이 생성되는 반경을 조정
+		float angleFactor = 1.0f - (gAngle / 90.0f); // 각도가 커질수록 범위가 좁아짐
+		float2 temp = disk;
+		temp *= angleFactor;
+		// 원뿔의 꼭짓점에서 파티클 생성
+		posW = gEmitPosW + float3(temp.x, 0.0f, temp.y); // 꼭짓점에서 생성 위치 설정
+
+		// 속도 벡터를 밑면 방향으로 설정하여 분사
+		velocity = normalize(float3(disk.x, coneHeight, disk.y)) * gStartSpeed; // 방향을 밑면 쪽으로 설정
 	}
 }
 
@@ -114,7 +135,7 @@ void StreamOutGS(point Particle gin[1],
 		}
 
 		// gIsLoop가 false일 때 Duration 동안만 파티클 생성
-		if ((gin[0].Age >= gDuration && !gIsLoop))
+		if (gin[0].Age >= gDuration && !gIsLoop)
 		{
 			// Emitter 파티클을 스트림에 유지하면서 더 이상 새 파티클 생성 안 함
 			ptStream.Append(gin[0]);
@@ -139,7 +160,7 @@ void StreamOutGS(point Particle gin[1],
 			ProcessShape(vRandom, p.InitialPosW, p.InitialVelW);
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
-			p.Type = PT_FLARE;				// 파티클 유형 설정
+			p.Type = PT_SIMULATER;				// 파티클 유형 설정
 			ptStream.Append(p);
 		}
 
