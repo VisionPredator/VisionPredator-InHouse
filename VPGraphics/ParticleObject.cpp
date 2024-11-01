@@ -96,6 +96,9 @@ void ParticleObject::Update()
 
 void ParticleObject::Draw(float deltaTime, float totalGameTime)
 {
+	if (!m_Info.IsRender)
+		return;
+
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context = m_Device->Context();
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 	DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(CameraCB->m_struct.viewInverse.Transpose()._41, CameraCB->m_struct.viewInverse.Transpose()._42, CameraCB->m_struct.viewInverse.Transpose()._43);
@@ -244,8 +247,7 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Shape.Shape = info.Shape.Shape;
 	m_Info.Shape.Angle = info.Shape.Angle;
 	m_Info.Shape.Radius = info.Shape.Radius;
-
 	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
-
+	m_Info.IsRender = info.IsRender;
 	//m_Info.
 }

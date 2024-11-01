@@ -1,7 +1,13 @@
 #define PT_EMITTER 0
 #define PT_FLARE 1
 
-static const float PI = 3.141592;
+#define SHAPE_CONE 0
+#define SHAPE_SPHERE 1
+#define SHAPE_BOX 2
+#define SHAPE_CIRCLE 3
+
+#define BILLBOARD 0
+#define STRETCHED_BILLBOARD 1
 
 cbuffer cbPerFrame : register(b0)
 {
@@ -35,8 +41,6 @@ Texture2DArray gTexArray : register(t0);
 Texture1D gRandomTex : register(t1);
 SamplerState samLinear : register(s0);
 
-
-
 // 게임 시간과 직접 전달한 offset을 기반으로 랜덤 벡터를 샘플링해준다.
 float3 RandUnitVec3(float offset)
 {
@@ -60,11 +64,6 @@ struct Particle
 	uint	Type			: TYPE;
 };
 
-#define SHAPE_CONE 0
-#define SHAPE_SPHERE 1
-#define SHAPE_BOX 2
-#define SHAPE_CIRCLE 3
-
 // The stream-out GS is just responsible for emitting 
 // new particles and destroying old particles.  The logic
 // programed here will generally vary from particle system
@@ -86,7 +85,7 @@ void StreamOutGS(point Particle gin[1],
 		}
 
 		// gIsLoop가 false일 때 Duration 동안만 파티클 생성
-		if (gin[0].Age >= gDuration && !gIsLoop)
+		if ((gin[0].Age >= gDuration && !gIsLoop))
 		{
 			// Emitter 파티클을 스트림에 유지하면서 더 이상 새 파티클 생성 안 함
 			ptStream.Append(gin[0]);

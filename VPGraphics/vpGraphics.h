@@ -88,6 +88,7 @@ namespace effect
 		VPMath::Vector3 Direction = VPMath::Vector3(0.0f, 1.0f, 0.0f);
 
 		float Duration = 5.f;
+		bool IsRender = true;
 		bool IsLoop = true;
 		bool Restart = false;
 

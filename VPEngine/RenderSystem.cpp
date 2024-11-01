@@ -10,9 +10,6 @@ RenderSystem::RenderSystem(std::shared_ptr<SceneManager> sceneManager)
 }
 void RenderSystem::ComponentAdded(Component* comp)
 {
-	static bool test = false;
-	static bool testPrev = false;
-
 	// Particle Object
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<ParticleComponent>())
 	{
@@ -24,6 +21,8 @@ void RenderSystem::ComponentAdded(Component* comp)
 
 		effect::ParticleInfo info;
 		info.TexturePath = Path;
+
+		info.IsRender = component->IsRender;
 		info.IsLoop = component->IsLoop;
 
 		if (component->RestartPrev == true)
@@ -124,6 +123,8 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 
 		effect::ParticleInfo info;
 		info.TexturePath = component.TexturePath;
+
+		info.IsRender = component.IsRender;
 		info.IsLoop = component.IsLoop;
 
 		if (component.RestartPrev == true)
