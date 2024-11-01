@@ -474,11 +474,11 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 	switch (meleecomp.AttackMode)
 	{
 	case VisPred::Game::PlayerMelee::VP_Left:
-		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.SwordAngle);
+		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
 		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack1, soundcomp.Volume_VPAttack1, true, false, {});
 		break;
 	case VisPred::Game::PlayerMelee::VP_Right:
-		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.SwordAngle);
+		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
 		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack2, soundcomp.Volume_VPAttack2, true, false, {});
 		break;
 	default:
@@ -590,8 +590,7 @@ void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.WalkSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
+
 
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
@@ -605,8 +604,7 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.RunSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
+
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
 	Active_Jump(transfomcomp, Controller);
@@ -618,8 +616,6 @@ void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
 	Active_Interect(playercomp);
@@ -793,19 +789,6 @@ void PlayerSystem::Active_Slide(PlayerComponent& playercomp, float deltatime)
 {
 	auto& controller = *playercomp.GetComponent<ControllerComponent>();
 	playercomp.SlideProgress += deltatime;
-	float slidespeed{};
-	if (playercomp.IsVPMode)
-	{
-		slidespeed = playercomp.RunSpeed * 3.f;
-	}
-	else
-	{
-		slidespeed = playercomp.RunSpeed * 1.5f;
-
-	}
-
-	controller.MaxSpeed = slidespeed;
-	controller.Acceleration = controller.MaxSpeed * 6.f;
 	controller.InputDir = playercomp.SlideDir;
 }
 void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
@@ -1386,8 +1369,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
 	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
-	//controllercomp.Acceleration= playercomp.Accel;
-	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
+
 	controlcomp.JumpSpeed = playercomp.JumpForce;
 	controlcomp.StaticFriction = playercomp.StaticFriction;
 	controlcomp.JumpXZAcceleration = controlcomp.Acceleration * playercomp.AirControlPercent / 100;
