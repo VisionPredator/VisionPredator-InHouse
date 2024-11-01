@@ -22,37 +22,34 @@ public:
 		VPMath::Matrix ViewProj;
 		VPMath::Vector3 EyePosW;
 		float GameTime;
-		VPMath::Vector3 EmitPosW;
 		float TimeStep;
-		VPMath::Vector3 EmitDirW;
-		float Unused;
+		float dummy1[3];
 	};
 	static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
 
-	struct InfoCB
+	struct DataCB
 	{
 		VPMath::Vector3 EmitPosW;	// Transform 에서 위치값을 뽑아와서 준다.
+		float padding1;
 		VPMath::Vector3 EmitDirW;	// 오브젝트이 Front Vector 값을 준다.
+		float padding2;
 
-		VPMath::Vector2 StartSizeA;
-		VPMath::Vector2 StartSizeB;
-
+		VPMath::Vector2 StartSize;
+		float StartSpeed;
 		float Duration;
 		int IsLoop;
 
-		float StartLifetimeA;
-		float StartLifetimeB;
 
+		int Restart;
+		float StartLifetime;
 		float Angle;
 		float Radius;
 
-		int ParticleShape;
-		int RenderMode;
-
-		float dummy1;
-		float dummy2;
+		unsigned int ParticleShape;
+		unsigned int RenderMode;
+		float padding3;
 	};
-	static_assert(sizeof(InfoCB) % 16 == 0, "must be align");
+	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
 
 	struct ParticleVertex
 	{
@@ -78,12 +75,14 @@ private:
 
 	// CB structure
 	PerFrame m_PerFrame = {};
+	DataCB m_Data = {};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_InitVB;		// emit	// 초기화용 방출기 입자
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_StreamOutVB;	// simulate
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_DrawVB;		// draw
 
 	std::shared_ptr<ConstantBuffer<PerFrame>> m_FrameCB;
+	std::shared_ptr<ConstantBuffer<DataCB>> m_DataCB;
 
 	std::shared_ptr<ShaderResourceView> m_TextureSRV;	// 파티클 2d 텍스쳐
 	std::shared_ptr<ShaderResourceView> m_RandomTextureSRV;		// 쉐이더용 난수 텍스처
@@ -106,12 +105,5 @@ private:
 
 	// 수치 조절용
 	effect::ParticleInfo m_Info;
-	// TODO 아래 것도 교체좀.
-	VPMath::Vector3 m_EyePosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
-	VPMath::Vector3 m_EmitPosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
-	VPMath::Vector3 m_EmitDirW = VPMath::Vector3(0.0f, 1.0f, 0.0f);
-
-
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_SamplerState;
 };
 
