@@ -55,6 +55,35 @@ float3 RandUnitVec3(float offset)
 	return normalize(v);
 }
 
+void ProcessShape(float3 random, out float3 posW, out float3 velocity)
+{
+	if (gParticleShape == SHAPE_CIRCLE)
+	{
+		float2 randomDir = normalize(float2(random.x, random.z));
+		float radius = gRadius * sqrt(saturate((random.y + 1.0f) * 0.5f));
+
+		float2 pos = randomDir * radius;
+
+		posW = gEmitPosW + float3(pos.x, 0.0f, pos.y);
+		velocity = normalize(float3(randomDir.x, 0.0f, randomDir.y)) * gStartSpeed;
+	}
+	else if (gParticleShape == SHAPE_SPHERE)
+	{
+		posW = gEmitPosW.xyz;
+		velocity = gStartSpeed * random;
+	}
+	else if (gParticleShape == SHAPE_BOX)
+	{
+		posW = gEmitPosW.xyz;
+		velocity = gStartSpeed * random;
+	}
+	else if (gParticleShape == SHAPE_CONE)
+	{
+		posW = gEmitPosW.xyz;
+		velocity = gStartSpeed * random;
+	}
+}
+
 struct Particle
 {
 	float3	InitialPosW		: POSITION;
@@ -107,39 +136,7 @@ void StreamOutGS(point Particle gin[1],
 			vRandom.x *= 0.5f;
 			vRandom.z *= 0.5f;
 
-
-			// 파티클 모양 설정
-			if (gParticleShape == SHAPE_SPHERE)
-			{
-				p.InitialPosW = gEmitPosW.xyz;
-				p.InitialVelW = gStartSpeed * vRandom;
-			}
-			else if (gParticleShape == SHAPE_CIRCLE)
-			{
-				// XZ 평면에서 무작위 방향 벡터를 생성 및 정규화
-				float2 randomDir = normalize(float2(vRandom.x, vRandom.z)); // 방향 벡터를 정규화
-				float radius = gRadius * sqrt(saturate((vRandom.y + 1.0f) * 0.5f)); // 반지름을 랜덤하게 설정, sqrt를 사용하여 균일한 분포
-
-				// 원의 중심에서 반지름까지 랜덤한 위치 계산
-				float2 pos = randomDir * radius;
-
-				// 파티클의 초기 위치를 XZ 평면에 설정 (Y축은 고정)
-				p.InitialPosW = gEmitPosW + float3(pos.x, 0.0f, pos.y);
-
-				// 속도 벡터를 바깥쪽으로 설정 (Y축 성분은 0)
-				p.InitialVelW = normalize(float3(randomDir.x, 0.0f, randomDir.y)) * gStartSpeed;
-			}
-			else if (gParticleShape == SHAPE_BOX)
-			{
-				p.InitialPosW = gEmitPosW.xyz;
-				p.InitialVelW = gStartSpeed * vRandom;
-			}
-			else if (gParticleShape == SHAPE_CONE)
-			{
-				p.InitialPosW = gEmitPosW.xyz;
-				p.InitialVelW = gStartSpeed * vRandom;
-			}
-
+			ProcessShape(vRandom, p.InitialPosW, p.InitialVelW);
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_FLARE;				// 파티클 유형 설정
@@ -173,12 +170,13 @@ struct VertexOut
 	uint   Type  : TYPE;
 };
 
+// 파티클을 쿼드 형태로 변환하고 최종 출력한다.
 [maxvertexcount(4)]
 void DrawGS(point VertexOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
 {
-	float3 gAccelW = { 0.0f, 7.8f, 0.0f };
-	float2 gQuadTexC[4] =
+	// 쿼드 텍스처 좌표 정의
+	const float2 gQuadTexC[4] =
 	{
 		float2(0.0f, 1.0f),
 		float2(1.0f, 1.0f),
@@ -192,7 +190,7 @@ void DrawGS(point VertexOut gin[1],
 		//
 		// Compute world matrix so that billboard faces the camera.
 		//
-		float3 look = normalize(gEyePosW.xyz - gin[0].PosW);
+		float3 look = normalize(gEyePosW.xyz - gin[0].PosW);	// 카메라를 향하는 방향 벡터
 		float3 right = normalize(cross(float3(0, 1, 0), look));
 		float3 up = cross(look, right);
 
@@ -202,6 +200,7 @@ void DrawGS(point VertexOut gin[1],
 		float halfWidth = 0.5f * gin[0].SizeW.x;
 		float halfHeight = 0.5f * gin[0].SizeW.y;
 
+		// 쿼드의 4개의 정점 위치를 계산
 		float4 v[4];
 		v[0] = float4(gin[0].PosW + halfWidth * right - halfHeight * up, 1.0f);
 		v[1] = float4(gin[0].PosW + halfWidth * right + halfHeight * up, 1.0f);
@@ -216,6 +215,7 @@ void DrawGS(point VertexOut gin[1],
 		[unroll]
 		for (int i = 0; i < 4; ++i)
 		{
+			// 정점 위치를 변환하여 클립 공간으로 변환
 			gout.PosH = mul(v[i], gViewProj);
 			gout.PosH /= gout.PosH.w;
 			gout.Tex = gQuadTexC[i];
