@@ -159,16 +159,14 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// ----------------------------------------------------------------------------------------
 	// Shader Resource View
 	// ----------------------------------------------------------------------------------------
-#ifdef _DEBUG
-	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\base.png";
-#else
 	const std::wstring filePath = L"..\\Data\\Texture\\base.png";
-#endif
+
 	//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 	Create<ShaderResourceView>(filePath, L"base.png");
 
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
+	Create<ShaderResourceView>(L"shadow.png", L"shadow.png");
 	
 
 	// ----------------------------------------------------------------------------------------
