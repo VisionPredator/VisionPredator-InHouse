@@ -20,6 +20,7 @@ struct PlayerComponent :
 	std::weak_ptr<Entity> CameraPosEntity{};
 	std::weak_ptr<Entity> FirePosEntity{};
 	std::weak_ptr<Entity> LongswordEntity{};
+	std::weak_ptr<Entity> AutoPickEntity{};
 	int MaxHP{};
 	int HP{};
 	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;

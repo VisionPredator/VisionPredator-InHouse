@@ -357,6 +357,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_string(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::wstring>>())
 		TypeImGui_vector_wstring(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::list<uint32_t>>())
+		TypeImGui_list_uint32(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>()) 
 		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
 		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
@@ -679,6 +681,48 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 
 	ImGui::PopID();
 }
+
+void Inspector::TypeImGui_list_uint32(entt::meta_data memberMetaData, Component* component) {
+	// Component의 핸들에서 std::list<uint32_t>를 가져옵니다
+	auto uint32List = memberMetaData.get(component->GetHandle()).cast<std::list<uint32_t>>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+
+	// 리스트의 각 요소를 표시
+	int index = 0;
+	for (auto it = uint32List.begin(); it != uint32List.end(); ++it, ++index) {
+		uint32_t value = *it;
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::InputScalar(("Element " + std::to_string(index)).c_str(), ImGuiDataType_U32, &value)) {
+			*it = value; // 입력한 값을 리스트에 반영
+		}
+	}
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+	// 새 요소 추가 옵션
+	if (ImGui::Button("  Add  ")) {
+		uint32List.push_back(0); // 기본값으로 0 추가
+	}
+
+	// 마지막 요소 제거 옵션
+	if (!uint32List.empty()) {
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("Remove")) {
+			uint32List.pop_back();
+		}
+	}
+
+	// 벡터가 수정된 경우 변경 사항을 적용
+	memberMetaData.set(component->GetHandle(), std::move(uint32List));
+
+	ImGui::PopID();
+}
+
+
 void Inspector::TypeImGui_vector_pair_wstring_float(entt::meta_data memberMetaData, Component* component) {
 	// component의 핸들에서 vector<std::pair<std::wstring, float>>를 가져옴
 	auto pairVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::pair<std::wstring, float>>>();

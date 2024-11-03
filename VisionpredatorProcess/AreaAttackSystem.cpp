@@ -61,7 +61,6 @@ void AreaAttackSystem::Finalize()
 }
 
 void AreaAttackSystem::EnterTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second)
-
 {
 	if (first->HasComponent<AreaAttackComponent>()&& second->HasComponent<EnemyComponent>())
 		TriggerAttack(*first->GetComponent<AreaAttackComponent>(), *second->GetComponent<EnemyComponent>());

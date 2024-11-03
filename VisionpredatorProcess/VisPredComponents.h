@@ -18,3 +18,7 @@
 #include "CabinetComponent.h"
 #include "VPDetectionComponent.h"
 #include "DetectableComponent.h"
+#include "IdentityRemoverComponent.h"
+#include "EntityRemoverComponet.h"
+#include "HPReducerComponent.h"
+#include "AutoPickComponent.h"

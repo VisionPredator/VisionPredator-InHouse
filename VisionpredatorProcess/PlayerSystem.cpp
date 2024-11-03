@@ -812,18 +812,22 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 			if (guncomp.IsEmpty)
 			{
-				auto sound =playercomp.GetComponent<PlayerSoundComponent>();
-				if (Gun_Throw(playercomp, guncomp))
+				if (!playercomp.IsGunRecoiling)
 				{
-					GetSceneManager()->SpawnSoundEntity(sound->SoundKey_GunThrow, sound->Volume_GunThrow, true, false, {});
-					Throw_Setting(playercomp);
+					auto sound = playercomp.GetComponent<PlayerSoundComponent>();
+					if (Gun_Throw(playercomp, guncomp))
+					{
+						GetSceneManager()->SpawnSoundEntity(sound->SoundKey_GunThrow, sound->Volume_GunThrow, true, false, {});
+						Throw_Setting(playercomp);
+					}
 				}
+
 			}
 			else if (playercomp.ReadyToShoot)
 				if (Gun_Shoot(playercomp, guncomp))
 					Gun_RecoilSetting(playercomp, guncomp);
 		}
-		else if (!playercomp.HasGun)
+		else if (!playercomp.HasGun )
 			PlayerMeleeAttack(playercomp);
 	}
 }
@@ -867,6 +871,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 		{
 			AnimationFinished(playercomp, anicomp);
 			ReturnToIdle(anicomp);
+
 		}
 	}
 
@@ -905,7 +910,13 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 			socketcomp->ConnectedEntityID = 0;
 			playercomp.ThrowingGunEntityID = 0;
 			socketcomp->GetComponent<MeshComponent>()->IsOverDraw = false;
-			playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
+	/*		if (playercomp.AutoPickEntity.lock()&& playercomp.AutoPickEntity.lock()->HasComponent<AutoPickComponent>()&& playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>()->IsAuto)
+			{
+				EventManager::GetInstance().ImmediateEvent("OnAutoPickup", playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>());
+			}
+			else*/
+				playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
+
 		}
 
 	}
@@ -1142,6 +1153,7 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			handtrans.SetLocalLocation(temp);
 		}
 	}
+
 }
 #pragma endregion
 #pragma region Shoot Logic
@@ -1290,6 +1302,9 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
 		auto LongswordEntity = GetSceneManager()->GetEntityByIdentityName(playercomp->LongswordName);
+		auto autopick = GetSceneManager()->GetChildEntityComp_HasComp<AutoPickComponent>(gameObjectId);
+		if(autopick)
+			playercomp->AutoPickEntity = GetSceneManager()->GetEntity(autopick->GetEntityID());
 		playercomp->HP = playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();

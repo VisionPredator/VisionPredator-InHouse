@@ -28,19 +28,19 @@ void PhysicsRegister::Register_Components()
 void PhysicsRegister::Register_EnumClass()
 {
 	META_ADD_ENUMCLASS(EColliderType,
-		EColliderType::TRIGGER,
+		EColliderType::NONCOLLISION,
 		EColliderType::COLLISION);
 	META_ADD_ENUMCLASS(EPhysicsLayer,
-		EPhysicsLayer::GROUND,
-		EPhysicsLayer::WALL,
-		EPhysicsLayer::TOP,
+		EPhysicsLayer::MAP,
 		EPhysicsLayer::PLAYER,
 		EPhysicsLayer::ENEMY,
+		EPhysicsLayer::PLAYERATTACK,
 		EPhysicsLayer::WEAPON,
-		EPhysicsLayer::PLAYERBULLET,
-		EPhysicsLayer::ENEMYBULLET,
 		EPhysicsLayer::INTERECTIVE,
-		EPhysicsLayer::TRIGGER);
+		EPhysicsLayer::AUTOPICKUP,
+		EPhysicsLayer::DETECTION,
+		EPhysicsLayer::REMOVER,
+		EPhysicsLayer::NONCOLLISION);
 	META_ADD_ENUMCLASS(ControllerPivot,
 		ControllerPivot::CENTER,
 		ControllerPivot::FOOT,

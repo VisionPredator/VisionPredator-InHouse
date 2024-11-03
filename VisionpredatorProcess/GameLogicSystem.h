@@ -13,3 +13,7 @@
 #include "SectorSystem.h"
 #include "WeaponBoxSystem.h"
 #include "CabinetSystem.h"
+#include "HPReducerButtonSystem.h"
+#include "IdentityRemoverSystem.h"
+#include "EntityRemoverSystem.h"
+#include "AutoPickSystem.h"

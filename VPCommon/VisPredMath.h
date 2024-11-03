@@ -50,6 +50,10 @@ namespace VisPred
         float Random_float(float min, float max) noexcept;
         int Random_int(int min, int max) noexcept;
         unsigned int Random_uint(unsigned int min, unsigned int max) noexcept;
+        template <typename T>
+        T CustomMax(T a, T b) {
+            return (a > b) ? a : b;
+        }
 
         //------------------------------------------------------------------------------
         // 2D rectangle

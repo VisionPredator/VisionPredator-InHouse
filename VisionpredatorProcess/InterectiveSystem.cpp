@@ -93,8 +93,6 @@ void InterectiveSystem::OnInterected(std::any interective_interector)
 		auto& player = *interector->GetComponent<PlayerComponent>();
 		Interected_Gun(guncomp, player);
 	}
-
-
 }
 /// <summary>
 /// GrapGun
@@ -110,8 +108,18 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 	if (anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Sword
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Pistol
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Rifle
-		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_ShotGun)
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_ShotGun
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_Pistol
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_Rifle
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_ShotGun)
 		return;
+
+	if ((anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_Pistol
+		|| anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_Rifle
+		|| anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_ShotGun) && !anicomp->IsFinished)
+	{
+		return;
+	}
 
 	if (playercomp.HasGun)
 	{
@@ -131,7 +139,7 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 	soceketcomp->ConnectedEntityID = handID;
 	playercomp.HasGun = true;
 	playercomp.GunEntityID = guncomp.GetEntityID();
-	m_PhysicsEngine->ConvertToStaticWithLayer(playercomp.GunEntityID, VPPhysics::EPhysicsLayer::TRIGGER);
+	m_PhysicsEngine->ConvertToStaticWithLayer(playercomp.GunEntityID, VPPhysics::EPhysicsLayer::NONCOLLISION);
 	guncomp.GetComponent<MeshComponent>()->IsOverDraw = true;
 	///TODO 사운드 로직 추가하기.
 	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
@@ -153,7 +161,7 @@ void InterectiveSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& p
 		break;
 	}
 	std::any data = temp;
-	EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
+	EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
 	GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_GunDraw, soundcomp->Volume_GunDraw, true, false, {});
 
 }

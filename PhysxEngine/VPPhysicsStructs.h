@@ -12,7 +12,7 @@ namespace VPPhysics
 	/// </summary>
 	enum class EColliderType
 	{
-		TRIGGER=0,
+		NONCOLLISION=0,
 		COLLISION
 	};
 	struct USERDATA
@@ -23,16 +23,16 @@ namespace VPPhysics
 
 	enum class EPhysicsLayer
 	{
-		GROUND=0,
-		WALL,
-		TOP,
+		MAP=0,
 		PLAYER,
 		ENEMY,
+		PLAYERATTACK,
 		WEAPON,
-		PLAYERBULLET,
-		ENEMYBULLET,
 		INTERECTIVE,
-		TRIGGER,
+		AUTOPICKUP,
+		DETECTION,
+		REMOVER,
+		NONCOLLISION,
 		END
 	};
 	enum class ControllerPivot
@@ -68,7 +68,7 @@ namespace VPPhysics
 
 		VPMath::Vector3 Gravity = {0.f,-9.81f,0.f};
 		uint32_t FrameRate = 60;
-		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ 511, 511, 511, 7, 7, 7, 7, 7, 7, 0 };
+		std::array<int, (int)EPhysicsLayer::END> CollisionMatrix{ 31, 37, 187, 37, 373, 190, 16, 36, 16, 0 };
 	};
 	struct ConvexMeshResourceInfo
 	{

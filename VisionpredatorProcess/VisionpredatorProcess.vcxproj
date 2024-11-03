@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AimUIComponent.h" />
+    <ClInclude Include="AutoPickComponent.h" />
+    <ClInclude Include="AutoPickSystem.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CabinetComponent.h" />
@@ -188,16 +190,22 @@
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="EnemyWalkState.h" />
+    <ClInclude Include="EntityRemoverSystem.h" />
+    <ClInclude Include="HPReducerButtonSystem.h" />
+    <ClInclude Include="IdentityRemoverComponent.h" />
+    <ClInclude Include="EntityRemoverComponet.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameLogicSystem.h" />
     <ClInclude Include="GunComponent.h" />
     <ClInclude Include="GunSystem.h" />
+    <ClInclude Include="IdentityRemoverSystem.h" />
     <ClInclude Include="InterectiveComponent.h" />
     <ClInclude Include="InterectiveSystem.h" />
     <ClInclude Include="IState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerFSMSystem.h" />
+    <ClInclude Include="HPReducerComponent.h" />
     <ClInclude Include="PlayerMeleeComponent.h" />
     <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
@@ -223,6 +231,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AimUIComponent.cpp" />
+    <ClCompile Include="AutoPickComponent.cpp" />
+    <ClCompile Include="AutoPickSystem.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="CabinetComponent.cpp" />
@@ -251,8 +261,13 @@
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="EnemySystem.cpp" />
     <ClCompile Include="EnemyWalkState.cpp" />
+    <ClCompile Include="EntityRemoverSystem.cpp" />
+    <ClCompile Include="HPReducerButtonSystem.cpp" />
+    <ClCompile Include="IdentityRemoverComponent.cpp" />
+    <ClCompile Include="EntityRemoverComponet.cpp" />
     <ClCompile Include="GunComponent.cpp" />
     <ClCompile Include="GunSystem.cpp" />
+    <ClCompile Include="IdentityRemoverSystem.cpp" />
     <ClCompile Include="InterectiveComponent.cpp" />
     <ClCompile Include="InterectiveSystem.cpp" />
     <ClCompile Include="IState.cpp" />
@@ -264,6 +279,7 @@
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerFSMSystem.cpp" />
+    <ClCompile Include="HPReducerComponent.cpp" />
     <ClCompile Include="PlayerMeleeComponent.cpp" />
     <ClCompile Include="PlayerSoundComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />

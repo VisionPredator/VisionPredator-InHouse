@@ -40,8 +40,8 @@ void NavMeshSystem::MakeNavigationMesh(BuildSettings buildSettrings)
 	GetSceneManager()->SetSceneNavMeshData(navMeshData);
 	std::vector<VPMath::Vector3> worldVertices;
 	std::vector<int> worldFaces;
-	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::GROUND, worldVertices, worldFaces);
-	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::WALL, worldVertices, worldFaces);
+	m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::MAP, worldVertices, worldFaces);
+	//m_PhysicsEngine->ExtractVerticesAndFacesByLayer(VPPhysics::EPhysicsLayer::WALL, worldVertices, worldFaces);
 	AbleTest(worldVertices, worldFaces, GetSceneManager()->GetSceneBuildSettrings());
 	GetSceneManager()->GetSceneNavMeshData()->m_worldVertices = worldVertices;
 }

@@ -35,7 +35,7 @@ void EngineRegister::Register_Value()
 {
 	META_ADD_VALUE(std::vector<std::string>);
 	META_ADD_VALUE(std::vector<std::wstring>);
-
+	META_ADD_VALUE(std::list<uint32_t>);
 	entt::meta<std::pair<std::wstring, float>>().type("std::pair<std::wstring, float>"_hs)
 		.prop("first"_hs, &std::pair<std::wstring, float>::first)
 		.prop("second"_hs, &std::pair<std::wstring, float>::second);
