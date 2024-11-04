@@ -37,6 +37,8 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<IdentityRemoverSystem>();
 	m_SystemManager->AddSystem<EntityRemoverSystem>();
 	m_SystemManager->AddSystem<AutoPickSystem>();
+	m_SystemManager->AddSystem<DoOnceSystem>();
+	m_SystemManager->AddSystem<SpawnerSystem>();
 }
 
 VPProcess::~VPProcess()

@@ -102,8 +102,8 @@ void VispredRegister::Register_Components()
 		, VPUIComponent::GageImage
 	)
 
-	META_ADD_COMP(DoorComponent, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
-	META_ADD_COMP(SectorClearComponent, SectorClearComponent::DoorIdentity, SectorClearComponent::PreDoorIdentity);
+	META_ADD_COMP(DoorComponent, DoorComponent::SoundKey, DoorComponent::Volume, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
+	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity, SectorClearComponent::PreDoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
 	META_ADD_COMP(CabinetComponent, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime);
@@ -112,6 +112,10 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(HPReducerComponent, HPReducerComponent::MaxHP, HPReducerComponent::DownHP);
 	META_ADD_COMP(AutoPickComponent, AutoPickComponent::IsAuto, AutoPickComponent::PickUps);
 	META_ADD_COMP(VPDetectionComponent, VPDetectionComponent::Length, VPDetectionComponent::EnemyColor, VPDetectionComponent::InterectColor);
+	META_ADD_COMP(DoOnceComponent, DoOnceComponent::temp);
+	META_ADD_COMP(DoOnceResetComponent, DoOnceResetComponent::ResetIdentitys);
+	META_ADD_COMP(SpawnerComponent, SpawnerComponent::SpawnPrefab, SpawnerComponent::SpawnTransform);
+	META_ADD_COMP(DoorAccessComponent, DoorAccessComponent::Open, DoorAccessComponent::DoorIdentitys);
 }
 
 void VispredRegister::Register_EnumClass()

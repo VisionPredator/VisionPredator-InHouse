@@ -50,6 +50,8 @@ void CabinetSystem::OnInterected(std::any interective_interector)
 	interected->GetComponent<InterectiveComponent>()->IsInterective = false;
 	auto cabinet = interected->GetComponent<CabinetComponent>();
 	cabinet->IsOpen = true;
+	GetSceneManager()->SpawnSoundEntity(interected->GetComponent<InterectiveComponent>()->Soundkey, interected->GetComponent<InterectiveComponent>()->Volume, false, false, interected->GetComponent<TransformComponent>()->World_Location);
+
 }
 
 void CabinetSystem::Initialize()

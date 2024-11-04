@@ -22,3 +22,7 @@
 #include "EntityRemoverComponet.h"
 #include "HPReducerComponent.h"
 #include "AutoPickComponent.h"
+#include "DoOnceComponent.h"
+#include "DoOnceResetComponent.h"
+#include "SpawnerComponent.h"
+#include "DoorAccessComponent.h"

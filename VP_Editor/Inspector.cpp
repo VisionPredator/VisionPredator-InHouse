@@ -363,6 +363,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
 		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
 		TypeImGui_vector_tuple_wstring_float_float(memberMetaData, component);
+		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
+		TypeImGui_vector_tuple_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
 		TypeImGui_ColliderInfo(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
@@ -843,7 +845,53 @@ void Inspector::TypeImGui_vector_tuple_wstring_float_float(entt::meta_data membe
 	ImGui::PopID();
 }
 
+void Inspector::TypeImGui_vector_tuple_Vector3(entt::meta_data memberMetaData, Component* component)
+{
+	using namespace VPMath;
+	// Retrieve the vector of tuples
+	auto tupleVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::tuple<Vector3, Vector3, Vector3>>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
 
+	ImGui::PushID(memberName.c_str());
+
+	// Toggleable UI section with a collapsing header
+	if (ImGui::CollapsingHeader((memberName + " Vector Tuples").c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		// Add and Remove buttons for managing elements
+		if (ImGui::Button("  Add  ")) {
+			tupleVector.push_back(std::make_tuple(Vector3(), Vector3(), Vector3()));
+		}
+		if (!tupleVector.empty()) {
+			ImGui::SameLine();
+			if (ImGui::Button("Remove")) {
+				tupleVector.pop_back();
+			}
+		}
+
+		// Display each tuple element on separate lines
+		for (size_t i = 0; i < tupleVector.size(); ++i) {
+			std::tuple<Vector3, Vector3, Vector3>& tempTuple = tupleVector[i];
+			Vector3& first = std::get<0>(tempTuple);
+			Vector3& second = std::get<1>(tempTuple);
+			Vector3& third = std::get<2>(tempTuple);
+
+			std::string index = (i < 10 ? "0" : "") + std::to_string(i);
+
+			// Display each Vector3 on a new line with input fields for x, y, z
+			ImGui::DragFloat3(("##First Vector3 " + index).c_str(), &first.x, 0.1f, -100.0f, 100.0f);
+			ImGui::DragFloat3(("##Second Vector3 " + index).c_str(), &second.x, 0.1f, -100.0f, 100.0f);
+			ImGui::SameLine();
+			// Label
+			ImGui::Text(("element " + index).c_str());
+			ImGui::DragFloat3(("##Third Vector3 " + index).c_str(), &third.x, 0.1f, -100.0f, 100.0f);
+			ImGui::Separator(); // Optional separator between tuple entries for clarity
+		}
+	}
+
+	// Apply modified data
+	memberMetaData.set(component->GetHandle(), std::move(tupleVector));
+
+	ImGui::PopID();
+}
 
 
 

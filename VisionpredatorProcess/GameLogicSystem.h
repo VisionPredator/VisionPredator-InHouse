@@ -17,3 +17,5 @@
 #include "IdentityRemoverSystem.h"
 #include "EntityRemoverSystem.h"
 #include "AutoPickSystem.h"
+#include "DoOnceSystem.h"
+#include "SpawnerSystem.h"

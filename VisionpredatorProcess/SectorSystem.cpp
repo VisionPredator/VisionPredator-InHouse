@@ -43,13 +43,16 @@ void SectorSystem::CheckSectorClear(SectorClearComponent* sectorcomp)
 	if (isSectorclear)
 	{
 
-		if (sectorcomp->DoorIdentity.empty())
+		if (sectorcomp->OpenDoorIdentity.empty())
 			return;
-		auto doorentity = GetSceneManager()->GetEntityByIdentityName(sectorcomp->DoorIdentity);
-		if (!doorentity->HasComponent<DoorComponent>())
-			return;
-
+		for (auto& dooridentity : sectorcomp->OpenDoorIdentity)
+		{
+		auto doorentity = GetSceneManager()->GetEntityByIdentityName(dooridentity);
+		if (!doorentity||!doorentity->HasComponent<DoorComponent>())
+			continue;
 		EventManager::GetInstance().ImmediateEvent("OnChangeDoorUseable", std::make_pair<uint32_t, bool>(doorentity->GetEntityID(), true));
+		}
+
 	}
 
 }

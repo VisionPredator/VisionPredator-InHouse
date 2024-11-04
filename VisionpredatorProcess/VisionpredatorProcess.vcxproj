@@ -167,6 +167,10 @@
     <ClInclude Include="CabinetComponent.h" />
     <ClInclude Include="CabinetSystem.h" />
     <ClInclude Include="DetectableComponent.h" />
+    <ClInclude Include="DoOnceComponent.h" />
+    <ClInclude Include="DoOnceResetComponent.h" />
+    <ClInclude Include="DoOnceSystem.h" />
+    <ClInclude Include="DoorAccessComponent.h" />
     <ClInclude Include="DoorComponent.h" />
     <ClInclude Include="DoorOpenerComponent.h" />
     <ClInclude Include="DoorSystem.h" />
@@ -213,6 +217,8 @@
     <ClInclude Include="SectorClearComponent.h" />
     <ClInclude Include="SectorSystem.h" />
     <ClInclude Include="ShotGunBulletComponent.h" />
+    <ClInclude Include="SpawnerComponent.h" />
+    <ClInclude Include="SpawnerSystem.h" />
     <ClInclude Include="StatesInclude.h" />
     <ClInclude Include="AreaAttackComponent.h" />
     <ClInclude Include="AreaAttackSystem.h" />
@@ -238,6 +244,10 @@
     <ClCompile Include="CabinetComponent.cpp" />
     <ClCompile Include="CabinetSystem.cpp" />
     <ClCompile Include="DetectableComponent.cpp" />
+    <ClCompile Include="DoOnceComponent.cpp" />
+    <ClCompile Include="DoOnceResetComponent.cpp" />
+    <ClCompile Include="DoOnceSystem.cpp" />
+    <ClCompile Include="DoorAccessComponent.cpp" />
     <ClCompile Include="DoorComponent.cpp" />
     <ClCompile Include="DoorOpenerComponent.cpp" />
     <ClCompile Include="DoorSystem.cpp" />
@@ -289,6 +299,8 @@
     <ClCompile Include="SectorClearComponent.cpp" />
     <ClCompile Include="SectorSystem.cpp" />
     <ClCompile Include="ShotGunBulletComponent.cpp" />
+    <ClCompile Include="SpawnerComponent.cpp" />
+    <ClCompile Include="SpawnerSystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="TrunComponent.cpp" />
     <ClCompile Include="TrunSystem.cpp" />

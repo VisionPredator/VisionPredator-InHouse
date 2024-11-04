@@ -13,9 +13,11 @@ void WeaponBoxSystem::OnInterected(std::any interective_interector)
 	if (!interected->HasComponent<WeaponBoxComponent>())
 		return;
 
-	interected->GetComponent<InterectiveComponent>()->IsInterective = false;
+	auto interectcomp = interected->GetComponent<InterectiveComponent>();
+		interectcomp->IsInterective = false;
 	auto weaponboxcomp = interected->GetComponent<WeaponBoxComponent>();
 	weaponboxcomp->IsOpen = true;
+	GetSceneManager()->SpawnSoundEntity(interectcomp->Soundkey, interectcomp->Volume, false, false, interected->GetComponent<TransformComponent>()->World_Location);
 }
 
 void WeaponBoxSystem::FixedUpdate(float deltaTime)

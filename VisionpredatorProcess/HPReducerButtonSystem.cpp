@@ -21,7 +21,7 @@ void HPReducerButtonSystem::OnInterected(std::any data)
 
     // HPReducerComponent와 PlayerComponent를 가져옴
     auto hpdown = interected->GetComponent<HPReducerComponent>();
-    auto player = interected->GetComponent<PlayerComponent>();
+    auto player = interector->GetComponent<PlayerComponent>();
 
     int& hp = player->HP;       // 현재 플레이어의 HP를 참조로 가져옴
     int& maxhp = player->MaxHP; // 현재 플레이어의 최대 HP를 참조로 가져옴
