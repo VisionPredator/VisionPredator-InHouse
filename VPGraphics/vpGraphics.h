@@ -132,6 +132,13 @@ namespace effect
 			// etc..
 		};
 		ParticleRenderer Renderer{};
+
+		enum class BlendType
+		{
+			AlphaBlending,
+			AdditiveBlending,
+
+		};
 	};
 
 }

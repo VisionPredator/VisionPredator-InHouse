@@ -218,8 +218,9 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	context->PSSetShader(m_DrawPS->GetShader(), nullptr, 0);
 
 	float factor[] = { 0.f, 0.f, 0.f, 0.f };
-	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
-	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
+	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Multiplicative").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
+	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlend").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
+	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Additive").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
 	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"NoDepthWrites").lock()->GetState().Get(), 0);	// ±íÀÌ ¾²±â´Â ÇÏÁö ¾Ê´Â´Ù.
 	context->IASetVertexBuffers(0, 1, m_DrawVB.GetAddressOf(), &stride, &offset);
 
