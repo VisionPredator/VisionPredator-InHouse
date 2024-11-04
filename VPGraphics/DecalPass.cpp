@@ -2,6 +2,7 @@
 #include "DecalPass.h"
 #include "Slot.h"
 #include "StaticData.h"
+#include "BlendState.h"
 
 DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DecalManager> decalmanager) : RenderPass(device,resourceManager)
 {
@@ -146,15 +147,18 @@ void DecalPass::Render()
 	m_Device.lock()->Context()->PSSetShaderResources(0,1, m_PositionSRV.lock()->GetAddress());
 	m_Device.lock()->Context()->PSSetShaderResources(1,1, m_NormalSRV.lock()->GetAddress());
 
-	
-	
+	auto blendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlend");
+
+	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	m_Device.lock()->Context()->OMSetBlendState(blendState.lock()->GetState().Get(), nullptr, 0xFFFFFFFF);
+
 	//render
 	int offset = 0;
 	for (auto& decals : curDecals)
 	{
 		std::wstring wDecalName;
 		wDecalName.assign(decals.first.begin(), decals.first.end());
-		std::weak_ptr<ShaderResourceView> decaltex = m_ResourceManager.lock()->Create<ShaderResourceView>(wDecalName);
+		std::weak_ptr<ShaderResourceView> decaltex = m_ResourceManager.lock()->Get<ShaderResourceView>(wDecalName);
 		if (decaltex.lock() == nullptr)
 		{
 			decaltex = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png");
@@ -166,6 +170,9 @@ void DecalPass::Render()
 		m_Device.lock()->Context()->DrawIndexedInstanced(DecalVolume::Index::count , curDecal.size(), 0, 0, offset);
 		offset += curDecal.size();
 	}
+
+	Device->Context()->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+	Device->Context()->OMSetDepthStencilState(nullptr, 1);
 
 	m_DecalManager->ClearDecals();
 	m_InstanceDatas.clear();
