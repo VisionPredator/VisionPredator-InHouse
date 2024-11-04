@@ -37,7 +37,7 @@ Texture2D DecalNormal : register (t3);
 
 SamplerState samLinear : register(s0);
 
-PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
+float4 main(VS_OUTPUT input) : SV_Target
 {
     
     PS_OUTPUT output;
@@ -91,12 +91,14 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_TARGET
     // 4. 최종적으로 정렬된 decal normal을 사용하여 조명 계산
         float3 finalNormal = normalize(decalNormal + normal);
         
+        return Decal.Sample(samLinear, textureCoordinate);
         
         output.Albedo = Decal.Sample(samLinear, textureCoordinate);
-        output.Normal = float4( finalNormal,1);
-        return output;
+        output.Normal = float4(finalNormal, 1);
+        //return output;
     }
     
     discard;
-    return output;
+    return float4(0, 0, 0, 1);
+    //return output;
 }
