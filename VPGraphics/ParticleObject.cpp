@@ -61,19 +61,18 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		m_SamLinear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
 	}
 
-	// TODO: SRV 이용하는 걸로 바꿔야 한다.
 	// Create Textures
 	{
-		std::vector<std::wstring> flares;
-		if (!m_Info.TexturePath.empty())
-		{
-			flares.push_back(Util::ToWideChar(m_Info.TexturePath));
-		}
-		else
-		{
-			flares.push_back(Util::ToWideChar("../../../Resource/Texture/Smoke.png"));	
-		}
-		D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
+		//std::vector<std::wstring> flares;
+		//if (!m_Info.TexturePath.empty())
+		//{
+		//	flares.push_back(Util::ToWideChar("../../../Resource/Texture/" + m_Info.TexturePath));
+		//}
+		//else
+		//{
+		//	flares.push_back(Util::ToWideChar("../../../Resource/Texture/Smoke.png"));	
+		//}
+		//D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
 
 		if (m_Info.TexturePath.empty())
 			m_Info.TexturePath = "Smoke.png";
@@ -135,7 +134,7 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.ParticleShape = static_cast<unsigned int>(m_Info.Shape.Shape);
 	m_Data.Angle = m_Info.Shape.Angle;
 	m_Data.Radius = m_Info.Shape.Radius;
-
+	m_Data.Gravity = m_Info.Gravity;
 	m_Data.RenderMode = static_cast<unsigned int>(m_Info.Renderer.RenderMode);
 	m_DataCB->Update(m_Data);
 
@@ -207,9 +206,9 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	std::swap(m_DrawVB, m_StreamOutVB);	// 핑퐁을 위해 swap 한다.
 
 	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"GBuffer").lock();
-	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
-	//m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
-	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+	//m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 	// 화면 렌더링
 	context->VSSetShader(m_DrawVS->GetShader(), nullptr, 0);
@@ -218,13 +217,16 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 
 	float factor[] = { 0.f, 0.f, 0.f, 0.f };
 	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
 	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"NoDepthWrites").lock()->GetState().Get(), 0);	// 깊이 쓰기는 하지 않는다.
 	context->IASetVertexBuffers(0, 1, m_DrawVB.GetAddressOf(), &stride, &offset);
+
 	context->DrawAuto();
 
 	// 언바인드
 	context->OMSetBlendState(nullptr, factor, 0xffffffff);
-	context->OMSetDepthStencilState(nullptr, 0);
+	//context->OMSetDepthStencilState(nullptr, 0);
+	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);	// 깊이 쓰기는 하지 않는다.
 
 	// 기본 값으로 재설정
 	context->VSSetShader(nullptr, nullptr, 0);
@@ -249,5 +251,6 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Shape.Radius = info.Shape.Radius;
 	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
 	m_Info.IsRender = info.IsRender;
+	m_Info.Gravity = info.Gravity;
 	//m_Info.
 }

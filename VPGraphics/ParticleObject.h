@@ -47,9 +47,11 @@ public:
 
 		unsigned int ParticleShape;
 		unsigned int RenderMode;
-		float padding3;
+		float Gravity;
 	};
 	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
+
+
 
 	struct ParticleVertex
 	{
