@@ -134,6 +134,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
 	Create<PixelShader>(L"DecalPS", L"DecalPS", "main");
 	Create<PixelShader>(L"OverDrawPS", L"OverDrawPS", "main");
+	Create<PixelShader>(L"CopyTex", L"CopyTex", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer
@@ -167,6 +168,14 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
 	Create<ShaderResourceView>(L"shadow.png", L"shadow.png");
+	Create<ShaderResourceView>(L"Decal(1).png", L"Decal(1).png");
+	Create<ShaderResourceView>(L"Decal(2).png", L"Decal(2).png");
+	Create<ShaderResourceView>(L"Decal(3).png", L"Decal(3).png");
+	Create<ShaderResourceView>(L"Decal(4).png", L"Decal(4).png");
+	Create<ShaderResourceView>(L"Decal(5).png", L"Decal(5).png");
+	Create<ShaderResourceView>(L"Decal(6).png", L"Decal(6).png");
+	Create<ShaderResourceView>(L"Decal(7).png", L"Decal(7).png");
+	Create<ShaderResourceView>(L"Decal(8).png", L"Decal(8).png");
 	
 
 	// ----------------------------------------------------------------------------------------

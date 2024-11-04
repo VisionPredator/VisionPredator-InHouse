@@ -582,6 +582,9 @@
     <FxCompile Include="DecalVS.hlsl" />
     <FxCompile Include="DecalPS.hlsl" />
     <FxCompile Include="OverDrawPS.hlsl" />
+    <FxCompile Include="CopyTex.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">
