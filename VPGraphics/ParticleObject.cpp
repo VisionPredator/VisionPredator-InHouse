@@ -134,7 +134,7 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.ParticleShape = static_cast<unsigned int>(m_Info.Shape.Shape);
 	m_Data.Angle = m_Info.Shape.Angle;
 	m_Data.Radius = m_Info.Shape.Radius;
-
+	m_Data.Gravity = m_Info.Gravity;
 	m_Data.RenderMode = static_cast<unsigned int>(m_Info.Renderer.RenderMode);
 	m_DataCB->Update(m_Data);
 
@@ -248,5 +248,6 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Shape.Radius = info.Shape.Radius;
 	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
 	m_Info.IsRender = info.IsRender;
+	m_Info.Gravity = info.Gravity;
 	//m_Info.
 }

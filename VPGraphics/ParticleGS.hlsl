@@ -37,6 +37,8 @@ cbuffer cbData : register(b1)
 
 	unsigned int gParticleShape;
 	unsigned int gRenderMode;
+
+	float gGravity;
 }
 
 Texture2DArray gTexArray : register(t0);
@@ -114,6 +116,36 @@ struct Particle
 	uint	Type			: TYPE;
 };
 
+float3x3 CreateRotationMatrixFromEuler(float3 eulerAngles)
+{
+	// 오일러 각도를 라디안 단위로 변환
+	float pitch = radians(eulerAngles.x); // X축 회전 (Pitch)
+	float yaw = radians(eulerAngles.y);   // Y축 회전 (Yaw)
+	float roll = radians(eulerAngles.z);  // Z축 회전 (Roll)
+
+	// 각 축에 대한 회전 행렬 계산
+	float3x3 rotationX = {
+		1, 0, 0,
+		0, cos(pitch), -sin(pitch),
+		0, sin(pitch), cos(pitch)
+	};
+
+	float3x3 rotationY = {
+		cos(yaw), 0, sin(yaw),
+		0, 1, 0,
+		-sin(yaw), 0, cos(yaw)
+	};
+
+	float3x3 rotationZ = {
+		cos(roll), -sin(roll), 0,
+		sin(roll), cos(roll), 0,
+		0, 0, 1
+	};
+
+	// 회전 순서를 ZYX (Roll -> Yaw -> Pitch)로 곱함
+	return mul(rotationY, mul(rotationX, rotationZ));
+}
+
 // The stream-out GS is just responsible for emitting 
 // new particles and destroying old particles.  The logic
 // programed here will generally vary from particle system
@@ -158,6 +190,10 @@ void StreamOutGS(point Particle gin[1],
 			vRandom.z *= 0.5f;
 
 			ProcessShape(vRandom, p.InitialPosW, p.InitialVelW);
+			float3x3 rotationMatrix = CreateRotationMatrixFromEuler(gEmitDirW);
+
+			p.InitialPosW = mul(rotationMatrix, p.InitialPosW - gEmitPosW) + gEmitPosW;
+			p.InitialVelW = mul(rotationMatrix, p.InitialVelW);
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_SIMULATER;				// 파티클 유형 설정

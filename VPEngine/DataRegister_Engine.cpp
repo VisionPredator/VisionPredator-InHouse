@@ -134,6 +134,7 @@ void EngineRegister::Register_Components()
 		ParticleComponent::IsRender,
 		ParticleComponent::IsLoop,
 		ParticleComponent::Restart,
+		ParticleComponent::Gravity,
 		ParticleComponent::Duration,
 		ParticleComponent::StartLifetime, ParticleComponent::StartSize, ParticleComponent::StartSpeed,
 		ParticleComponent::Shape,

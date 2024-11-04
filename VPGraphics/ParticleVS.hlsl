@@ -5,15 +5,28 @@ Texture2DArray gTexArray : register(t0);
 Texture1D gRandomTex : register(t1);
 SamplerState samLinear : register(s0);
 
-cbuffer cbPerFrame : register(b0)
+cbuffer cbData : register(b1)
 {
-	float4x4 gViewProj;
-	float3 gEyePosW;
-	float gGameTime;
 	float3 gEmitPosW;
-	float gTimeStep;
 	float3 gEmitDirW;
-};
+
+	float2 gStartSize;
+	float gStartSpeed;
+	float gDuration;
+	int gIsLoop;
+
+	int gRestart;
+	float gStartLifetime;
+
+	float gAngle;
+	float gRadius;
+
+	unsigned int gParticleShape;
+	unsigned int gRenderMode;
+
+	float gGravity;
+}
+
 
 struct Particle
 {
@@ -38,8 +51,7 @@ VertexOut DrawVS(Particle vin)
 	VertexOut vout;
 
 	// 중력 설정.
-	float3 gAccelW = { 0.0f, -7.8f, 0.0f };
-	//float3 gAccelW = { 0.0f, 7.8f, 0.0f };
+	float3 gAccelW = { 0.0f, gGravity, 0.0f };
 
 	const float t = vin.Age;
 
