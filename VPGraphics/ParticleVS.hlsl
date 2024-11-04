@@ -10,6 +10,9 @@ cbuffer cbData : register(b1)
 	float3 gEmitPosW;
 	float3 gEmitDirW;
 
+	float4 gStartColor;
+	float4 gEndColor;
+
 	float2 gStartSize;
 	float gStartSpeed;
 	float gDuration;
@@ -61,7 +64,8 @@ VertexOut DrawVS(Particle vin)
 	// 시간이 지남에 따라 투명도가 감소한다.
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
 
-	vout.Color = float4(1.0f, 1.0f, 1.0f, opacity);
+	//vout.Color = float4(1.0f, 1.0f, 1.0f, opacity);
+	vout.Color = lerp(gStartColor, gEndColor, t) * opacity;
 	vout.SizeW = vin.SizeW;
 	vout.Type = vin.Type;
 

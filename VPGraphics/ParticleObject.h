@@ -29,29 +29,31 @@ public:
 
 	struct DataCB
 	{
-		VPMath::Vector3 EmitPosW;	// Transform 에서 위치값을 뽑아와서 준다.
-		float padding1;
-		VPMath::Vector3 EmitDirW;	// 오브젝트이 Front Vector 값을 준다.
-		float padding2;
+		VPMath::Vector3 EmitPosW;	// 12
+		float padding1;				// 4
 
-		VPMath::Vector2 StartSize;
-		float StartSpeed;
-		float Duration;
-		int IsLoop;
+		VPMath::Vector3 EmitDirW;	// 12
+		float padding2;				// 4
 
+		VPMath::Color StartColor;	// 16
 
-		int Restart;
-		float StartLifetime;
-		float Angle;
-		float Radius;
+		VPMath::Color EndColor;		// 16
 
-		unsigned int ParticleShape;
-		unsigned int RenderMode;
-		float Gravity;
+		VPMath::Vector2 StartSize;	// 8
+		float StartSpeed;			// 4
+		float Duration;				// 4
+
+		int IsLoop;					// 4
+		int Restart;				// 4
+		float StartLifetime;		// 4
+		float Angle;				// 4
+
+		float Radius;				// 4
+		unsigned int ParticleShape;	// 4
+		unsigned int RenderMode;	// 4
+		float Gravity;				// 4
 	};
 	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
-
-
 
 	struct ParticleVertex
 	{

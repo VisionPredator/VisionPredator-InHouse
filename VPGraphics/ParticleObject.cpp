@@ -136,6 +136,8 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.Radius = m_Info.Shape.Radius;
 	m_Data.Gravity = m_Info.Gravity;
 	m_Data.RenderMode = static_cast<unsigned int>(m_Info.Renderer.RenderMode);
+	m_Data.StartColor = m_Info.StartColor;
+	m_Data.EndColor = m_Info.EndColor;
 	m_DataCB->Update(m_Data);
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
@@ -252,5 +254,7 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
 	m_Info.IsRender = info.IsRender;
 	m_Info.Gravity = info.Gravity;
+	m_Info.StartColor = info.StartColor;
+	m_Info.EndColor = info.EndColor;
 	//m_Info.
 }
