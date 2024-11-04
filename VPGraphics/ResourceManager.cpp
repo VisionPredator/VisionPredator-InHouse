@@ -164,6 +164,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 
 	//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 	Create<ShaderResourceView>(filePath, L"base.png");
+	Create<ShaderResourceView>(L"normalbase.png", L"normalbase.png");
 
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
@@ -172,10 +173,10 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<ShaderResourceView>(L"Decal(2).png", L"Decal(2).png");
 	Create<ShaderResourceView>(L"Decal(3).png", L"Decal(3).png");
 	Create<ShaderResourceView>(L"Decal(4).png", L"Decal(4).png");
-	Create<ShaderResourceView>(L"Decal(5).png", L"Decal(5).png");
-	Create<ShaderResourceView>(L"Decal(6).png", L"Decal(6).png");
-	Create<ShaderResourceView>(L"Decal(7).png", L"Decal(7).png");
-	Create<ShaderResourceView>(L"Decal(8).png", L"Decal(8).png");
+	Create<ShaderResourceView>(L"Decal(1)_N.png", L"Decal(1)_N.png");
+	Create<ShaderResourceView>(L"Decal(2)_N.png", L"Decal(2)_N.png");
+	Create<ShaderResourceView>(L"Decal(3)_N.png", L"Decal(3)_N.png");
+	Create<ShaderResourceView>(L"Decal(4)_N.png", L"Decal(4)_N.png");
 	
 
 	// ----------------------------------------------------------------------------------------

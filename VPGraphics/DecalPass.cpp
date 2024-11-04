@@ -10,6 +10,7 @@ DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_pt
 
 	m_Device = device;
 	m_ResourceManager = resourceManager;
+	decalmanager->Initialize(m_ResourceManager);
 
 	m_DepthStencilView = resourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
@@ -192,13 +193,15 @@ void DecalPass::Render()
 		std::weak_ptr<ShaderResourceView> decaltex = m_ResourceManager.lock()->Get<ShaderResourceView>(wDecalName);
 		if (decaltex.lock() == nullptr)
 		{
-			decaltex = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png");
+			decaltex = m_ResourceManager.lock()->Get<ShaderResourceView>(L"base.png");
 		}
-
 		m_Device.lock()->Context()->PSSetShaderResources(2, 1, decaltex.lock()->GetAddress());
 
-		std::weak_ptr<ShaderResourceView> decalnormaltex = m_ResourceManager.lock()->Get<ShaderResourceView>(L"Decal(1).png");
-
+		std::weak_ptr<ShaderResourceView> decalnormaltex = m_DecalManager->GetNormalDecal(decals.first);
+		if (decalnormaltex.lock() == nullptr)
+		{
+			decalnormaltex = m_ResourceManager.lock()->Get<ShaderResourceView>(L"normalbase.png");
+		}
 		m_Device.lock()->Context()->PSSetShaderResources(3, 1, decalnormaltex.lock()->GetAddress());
 
 		auto& curDecal = decals.second;
