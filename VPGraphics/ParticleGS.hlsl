@@ -191,9 +191,8 @@ void StreamOutGS(point Particle gin[1],
 
 			ProcessShape(vRandom, p.InitialPosW, p.InitialVelW);
 			float3x3 rotationMatrix = CreateRotationMatrixFromEuler(gEmitDirW);
-
-			//p.InitialPosW = mul(rotationMatrix, p.InitialPosW - gEmitPosW) + gEmitPosW;
-			//p.InitialVelW = mul(rotationMatrix, p.InitialVelW);
+			p.InitialPosW = mul(rotationMatrix, p.InitialPosW - gEmitPosW) + gEmitPosW;
+			p.InitialVelW = mul(rotationMatrix, p.InitialVelW);
 			p.SizeW = gStartSize;	// 크기 설정
 			p.Age = 0.0f;					// 나이 초기화
 			p.Type = PT_SIMULATER;				// 파티클 유형 설정
@@ -236,7 +235,7 @@ void DrawGS(point VertexOut gin[1],
 	float4 clipPos = mul(float4(gin[0].PosW, 1.0f), gViewProj);
 	if (clipPos.x < -clipPos.w || clipPos.x > clipPos.w || clipPos.y < -clipPos.w || clipPos.y > clipPos.w || clipPos.z < 0.0f)
 	{
-		return; // 시야를 벗어난 경우 렌더링을 건너뜀
+		return;
 	}
 
 	// 쿼드 텍스처 좌표 정의
