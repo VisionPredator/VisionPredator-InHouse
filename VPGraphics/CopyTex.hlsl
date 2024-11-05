@@ -1,3 +1,4 @@
+
 struct VS_OUTPUT
 {
     float4 pos : SV_POSITION;
@@ -10,20 +11,12 @@ struct VS_OUTPUT
     float2 lightuv : LIGHTMAPUV;
 };
 
-struct Quad
-{
-    float4 pos : POSITION;
-    float2 tex : TEXCOORD;
-};
+Texture2D gTex : register(t0);
+SamplerState samLinear : register(s0);
 
-VS_OUTPUT main(Quad input)
+
+float4 main(VS_OUTPUT input) : SV_TARGET
 {
-    VS_OUTPUT test;
-        
-    test.pos = input.pos;
-    //test.pos = input.pos;
-    //test.posWorld = input.pos;
-    test.tex = input.tex;
-    
-    return test;
+    float4 color = gTex.Sample(samLinear, input.tex);
+    return color;
 }

@@ -88,41 +88,48 @@ namespace effect
 		VPMath::Vector3 Direction = VPMath::Vector3(0.0f, 1.0f, 0.0f);
 
 		float Duration = 5.f;
+		bool IsRender = true;
 		bool IsLoop = true;
-		float StartLifetimeA = 5.f;
-		float StartLifetimeB = 5.f;
-		float StartSizeA = 4.f;
-		float StartSizeB = 4.f;
-		UINT MaxParticles = 0;		// TODO: 삭제. 값 고정.
+		bool Restart = false;
 
-		struct Shape
+		float Gravity = -7.8f;
+
+		VPMath::Vector2 StartLifetime = { 5.f, 5.f };
+		VPMath::Vector2 StartSize = { 3.f, 3.f };
+		VPMath::Vector2 StartSpeed = { 5.f, 5.f };
+
+		struct ParticleShape
 		{
 			enum class ShapeType
 			{
-				Cone,
-				Sphere
+				Cone = 0,
+				Sphere = 1,
+				Box = 2,
+				Circle = 3
+				// etc..
 			};
 
-			ShapeType ParticleShape = ShapeType::Cone;
+			ShapeType Shape = ShapeType::Cone;
 
 			float Angle = 30.f;
 			float Radius = 1.f;
 		};
+		ParticleShape Shape{};
 
-		struct Renderer
+		struct ParticleRenderer
 		{
-			enum class BillBoardType
+			enum class ParticleBillBoardType
 			{
-				Billboard,
-				StretchedBillboard,
+				Billboard = 0,
+				StretchedBillboard = 1,
 				// etc..
 			};
 
-			BillBoardType RenderMode = BillBoardType::Billboard;
+			ParticleBillBoardType RenderMode = ParticleBillBoardType::Billboard;
 
 			// etc..
 		};
-		
+		ParticleRenderer Renderer{};
 	};
 
 }
@@ -157,12 +164,12 @@ namespace ui
 		// 2D
 		float PosXPercent = 0.f;
 		float PosYPercent = 0.f;
-		float Scale = 1.f;		
+		float Scale = 1.f;
 		uint32_t Layer = 0;		// 이미지 깊이값
 
 		// 3D
 		VPMath::Matrix World = VPMath::Matrix::Identity;
-		
+
 	};
 
 	struct TextInfo

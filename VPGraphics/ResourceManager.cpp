@@ -134,6 +134,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
 	Create<PixelShader>(L"DecalPS", L"DecalPS", "main");
 	Create<PixelShader>(L"OverDrawPS", L"OverDrawPS", "main");
+	Create<PixelShader>(L"CopyTex", L"CopyTex", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer
@@ -159,16 +160,23 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// ----------------------------------------------------------------------------------------
 	// Shader Resource View
 	// ----------------------------------------------------------------------------------------
-#ifdef _DEBUG
-	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\base.png";
-#else
 	const std::wstring filePath = L"..\\Data\\Texture\\base.png";
-#endif
+
 	//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 	Create<ShaderResourceView>(filePath, L"base.png");
+	Create<ShaderResourceView>(L"normalbase.png", L"normalbase.png");
 
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
+	Create<ShaderResourceView>(L"shadow.png", L"shadow.png");
+	Create<ShaderResourceView>(L"Decal(1).png", L"Decal(1).png");
+	Create<ShaderResourceView>(L"Decal(2).png", L"Decal(2).png");
+	Create<ShaderResourceView>(L"Decal(3).png", L"Decal(3).png");
+	Create<ShaderResourceView>(L"Decal(4).png", L"Decal(4).png");
+	Create<ShaderResourceView>(L"Decal(1)_N.png", L"Decal(1)_N.png");
+	Create<ShaderResourceView>(L"Decal(2)_N.png", L"Decal(2)_N.png");
+	Create<ShaderResourceView>(L"Decal(3)_N.png", L"Decal(3)_N.png");
+	Create<ShaderResourceView>(L"Decal(4)_N.png", L"Decal(4)_N.png");
 	
 
 	// ----------------------------------------------------------------------------------------

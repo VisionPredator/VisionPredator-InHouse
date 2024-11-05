@@ -43,6 +43,12 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), bullet.GetComponent<BulletComponent>()->Damage));
 
 	}
+	else if (Other.GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::GROUND)
+	{
+		auto transform = bullet.GetComponent<TransformComponent>();
+
+		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", transform->World_Location, {0,0,0});
+	}
 	GetSceneManager()->DestroyEntity(bullet.GetEntityID());
 
 }

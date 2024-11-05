@@ -25,6 +25,9 @@ void EngineRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
 	META_ADD_ENUMCLASS(BillboardType, BillboardType::None, BillboardType::Full, BillboardType::AxisY);
 	META_ADD_ENUMCLASS(Skill, Skill::SCENECHANGE,Skill::SPAWNPREFAB,Skill::DESTORYPREFAB,Skill::DRAGBAR,Skill::UION,Skill::UIOFFSELF,Skill::UIOFF,Skill::EXIT);
+
+	META_ADD_ENUMCLASS(ShapeType, ShapeType::Cone, ShapeType::Box, ShapeType::Circle, ShapeType::Sphere);
+	META_ADD_ENUMCLASS(ParticleBillBoardType, ParticleBillBoardType::Billboard, ParticleBillBoardType::StretchedBillboard);
 }
 
 void EngineRegister::Register_Structs()
@@ -137,7 +140,19 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(CameraComponent, CameraComponent::IsMain, CameraComponent::NearZ, CameraComponent::FarZ, CameraComponent::FOV);
 	META_ADD_COMP(AnimationComponent, AnimationComponent::FBX, AnimationComponent::duration, AnimationComponent::speed, AnimationComponent::transitionDuration,AnimationComponent::curAni,AnimationComponent::preAni,AnimationComponent::isLoop, AnimationComponent::isPlay, AnimationComponent::IsBlending,AnimationComponent::PlayerCurAni, AnimationComponent::AnimationSpeed_Transition);
 	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX,SkinningMeshComponent::InteractiveColor);
-	META_ADD_COMP(ParticleComponent, ParticleComponent::TexturePath, ParticleComponent::MaxParticle);
+	META_ADD_COMP(ParticleComponent,
+		ParticleComponent::TexturePath,
+		ParticleComponent::IsRender,
+		ParticleComponent::IsLoop,
+		ParticleComponent::Restart,
+		ParticleComponent::Gravity,
+		ParticleComponent::Duration,
+		ParticleComponent::StartLifetime, ParticleComponent::StartSize, ParticleComponent::StartSpeed,
+		ParticleComponent::Shape,
+		ParticleComponent::Angle,
+		ParticleComponent::Radius,
+		ParticleComponent::RenderMode
+		);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
 	META_ADD_COMP(ControllerComponent, ControllerComponent::Contollerinfo, ControllerComponent::CapsuleControllerinfo, ControllerComponent::Velocity, ControllerComponent::MaxSpeed, ControllerComponent::Acceleration, ControllerComponent::StaticFriction, ControllerComponent::DynamicFriction, ControllerComponent::JumpSpeed, ControllerComponent::JumpXZAcceleration, ControllerComponent::JumpXZDeceleration, ControllerComponent::GravityWeight);
