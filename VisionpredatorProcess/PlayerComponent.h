@@ -25,8 +25,8 @@ struct PlayerComponent :
 	int HP{110};
 	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	VisPred::Game::PlayerFSM PreFSM = VisPred::Game::PlayerFSM::IDLE;
-	float Height{1.6};
-	float Radius{0.4};
+	float Height{};
+	float Radius{};
 	float Sencitive = 1.f;
 	float WalkSpeed{};
 	float RunSpeed{};

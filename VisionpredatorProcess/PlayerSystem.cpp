@@ -1030,7 +1030,7 @@ void PlayerSystem::Drop_Gun(PlayerComponent& playercomp)
 	auto guncomp = gunentity->GetComponent<GunComponent>();
 	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
 	m_PhysicsEngine->ConvertToDynamicWithLayer(gunentity->GetEntityID(), VPPhysics::EPhysicsLayer::WEAPON);
-	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), {});
+	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), playercomp.GetComponent<TransformComponent>()->FrontVector,1);
 	soceketcomp->IsConnected = false;
 	soceketcomp->ConnectedEntityID = 0;
 	playercomp.HasGun = false;
