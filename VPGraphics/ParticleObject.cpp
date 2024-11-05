@@ -136,6 +136,8 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	m_Data.Radius = m_Info.Shape.Radius;
 	m_Data.Gravity = m_Info.Gravity;
 	m_Data.RenderMode = static_cast<unsigned int>(m_Info.Renderer.RenderMode);
+	m_Data.StartColor = m_Info.StartColor;
+	m_Data.EndColor = m_Info.EndColor;
 	m_DataCB->Update(m_Data);
 
 	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
@@ -216,8 +218,9 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 	context->PSSetShader(m_DrawPS->GetShader(), nullptr, 0);
 
 	float factor[] = { 0.f, 0.f, 0.f, 0.f };
-	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
-	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Multiplicative").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlend").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Additive").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
 	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"NoDepthWrites").lock()->GetState().Get(), 0);	// 깊이 쓰기는 하지 않는다.
 	context->IASetVertexBuffers(0, 1, m_DrawVB.GetAddressOf(), &stride, &offset);
 
@@ -252,5 +255,7 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
 	m_Info.IsRender = info.IsRender;
 	m_Info.Gravity = info.Gravity;
+	m_Info.StartColor = info.StartColor;
+	m_Info.EndColor = info.EndColor;
 	//m_Info.
 }

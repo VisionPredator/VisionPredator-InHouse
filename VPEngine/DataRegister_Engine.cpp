@@ -147,7 +147,7 @@ void EngineRegister::Register_Components()
 		ParticleComponent::Restart,
 		ParticleComponent::Gravity,
 		ParticleComponent::Duration,
-		ParticleComponent::StartLifetime, ParticleComponent::StartSize, ParticleComponent::StartSpeed,
+		ParticleComponent::StartLifetime, ParticleComponent::StartSize, ParticleComponent::StartSpeed, ParticleComponent::StartColor, ParticleComponent::EndColor,
 		ParticleComponent::Shape,
 		ParticleComponent::Angle,
 		ParticleComponent::Radius,
