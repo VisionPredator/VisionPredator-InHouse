@@ -66,6 +66,7 @@ public:
 	virtual std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) abstract;
 #pragma endregion
 	virtual bool IsDynamic(uint32_t entityID) abstract;
+	virtual bool IsStatic(uint32_t entityID) abstract;
 
 	virtual void ReleaseActor(uint32_t entityID) abstract;
 	virtual const VPPhysics::PhysicsInfo GetPhysicsInfo()abstract;

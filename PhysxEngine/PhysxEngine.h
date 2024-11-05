@@ -118,6 +118,7 @@ private:
 
 	// IPhysx을(를) 통해 상속됨
 	bool IsDynamic(uint32_t entityID) override;
+	bool IsStatic(uint32_t entityID) override;
 
 };
 

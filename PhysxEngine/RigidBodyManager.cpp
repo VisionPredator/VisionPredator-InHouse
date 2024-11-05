@@ -529,6 +529,16 @@ bool RigidBodyManager::IsDynamic(uint32_t EntityID)
 	return false;
 
 }
+bool RigidBodyManager::IsStatic(uint32_t EntityID)
+{
+	auto rigid = GetRigidBody(EntityID);
+	if (!rigid)
+		return false;
+	if (Reflection::IsSameType<StaticRigidBody>(rigid->GetTypeID()))
+		return true;
+
+	return false;
+}
 void RigidBodyManager::ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!scene)

@@ -43,7 +43,7 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), bullet.GetComponent<BulletComponent>()->Damage));
 
 	}
-	else if (Other.GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::GROUND)
+	else if (Other.GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::MAP)
 	{
 		auto transform = bullet.GetComponent<TransformComponent>();
 

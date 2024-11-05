@@ -40,8 +40,12 @@ void EntityRemoverSystem::Finish(uint32_t gameObjectId)
 		return;
 	auto remover = entity->GetComponent<EntityRemoverComponet>();
 	for (auto entityid : remover->RemoveEntitys)
-		GetSceneManager()->DestroyEntity(entityid);
+	{
+		if (!m_PhysicsEngine->IsStatic(entityid))
+			GetSceneManager()->DestroyEntity(entityid);
+	}
 }
 void EntityRemoverSystem::Finalize()
 {
 }
+

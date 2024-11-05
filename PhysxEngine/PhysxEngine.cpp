@@ -295,6 +295,11 @@ bool PhysxEngine::IsDynamic(uint32_t entityID)
 	return m_RigidBodyManager->IsDynamic(entityID);
 }
 
+bool PhysxEngine::IsStatic(uint32_t entityID)
+{
+	return m_RigidBodyManager->IsStatic(entityID);
+}
+
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
 {

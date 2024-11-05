@@ -2,7 +2,7 @@
 #include <System.h>
 #include "EventSubscriber.h"
 class EntityRemoverSystem :
-    public System,public ITriggerable,public IStartable
+    public System,public ITriggerable,public IStartable, public IPhysicable
 {
 public : 
     EntityRemoverSystem(std::shared_ptr<SceneManager> scenemanager);
@@ -23,6 +23,12 @@ public :
     void Finish(uint32_t gameObjectId) override;
 
     void Finalize() override;
+
+
+    // IPhysicable을(를) 통해 상속됨
+    void PhysicsUpdate(float deltaTime) override {};
+
+    void PhysicsLateUpdate(float deltaTime) override {};
 
 };
 
