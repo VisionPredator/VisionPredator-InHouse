@@ -21,7 +21,7 @@ void IdentityRemoverSystem::OnInterected(std::any entitys)
 	{
 		auto entity = GetSceneManager()->GetEntityByIdentityName(indentity);
 		if (entity)
-			GetSceneManager()->DeleteEntity(entity->GetEntityID());
+			GetSceneManager()->DestroyEntity(entity->GetEntityID());
 	}
 
 }
