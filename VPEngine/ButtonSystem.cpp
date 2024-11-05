@@ -64,7 +64,10 @@ void ButtonSystem::Update(float deltaTime)
 			if (rect.left < curMousePosX && curMousePosX < rect.right &&
 				rect.top < curMousePosY && curMousePosY < rect.bottom)
 			{
-				imageComp->Scale = 1.3f;
+				if (!comp.ChangeImage.empty())
+				{
+					imageComp->TexturePath = comp.ChangeImage[1];
+				}
 
 				if (INPUTKEYUP(MOUSEKEY::LBUTTON))
 				{
@@ -153,11 +156,14 @@ void ButtonSystem::Update(float deltaTime)
 
 				}
 
-			
+
 			}
 			else
 			{
-				imageComp->Scale = 1;
+				if (!comp.ChangeImage.empty())
+				{
+					imageComp->TexturePath = comp.ChangeImage[0];
+				}
 
 			}
 

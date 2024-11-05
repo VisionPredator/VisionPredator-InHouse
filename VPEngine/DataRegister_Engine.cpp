@@ -163,6 +163,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::FontPath, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Angle, TextComponent::Layer);
 	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume, SoundComponent::Duration, SoundComponent::Loop);
 	META_ADD_COMP(DecalComponent, DecalComponent::TextureName);
-	META_ADD_COMP(ButtonComponent,ButtonComponent::skill,ButtonComponent::name);
+	META_ADD_COMP(ButtonComponent,ButtonComponent::skill,ButtonComponent::name, ButtonComponent::ChangeImage);
 }
 
