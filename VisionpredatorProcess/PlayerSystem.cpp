@@ -135,16 +135,25 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 
 void PlayerSystem::OnShoot(std::any entityID)
 {
-	auto gunID = std::any_cast<uint32_t>(entityID);
+	const auto gunID = std::any_cast<uint32_t>(entityID);
+	const auto gunComp = GetSceneManager()->GetComponent<GunComponent>(gunID);
+	const auto& particle = GetSceneManager()->GetChildEntityComp_HasComp<ParticleComponent>(gunID);
+	const auto& firePos = GetSceneManager()->GetChildEntityComp_HasComp<IdentityComponent>(gunID);
 
-	const auto& children = GetSceneManager()->GetChildEntityComp_HasComp<ParticleComponent>(gunID);
+	if (firePos != nullptr)
+	{
+		const auto transform = firePos->GetComponent<TransformComponent>();
+
+		const auto& pointLightPrefabName = gunComp->MuzzleEffectPointLightPrefab;
+		GetSceneManager()->SpawnEditablePrefab(pointLightPrefabName, transform->World_Location, transform->World_Rotation, transform->World_Scale);
+	}
 
 	// Gun 오브젝트가 ParticleObj를 가지고 있는지 확인
-	if (children == nullptr)
-		return;
-
-	children->IsRender = true;
-	children->Restart = true;
+	if (particle != nullptr)
+	{
+		particle->IsRender = true;
+		particle->Restart = true;
+	}
 }
 
 #pragma region Update
@@ -1064,20 +1073,11 @@ bool PlayerSystem::Gun_Shoot(PlayerComponent& playercomp, GunComponent& guncomp)
 	switch (guncomp.Type)
 	{
 		case VisPred::Game::GunType::PISTOL:
-		{
-			EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 			return Shoot_Pistol(playercomp, guncomp, TransformComp);
-		}
 		case VisPred::Game::GunType::SHOTGUN:
-		{
-			EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 			return Shoot_ShotGun(playercomp, guncomp, TransformComp);
-		}
 		case VisPred::Game::GunType::RIFLE:
-		{
-			EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 			return Shoot_Rifle(playercomp, guncomp, TransformComp);
-		}
 		default:
 			return false;
 	}
@@ -1193,6 +1193,8 @@ bool PlayerSystem::Shoot_Common(PlayerComponent& playercomp, GunComponent& gunco
 }
 bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
+
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
 	auto temppos = firetrans.World_Location;
@@ -1209,6 +1211,8 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
+
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_ShotGun, PlayerAni::ToAttack_ShotGun))
 		return false;
 
@@ -1240,6 +1244,8 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
+
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToIdle02_Rifle))
 		return false;
 

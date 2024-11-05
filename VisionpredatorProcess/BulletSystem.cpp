@@ -23,15 +23,30 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 {
 	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
 	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
+
+	Entity* bullet = nullptr;
+
 	if (Firstentity.HasComponent<BulletComponent>())
 	{
+		bullet = &Firstentity;
+
 		ApplyDamage(Firstentity, Secondentity);
 		return;
 	}
 	else if (Secondentity.HasComponent<BulletComponent>())
 	{
+		bullet = &Secondentity;
+
 		ApplyDamage(Secondentity, Firstentity);
 		return;
+	}
+
+	if (bullet == nullptr)
+		return;
+
+	if (!bullet->GetComponent<BulletComponent>()->SparkParticlePrefab.empty())
+	{
+		// TODO: ÃÑ¾Ë Æ¢±è ÀÌÆåÆ® ÇÁ¸®Æé »ý¼º
 	}
 
 }
