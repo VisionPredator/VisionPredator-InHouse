@@ -14,6 +14,8 @@ void SpawnerSystem::OnInterected(std::any interective_interector)
 	if (!interected->HasComponent<SpawnerComponent>())
 		return;
 	SpawnEntitys(interected->GetComponent<SpawnerComponent>());
+	auto temp = interected->GetComponent<InterectiveComponent>();
+	GetSceneManager()->SpawnSoundEntity(temp->Soundkey, temp->Volume,false, false, interected->GetComponent<TransformComponent>()->World_Location);
 
 }
 

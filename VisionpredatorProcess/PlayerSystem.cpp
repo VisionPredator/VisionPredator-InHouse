@@ -1347,6 +1347,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		{
 			auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
 			playercomp->Radius = controllercomp.CapsuleControllerinfo.radius;
+			playercomp->Height = controllercomp.CapsuleControllerinfo.height;
 
 			// 캡슐의 현재 전체 높이 (총 높이 = 2 * (반지름 + 높이))
 			float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);

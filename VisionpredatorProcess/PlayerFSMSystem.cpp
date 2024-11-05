@@ -370,7 +370,7 @@ void PlayerFSMSystem::Enter_Sound_Idle(PlayerSoundComponent& soundcomp)
 	auto player = soundcomp.GetComponent<PlayerComponent>();
 	if (player->PreFSM ==VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
 	}
 
 }
@@ -380,7 +380,7 @@ void PlayerFSMSystem::Enter_Sound_Walk(PlayerSoundComponent& soundcomp)
 	auto player = soundcomp.GetComponent<PlayerComponent>();
 	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
 	}
 	soundcomp.Played_Walk1 = false;
 
@@ -391,7 +391,7 @@ void PlayerFSMSystem::Enter_Sound_Run(PlayerSoundComponent& soundcomp)
 	auto player = soundcomp.GetComponent<PlayerComponent>();
 	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
 	}
 	soundcomp.Played_Run1 = false;
 }

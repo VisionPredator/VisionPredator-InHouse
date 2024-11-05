@@ -34,11 +34,12 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::VPGageCoolTime
 		, PlayerComponent::TransformationTime
 	);
-	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor);
+	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor, InterectiveComponent::Soundkey, InterectiveComponent::Volume);
 	META_ADD_COMP(PlayerSoundComponent
 		, PlayerSoundComponent::Volume_Walk
 		, PlayerSoundComponent::Volume_Run
 		, PlayerSoundComponent::Volume_Jump
+		, PlayerSoundComponent::Volume_Landing
 		, PlayerSoundComponent::Volume_Slide
 		, PlayerSoundComponent::Volume_Dash
 		, PlayerSoundComponent::Volume_Sit
@@ -57,6 +58,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::SoundKey_Run1
 		, PlayerSoundComponent::SoundKey_Run2
 		, PlayerSoundComponent::SoundKey_Jump
+		, PlayerSoundComponent::Volume_Landing
 		, PlayerSoundComponent::SoundKey_Slide
 		, PlayerSoundComponent::SoundKey_Dash
 		, PlayerSoundComponent::SoundKey_Sit

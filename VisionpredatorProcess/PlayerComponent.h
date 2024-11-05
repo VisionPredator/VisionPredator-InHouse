@@ -21,12 +21,12 @@ struct PlayerComponent :
 	std::weak_ptr<Entity> FirePosEntity{};
 	std::weak_ptr<Entity> LongswordEntity{};
 	std::weak_ptr<Entity> AutoPickEntity{};
-	int MaxHP{};
-	int HP{};
+	int MaxHP{110};
+	int HP{110};
 	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	VisPred::Game::PlayerFSM PreFSM = VisPred::Game::PlayerFSM::IDLE;
-	float Height{};
-	float Radius{};
+	float Height{1.6};
+	float Radius{0.4};
 	float Sencitive = 1.f;
 	float WalkSpeed{};
 	float RunSpeed{};

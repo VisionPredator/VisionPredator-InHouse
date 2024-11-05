@@ -20,7 +20,6 @@ public:
     void LoadSound(const std::string& path, const std::string& key);
     void Load2DSound(const std::string& path, const std::string& key, SoundType type);
     void Load3DSound(const std::string& path, const std::string& key, SoundType type);
-    bool Play(const uint32_t& id, const std::string& key, int volume, VPMath::Vector3 pose) override;
     bool Play(const uint32_t& id, const std::string& key, int basevolume , bool Is2D, bool IsLoop, VPMath::Vector3 pose) override;
     void Stop(const uint32_t& id, const std::string& soundKey) override;
     void Stop(const uint32_t& id) override;
@@ -34,6 +33,7 @@ private:
 
     FMOD::System* m_System;
     std::unordered_map<std::string, FMOD::Sound*> m_SoundMap;
+	std::unordered_map<uint32_t, int > m_OriginalVolumes;
     std::unordered_map<uint32_t, FMOD::Channel*> m_EntityChannels;
 
     float m_MasterVolume=100;

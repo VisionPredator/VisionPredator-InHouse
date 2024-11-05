@@ -19,7 +19,6 @@ public:
 
 	//virtual void Load3DSound(const std::string& path, const std::string& key, SoundType type) = 0;
 
-	virtual bool Play(const uint32_t& id, const std::string& key, int volume, VPMath::Vector3 pose = {}) = 0;
 	virtual bool Play(const uint32_t& id, const std::string& key, int volume, bool Is2D, bool IsLoop, VPMath::Vector3 pose = {}) = 0;
 	virtual void SetSystemVolume(int master, int bgm, int effect) = 0;
 	virtual int GetMasterVolume() = 0;
