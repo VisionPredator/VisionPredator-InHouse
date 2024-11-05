@@ -92,6 +92,8 @@ namespace effect
 		bool IsLoop = true;
 		bool Restart = false;
 
+		float Gravity = -7.8f;
+
 		VPMath::Vector2 StartLifetime = { 5.f, 5.f };
 		VPMath::Vector2 StartSize = { 3.f, 3.f };
 		VPMath::Vector2 StartSpeed = { 5.f, 5.f };

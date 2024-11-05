@@ -30,6 +30,8 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.Restart = component->Restart;
 		component->RestartPrev = component->Restart;
 
+		info.Gravity = component->Gravity;
+
 		info.Duration = component->Duration;
 
 		info.StartLifetime = component->StartLifetime;
@@ -43,7 +45,7 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.Renderer.RenderMode = component->RenderMode;
 
 		info.PosW = transform.World_Location;
-		info.Direction = transform.FrontVector;
+		info.Direction = transform.Local_Rotation;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
 		return;
 	}
@@ -132,6 +134,8 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.Restart = component.Restart;
 		component.RestartPrev = component.Restart;
 
+		info.Gravity = component.Gravity;
+
 		info.Duration = component.Duration;
 
 		info.StartLifetime = component.StartLifetime;
@@ -145,7 +149,7 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.Renderer.RenderMode = component.RenderMode;
 
 		info.PosW = transform.World_Location;
-		info.Direction = transform.FrontVector;
+		info.Direction = transform.Local_Rotation;
 		m_Graphics->UpdateParticleObject(component.GetComponent<IDComponent>()->GetEntityID(), info);
 	}
 
