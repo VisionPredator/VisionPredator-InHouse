@@ -24,31 +24,16 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
 	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
 
-	Entity* bullet = nullptr;
-
 	if (Firstentity.HasComponent<BulletComponent>())
 	{
-		bullet = &Firstentity;
-
 		ApplyDamage(Firstentity, Secondentity);
 		return;
 	}
 	else if (Secondentity.HasComponent<BulletComponent>())
 	{
-		bullet = &Secondentity;
-
 		ApplyDamage(Secondentity, Firstentity);
 		return;
 	}
-
-	if (bullet == nullptr)
-		return;
-
-	if (!bullet->GetComponent<BulletComponent>()->SparkParticlePrefab.empty())
-	{
-		// TODO: ÃÑ¾Ë Æ¢±è ÀÌÆåÆ® ÇÁ¸®Æé »ý¼º
-	}
-
 }
 
 void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
@@ -63,6 +48,15 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 		auto transform = bullet.GetComponent<TransformComponent>();
 
 		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", transform->World_Location, {0,0,0});
+
+		//if (bullet.HasComponent<ParticleComponent>())
+		//{
+		//	auto gunSparkParticle = bullet.GetComponent<ParticleComponent>();
+		//	gunSparkParticle->IsRender = true;
+		//	gunSparkParticle->Restart = true;
+		//}
+		//auto bulletDir = bullet.GetComponent<TransformComponent>()->FrontVector;
+		GetSceneManager()->SpawnEditablePrefab(bullet.GetComponent<BulletComponent>()->SparkParticlePrefab, transform->World_Location, transform->World_Rotation, transform->World_Scale);
 	}
 	GetSceneManager()->DestroyEntity(bullet.GetEntityID());
 
