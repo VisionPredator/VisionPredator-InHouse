@@ -33,7 +33,7 @@ public:
 
 	void OnDamaged(std::any entityid_Damage);
 
-
+	void OnShoot(std::any entityID);
 
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);

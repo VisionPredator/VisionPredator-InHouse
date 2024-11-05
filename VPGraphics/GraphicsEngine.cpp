@@ -564,6 +564,12 @@ void GraphicsEngine::Culling()
 
 		if (curFBX != nullptr)
 		{
+			if (object->isOverDraw)
+			{
+				m_AfterCulling.push_back(object);
+				continue;
+			}
+
 			object->ModelID = curFBX->UID;
 
 			{

@@ -24,6 +24,9 @@ cbuffer cbData : register(b1)
 	float3 gEmitPosW;
 	float3 gEmitDirW;
 
+	float4 gStartColor;
+	float4 gEndColor;
+
 	float2 gStartSize;
 	float gStartSpeed;
 	float gDuration;

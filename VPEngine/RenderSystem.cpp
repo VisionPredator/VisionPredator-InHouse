@@ -37,6 +37,8 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.StartLifetime = component->StartLifetime;
 		info.StartSize = component->StartSize;
 		info.StartSpeed = component->StartSpeed;
+		info.StartColor = component->StartColor;
+		info.EndColor = component->EndColor;
 
 		info.Shape.Shape = component->Shape;
 		info.Shape.Angle = component->Angle;
@@ -141,6 +143,8 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.StartLifetime = component.StartLifetime;
 		info.StartSize = component.StartSize;
 		info.StartSpeed = component.StartSpeed;
+		info.StartColor = component.StartColor;
+		info.EndColor = component.EndColor;
 
 		info.Shape.Shape = component.Shape;
 		info.Shape.Angle = component.Angle;
