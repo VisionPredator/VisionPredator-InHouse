@@ -135,8 +135,7 @@ void DecalPass::Render()
 
 	//bind
 	Device->UnBindSRV();
-	Device->Context()->PSSetConstantBuffers(0, 1, CameraCB->GetAddress());
-
+	Device->Context()->VSSetConstantBuffers(0, 1, CameraCB->GetAddress());
 	Device->Context()->PSSetConstantBuffers(0, 1, CameraCB->GetAddress());
 
 	//set rtv,dsv
@@ -181,7 +180,8 @@ void DecalPass::Render()
 
 	//set srv
 	m_Device.lock()->Context()->PSSetShaderResources(0, 1, m_PositionSRV.lock()->GetAddress());
-	m_Device.lock()->Context()->PSSetShaderResources(1, 1, m_NormalCopySRV.lock()->GetAddress());
+	//m_Device.lock()->Context()->PSSetShaderResources(1, 1, m_NormalCopySRV.lock()->GetAddress());
+	m_Device.lock()->Context()->PSSetShaderResources(1, 1, m_NormalSRV.lock()->GetAddress());
 
 	auto blendState = m_ResourceManager.lock()->Get<BlendState>(L"AlphaBlend");
 

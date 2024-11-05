@@ -32,7 +32,7 @@ cbuffer RenderTargetSize: register(b1)
 Texture2D Position : register (t0);
 Texture2D Normal : register (t1);
 Texture2D Decal : register (t2);
-Texture2D DecalNormal : register (t3);
+//Texture2D DecalNormal : register (t3);
 
 
 SamplerState samLinear : register(s0);
@@ -76,25 +76,25 @@ float4 main(VS_OUTPUT input) : SV_Target
             textureCoordinate = posInDecal.yz + 0.5;
         }
         
-        float3 decalNormal = DecalNormal.Sample(samLinear, textureCoordinate).xyz * 2.0f - 1.0f;
+        //float3 decalNormal = DecalNormal.Sample(samLinear, textureCoordinate).xyz * 2.0f - 1.0f;
 
-        decalNormal = normalize(decalNormal);
+        //decalNormal = normalize(decalNormal);
 
     // 3. Decal normal을 물체의 normal 방향에 맞춰 회전
     // worldSurfaceNormal과 decalNormal의 dot product 계산
-        float alignmentFactor = dot(normal, decalNormal);
-        if (alignmentFactor < 0.0)
-        {
-            decalNormal = -decalNormal; // 방향이 반대인 경우 반전
-        }
+        //float alignmentFactor = dot(normal, decalNormal);
+        //if (alignmentFactor < 0.0)
+        //{
+        //    decalNormal = -decalNormal; // 방향이 반대인 경우 반전
+        //}
 
     // 4. 최종적으로 정렬된 decal normal을 사용하여 조명 계산
-        float3 finalNormal = normalize(decalNormal + normal);
+        //float3 finalNormal = normalize(decalNormal + normal);
         
         return Decal.Sample(samLinear, textureCoordinate);
         
-        output.Albedo = Decal.Sample(samLinear, textureCoordinate);
-        output.Normal = float4(finalNormal, 1);
+        //output.Albedo = Decal.Sample(samLinear, textureCoordinate);
+        //output.Normal = float4(finalNormal, 1);
         //return output;
     }
     
