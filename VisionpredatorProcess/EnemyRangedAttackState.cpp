@@ -24,7 +24,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	auto transform = enemyComp->GetComponent<TransformComponent>();
 	auto enemyPos = transform->World_Location;
 	auto rotation = transform->World_Rotation;
-
+	enemyPos.y += 1.2f;
 	enemyComp->currentAttackTime += deltaTime;
 
 	const auto playerTransform = enemyComp->Player->GetComponent<TransformComponent>();

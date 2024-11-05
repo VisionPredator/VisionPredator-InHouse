@@ -71,8 +71,8 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	};
 
 	constexpr float offsetY = 1.8f;
-	const VPMath::Vector3 enemyPos =
-	{ transform->WorldTransform._41, transform->WorldTransform._42 + offsetY, transform->WorldTransform._43 };
+	 VPMath::Vector3 enemyPos = transform->World_Location;
+	enemyPos.y += 1.2f;
 
 	auto targetDir = playerPos - enemyPos;
 	targetDir.Normalize();

@@ -374,7 +374,7 @@ const VPMath::Matrix GraphicsEngine::Attachment(const uint32_t entityID, const s
 		//temp.Sphere.Radius = 1.f;
 		temp.Color = VPMath::Color{ 0,1,0,1 };
 		//DrawSphere(temp);
-		DrawOBB(temp);
+		//DrawOBB(temp);
 		return attach;
 	}
 

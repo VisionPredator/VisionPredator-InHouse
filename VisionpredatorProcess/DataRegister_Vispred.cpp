@@ -108,7 +108,19 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity, SectorClearComponent::PreDoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
-	META_ADD_COMP(CabinetComponent, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime);
+	META_ADD_COMP(CabinetComponent
+		,CabinetComponent::PistolPrefab
+		,CabinetComponent::PistolPose
+		,CabinetComponent::ShotGunPrefab
+		,CabinetComponent::ShotGunPose
+		,CabinetComponent::RiflePrefab
+		,CabinetComponent::RiflePose
+		, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime
+	
+	
+	
+	
+	);
 	META_ADD_COMP(EntityRemoverComponet, EntityRemoverComponet::temp);
 	META_ADD_COMP(IdentityRemoverComponent, IdentityRemoverComponent::RemoveIdentitys);
 	META_ADD_COMP(HPReducerComponent, HPReducerComponent::MaxHP, HPReducerComponent::DownHP);

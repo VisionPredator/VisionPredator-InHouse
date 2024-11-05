@@ -75,6 +75,50 @@ void CabinetSystem::Start(uint32_t gameObjectId)
 	cabinetcomp->LeftStartRotate = cabinetcomp->LeftEntity->GetComponent<TransformComponent>()->Local_Rotation;
 	cabinetcomp->RightEndRotation.y -= cabinetcomp->OpenAngle;
 	cabinetcomp->LeftEndRotation.y += cabinetcomp->OpenAngle;
+	///스폰기능 만들기
+	if (true)
+	{
+		const VPMath::Vector3 defaultPos{ 0.0f, 0.0f, 0.0f };
+		const VPMath::Vector3 defaultRotation{ 0.0f, 0.0f, 0.0f };
+		const VPMath::Vector3 defaultScale{.2f, .2f, .2f };
+
+
+		//for (size_t i = 0; i < cabinetcomp->PistolPose.size(); ++i)
+		//{
+		//	VPMath::Vector3 pos = defaultPos;
+		//	VPMath::Vector3 rotation = defaultRotation;
+		//	VPMath::Vector3 scale = defaultScale;
+
+		//		std::tie(pos, rotation, scale) = cabinetcomp->PistolPose[i];
+
+		//	auto entity = GetSceneManager()->SpawnEditablePrefab(cabinetcomp->PistolPrefab, pos, rotation, scale);
+		//}
+
+		//for (size_t i = 0; i < cabinetcomp->PistolPose.size(); ++i)
+		//{
+		//	VPMath::Vector3 pos = defaultPos;
+		//	VPMath::Vector3 rotation = defaultRotation;
+		//	VPMath::Vector3 scale = defaultScale;
+
+		//	std::tie(pos, rotation, scale) = cabinetcomp->RiflePose[i];
+
+		//	auto entity = GetSceneManager()->SpawnEditablePrefab(cabinetcomp->RiflePrefab, pos, rotation, scale);
+		//}
+
+		//for (size_t i = 0; i < cabinetcomp->PistolPose.size(); ++i)
+		//{
+		//	VPMath::Vector3 pos = defaultPos;
+		//	VPMath::Vector3 rotation = defaultRotation;
+		//	VPMath::Vector3 scale = defaultScale;
+
+		//	std::tie(pos, rotation, scale) = cabinetcomp->ShotGunPose[i];
+
+		//	auto entity = GetSceneManager()->SpawnEditablePrefab(cabinetcomp->ShotGunPrefab, pos, rotation, scale);
+		//}
+
+
+	}									   
+
 }
 
 
