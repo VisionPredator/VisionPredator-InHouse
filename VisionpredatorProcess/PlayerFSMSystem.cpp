@@ -244,18 +244,13 @@ void PlayerFSMSystem::Calculate_Slide(PlayerComponent& playercomp)
 {
 	if (playercomp.HP <= 0)
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::DIE;
-	else if (playercomp.SlideProgress >= playercomp.SlideDuration)
+	else if (!playercomp.IsVPMode && playercomp.SlideProgress >= playercomp.SlideDuration)
 	{
 		playercomp.SlideProgress = 0;
-		if (playercomp.IsVPMode)
+
 		{
-			if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
-			else
-				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
-		}
-		else
-		{
+			if (playercomp.GetComponent<ControllerComponent>()->IsFall)
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
 			if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 			else if (INPUTKEYS(KEYBOARDKEY::LSHIFT))
@@ -263,8 +258,16 @@ void PlayerFSMSystem::Calculate_Slide(PlayerComponent& playercomp)
 			else
 				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
 		}
-
-
+	}
+	else if (playercomp.IsVPMode && playercomp.SlideProgress >= playercomp.DashDuration)
+	{
+		playercomp.SlideProgress = 0;
+		if (playercomp.GetComponent<ControllerComponent>()->IsFall)
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
+		else if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+		else
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 	}
 }
 void PlayerFSMSystem::Calculate_Jump(PlayerComponent& playercomp)
@@ -367,7 +370,7 @@ void PlayerFSMSystem::Enter_Sound_Idle(PlayerSoundComponent& soundcomp)
 	auto player = soundcomp.GetComponent<PlayerComponent>();
 	if (player->PreFSM ==VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
 	}
 
 }
@@ -377,7 +380,7 @@ void PlayerFSMSystem::Enter_Sound_Walk(PlayerSoundComponent& soundcomp)
 	auto player = soundcomp.GetComponent<PlayerComponent>();
 	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
 	}
 	soundcomp.Played_Walk1 = false;
 
@@ -388,7 +391,7 @@ void PlayerFSMSystem::Enter_Sound_Run(PlayerSoundComponent& soundcomp)
 	auto player = soundcomp.GetComponent<PlayerComponent>();
 	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Run1, soundcomp.Volume_Run, true, false, {});
+		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
 	}
 	soundcomp.Played_Run1 = false;
 }
@@ -523,12 +526,20 @@ void PlayerFSMSystem::Enter_Idle(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Walk(PlayerComponent & playercomp)
 {
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.MaxSpeed = playercomp.WalkSpeed;
+	Controller.Acceleration = Controller.MaxSpeed * 3;
+
 	if (!playercomp.IsVPMode)
 		if (playercomp.PreFSM == VisPred::Game::PlayerFSM::CROUCH || playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 			DefalutModeController(playercomp);
 }
 void PlayerFSMSystem::Enter_Run(PlayerComponent& playercomp)
 {
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.MaxSpeed = playercomp.RunSpeed;
+	Controller.Acceleration = Controller.MaxSpeed * 3;
+
 	if (playercomp.IsVPMode)
 	{
 		auto anicomp = playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
@@ -546,6 +557,8 @@ void PlayerFSMSystem::Enter_Run(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 {
+
+
 	if (playercomp.IsVPMode)
 	{
 		auto anicomp = playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
@@ -553,8 +566,39 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 		if (tempindex == VisPred::Game::VPAni::ToVP_attack_L || tempindex == VisPred::Game::VPAni::ToVP_attack_R)
 			return;
 		if (!INPUTKEY(KEYBOARDKEY::SPACE))
-			return;
+			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_Idle, 0, 0, false);
 		ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_jump, 0, 0, false);
+
+		if (playercomp.PreFSM == VisPred::Game::PlayerFSM::RUN
+			|| playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
+		{
+			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+			Controller.MaxSpeed = playercomp.RunSpeed;
+			Controller.Acceleration = Controller.MaxSpeed * 3;
+		}
+	}
+	else
+	{
+		if (playercomp.PreFSM == VisPred::Game::PlayerFSM::WALK)
+		{
+			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+			Controller.MaxSpeed = playercomp.WalkSpeed;
+			Controller.Acceleration = Controller.MaxSpeed * 3;
+		}
+		else if (playercomp.PreFSM == VisPred::Game::PlayerFSM::RUN
+			|| playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
+		{
+			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+			Controller.MaxSpeed =  playercomp.RunSpeed;
+			Controller.Acceleration = Controller.MaxSpeed * 3;
+		}
+		else if (playercomp.PreFSM == VisPred::Game::PlayerFSM::CROUCH)
+		{
+			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+			Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
+			Controller.Acceleration = Controller.MaxSpeed * 3;
+		}
+
 	}
 }
 void PlayerFSMSystem::Enter_Crouch(PlayerComponent& playercomp)
@@ -563,8 +607,11 @@ void PlayerFSMSystem::Enter_Crouch(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Dash_Slide(PlayerComponent& playercomp)
 {
+	auto& controller = *playercomp.GetComponent<ControllerComponent>();
+
 	if (playercomp.IsVPMode)
 	{
+		controller.MaxSpeed = playercomp.RunSpeed * playercomp.DashMultiple;
 		ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_dash, 0, 0, true);
 		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
 		auto& melee = *playercomp.GetComponent<PlayerMeleeComponent>();
@@ -577,9 +624,12 @@ void PlayerFSMSystem::Enter_Dash_Slide(PlayerComponent& playercomp)
 	}
 	else
 	{
+		controller.MaxSpeed = playercomp.RunSpeed * playercomp.SlideMultiple;
 		SlideModeController(playercomp);
 		SetSlideDir(playercomp, *playercomp.GetComponent<ControllerComponent>());
 	}
+	controller.Acceleration = controller.MaxSpeed * 6.f;
+
 }
 void PlayerFSMSystem::Enter_Transformation(PlayerComponent& playercomp)
 {

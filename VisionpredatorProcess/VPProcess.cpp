@@ -31,6 +31,14 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<InterectiveSystem>();
 	m_SystemManager->AddSystem<SectorSystem>();
 	m_SystemManager->AddSystem<DoorSystem>();
+	m_SystemManager->AddSystem<WeaponBoxSystem>();
+	m_SystemManager->AddSystem<CabinetSystem>();
+	m_SystemManager->AddSystem<HPReducerButtonSystem>();
+	m_SystemManager->AddSystem<IdentityRemoverSystem>();
+	m_SystemManager->AddSystem<EntityRemoverSystem>();
+	m_SystemManager->AddSystem<AutoPickSystem>();
+	m_SystemManager->AddSystem<DoOnceSystem>();
+	m_SystemManager->AddSystem<SpawnerSystem>();
 }
 
 VPProcess::~VPProcess()

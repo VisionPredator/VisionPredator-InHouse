@@ -1,9 +1,11 @@
 #pragma once
 #include <Component.h>
-struct DoorComponent :   public Component
+struct DoorComponent : public Component
 {
-    VP_JSONBODY(DoorComponent, IsOpen, OpenTime , IsUseserble, UseableFBX, UnUseableFBX, MoveDistance , LeftDoor, RightDoor)
+	VP_JSONBODY(DoorComponent, IsOpen, SoundKey, Volume, OpenTime, IsUseserble, UseableFBX, UnUseableFBX, MoveDistance, LeftDoor, RightDoor)
 		bool IsOpen{};
+	std::string SoundKey = "OpenDoor_Big";
+	int Volume =50;
 	bool IsActivated{};
 	bool IsUseserble{};
 	std::wstring UseableFBX = L"doorA1_outline.fbx";

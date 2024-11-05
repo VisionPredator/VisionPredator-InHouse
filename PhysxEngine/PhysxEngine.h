@@ -27,15 +27,21 @@ public:
 	void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 
+	void ConvertToStaticWithLayer(uint32_t entityID, EPhysicsLayer layer) override;
+	void ConvertToDynamicWithLayer(uint32_t entityID, EPhysicsLayer layer) override;
+	void ConvertToStatic(uint32_t entityID) override;
+	void ConvertToDynamic(uint32_t entityID) override;
+	void ReleaseActor(uint32_t entityID) override;
 
 	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
-	void ReleaseActor(uint32_t entityID) override;
+	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
 	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
+	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	void SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q) override;
 	VPMath::Vector3 GetGobalLocation(uint32_t entityID) override;
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID) override;
@@ -80,18 +86,16 @@ private:
 	bool GetControllerIsFall(uint32_t entityID) override;
 	void LoadConvexMeshResource(const VPPhysics::ConvexMeshResourceInfo& info) override;
 	bool HasConvexMeshResource(const std::wstring& key) override;
-	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
-	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) override;
 	bool HasRigidBody(uint32_t entityID) override;
 	bool HasController(uint32_t entityID) override;
 
 
 	// IPhysx을(를) 통해 상속됨
-	RaycastData RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-	RaycastData RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActorAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActorAtPose_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+	RaycastData RaycastActorAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 
 
 
@@ -102,6 +106,19 @@ private:
 
 
 
+
+
+
+
+	// IPhysx을(를) 통해 상속됨
+	std::vector<RaycastData> RaycastActorsAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+
+	std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
+
+
+	// IPhysx을(를) 통해 상속됨
+	bool IsDynamic(uint32_t entityID) override;
+	bool IsStatic(uint32_t entityID) override;
 
 };
 

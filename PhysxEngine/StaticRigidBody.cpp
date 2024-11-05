@@ -2,13 +2,25 @@
 #include "StaticRigidBody.h"
 
 
-StaticRigidBody::StaticRigidBody(VPPhysics::EColliderType colltype, uint32_t entityId, VPPhysics::EPhysicsLayer layerNumber)
-	:RigidBody(colltype, entityId, layerNumber)
+StaticRigidBody::StaticRigidBody(VPPhysics::BoxColliderInfo info, EColliderType type, const PhysicsInfo& engininfo):RigidBody(info, type, engininfo)
 {
 }
+
+StaticRigidBody::StaticRigidBody(VPPhysics::CapsuleColliderInfo info, EColliderType type, const PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
+{
+}
+
+StaticRigidBody::StaticRigidBody(VPPhysics::SphereColliderInfo info, EColliderType type, const PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
+{
+}
+
+StaticRigidBody::StaticRigidBody(VPPhysics::ConvexColliderInfo info, EColliderType type, const  PhysicsInfo& engininfo) :RigidBody(info, type, engininfo)
+{
+}
+
 StaticRigidBody::~StaticRigidBody()
 {
-
+	
 	physx::PxShape* shape;
 	m_StaticRigid->getShapes(&shape, 1);
 	physx::PxMaterial* material = nullptr;
@@ -27,8 +39,7 @@ StaticRigidBody::~StaticRigidBody()
 	m_StaticRigid->release();
 }
 
-
-bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shape, physx::PxPhysics* physics)
+bool StaticRigidBody::Initialize(physx::PxShape* shape, physx::PxPhysics* physics)
 {
 	if (m_ColliderType == EColliderType::COLLISION)
 	{
@@ -45,10 +56,22 @@ bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shap
 	shape->setContactOffset(0.02f);
 	shape->setRestOffset(0.01f);
 	physx::PxTransform transform;
-	transform.p = { 
+	VPPhysics::ColliderInfo colliderInfo{};
+	if (m_Boxinfo)
+		colliderInfo = m_Boxinfo->colliderInfo;
+	else if (m_Sphereinfo)
+			colliderInfo= m_Sphereinfo->colliderInfo;
+	else if (m_Convexinfo)
+		colliderInfo = m_Convexinfo->colliderInfo;
+	else if (m_Capulseinfo)
+		colliderInfo = m_Capulseinfo->colliderInfo;
+	else
+		VP_ASSERT(false, "rigidbody 초기화 오류!");
+
+	transform.p = {
 		colliderInfo.WorldLocation.x,
 		colliderInfo.WorldLocation.y,
-		colliderInfo.WorldLocation.z 
+		colliderInfo.WorldLocation.z
 	};
 	transform.q.x = colliderInfo.WorldQuaternion.x;
 	transform.q.y = colliderInfo.WorldQuaternion.y;
@@ -65,6 +88,5 @@ bool StaticRigidBody::Initialize(ColliderInfo colliderInfo, physx::PxShape* shap
 		return false;
 	}
 	return true;
-
 }
 

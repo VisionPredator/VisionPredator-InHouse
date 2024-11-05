@@ -357,10 +357,14 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_string(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::wstring>>())
 		TypeImGui_vector_wstring(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::list<uint32_t>>())
+		TypeImGui_list_uint32(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>()) 
 		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
 		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
 		TypeImGui_vector_tuple_wstring_float_float(memberMetaData, component);
+		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
+		TypeImGui_vector_tuple_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
 		TypeImGui_ColliderInfo(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
@@ -679,6 +683,48 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 
 	ImGui::PopID();
 }
+
+void Inspector::TypeImGui_list_uint32(entt::meta_data memberMetaData, Component* component) {
+	// Component의 핸들에서 std::list<uint32_t>를 가져옵니다
+	auto uint32List = memberMetaData.get(component->GetHandle()).cast<std::list<uint32_t>>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+
+	// 리스트의 각 요소를 표시
+	int index = 0;
+	for (auto it = uint32List.begin(); it != uint32List.end(); ++it, ++index) {
+		uint32_t value = *it;
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::InputScalar(("Element " + std::to_string(index)).c_str(), ImGuiDataType_U32, &value)) {
+			*it = value; // 입력한 값을 리스트에 반영
+		}
+	}
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+	// 새 요소 추가 옵션
+	if (ImGui::Button("  Add  ")) {
+		uint32List.push_back(0); // 기본값으로 0 추가
+	}
+
+	// 마지막 요소 제거 옵션
+	if (!uint32List.empty()) {
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("Remove")) {
+			uint32List.pop_back();
+		}
+	}
+
+	// 벡터가 수정된 경우 변경 사항을 적용
+	memberMetaData.set(component->GetHandle(), std::move(uint32List));
+
+	ImGui::PopID();
+}
+
+
 void Inspector::TypeImGui_vector_pair_wstring_float(entt::meta_data memberMetaData, Component* component) {
 	// component의 핸들에서 vector<std::pair<std::wstring, float>>를 가져옴
 	auto pairVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::pair<std::wstring, float>>>();
@@ -799,7 +845,53 @@ void Inspector::TypeImGui_vector_tuple_wstring_float_float(entt::meta_data membe
 	ImGui::PopID();
 }
 
+void Inspector::TypeImGui_vector_tuple_Vector3(entt::meta_data memberMetaData, Component* component)
+{
+	using namespace VPMath;
+	// Retrieve the vector of tuples
+	auto tupleVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::tuple<Vector3, Vector3, Vector3>>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
 
+	ImGui::PushID(memberName.c_str());
+
+	// Toggleable UI section with a collapsing header
+	if (ImGui::CollapsingHeader((memberName + " Vector Tuples").c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		// Add and Remove buttons for managing elements
+		if (ImGui::Button("  Add  ")) {
+			tupleVector.push_back(std::make_tuple(Vector3(), Vector3(), Vector3()));
+		}
+		if (!tupleVector.empty()) {
+			ImGui::SameLine();
+			if (ImGui::Button("Remove")) {
+				tupleVector.pop_back();
+			}
+		}
+
+		// Display each tuple element on separate lines
+		for (size_t i = 0; i < tupleVector.size(); ++i) {
+			std::tuple<Vector3, Vector3, Vector3>& tempTuple = tupleVector[i];
+			Vector3& first = std::get<0>(tempTuple);
+			Vector3& second = std::get<1>(tempTuple);
+			Vector3& third = std::get<2>(tempTuple);
+
+			std::string index = (i < 10 ? "0" : "") + std::to_string(i);
+
+			// Display each Vector3 on a new line with input fields for x, y, z
+			ImGui::DragFloat3(("##First Vector3 " + index).c_str(), &first.x, 0.1f, -100.0f, 100.0f);
+			ImGui::DragFloat3(("##Second Vector3 " + index).c_str(), &second.x, 0.1f, -100.0f, 100.0f);
+			ImGui::SameLine();
+			// Label
+			ImGui::Text(("element " + index).c_str());
+			ImGui::DragFloat3(("##Third Vector3 " + index).c_str(), &third.x, 0.1f, -100.0f, 100.0f);
+			ImGui::Separator(); // Optional separator between tuple entries for clarity
+		}
+	}
+
+	// Apply modified data
+	memberMetaData.set(component->GetHandle(), std::move(tupleVector));
+
+	ImGui::PopID();
+}
 
 
 

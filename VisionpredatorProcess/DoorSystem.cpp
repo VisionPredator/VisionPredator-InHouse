@@ -12,7 +12,7 @@ void DoorSystem::FixedUpdate(float deltaTime)
 	COMPLOOP(DoorComponent, doorcomp)
 	{
 		if (!doorcomp.IsActivated)
-			return;
+			continue;
 
 		doorcomp.OpenProgress += deltaTime;
 		if (doorcomp.OpenProgress > doorcomp.OpenTime)
@@ -110,13 +110,13 @@ void DoorSystem::OnChangeDoorUseable(std::any entityid_bool)
 		doorcomp->GetComponent<MeshComponent>()->FBX = doorcomp->UseableFBX;
 	else
 		doorcomp->GetComponent<MeshComponent>()->FBX = doorcomp->UnUseableFBX;
-	//std::string dooridentity = doorcomp->GetComponent<IdentityComponent>()->UUID;
 
-	//auto components = GetSceneManager()->GetParentEntityComp_HasComp<DoorComponent>();
-
-		//if (opencomp.Dummy != dooridentity || !opencomp.HasComponent<InterectiveComponent>())
-		//	continue;
-
+	if (!doorcomp->IsUseserble&& doorcomp->IsOpen)
+	{
+	doorcomp->IsActivated = true;
+	doorcomp->IsOpen = false;
+	}
+	
 	auto compvec = GetSceneManager()->GetChildEntityComps_HasComp<DoorOpenerComponent>(doorcomp->GetEntityID());
 	if (compvec.empty())
 		return;
@@ -127,20 +127,30 @@ void DoorSystem::OnChangeDoorUseable(std::any entityid_bool)
 	}
 }
 
-void DoorSystem::OnInterected(std::any interective_interector) {
+void DoorSystem::OnInterected(std::any interective_interector) 
+{
 	auto [interected, interector] = std::any_cast<std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>>>(interective_interector);
 
 	// DoorComponent가 없으면 함수 종료
-	if (!interected->HasComponent<DoorOpenerComponent>())
-		return;
+	if (interected->HasComponent<DoorOpenerComponent>())
+		ActivateDoor(interected->GetComponent<DoorOpenerComponent>());
 
-	auto doorOpencomp = interected->GetComponent<DoorOpenerComponent>();
+	if (interected->HasComponent<DoorAccessComponent>())
+	{
+		DoorAccessSetting(interected->GetComponent<DoorAccessComponent>());
+	}
+
+
+}
+
+void DoorSystem::ActivateDoor(DoorOpenerComponent* opener)
+{
 
 	// DoorIdentitys 벡터가 비어있을 경우 예외 처리
-	//if (doorOpencomp->Dummy.empty())
-	//	return;
-	//auto doorentity = GetSceneManager()->GetEntityByIdentityName(doorOpencomp->Dummy);
-	auto doorcomp = GetSceneManager()->GetParentEntityComp_HasComp<DoorComponent>(doorOpencomp->GetEntityID());
+//if (doorOpencomp->Dummy.empty())
+//	return;
+//auto doorentity = GetSceneManager()->GetEntityByIdentityName(doorOpencomp->Dummy);
+	auto doorcomp = GetSceneManager()->GetParentEntityComp_HasComp<DoorComponent>(opener->GetEntityID());
 	// doorentity가 유효하지 않거나 DoorComponent가 없을 경우, 현재 루프 스킵
 	if (!doorcomp)
 		return;
@@ -151,6 +161,19 @@ void DoorSystem::OnInterected(std::any interective_interector) {
 	// 문 활성화 및 열림 상태 전환
 	doorcomp->IsActivated = true;
 	doorcomp->IsOpen = !doorcomp->IsOpen;
+	GetSceneManager()->SpawnSoundEntity(opener->GetComponent<InterectiveComponent>()->Soundkey, opener->GetComponent<InterectiveComponent>()->Volume,false,false, opener->GetComponent<TransformComponent>()->World_Location);
+	GetSceneManager()->SpawnSoundEntity(doorcomp->SoundKey, doorcomp->Volume, false, false, doorcomp->GetComponent<TransformComponent>()->World_Location);
+
+}
+
+void DoorSystem::DoorAccessSetting(DoorAccessComponent* opener)
+{
+	for (auto& identity : opener->DoorIdentitys)
+	{
+		auto entity = GetSceneManager()->GetEntityByIdentityName(identity);
+		if (entity&& entity->HasComponent<DoorComponent>())
+			OnChangeDoorUseable(std::make_pair(entity->GetEntityID(), opener->Open));
+	}
 }
 
 

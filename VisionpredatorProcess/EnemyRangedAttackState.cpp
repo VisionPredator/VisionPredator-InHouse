@@ -63,7 +63,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 		// 명중률에 따라 사격
 		if (randomValue <= enemyComp->AttackAccuracy)
 		{
-			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
+			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 			if (detectedObjID == enemyComp->Player->GetEntityID())
 			{
 

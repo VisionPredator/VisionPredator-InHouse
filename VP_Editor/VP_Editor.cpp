@@ -14,7 +14,9 @@
 #include "EditorSystem.h"
 VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arialbd.ttf", 18.f);
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgunbd.ttf",20.f, NULL, io.Fonts->GetGlyphRangesKorean());
+
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     SetUnityDarkThemeColors();
