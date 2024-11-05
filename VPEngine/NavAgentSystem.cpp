@@ -84,6 +84,8 @@ void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination
 	comp->TargetLocation = destination;
 
 	auto SceneNavMeshData = GetSceneManager()->GetSceneNavMeshData();
+	if (!SceneNavMeshData)
+		return;
 	const dtQueryFilter* filter = SceneNavMeshData->crowd->getFilter(0);
 	const dtCrowdAgent* agent = SceneNavMeshData->crowd->getAgent(comp->NavAgent->AgentID);  // 오타 수정
 	const float* halfExtents = SceneNavMeshData->crowd->getQueryExtents();

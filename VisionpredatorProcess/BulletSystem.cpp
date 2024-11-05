@@ -43,7 +43,7 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), bullet.GetComponent<BulletComponent>()->Damage));
 
 	}
-	else if (Other.GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::GROUND)
+	else if (Other.GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::MAP)
 	{
 		auto transform = bullet.GetComponent<TransformComponent>();
 
@@ -53,12 +53,12 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 
 }
 
-void BulletSystem::ApplyShotGunDamage(Entity& bullet, Entity& Other)
+void BulletSystem::ApplyShotGunDamage(std::shared_ptr<Entity> bullet, std::shared_ptr<Entity>  Other)
 {
-	if (Other.HasComponent<EnemyComponent>())
+	if (Other->HasComponent<EnemyComponent>())
 	{
-		auto bullettrans = bullet.GetComponent<TransformComponent>();
-		auto shotgunbullet = bullet.GetComponent<ShotGunBulletComponent>();
+		auto bullettrans = bullet->GetComponent<TransformComponent>();
+		auto shotgunbullet = bullet->GetComponent<ShotGunBulletComponent>();
 
 		shotgunbullet->Distance;
 		float distance = (bullettrans->World_Location - shotgunbullet->StartPoint).Length();
@@ -71,7 +71,7 @@ void BulletSystem::ApplyShotGunDamage(Entity& bullet, Entity& Other)
 		else if (distance < shotgunbullet->Distance)
 			applyDamage = shotgunbullet->Damage3;
 
-		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(Other.GetEntityID(), applyDamage));
+		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(Other->GetEntityID(), applyDamage));
 	}
 }
 
@@ -104,17 +104,18 @@ void BulletSystem::Start(uint32_t gameObjectId)
 
 }
 
-void BulletSystem::EnterTrigger(std::pair<uint32_t, uint32_t> entitypair)
+
+
+void BulletSystem::EnterTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second)
 {
-	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
-	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
-	if (Firstentity.HasComponent<ShotGunBulletComponent>())
-		ApplyShotGunDamage(Firstentity, Secondentity);
-	else if (Secondentity.HasComponent<ShotGunBulletComponent>())
-		ApplyShotGunDamage(Secondentity, Firstentity);
+
+	if (first->HasComponent<ShotGunBulletComponent>())
+		ApplyShotGunDamage(first, second);
+	else if (second->HasComponent<ShotGunBulletComponent>())
+		ApplyShotGunDamage(second, first);
 }
 
-void BulletSystem::ExitTrigger(std::pair<uint32_t, uint32_t> entitypair)
+void BulletSystem::ExitTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second)
 {
 }
 

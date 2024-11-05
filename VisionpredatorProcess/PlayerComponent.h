@@ -4,10 +4,9 @@
 struct PlayerComponent :
 	public Component
 {
-	PlayerComponent();
 	VP_JSONBODY(PlayerComponent
 		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
-		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
+		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, DashDuration, DashMultiple, SlideMultiple, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
 
 	std::string HandName{};
 	std::string VPHandName{};
@@ -21,8 +20,9 @@ struct PlayerComponent :
 	std::weak_ptr<Entity> CameraPosEntity{};
 	std::weak_ptr<Entity> FirePosEntity{};
 	std::weak_ptr<Entity> LongswordEntity{};
-	int MaxHP{};
-	int HP{};
+	std::weak_ptr<Entity> AutoPickEntity{};
+	int MaxHP{110};
+	int HP{110};
 	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	VisPred::Game::PlayerFSM PreFSM = VisPred::Game::PlayerFSM::IDLE;
 	float Height{};
@@ -50,6 +50,9 @@ struct PlayerComponent :
 	float CamTransProgress = 0.f;
 	VPMath::Vector3 DefalutCameraPos{};
 	float SlideDuration = 0.5f;
+	float DashDuration = 0.5f;
+	float SlideMultiple = 1.5f;
+	float DashMultiple = 3.f;
     float SlideProgress{};
     VPMath::Vector3 SlideDir{};
 	float SearchDistance{};

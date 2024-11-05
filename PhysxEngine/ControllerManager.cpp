@@ -63,7 +63,7 @@ bool ControllerManager::Update(float deltatime)
 
 }
 
-VPPhysics::RaycastData ControllerManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+VPPhysics::RaycastData ControllerManager::RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
     RaycastData racastresult{};
 
@@ -118,7 +118,7 @@ VPPhysics::RaycastData ControllerManager::RaycastToHitActor(uint32_t entityID, V
 #pragma endregion
 }
 
-VPPhysics::RaycastData ControllerManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+VPPhysics::RaycastData ControllerManager::RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
     RaycastData racastresult{};
 

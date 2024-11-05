@@ -1,7 +1,7 @@
 #pragma once
 #include "../PhysxEngine/IPhysx.h"
 #include "../SoundEngine/ISound.h"
-
+class Entity;
 namespace Graphics
 {
 	class Interface;
@@ -79,8 +79,8 @@ public:
 class ITriggerable
 {
 public:
-	virtual void EnterTrigger(std::pair<uint32_t, uint32_t> entitypair) = 0;
-	virtual void ExitTrigger(std::pair<uint32_t, uint32_t> entitypair) = 0;
+	virtual void EnterTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second) = 0;
+	virtual void ExitTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second) = 0;
 };
 class ISoundable
 {

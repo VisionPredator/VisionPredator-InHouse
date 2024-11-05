@@ -14,21 +14,34 @@ public:
 	~RigidBodyManager();
 	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene, std::shared_ptr<PhysichResourceManager> resourceManager);
 	void Update();
-	void EndScene();
-	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const VPPhysics::PhysicsInfo& engininfo );
-	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	void CreateStaticBody(const BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const PhysicsInfo& engininfo );
+	void CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateStaticBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+
+	void CreateDynamicBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
-
+	void ConvertToStatic(uint32_t EntityID);
+	void ConvertToDynamic(uint32_t EntityID);
+	void ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer);
+	void ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer);
 	bool HasRigidBody(uint32_t EntityID);
+	bool IsDynamic(uint32_t EntityID);
+	bool IsStatic(uint32_t EntityID);
 	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
@@ -41,11 +54,13 @@ public:
 	VPMath::Quaternion GetGobalQuaternion(uint32_t entityID);
 	uint32_t FindIDByActor(physx::PxRigidActor* Actor);
 
-	RaycastData RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
-	RaycastData RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
-	RaycastData RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
-	RaycastData RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
-	RaycastData RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	RaycastData RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance);
+	RaycastData RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance);
+	RaycastData RaycastActorAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	RaycastData RaycastActorAtPose_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	RaycastData RaycastActorAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	std::vector<RaycastData> RaycastActorsAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
+	std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
 private:
 	physx::PxRigidActor* FindActorByID(uint32_t entityID);
 	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);

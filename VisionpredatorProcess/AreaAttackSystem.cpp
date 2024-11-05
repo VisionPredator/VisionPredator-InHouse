@@ -60,20 +60,17 @@ void AreaAttackSystem::Finalize()
 {
 }
 
-void AreaAttackSystem::EnterTrigger(std::pair<uint32_t, uint32_t> entitypair)
+void AreaAttackSystem::EnterTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second)
 {
-	auto entity_first = GetSceneManager()->GetEntity(entitypair.first);
-	auto entity_second = GetSceneManager()->GetEntity(entitypair.second);
-
-	if (entity_first->HasComponent<AreaAttackComponent>()&& entity_second->HasComponent<EnemyComponent>())
-		TriggerAttack(*entity_first->GetComponent<AreaAttackComponent>(), *entity_second->GetComponent<EnemyComponent>());
-	else if (entity_first->HasComponent<EnemyComponent>() && entity_second->HasComponent<AreaAttackComponent>())
-		TriggerAttack(*entity_second->GetComponent<AreaAttackComponent>(), *entity_first->GetComponent<EnemyComponent>());
+	if (first->HasComponent<AreaAttackComponent>()&& second->HasComponent<EnemyComponent>())
+		TriggerAttack(*first->GetComponent<AreaAttackComponent>(), *second->GetComponent<EnemyComponent>());
+	else if (first->HasComponent<EnemyComponent>() && second->HasComponent<AreaAttackComponent>())
+		TriggerAttack(*second->GetComponent<AreaAttackComponent>(), *first->GetComponent<EnemyComponent>());
 
 }
 
 
-void AreaAttackSystem::ExitTrigger(std::pair<uint32_t, uint32_t> entitypair)
+void AreaAttackSystem::ExitTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second)
 {
 
 }

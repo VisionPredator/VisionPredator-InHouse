@@ -134,8 +134,11 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 #pragma region Update
 void PlayerSystem::Update(float deltaTime)
 {
+
 	COMPLOOP(PlayerComponent, playercomp)
 	{
+		
+
 		if (!playercomp.CameraEntity.lock()
 			|| !playercomp.CameraPosEntity.lock()
 			|| !playercomp.FirePosEntity.lock()
@@ -197,20 +200,14 @@ void PlayerSystem::SearchingInterectives(PlayerComponent& playercomp)
 		if (playercomp.SearchedItemID!=0)
 		{
 			EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.SearchedItemID);
-			//auto presearchedentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-			//if (presearchedentity && presearchedentity->HasComponent<MeshComponent>())
-			//	presearchedentity->GetComponent<MeshComponent>()->MaskColor = { 0,0,0,0 };
 		}
-
 		playercomp.SearchedItemID = 0;
 		return;
 	}
 	/// Raycast 를 통해 오브젝트를 검출. 이전에 찾았던 오브젝트의 마스크를 0 0 0 처리해준다. 
 	SearchInterective(playercomp);
 	///찾아낸 물체가 Guncomp를 가지고있다면 
-	SearchedGun(playercomp);
-	//SearchedDoor(playercomp);
-	//SearchedButton(playercomp);
+
 }
 void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 {
@@ -221,11 +218,27 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 		return;
 	auto cameratransform = cameraEntity->GetComponent<TransformComponent>();
 	auto front = cameratransform->FrontVector;
-	std::vector<uint32_t> ignorevec{};
-	ignorevec.push_back(playercomp.GetEntityID());
-	ignorevec.push_back(playercomp.GunEntityID);
-	playercomp.SearchedItemID = m_PhysicsEngine->RaycastToHitActorFromLocation_Ignore(ignorevec, cameratransform->World_Location, cameratransform->FrontVector, playercomp.SearchDistance).EntityID;
 
+	std::vector<VPPhysics::RaycastData> raycastedEntitys = m_PhysicsEngine->RaycastActorsAtPose(cameratransform->World_Location, cameratransform->FrontVector, playercomp.SearchDistance);
+	playercomp.SearchedItemID = 0;
+	if (!raycastedEntitys.empty())
+	{
+		for (auto [entityid, pos, normal, dist] : raycastedEntitys)
+		{
+			if (entityid == playercomp.GunEntityID || entityid == playercomp.GetEntityID())
+				continue;
+
+			if (GetSceneManager()->HasComponent<CabinetComponent>(entityid) &&
+				(!GetSceneManager()->HasComponent<InterectiveComponent>(entityid) ||
+					!GetSceneManager()->GetComponent<InterectiveComponent>(entityid)->IsInterective))
+			{
+				continue;
+			}
+
+			playercomp.SearchedItemID = entityid;
+			break;
+		}
+	}
 	if (playercomp.PreSearchedItemID != playercomp.SearchedItemID)
 	{
 		EventManager::GetInstance().ImmediateEvent("OnUnSearched", playercomp.PreSearchedItemID);
@@ -233,16 +246,8 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 		playercomp.PreSearchedItemID = playercomp.SearchedItemID;
 	}
 }
-void PlayerSystem::SearchedGun(PlayerComponent& playercomp)
-{
-	//auto gunentity = GetSceneManager()->GetEntity(playercomp.SearchedItemID);
-	//if (gunentity && gunentity->HasComponent<GunComponent>() && gunentity->GetEntityID() != playercomp.GunEntityID)
-	//	gunentity->GetComponent<MeshComponent>()->MaskColor = { 255,0,0,255 };
-}
-void PlayerSystem::SearchedInterective(PlayerComponent& playercomp)
-{
-	EventManager::GetInstance().ImmediateEvent("OnSearched", playercomp.SearchedItemID);
-}
+
+
 #pragma endregion
 
 #pragma region Camera Setting
@@ -472,11 +477,11 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 	switch (meleecomp.AttackMode)
 	{
 	case VisPred::Game::PlayerMelee::VP_Left:
-		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.SwordAngle);
+		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
 		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack1, soundcomp.Volume_VPAttack1, true, false, {});
 		break;
 	case VisPred::Game::PlayerMelee::VP_Right:
-		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.SwordAngle);
+		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
 		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack2, soundcomp.Volume_VPAttack2, true, false, {});
 		break;
 	default:
@@ -588,8 +593,7 @@ void PlayerSystem::Action_Walk(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.WalkSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
+
 
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
@@ -603,8 +607,7 @@ void PlayerSystem::Action_Run(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.RunSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
+
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
 	Active_Jump(transfomcomp, Controller);
@@ -616,8 +619,6 @@ void PlayerSystem::Action_Crouch(PlayerComponent& playercomp)
 {
 	TransformComponent& transfomcomp = *playercomp.GetComponent<TransformComponent>();
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
 	Active_Rotation(playercomp, transfomcomp);
 	Active_Walk(transfomcomp, playercomp, Controller);
 	Active_Interect(playercomp);
@@ -791,19 +792,6 @@ void PlayerSystem::Active_Slide(PlayerComponent& playercomp, float deltatime)
 {
 	auto& controller = *playercomp.GetComponent<ControllerComponent>();
 	playercomp.SlideProgress += deltatime;
-	float slidespeed{};
-	if (playercomp.IsVPMode)
-	{
-		slidespeed = playercomp.RunSpeed * 3.f;
-	}
-	else
-	{
-		slidespeed = playercomp.RunSpeed * 1.5f;
-
-	}
-
-	controller.MaxSpeed = slidespeed;
-	controller.Acceleration = controller.MaxSpeed * 6.f;
 	controller.InputDir = playercomp.SlideDir;
 }
 void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
@@ -817,18 +805,22 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 			auto& guncomp = *GetSceneManager()->GetComponent<GunComponent>(playercomp.GunEntityID);
 			if (guncomp.IsEmpty)
 			{
-				auto sound =playercomp.GetComponent<PlayerSoundComponent>();
-				if (Gun_Throw(playercomp, guncomp))
+				if (!playercomp.IsGunRecoiling)
 				{
-					GetSceneManager()->SpawnSoundEntity(sound->SoundKey_GunThrow, sound->Volume_GunThrow, true, false, {});
-					Throw_Setting(playercomp);
+					auto sound = playercomp.GetComponent<PlayerSoundComponent>();
+					if (Gun_Throw(playercomp, guncomp))
+					{
+						GetSceneManager()->SpawnSoundEntity(sound->SoundKey_GunThrow, sound->Volume_GunThrow, true, false, {});
+						Throw_Setting(playercomp);
+					}
 				}
+
 			}
 			else if (playercomp.ReadyToShoot)
 				if (Gun_Shoot(playercomp, guncomp))
 					Gun_RecoilSetting(playercomp, guncomp);
 		}
-		else if (!playercomp.HasGun)
+		else if (!playercomp.HasGun )
 			PlayerMeleeAttack(playercomp);
 	}
 }
@@ -872,6 +864,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 		{
 			AnimationFinished(playercomp, anicomp);
 			ReturnToIdle(anicomp);
+
 		}
 	}
 
@@ -902,7 +895,7 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 		if (GetSceneManager()->GetEntity(playercomp.ThrowingGunEntityID))
 		{
 			SocketComponent* socketcomp = GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
-
+			m_PhysicsEngine->ConvertToDynamicWithLayer(playercomp.ThrowingGunEntityID,VPPhysics::EPhysicsLayer::WEAPON);
 			VPMath::Vector3 temp = playercomp.FirePosEntity.lock()->GetComponent <TransformComponent>()->FrontVector;
 			temp.RotateToUp(6);
 			socketcomp->IsConnected = false;
@@ -910,7 +903,13 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 			socketcomp->ConnectedEntityID = 0;
 			playercomp.ThrowingGunEntityID = 0;
 			socketcomp->GetComponent<MeshComponent>()->IsOverDraw = false;
-			playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
+	/*		if (playercomp.AutoPickEntity.lock()&& playercomp.AutoPickEntity.lock()->HasComponent<AutoPickComponent>()&& playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>()->IsAuto)
+			{
+				EventManager::GetInstance().ImmediateEvent("OnAutoPickup", playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>());
+			}
+			else*/
+				playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
+
 		}
 
 	}
@@ -1030,7 +1029,8 @@ void PlayerSystem::Drop_Gun(PlayerComponent& playercomp)
 	auto gunentity = GetSceneManager()->GetEntity(playercomp.GunEntityID);
 	auto guncomp = gunentity->GetComponent<GunComponent>();
 	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
-	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), {});
+	m_PhysicsEngine->ConvertToDynamicWithLayer(gunentity->GetEntityID(), VPPhysics::EPhysicsLayer::WEAPON);
+	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), playercomp.GetComponent<TransformComponent>()->FrontVector,1);
 	soceketcomp->IsConnected = false;
 	soceketcomp->ConnectedEntityID = 0;
 	playercomp.HasGun = false;
@@ -1086,7 +1086,7 @@ void PlayerSystem::Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& 
 {
 	playercomp.IsGunRecoiling = true;
 	// 랜덤한 Yaw 회전 범위 [-RecoilPos.x, RecoilPos.x]에서 값 생성
-	float randfloat =VPMath::Randomfloat(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
+	float randfloat =VPMath::Random_float(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
 	// 카메라의 TransformComponent 가져오기
 	auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 	// 초기 및 최종 반동 Quaternion 설정
@@ -1146,6 +1146,7 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			handtrans.SetLocalLocation(temp);
 		}
 	}
+
 }
 #pragma endregion
 #pragma region Shoot Logic
@@ -1294,6 +1295,9 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto FirePosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->FirePosName);
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
 		auto LongswordEntity = GetSceneManager()->GetEntityByIdentityName(playercomp->LongswordName);
+		auto autopick = GetSceneManager()->GetChildEntityComp_HasComp<AutoPickComponent>(gameObjectId);
+		if(autopick)
+			playercomp->AutoPickEntity = GetSceneManager()->GetEntity(autopick->GetEntityID());
 		playercomp->HP = playercomp->MaxHP;
 		if (HandEntity)
 			playercomp->HandEntity = HandEntity;			//playercomp->HandID = HandEntity->GetEntityID();
@@ -1343,6 +1347,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		{
 			auto& controllercomp = *playercomp->GetComponent<ControllerComponent>();
 			playercomp->Radius = controllercomp.CapsuleControllerinfo.radius;
+			playercomp->Height = controllercomp.CapsuleControllerinfo.height;
 
 			// 캡슐의 현재 전체 높이 (총 높이 = 2 * (반지름 + 높이))
 			float fullHeight = 2 * (controllercomp.CapsuleControllerinfo.radius + controllercomp.CapsuleControllerinfo.height);
@@ -1383,8 +1388,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 void PlayerSystem::UpdateCharDataToController(PlayerComponent& playercomp)
 {
 	ControllerComponent& controlcomp = *playercomp.GetComponent<ControllerComponent>();
-	//controllercomp.Acceleration= playercomp.Accel;
-	//controllercomp.MaxSpeed = playercomp.WalkSpeed;
+
 	controlcomp.JumpSpeed = playercomp.JumpForce;
 	controlcomp.StaticFriction = playercomp.StaticFriction;
 	controlcomp.JumpXZAcceleration = controlcomp.Acceleration * playercomp.AirControlPercent / 100;

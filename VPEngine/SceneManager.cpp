@@ -704,15 +704,13 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 std::shared_ptr<Entity> SceneManager::CreateEntity(std::string entityName)
 {
 	// 난수 생성기를 사용하여 엔티티 ID를 생성합니다.
-	std::random_device rd;  // 난수 생성기
-	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
-	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_MAX까지의 난수 범위
-	uint32_t id = dis(gen);
+	uint32_t id = VPMath::Random_uint(0, UINT32_MAX); 
+
 
 	// 생성된 ID가 이미 존재하는지 확인하고, 존재하면 새로운 ID를 생성합니다.
 	while (HasEntity(id))
 	{
-		id = dis(gen);
+		id = VPMath::Random_uint(0, UINT32_MAX);
 	}
 
 	// 새로운 엔티티를 생성하고 ID를 설정합니다.
@@ -739,9 +737,9 @@ uint32_t SceneManager::CreateRandomEntityID()
 	std::random_device rd;  // 난수 생성기
 	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
 	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_Max 까지의 난수 범위
-	uint32_t id = dis(gen);
+	uint32_t id = VPMath::Random_uint(0, UINT32_MAX);
 	while (HasEntity(id))
-		id = dis(gen);
+		id = VPMath::Random_uint(0, UINT32_MAX);
 	return id;
 }
 void SceneManager::SetScenePhysic(VPPhysics::PhysicsInfo physicInfo)

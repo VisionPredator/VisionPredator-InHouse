@@ -24,17 +24,22 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::SearchDistance
 		, PlayerComponent::JumpForce
 		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
+		, PlayerComponent::SlideDuration
+		, PlayerComponent::DashDuration
+		, PlayerComponent::SlideMultiple
+		, PlayerComponent::DashMultiple
 		, PlayerComponent::AirControlPercent
 		, PlayerComponent::GravityPower
 		, PlayerComponent::StaticFriction
 		, PlayerComponent::VPGageCoolTime
 		, PlayerComponent::TransformationTime
 	);
-	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor);
+	META_ADD_COMP(InterectiveComponent, InterectiveComponent::IsInterective, InterectiveComponent::SearcehdColor, InterectiveComponent::Soundkey, InterectiveComponent::Volume);
 	META_ADD_COMP(PlayerSoundComponent
 		, PlayerSoundComponent::Volume_Walk
 		, PlayerSoundComponent::Volume_Run
 		, PlayerSoundComponent::Volume_Jump
+		, PlayerSoundComponent::Volume_Landing
 		, PlayerSoundComponent::Volume_Slide
 		, PlayerSoundComponent::Volume_Dash
 		, PlayerSoundComponent::Volume_Sit
@@ -53,6 +58,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::SoundKey_Run1
 		, PlayerSoundComponent::SoundKey_Run2
 		, PlayerSoundComponent::SoundKey_Jump
+		, PlayerSoundComponent::Volume_Landing
 		, PlayerSoundComponent::SoundKey_Slide
 		, PlayerSoundComponent::SoundKey_Dash
 		, PlayerSoundComponent::SoundKey_Sit
@@ -98,9 +104,20 @@ void VispredRegister::Register_Components()
 		, VPUIComponent::GageImage
 	)
 
-	META_ADD_COMP(DoorComponent, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
-	META_ADD_COMP(SectorClearComponent, SectorClearComponent::DoorIdentity);
+	META_ADD_COMP(DoorComponent, DoorComponent::SoundKey, DoorComponent::Volume, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
+	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity, SectorClearComponent::PreDoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
+	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
+	META_ADD_COMP(CabinetComponent, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime);
+	META_ADD_COMP(EntityRemoverComponet, EntityRemoverComponet::temp);
+	META_ADD_COMP(IdentityRemoverComponent, IdentityRemoverComponent::RemoveIdentitys);
+	META_ADD_COMP(HPReducerComponent, HPReducerComponent::MaxHP, HPReducerComponent::DownHP);
+	META_ADD_COMP(AutoPickComponent, AutoPickComponent::IsAuto, AutoPickComponent::PickUps);
+	META_ADD_COMP(VPDetectionComponent, VPDetectionComponent::Length, VPDetectionComponent::EnemyColor, VPDetectionComponent::InterectColor);
+	META_ADD_COMP(DoOnceComponent, DoOnceComponent::temp);
+	META_ADD_COMP(DoOnceResetComponent, DoOnceResetComponent::ResetIdentitys);
+	META_ADD_COMP(SpawnerComponent, SpawnerComponent::SpawnPrefab, SpawnerComponent::SpawnTransform);
+	META_ADD_COMP(DoorAccessComponent, DoorAccessComponent::Open, DoorAccessComponent::DoorIdentitys);
 }
 
 void VispredRegister::Register_EnumClass()

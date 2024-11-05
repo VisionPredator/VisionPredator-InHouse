@@ -35,42 +35,33 @@ void RigidBodyManager::CreateStaticBody(const BoxColliderInfo& boxinfo, const EC
 {
 	// Create the material for the box
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
-
 	// Create the shape for the box collider with absolute scale values
 	physx::PxBoxGeometry mesh(
 		std::abs(boxinfo.Extent.x * boxinfo.colliderInfo.WorldScale.x),
 		std::abs(boxinfo.Extent.y * boxinfo.colliderInfo.WorldScale.y),
 		std::abs(boxinfo.Extent.z * boxinfo.colliderInfo.WorldScale.z)
 	);
-
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
-
 	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, boxinfo.colliderInfo, collidertype, engininfo);
-
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, boxinfo, collidertype, engininfo);
 	// Initialize the rigid body
-	if (rigidBody->Initialize(boxinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
 		rigidBody->SetExtent(boxinfo.Extent);
-
 		// Insert the rigid body into the map
 		m_RigidBodyMap[boxinfo.colliderInfo.EntityID] = rigidBody;
-
 		// Add the rigid body to the scene
 		AddBodyScene(rigidBody);
 		shape->release();
 	}
 	else
-	{
 		assert(false);
-	}
 }
-
 void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the Sphere
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
-
+	
 	// Create the shape for the sphere collider with the maximum absolute scale
 	float maxScale = std::abs(sphereinfo.colliderInfo.WorldScale.GetMaxComponent());
 	float newRadius = sphereinfo.Radius * maxScale;
@@ -78,16 +69,14 @@ void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& sphereinfo, co
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
 	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, sphereinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, sphereinfo, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(sphereinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
 		rigidBody->SetRadius(sphereinfo.Radius);
-
 		// Insert the rigid body into the map
 		m_RigidBodyMap[sphereinfo.colliderInfo.EntityID] = rigidBody;
-
 		// Add the rigid body to the scene
 		AddBodyScene(rigidBody);
 		shape->release();
@@ -97,7 +86,6 @@ void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& sphereinfo, co
 		assert(false);
 	}
 }
-
 void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the collider
@@ -111,16 +99,14 @@ void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, 
 	float maxScale = std::abs(scale.GetMaxComponent());
 	size.x = capsuleinfo.Radius * maxScale;
 	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(size.x, size.y), *pxMaterial);
-
 	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, capsuleinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, capsuleinfo, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(capsuleinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
 		// Insert the rigid body into the map
 		m_RigidBodyMap[capsuleinfo.colliderInfo.EntityID] = rigidBody;
-
 		// Add the rigid body to the scene
 		AddBodyScene(rigidBody);
 		shape->release();
@@ -130,8 +116,7 @@ void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, 
 		assert(false);
 	}
 }
-
-void RigidBodyManager::CreateStaticBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateStaticBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	// Create the material for the collider
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(convexMeshinfo.colliderInfo.StaticFriction, convexMeshinfo.colliderInfo.DynamicFriction, convexMeshinfo.colliderInfo.Restitution);
@@ -146,56 +131,48 @@ void RigidBodyManager::CreateStaticBody(const VPPhysics::ConvexColliderInfo& con
 		std::abs(convexMeshinfo.colliderInfo.WorldScale.z)
 	};
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
-
 	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, convexMeshinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, convexMeshinfo, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(convexMeshinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize( shape, m_Physics))
 	{
 		// Insert the rigid body into the map
 		m_RigidBodyMap[convexMeshinfo.colliderInfo.EntityID] = rigidBody;
-
 		// Add the rigid body to the scene
 		AddBodyScene(rigidBody);
 		shape->release();
 	}
 	else
-	{
 		assert(false);
-	}
 }
-
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& info, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
 
 	// Create the shape for the box collider with absolute scale values
 	physx::PxBoxGeometry mesh(
-		std::abs(boxinfo.Extent.x * boxinfo.colliderInfo.WorldScale.x),
-		std::abs(boxinfo.Extent.y * boxinfo.colliderInfo.WorldScale.y),
-		std::abs(boxinfo.Extent.z * boxinfo.colliderInfo.WorldScale.z)
+		std::abs(info.Extent.x * info.colliderInfo.WorldScale.x),
+		std::abs(info.Extent.y * info.colliderInfo.WorldScale.y),
+		std::abs(info.Extent.z * info.colliderInfo.WorldScale.z)
 	);
 
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
 	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, boxinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, info, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(boxinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		m_RigidBodyMap[boxinfo.colliderInfo.EntityID] = rigidBody;
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody;
 		AddBodyScene(rigidBody);
 		shape->release();
-		rigidBody->SetExtent(boxinfo.Extent);
+		rigidBody->SetExtent(info.Extent);
 	}
 	else
-	{
 		assert(false);
-	}
 }
-
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
@@ -207,10 +184,10 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sp
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
 	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody>  rigidBody = SettingDynamicBody(shape, sphereinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<DynamicRigidBody>  rigidBody = SettingDynamicBody(shape, sphereinfo, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(sphereinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
 		m_RigidBodyMap[sphereinfo.colliderInfo.EntityID] = rigidBody;
 		AddBodyScene(rigidBody);
@@ -222,11 +199,9 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sp
 		assert(false);
 	}
 }
-
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
-
 	// Create the shape for the capsule collider with absolute scale values
 	VPMath::Vector3 scale = capsuleinfo.colliderInfo.WorldScale;
 	VPMath::Vector2 size;
@@ -237,10 +212,10 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& c
 	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(size.x, size.y), *pxMaterial);
 
 	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, capsuleinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, capsuleinfo, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(capsuleinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
 		m_RigidBodyMap[capsuleinfo.colliderInfo.EntityID] = rigidBody;
 		AddBodyScene(rigidBody);
@@ -253,7 +228,6 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& c
 		assert(false);
 	}
 }
-
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(convexMeshinfo.colliderInfo.StaticFriction, convexMeshinfo.colliderInfo.DynamicFriction, convexMeshinfo.colliderInfo.Restitution);
@@ -270,10 +244,10 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& co
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
 	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, convexMeshinfo.colliderInfo, collidertype, engininfo);
+	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, convexMeshinfo, collidertype, engininfo);
 
 	// Initialize the rigid body
-	if (rigidBody->Initialize(convexMeshinfo.colliderInfo, shape, m_Physics))
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
 		m_RigidBodyMap[convexMeshinfo.colliderInfo.EntityID] = rigidBody;
 		AddBodyScene(rigidBody);
@@ -284,27 +258,88 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& co
 		assert(false);
 	}
 }
-
-std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxFilterData filterdata;
-	filterdata.word0 = static_cast<int>(info.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.PhysicsLayer)];
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
+	auto staticBody = std::make_shared<StaticRigidBody>(info,colliderType, engininfo);
+	m_RigidBodyMap[staticBody->GetID()] = staticBody;
 
-	auto staticBody = std::make_shared<StaticRigidBody>(colliderType, info.EntityID, info.PhysicsLayer);
+	return staticBody;
+}
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
+{
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+	auto staticBody = std::make_shared<StaticRigidBody>(info, colliderType, engininfo);
 	m_RigidBodyMap[staticBody->GetID()] = staticBody;
 	return staticBody;
 }
-
-std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const ColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
 {
 	physx::PxFilterData filterdata;
-	filterdata.word0 = static_cast<int>(info.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.PhysicsLayer)];
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+	auto staticBody = std::make_shared<StaticRigidBody>(info, colliderType, engininfo);
+	m_RigidBodyMap[staticBody->GetID()] = staticBody;
+	return staticBody;
+}
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
+{
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+	auto staticBody = std::make_shared<StaticRigidBody>(info, colliderType, engininfo);
+	m_RigidBodyMap[staticBody->GetID()] = staticBody;
+	return staticBody;
+}
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+{
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
 
-	auto dynamicBody = std::make_shared<DynamicRigidBody>(colliderType, info.EntityID, info.PhysicsLayer);
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
+	return dynamicBody;
+}
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+{
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
+	return dynamicBody;
+}
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+{
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
+	return dynamicBody;
+}
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+{
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
 	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
 	return dynamicBody;
 }
@@ -336,7 +371,6 @@ void RigidBodyManager::OnReleaseBodyScene(std::any data)
 		}
 	}
 }
-
 void RigidBodyManager::ReleaseBodyScene(uint32_t entityID)
 {
 	auto it = m_RigidBodyMap.find(entityID);
@@ -370,8 +404,6 @@ void RigidBodyManager::ReleaseBodyScene(uint32_t entityID)
 	std::any data = std::make_pair(tempbody, isDynamic);
 	OnReleaseBodyScene(data);
 }
-
-
 std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
 {
 	auto it = m_RigidBodyMap.find(entityID);
@@ -379,12 +411,134 @@ std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
 		return nullptr;
 	return it->second;
 }
+void RigidBodyManager::ConvertToStatic(uint32_t EntityID)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (!rigidbody)
+		return;
+	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+		return;
+	// Remove the dynamic actor from the scene
+	if (auto dynamicActor = std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody))
+	{
+		m_Scene->removeActor(*dynamicActor->GetPxDynamicRigid());
+	}
+	if (rigidbody->m_Boxinfo)
+		CreateStaticBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	else if (rigidbody->m_Sphereinfo)
+		CreateStaticBody(*rigidbody->m_Sphereinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	else if (rigidbody->m_Capulseinfo)
+		CreateStaticBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	else if (rigidbody->m_Convexinfo)
+		CreateStaticBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+}
+void RigidBodyManager::ConvertToDynamic(uint32_t EntityID)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (!rigidbody)
+		return;
+	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+		return;
+	// Remove the dynamic actor from the scene
+	if (auto dynamicActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
+		m_Scene->removeActor(*dynamicActor->GetPxStaticRigid());
+	if (rigidbody->m_Boxinfo)
+		CreateDynamicBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	else if (rigidbody->m_Sphereinfo)
+		CreateDynamicBody(*rigidbody->m_Sphereinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	else if (rigidbody->m_Capulseinfo)
+		CreateDynamicBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	else if (rigidbody->m_Convexinfo)
+		CreateDynamicBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+}
+void RigidBodyManager::ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (!rigidbody)
+		return;
+	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+		return;
+	// Remove the dynamic actor from the scene
+	if (auto dynamicActor = std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody))
+		m_Scene->removeActor(*dynamicActor->GetPxDynamicRigid());
 
+	if (rigidbody->m_Boxinfo)
+	{
+		rigidbody->m_Boxinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Sphereinfo)
+	{
+		rigidbody->m_Sphereinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Sphereinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Capulseinfo)
+	{
+		rigidbody->m_Capulseinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Convexinfo)
+	{
+		rigidbody->m_Convexinfo->colliderInfo.PhysicsLayer = layer;
+		CreateStaticBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+}
+void RigidBodyManager::ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer)
+{
+	auto rigidbody = GetRigidBody(EntityID);
+	if (!rigidbody)
+		return;
+	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+		return;
+	// Remove the dynamic actor from the scene
+	if (auto dynamicActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
+		m_Scene->removeActor(*dynamicActor->GetPxStaticRigid());
+	if (rigidbody->m_Boxinfo)
+	{
+		rigidbody->m_Boxinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Sphereinfo)
+	{
+		rigidbody->m_Sphereinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Sphereinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Capulseinfo)
+	{
+		rigidbody->m_Capulseinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Capulseinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+	else if (rigidbody->m_Convexinfo)
+	{
+		rigidbody->m_Convexinfo->colliderInfo.PhysicsLayer = layer;
+		CreateDynamicBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
+	}
+}
 bool RigidBodyManager::HasRigidBody(uint32_t entityID)
 {
 	return m_RigidBodyMap.count(entityID) > 0;
 }
+bool RigidBodyManager::IsDynamic(uint32_t EntityID)
+{
+	auto rigid = GetRigidBody(EntityID);
+	if (!rigid)
+		return false;
+	if (Reflection::IsSameType<DynamicRigidBody>(rigid->GetTypeID()))
+		return true;
 
+	return false;
+
+}
+bool RigidBodyManager::IsStatic(uint32_t EntityID)
+{
+	auto rigid = GetRigidBody(EntityID);
+	if (!rigid)
+		return false;
+	if (Reflection::IsSameType<StaticRigidBody>(rigid->GetTypeID()))
+		return true;
+
+	return false;
+}
 void RigidBodyManager::ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!scene)
@@ -423,7 +577,6 @@ void RigidBodyManager::ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhys
 		}
 	}
 }
-
 void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!HasRigidBody(entityID))
@@ -527,7 +680,6 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 		}
 	}
 }
-
 void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q)
 {
 	auto temp = GetRigidBody(entityID);
@@ -553,7 +705,6 @@ void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P,
 		assert(false);
 	}
 }
-
 VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
@@ -597,7 +748,6 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir
 		dynamicBody->GetPxDynamicRigid()->addForce(force, PxForceMode::eVELOCITY_CHANGE);
 	}
 }
-
 void RigidBodyManager::SetVelocity(uint32_t entityID, const VPMath::Vector3& dir, float V) {
 	auto temp = GetRigidBody(entityID);
 	if (!temp) {
@@ -623,7 +773,6 @@ void RigidBodyManager::SetVelocity(uint32_t entityID, const VPMath::Vector3& dir
 	}
 }
 
-
 VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
@@ -645,7 +794,6 @@ VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 		return {};
 	}
 }
-
 VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
@@ -679,7 +827,7 @@ uint32_t RigidBodyManager::FindIDByActor(physx::PxRigidActor* Actor)
 	return key->entityID;
 }
 
-RaycastData RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {
 	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);
@@ -721,8 +869,7 @@ RaycastData RigidBodyManager::RaycastToHitActor(uint32_t entityID, VPMath::Vecto
 	}
 	return raycastresult;
 }
-
-RaycastData RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance)
 {
 	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);			// entityID를 통해 물리 액터를 찾아옴
@@ -773,9 +920,7 @@ RaycastData RigidBodyManager::RaycastToHitActor_Offset(uint32_t entityID, VPMath
 
 	return 	 raycastresult;  // 트리거가 아닌 충돌체를 찾지 못한 경우 0을 반환
 }
-
-
-RaycastData RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastActorAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
 	RaycastData raycastresult{};
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
@@ -823,7 +968,7 @@ RaycastData RigidBodyManager::RaycastToHitActorFromLocation(VPMath::Vector3 loca
 	return raycastresult;
 }
 
-RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastActorAtPose_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
 	RaycastData raycastresult{};
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
@@ -874,7 +1019,7 @@ RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(uint32_t enti
 	return raycastresult;
 }
 
-RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+RaycastData RigidBodyManager::RaycastActorAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
 {
 	RaycastData temp{};
 
@@ -922,6 +1067,101 @@ RaycastData RigidBodyManager::RaycastToHitActorFromLocation_Ignore(std::vector<u
 	}
 	return temp;
 }
+
+std::vector<RaycastData> RigidBodyManager::RaycastActorsAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	//RaycastData raycastresult{};
+	std::vector<RaycastData> raycastresult{};
+	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+	tempDir.normalize();  // 단위 벡터로 정규화
+	PxF32 max = (PxF32)distance;
+	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+
+	if (tempDir.isZero())
+		return raycastresult;
+
+	// 주어진 위치를 PhysX의 PxVec3로 변환
+	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
+
+	// 레이캐스트 수행
+	bool find = m_Scene->raycast(
+		raypos,                                   // 시작점
+		tempDir,                                  // 단위벡터
+		max,                                      // 거리
+		buf);                                     // PxRaycastCallback& hitCall
+
+	if (!find)
+		return raycastresult;
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
+	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
+	for (PxU32 i = 0; i < buf.nbTouches; i++)
+	{
+		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
+		PxVec3 n = buf.getTouch(i).normal;					// i번째 접촉된 지점의 법선 벡터(표면의 방향)을 가져옴
+		PxF32 d = buf.getTouch(i).distance;					// i번째 접촉된 지점까지의 거리를 가져옴
+		auto tempID = FindIDByActor(buf.touches[i].actor);	// i번째 접촉된 액터(물리 객체)와 관련된 엔티티의 ID를 찾음
+
+		// 트리거가 아닌 충돌체인 경우에만 엔티티 ID 반환
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE))
+		{
+			raycastresult.push_back ({ tempID ,{p.x,p.y,p.z},{n.x,n.y,n.z} ,d });
+		}
+	}
+	return raycastresult;
+}
+
+std::vector<RaycastData> RigidBodyManager::RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance)
+{
+	std::vector<RaycastData> raycastresult{};
+
+	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };
+	tempDir.normalize();  // 단위 벡터로 정규화
+	PxF32 max = (PxF32)distance;
+	const PxU32 bufferSize = 32;                 // [in] size of 'hitBuffer'
+	PxRaycastHit hitBuffer[bufferSize];          // [out] User provided buffer for results
+	PxRaycastBuffer buf(hitBuffer, bufferSize);  // [out] Blocking and touching hits stored here
+
+	if (tempDir.isZero())
+		return raycastresult;
+
+	// 주어진 위치를 PhysX의 PxVec3로 변환
+	PxVec3 raypos = PxVec3{ location.x, location.y, location.z };
+
+	// 레이캐스트 수행
+	bool find = m_Scene->raycast(
+		raypos,                                   // 시작점
+		tempDir,                                  // 단위벡터
+		max,                                      // 거리
+		buf);                                     // PxRaycastCallback& hitCall
+
+	if (!find)
+		return raycastresult;
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
+		return a.distance < b.distance;
+		});
+	// 히트된 엔티티들 중에서 트리거가 아닌 충돌체의 ID를 반환
+	for (PxU32 i = 0; i < buf.nbTouches; i++) {
+		auto tempID = FindIDByActor(buf.touches[i].actor); // i번째 접촉된 액터와 관련된 엔티티 ID
+
+		// entityIDs에 포함된 ID는 무시
+		if (std::find(entityIDs.begin(), entityIDs.end(), tempID) != entityIDs.end())
+			continue;
+
+		// 트리거가 아닌 충돌체인 경우에만 처리
+		if (!(buf.touches[i].shape->getFlags() & physx::PxShapeFlag::eTRIGGER_SHAPE)) {
+			PxVec3 p = buf.getTouch(i).position;  // 접촉된 지점의 위치
+			PxVec3 n = buf.getTouch(i).normal;    // 접촉된 지점의 법선 벡터
+			PxF32 d = buf.getTouch(i).distance;   // 접촉된 지점까지의 거리
+			raycastresult.push_back({ tempID, {p.x, p.y, p.z}, {n.x, n.y, n.z}, d }) ;
+		}
+	}
+	return raycastresult;
+}
+
 
 
 physx::PxRigidActor* RigidBodyManager::FindActorByID(uint32_t entityID)

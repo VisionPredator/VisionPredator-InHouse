@@ -36,9 +36,11 @@ void EngineRegister::Register_Structs()
 
 void EngineRegister::Register_Value()
 {
+	using namespace VPMath;
+
 	META_ADD_VALUE(std::vector<std::string>);
 	META_ADD_VALUE(std::vector<std::wstring>);
-
+	META_ADD_VALUE(std::list<uint32_t>);
 	entt::meta<std::pair<std::wstring, float>>().type("std::pair<std::wstring, float>"_hs)
 		.prop("first"_hs, &std::pair<std::wstring, float>::first)
 		.prop("second"_hs, &std::pair<std::wstring, float>::second);
@@ -55,8 +57,17 @@ void EngineRegister::Register_Value()
 	entt::meta<std::vector<std::tuple<std::wstring, float, float>>>()
 		.type("std::vector<std::tuple<std::wstring, float, float>>"_hs);
 
+	// Register std::tuple<Vector3, Vector3, Vector3>
+	entt::meta<std::tuple<Vector3, Vector3, Vector3>>()
+		.type("std::tuple<Vector3, Vector3, Vector3>"_hs)
+		.prop("first"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<0>(tuple); })  // First element (Vector3)
+		.prop("second"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<1>(tuple); }) // Second element (Vector3)
+		.prop("third"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<2>(tuple); }); // Third element (Vector3)
 
+	// Register std::vector<std::tuple<Vector3, Vector3, Vector3>>
+	entt::meta<std::vector<std::tuple<Vector3, Vector3, Vector3>>>().type("std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>"_hs);
 }
+
 
 void EngineRegister::Register_VPMath()
 {

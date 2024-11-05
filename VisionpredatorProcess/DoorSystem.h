@@ -1,5 +1,6 @@
 #pragma once
 #include "System.h"
+#include "VisPredComponents.h"
 class DoorSystem :public System, public IFixedUpdatable, public IStartable,public EventSubscriber
 {
 public :
@@ -20,5 +21,7 @@ public :
 	void Finalize() override;
 	void OnChangeDoorUseable(std::any entityid_bool);
 	void OnInterected(std::any interective_interector);
+	void ActivateDoor(DoorOpenerComponent* opener);
+	void DoorAccessSetting(DoorAccessComponent* opener);
 };
 

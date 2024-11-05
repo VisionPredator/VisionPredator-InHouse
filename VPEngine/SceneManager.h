@@ -93,6 +93,8 @@ public:
 	T* GetParentEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
 	template<typename T>
 	std::vector<T*>  GetChildEntityComps_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
+	template<typename T>
+	T*  GetChildEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
@@ -267,6 +269,52 @@ inline std::vector<T*>  SceneManager::GetChildEntityComps_HasComp(uint32_t entit
 	}
 
 	return components;
+}
+
+template<typename T>
+inline T* SceneManager::GetChildEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component> {
+	// 메인 엔티티를 가져옵니다
+	auto mainEntity = GetEntity(entityID);
+	if (!mainEntity)
+		return nullptr;
+
+	// 메인 엔티티 자체에 컴포넌트 T가 있는지 확인합니다
+	if (mainEntity->HasComponent<T>())
+		return mainEntity->GetComponent<T>();
+
+	// 엔티티에 자식이 있는지 확인합니다
+	if (!mainEntity->HasComponent<Children>())
+		return nullptr;
+
+	// 자식 엔티티에서 컴포넌트를 재귀적으로 수집하는 함수
+	std::function<T* (uint32_t)> collectComponents = [&](uint32_t currentEntityID) -> T* {
+		auto currentEntity = GetEntity(currentEntityID);
+		if (!currentEntity)
+			return nullptr;
+
+		// 현재 엔티티에 컴포넌트 T가 있으면 반환합니다
+		if (currentEntity->HasComponent<T>())
+			return currentEntity->GetComponent<T>();
+
+		// 현재 엔티티에 자식이 있으면 재귀적으로 탐색을 계속합니다
+		if (currentEntity->HasComponent<Children>()) {
+			for (auto childID : currentEntity->GetComponent<Children>()->ChildrenID) {
+				T* result = collectComponents(childID);
+				if (result)
+					return result; // 찾으면 탐색을 중지하고 반환
+			}
+		}
+		return nullptr;
+		};
+
+	// 메인 엔티티의 자식들부터 수집을 시작합니다
+	for (auto childID : mainEntity->GetComponent<Children>()->ChildrenID) {
+		T* result = collectComponents(childID);
+		if (result)
+			return result;
+	}
+
+	return nullptr;
 }
 
 
