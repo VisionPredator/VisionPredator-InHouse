@@ -23,6 +23,7 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 {
 	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
 	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
+
 	if (Firstentity.HasComponent<BulletComponent>())
 	{
 		ApplyDamage(Firstentity, Secondentity);
@@ -33,7 +34,6 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 		ApplyDamage(Secondentity, Firstentity);
 		return;
 	}
-
 }
 
 void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
@@ -48,9 +48,20 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 		auto transform = bullet.GetComponent<TransformComponent>();
 
 		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", transform->World_Location, {0,0,0});
+
+		if (GunSparkParticleEntity.lock())
+		{
+			auto& particleTransform = GunSparkParticleEntity.lock()->GetComponent<TransformComponent>()->World_Location;
+			const auto particleComp = GunSparkParticleEntity.lock()->GetComponent<ParticleComponent>();
+
+			// 총알 위치로 파티클 이동
+			particleTransform = transform->World_Location;
+
+			particleComp->IsRender = true;
+			particleComp->Restart = true;
+		}
 	}
 	GetSceneManager()->DestroyEntity(bullet.GetEntityID());
-
 }
 
 void BulletSystem::ApplyShotGunDamage(std::shared_ptr<Entity> bullet, std::shared_ptr<Entity>  Other)
@@ -90,9 +101,10 @@ void BulletSystem::Start(uint32_t gameObjectId)
 		return;
 	if (entity.HasComponent<BulletComponent>() )
 	{
-		const auto& bulletcomp = *entity.GetComponent<BulletComponent>();;
+		auto& bulletcomp = *entity.GetComponent<BulletComponent>();;
 		const auto& transform = *entity.GetComponent <TransformComponent >();
 		m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
+		GunSparkParticleEntity = GetSceneManager()->GetEntityByIdentityName(bulletcomp.SparkParticleName);
 	}
 	else if	(entity.HasComponent<ShotGunBulletComponent>())
 	{
@@ -100,8 +112,8 @@ void BulletSystem::Start(uint32_t gameObjectId)
 		const auto& transform = *entity.GetComponent <TransformComponent >();
 		m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
 		bulletcomp.StartPoint = transform.World_Location;
+		GunSparkParticleEntity = GetSceneManager()->GetEntityByIdentityName(bulletcomp.SparkParticleName);
 	}
-
 }
 
 
