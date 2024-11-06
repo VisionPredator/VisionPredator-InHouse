@@ -134,7 +134,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
 	Create<PixelShader>(L"DecalPS", L"DecalPS", "main");
 	Create<PixelShader>(L"OverDrawPS", L"OverDrawPS", "main");
-	Create<PixelShader>(L"CopyTex", L"CopyTex", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer
