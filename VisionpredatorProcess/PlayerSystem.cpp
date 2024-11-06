@@ -1193,36 +1193,41 @@ bool PlayerSystem::Shoot_Common(PlayerComponent& playercomp, GunComponent& gunco
 }
 bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
-
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
+
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
 
 	auto bulletentity = m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
 	if (!bulletentity)
 		return false;
+
 	auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
 	bulletcomp->Damage = guncomp.Damage1;
 	bulletcomp->Speed = guncomp.BulletSpeed;
+
 	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
+
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
+
 	return true;
 }
 bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
-
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_ShotGun, PlayerAni::ToAttack_ShotGun))
 		return false;
 
 	auto temppos = firetrans.World_Location;
 	auto temprotate = firetrans.World_Rotation;
+
 	auto bulletentity = m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
 	if (!bulletentity)
 		return false;
+
 	auto shotbullet = bulletentity->GetComponent<ShotGunBulletComponent>();
 	auto bullettrans = bulletentity->GetComponent<TransformComponent>();
+
 	if (guncomp.BulletSize.x <= 0)
 	{
 		guncomp.BulletSize.x = 0.01f;
@@ -1230,15 +1235,18 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 	if (guncomp.BulletSize.y <= 0)
 	{
 		guncomp.BulletSize.y = 0.01f;
-
 	}
+
 	bullettrans->SetLocalScale({ guncomp.BulletSize.x,guncomp.BulletSize.y,0.5f });
 	shotbullet->Speed = guncomp.BulletSpeed;
 	shotbullet->Damage1 = guncomp.Damage1;
 	shotbullet->Damage2 = guncomp.Damage2;
 	shotbullet->Damage3 = guncomp.Damage3;
 	shotbullet->Distance = guncomp.ShotGunDistance;
+
 	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
+
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 
 	return true;
 }
