@@ -23,6 +23,7 @@ void MeshSystem::ComponentAdded(Component* comp)
 		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
 		meshComponent->Renderdata->MaskingColor = meshComponent->MaskColor;
 		meshComponent->Renderdata->color = meshComponent->InteractiveColor;
+		meshComponent->Renderdata->punchEffect = meshComponent->isPunch;
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;

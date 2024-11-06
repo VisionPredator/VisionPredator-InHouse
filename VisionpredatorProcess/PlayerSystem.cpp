@@ -153,7 +153,7 @@ void PlayerSystem::Update(float deltaTime)
 
 	COMPLOOP(PlayerComponent, playercomp)
 	{
-		
+
 
 		if (!playercomp.CameraEntity.lock()
 			|| !playercomp.CameraPosEntity.lock()
@@ -490,18 +490,35 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 				meleecomp.IsLeft = false;
 		};
 
+	//소환!
+	auto effect = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/PunchEffect.prefab", {}, VPMath::Vector3{});
+	if (effect)
+	{
+		GetSceneManager()->AddChild(playercomp.FirePosEntity.lock()->GetEntityID(), effect->GetEntityID(), true);
+		auto effecttrans = effect->GetComponent<TransformComponent>();
+		effecttrans->SetLocalLocation({ 0,0,5 });
+		effecttrans->SetLocalRotation({});
+		effecttrans->SetLocalScale({ 1,1,1 });
+
+		if (effect->HasComponent<MeshComponent>())
+		{
+			auto mesh = effect->GetComponent<MeshComponent>(); 
+			mesh->isPunch= true;
+		}
+	}
+
 	switch (meleecomp.AttackMode)
 	{
-	case VisPred::Game::PlayerMelee::VP_Left:
-		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack1, soundcomp.Volume_VPAttack1, true, false, {});
-		break;
-	case VisPred::Game::PlayerMelee::VP_Right:
-		SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack2, soundcomp.Volume_VPAttack2, true, false, {});
-		break;
-	default:
-		return;
+		case VisPred::Game::PlayerMelee::VP_Left:
+			SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
+			GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack1, soundcomp.Volume_VPAttack1, true, false, {});
+			break;
+		case VisPred::Game::PlayerMelee::VP_Right:
+			SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
+			GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack2, soundcomp.Volume_VPAttack2, true, false, {});
+			break;
+		default:
+			return;
 	}
 
 	// Spawn the prefab
@@ -836,7 +853,7 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 				if (Gun_Shoot(playercomp, guncomp))
 					Gun_RecoilSetting(playercomp, guncomp);
 		}
-		else if (!playercomp.HasGun )
+		else if (!playercomp.HasGun)
 			PlayerMeleeAttack(playercomp);
 	}
 }
@@ -1045,7 +1062,7 @@ void PlayerSystem::Drop_Gun(PlayerComponent& playercomp)
 	auto guncomp = gunentity->GetComponent<GunComponent>();
 	auto soceketcomp = gunentity->GetComponent<SocketComponent>();
 	m_PhysicsEngine->ConvertToDynamicWithLayer(gunentity->GetEntityID(), VPPhysics::EPhysicsLayer::WEAPON);
-	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), playercomp.GetComponent<TransformComponent>()->FrontVector,1);
+	m_PhysicsEngine->SetVelocity(gunentity->GetEntityID(), playercomp.GetComponent<TransformComponent>()->FrontVector, 1);
 	soceketcomp->IsConnected = false;
 	soceketcomp->ConnectedEntityID = 0;
 	playercomp.HasGun = false;
@@ -1105,7 +1122,7 @@ void PlayerSystem::Gun_RecoilSetting(PlayerComponent& playercomp, GunComponent& 
 {
 	playercomp.IsGunRecoiling = true;
 	// 랜덤한 Yaw 회전 범위 [-RecoilPos.x, RecoilPos.x]에서 값 생성
-	float randfloat =VPMath::Random_float(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
+	float randfloat = VPMath::Random_float(-guncomp.RecoilPos.x, guncomp.RecoilPos.x);
 	// 카메라의 TransformComponent 가져오기
 	auto cameratrans = playercomp.CameraEntity.lock()->GetComponent<TransformComponent>();
 	// 초기 및 최종 반동 Quaternion 설정
@@ -1315,7 +1332,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		auto CameraPosEntity = GetSceneManager()->GetRelationEntityByName(gameObjectId, playercomp->CameraPosName);
 		auto LongswordEntity = GetSceneManager()->GetEntityByIdentityName(playercomp->LongswordName);
 		auto autopick = GetSceneManager()->GetChildEntityComp_HasComp<AutoPickComponent>(gameObjectId);
-		if(autopick)
+		if (autopick)
 			playercomp->AutoPickEntity = GetSceneManager()->GetEntity(autopick->GetEntityID());
 		playercomp->HP = playercomp->MaxHP;
 		if (HandEntity)
