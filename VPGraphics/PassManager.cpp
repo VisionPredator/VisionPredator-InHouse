@@ -126,11 +126,12 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	//pass push
 	m_OffScreenPasses.push_back(m_DebugPass);
 	m_OffScreenPasses.push_back(m_Instancing);	//static
-	m_OffScreenPasses.push_back(m_Decal);
+	//m_OffScreenPasses.push_back(m_Decal);
 	m_OffScreenPasses.push_back(m_DeferredPass);	//skinned
 	m_OffScreenPasses.push_back(m_ObjectMaskPass);
 
 	m_AfterLightPasses.push_back(m_DeferredLight);
+	m_AfterLightPasses.push_back(m_Decal);
 	m_AfterLightPasses.push_back(m_TransparencyPass);
 	m_AfterLightPasses.push_back(m_OverDraw);
 
