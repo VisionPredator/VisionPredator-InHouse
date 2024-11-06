@@ -26,10 +26,12 @@ EffectPass::EffectPass(const std::shared_ptr<Device>& device, const std::shared_
 	m_AmbientOcclusionSRV = resourceManager->Get<ShaderResourceView>(L"AO").lock();
 	m_EmissiveSRV = resourceManager->Get<ShaderResourceView>(L"Emissive").lock();
 	m_GBufferSRV = resourceManager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_NoiseSRV= resourceManager->Get<ShaderResourceView>(L"Noise.png").lock();
 
 	m_StaticMeshVS = resourceManager->Get<VertexShader>(L"Base").lock();
-	m_PuchPS = resourceManager->Get<PixelShader>(L"MeshDeferredGeometry").lock();
-	//m_TimeCB = m_ResourceManager.lock()->Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"Time");
+	m_PuchPS = resourceManager->Create<PixelShader>(L"punch",L"punch","main").lock();
+
+	m_TimeCB = m_ResourceManager.lock()->Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"Time", ConstantBufferType::Default);
 
 }
 
@@ -43,18 +45,17 @@ void EffectPass::Render(float deltaTime)
 	std::shared_ptr<Device> Device = m_Device.lock();
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager.lock()->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
 	std::shared_ptr<ConstantBuffer<TransformData>> TransformCB = m_ResourceManager.lock()->Get<ConstantBuffer<TransformData>>(L"Transform").lock();
+	std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 
 	std::shared_ptr<Sampler> linear = m_ResourceManager.lock()->Get<Sampler>(L"LinearClamp").lock();
 	std::shared_ptr<Sampler> linearWrap = m_ResourceManager.lock()->Get<Sampler>(L"LinearWrap").lock();
 
 	//bind
 	Device->UnBindSRV();
-	Device->Context()->VSSetConstantBuffers(0, 1, CameraCB->GetAddress());
-	Device->Context()->PSSetConstantBuffers(0, 1, CameraCB->GetAddress());
 
 	//rtv
 	std::vector<ID3D11RenderTargetView*> RTVs;
-	RTVs.push_back(m_GBuffer.lock()->Get());
+	RTVs.push_back(m_NormalRTV.lock()->Get());
 	Device->Context()->OMSetRenderTargets(RTVs.size(), RTVs.data(), m_DepthStencilView.lock()->Get());
 
 	//set primitive
@@ -71,19 +72,33 @@ void EffectPass::Render(float deltaTime)
 
 	//set cb
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
+	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, MaterialCB->GetAddress());
 
 	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
 
-	//m_TimeCB.lock()->Update({deltaTime,0,0,0});
-	//Device->Context()->PSSetConstantBuffers(2, 1, m_TimeCB.lock()->GetAddress());
+	static float dt = 0;
+	dt += deltaTime;
+
+	if (dt > 1.f)
+	{
+		dt -= 1.f;
+	}
+
+	m_TimeCB.lock()->Update({dt,0,0,0});
+	Device->Context()->PSSetConstantBuffers(2, 1, m_TimeCB.lock()->GetAddress());
 
 	//set srv
-	m_Device.lock()->Context()->PSSetShaderResources(0, 1, m_PositionSRV.lock()->GetAddress());
+
+	m_Device.lock()->Context()->PSSetShaderResources(0, 1, m_NoiseSRV.lock()->GetAddress());
 
 	//render
 	for (const auto& curData : m_RenderList)
 	{
+		if(!curData->punchEffect)
+			continue;
+
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
 
 		if (curModel != nullptr)
@@ -116,9 +131,11 @@ void EffectPass::Render(float deltaTime)
 
 						if (curMaterial != nullptr)
 						{
-							Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+							curMaterialData->Update(curMaterial->m_Data);
 
-							Device->BindMaterialSRV(curMaterial);
+							Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+							m_Device.lock()->Context()->PSSetShaderResources(0, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
+
 						}
 					}
 
@@ -134,5 +151,32 @@ void EffectPass::Render(float deltaTime)
 
 void EffectPass::OnResize()
 {
+	std::shared_ptr<ResourceManager> manager = m_ResourceManager.lock();
 
+	m_DepthStencilView = manager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+
+	m_AlbedoRTV = manager->Get<RenderTargetView>(L"Albedo").lock();
+	m_NormalRTV = manager->Get<RenderTargetView>(L"Normal").lock();
+	m_PositionRTV = manager->Get<RenderTargetView>(L"Position").lock();
+	m_DepthRTV = manager->Get<RenderTargetView>(L"Depth").lock();
+	m_MetalicRoughnessRTV = manager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
+	m_AORTV = manager->Get<RenderTargetView>(L"AO").lock();
+	m_EmissiveRTV = manager->Get<RenderTargetView>(L"Emissive").lock();
+	m_LightMapRTV = manager->Get<RenderTargetView>(L"LightMap").lock();
+	m_GBuffer = manager->Get<RenderTargetView>(L"GBuffer").lock();
+
+	m_AlbedoSRV = manager->Get<ShaderResourceView>(L"Albedo").lock();
+	m_NormalSRV = manager->Get<ShaderResourceView>(L"Normal").lock();
+	m_PositionSRV = manager->Get<ShaderResourceView>(L"Position").lock();
+	m_DepthSRV = manager->Get<ShaderResourceView>(L"Depth").lock();
+	m_MetalicRoughnessSRV = manager->Get<ShaderResourceView>(L"Metalic_Roughness").lock();
+	m_AmbientOcclusionSRV = manager->Get<ShaderResourceView>(L"AO").lock();
+	m_EmissiveSRV = manager->Get<ShaderResourceView>(L"Emissive").lock();
+	m_GBufferSRV = manager->Get<ShaderResourceView>(L"GBuffer").lock();
+	m_LightMapSRV = manager->Get<ShaderResourceView>(L"LightMap").lock();
+}
+
+void EffectPass::SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue)
+{
+	m_RenderList = renderQueue;
 }

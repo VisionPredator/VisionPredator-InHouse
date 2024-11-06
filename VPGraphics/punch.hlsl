@@ -47,10 +47,11 @@ cbuffer time : register(b2)
 }
 
 Texture2D normalTex : register(t0);
-Texture2D noiseTex : register(t0);
+Texture2D noiseTex : register(t1);
 
 
 SamplerState samLinear : register(s0);
+
 
 
 
@@ -72,6 +73,28 @@ float4 main(VS_OUTPUT input) : SV_TARGET
      //View
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
     
-    return 1 - saturate(dot(N,V));
+    float effect = frac(deltaTime.r);
+    //float effect = 1;
+    
+    float TAU = 6.23f;
+    
+    
+    float2 noiseUV = float2((deltaTime.r * 0.1f) + (input.tex.x / 4.f),input.tex.y);
+    
+    float3 noiseValue = noiseTex.Sample(samLinear, noiseUV).rgb;
+    
+    
+    
+    float4 color = pow(1 - saturate(dot(N, V)), 1) * sin(TAU * (effect + (1 - (2 * pow(1 - saturate(dot(N, V)),1)))));
+   
+    if (color.w  <= 0)
+    {
+        discard;
+    }
+    
+    
+        return color;
+    
+    //return float4(N.xyz, 1);
        
 }

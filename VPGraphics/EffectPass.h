@@ -15,7 +15,7 @@ public:
 
 	void Render(float deltaTime);
 	void OnResize();
-
+	void SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue);
 private:
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ResourceManager> m_ResourceManager;
@@ -41,6 +41,7 @@ private:
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBufferSRV;
 	std::weak_ptr<ShaderResourceView> m_NormalCopySRV;
+	std::weak_ptr<ShaderResourceView> m_NoiseSRV;
 
 
 	// Multi Render Target
