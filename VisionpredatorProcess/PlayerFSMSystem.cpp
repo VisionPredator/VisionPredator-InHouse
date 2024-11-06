@@ -176,12 +176,15 @@ void PlayerFSMSystem::Calculate_Walk(PlayerComponent& playercomp)
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::DIE;
 	else if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
+	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 	else if ( playercomp.GetComponent<ControllerComponent>()->IsFall)
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL) || INPUTKEY(KEYBOARDKEY::LCONTROL))
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
+
 	else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform)
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
 }

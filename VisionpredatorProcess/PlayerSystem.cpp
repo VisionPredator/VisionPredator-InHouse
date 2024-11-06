@@ -1397,6 +1397,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 		else
 			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
 
+		ChangeArm(*playercomp, playercomp->IsVPMode);
 
 
 	};

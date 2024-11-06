@@ -144,7 +144,6 @@ public:
 	void Start(uint32_t gameObjectId) override;
 	void Finish(uint32_t gameObjectId) override {};
 	void Finalize() override;
-	float Randomfloat(float min, float max);
 	double RecoilPercent(double curtime, double time, double percent);
 	bool RecoilReturn(double curtime, double time, double percent);
 };

@@ -109,12 +109,6 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
 	META_ADD_COMP(CabinetComponent
-		,CabinetComponent::PistolPrefab
-		,CabinetComponent::PistolPose
-		,CabinetComponent::ShotGunPrefab
-		,CabinetComponent::ShotGunPose
-		,CabinetComponent::RiflePrefab
-		,CabinetComponent::RiflePose
 		, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime
 	
 	
@@ -130,6 +124,20 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(DoOnceResetComponent, DoOnceResetComponent::ResetIdentitys);
 	META_ADD_COMP(SpawnerComponent, SpawnerComponent::SpawnPrefab, SpawnerComponent::SpawnTransform);
 	META_ADD_COMP(DoorAccessComponent, DoorAccessComponent::Open, DoorAccessComponent::DoorIdentitys);
+	META_ADD_COMP(SpawnChildComponent
+		, SpawnChildComponent::Prefab1
+		, SpawnChildComponent::Prefab1_Pose
+		, SpawnChildComponent::Prefab2
+		, SpawnChildComponent::Prefab2_Pose
+		, SpawnChildComponent::Prefab3
+		, SpawnChildComponent::Prefab3_Pose
+		, SpawnChildComponent::Prefab4
+		, SpawnChildComponent::Prefab4_Pose
+		, SpawnChildComponent::Prefab5
+		, SpawnChildComponent::Prefab5_Pose
+	);
+	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType,  QuestComponent::IsStarted, QuestComponent::IsCleared);
+	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence);
 }
 
 void VispredRegister::Register_EnumClass()
@@ -174,6 +182,27 @@ void VispredRegister::Register_EnumClass()
 		, PlayerAni::ToThrow_Rifle
 		, PlayerAni::ToThrow_ShotGun
 	);
+	META_ADD_ENUMCLASS(QuestType
+		, QuestType::VPMOVE
+		, QuestType::VPJUMP
+		, QuestType::VPDASH
+		, QuestType::VPCHANGE
+		, QuestType::PLAYERSHOOT
+		, QuestType::PLAYERRUN
+		, QuestType::PLAYERJUMP
+		, QuestType::PLAYERCROUCH
+		, QuestType::PLAYERSLIDE
+		, QuestType::PLAYERATTACK
+		, QuestType::PLAYERPICKUP
+		, QuestType::PLAYERTHROW
+		, QuestType::PLAYERINTERECT);
+
+
+
+
+
+
+
 	META_ADD_ENUMCLASS(VPAni
 		, VPAni::ToVP_attack_L
 		, VPAni::ToVP_attack_R

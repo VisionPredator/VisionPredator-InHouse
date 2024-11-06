@@ -19,3 +19,4 @@
 #include "AutoPickSystem.h"
 #include "DoOnceSystem.h"
 #include "SpawnerSystem.h"
+#include "QuestSystem.h"
