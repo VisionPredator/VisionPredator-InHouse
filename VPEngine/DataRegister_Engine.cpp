@@ -28,6 +28,8 @@ void EngineRegister::Register_EnumClass()
 
 	META_ADD_ENUMCLASS(ShapeType, ShapeType::Cone, ShapeType::Box, ShapeType::Circle, ShapeType::Sphere);
 	META_ADD_ENUMCLASS(ParticleBillBoardType, ParticleBillBoardType::Billboard, ParticleBillBoardType::StretchedBillboard);
+	META_ADD_ENUMCLASS(BlendType, BlendType::AlphaBlend, BlendType::Additive);
+
 }
 
 void EngineRegister::Register_Structs()
@@ -151,7 +153,8 @@ void EngineRegister::Register_Components()
 		ParticleComponent::Shape,
 		ParticleComponent::Angle,
 		ParticleComponent::Radius,
-		ParticleComponent::RenderMode
+		ParticleComponent::RenderMode,
+		ParticleComponent::BlendMode
 		);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);

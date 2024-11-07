@@ -140,13 +140,15 @@ void PlayerSystem::OnShoot(std::any entityID)
 	const auto& particle = GetSceneManager()->GetChildEntityComp_HasComp<ParticleComponent>(gunID);
 	const auto& firePos = GetSceneManager()->GetChildEntityComp_HasComp<IdentityComponent>(gunID);
 
-	if (firePos != nullptr)
-	{
-		const auto transform = firePos->GetComponent<TransformComponent>();
-
-		const auto& pointLightPrefabName = gunComp->MuzzleEffectPointLightPrefab;
-		GetSceneManager()->SpawnEditablePrefab(pointLightPrefabName, transform->World_Location, transform->World_Rotation, transform->World_Scale);
-	}
+	// 오류로 인하여 주석처리.
+	// 총 발사 라이트
+	//if (firePos != nullptr)
+	//{
+	//	const auto transform = firePos->GetComponent<TransformComponent>();
+	//
+	//	const auto& pointLightPrefabName = gunComp->MuzzleEffectPointLightPrefab;
+	//	GetSceneManager()->SpawnEditablePrefab(pointLightPrefabName, transform->World_Location, transform->World_Rotation, transform->World_Scale);
+	//}
 
 	// Gun 오브젝트가 ParticleObj를 가지고 있는지 확인
 	if (particle != nullptr)
