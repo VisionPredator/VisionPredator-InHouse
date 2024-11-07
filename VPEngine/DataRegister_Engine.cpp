@@ -164,5 +164,6 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume, SoundComponent::Duration, SoundComponent::Loop);
 	META_ADD_COMP(DecalComponent, DecalComponent::TextureName);
 	META_ADD_COMP(ButtonComponent,ButtonComponent::skill,ButtonComponent::name, ButtonComponent::ChangeImage);
+	META_ADD_COMP(EffectComponent,EffectComponent::Duration, EffectComponent::Speed, EffectComponent::FBX, EffectComponent::NoiseTexture, EffectComponent::Offset, EffectComponent::Scale);
 }
 

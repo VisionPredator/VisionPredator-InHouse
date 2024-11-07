@@ -20,3 +20,4 @@
 #include "SoundComponent.h"
 #include "DecalComponent.h"
 #include "ButtonComponent.h"
+#include "EffectComponent.h"
