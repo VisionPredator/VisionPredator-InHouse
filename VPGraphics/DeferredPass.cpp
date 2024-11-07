@@ -270,9 +270,6 @@ void DeferredPass::GeometryPass()
 
 	for(const auto& curData : m_RenderList)
 	{
-		if(curData->punchEffect)
-			continue;
-
 		bool isTranparency = false;
 
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();

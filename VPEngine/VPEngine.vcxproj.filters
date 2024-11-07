@@ -308,8 +308,6 @@
       <Filter>Component\etc</Filter>
     </ClInclude>
     <ClInclude Include="ButtonSystem.h" />
-    <ClInclude Include="EffectComponent.h" />
-    <ClInclude Include="EffectSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TransformSystem.cpp">
@@ -466,8 +464,6 @@
       <Filter>Component\etc\Source</Filter>
     </ClCompile>
     <ClCompile Include="ButtonSystem.cpp" />
-    <ClCompile Include="EffectComponent.cpp" />
-    <ClCompile Include="EffectSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VPEngine.rc">

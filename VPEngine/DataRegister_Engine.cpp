@@ -28,8 +28,6 @@ void EngineRegister::Register_EnumClass()
 
 	META_ADD_ENUMCLASS(ShapeType, ShapeType::Cone, ShapeType::Box, ShapeType::Circle, ShapeType::Sphere);
 	META_ADD_ENUMCLASS(ParticleBillBoardType, ParticleBillBoardType::Billboard, ParticleBillBoardType::StretchedBillboard);
-	META_ADD_ENUMCLASS(BlendType, BlendType::AlphaBlend, BlendType::Additive);
-
 }
 
 void EngineRegister::Register_Structs()
@@ -134,7 +132,7 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(IDComponent, IDComponent::Name);
 	META_ADD_COMP(IdentityComponent, IdentityComponent::UUID);
 	META_ADD_COMP(TransformComponent, TransformComponent::Local_Location, TransformComponent::Local_Rotation, TransformComponent::Local_Quaternion, TransformComponent::Local_Scale, TransformComponent::World_Location, TransformComponent::World_Rotation, TransformComponent::World_Quaternion, TransformComponent::World_Scale, TransformComponent::FrontVector, TransformComponent::RightVector);
-	META_ADD_COMP(MeshComponent, MeshComponent::IsVisible, MeshComponent::IsOverDraw,MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::MaskColor,MeshComponent::InteractiveColor, MeshComponent::isEffect);
+	META_ADD_COMP(MeshComponent, MeshComponent::IsVisible, MeshComponent::IsOverDraw,MeshComponent::FBX,MeshComponent::LightMapOffset, MeshComponent::LightMapTiling,MeshComponent::LightMapScale, MeshComponent::LightMapIndex, MeshComponent::MaskColor,MeshComponent::InteractiveColor);
 	META_ADD_COMP(SkinningMeshComponent, SkinningMeshComponent::IsVisible, SkinningMeshComponent::IsOverDraw,SkinningMeshComponent::FBX);
 	META_ADD_COMP(LightComponent, LightComponent::type, LightComponent::intensity, LightComponent::color, LightComponent::direction, LightComponent::attenuation, LightComponent::range, LightComponent::spot);
 	META_ADD_COMP(Parent, Parent::ParentID);
@@ -153,8 +151,7 @@ void EngineRegister::Register_Components()
 		ParticleComponent::Shape,
 		ParticleComponent::Angle,
 		ParticleComponent::Radius,
-		ParticleComponent::RenderMode,
-		ParticleComponent::BlendMode
+		ParticleComponent::RenderMode
 		);
 	META_ADD_COMP(GeometryComponent,GeometryComponent::IsVisible, GeometryComponent::IsOverDraw, GeometryComponent::FBXFilter, GeometryComponent::color, GeometryComponent::UseTexture, GeometryComponent::TextureName);
 	META_ADD_COMP(RigidBodyComponent, RigidBodyComponent::IsDynamic, RigidBodyComponent::ColliderType, RigidBodyComponent::ColliderShape, RigidBodyComponent::BoxInfo, RigidBodyComponent::SphereInfo, RigidBodyComponent::CapsuleInfo, RigidBodyComponent::DefaultColliderInfo);
@@ -164,9 +161,8 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(NavAgentComponent, NavAgentComponent::TargetName, NavAgentComponent::IsChase);
 	META_ADD_COMP(SocketComponent, SocketComponent::ConnectedEntity, SocketComponent::SocketName, SocketComponent::IsConnected, SocketComponent::Offset, SocketComponent::UseQuaternion, SocketComponent::OffsetQuaternion, SocketComponent::OffsetRotation);
 	META_ADD_COMP(TextComponent, TextComponent::Text, TextComponent::FontPath, TextComponent::Color, TextComponent::PosXPercent, TextComponent::PosYPercent, TextComponent::Scale, TextComponent::Angle, TextComponent::Layer);
-	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume, SoundComponent::Duration, SoundComponent::Loop);
+	META_ADD_COMP(SoundComponent, SoundComponent::SoundPath, SoundComponent::Volume,SoundComponent::Is2D, SoundComponent::Duration, SoundComponent::Loop);
 	META_ADD_COMP(DecalComponent, DecalComponent::TextureName);
 	META_ADD_COMP(ButtonComponent,ButtonComponent::skill,ButtonComponent::name, ButtonComponent::ChangeImage);
-	META_ADD_COMP(EffectComponent,EffectComponent::Duration, EffectComponent::Speed, EffectComponent::FBX, EffectComponent::NoiseTexture, EffectComponent::Offset, EffectComponent::Scale, EffectComponent::Rotation);
 }
 

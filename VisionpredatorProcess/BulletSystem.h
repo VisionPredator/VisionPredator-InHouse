@@ -52,7 +52,5 @@ public:
 
 	void ExitTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second) override;
 
-private:
-	std::weak_ptr<Entity> GunSparkParticleEntity{};
 };
 

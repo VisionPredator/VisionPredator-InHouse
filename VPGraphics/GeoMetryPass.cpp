@@ -38,7 +38,7 @@ void GeoMetryPass::Render()
 			std::shared_ptr<VertexBuffer> vb = m_ResourceManager.lock()->Get<VertexBuffer>(L"TextureBox_VB").lock();
 			std::shared_ptr<IndexBuffer> ib = m_ResourceManager.lock()->Get<IndexBuffer>(L"TextureBox_IB").lock();
 
-			if (curOb->punchEffect)
+			if (curOb->useTexture)
 			{
 
 				std::shared_ptr<ShaderResourceView> srv = m_ResourceManager.lock()->Get<ShaderResourceView>(curOb->textureName).lock();

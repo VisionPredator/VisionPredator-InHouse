@@ -8,7 +8,7 @@ EditorSystem::EditorSystem(std::shared_ptr<SceneManager> sceneManager) : System(
 
 void EditorSystem::Update(float deltaTime)
 {
-	if (INPUTKEYDOWN(KEYBOARDKEY::F1))
+	if (INPUTKEYDOWN(KEYBOARDKEY::F2))
 	{
 		isDebugRender = !isDebugRender;
 		m_Graphics->DebugRenderONOFF(isDebugRender);

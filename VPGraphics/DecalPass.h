@@ -48,7 +48,6 @@ private:
 	std::weak_ptr<RenderTargetView> m_AORTV;
 	std::weak_ptr<RenderTargetView> m_EmissiveRTV;
 	std::weak_ptr<RenderTargetView> m_LightMapRTV;
-	std::weak_ptr<RenderTargetView> m_GBuffer;
 	std::weak_ptr<RenderTargetView> m_NormalCopyRTV;
 
 	std::weak_ptr<VertexBuffer> m_InstanceBuffer;

@@ -5,7 +5,7 @@ struct TextComponent : Component
 {
 	VP_JSONBODY(TextComponent, Text, FontPath, Color, PosXPercent, PosYPercent, Scale, Angle, Layer);
 
-	std::wstring Text = L"Text";
+	std::wstring Text = L"ÇÑ±¹¾î";
 	std::wstring FontPath = {};
 	VPMath::Color Color;
 	float PosXPercent = 0.f;

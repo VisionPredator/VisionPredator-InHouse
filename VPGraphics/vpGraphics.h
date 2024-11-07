@@ -135,10 +135,10 @@ namespace effect
 
 		enum class BlendType
 		{
-			AlphaBlend,
-			Additive,
+			AlphaBlending,
+			AdditiveBlending,
+
 		};
-		BlendType BlendMode = BlendType::AlphaBlend;
 	};
 
 }

@@ -9,8 +9,7 @@ class EnemySystem :
 	, public IPhysicable
 	, public IRenderable
 	, public IStartable
-	, public ISoundable
-	, public EventSubscriber
+	,public EventSubscriber
 {
 public:
 	EnemySystem(const std::shared_ptr<SceneManager>& sceneManager);
@@ -40,7 +39,6 @@ public:
 	void OnDamaged(std::any entityid_Damage);
 	PlayerComponent* m_playercomponent =nullptr;
 
-	// ISoundable 을 통해 상속됨
-	void SoundUpdate(float deltaTime) override {};
+	
 };
 

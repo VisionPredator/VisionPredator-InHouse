@@ -9,7 +9,6 @@ void EnemyIdleState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter IdleState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-	enemyComp->CurrentFSM = VisPred::Game::EnemyStates::Idle;
 
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
 }

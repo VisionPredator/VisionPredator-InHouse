@@ -60,8 +60,6 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	enemyCompRawPtr->SceneManager = m_SceneManager;
 	enemyCompRawPtr->PhysicsManager = m_PhysicsEngine;
 	enemyCompRawPtr->Graphics = m_Graphics;
-	enemyCompRawPtr->SoundEngine = m_SoundEngine;
-
 	enemyComp->BehaviorState->Enter(enemyComp);
 	enemyComp->CombatState->Enter(enemyComp);
 	enemyComp->MovementState->Enter(enemyComp);
@@ -114,6 +112,9 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 		else
 			m_playercomponent->HP += healthup;
 
+		auto playersound = m_playercomponent->GetComponent<PlayerSoundComponent>();
+		if (!GetSceneManager()->GetEntityByIdentityName(playersound->SoundKey_Heal))
+			GetSceneManager()->SpawnSoundEntity(playersound->SoundKey_Heal, playersound->Volume_Heal, true, false, {});
 	}
 	Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 

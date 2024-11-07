@@ -41,8 +41,7 @@ void VPOutLinePass::Render()
 
 	Device->Context()->PSSetShaderResources(0, 1, m_Normal.lock()->GetAddress());
 	Device->Context()->PSSetShaderResources(1, 1, m_Depth.lock()->GetAddress());
-	m_Device.lock()->Context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+	
 	Device->Context()->RSSetState(resourcemanager->Get<RenderState>(L"Solid").lock()->Get());
 	m_Device.lock()->Context()->IASetVertexBuffers(0, 1, vb->GetAddress(), vb->Size(), vb->Offset());
 	m_Device.lock()->Context()->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0);

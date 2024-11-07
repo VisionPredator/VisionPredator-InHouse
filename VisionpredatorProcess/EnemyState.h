@@ -39,7 +39,4 @@ public:
 	/// </summary>
 	static void ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime = 0.1f, bool isLoop = true, bool isAgain = false, bool isImmediate = false);
 	static void ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime = 0.1f, bool isLoop = true, bool isAgain = false, bool isImmediate = false);
-
-	static void DrawDebugDraw(const EnemyComponent& enemyComp, DirectX::BoundingFrustum& viewRangeOutput, DirectX::BoundingSphere& noiseRangeOutput,
-		DirectX::BoundingSphere& chaseRangeOutput);
 };

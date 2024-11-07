@@ -39,6 +39,8 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<AutoPickSystem>();
 	m_SystemManager->AddSystem<DoOnceSystem>();
 	m_SystemManager->AddSystem<SpawnerSystem>();
+	m_SystemManager->AddSystem<QuestSystem>();
+	m_SystemManager->AddSystem<CursorSystem>();
 }
 
 VPProcess::~VPProcess()

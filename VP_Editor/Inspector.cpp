@@ -5,6 +5,34 @@
 #include "imgui_stdlib.h"
 #include "Components.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
+#include <locale>
+#include <codecvt>
+// UTF-8 변환 함수
+
+// UTF-8 변환 함수
+std::string WStringToUTF8(const std::wstring& wstr) {
+	if (wstr.empty()) return {};
+
+	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+	if (sizeNeeded == 0) return {};
+
+	std::string strTo(sizeNeeded, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &strTo[0], sizeNeeded, nullptr, nullptr);
+	return strTo;
+}
+
+std::wstring UTF8ToWString(const std::string& str) {
+	if (str.empty()) return {};
+
+	int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), nullptr, 0);
+	if (sizeNeeded == 0) return {};
+
+	std::wstring wstrTo(sizeNeeded, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &wstrTo[0], sizeNeeded);
+	return wstrTo;
+}
+
+
 Inspector::Inspector(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<HierarchySystem> hierarchySystem) :m_SceneManager{ sceneManager }, m_HierarchySystem{ hierarchySystem }
 {
 }
@@ -476,22 +504,35 @@ void Inspector::TypeImGui_string(entt::meta_data memberMetaData, Component* comp
 		memberMetaData.set(component->GetHandle(), tempName);
 	ImGui::PopID();
 }
+
+
+//// InputText의 콜백 함수
+//int InputTextCallback(ImGuiInputTextCallbackData* data)
+//{
+//	return 0; // 특별한 필터가 필요 없으므로 그냥 0 반환
+//}	
+
 void Inspector::TypeImGui_wstring(entt::meta_data memberMetaData, Component* component)
 {
 	std::wstring tempWName = memberMetaData.get(component->GetHandle()).cast<std::wstring>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 
-	// Convert wstring to string
-	std::string tempName(tempWName.begin(), tempWName.end());
+	// wstring을 UTF-8 string으로 변환
+	std::string tempName = WStringToUTF8(tempWName);
 
 	ImGui::PushID(memberName.c_str());
 
-	// InputText handling for std::wstring
-	if (ImGui::InputText(memberName.c_str(), &tempName))
+	if (ImGui::InputText(memberName.c_str(), &tempName, ImGuiInputTextFlags_CallbackCharFilter))
 	{
-		// Convert string back to wstring
-		std::wstring newWName(tempName.begin(), tempName.end());
-		memberMetaData.set(component->GetHandle(), newWName);
+		try {
+			// UTF-8 문자열을 다시 wstring으로 변환
+			std::wstring newWName = UTF8ToWString(tempName);
+			memberMetaData.set(component->GetHandle(), newWName);
+		}
+		catch (...) {
+			// 예외가 발생할 경우 변환하지 않고 넘어갑니다.
+			// 필요한 경우 로그를 추가하여 예외 내용을 확인할 수 있습니다.
+		}
 	}
 
 	ImGui::PopID();

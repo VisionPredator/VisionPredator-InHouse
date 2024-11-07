@@ -108,7 +108,6 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<LifeTimeSystem>();
 	m_SystemManager->AddSystem<SoundSystem>();
 	m_SystemManager->AddSystem<DecalSystem>();
-	m_SystemManager->AddSystem<EffectSystem>();
 
 
 }

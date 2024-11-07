@@ -19,7 +19,6 @@ DecalPass::DecalPass(const std::shared_ptr<Device>& device, const std::shared_pt
 	m_NormalRTV = resourceManager->Get<RenderTargetView>(L"Normal").lock();
 	m_DepthRTV = resourceManager->Get<RenderTargetView>(L"Depth").lock();
 	m_MetalicRoughnessRTV = resourceManager->Get<RenderTargetView>(L"Metalic_Roughness").lock();
-	m_GBuffer = resourceManager->Get<RenderTargetView>(L"GBuffer").lock();
 
 
 	const uint32_t width = m_Device.lock()->GetWndWidth();
@@ -140,9 +139,9 @@ void DecalPass::Render()
 	Device->Context()->PSSetConstantBuffers(0, 1, CameraCB->GetAddress());
 
 	//set rtv,dsv
+	Device->UnBindSRV();
 	std::vector<ID3D11RenderTargetView*> RTVs;
-	RTVs.push_back(m_GBuffer.lock()->Get());
-	//RTVs.push_back(m_AlbedoRTV.lock()->Get());
+	RTVs.push_back(m_AlbedoRTV.lock()->Get());
 	//RTVs.push_back(m_NormalRTV.lock()->Get());
 	Device->Context()->OMSetRenderTargets(RTVs.size(), RTVs.data(), m_DepthStencilView.lock()->Get());
 
@@ -238,7 +237,6 @@ void DecalPass::OnResize()
 	m_AORTV = manager->Get<RenderTargetView>(L"AO").lock();
 	m_EmissiveRTV = manager->Get<RenderTargetView>(L"Emissive").lock();
 	m_LightMapRTV = manager->Get<RenderTargetView>(L"LightMap").lock();
-	m_GBuffer = manager->Get<RenderTargetView>(L"GBuffer").lock();
 
 	m_NormalCopyRTV.lock()->OnResize();
 
