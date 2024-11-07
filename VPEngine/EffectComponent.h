@@ -1,13 +1,12 @@
 #pragma once
 #include "Component.h"
-#include "../VPGraphics/MeshFilter.h"
 
 class EffectComponent :
     public Component
 {
 public:
 	EffectComponent() = default;
-	VP_JSONBODY(EffectComponent, isEffect, Duration, Speed, FBX, NoiseTexture, Offset, Scale);
+	VP_JSONBODY(EffectComponent, isEffect, Duration, Speed, FBX, NoiseTexture, Offset, Scale, Rotation);
 
 	bool isEffect = true;	
 	float Duration = 0;
@@ -18,6 +17,7 @@ public:
 
 	VPMath::Vector3 Offset;
 	VPMath::Vector3 Scale;
+	VPMath::Vector3 Rotation;
 
 };
 

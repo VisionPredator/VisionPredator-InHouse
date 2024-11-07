@@ -496,14 +496,21 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 	{
 		GetSceneManager()->AddChild(playercomp.FirePosEntity.lock()->GetEntityID(), effect->GetEntityID(), true);
 		auto effecttrans = effect->GetComponent<TransformComponent>();
-		effecttrans->SetLocalLocation({ 0,0,5 });
-		effecttrans->SetLocalRotation({});
-		effecttrans->SetLocalScale({ 1,1,1 });
+
+		if (effect->HasComponent<EffectComponent>())
+		{
+			auto comp = effect->GetComponent<EffectComponent>();
+
+			effecttrans->SetLocalLocation(comp->Offset);
+			effecttrans->SetLocalRotation(comp->Rotation);
+			effecttrans->SetLocalScale(comp->Scale);
+		}
+
 
 		if (effect->HasComponent<MeshComponent>())
 		{
-			auto mesh = effect->GetComponent<MeshComponent>(); 
-			mesh->isPunch= true;
+			auto mesh = effect->GetComponent<MeshComponent>();
+			mesh->isEffect = true;
 		}
 	}
 
@@ -1413,10 +1420,13 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 
 		else
 			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
+		ChangeArm(*playercomp, playercomp->IsVPMode);
 
 
 
 	};
+
+
 }
 #pragma endregion
 #pragma region player Functuions
