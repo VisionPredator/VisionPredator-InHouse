@@ -12,7 +12,7 @@ struct CabinetComponent :
     std::shared_ptr<Entity> RighEntity{};
     std::shared_ptr<Entity> LeftEntity{};
 
-
+    
     bool IsOpen{};
     VPMath::Vector3 RightStartRotate = {};
     VPMath::Vector3 RightEndRotation = {};

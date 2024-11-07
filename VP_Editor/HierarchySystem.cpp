@@ -2,9 +2,12 @@
 #include "HierarchySystem.h"
 #include "Components.h"
 #include <imgui.h>
-uint32_t HierarchySystem::m_SelectedEntityID=0;
+#include "EventManager.h"
+uint32_t HierarchySystem::m_SelectedEntityID = 0;
 HierarchySystem::HierarchySystem(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
+	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&HierarchySystem::OnPlayButton));
+	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&HierarchySystem::OnStopButton));
 }
 
 void HierarchySystem::ShowEntitys()
@@ -69,13 +72,6 @@ void HierarchySystem::ShowEntity(uint32_t entityID)
 		IsItemDoubleClicked = true;
 	}
 
-	//if (ImGui::IsItemClicked())
-	//{
-	//	m_SelectedEntityID = entityID;
-	//}
-
-
-
 	// 마우스 오른쪽 클릭을 통해 컨텍스트 메뉴 표시
 	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
 		ImGui::OpenPopup("Entity_Popup");
@@ -93,7 +89,46 @@ void HierarchySystem::ShowEntity(uint32_t entityID)
 		ImGui::EndPopup();
 	}
 
+	// 드래그 앤 드롭 기능 추가
+	if (!IsPlayMode)
+	{
+		ImGuiDragDropFlags target_flags = 0;
+
+		// 드래그 소스 설정
+		if (ImGui::BeginDragDropSource(target_flags))
+		{
+			ImGui::SetDragDropPayload("Entity", &entityID, sizeof(uint32_t));
+			ImGui::Text("%s", IDcomp->Name.c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		// 드롭 타겟 설정
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity", target_flags))
+			{
+				auto childEntity = *(const uint32_t*)payload->Data;
+				auto parentEntity = entityID;
+
+				if (childEntity != parentEntity)
+					GetSceneManager()->AddChild(parentEntity, childEntity);
+			}
+			ImGui::EndDragDropTarget();
+		}
+	}
+
 	ImGui::PopID();
+}
+
+
+void HierarchySystem::OnPlayButton(std::any none)
+{
+	IsPlayMode = true;
+}
+
+void HierarchySystem::OnStopButton(std::any none)
+{
+	IsPlayMode = false;
 }
 
 
@@ -152,8 +187,8 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 		}
 		ImGui::EndPopup();
 	}
-
-
+	if (!IsPlayMode)
+	{
 	/// 아이템 드래그 앤 드랍
 	ImGuiDragDropFlags target_flags = 0;
 	// 드래그 Entity
@@ -178,6 +213,8 @@ void HierarchySystem::ShowParentEntity(uint32_t entityID)
 		}
 		ImGui::EndDragDropTarget();
 	}
+	}
+
 	ImGui::PopID();
 	if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered())
 	{

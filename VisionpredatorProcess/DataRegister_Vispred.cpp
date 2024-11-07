@@ -53,6 +53,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::Volume_Sword3
 		, PlayerSoundComponent::Volume_VPAttack1
 		, PlayerSoundComponent::Volume_VPAttack2
+		, PlayerSoundComponent::Volume_Heal
 		, PlayerSoundComponent::Volume_Transformation
 		, PlayerSoundComponent::SoundKey_Walk1
 		, PlayerSoundComponent::SoundKey_Walk2
@@ -72,6 +73,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::SoundKey_Sword3
 		, PlayerSoundComponent::SoundKey_VPAttack1
 		, PlayerSoundComponent::SoundKey_VPAttack2
+		, PlayerSoundComponent::SoundKey_Heal
 		, PlayerSoundComponent::SoundKey_Transformation);
 	META_ADD_COMP(TrunComponent, TrunComponent::MoveTime, TrunComponent::Is_X, TrunComponent::Angle, TrunComponent::Finished);
 	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::IdentityAttach, AreaAttackComponent::Damage);
@@ -129,7 +131,13 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity, SectorClearComponent::PreDoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
-	META_ADD_COMP(CabinetComponent, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime);
+	META_ADD_COMP(CabinetComponent
+		, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime
+	
+	
+	
+	
+	);
 	META_ADD_COMP(EntityRemoverComponet, EntityRemoverComponet::temp);
 	META_ADD_COMP(IdentityRemoverComponent, IdentityRemoverComponent::RemoveIdentitys);
 	META_ADD_COMP(HPReducerComponent, HPReducerComponent::MaxHP, HPReducerComponent::DownHP);
@@ -139,6 +147,29 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(DoOnceResetComponent, DoOnceResetComponent::ResetIdentitys);
 	META_ADD_COMP(SpawnerComponent, SpawnerComponent::SpawnPrefab, SpawnerComponent::SpawnTransform);
 	META_ADD_COMP(DoorAccessComponent, DoorAccessComponent::Open, DoorAccessComponent::DoorIdentitys);
+	META_ADD_COMP(SpawnChildComponent
+		, SpawnChildComponent::Prefab1
+		, SpawnChildComponent::Prefab1_Pose
+		, SpawnChildComponent::Prefab2
+		, SpawnChildComponent::Prefab2_Pose
+		, SpawnChildComponent::Prefab3
+		, SpawnChildComponent::Prefab3_Pose
+		, SpawnChildComponent::Prefab4
+		, SpawnChildComponent::Prefab4_Pose
+		, SpawnChildComponent::Prefab5
+		, SpawnChildComponent::Prefab5_Pose
+	);
+	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType,  QuestComponent::IsStarted, QuestComponent::IsCleared);
+	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence
+		,MainQuestComponent::Volume_Subquest
+		,MainQuestComponent::Volume_Mainquest
+		, MainQuestComponent::SounKey_Subquest
+		,MainQuestComponent::SounKey_Mainquest
+		
+	);
+	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPGage, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI);
+	META_ADD_COMP(		CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale	);
+	META_ADD_COMP(HitUIComponent, HitUIComponent::IsHitUIOn, HitUIComponent::ProgressTime, HitUIComponent::DurationTime);
 }
 
 void VispredRegister::Register_EnumClass()
@@ -183,6 +214,27 @@ void VispredRegister::Register_EnumClass()
 		, PlayerAni::ToThrow_Rifle
 		, PlayerAni::ToThrow_ShotGun
 	);
+	META_ADD_ENUMCLASS(QuestType
+		, QuestType::VPMOVE
+		, QuestType::VPJUMP
+		, QuestType::VPDASH
+		, QuestType::VPCHANGE
+		, QuestType::PLAYERSHOOT
+		, QuestType::PLAYERRUN
+		, QuestType::PLAYERJUMP
+		, QuestType::PLAYERCROUCH
+		, QuestType::PLAYERSLIDE
+		, QuestType::PLAYERATTACK
+		, QuestType::PLAYERPICKUP
+		, QuestType::PLAYERTHROW
+		, QuestType::PLAYERINTERECT);
+
+
+
+
+
+
+
 	META_ADD_ENUMCLASS(VPAni
 		, VPAni::ToVP_attack_L
 		, VPAni::ToVP_attack_R

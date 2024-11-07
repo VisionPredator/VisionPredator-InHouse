@@ -65,8 +65,8 @@ struct PlayerComponent :
     bool ReadyToShoot{};
 	bool IsGunRecoiling{};
 	float RecoilProgress{};
-
-	bool IsVPMode{};
+	bool IsSearchable = true;
+	bool IsVPMode=true;
 	bool NonDamageMode =false;
 	bool IsTransformationing{};
 	float VPGageProgress{};

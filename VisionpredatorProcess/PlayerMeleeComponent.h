@@ -11,7 +11,6 @@ struct PlayerMeleeComponent :
 		std::string DefalutPrefab{};
 	std::string DashPrefab{};
 	VisPred::Game::PlayerMelee AttackMode= VisPred::Game::PlayerMelee::Sword_First;
-	bool IsVPMode{};
 	float Length{};
 	float Damage{};
 	float Angle{};

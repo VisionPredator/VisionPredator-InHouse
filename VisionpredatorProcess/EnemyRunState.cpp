@@ -19,8 +19,10 @@ void EnemyRunState::Update(const std::shared_ptr<Component>& component, float de
 	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 	const auto soundEngine = enemyComp->SoundEngine;
 
-	const auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
+	if (!enemyComp->HasComponent<EnemySoundComponent>())
+		return; 
 
+	const auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
 	// 사운드가 재생중이라면 플레이하지 않음
 	if (!soundEngine->IsPlayingSound(soundComp->GetEntityID(), soundComp->SoundKey_Run))
 	{

@@ -196,7 +196,10 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 			|| !playercomp.LongswordEntity.lock()
 			)
 			continue;
+		if (playercomp.IsSearchable)
+		{
 		SearchingInterectives(playercomp);
+		}
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 	}
@@ -1453,6 +1456,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
 		ChangeArm(*playercomp, playercomp->IsVPMode);
 
+		ChangeArm(*playercomp, playercomp->IsVPMode);
 
 
 	};

@@ -13,6 +13,23 @@ namespace VisPred
 			END
 
 		};		
+		enum class QuestType
+		{
+			VPMOVE,
+			VPJUMP,
+			VPDASH,
+			VPCHANGE,
+			PLAYERRUN,
+			PLAYERJUMP,
+			PLAYERCROUCH,
+			PLAYERSLIDE,
+			PLAYERATTACK,
+			PLAYERINTERECT,
+			PLAYERPICKUP,
+			PLAYERSHOOT,
+			PLAYERTHROW,
+
+		};
 		enum class GunRecoilMode
 		{
 			ReturnToMiddle,

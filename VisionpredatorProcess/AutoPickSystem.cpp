@@ -137,7 +137,12 @@ void AutoPickSystem::RemoveInvalidEntities(AutoPickComponent* autopick)
 {
 	for (auto it = autopick->PickUps.begin(); it != autopick->PickUps.end(); )
 	{
-		if (!GetSceneManager()->HasEntity(*it))
+		auto entity = GetSceneManager()->GetEntity(*it);
+		if (!entity)
+		{
+			it = autopick->PickUps.erase(it);
+		}
+		else if (entity->HasComponent<GunComponent>()&& entity->GetComponent<GunComponent>()->IsEmpty)
 		{
 			it = autopick->PickUps.erase(it);
 		}
@@ -168,7 +173,7 @@ uint32_t AutoPickSystem::FindClosestValidEntity(AutoPickComponent* autopick) {
 	{
 		auto gunEntity = GetSceneManager()->GetEntity(gunid);
 		if (gunEntity) {
-			float distance = (playerLocation, gunEntity->GetComponent<TransformComponent>()->World_Location).Length();
+			float distance = (playerLocation - gunEntity->GetComponent<TransformComponent>()->World_Location).Length();
 			distanceEntities.emplace_back(distance, gunid);
 		}
 	}
