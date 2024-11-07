@@ -39,6 +39,7 @@ void PlayerUISystem::Start(uint32_t gameObjectId)
 		playerUI->VPeyeEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->VPeyeUI);
 		playerUI->WeaponEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->WeaponUI);
 		playerUI->HitEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HitUI);
+		playerUI->InterectionEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->InterectionUI);
 
 		UpdatePlayerUI(*entity->GetComponent<PlayerUIComponent>(),0);
 	}
@@ -289,7 +290,7 @@ void PlayerUISystem::OnResetInterectionUI(std::any null)
 	auto entity = GetSceneManager()->GetEntityByIdentityName("PlayerUI");
 	if (!entity)
 		return;
-	ResetInterectionUI(entity);
+	ResetInterectionUI(entity->GetComponent<PlayerUIComponent>()->InterectionEntity.lock());
 }
 
 

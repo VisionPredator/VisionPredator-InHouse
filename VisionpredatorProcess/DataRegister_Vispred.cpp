@@ -89,11 +89,14 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::IsModelFlipped
 		, EnemyComponent::NoiseRangeRadius, EnemyComponent::ChaseRangeRadius
 		, EnemyComponent::DeadTime
-		, EnemyComponent::AttackRange, EnemyComponent::AttackSpeed, EnemyComponent::AttackCooldown
+		, EnemyComponent::AttackRange, EnemyComponent::ConsecutiveAttackDelay, EnemyComponent::AttackCycleDelay
 		, EnemyComponent::OnHit
 		, EnemyComponent::AttackAccuracy
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
 		, EnemyComponent::AttackPower
+		, EnemyComponent::AttackCycleDelay
+		, EnemyComponent::ConsecutiveAttackDelay
+		, EnemyComponent::MaxShotPerBurst
 	);
 	META_ADD_COMP(EnemySoundComponent
 		, EnemySoundComponent::Volume_Run

@@ -18,10 +18,11 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 	DetectTarget(*enemyComp, deltaTime);	/// TEMP!!!!!!!
 	const auto transform = enemyComp->GetComponent<TransformComponent>();
-	auto enemyPos = transform->World_Location;
+	const auto enemyPos = transform->World_Location;
 	auto rotation = transform->World_Rotation;
-	enemyPos.y += 1.2f;
-	enemyComp->currentAttackTime += deltaTime;
+
+	enemyComp->AttackCycleTimer += deltaTime;
+	enemyComp->ConsecutiveAttackTimer += deltaTime;
 
 	const auto playerTransform = enemyComp->Player->GetComponent<TransformComponent>();
 	const auto playerPos = VisPred::SimpleMath::Vector3{
@@ -34,41 +35,60 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 
 	// TODO: 공격 쿨타임 조절할수있게 하기
 	// 일정시간 마다 플레이어를 공격
-	if ( enemyComp->currentAttackTime >= 1.f)
-	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->currentAttackTime >= 1.f)
+	if (enemyComp->AttackCycleTimer >= enemyComp->AttackCycleDelay)
+	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->AttackCycleTimer >= 1.f)
 	{
-		enemyComp->currentAttackTime = 0.f;
 
-
-		auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
-		// 사운드 출력
-		//enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
-		enemyComp->SceneManager.lock()->SpawnSoundEntity(soundComp->SoundKey_Attack,soundComp->Volume_Attack,false,false , enemyPos);
-
-		// 이펙트 출력
-		const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());
-		if (particle != nullptr)
+		// 연속 발사 타이머가 충족되고 남은 연속 공격 횟수가 있을 때만 발사.
+		if (enemyComp->ConsecutiveAttackTimer >= enemyComp->ConsecutiveAttackDelay && enemyComp->ShotCount > 0)
 		{
-			particle->IsRender = true;
-			particle->Restart = true;
-		}
+			enemyComp->ConsecutiveAttackTimer = 0;
+			enemyComp->ShotCount--;
 
-		// 명중률 계산
-		enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
-		const float randomValue = static_cast<float>(rand() % 101);
-
-		// 명중률에 따라 사격
-		if (randomValue <= enemyComp->AttackAccuracy)
-		{
-			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
-			if (detectedObjID == enemyComp->Player->GetEntityID())
+			if (enemyComp->ShotCount <= 0)
 			{
-				EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
+				// 타이머 초기화
+				enemyComp->AttackCycleTimer = 0.f;
+				enemyComp->ShotCount = rand() % enemyComp->MaxShotPerBurst + 1;	// TODO: 연속적으로 최대 몇 발 쏠지 결정해주는 변수가 필요.
 			}
+
+			auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
+			// 사운드 출력
+			//enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
+			enemyComp->SceneManager.lock()->SpawnSoundEntity(soundComp->SoundKey_Attack, soundComp->Volume_Attack, false, false, enemyPos);
+
+			// 이펙트 출력
+			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());
+			if (particle != nullptr)
+			{
+				particle->IsRender = true;
+				particle->Restart = true;
+			}
+
+			// 명중률 계산
+			enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
+			const float randomValue = static_cast<float>(rand() % 101);
+
+			// 명중률에 따라 사격
+			if (randomValue <= enemyComp->AttackAccuracy)
+			{
+				const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
+				if (detectedObjID == enemyComp->Player->GetEntityID())
+				{
+					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
+				}
+			}
+			ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 		}
-		ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
-		return;
 	}
+
+	if (enemyComp->ShotCount <= 0)
+	{
+		// 타이머 초기화
+		enemyComp->AttackCycleTimer = 0.f;
+		enemyComp->ShotCount = rand() % enemyComp->MaxShotPerBurst + 1;	// TODO: 연속적으로 최대 몇 발 쏠지 결정해주는 변수가 필요.
+	}
+
 }
 
 void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
