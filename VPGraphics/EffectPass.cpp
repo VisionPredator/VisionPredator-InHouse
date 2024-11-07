@@ -68,7 +68,7 @@ void EffectPass::Render(float deltaTime)
 	m_Device.lock()->Context()->PSSetShader(m_PuchPS.lock()->GetPS(), nullptr, 0);
 
 	//set sampler
-	m_Device.lock()->Context()->PSSetSamplers(0, 1, linear->GetAddress());
+	m_Device.lock()->Context()->PSSetSamplers(0, 1, linearWrap->GetAddress());
 
 	//set cb
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
@@ -91,7 +91,7 @@ void EffectPass::Render(float deltaTime)
 
 	//set srv
 
-	m_Device.lock()->Context()->PSSetShaderResources(0, 1, m_NoiseSRV.lock()->GetAddress());
+	m_Device.lock()->Context()->PSSetShaderResources(1, 1, m_NoiseSRV.lock()->GetAddress());
 
 	//render
 	for (const auto& curData : m_RenderList)

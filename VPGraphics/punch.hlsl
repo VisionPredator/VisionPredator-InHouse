@@ -1,4 +1,4 @@
-struct VS_OUTPUT
+ struct VS_OUTPUT
 {
     float4 pos : SV_POSITION;
     float4 posWorld : WORLDPOSITION;
@@ -74,26 +74,28 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
     
     float effect = frac(deltaTime.r);
-    //float effect = 1;
+    //effect = 0.1;
     
     float TAU = 6.23f;
     
     
-    float2 noiseUV = float2((deltaTime.r * 0.1f) + (input.tex.x / 4.f),input.tex.y);
-    
-    float3 noiseValue = noiseTex.Sample(samLinear, noiseUV).rgb;
+    float2 noiseUV = float2((effect * 0.1f) + (input.tex.x), input.tex.y);
     
     
+    float noiseValue = noiseTex.Sample(samLinear, noiseUV);
     
-    float4 color = pow(1 - saturate(dot(N, V)), 1) * sin(TAU * (effect + (1 - (2 * pow(1 - saturate(dot(N, V)),1)))));
+    
+    float4 color = noiseValue * pow(1 - saturate(dot(N, V)), 1.5) * sin( TAU * (effect + (1 - (2 * pow(1 - saturate(dot(N, V)),1)))));
    
-    if (color.w  <= 0)
+    if (color.w <= 0.1)
     {
-        discard;
+       discard;
     }
     
+    //return float4(noiseValue, 0, 0, 1);
     
-        return color;
+    
+    return color;
     
     //return float4(N.xyz, 1);
        

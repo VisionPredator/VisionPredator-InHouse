@@ -58,6 +58,7 @@ void MeshSystem::BeginRenderUpdate(float deltaTime)
 		renderdata->offset = meshComp.LightMapOffset;
 		renderdata->lightmapindex = meshComp.LightMapIndex;
 		renderdata->color = meshComp.InteractiveColor;
+		renderdata->punchEffect = meshComp.isPunch;
 
 	}
 }

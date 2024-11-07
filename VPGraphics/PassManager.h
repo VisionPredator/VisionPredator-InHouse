@@ -95,7 +95,7 @@ private:
 	VPMath::Matrix m_Proj;
 
 private:
-	bool m_isVP = false;
+	bool m_isVP = false; 
 	bool m_isDebugDraw = false;
 };
 
