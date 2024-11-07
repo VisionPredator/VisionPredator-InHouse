@@ -83,7 +83,15 @@ void EffectSystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(EffectComponent, comp)
 	{
+		float preScale = comp.Duration;
+
+
 		if (comp.Duration > 0)
 		comp.Duration -= deltaTime;
+
+		comp.Scale.x += deltaTime;
+		comp.Scale.y += deltaTime;
+		comp.Scale.z += deltaTime;
+
 	}
 }

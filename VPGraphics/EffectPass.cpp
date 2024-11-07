@@ -10,7 +10,7 @@
 
 EffectPass::EffectPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager) : m_Device(device), m_ResourceManager(resourceManager)
 {
-	m_DepthStencilView = resourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+	m_DepthStencilView = resourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
 
 	m_AlbedoRTV = resourceManager->Get<RenderTargetView>(L"Albedo").lock();
 	m_NormalRTV = resourceManager->Get<RenderTargetView>(L"Normal").lock();
@@ -55,7 +55,8 @@ void EffectPass::Render(float deltaTime)
 
 	//rtv
 	std::vector<ID3D11RenderTargetView*> RTVs;
-	RTVs.push_back(m_NormalRTV.lock()->Get());
+	RTVs.push_back(m_GBuffer.lock()->Get());
+	//RTVs.push_back(m_NormalRTV.lock()->Get());
 	Device->Context()->OMSetRenderTargets(RTVs.size(), RTVs.data(), m_DepthStencilView.lock()->Get());
 
 	//set primitive

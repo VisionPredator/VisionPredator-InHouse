@@ -164,9 +164,9 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 
 	if (m_isVP)
 	{
-		m_punch->SetRenderQueue(afterCulling);
 		m_VPOutLinePass->SetRenderQueue(afterCulling);
 		m_RimLight->SetRenderQueue(afterCulling);
+		m_punch->SetRenderQueue(afterCulling);
 	}
 
 	if (!m_isDebugDraw)
@@ -197,12 +197,12 @@ void PassManager::Render(float deltaTime)
 
 	if (m_isVP)
 	{
-		m_punch->Render(deltaTime);
 
 		for (auto& pass : m_VPPasses)
 		{
 			pass->Render();
 		}
+		m_punch->Render(deltaTime);
 	}
 
 	for (auto& pass : m_IndepentCulling)
