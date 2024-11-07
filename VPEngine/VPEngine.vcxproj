@@ -176,6 +176,8 @@
     <ClInclude Include="ControllerMovementSystem.h" />
     <ClInclude Include="DecalComponent.h" />
     <ClInclude Include="DecalSystem.h" />
+    <ClInclude Include="EffectComponent.h" />
+    <ClInclude Include="EffectSystem.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="DataRegister_Engine.h" />
@@ -238,6 +240,8 @@
     <ClCompile Include="ControllerMovementSystem.cpp" />
     <ClCompile Include="DecalComponent.cpp" />
     <ClCompile Include="DecalSystem.cpp" />
+    <ClCompile Include="EffectComponent.cpp" />
+    <ClCompile Include="EffectSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="DataRegister_Engine.cpp" />
     <ClCompile Include="GeometryComponent.cpp" />

@@ -140,7 +140,6 @@ void DecalPass::Render()
 	Device->Context()->PSSetConstantBuffers(0, 1, CameraCB->GetAddress());
 
 	//set rtv,dsv
-	Device->UnBindSRV();
 	std::vector<ID3D11RenderTargetView*> RTVs;
 	RTVs.push_back(m_GBuffer.lock()->Get());
 	//RTVs.push_back(m_AlbedoRTV.lock()->Get());
