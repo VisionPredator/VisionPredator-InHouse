@@ -491,38 +491,53 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 		};
 
 	//¼ÒÈ¯!
-	auto effect = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/PunchEffect.prefab", {}, VPMath::Vector3{});
-	if (effect)
-	{
-		GetSceneManager()->AddChild(playercomp.FirePosEntity.lock()->GetEntityID(), effect->GetEntityID(), true);
-		auto effecttrans = effect->GetComponent<TransformComponent>();
-
-		if (effect->HasComponent<EffectComponent>())
-		{
-			auto comp = effect->GetComponent<EffectComponent>();
-
-			effecttrans->SetLocalLocation(comp->Offset);
-			effecttrans->SetLocalRotation(comp->Rotation);
-			effecttrans->SetLocalScale(comp->Scale);
-		}
-
-
-		if (effect->HasComponent<MeshComponent>())
-		{
-			auto mesh = effect->GetComponent<MeshComponent>();
-			mesh->isEffect = true;
-		}
-	}
+	
 
 	switch (meleecomp.AttackMode)
 	{
 		case VisPred::Game::PlayerMelee::VP_Left:
+		{
+
+			auto effect = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/PunchEffectL.prefab", {}, VPMath::Vector3{});
+			if (effect)
+			{
+				GetSceneManager()->AddChild(playercomp.FirePosEntity.lock()->GetEntityID(), effect->GetEntityID(), true);
+				auto effecttrans = effect->GetComponent<TransformComponent>();
+
+				if (effect->HasComponent<EffectComponent>())
+				{
+					auto comp = effect->GetComponent<EffectComponent>();
+
+					effecttrans->SetLocalLocation(comp->Offset);
+					effecttrans->SetLocalRotation(comp->Rotation);
+					effecttrans->SetLocalScale(comp->Scale);
+				}
+			}
+
 			SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_L, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
 			GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack1, soundcomp.Volume_VPAttack1, true, false, {});
 			break;
+		}
 		case VisPred::Game::PlayerMelee::VP_Right:
+		{
+			auto effect = GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/PunchEffectR.prefab", {}, VPMath::Vector3{});
+			if (effect)
+			{
+				GetSceneManager()->AddChild(playercomp.FirePosEntity.lock()->GetEntityID(), effect->GetEntityID(), true);
+				auto effecttrans = effect->GetComponent<TransformComponent>();
+
+				if (effect->HasComponent<EffectComponent>())
+				{
+					auto comp = effect->GetComponent<EffectComponent>();
+
+					effecttrans->SetLocalLocation(comp->Offset);
+					effecttrans->SetLocalRotation(comp->Rotation);
+					effecttrans->SetLocalScale(comp->Scale);
+				}
+			}
 			SetAttackDetails(VisPred::Game::VPAni::ToVP_attack_R, meleecomp.VPLength, meleecomp.VPDamage, meleecomp.VPAngle);
 			GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_VPAttack2, soundcomp.Volume_VPAttack2, true, false, {});
+		}
 			break;
 		default:
 			return;

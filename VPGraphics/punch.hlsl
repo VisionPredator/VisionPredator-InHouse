@@ -73,7 +73,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
      //View
     float3 V = normalize(float3(gViewInverse._41, gViewInverse._42, gViewInverse._43) - input.posWorld.xyz);
     
-    float effect = frac(deltaTime.r);
+    float effect = 1 - frac(deltaTime.r);
     //effect = 0.1;
     
     float TAU = 6.23f;
@@ -93,7 +93,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     }
     
     //return float4(noiseValue, 0, 0, 1);
-    
+    color = float4(0.227, 0.745, 0.576, color.w);
     
     return color;
     

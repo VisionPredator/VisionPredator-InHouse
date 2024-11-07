@@ -89,9 +89,9 @@ void EffectSystem::FixedUpdate(float deltaTime)
 		if (comp.Duration > 0)
 		comp.Duration -= deltaTime;
 
-		comp.Scale.x += deltaTime;
-		comp.Scale.y += deltaTime;
-		comp.Scale.z += deltaTime;
+		comp.Scale.x += deltaTime*comp.Speed;
+		comp.Scale.y += deltaTime*comp.Speed;
+		comp.Scale.z += deltaTime*comp.Speed;
 
 	}
 }
