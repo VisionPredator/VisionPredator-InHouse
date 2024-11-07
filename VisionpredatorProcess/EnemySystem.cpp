@@ -60,6 +60,8 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	enemyCompRawPtr->SceneManager = m_SceneManager;
 	enemyCompRawPtr->PhysicsManager = m_PhysicsEngine;
 	enemyCompRawPtr->Graphics = m_Graphics;
+	enemyCompRawPtr->SoundEngine = m_SoundEngine;
+
 	enemyComp->BehaviorState->Enter(enemyComp);
 	enemyComp->CombatState->Enter(enemyComp);
 	enemyComp->MovementState->Enter(enemyComp);

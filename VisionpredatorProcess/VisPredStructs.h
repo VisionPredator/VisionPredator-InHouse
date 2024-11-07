@@ -106,7 +106,7 @@ namespace VisPred
 			, DIE = 5
 			, ATTACKED = 6
 			, BACKWALK = 7
-			, ATTACI_IDLE = 8
+			, ATTACK_IDLE = 8
 			, END = 9
 		};
 	}
