@@ -1,21 +1,25 @@
 #pragma once
 #include "RenderPass.h"
-#include "ResourceManager.h"
-#include "DecalManager.h"
+#include "VisPredMath.h"
 
-class DecalPass :
-    public RenderPass
+class RenderData;
+
+template<typename T>
+class ConstantBuffer;
+
+class EffectPass
 {
 public:
-	DecalPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const std::shared_ptr<DecalManager> decalmanager);
-	~DecalPass();
+	EffectPass(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager);
+	~EffectPass();
 
-	virtual void Render() override;
-	virtual void OnResize() override;
+	void Render(float deltaTime);
+	void OnResize();
+	void SetRenderQueue(const std::vector<std::shared_ptr<RenderData>>& renderQueue);
+private:
+	std::weak_ptr<Device> m_Device;
+	std::weak_ptr<ResourceManager> m_ResourceManager;
 
-private:
-	std::shared_ptr<DecalManager> m_DecalManager;
-private:
 	std::weak_ptr<DepthStencilView> m_DepthStencilView;
 
 	//GBuffer Texture
@@ -37,8 +41,9 @@ private:
 	//GBuffer Result
 	std::weak_ptr<ShaderResourceView> m_GBufferSRV;
 	std::weak_ptr<ShaderResourceView> m_NormalCopySRV;
+	std::weak_ptr<ShaderResourceView> m_NoiseSRV;
 
-	
+
 	// Multi Render Target
 	std::weak_ptr<RenderTargetView> m_AlbedoRTV;
 	std::weak_ptr<RenderTargetView> m_NormalRTV;
@@ -51,13 +56,12 @@ private:
 	std::weak_ptr<RenderTargetView> m_GBuffer;
 	std::weak_ptr<RenderTargetView> m_NormalCopyRTV;
 
-	std::weak_ptr<VertexBuffer> m_InstanceBuffer;
-	std::vector<InstanceDecalData> m_InstanceDatas;
+	std::weak_ptr<VertexShader> m_StaticMeshVS;
+	std::weak_ptr<PixelShader> m_PuchPS;
 
-	std::weak_ptr<VertexBuffer> m_DecalVB;
-	std::weak_ptr<IndexBuffer> m_DecalIB;
 
-	std::weak_ptr<VertexShader> m_DecalVS;
-	std::weak_ptr<PixelShader> m_DecalPS;
+	std::weak_ptr<ConstantBuffer<VPMath::XMFLOAT4>> m_TimeCB;
+	std::vector<std::shared_ptr<RenderData>> m_RenderList;
+
 };
 

@@ -219,9 +219,20 @@ void ParticleObject::Draw(float deltaTime, float totalGameTime)
 
 	float factor[] = { 0.f, 0.f, 0.f, 0.f };
 	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Multiplicative").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
-	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlend").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
-	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Additive").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
 	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"NoDepthWrites").lock()->GetState().Get(), 0);	// ±íÀÌ ¾²±â´Â ÇÏÁö ¾Ê´Â´Ù.
+
+	// BlendState ¼¼ÆÃ
+	switch(m_Info.BlendMode)
+	{
+	case effect::ParticleInfo::BlendType::AlphaBlend:
+		context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlend").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
+		break;
+	case effect::ParticleInfo::BlendType::Additive:
+		context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Additive").lock()->GetState().Get(), factor, 0xffffffff);	// °¡»ê È¥ÇÕ
+		break;
+	}
+
+
 	context->IASetVertexBuffers(0, 1, m_DrawVB.GetAddressOf(), &stride, &offset);
 
 	context->DrawAuto();
@@ -257,5 +268,6 @@ void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
 	m_Info.Gravity = info.Gravity;
 	m_Info.StartColor = info.StartColor;
 	m_Info.EndColor = info.EndColor;
+	m_Info.BlendMode = info.BlendMode;
 	//m_Info.
 }

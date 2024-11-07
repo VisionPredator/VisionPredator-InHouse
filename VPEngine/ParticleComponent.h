@@ -4,14 +4,14 @@
 
 using ShapeType = effect::ParticleInfo::ParticleShape::ShapeType;
 using ParticleBillBoardType = effect::ParticleInfo::ParticleRenderer::ParticleBillBoardType;
+using BlendType = effect::ParticleInfo::BlendType;
 
 struct ParticleComponent : Component
 {
 	ParticleComponent() = default;
 
-	VP_JSONBODY(ParticleComponent, TexturePath, IsRender, IsLoop, Restart, Gravity, Duration, StartLifetime, StartSize, StartSpeed, StartColor, EndColor, Shape, Angle, Radius, RenderMode);
+	VP_JSONBODY(ParticleComponent, TexturePath, IsRender, IsLoop, Restart, Gravity, Duration, StartLifetime, StartSize, StartSpeed, StartColor, EndColor, Shape, Angle, Radius, RenderMode, BlendMode);
 
-	// TODO: Base 텍스처 Path 집어넣기. 아니면 ParticleObject 상에서 null이면 분기타도록 바꾸기.
 	std::string TexturePath;
 	bool IsRender = true;
 	bool IsLoop = true;
@@ -32,6 +32,9 @@ struct ParticleComponent : Component
 	float Radius = 1.f;
 
 	ParticleBillBoardType RenderMode = ParticleBillBoardType::Billboard;
+
+	BlendType BlendMode = BlendType::AlphaBlend;
+
 
 	bool RestartPrev = false;
 };

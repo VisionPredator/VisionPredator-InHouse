@@ -26,6 +26,7 @@
 #include "DoOnceResetComponent.h"
 #include "SpawnerComponent.h"
 #include "DoorAccessComponent.h"
+#include "EnemySoundComponent.h"
 #include "SpawnChildComponent.h"
 #include "QuestComponent.h"
 #include "MainQuestComponent.h"

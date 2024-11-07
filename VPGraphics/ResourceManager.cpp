@@ -134,7 +134,6 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<PixelShader>(L"InstancingPS", L"InstancingPS", "main");
 	Create<PixelShader>(L"DecalPS", L"DecalPS", "main");
 	Create<PixelShader>(L"OverDrawPS", L"OverDrawPS", "main");
-	Create<PixelShader>(L"CopyTex", L"CopyTex", "main");
 
 	// ----------------------------------------------------------------------------------------
 	// Vertex Buffer
@@ -165,6 +164,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 	Create<ShaderResourceView>(filePath, L"base.png");
 	Create<ShaderResourceView>(L"normalbase.png", L"normalbase.png");
+	Create<ShaderResourceView>(L"Noise.png", L"Noise.png");
 
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");

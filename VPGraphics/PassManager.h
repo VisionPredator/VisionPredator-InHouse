@@ -26,6 +26,7 @@ class DeferredInstancing;
 class OverDrawPass;
 class DecalPass;
 class DeferredLightPass;
+class EffectPass;
 #pragma region Pass
 
 #pragma region Manager
@@ -51,6 +52,8 @@ public:
 	void OnResize();
 	void SetVP(bool isVP);
 	void SetDebugDraw(bool on_off);
+
+
 private:
 	void DrawIMGUI();
 
@@ -76,6 +79,7 @@ private:
 	std::shared_ptr<OverDrawPass> m_OverDraw;
 	std::shared_ptr<DecalPass> m_Decal;
 	std::shared_ptr<DeferredLightPass> m_DeferredLight;
+	std::shared_ptr<EffectPass> m_punch;
 
 private:
 	std::weak_ptr<Device> m_Device;
@@ -91,7 +95,7 @@ private:
 	VPMath::Matrix m_Proj;
 
 private:
-	bool m_isVP = false;
+	bool m_isVP = false; 
 	bool m_isDebugDraw = false;
 };
 
