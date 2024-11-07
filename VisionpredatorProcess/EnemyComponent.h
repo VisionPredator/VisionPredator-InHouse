@@ -8,6 +8,7 @@
 #include "PlayerComponent.h"
 
 #include "../PhysxEngine/IPhysx.h"
+#include "../SoundEngine/ISound.h"
 #include "../VPGraphics/IGraphics.h"
 
 class SceneManager;
@@ -66,6 +67,7 @@ struct EnemyComponent : public Component
 	std::weak_ptr<SceneManager> SceneManager{};
 	Physic::IPhysx* PhysicsManager = nullptr;
 	Graphics::Interface* Graphics = nullptr;
+	Sound::ISound* SoundEngine = nullptr;
 
 	/// 아직 쓰이지 않는 변수. 연결해야한다.
 	// 공격 속도
