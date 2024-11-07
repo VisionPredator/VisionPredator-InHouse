@@ -13,7 +13,7 @@ void VispredRegister::Register_Metadata()
 
 void VispredRegister::Register_Components()
 {
-	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
+	META_ADD_COMP(BulletComponent, BulletComponent::SparkParticleName ,BulletComponent::Damage, BulletComponent::Speed);
 	META_ADD_COMP(PlayerComponent
 		, PlayerComponent::IsAttacking
 		, PlayerComponent::CurrentFSM
@@ -90,14 +90,14 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
 		, EnemyComponent::AttackPower
 	);
-	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound,GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound,GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilBack,GunComponent::RecoilTime, GunComponent::RecoilPercent);
+	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::MuzzleEffectPointLightPrefab,GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound,GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound,GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilBack,GunComponent::RecoilTime, GunComponent::RecoilPercent);
 	META_ADD_COMP(AimUIComponent
 		, AimUIComponent::Killed
 		, AimUIComponent::Aimed
 		, AimUIComponent::Attacked
 		, AimUIComponent::Interected
 	);
-	META_ADD_COMP(ShotGunBulletComponent, ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3, ShotGunBulletComponent::Distance, ShotGunBulletComponent::Speed);
+	META_ADD_COMP(ShotGunBulletComponent, ShotGunBulletComponent::SparkParticleName,ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3, ShotGunBulletComponent::Distance, ShotGunBulletComponent::Speed);
 	META_ADD_COMP(VPUIComponent
 		, VPUIComponent::ChangeColor
 		, VPUIComponent::FullImage
