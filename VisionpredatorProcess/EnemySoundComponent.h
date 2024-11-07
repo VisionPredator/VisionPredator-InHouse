@@ -7,6 +7,7 @@ struct EnemySoundComponent : Component
 	VP_JSONBODY(EnemySoundComponent,
 		Volume_Run,
 		Volume_Hurt,
+		Volume_Attack,
 		Volume_Death1,
 		Volume_Death2,
 		Volume_Death3,

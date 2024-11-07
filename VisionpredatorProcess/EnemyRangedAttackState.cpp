@@ -11,8 +11,6 @@ void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 	Log::GetClientLogger()->info("Enter RangedAttackState");
 
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-
-
 }
 
 void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component, float deltaTime)
@@ -34,14 +32,17 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 
 	enemyComp->GetComponent<NavAgentComponent>()->IsChase = false;
 
+	// TODO: 공격 쿨타임 조절할수있게 하기
 	// 일정시간 마다 플레이어를 공격
 	if ( enemyComp->currentAttackTime >= 1.f)
 	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->currentAttackTime >= 1.f)
 	{
 		enemyComp->currentAttackTime = 0.f;
 
+		auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
 		// 사운드 출력
-		enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
+		//enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
+		enemyComp->SceneManager.lock()->SpawnSoundEntity(soundComp->SoundKey_Attack,soundComp->Volume_Attack,false,false , enemyPos);
 
 		// 이펙트 출력
 		const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());

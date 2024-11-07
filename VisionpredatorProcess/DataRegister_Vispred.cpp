@@ -96,6 +96,7 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(EnemySoundComponent
 		, EnemySoundComponent::Volume_Run
 		, EnemySoundComponent::Volume_Hurt
+		, EnemySoundComponent::Volume_Attack
 		, EnemySoundComponent::Volume_Death1
 		, EnemySoundComponent::Volume_Death2
 		, EnemySoundComponent::Volume_Death3
