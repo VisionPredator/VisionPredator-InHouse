@@ -6,6 +6,7 @@
 QuestSystem::QuestSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&QuestSystem::OnInterected));
+	EventManager::GetInstance().Subscribe("OnTutorialClear", CreateSubscriber(&QuestSystem::OnTutorialClear));
 }
 
 void QuestSystem::FixedUpdate(float deltaTime)
@@ -14,8 +15,8 @@ void QuestSystem::FixedUpdate(float deltaTime)
 	COMPLOOP(QuestComponent, quest)
 	{
 		quest.GetComponent<TextComponent>()->Color = { .4f,.4f,.4f };
-
-		if (!quest.IsStarted || quest.IsCleared)
+		
+		if (!quest.QuestPlayer ||!quest.IsStarted || quest.IsCleared)
 			continue;
 		switch (quest.QuestType)
 		{
@@ -23,42 +24,40 @@ void QuestSystem::FixedUpdate(float deltaTime)
 		case VisPred::Game::QuestType::VPJUMP:			QuestCheck_VPJUMP(quest); break;
 		case VisPred::Game::QuestType::VPDASH:			QuestCheck_VPDASH(quest); break;
 		case VisPred::Game::QuestType::VPCHANGE:		QuestCheck_VPCHANGE(quest); break;
-		case VisPred::Game::QuestType::PLAYERSHOOT:		QuestCheck_PLAYERSHOOT(quest); break;
 		case VisPred::Game::QuestType::PLAYERRUN:		QuestCheck_PLAYERRUN(quest); break;
 		case VisPred::Game::QuestType::PLAYERJUMP:		QuestCheck_PLAYERJUMP(quest); break;
 		case VisPred::Game::QuestType::PLAYERCROUCH:	QuestCheck_PLAYERCROUCH(quest); break;
 		case VisPred::Game::QuestType::PLAYERSLIDE:		QuestCheck_PLAYERSLIDE(quest); break;
 		case VisPred::Game::QuestType::PLAYERATTACK:	QuestCheck_PLAYERATTACK(quest); break;
-		case VisPred::Game::QuestType::PLAYERPICKUP:	QuestCheck_PLAYERPICKUP(quest); break;
-		case VisPred::Game::QuestType::PLAYERTHROW:		QuestCheck_PLAYERTHROW(quest); break;
 		case VisPred::Game::QuestType::PLAYERINTERECT:	QuestCheck_PLAYERINTERECT(quest); break;
+		case VisPred::Game::QuestType::PLAYERPICKUP:	QuestCheck_PLAYERPICKUP(quest); break;
+		case VisPred::Game::QuestType::PLAYERSHOOT:		QuestCheck_PLAYERSHOOT(quest); break;
+		case VisPred::Game::QuestType::PLAYERTHROW:		QuestCheck_PLAYERTHROW(quest); break;
 		default:
 			break;
 		}
 
 	}
-	if (!m_MainQuest)
+	if (!m_MainQuestEntity.lock())
 		return;
+	auto mainquestcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
 	// Questptrs가 비어있는지 확인하여 예외 처리
-	if (!m_MainQuest->Questptrs.empty())
+	if (!mainquestcomp->Questptrs.empty())
 	{
 		// 첫 번째 퀘스트 시작 설정
 
-		m_MainQuest->Questptrs.front()->IsStarted = true;
+		mainquestcomp->Questptrs.front()->IsStarted = true;
 
 		// 첫 번째 퀘스트가 클리어된 경우, 리스트에서 제거
-		if (m_MainQuest->Questptrs.front()->IsCleared)
+		if (mainquestcomp->Questptrs.front()->IsCleared)
 		{
-			m_MainQuest->Questptrs.pop_front();
+			mainquestcomp->Questptrs.pop_front();
 		}
 	}
 	// Questptrs가 비어 있는지 확인 후 추가 작업
-	if (m_MainQuest->Questptrs.empty())
+	if (mainquestcomp->Questptrs.empty())
 	{
-		// 모든 퀘스트가 완료된 경우에 대한 처리
-		// 예: 로그 출력, 다음 단계 진행, UI 업데이트 등
-		// 예: 로그 출력
-		// 추가로 필요에 따라 다른 로직을 추가
+		EventManager::GetInstance().ImmediateEvent("OnTutorialClear");
 	}
 
 
@@ -80,19 +79,20 @@ void QuestSystem::Initialize()
 
 void QuestSystem::Start(uint32_t gameObjectId)
 {
-	
+
 	auto entity = GetSceneManager()->GetEntity(gameObjectId);
 	if (entity->HasComponent<MainQuestComponent>())
 	{
-		if (!m_MainQuest)
+		if (!m_MainQuestEntity.lock())
 		{
-			m_MainQuest = entity->GetComponent<MainQuestComponent>();
-			for (auto& identity : m_MainQuest->QuestSequence)
+			m_MainQuestEntity = entity;
+			auto questcomp = entity->GetComponent<MainQuestComponent>();
+			for (auto& identity : questcomp->QuestSequence)
 			{
 				auto quest = GetSceneManager()->GetEntityByIdentityName(identity);
 				if (quest && quest->HasComponent<QuestComponent>())
 				{
-					m_MainQuest->Questptrs.push_back(quest->GetComponent<QuestComponent>());
+					questcomp->Questptrs.push_back(quest->GetComponent<QuestComponent>());
 				}
 			}
 		}
@@ -116,12 +116,16 @@ void QuestSystem::Finish(uint32_t gameObjectId)
 void QuestSystem::QuestCheck_VPMOVE(QuestComponent& questcomp)
 {
 	questcomp.GetComponent<TextComponent>()->Color = { 1.f,1.f,1.f };
-	if (questcomp.QuestPlayer->IsVPMode&& questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::RUN)
+	questcomp.QuestPlayer->IsSearchable = false;
+
+	if (questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::RUN)
 	{
-		questcomp.IsCleared=true;
+		questcomp.IsCleared = true;
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 
 	}
-	
+
 }
 
 void QuestSystem::QuestCheck_VPJUMP(QuestComponent& questcomp)
@@ -130,7 +134,8 @@ void QuestSystem::QuestCheck_VPJUMP(QuestComponent& questcomp)
 	if (questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 
 	}
 }
@@ -141,7 +146,8 @@ void QuestSystem::QuestCheck_VPDASH(QuestComponent& questcomp)
 	if (questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -151,7 +157,8 @@ void QuestSystem::QuestCheck_VPCHANGE(QuestComponent& questcomp)
 	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::Transformation)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -161,7 +168,8 @@ void QuestSystem::QuestCheck_PLAYERSHOOT(QuestComponent& questcomp)
 	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->HasGun && questcomp.QuestPlayer->IsAttacking)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -171,7 +179,8 @@ void QuestSystem::QuestCheck_PLAYERRUN(QuestComponent& questcomp)
 	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::RUN)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -181,7 +190,8 @@ void QuestSystem::QuestCheck_PLAYERJUMP(QuestComponent& questcomp)
 	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -191,7 +201,8 @@ void QuestSystem::QuestCheck_PLAYERCROUCH(QuestComponent& questcomp)
 	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::CROUCH)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -201,17 +212,20 @@ void QuestSystem::QuestCheck_PLAYERSLIDE(QuestComponent& questcomp)
 	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
 void QuestSystem::QuestCheck_PLAYERATTACK(QuestComponent& questcomp)
 {
 	questcomp.GetComponent<TextComponent>()->Color = { 1.f,1.f,1.f };
-	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->IsAttacking&& !questcomp.QuestPlayer->HasGun)
+	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->IsAttacking && !questcomp.QuestPlayer->HasGun)
 	{
 		questcomp.IsCleared = true;
-
+		questcomp.QuestPlayer->IsSearchable = true;
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -223,7 +237,8 @@ void QuestSystem::QuestCheck_PLAYERPICKUP(QuestComponent& questcomp)
 		|| curani == static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_Rifle) || curani == static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_ShotGun))
 	{
 		questcomp.IsCleared = true;
-
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
 }
 
@@ -246,17 +261,31 @@ void QuestSystem::QuestCheck_PLAYERINTERECT(QuestComponent& questcomp)
 void QuestSystem::OnInterected(std::any interective_interector)
 {
 	auto [interected, interector] = std::any_cast<std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>>>(interective_interector);
-	if (!m_MainQuest)
+	if (!m_MainQuestEntity.lock())
 		return;
-	if (m_MainQuest->Questptrs.empty())
+	auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+
+	if (questcomp->Questptrs.empty())
 		return;
-	if (m_MainQuest->Questptrs.front()->QuestType == VisPred::Game::QuestType::PLAYERINTERECT)
-			m_MainQuest->Questptrs.front()->IsCleared = true;
+	if (questcomp->Questptrs.front()->QuestType == VisPred::Game::QuestType::PLAYERINTERECT)
+	{
+		questcomp->Questptrs.front()->IsCleared = true;
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
+	}
+}
+
+void QuestSystem::OnTutorialClear(std::any none)
+{
+	EventManager::GetInstance().ImmediateEvent("OnInterected",std::make_pair(m_MainQuestEntity.lock(), m_MainQuestEntity.lock()));
+	auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+	GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Mainquest, questcomp->Volume_Mainquest, true, false, {});
+	m_MainQuestEntity.lock()->DestorySelf();
 }
 
 void QuestSystem::Finalize()
 {
-	m_MainQuest = nullptr;	
+	//m_MainQuest = nullptr;
 }
 
 void QuestSystem::Update(float deltaTime)

@@ -29,3 +29,6 @@
 #include "SpawnChildComponent.h"
 #include "QuestComponent.h"
 #include "MainQuestComponent.h"
+#include "CursorComponent.h"
+#include "PlayerUIComponent.h"
+#include "HitUIComponent.h"

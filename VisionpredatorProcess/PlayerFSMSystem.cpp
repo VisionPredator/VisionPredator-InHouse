@@ -371,9 +371,15 @@ void PlayerFSMSystem::Enter_Sound_FSM(PlayerComponent& playercomp, float deltaTi
 void PlayerFSMSystem::Enter_Sound_Idle(PlayerSoundComponent& soundcomp)
 {
 	auto player = soundcomp.GetComponent<PlayerComponent>();
-	if (player->PreFSM ==VisPred::Game::PlayerFSM::JUMP)
+	if (player->PreFSM == VisPred::Game::PlayerFSM::JUMP)
 	{
-		GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
+
+		if (!GetSceneManager()->GetEntityByIdentityName(soundcomp.SoundKey_Landing))
+		{
+			GetSceneManager()->SpawnSoundEntity(soundcomp.SoundKey_Landing, soundcomp.Volume_Landing, true, false, {});
+		}
+
+
 	}
 
 }

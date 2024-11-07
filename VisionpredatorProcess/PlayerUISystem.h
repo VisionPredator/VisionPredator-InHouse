@@ -15,27 +15,26 @@ public:
 
 	void Update(float deltaTime) override;
 	void Initialize() override;
-	void Start(uint32_t gameObjectId) override {};
+	void Start(uint32_t gameObjectId) override;
 	void Finish(uint32_t gameObjectId) override {};
 	void Finalize() override ;
+	void UpdateHP(PlayerUIComponent& playerUI);
+	void UpdateVPState(PlayerUIComponent& playerUI);
+	void UpdateAim(PlayerUIComponent& playerUI);
+	void UpdateWeaponUI(PlayerUIComponent& playerUI);
+	void UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime);
+	void UpdateFadeUI(PlayerUIComponent& playerUI);
+	void UpdateHitUI(PlayerUIComponent& playerUI, float deltatime);
+	double TrasnformationFadePercent(PlayerComponent* playercomp);
 
-	void UpdateHP(IdentityComponent& identityComp);
-	void UpdateVPState(IdentityComponent& identityComp);
-	void UpdateAim(IdentityComponent& identityComp);
-	void UpdateWeaponUI(IdentityComponent& identityComp);
-
-	void UpdateFadeUI(IdentityComponent& identityComp);
-	double TrasnformationFadePercent();
 	void OnUpdateSearchUI(std::any null);
 	void OnResetInterectionUI(std::any null);
-	bool ResetInterectionUI(IdentityComponent& identityComp);
-	void UpdateInterectionUI(IdentityComponent& identityComp);
-	bool InterectingGun(IdentityComponent& identityComp,Entity* selectedentity);
-	bool InterectingDoor(IdentityComponent& identityComp,Entity* selectedentity);
-	bool InterectingCloset(IdentityComponent& identityComp,Entity* selectedentity);
-
+	bool ResetInterectionUI(std::shared_ptr<Entity> identityComp);
+	void UpdateInterectionUI(PlayerUIComponent& identityComp);
+	bool InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity);
+	void OnDamaged(std::any entity_Damage);
 	// Event
 	void OnGunShoot(std::any data);
-	 PlayerComponent *m_PlayerComp{};
+	 //PlayerComponent *m_PlayerComp{};
 	
 };

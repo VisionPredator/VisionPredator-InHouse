@@ -52,6 +52,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::Volume_Sword3
 		, PlayerSoundComponent::Volume_VPAttack1
 		, PlayerSoundComponent::Volume_VPAttack2
+		, PlayerSoundComponent::Volume_Heal
 		, PlayerSoundComponent::Volume_Transformation
 		, PlayerSoundComponent::SoundKey_Walk1
 		, PlayerSoundComponent::SoundKey_Walk2
@@ -71,6 +72,7 @@ void VispredRegister::Register_Components()
 		, PlayerSoundComponent::SoundKey_Sword3
 		, PlayerSoundComponent::SoundKey_VPAttack1
 		, PlayerSoundComponent::SoundKey_VPAttack2
+		, PlayerSoundComponent::SoundKey_Heal
 		, PlayerSoundComponent::SoundKey_Transformation);
 	META_ADD_COMP(TrunComponent, TrunComponent::MoveTime, TrunComponent::Is_X, TrunComponent::Angle, TrunComponent::Finished);
 	META_ADD_COMP(AreaAttackComponent, AreaAttackComponent::IdentityAttach, AreaAttackComponent::Damage);
@@ -137,7 +139,16 @@ void VispredRegister::Register_Components()
 		, SpawnChildComponent::Prefab5_Pose
 	);
 	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType,  QuestComponent::IsStarted, QuestComponent::IsCleared);
-	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence);
+	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence
+		,MainQuestComponent::Volume_Subquest
+		,MainQuestComponent::Volume_Mainquest
+		, MainQuestComponent::SounKey_Subquest
+		,MainQuestComponent::SounKey_Mainquest
+		
+	);
+	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPGage, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI);
+	META_ADD_COMP(		CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale	);
+	META_ADD_COMP(HitUIComponent, HitUIComponent::IsHitUIOn, HitUIComponent::ProgressTime, HitUIComponent::DurationTime);
 }
 
 void VispredRegister::Register_EnumClass()

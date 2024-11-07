@@ -83,6 +83,7 @@ void VP_Editor::Update()
     }
 	else
 	{
+
 		VPEngine::Update();
 	}
 
@@ -224,23 +225,30 @@ void VP_Editor::SetUnityDarkThemeColors()
 void VP_Editor::OnPlayButton(std::any)
 {
 	m_IsEditorMode = false;
+    ShowCursor(FALSE);
     EventManager::GetInstance().ImmediateEvent("OnStartScene");
 }
 
 void VP_Editor::OnStopButton(std::any)
 {
 	m_IsEditorMode = true;
+    ShowCursor(TRUE);
+
     EventManager::GetInstance().ImmediateEvent("OnEndScene");
 
 }
 
 void VP_Editor::OnPauseButton(std::any)
 {
+    ShowCursor(TRUE);
+
     m_IsPauseMode = true;
 }
 
 void VP_Editor::OnResumeButton(std::any)
 {
+    ShowCursor(FALSE);
+
     m_IsPauseMode = false;
 }
 

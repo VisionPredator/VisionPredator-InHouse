@@ -7,7 +7,7 @@ class QuestSystem :
 {
 public: 
     QuestSystem(std::shared_ptr<SceneManager> scenemanager);
-    MainQuestComponent* m_MainQuest;
+    std::weak_ptr<Entity> m_MainQuestEntity;
 
     // IFixedUpdatable을(를) 통해 상속됨
     void FixedUpdate(float deltaTime) override;
@@ -33,6 +33,7 @@ public:
     void QuestCheck_PLAYERTHROW(QuestComponent& questcomp) ;
     void QuestCheck_PLAYERINTERECT(QuestComponent& questcomp) ;
     void OnInterected(std::any interective_interector);
+    void OnTutorialClear(std::any none);
 
     void Finalize() override;
 

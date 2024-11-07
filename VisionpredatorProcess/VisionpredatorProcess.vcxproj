@@ -166,6 +166,8 @@
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CabinetComponent.h" />
     <ClInclude Include="CabinetSystem.h" />
+    <ClInclude Include="CursorComponent.h" />
+    <ClInclude Include="CursorSystem.h" />
     <ClInclude Include="DetectableComponent.h" />
     <ClInclude Include="DoOnceComponent.h" />
     <ClInclude Include="DoOnceResetComponent.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="EnemyWalkState.h" />
     <ClInclude Include="EntityRemoverSystem.h" />
+    <ClInclude Include="HitUIComponent.h" />
     <ClInclude Include="HPReducerButtonSystem.h" />
     <ClInclude Include="IdentityRemoverComponent.h" />
     <ClInclude Include="EntityRemoverComponet.h" />
@@ -214,6 +217,7 @@
     <ClInclude Include="PlayerMeleeComponent.h" />
     <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
+    <ClInclude Include="PlayerUIComponent.h" />
     <ClInclude Include="PlayerUISystem.h" />
     <ClInclude Include="QuestComponent.h" />
     <ClInclude Include="QuestSystem.h" />
@@ -247,6 +251,8 @@
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="CabinetComponent.cpp" />
     <ClCompile Include="CabinetSystem.cpp" />
+    <ClCompile Include="CursorComponent.cpp" />
+    <ClCompile Include="CursorSystem.cpp" />
     <ClCompile Include="DetectableComponent.cpp" />
     <ClCompile Include="DoOnceComponent.cpp" />
     <ClCompile Include="DoOnceResetComponent.cpp" />
@@ -276,6 +282,7 @@
     <ClCompile Include="EnemySystem.cpp" />
     <ClCompile Include="EnemyWalkState.cpp" />
     <ClCompile Include="EntityRemoverSystem.cpp" />
+    <ClCompile Include="HitUIComponent.cpp" />
     <ClCompile Include="HPReducerButtonSystem.cpp" />
     <ClCompile Include="IdentityRemoverComponent.cpp" />
     <ClCompile Include="EntityRemoverComponet.cpp" />
@@ -298,6 +305,7 @@
     <ClCompile Include="PlayerMeleeComponent.cpp" />
     <ClCompile Include="PlayerSoundComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
+    <ClCompile Include="PlayerUIComponent.cpp" />
     <ClCompile Include="PlayerUISystem.cpp" />
     <ClCompile Include="AreaAttackComponent.cpp" />
     <ClCompile Include="AreaAttackSystem.cpp" />

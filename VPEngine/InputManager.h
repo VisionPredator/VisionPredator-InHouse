@@ -215,6 +215,9 @@ public:
 	bool IsEscapePressed();
 	bool GetClipmode();
 	void SetClipMode(bool IsWindowMode);
+	VPMath::Vector2 GetClientSize() {
+		return { static_cast<float> (m_clientRect.right - m_clientRect.left),static_cast<float> (m_clientRect.bottom-m_clientRect.top ) };
+	};
 
 private:
 	void CopyKeyStateToPrevious();

@@ -112,6 +112,9 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 		else
 			m_playercomponent->HP += healthup;
 
+		auto playersound = m_playercomponent->GetComponent<PlayerSoundComponent>();
+		if (!GetSceneManager()->GetEntityByIdentityName(playersound->SoundKey_Heal))
+			GetSceneManager()->SpawnSoundEntity(playersound->SoundKey_Heal, playersound->Volume_Heal, true, false, {});
 	}
 	Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 

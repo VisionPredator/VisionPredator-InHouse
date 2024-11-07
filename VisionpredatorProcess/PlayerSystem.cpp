@@ -185,7 +185,10 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 			|| !playercomp.LongswordEntity.lock()
 			)
 			continue;
+		if (playercomp.IsSearchable)
+		{
 		SearchingInterectives(playercomp);
+		}
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 	}
