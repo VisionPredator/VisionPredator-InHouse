@@ -105,7 +105,7 @@ void DeferredInstancing::Render()
 			continue;
 		}
 
-		if (object->isOverDraw)
+		if (object->isOverDraw || object->punchEffect)
 		{
 			continue;
 		}

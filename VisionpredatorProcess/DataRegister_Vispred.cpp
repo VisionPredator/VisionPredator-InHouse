@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "DataRegister_Vispred.h"
+
 #include "VisPredComponents.h"
 #include "VisPredStructs.h"
 void VispredRegister::Register_Metadata()
@@ -13,7 +14,7 @@ void VispredRegister::Register_Metadata()
 
 void VispredRegister::Register_Components()
 {
-	META_ADD_COMP(BulletComponent, BulletComponent::Damage, BulletComponent::Speed);
+	META_ADD_COMP(BulletComponent, BulletComponent::SparkParticleName ,BulletComponent::Damage, BulletComponent::Speed);
 	META_ADD_COMP(PlayerComponent
 		, PlayerComponent::IsAttacking
 		, PlayerComponent::CurrentFSM
@@ -81,6 +82,8 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(EnemyComponent
 		, EnemyComponent::HP
 		, EnemyComponent::CurrentFSM
+		, EnemyComponent::CurrentAni
+		, EnemyComponent::EnemyType
 		, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV
 		, EnemyComponent::NearZ, EnemyComponent::FarZ
 		, EnemyComponent::IsModelFlipped
@@ -92,14 +95,29 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
 		, EnemyComponent::AttackPower
 	);
-	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound,GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound,GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilBack,GunComponent::RecoilTime, GunComponent::RecoilPercent);
+	META_ADD_COMP(EnemySoundComponent
+		, EnemySoundComponent::Volume_Run
+		, EnemySoundComponent::Volume_Hurt
+		, EnemySoundComponent::Volume_Attack
+		, EnemySoundComponent::Volume_Death1
+		, EnemySoundComponent::Volume_Death2
+		, EnemySoundComponent::Volume_Death3
+		, EnemySoundComponent::SoundKey_Run
+		, EnemySoundComponent::SoundKey_Hurt
+		, EnemySoundComponent::SoundKey_Attack
+		, EnemySoundComponent::SoundKey_Death1
+		, EnemySoundComponent::SoundKey_Death2
+		, EnemySoundComponent::SoundKey_Death3
+		)
+
+	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::MuzzleEffectPointLightPrefab,GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound,GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound,GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilBack,GunComponent::RecoilTime, GunComponent::RecoilPercent);
 	META_ADD_COMP(AimUIComponent
 		, AimUIComponent::Killed
 		, AimUIComponent::Aimed
 		, AimUIComponent::Attacked
 		, AimUIComponent::Interected
 	);
-	META_ADD_COMP(ShotGunBulletComponent, ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3, ShotGunBulletComponent::Distance, ShotGunBulletComponent::Speed);
+	META_ADD_COMP(ShotGunBulletComponent, ShotGunBulletComponent::SparkParticleName,ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3, ShotGunBulletComponent::Distance, ShotGunBulletComponent::Speed);
 	META_ADD_COMP(VPUIComponent
 		, VPUIComponent::ChangeColor
 		, VPUIComponent::FullImage
@@ -167,7 +185,7 @@ void VispredRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right, PlayerMelee::END);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyStates, EnemyStates::Idle, EnemyStates::Chase, EnemyStates::Patrol, EnemyStates::Dead);
-	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);
+	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK, EnemyAni::ATTACK_IDLE);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 	META_ADD_ENUMCLASS(PlayerAni
 		, PlayerAni::ToAttack_Pistol

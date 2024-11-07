@@ -10,6 +10,7 @@ void EnemyChaseState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter ChaseState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	enemyComp->CurrentFSM = VisPred::Game::EnemyStates::Chase;
 
 	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
 

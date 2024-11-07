@@ -31,6 +31,7 @@
 #include "OverDrawPass.h"
 #include "DecalPass.h"
 #include "DeferredLightPass.h"
+#include "EffectPass.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -104,6 +105,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_Instancing->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_OverDraw = std::make_shared<OverDrawPass>(m_Device.lock(), m_ResourceManager.lock());
 
+
 	m_DeferredLight->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 
 	//VPpasses
@@ -126,11 +128,11 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	//pass push
 	m_OffScreenPasses.push_back(m_DebugPass);
 	m_OffScreenPasses.push_back(m_Instancing);	//static
-	m_OffScreenPasses.push_back(m_Decal);
 	m_OffScreenPasses.push_back(m_DeferredPass);	//skinned
 	m_OffScreenPasses.push_back(m_ObjectMaskPass);
 
 	m_AfterLightPasses.push_back(m_DeferredLight);
+	m_AfterLightPasses.push_back(m_Decal);
 	m_AfterLightPasses.push_back(m_TransparencyPass);
 	m_AfterLightPasses.push_back(m_OverDraw);
 
@@ -141,10 +143,15 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_IndepentCulling.push_back(m_OutlineBlurPass);
 	m_IndepentCulling.push_back(m_OutlineAddPass);
 
+
+	m_punch = std::make_shared<EffectPass>(m_Device.lock(), m_ResourceManager.lock());
+
+
 }
 
 void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling)
 {
+
 	for (auto& pass : m_OffScreenPasses)
 	{
 		pass->SetRenderQueue(afterCulling);
@@ -159,6 +166,7 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 	{
 		m_VPOutLinePass->SetRenderQueue(afterCulling);
 		m_RimLight->SetRenderQueue(afterCulling);
+		m_punch->SetRenderQueue(afterCulling);
 	}
 
 	if (!m_isDebugDraw)
@@ -180,6 +188,7 @@ void PassManager::Render(float deltaTime)
 		pass->Render();
 	}
 
+
 	for (auto& pass : m_AfterLightPasses)
 	{
 		pass->Render();
@@ -188,10 +197,12 @@ void PassManager::Render(float deltaTime)
 
 	if (m_isVP)
 	{
+
 		for (auto& pass : m_VPPasses)
 		{
 			pass->Render();
 		}
+		m_punch->Render(deltaTime);
 	}
 
 	for (auto& pass : m_IndepentCulling)
@@ -209,6 +220,8 @@ void PassManager::Render(float deltaTime)
 
 void PassManager::OnResize()
 {
+	m_punch->OnResize();
+
 	for (auto& pass : m_OffScreenPasses)
 	{
 		pass->OnResize();

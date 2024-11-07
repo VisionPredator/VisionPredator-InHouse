@@ -46,6 +46,8 @@ void RenderSystem::ComponentAdded(Component* comp)
 
 		info.Renderer.RenderMode = component->RenderMode;
 
+		info.BlendMode = component->BlendMode;
+
 		info.PosW = transform.World_Location;
 		info.Direction = transform.Local_Rotation;
 		m_Graphics->CreateParticleObject(component->GetEntityID(), info);
@@ -151,6 +153,8 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.Shape.Radius = component.Radius;
 
 		info.Renderer.RenderMode = component.RenderMode;
+
+		info.BlendMode = component.BlendMode;
 
 		info.PosW = transform.World_Location;
 		info.Direction = transform.Local_Rotation;
