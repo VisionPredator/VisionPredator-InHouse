@@ -78,20 +78,7 @@ void EffectPass::Render(float deltaTime)
 	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 	Device->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
 
-	static float dt = 0;
-	dt += deltaTime;
-
-	if (dt > 1.f)
-	{
-		dt -= 1.f;
-	}
-
-	m_TimeCB.lock()->Update({dt,0,0,0});
 	Device->Context()->PSSetConstantBuffers(2, 1, m_TimeCB.lock()->GetAddress());
-
-	//set srv
-
-	m_Device.lock()->Context()->PSSetShaderResources(1, 1, m_NoiseSRV.lock()->GetAddress());
 
 	//render
 	for (const auto& curData : m_RenderList)
@@ -100,6 +87,20 @@ void EffectPass::Render(float deltaTime)
 			continue;
 
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
+
+		//set srv
+		auto noiseTex = m_ResourceManager.lock()->Get<ShaderResourceView>(curData->textureName).lock();
+		if (noiseTex != nullptr)
+		{
+			m_Device.lock()->Context()->PSSetShaderResources(1, 1, noiseTex->GetAddress());
+		}
+		else
+		{
+			m_Device.lock()->Context()->PSSetShaderResources(1, 1, m_NoiseSRV.lock()->GetAddress());
+		}
+
+		m_TimeCB.lock()->Update({ curData->duration,0,0,0 });
+
 
 		if (curModel != nullptr)
 		{

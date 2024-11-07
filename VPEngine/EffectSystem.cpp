@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "EffectSystem.h"
 
-void EffectSystem::BeginRenderUpdate(float deltaTime)
+EffectSystem::EffectSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {
+
 }
 
-void EffectSystem::RenderUpdate(float deltaTime)
+void EffectSystem::BeginRenderUpdate(float deltaTime)
 {
 	COMPLOOP(EffectComponent, comp)
 	{
@@ -15,10 +16,13 @@ void EffectSystem::RenderUpdate(float deltaTime)
 			{
 				auto mesh = comp.GetComponent<MeshComponent>();
 
+				mesh->FBX = comp.FBX;
+
 				mesh->Renderdata->FBX = comp.FBX;
 				mesh->Renderdata->textureName = comp.NoiseTexture;
 				mesh->isEffect = comp.isEffect;
 				mesh->Renderdata->punchEffect = comp.isEffect;
+				mesh->Renderdata->duration = comp.Duration;
 			}
 
 			auto transform = comp.GetComponent<TransformComponent>();
@@ -29,12 +33,18 @@ void EffectSystem::RenderUpdate(float deltaTime)
 	}
 }
 
+void EffectSystem::RenderUpdate(float deltaTime)
+{
+	
+}
+
 void EffectSystem::LateRenderUpdate(float deltaTime)
 {
 }
 
 void EffectSystem::EditorRenderUpdate(float deltaTime)
 {
+	BeginRenderUpdate(deltaTime);
 }
 
 void EffectSystem::ComponentAdded(Component* comp)
@@ -42,6 +52,12 @@ void EffectSystem::ComponentAdded(Component* comp)
 	if (comp->GetHandle()->type().id() == Reflection::GetTypeID<EffectComponent>())
 	{
 		auto effect = static_cast<EffectComponent*>(comp);
+
+		if (comp->HasComponent<LifeTimeComponent>())
+		{
+			auto life = comp->GetComponent<LifeTimeComponent>();
+			life->LifeTime = effect->Duration;
+		}
 
 		if (comp->HasComponent<MeshComponent>())
 		{
@@ -61,4 +77,13 @@ void EffectSystem::ComponentAdded(Component* comp)
 void EffectSystem::ComponentReleased(Component* comp)
 {
 
+}
+
+void EffectSystem::FixedUpdate(float deltaTime)
+{
+	COMPLOOP(EffectComponent, comp)
+	{
+		if (comp.Duration > 0)
+		comp.Duration -= deltaTime;
+	}
 }
