@@ -79,6 +79,8 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(EnemyComponent
 		, EnemyComponent::HP
 		, EnemyComponent::CurrentFSM
+		, EnemyComponent::CurrentAni
+		, EnemyComponent::EnemyType
 		, EnemyComponent::HorizontalFOV, EnemyComponent::VerticalFOV
 		, EnemyComponent::NearZ, EnemyComponent::FarZ
 		, EnemyComponent::IsModelFlipped
@@ -136,7 +138,7 @@ void VispredRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right, PlayerMelee::END);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyStates, EnemyStates::Idle, EnemyStates::Chase, EnemyStates::Patrol, EnemyStates::Dead);
-	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK);
+	META_ADD_ENUMCLASS(EnemyAni, EnemyAni::ATTACK, EnemyAni::IDLE, EnemyAni::CHASE, EnemyAni::JUMP, EnemyAni::WALK, EnemyAni::DIE, EnemyAni::ATTACKED, EnemyAni::BACKWALK, EnemyAni::ATTACK_IDLE);
 	META_ADD_ENUMCLASS(GunType, GunType::NONE, GunType::PISTOL, GunType::RIFLE, GunType::SHOTGUN, GunType::END);
 	META_ADD_ENUMCLASS(PlayerAni
 		, PlayerAni::ToAttack_Pistol
