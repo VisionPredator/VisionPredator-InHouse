@@ -17,6 +17,7 @@ void EffectSystem::RenderUpdate(float deltaTime)
 
 				mesh->Renderdata->FBX = comp.FBX;
 				mesh->Renderdata->textureName = comp.NoiseTexture;
+				mesh->isEffect = comp.isEffect;
 				mesh->Renderdata->punchEffect = comp.isEffect;
 			}
 
@@ -48,6 +49,7 @@ void EffectSystem::ComponentAdded(Component* comp)
 
 			mesh->FBX = effect->FBX;
 			mesh->Renderdata->textureName = effect->NoiseTexture;
+			mesh->isEffect = effect->isEffect;
 		}
 
 		auto transform = comp->GetComponent<TransformComponent>();
