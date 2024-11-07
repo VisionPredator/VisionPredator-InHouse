@@ -31,7 +31,7 @@ public:
 	void OnResetInterectionUI(std::any null);
 	bool ResetInterectionUI(std::shared_ptr<Entity> identityComp);
 	void UpdateInterectionUI(PlayerUIComponent& identityComp);
-	bool InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity);
+	bool InterectingGun(std::shared_ptr<Entity> interectionEntity, Entity* selectedentity);
 	void OnDamaged(std::any entity_Damage);
 	// Event
 	void OnGunShoot(std::any data);

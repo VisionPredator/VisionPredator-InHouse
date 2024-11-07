@@ -39,6 +39,7 @@ void PlayerUISystem::Start(uint32_t gameObjectId)
 		playerUI->VPeyeEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->VPeyeUI);
 		playerUI->WeaponEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->WeaponUI);
 		playerUI->HitEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HitUI);
+		playerUI->InterectionEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->InterectionUI);
 
 		UpdatePlayerUI(*entity->GetComponent<PlayerUIComponent>(),0);
 	}
@@ -183,7 +184,6 @@ void PlayerUISystem::UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime
 	UpdateFadeUI(playerUI);
 	UpdateHitUI(playerUI,deltatime);
 
-
 }
 void PlayerUISystem::UpdateFadeUI(PlayerUIComponent& playerUI)
 {
@@ -289,7 +289,7 @@ void PlayerUISystem::OnResetInterectionUI(std::any null)
 	auto entity = GetSceneManager()->GetEntityByIdentityName("PlayerUI");
 	if (!entity)
 		return;
-	ResetInterectionUI(entity);
+	ResetInterectionUI(entity->GetComponent<PlayerUIComponent>()->InterectionEntity.lock());
 }
 
 
@@ -310,18 +310,18 @@ void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 	if (!entity)
 		return;
 
-	if (InterectingGun(playerUI.WeaponEntity.lock(), entity)) {}
+	if (InterectingGun(playerUI.InterectionEntity.lock(), entity)) {}
 
 }
 
-bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity)
+bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionEntity, Entity* selectedentity)
 {
 	if (!selectedentity->HasComponent<GunComponent>())
 		return false;
 
 
 	auto guncomp = selectedentity->GetComponent<GunComponent>();
-	auto& textUI = *weaponentity->GetComponent<TextComponent>();
+	auto& textUI = *interectionEntity->GetComponent<TextComponent>();
 	auto& imageUI = *textUI.GetComponent<ImageComponent>();
 
 	textUI.Color.w = 1;
@@ -363,7 +363,7 @@ void PlayerUISystem::OnDamaged(std::any entityid_Damage)
 	if (!entity || !entity->HasComponent<PlayerComponent>())
 		return;
 	auto playerUI = GetSceneManager()->GetEntityByIdentityName("PlayerUI");
-	if (!playerUI->HasComponent<PlayerUIComponent>())
+	if (!playerUI && !playerUI->HasComponent<PlayerUIComponent>())
 		return;
 	auto playeruicomp = playerUI->GetComponent<PlayerUIComponent>();
 

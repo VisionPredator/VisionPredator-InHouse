@@ -11,7 +11,7 @@ struct PlayerUIComponent :
     std::string VPeyeUI= "VPeyeUI";
     std::string WeaponUI= "WeaponUI";
     std::string HitUI = "HitUI";
-    std::string InterectionUI = "InterectionUI";
+    std::string InterectionUI =  "InterectionUI";
 
     std::weak_ptr<Entity> PlayerEntity;
     std::weak_ptr<Entity> FadeEntity;
