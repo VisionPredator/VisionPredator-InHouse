@@ -331,18 +331,18 @@ void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 	if (!entity)
 		return;
 
-	if (InterectingGun(playerUI.WeaponEntity.lock(), entity)) {}
+	if (InterectingGun(playerUI.InterectionEntity.lock(), entity)) {}
 
 }
 
-bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity)
+bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
 {
 	if (!selectedentity->HasComponent<GunComponent>())
 		return false;
 
 
 	auto guncomp = selectedentity->GetComponent<GunComponent>();
-	auto& textUI = *weaponentity->GetComponent<TextComponent>();
+	auto& textUI = *interectionentity->GetComponent<TextComponent>();
 	auto& imageUI = *textUI.GetComponent<ImageComponent>();
 
 	textUI.Color.w = 1;
