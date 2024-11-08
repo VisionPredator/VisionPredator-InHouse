@@ -25,13 +25,15 @@ public:
 	void UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime);
 	void UpdateFadeUI(PlayerUIComponent& playerUI);
 	void UpdateHitUI(PlayerUIComponent& playerUI, float deltatime);
-	double TrasnformationFadePercent(PlayerComponent* playercomp);
+	double Fade_in_out_Percent(float progress, float totalTime);
+	double Fade_in_Percent(float progress, float totalTime);
+	double Fade_out_Percent(float progress, float totalTime);
 
 	void OnUpdateSearchUI(std::any null);
 	void OnResetInterectionUI(std::any null);
 	bool ResetInterectionUI(std::shared_ptr<Entity> identityComp);
 	void UpdateInterectionUI(PlayerUIComponent& identityComp);
-	bool InterectingGun(std::shared_ptr<Entity> interectionEntity, Entity* selectedentity);
+	bool InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity);
 	void OnDamaged(std::any entity_Damage);
 	// Event
 	void OnGunShoot(std::any data);
