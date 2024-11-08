@@ -37,7 +37,8 @@ struct EnemyComponent : public Component
 		AttackCycleDelay, 
 		OnHit, 
 		AttackAccuracy, 
-		AccuracyRangeOne, AccuracyRangeTwo, AccuracyRangeThree, AccuracyRangeFour, 
+		AccuracyRangeOne, AccuracyRangeTwo, AccuracyRangeThree, AccuracyRangeFour,
+		AccuracyPenaltyOne, AccuracyPenaltyTwo, AccuracyPenaltyThree, AccuracyPenaltyFour,
 		AttackPower,
 		AttackCycleDelay,
 		ConsecutiveAttackDelay,
@@ -68,6 +69,11 @@ struct EnemyComponent : public Component
 	float AccuracyRangeTwo = 3.f;
 	float AccuracyRangeThree = 5.f;
 	float AccuracyRangeFour = 7.f;
+	// 거리별 감소되는 명중률
+	float AccuracyPenaltyOne = 20.f;;
+	float AccuracyPenaltyTwo = 30.0f;
+	float AccuracyPenaltyThree = 40.0f;
+	float AccuracyPenaltyFour = 50.0f;
 
 	// 공격력
 	uint32_t AttackPower = 1.f;
