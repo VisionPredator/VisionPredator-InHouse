@@ -6,6 +6,7 @@
 #include "../PhysxEngine/IPhysx.h"
 #include  "Components.h"
 #include  "VisPredComponents.h"
+#include <random>
 void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter RangedAttackState");
@@ -33,10 +34,12 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 
 	enemyComp->GetComponent<NavAgentComponent>()->IsChase = false;
 
-	// TODO: 공격 쿨타임 조절할수있게 하기
+	// 난수 생성기 초기화
+	std::random_device rd;  // 하드웨어 엔트로피를 기반으로 시드 생성
+	std::mt19937 gen(rd()); // Mersenne Twister 난수 생성기
+
 	// 일정시간 마다 플레이어를 공격
 	if (enemyComp->AttackCycleTimer >= enemyComp->AttackCycleDelay)
-	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->AttackCycleTimer >= 1.f)
 	{
 		// 연속 발사 타이머가 충족되고 남은 연속 공격 횟수가 있을 때만 발사.
 		if (enemyComp->ConsecutiveAttackTimer >= enemyComp->ConsecutiveAttackDelay && enemyComp->ShotCount > 0)
@@ -48,19 +51,26 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			{
 				// 타이머 초기화
 				enemyComp->AttackCycleTimer = 0.f;
-				if (enemyComp->MaxShotPerBurst == 0)
+				if (enemyComp->MaxShotPerBurst <= 0)	// 예외처리
 				{
 					enemyComp->MaxShotPerBurst = 1;
 				}
-				enemyComp->ShotCount = rand() % enemyComp->MaxShotPerBurst + 1;	// TODO: 연속적으로 최대 몇 발 쏠지 결정해주는 변수가 필요.
+				std::uniform_int_distribution dist(1, enemyComp->MaxShotPerBurst);
+				enemyComp->ShotCount = dist(gen);
 			}
 
-			auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
-			// 사운드 출력
-			//enemyComp->SceneManager.lock()->SpawnSoundEntity("Pistol",10,false,false , enemyPos);
-			enemyComp->SceneManager.lock()->SpawnSoundEntity(soundComp->SoundKey_Attack, soundComp->Volume_Attack, false, false, enemyPos);
+			const auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
 
-			// 이펙트 출력
+			// 공격 사운드 출력
+			enemyComp->SceneManager.lock()->SpawnSoundEntity(
+				soundComp->SoundKey_Attack, 
+				soundComp->Volume_Attack, 
+				false, 
+				false, 
+				enemyPos
+			);
+
+			// 공격 이펙트 출력
 			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());
 			if (particle != nullptr)
 			{
@@ -70,7 +80,11 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 
 			// 명중률 계산
 			enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
-			const float randomValue = static_cast<float>(rand() % 101);
+
+			std::random_device rd;  // 하드웨어 엔트로피를 기반으로 시드 생성
+			std::mt19937 gen(rd()); // Mersenne Twister 난수 생성기
+			std::uniform_int_distribution dist(0, 100);
+			const float randomValue = static_cast<float>(dist(gen));
 
 			// 명중률에 따라 사격
 			if (randomValue <= enemyComp->AttackAccuracy)
@@ -89,7 +103,12 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	{
 		// 타이머 초기화
 		enemyComp->AttackCycleTimer = 0.f;
-		enemyComp->ShotCount = rand() % enemyComp->MaxShotPerBurst + 1;	// TODO: 연속적으로 최대 몇 발 쏠지 결정해주는 변수가 필요.
+		if (enemyComp->MaxShotPerBurst <= 0)	// 예외처리
+		{
+			enemyComp->MaxShotPerBurst = 1;
+		}
+		std::uniform_int_distribution dist(1, enemyComp->MaxShotPerBurst);
+		enemyComp->ShotCount = dist(gen);
 	}
 
 }
