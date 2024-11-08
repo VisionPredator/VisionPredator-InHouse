@@ -4,7 +4,8 @@
 struct MainQuestComponent:
     public Component
 {
-    VP_JSONBODY(MainQuestComponent, QuestSequence, SounKey_Subquest, SounKey_Mainquest, Volume_Subquest, Volume_Mainquest);
+	VP_JSONBODY(MainQuestComponent, IsSkipMode, QuestSequence, SounKey_Subquest, SounKey_Mainquest, Volume_Subquest, Volume_Mainquest);
+    bool IsSkipMode{};
     std::vector < std::string > QuestSequence;
 	std::list < QuestComponent* > Questptrs;
     std::string SounKey_Subquest = "QuestClear";

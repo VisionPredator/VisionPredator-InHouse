@@ -52,6 +52,5 @@ protected:
 	Graphics::Interface* m_Graphics;
 	std::shared_ptr<Sound::ISound> m_SoundEngine;
 	TransformSystem* m_TransformSystem;
-
 };
 

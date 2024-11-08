@@ -13,6 +13,7 @@ void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 }
 
+#pragma optimize( "", off )
 void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
@@ -49,6 +50,10 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			{
 				// 타이머 초기화
 				enemyComp->AttackCycleTimer = 0.f;
+				if (enemyComp->MaxShotPerBurst == 0)
+				{
+					enemyComp->MaxShotPerBurst = 1;
+				}
 				enemyComp->ShotCount = rand() % enemyComp->MaxShotPerBurst + 1;	// TODO: 연속적으로 최대 몇 발 쏠지 결정해주는 변수가 필요.
 			}
 
@@ -90,7 +95,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	}
 
 }
-
+#pragma optimize( "", on )
 void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit RangedAttackState");

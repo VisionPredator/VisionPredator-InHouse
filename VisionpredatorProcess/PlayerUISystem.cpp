@@ -202,7 +202,7 @@ void PlayerUISystem::UpdateFadeUI(PlayerUIComponent& playerUI)
 	else
 	{
 		auto& fadeui = *playerUI.FadeEntity.lock()->GetComponent<ImageComponent>();
-		fadeui.Color.w = TrasnformationFadePercent(playercomp);
+		fadeui.Color.w = Fade_in_out_Percent(playercomp->TransformationProgress,playercomp->TransformationTime);
 	}
 }
 void PlayerUISystem::UpdateHitUI(PlayerUIComponent& playerUI, float deltatime)
@@ -240,13 +240,8 @@ void PlayerUISystem::UpdateHitUI(PlayerUIComponent& playerUI, float deltatime)
 	}
 }
 
-
-double PlayerUISystem::TrasnformationFadePercent(PlayerComponent* playercomp)
+double PlayerUISystem::Fade_in_out_Percent(float progress, float totalTime)
 {
-	// 현재 진행도와 전체 시간을 가져옵니다.
-	float progress = playercomp->TransformationProgress;
-	float totalTime = playercomp->TransformationTime;
-
 	// 전체 시간이 0 이하일 경우 0을 반환하여 나누기 오류를 방지합니다.
 	if (totalTime <= 0.0f) return 0.0;
 
@@ -266,6 +261,31 @@ double PlayerUISystem::TrasnformationFadePercent(PlayerComponent* playercomp)
 		return 2.0 * (1.0f - (percentage - 0.66f) / 0.34f);
 	}
 
+	// 진행도가 100%를 초과할 경우 기본적으로 0을 반환
+	return 0.0;
+}
+double PlayerUISystem::Fade_in_Percent(float progress, float totalTime)
+{
+	// 전체 시간이 0 이하일 경우 0을 반환하여 나누기 오류를 방지합니다.
+	if (totalTime <= 0.0f) return 0.0;
+	// 진행도를 퍼센트로 계산합니다.
+	float percentage = progress / totalTime;
+	// 0% - 100%에서 0에서 2로 선형적으로 증가
+	if (percentage <= 1.0f) 
+		return percentage * 2.0;
+	// 진행도가 100%를 초과할 경우 2를 반환
+	return 2.0;
+}
+
+double PlayerUISystem::Fade_out_Percent(float progress, float totalTime)
+{
+	// 전체 시간이 0 이하일 경우 0을 반환하여 나누기 오류를 방지합니다.
+	if (totalTime <= 0.0f) return 0.0;
+	// 진행도를 퍼센트로 계산합니다.
+	float percentage = progress / totalTime;
+	// 0% - 100%에서 2에서 0으로 선형적으로 감소
+	if (percentage <= 1.0f) 
+		return 2.0 * (1.0f - percentage);
 	// 진행도가 100%를 초과할 경우 기본적으로 0을 반환
 	return 0.0;
 }
@@ -311,18 +331,18 @@ void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 	if (!entity)
 		return;
 
-	if (InterectingGun(playerUI.WeaponEntity.lock(), entity)) {}
+	if (InterectingGun(playerUI.InterectionEntity.lock(), entity)) {}
 
 }
 
-bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity)
+bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
 {
 	if (!selectedentity->HasComponent<GunComponent>())
 		return false;
 
 
 	auto guncomp = selectedentity->GetComponent<GunComponent>();
-	auto& textUI = *weaponentity->GetComponent<TextComponent>();
+	auto& textUI = *interectionentity->GetComponent<TextComponent>();
 	auto& imageUI = *textUI.GetComponent<ImageComponent>();
 
 	textUI.Color.w = 1;

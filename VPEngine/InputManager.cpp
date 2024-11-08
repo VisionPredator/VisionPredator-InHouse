@@ -12,6 +12,11 @@ InputManager::InputManager()
 {
 	EventManager::GetInstance().Subscribe("OnResize", CreateSubscriber(&InputManager::OnResize));
 	EventManager::GetInstance().Subscribe("OnClipMouse", CreateSubscriber(&InputManager::OnClipMouse));
+	EventManager::GetInstance().Subscribe("OnResize", CreateSubscriber(&InputManager::OnResize));
+	EventManager::GetInstance().Subscribe("OnPlayButton", CreateSubscriber(&InputManager::OnPlayButton));
+	EventManager::GetInstance().Subscribe("OnStopButton", CreateSubscriber(&InputManager::OnStopButton));
+	EventManager::GetInstance().Subscribe("OnPauseButton", CreateSubscriber(&InputManager::OnPauseButton));
+	EventManager::GetInstance().Subscribe("OnResumeButton", CreateSubscriber(&InputManager::OnResumeButton));
 }
 
 
@@ -94,21 +99,18 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND* hwnd)
 
 	return returnbool;
 }
-void InputManager::SetClipMode(bool IsWindowMode) {
-	m_IsWindowMode = IsWindowMode;
+void InputManager::SetClipMode(bool isclipmode) 
+{
+	m_IsClipMode = isclipmode;
 	std::any data;
 	OnClipMouse(data);
 }
 void InputManager::OnClipMouse(std::any hwnd)
 {
 	// Apply clipping if enabled
-	if (m_IsWindowMode)
+	if (m_IsClipMode)
 	{
-		GetWindowRect(*m_hwnd, &m_clientRect);
-		ClipCursor(&m_clientRect);
-	}
-	else
-	{
+	
 		RECT clientRect{};
 		GetClientRect(*m_hwnd, &m_clientRect);
 
@@ -127,6 +129,44 @@ void InputManager::OnClipMouse(std::any hwnd)
 		// Apply the clipping
 		ClipCursor(&m_clientRect);
 	}
+	else
+	{
+		// Unclip the cursor
+		ClipCursor(nullptr);
+
+		// Set m_clientRect to the client area dimensions even if clipping is disabled
+		GetClientRect(*m_hwnd, &m_clientRect);
+
+		// Convert client coordinates to screen coordinates
+		POINT topLeft = { m_clientRect.left, m_clientRect.top };
+		POINT bottomRight = { m_clientRect.right, m_clientRect.bottom };
+		ClientToScreen(*m_hwnd, &topLeft);
+		ClientToScreen(*m_hwnd, &bottomRight);
+
+		// Update clientRect with screen coordinates
+		m_clientRect.left = topLeft.x;
+		m_clientRect.top = topLeft.y;
+		m_clientRect.right = bottomRight.x;
+		m_clientRect.bottom = bottomRight.y;
+	}
+}
+void InputManager::OnPlayButton(std::any hwnd)
+{
+	SetClipMode(true);
+}
+void InputManager::OnStopButton(std::any hwnd)
+{
+	SetClipMode(false);
+
+}
+void InputManager::OnPauseButton(std::any hwnd)
+{
+	SetClipMode(false);
+
+}
+void InputManager::OnResumeButton(std::any hwnd)
+{
+	SetClipMode(true);
 }
 bool InputManager::Update() {
 	// Store previous key and mouse states
@@ -305,7 +345,7 @@ bool InputManager::IsEscapePressed()
 
 bool InputManager::GetClipmode()
 {
-	return m_IsWindowMode;
+	return m_IsClipMode;
 }
 
 bool InputManager::ReadKeyboard()

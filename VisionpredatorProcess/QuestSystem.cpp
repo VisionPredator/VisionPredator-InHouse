@@ -54,6 +54,8 @@ void QuestSystem::FixedUpdate(float deltaTime)
 			mainquestcomp->Questptrs.pop_front();
 		}
 	}
+	MainquestSetting();
+
 	// Questptrs가 비어 있는지 확인 후 추가 작업
 	if (mainquestcomp->Questptrs.empty())
 	{
@@ -281,6 +283,30 @@ void QuestSystem::OnTutorialClear(std::any none)
 	auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
 	GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Mainquest, questcomp->Volume_Mainquest, true, false, {});
 	m_MainQuestEntity.lock()->DestorySelf();
+}
+
+void QuestSystem::MainquestSetting()
+{
+	if (INPUTKEY(KEYBOARDKEY::O))
+	{
+		if (!m_MainQuestEntity.lock())
+			return;
+		auto mainquestcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+
+		mainquestcomp->IsSkipMode = true;
+
+		// Queue-like behavior: 첫 번째 요소 활성화 후 pop
+		while (!mainquestcomp->Questptrs.empty())
+		{
+			auto& frontQuest = mainquestcomp->Questptrs.front();
+			frontQuest->IsStarted = true;
+			frontQuest->IsCleared = true;
+			if (frontQuest->QuestType == VisPred::Game::QuestType::PLAYERINTERECT)
+				frontQuest->QuestPlayer->IsSearchable = true;
+			// 첫 번째 요소 제거
+			mainquestcomp->Questptrs.pop_front();
+		}
+	}
 }
 
 void QuestSystem::Finalize()

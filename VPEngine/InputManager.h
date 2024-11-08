@@ -225,6 +225,10 @@ private:
 	void ProcessMouseInput();
 	void OnResize(std::any hwnd);
 	void OnClipMouse(std::any hwnd);
+	void OnPlayButton(std::any hwnd);
+	void OnStopButton(std::any hwnd);
+	void OnPauseButton(std::any hwnd);
+	void OnResumeButton(std::any hwnd);
 	IDirectInput8* m_directInput = nullptr;
 	IDirectInputDevice8* m_keyboard = nullptr;
 	IDirectInputDevice8* m_mouse = nullptr;
@@ -241,7 +245,7 @@ private:
 	POINT m_mouseDelta = {};
 	POINT m_UImouseDelta = {};
 	HWND* m_hwnd{};
-	bool m_IsWindowMode= false;
+	bool m_IsClipMode= false;
 };
 
 template <typename T>

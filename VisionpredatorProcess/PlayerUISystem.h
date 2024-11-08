@@ -25,7 +25,9 @@ public:
 	void UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime);
 	void UpdateFadeUI(PlayerUIComponent& playerUI);
 	void UpdateHitUI(PlayerUIComponent& playerUI, float deltatime);
-	double TrasnformationFadePercent(PlayerComponent* playercomp);
+	double Fade_in_out_Percent(float progress, float totalTime);
+	double Fade_in_Percent(float progress, float totalTime);
+	double Fade_out_Percent(float progress, float totalTime);
 
 	void OnUpdateSearchUI(std::any null);
 	void OnResetInterectionUI(std::any null);
