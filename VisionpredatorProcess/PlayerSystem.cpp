@@ -27,6 +27,8 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 			playercomp.VPHandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = true;
 			playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = true;
 			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_draw, 0, 0, false);
+			ChangeAni_Index(playercomp.HandEntity.lock()->GetEntityID(), VisPred::Game::PlayerAni::End , 0, 0, false);
+
 			m_Graphics->SetVP(playercomp.IsVPMode);
 		}
 		else
@@ -38,6 +40,8 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 			playercomp.VPHandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = false;
 			playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = false;
 			ChangeAni_Index(playercomp.HandEntity.lock()->GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Sword, 0, 0, false);
+			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::End, 0, 0, false);
+
 			m_Graphics->SetVP(playercomp.IsVPMode);
 
 		}

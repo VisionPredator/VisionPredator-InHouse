@@ -220,6 +220,7 @@ void VispredRegister::Register_EnumClass()
 		, PlayerAni::ToThrow_Pistol
 		, PlayerAni::ToThrow_Rifle
 		, PlayerAni::ToThrow_ShotGun
+		, PlayerAni::End
 	);
 	META_ADD_ENUMCLASS(QuestType
 		, QuestType::VPMOVE
@@ -250,6 +251,7 @@ void VispredRegister::Register_EnumClass()
 		, VPAni::ToVP_jump
 		, VPAni::ToVP_run
 		, VPAni::ToVP_draw
+		, VPAni::End
 	);
 }
 
