@@ -541,15 +541,24 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
 		newMaterial->AlbeoPath = finalPath;
 
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.x += 1;
 	}
 	else
 	{
 		finalPath = basePath + L"base.png";
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
 		newMaterial->AlbeoPath = finalPath;
+
 		newMaterial->m_AlbedoSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png", L"base.png");
 	}
 
@@ -558,7 +567,13 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
 		newMaterial->NormalPath = finalPath;
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useNEOL.x += true;
 
@@ -568,6 +583,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	else
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
 		newMaterial->NormalPath = finalPath;
 		newMaterial->m_NormalSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(L"base.png", L"base.png");
 
@@ -577,6 +594,8 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
 		//newMaterial->m_SpecularFilePath = finalPath;
 		//newMaterial->m_SpecularSRV->Load(finalPath);
 		//m_pSpecular = ResourceManager::Instance->CreateTextureResource(finalPath);
@@ -587,6 +606,13 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
+
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->m_EmissiveSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->EmissivePath = finalPath;
 		newMaterial->m_Data.useNEOL.y += true;
@@ -596,6 +622,12 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->m_OpacitySRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->OpacityPath = finalPath;
 		newMaterial->m_Data.useNEOL.z += true;
@@ -608,6 +640,12 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->MetalicPath = finalPath;
 		newMaterial->m_MetalicSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.y += 1;
@@ -618,6 +656,12 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->RoughnessPath = finalPath;
 		newMaterial->m_RoughnessSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.z += 1;
@@ -629,6 +673,12 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	if (!path.empty())
 	{
 		finalPath = basePath + path.filename().wstring();
+		finalPath = finalPath.substr(0, finalPath.find_last_of(L"."));
+		finalPath += L".dds";
+		std::wstring newPath = path.filename().wstring();
+		newPath = newPath.substr(0, newPath.find_last_of(L"."));
+		newPath += L".dds";
+		path = newPath;
 		newMaterial->AOPath = finalPath;
 		newMaterial->m_AOSRV = m_ResourceManager.lock()->Create<ShaderResourceView>(path.filename().wstring(), path);
 		newMaterial->m_Data.useAMRO.w += 1;

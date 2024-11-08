@@ -58,6 +58,7 @@ public:
 	void OnResize(RECT& wndsize, bool isFullScreen);
 
 private:
+	void ConvertDDS();
 
 	std::weak_ptr<Device> m_Device;
 	std::weak_ptr<ConstantBuffer<CameraData>> m_Camera;
