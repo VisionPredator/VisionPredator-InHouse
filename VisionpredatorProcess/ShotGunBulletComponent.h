@@ -3,7 +3,7 @@
 struct ShotGunBulletComponent :
     public Component
 {
-    VP_JSONBODY(ShotGunBulletComponent, SparkParticleName,Damage1, Damage2, Damage3,Distance,Speed)
+    VP_JSONBODY(ShotGunBulletComponent, SparkParticleName, BloodSplashParticleName, Damage1, Damage2, Damage3,Distance,Speed)
 
     int Damage1{};
     int Damage2{};
@@ -13,5 +13,6 @@ struct ShotGunBulletComponent :
     VPMath::Vector3 StartPoint{};
 
     std::string SparkParticleName{};
+    std::string BloodSplashParticleName{};
 };
 

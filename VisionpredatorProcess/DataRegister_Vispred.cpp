@@ -14,7 +14,7 @@ void VispredRegister::Register_Metadata()
 
 void VispredRegister::Register_Components()
 {
-	META_ADD_COMP(BulletComponent, BulletComponent::SparkParticleName ,BulletComponent::Damage, BulletComponent::Speed);
+	META_ADD_COMP(BulletComponent, BulletComponent::SparkParticleName, BulletComponent::BloodSplashParticleName, BulletComponent::Damage, BulletComponent::Speed);
 	META_ADD_COMP(PlayerComponent
 		, PlayerComponent::IsAttacking
 		, PlayerComponent::CurrentFSM
@@ -93,6 +93,7 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::OnHit
 		, EnemyComponent::AttackAccuracy
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
+		, EnemyComponent::AccuracyPenaltyOne, EnemyComponent::AccuracyPenaltyTwo, EnemyComponent::AccuracyPenaltyThree, EnemyComponent::AccuracyPenaltyFour
 		, EnemyComponent::AttackPower
 		, EnemyComponent::AttackCycleDelay
 		, EnemyComponent::ConsecutiveAttackDelay
@@ -120,7 +121,13 @@ void VispredRegister::Register_Components()
 		, AimUIComponent::Attacked
 		, AimUIComponent::Interected
 	);
-	META_ADD_COMP(ShotGunBulletComponent, ShotGunBulletComponent::SparkParticleName,ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3, ShotGunBulletComponent::Distance, ShotGunBulletComponent::Speed);
+	META_ADD_COMP(ShotGunBulletComponent
+		, ShotGunBulletComponent::SparkParticleName
+		, ShotGunBulletComponent::BloodSplashParticleName
+		, ShotGunBulletComponent::Damage1, ShotGunBulletComponent::Damage2, ShotGunBulletComponent::Damage3
+		, ShotGunBulletComponent::Distance
+		, ShotGunBulletComponent::Speed
+	);
 	META_ADD_COMP(VPUIComponent
 		, VPUIComponent::ChangeColor
 		, VPUIComponent::FullImage

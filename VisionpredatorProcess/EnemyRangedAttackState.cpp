@@ -111,13 +111,9 @@ float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
 
 	float accuracy = 100.f; // 기본 명중률
 
-	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::CROUCH;
-
-	// 플레이어가 이동 중일 때 명중률 감소
-	if (isPlayerMoving)
-	{
-		accuracy -= 20.0f;
-	}
+	const bool isPlayerWalking = enemyComp.Player->CurrentFSM == VisPred::Game::PlayerFSM::WALK;
+	const bool isPlayerRunning = enemyComp.Player->CurrentFSM == VisPred::Game::PlayerFSM::RUN;
+	const bool isPlayerJumping = enemyComp.Player->CurrentFSM == VisPred::Game::PlayerFSM::JUMP;
 
 	// 거리별 명중률 감소
 	if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeOne)
@@ -126,17 +122,27 @@ float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
 	}
 	else if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeTwo)
 	{
-		accuracy -= 10.0f;
+		accuracy -= enemyComp.AccuracyPenaltyOne;
 	}
 	else if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeThree)
 	{
-		accuracy -= 20.0f;
+		accuracy -= enemyComp.AccuracyPenaltyTwo;
 	}
 	else if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeFour)
 	{
-		accuracy -= 30.0f;
+		accuracy -= enemyComp.AccuracyPenaltyThree;
 	}
 	else
+	{
+		accuracy -= enemyComp.AccuracyPenaltyFour;
+	}
+
+	// 플레이어가 이동 중일 때 명중률 감소
+	if (isPlayerWalking || isPlayerJumping)
+	{
+		accuracy -= 20.0f;
+	}
+	else if (isPlayerRunning)
 	{
 		accuracy -= 40.0f;
 	}

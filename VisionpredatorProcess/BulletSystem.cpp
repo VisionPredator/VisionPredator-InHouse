@@ -38,25 +38,40 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 
 void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 {
+	// Enemy에 충돌했을 때
 	if (Other.HasComponent<EnemyComponent>())
 	{
-		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), bullet.GetComponent<BulletComponent>()->Damage));
+		const auto bulletTransform = bullet.GetComponent<TransformComponent>();
 
+		// 피격 이펙트 출력
+		if (BloodSplashEntity.lock())
+		{
+			auto& particleTransform = BloodSplashEntity.lock()->GetComponent<TransformComponent>()->World_Location;
+			const auto particleComp = BloodSplashEntity.lock()->GetComponent<ParticleComponent>();
+
+			// 충돌 위치로 파티클 이동하여 렌더
+			particleTransform = bulletTransform->World_Location;
+			particleComp->IsRender = true;
+			particleComp->Restart = true;
+		}
+
+		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(Other.GetEntityID(), bullet.GetComponent<BulletComponent>()->Damage));
 	}
+	// 지형물에 충돌했을 때
 	else if (Other.GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::MAP)
 	{
-		auto transform = bullet.GetComponent<TransformComponent>();
+		auto bulletTransform = bullet.GetComponent<TransformComponent>();
 
-		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", transform->World_Location, {0,0,0});
+		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", bulletTransform->World_Location, {0,0,0});
 
+		// 바닥 총알 튀김 이펙트 출력
 		if (GunSparkParticleEntity.lock())
 		{
 			auto& particleTransform = GunSparkParticleEntity.lock()->GetComponent<TransformComponent>()->World_Location;
 			const auto particleComp = GunSparkParticleEntity.lock()->GetComponent<ParticleComponent>();
 
-			// 총알 위치로 파티클 이동
-			particleTransform = transform->World_Location;
-
+			// 충돌 위치로 파티클 이동하여 렌더
+			particleTransform = bulletTransform->World_Location;
 			particleComp->IsRender = true;
 			particleComp->Restart = true;
 		}
@@ -66,36 +81,54 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 
 void BulletSystem::ApplyShotGunDamage(std::shared_ptr<Entity> bullet, std::shared_ptr<Entity>  Other)
 {
+	// Enemy에 충돌했을 때
 	if (Other->HasComponent<EnemyComponent>())
 	{
-		auto bullettrans = bullet->GetComponent<TransformComponent>();
-		auto shotgunbullet = bullet->GetComponent<ShotGunBulletComponent>();
-
-		shotgunbullet->Distance;
-		float distance = (bullettrans->World_Location - shotgunbullet->StartPoint).Length();
+		const auto bulletTransform = bullet->GetComponent<TransformComponent>();
+		const auto bulletComp = bullet->GetComponent<ShotGunBulletComponent>();
+		const float distance = (bulletTransform->World_Location - bulletComp->StartPoint).Length();
 		int applyDamage{};
-		if (distance < shotgunbullet->Distance / 3)
-			applyDamage = shotgunbullet->Damage1;
-		else if (distance < shotgunbullet->Distance * 2 / 3)
-			applyDamage = shotgunbullet->Damage2;
 
-		else if (distance < shotgunbullet->Distance)
-			applyDamage = shotgunbullet->Damage3;
+		if (distance < bulletComp->Distance / 3)
+		{
+			applyDamage = bulletComp->Damage1;
+		}
+		else if (distance < bulletComp->Distance * 2 / 3)
+		{
+			applyDamage = bulletComp->Damage2;
+		}
+		else if (distance < bulletComp->Distance)
+		{
+			applyDamage = bulletComp->Damage3;
+		}
+
+		// 피격 이펙트 출력
+		if (BloodSplashEntity.lock())
+		{
+			auto& particleTransform = BloodSplashEntity.lock()->GetComponent<TransformComponent>()->World_Location;
+			const auto particleComp = BloodSplashEntity.lock()->GetComponent<ParticleComponent>();
+
+			// 충돌 위치로 파티클 이동하여 렌더
+			particleTransform = bulletTransform->World_Location;
+			particleComp->IsRender = true;
+			particleComp->Restart = true;
+		}
 
 		EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(Other->GetEntityID(), applyDamage));
 	}
+	// 지형물에 맞았을 때
 	else if (Other->GetComponent<RigidBodyComponent>()->DefaultColliderInfo.PhysicsLayer == EPhysicsLayer::MAP)
 	{
-		auto transform = bullet->GetComponent<TransformComponent>();
+		const auto bulletTransform = bullet->GetComponent<TransformComponent>();
 
+		// 바닥 총알 튀김 이펙트 출력
 		if (GunSparkParticleEntity.lock())
 		{
 			auto& particleTransform = GunSparkParticleEntity.lock()->GetComponent<TransformComponent>()->World_Location;
 			const auto particleComp = GunSparkParticleEntity.lock()->GetComponent<ParticleComponent>();
 
 			// 총알 위치로 파티클 이동
-			particleTransform = transform->World_Location;
-
+			particleTransform = bulletTransform->World_Location;
 			particleComp->IsRender = true;
 			particleComp->Restart = true;
 		}
@@ -121,6 +154,7 @@ void BulletSystem::Start(uint32_t gameObjectId)
 		const auto& transform = *entity.GetComponent <TransformComponent >();
 		m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
 		GunSparkParticleEntity = GetSceneManager()->GetEntityByIdentityName(bulletcomp.SparkParticleName);
+		BloodSplashEntity = GetSceneManager()->GetEntityByIdentityName(bulletcomp.BloodSplashParticleName);
 	}
 	else if	(entity.HasComponent<ShotGunBulletComponent>())
 	{
@@ -129,6 +163,7 @@ void BulletSystem::Start(uint32_t gameObjectId)
 		m_PhysicsEngine->AddVelocity(gameObjectId, transform.FrontVector, bulletcomp.Speed);
 		bulletcomp.StartPoint = transform.World_Location;
 		GunSparkParticleEntity = GetSceneManager()->GetEntityByIdentityName(bulletcomp.SparkParticleName);
+		BloodSplashEntity = GetSceneManager()->GetEntityByIdentityName(bulletcomp.BloodSplashParticleName);
 	}
 }
 
