@@ -38,7 +38,7 @@ private:
 	void LateRenderUpdate(float deltaTime) override;
 	// IRenderable을(를) 통해 상속됨
 	void EditorRenderUpdate(float deltaTime) override;
-
+	void OnAddVelecity(std::any ID_Vector3_power);
     // IPhysicable을(를) 통해 상속됨
     void PhysicsUpdate(float deltaTime) override;
 

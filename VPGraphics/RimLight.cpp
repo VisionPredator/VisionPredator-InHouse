@@ -37,6 +37,7 @@ void RimLight::Render()
 
 	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager.lock()->Get<RenderTargetView>(L"GBuffer").lock();
 	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Main").lock();
+	std::shared_ptr<DepthStencilView> deferredDsv = m_ResourceManager.lock()->Get<DepthStencilView>(L"DSV_Deferred").lock();
 
 
 	Device->UnBindSRV();
@@ -51,6 +52,7 @@ void RimLight::Render()
 	std::shared_ptr<ConstantBuffer<MatrixPallete>>SkeletalCB = m_ResourceManager.lock()->Get<ConstantBuffer<MatrixPallete>>(L"MatrixPallete").lock();
 	std::shared_ptr<ConstantBuffer<MaterialData>> MaterialCB = m_ResourceManager.lock()->Get<ConstantBuffer<MaterialData>>(L"MaterialData").lock();
 	std::shared_ptr<ConstantBuffer<LightArray>> light = m_ResourceManager.lock()->Get<ConstantBuffer<LightArray>>(L"LightArray").lock();
+	std::shared_ptr<ConstantBuffer<VPMath::XMFLOAT4>> color = m_ResourceManager.lock()->Get<ConstantBuffer<VPMath::XMFLOAT4>>(L"Color").lock();
 
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, CameraCB->GetAddress());
 	Device->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, TransformCB->GetAddress());
@@ -60,6 +62,7 @@ void RimLight::Render()
 
 	Device->Context()->PSSetConstantBuffers(0, 1, CameraCB->GetAddress());
 	Device->Context()->PSSetConstantBuffers(1, 1, MaterialCB->GetAddress());
+	Device->Context()->PSSetConstantBuffers(2, 1, color->GetAddress());
 
 	for (const auto& curData : m_RenderList)
 	{
@@ -67,6 +70,16 @@ void RimLight::Render()
 		{
 			continue;
 		}
+
+		if (curData->color.x == 0.f &&
+			curData->color.y == 0.f &&
+			curData->color.z == 0.f)
+		{
+			continue;
+		}
+
+		color->Update(curData->color);
+
 
 
 		std::shared_ptr<ModelData> curModel = m_ResourceManager.lock()->Get<ModelData>(curData->FBX).lock();
@@ -76,13 +89,27 @@ void RimLight::Render()
 			for (const auto& mesh : curModel->m_Meshes)
 			{
 				Device->BindMeshBuffer(mesh);
+
 				// Static Mesh Data Update & Bind
 				if (!mesh->IsSkinned())
 				{
-					continue;
+					Device->Context()->IASetInputLayout(m_StaticMeshVS.lock()->InputLayout());
+					Device->Context()->VSSetShader(m_StaticMeshVS.lock()->GetVS(), nullptr, 0);
+					Device->Context()->PSSetShader(m_RimLightPS.lock()->GetPS(), nullptr, 0);
+
+
+					TransformData renew;
+					XMStoreFloat4x4(&renew.local, XMMatrixTranspose(curData->world));
+					XMStoreFloat4x4(&renew.world, XMMatrixTranspose(curData->world));
+					XMStoreFloat4x4(&renew.localInverse, (curData->world.Invert()));
+					XMStoreFloat4x4(&renew.worldInverse, (curData->world.Invert()));
+					TransformCB->Update(renew);
+					Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), deferredDsv->Get());
 				}
 				else
 				{
+					Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+
 					Device->BindVS(m_SkeletalMeshVS.lock());
 
 					std::shared_ptr<SkinnedMesh> curMesh = std::dynamic_pointer_cast<SkinnedMesh>(mesh);
@@ -133,7 +160,7 @@ void RimLight::Render()
 
 						Device->Context()->PSSetSamplers(0, 1, linear->GetAddress());
 
-						Device->BindMaterialSRV(curMaterial);
+						Device->Context()->PSSetShaderResources(0, 1, curMaterial->m_NormalSRV.lock()->GetAddress());
 					}
 				}
 
@@ -144,6 +171,7 @@ void RimLight::Render()
 
 	//overdraw pass랑 같은 depth stencil 사용하기 때문에 나중에 클리어
 	m_Device.lock()->Context()->ClearDepthStencilView(dsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_Device.lock()->Context()->ClearDepthStencilView(deferredDsv->Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 }
 void RimLight::OnResize()

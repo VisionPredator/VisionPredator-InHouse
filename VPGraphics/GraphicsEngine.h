@@ -36,7 +36,7 @@ struct RenderData;
 class GraphicsEngine : public Graphics::Interface
 {
 public:
-	GraphicsEngine(HWND hWnd, TimeManager* timeManager);
+	GraphicsEngine(HWND hWnd);
 	~GraphicsEngine() = default;
 
 	bool Initialize() override;
@@ -46,12 +46,12 @@ public:
 	void EndUpdate(double dt) override;
 	bool Finalize() override;
 	void BeginRender() override;
-	void Render() override;
+	void Render(float deltaTime) override;
 	void ImguiBeginRender() override;
 	void ImguiEndRender() override;
 	void EndRender() override;
 
-	void OnResize(HWND hwnd) override;
+	void OnResize(HWND hwnd, bool isFullScreen) override;
 
 	virtual void DebugRenderONOFF(bool isRender) override;
 
@@ -79,6 +79,7 @@ public:
 	void CreateTextObject(uint32_t entityID, const ui::TextInfo& info) override;
 	void UpdateTextObject(uint32_t entityID, const ui::TextInfo& info) override;
 	void DeleteTextObject(uint32_t entityId) override;
+	RECT GetImageRect(uint32_t entityID) const override;
 
 	/// Light
 	void AddLight(uint32_t EntityID, LightType kind, LightData data) override;
@@ -127,7 +128,6 @@ private:
 	std::shared_ptr<LightManager> m_LightManager;
 	std::shared_ptr<class DebugDrawManager> m_DebugDrawManager;	
 	std::shared_ptr<class ParticleManager> m_ParticleManager;
-	TimeManager* m_TimeManager;
 	std::shared_ptr<class UIManager> m_UIManager;
 	std::shared_ptr <DecalManager> m_DecalManager;
 

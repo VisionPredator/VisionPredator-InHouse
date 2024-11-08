@@ -22,6 +22,7 @@
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
 #include "nlohmann/json.hpp"
+#include <random>
 
 
 #ifdef __clang__
@@ -36,6 +37,8 @@ namespace VisPred
 {
     namespace SimpleMath
     {
+
+
         using namespace DirectX;
 
         struct Vector2;
@@ -43,6 +46,14 @@ namespace VisPred
         struct Matrix;
         struct Quaternion;
         struct Plane;
+
+        float Random_float(float min, float max) noexcept;
+        int Random_int(int min, int max) noexcept;
+        unsigned int Random_uint(unsigned int min, unsigned int max) noexcept;
+        template <typename T>
+        T CustomMax(T a, T b) {
+            return (a > b) ? a : b;
+        }
 
         //------------------------------------------------------------------------------
         // 2D rectangle
@@ -588,9 +599,8 @@ namespace VisPred
 
             Matrix Invert() const noexcept;
             void Invert(Matrix& result) const noexcept;
-            bool IsMatrixIrregular() const noexcept;
             float Determinant() const noexcept;
-
+            bool IsMatrixIrregular() const noexcept;
             // Computes rotation about y-axis (y), then x-axis (x), then z-axis (z)
             Vector3 ToEuler() const noexcept;
 

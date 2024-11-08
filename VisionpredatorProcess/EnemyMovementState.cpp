@@ -6,6 +6,8 @@
 #include "EnemyBackpedalState.h"
 #include "EnemyIdleMovementState.h"
 #include "EnemyHitReactionState.h"
+#include "EnemyIdleAttack.h"
+#include "EnemyAttackState.h"
 #include "../VPGraphics/Log.h"
 
 EnemyJumpState EnemyMovementState::s_Jumping;
@@ -14,6 +16,8 @@ EnemyRunState EnemyMovementState::s_Run;
 EnemyIdleMovementState EnemyMovementState::s_Idle;
 EnemyBackpedalState EnemyMovementState::s_Backpedal;
 EnemyHitReactionState EnemyMovementState::s_HitReaction;
+EnemyIdleAttack EnemyMovementState::s_IdleAttack;
+EnemyAttackState EnemyMovementState::s_Attack;
 
 void EnemyMovementState::Enter(const std::shared_ptr<Component>& component)
 {

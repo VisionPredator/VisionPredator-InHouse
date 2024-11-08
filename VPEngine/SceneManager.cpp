@@ -427,9 +427,6 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 	VPMath::Vector3 rot = Quater.ToEuler() * 180 / VPMath::XM_PI;
 	return SpawnEditablePrefab(prefabname, pos, rot, scele);
 }
-
-
-
 std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scele)
 {
 	PrefabData prefabData = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
@@ -499,6 +496,34 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 
 	return  GetEntity(mainprefabID);
 }
+//
+//std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, float volume, bool isloop, VPMath::Vector3 pos)
+//{
+//	auto entity = CreateEntity(soundName);
+//	auto soundcomp = entity->AddComponent<SoundComponent>();
+//	soundcomp->SoundPath = soundName;
+//	soundcomp->Volume = volume;
+//	soundcomp->Loop= isloop;
+//	entity->GetComponent<TransformComponent>()->Local_Location = pos;
+//	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
+//	return std::shared_ptr<Entity>();
+//}
+
+std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, int volume, bool Is2D, bool isloop, VPMath::Vector3 pos)
+{
+	auto entity = CreateEntity(soundName);
+	auto soundcomp = entity->AddComponent<SoundComponent>();
+	auto identity = entity->AddComponent<IdentityComponent>();
+	identity->UUID = soundName;
+	soundcomp->SoundPath = soundName;
+	soundcomp->Is2D = Is2D;
+	soundcomp->Volume = volume;
+	soundcomp->Loop = isloop;
+	entity->GetComponent<TransformComponent>()->Local_Location = pos;
+	EventManager::GetInstance().ScheduleEvent("OnStart", entity->GetEntityID());
+	return entity;
+}
+
 
 
 
@@ -676,16 +701,18 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 }
 std::shared_ptr<Entity> SceneManager::CreateEntity()
 {
+	return CreateEntity("Entity");
+}
+std::shared_ptr<Entity> SceneManager::CreateEntity(std::string entityName)
+{
 	// 난수 생성기를 사용하여 엔티티 ID를 생성합니다.
-	std::random_device rd;  // 난수 생성기
-	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
-	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_MAX까지의 난수 범위
-	uint32_t id = dis(gen);
+	uint32_t id = VPMath::Random_uint(0, UINT32_MAX); 
+
 
 	// 생성된 ID가 이미 존재하는지 확인하고, 존재하면 새로운 ID를 생성합니다.
 	while (HasEntity(id))
 	{
-		id = dis(gen);
+		id = VPMath::Random_uint(0, UINT32_MAX);
 	}
 
 	// 새로운 엔티티를 생성하고 ID를 설정합니다.
@@ -697,6 +724,7 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 	std::shared_ptr<IDComponent> IDComp = tempEntity->AddComponent<IDComponent>();
 	std::shared_ptr<TransformComponent> TransformComp = tempEntity->AddComponent<TransformComponent>();
 
+	IDComp->Name = entityName;
 	// IDComponent의 이름을 설정합니다.
 	if (IDComp->Name == "Entity")
 	{
@@ -704,7 +732,6 @@ std::shared_ptr<Entity> SceneManager::CreateEntity()
 		IDComp->Name = IDComp->Name + std::to_string(a);
 		a++;
 	}
-
 	return tempEntity;
 }
 uint32_t SceneManager::CreateRandomEntityID()
@@ -712,9 +739,9 @@ uint32_t SceneManager::CreateRandomEntityID()
 	std::random_device rd;  // 난수 생성기
 	std::mt19937 gen(rd()); // Mersenne Twister 난수 엔진
 	std::uniform_int_distribution<uint32_t> dis(0, UINT32_MAX); // 0부터 UINT32_Max 까지의 난수 범위
-	uint32_t id = dis(gen);
+	uint32_t id = VPMath::Random_uint(0, UINT32_MAX);
 	while (HasEntity(id))
-		id = dis(gen);
+		id = VPMath::Random_uint(0, UINT32_MAX);
 	return id;
 }
 void SceneManager::SetScenePhysic(VPPhysics::PhysicsInfo physicInfo)
@@ -928,21 +955,6 @@ std::shared_ptr<Entity> SceneManager::GetEntityByIdentityName( std::string name)
 	return nullptr;
 }
 
-std::shared_ptr<Entity> SceneManager::GetEntitySocketEntity(uint32_t entityID)
-{
-	auto mainentity = GetEntity(entityID);
-	while (mainentity)
-	{
-		if (mainentity->HasComponent<SocketComponent>())
-			return mainentity;
-		else if (mainentity->HasComponent<Parent>())
-			mainentity = GetEntity(mainentity->GetComponent<Parent>()->ParentID);
-		else
-			return nullptr; 
-	}
-	return nullptr;
-}
-
 
 void SceneManager::DestroyEntity(uint32_t entityID, bool Immidiate)
 {
@@ -958,6 +970,9 @@ void SceneManager::OnDestroyEntity(std::any data)
 {
 	uint32_t mainID = std::any_cast<uint32_t>(data);
 	auto& entityMap = GetEntityMap();
+	auto temp = GetEntity(mainID);
+	if (!temp)
+		return;
 	std::list<uint32_t> DeleteEntityIDs;
 	DeleteEntityIDs.push_back(mainID);
 

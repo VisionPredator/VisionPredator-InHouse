@@ -31,11 +31,9 @@ void ModelLoader::Initialize(const std::shared_ptr<ResourceManager>& manager, co
 	m_Device = device;
 
 	std::string path;
-#ifdef _DEBUG
-	path = "..\\..\\..\\Resource\\FBX\\";
-#else
+
 	path = "..\\Data\\FBX\\";
-#endif
+
 
 	if (!std::filesystem::exists(path))
 	{
@@ -89,11 +87,8 @@ bool ModelLoader::LoadModel(std::string filename, Filter filter, int UID)
 {
 	//std::filesystem::path path = ToWString(std::string(filename));
 
-#ifdef _DEBUG
-	std::string filePath = "..\\..\\..\\Resource\\FBX\\";
-#else
+
 	std::string filePath = "..\\Data\\FBX\\";
-#endif
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
@@ -342,7 +337,13 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				newMesh->MaxBounding = { v.x,v.y,v.z };
 			}
 
+			//각 메쉬에대한 pivot
 			newMesh->Pivot = VPMath::Vector3(newMesh->MaxBounding.x + newMesh->MinBounding.x, newMesh->MaxBounding.y + newMesh->MinBounding.y, newMesh->MaxBounding.z + newMesh->MinBounding.z) / 2;
+			//특정 메쉬를 기준으로 각각의 위치를 맞춰야 메쉬를 통으로 그렸을때 맞음
+			if (index < 1)
+			{
+				Model->Pivot = newMesh->Pivot;
+			}
 
 			for (unsigned int i = 0; i < curMesh->mNumVertices; i++)
 			{
@@ -353,7 +354,7 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 				curPos.y = TextureVertices.back().pos.y;
 				curPos.z = TextureVertices.back().pos.z;
 
-				curPos -= newMesh->Pivot;
+				curPos -= Model->Pivot;
 
 				Model->vertices.push_back(curPos);
 			}
@@ -361,10 +362,12 @@ void ModelLoader::ProcessMesh(std::shared_ptr<ModelData> Model, aiMesh* mesh, un
 			for (auto& ver : TextureVertices)
 			{
 				DirectX::XMFLOAT4& curPos = ver.pos;
-				curPos.x -= newMesh->Pivot.x;
-				curPos.y -= newMesh->Pivot.y;
-				curPos.z -= newMesh->Pivot.z;
+				curPos.x -= Model->Pivot.x;
+				curPos.y -= Model->Pivot.y;
+				curPos.z -= Model->Pivot.z;
 			}
+			/*
+			*/
 
 
 			desc.ByteWidth = sizeof(BaseVertex) * curMesh->mNumVertices;
@@ -447,11 +450,7 @@ void ModelLoader::ProcessMaterials(std::shared_ptr<ModelData> Model, aiMaterial*
 	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(m_Device.lock());
 
 	// Diffuse
-#ifdef _DEBUG
-	const std::wstring basePath = L"..\\..\\..\\Resource\\FBX\\";
-#else
 	const std::wstring basePath = L"..\\Data\\FBX\\";
-#endif
 	std::filesystem::path path;
 	std::wstring finalPath;
 	std::string name = material->GetName().C_Str();

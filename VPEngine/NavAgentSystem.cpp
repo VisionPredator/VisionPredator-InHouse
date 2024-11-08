@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "NavAgentSystem.h"
 #include <iostream>
+#include "EventManager.h"
 
 NavAgentSystem::NavAgentSystem(std::shared_ptr<SceneManager> sceneManager):System{ sceneManager }
 {
+	EventManager::GetInstance().Subscribe("OnRemoveNavAgent", CreateSubscriber(&NavAgentSystem::OnRemoveNavAgent));
 }
 
 
@@ -82,6 +84,8 @@ void NavAgentSystem::MoveTo(NavAgentComponent* comp, VPMath::Vector3 destination
 	comp->TargetLocation = destination;
 
 	auto SceneNavMeshData = GetSceneManager()->GetSceneNavMeshData();
+	if (!SceneNavMeshData)
+		return;
 	const dtQueryFilter* filter = SceneNavMeshData->crowd->getFilter(0);
 	const dtCrowdAgent* agent = SceneNavMeshData->crowd->getAgent(comp->NavAgent->AgentID);  // 오타 수정
 	const float* halfExtents = SceneNavMeshData->crowd->getQueryExtents();
@@ -218,6 +222,23 @@ void NavAgentSystem::Finalize()
 	{
 		Finish(comp.GetEntityID());
 	}
+}
+
+void NavAgentSystem::OnRemoveNavAgent(std::any id)
+{
+	auto entityid = std::any_cast<uint32_t>(id);
+	auto entity = GetSceneManager()->GetEntity(entityid);
+	if (!entity || !entity->HasComponent<NavAgentComponent>())
+		return;
+	auto agentcomp = entity->GetComponent<NavAgentComponent>();
+	auto navmeshdata = GetSceneManager()->GetSceneNavMeshData();
+	if (!navmeshdata)
+		return;
+
+	auto agent = navmeshdata->crowd->getEditableAgent(agentcomp->NavAgent->AgentID);
+	if (!agent)
+		return;
+	navmeshdata->crowd->removeAgent(agentcomp->NavAgent->AgentID);
 }
 
 void NavAgentSystem::PhysicsLateUpdate(float deltaTime)

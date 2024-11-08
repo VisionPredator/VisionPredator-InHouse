@@ -32,6 +32,7 @@ public:
 	int m_ScreenWidth {};
 	int m_ScreenHeight{};
 	static bool isResize;
+	static bool isFullScreen;
 protected:
 	void Addsystem();
 	virtual void Update();
@@ -46,11 +47,10 @@ protected:
 	std::shared_ptr<SystemManager> m_SystemManager;
 	std::shared_ptr<SceneManager> m_SceneManager;
 	float m_DeltaTime;
-
+	float m_TotalGameTime;
 	Physic::IPhysx* m_PhysicEngine;
 	Graphics::Interface* m_Graphics;
 	std::shared_ptr<Sound::ISound> m_SoundEngine;
 	TransformSystem* m_TransformSystem;
-
 };
 

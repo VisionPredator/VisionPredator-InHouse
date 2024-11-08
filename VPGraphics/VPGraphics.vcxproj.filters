@@ -312,6 +312,8 @@
     <ClInclude Include="OverDrawPass.h" />
     <ClInclude Include="DecalManager.h" />
     <ClInclude Include="DecalPass.h" />
+    <ClInclude Include="DeferredLightPass.h" />
+    <ClInclude Include="EffectPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsEngine.cpp">
@@ -498,6 +500,8 @@
     <ClCompile Include="OverDrawPass.cpp" />
     <ClCompile Include="DecalManager.cpp" />
     <ClCompile Include="DecalPass.cpp" />
+    <ClCompile Include="DeferredLightPass.cpp" />
+    <ClCompile Include="EffectPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasePS.hlsl">
@@ -580,6 +584,10 @@
     <FxCompile Include="DecalVS.hlsl" />
     <FxCompile Include="DecalPS.hlsl" />
     <FxCompile Include="OverDrawPS.hlsl" />
+    <FxCompile Include="CopyTex.hlsl">
+      <Filter>HLSL\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="punch.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

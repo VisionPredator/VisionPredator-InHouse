@@ -1,6 +1,7 @@
 #pragma once
 #include "System.h"
-class HierarchySystem :public System
+#include"EventSubscriber.h"
+class HierarchySystem :public System,public EventSubscriber
 {
 public:
 	HierarchySystem(std::shared_ptr<SceneManager> sceneManager);
@@ -23,5 +24,9 @@ public:
 	std::string m_SearchingName{};
 	uint32_t m_EntityCount{};
 	bool m_IsEntityRClicked = false;
+	bool IsPlayMode{};
+
+	void OnPlayButton(std::any none);
+	void OnStopButton(std::any none);
 };
 

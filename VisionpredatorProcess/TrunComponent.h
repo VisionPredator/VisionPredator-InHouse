@@ -8,6 +8,7 @@ struct TrunComponent:public Component
 	float Angle;
 	bool Is_Left{};
 	VPMath::Quaternion StartPoint{};
+	VPMath::Quaternion HalfPoint{};
 	VPMath::Quaternion EndPoint{};
 	float MoveTime{};
 	float ProgressTime {};

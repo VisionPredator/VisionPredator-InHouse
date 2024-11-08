@@ -25,7 +25,7 @@ public:
 	RenderData() :EntityID(0), Name(L""), FBX(L""),ModelID(0)
 		, local(VPMath::Matrix::Identity), world(VPMath::Matrix::Identity)
 		, duration(0.f), preDuration(0.f), isPlay(false)
-		, color(), useTexture(false), textureName(L"")
+		, color(), punchEffect(false), textureName(L"")
 	{
 
 	}
@@ -71,6 +71,7 @@ public:
 
 	//overdraw
 	bool isOverDraw = false;	//벽뒤에 플레이어랑 총 짤리는거 방지 flag
+	bool punchEffect;	//펀치 이펙트 메쉬 flag
 
 	//애니메이션
 	float duration;
@@ -81,8 +82,6 @@ public:
 	float transitionDuration;
 
 	//디버그박스용 - 나중에 지울거
-	DirectX::XMFLOAT4 color;
-	bool useTexture;
 	std::wstring textureName;
 
 	//라이트맵 데이터
@@ -93,6 +92,8 @@ public:
 
 	// 아웃라인 관련 변수
 	VPMath::Color MaskingColor = VPMath::Color{ 0, 0, 0, 0 };
+	// 인터랙티브 COLOR
+	DirectX::XMFLOAT4 color;
 };
 
 

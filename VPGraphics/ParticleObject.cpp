@@ -18,9 +18,7 @@
 ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const effect::ParticleInfo& info)
 	: m_Device(device), m_ResourceManager(resourceManager), m_Info(info)
 {
-#pragma region 임시
-	m_Info.MaxParticles = 500;
-#pragma endregion
+	constexpr uint32_t MaxParticles = 1000.f;
 
 	// Create Buffers
 	{
@@ -41,51 +39,43 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 		
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, &vinitData, &m_InitVB));			// 스트림 출력용 버퍼
 
-		vbd.ByteWidth = sizeof(ParticleVertex) * m_Info.MaxParticles; // 최대로 다룰 버퍼 크기. 넘어가면 안된다.
+		vbd.ByteWidth = sizeof(ParticleVertex) * MaxParticles; // 최대로 다룰 버퍼 크기. 넘어가면 안된다.
 		vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT; // 플래그 중요!
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_DrawVB));			// 
 		HR_CHECK(device->Get()->CreateBuffer(&vbd, nullptr, &m_StreamOutVB));
 
 		m_FrameCB = m_ResourceManager->Create<ConstantBuffer<PerFrame>>(L"FrameCB", ConstantBufferType::Default).lock();
-
-		/*D3D11_BUFFER_DESC cbd;
-		cbd.Usage = D3D11_USAGE_DEFAULT;
-		static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
-		cbd.ByteWidth = sizeof(PerFrame);
-		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbd.CPUAccessFlags = 0;
-		cbd.MiscFlags = 0;
-
-		HR_CHECK(device->Get()->CreateBuffer(&cbd, NULL, m_FrameCB->GetAddress()));*/
+		m_DataCB = m_ResourceManager->Create<ConstantBuffer<DataCB>>(L"DataCB", ConstantBufferType::Default).lock();
 	}
 
 	// Create Shaders
 	{
 		m_StreamOutVS = std::make_shared<VertexShader>(device, L"ParticleVS", "StreamOutVS");
 		m_DrawVS = std::make_shared<VertexShader>(device, L"ParticleVS", "DrawVS");
+
 		m_StreamOutGS = std::make_shared<GeometryShader>(device, L"ParticleGS", "StreamOutGS", "gs_5_0");
 		m_DrawGS = std::make_shared<GeometryShader>(device, L"ParticleGS", "DrawGS", "gs_5_0");
+
 		m_DrawPS = std::make_shared<PixelShader>(device, L"ParticlePS", "DrawPS");
 
 		m_SamLinear = m_ResourceManager->Get<Sampler>(L"LinearWrap").lock();
 	}
 
-	// TODO: SRV 이용하는 걸로 바꿔야 한다.
 	// Create Textures
 	{
-		std::vector<std::wstring> flares;
-		if (!m_Info.TexturePath.empty())
-		{
-			flares.push_back(Util::ToWideChar(m_Info.TexturePath));
-		}
-		else
-		{
-			flares.push_back(Util::ToWideChar("../../../Resource/Texture/flare0.dds"));	
-		}
-		D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
+		//std::vector<std::wstring> flares;
+		//if (!m_Info.TexturePath.empty())
+		//{
+		//	flares.push_back(Util::ToWideChar("../../../Resource/Texture/" + m_Info.TexturePath));
+		//}
+		//else
+		//{
+		//	flares.push_back(Util::ToWideChar("../../../Resource/Texture/Smoke.png"));	
+		//}
+		//D3DUtill::CreateTexture2DArraySRV(device->Get(), device->Context(), m_TexArraySRV.GetAddressOf(), flares);
 
 		if (m_Info.TexturePath.empty())
-			m_Info.TexturePath = "flare0.dds";
+			m_Info.TexturePath = "Smoke.png";
 		m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 		
 		// 랜덤 텍스처 생성
@@ -95,21 +85,22 @@ ParticleObject::ParticleObject(const std::shared_ptr<Device>& device, const std:
 	}
 }
 
-void ParticleObject::Update(const float& deltaTime, const float& totalGameTime)
+void ParticleObject::Update()
 {
-	m_TotalGameTime = totalGameTime;
-	m_TimeStep = deltaTime;
-	m_Age += deltaTime;
-
 	if (m_Info.TexturePath.empty())
-		m_Info.TexturePath = "flare0.dds";
+		m_Info.TexturePath = "Smoke.png";	// 기본 파티클 이미지 세팅
+
 	m_TextureSRV = m_ResourceManager->Create<ShaderResourceView>(Util::ToWideChar(m_Info.TexturePath).c_str(), Util::ToWideChar(m_Info.TexturePath).c_str()).lock();
 }
 
-void ParticleObject::Draw()
+void ParticleObject::Draw(float deltaTime, float totalGameTime)
 {
+	if (!m_Info.IsRender)
+		return;
+
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context = m_Device->Context();
 	std::shared_ptr<ConstantBuffer<CameraData>> CameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+	DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(CameraCB->m_struct.viewInverse.Transpose()._41, CameraCB->m_struct.viewInverse.Transpose()._42, CameraCB->m_struct.viewInverse.Transpose()._43);
 
 	UINT stride = sizeof(ParticleVertex);
 	UINT offset = 0;
@@ -117,15 +108,43 @@ void ParticleObject::Draw()
 	VPMath::Matrix viewInvert = CameraCB->m_struct.view.Invert().Transpose();
 	VPMath::Matrix VP = CameraCB->m_struct.view.Transpose() * CameraCB->m_struct.proj.Transpose();
 
+	m_TotalGameTime = totalGameTime;
+	m_TimeStep = deltaTime;
+	m_Age += deltaTime;
+
 	// CB data 갱신
-	m_PerFrame.ViewProj = VP.Transpose();
+	m_PerFrame.ViewProj = CameraCB->m_struct.worldviewproj;
+	m_PerFrame.EyePosW = cameraPos;
 	m_PerFrame.GameTime = m_TotalGameTime;
 	m_PerFrame.TimeStep = m_TimeStep;
-	m_PerFrame.EyePosW = viewInvert.Translation();
-	m_PerFrame.EmitPosW = m_EmitPosW;
-	m_PerFrame.EmitDirW = m_EmitDirW;
-
 	m_FrameCB->Update(m_PerFrame);
+
+	// TODO: 이거 lerp ? 인가 쉐이더 코드 상에서 수행해도 된다.
+	const float lifetime = m_Info.StartLifetime.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartLifetime.y - m_Info.StartLifetime.x));
+	m_Data.StartLifetime = lifetime;
+	const float size = m_Info.StartSize.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSize.y - m_Info.StartSize.x));
+	m_Data.StartSize = VPMath::Vector2{size, size};	// TODO: 가로세로 사이즈 조절할수 있도록 열어두면 좋을듯
+	m_Data.IsLoop = m_Info.IsLoop;
+	m_Data.EmitDirW = m_Info.Direction;
+	m_Data.EmitPosW = m_Info.PosW;
+	m_Data.Duration = m_Info.Duration;
+	m_Data.Restart = m_Info.Restart;
+	const float speed = m_Info.StartSpeed.x + static_cast<float>(rand()) / (RAND_MAX / (m_Info.StartSpeed.y - m_Info.StartSpeed.x));
+	m_Data.StartSpeed = speed;
+	m_Data.ParticleShape = static_cast<unsigned int>(m_Info.Shape.Shape);
+	m_Data.Angle = m_Info.Shape.Angle;
+	m_Data.Radius = m_Info.Shape.Radius;
+	m_Data.Gravity = m_Info.Gravity;
+	m_Data.RenderMode = static_cast<unsigned int>(m_Info.Renderer.RenderMode);
+	m_Data.StartColor = m_Info.StartColor;
+	m_Data.EndColor = m_Info.EndColor;
+	m_DataCB->Update(m_Data);
+
+	// 기존에 바인딩된 꼭짓점 버퍼를 해제합니다.
+	ID3D11Buffer* nullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
+	UINT strides[4] = { 0, 0, 0, 0 };
+	UINT offsets[4] = { 0, 0, 0, 0 };
+	context->IASetVertexBuffers(0, 4, nullBuffers, strides, offsets);
 
 	// Bind
 	context->IASetInputLayout(m_DrawVS->InputLayout());
@@ -139,16 +158,19 @@ void ParticleObject::Draw()
 	// Bind Shader's resources
 	context->VSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->VSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
+	context->VSSetConstantBuffers(1, 1, m_DataCB->GetAddress());
 	context->VSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->VSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->GSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->GSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
+	context->GSSetConstantBuffers(1, 1, m_DataCB->GetAddress());
 	context->GSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->GSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
 	context->PSSetSamplers(0, 1, m_SamLinear->GetAddress());
 	context->PSSetConstantBuffers(0, 1, m_FrameCB->GetAddress());
+	context->PSSetConstantBuffers(1, 1, m_DataCB->GetAddress());
 	context->PSSetShaderResources(0, 1, m_TextureSRV->GetAddress());
 	context->PSSetShaderResources(1, 1, m_RandomTexSRV.GetAddressOf());
 
@@ -186,9 +208,9 @@ void ParticleObject::Draw()
 	std::swap(m_DrawVB, m_StreamOutVB);	// 핑퐁을 위해 swap 한다.
 
 	std::shared_ptr<RenderTargetView> rtv = m_ResourceManager->Get<RenderTargetView>(L"GBuffer").lock();
-	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Main").lock();
-	//m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
-	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
+	std::shared_ptr<DepthStencilView> dsv = m_ResourceManager->Get<DepthStencilView>(L"DSV_Deferred").lock();
+	m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), dsv->Get());
+	//m_Device->Context()->OMSetRenderTargets(1, rtv->GetAddress(), nullptr);
 
 	// 화면 렌더링
 	context->VSSetShader(m_DrawVS->GetShader(), nullptr, 0);
@@ -196,17 +218,56 @@ void ParticleObject::Draw()
 	context->PSSetShader(m_DrawPS->GetShader(), nullptr, 0);
 
 	float factor[] = { 0.f, 0.f, 0.f, 0.f };
-	context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AdditiveBlending").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+	//context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Multiplicative").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
 	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"NoDepthWrites").lock()->GetState().Get(), 0);	// 깊이 쓰기는 하지 않는다.
+
+	// BlendState 세팅
+	switch(m_Info.BlendMode)
+	{
+	case effect::ParticleInfo::BlendType::AlphaBlend:
+		context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"AlphaBlend").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+		break;
+	case effect::ParticleInfo::BlendType::Additive:
+		context->OMSetBlendState(m_ResourceManager->Get<BlendState>(L"Additive").lock()->GetState().Get(), factor, 0xffffffff);	// 가산 혼합
+		break;
+	}
+
+
 	context->IASetVertexBuffers(0, 1, m_DrawVB.GetAddressOf(), &stride, &offset);
+
 	context->DrawAuto();
 
 	// 언바인드
 	context->OMSetBlendState(nullptr, factor, 0xffffffff);
-	context->OMSetDepthStencilState(nullptr, 0);
+	//context->OMSetDepthStencilState(nullptr, 0);
+	context->OMSetDepthStencilState(m_ResourceManager->Get<DepthStencilState>(L"DefaultDSS").lock()->GetState().Get(), 0);	// 깊이 쓰기는 하지 않는다.
 
 	// 기본 값으로 재설정
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
+}
+
+void ParticleObject::SetParticleInfo(const effect::ParticleInfo& info)
+{
+	m_Info.Direction = info.Direction;
+	m_Info.PosW = info.PosW;
+	m_Info.Duration = info.Duration;
+	m_Info.TexturePath = info.TexturePath;
+	m_Info.IsLoop = info.IsLoop;
+	m_Info.StartLifetime = info.StartLifetime;
+	m_Info.StartSize = info.StartSize;
+	m_Info.StartSpeed = info.StartSpeed;
+	m_Info.Duration = info.Duration;
+	m_Info.Restart = info.Restart;
+	m_Info.Shape.Shape = info.Shape.Shape;
+	m_Info.Shape.Angle = info.Shape.Angle;
+	m_Info.Shape.Radius = info.Shape.Radius;
+	m_Info.Renderer.RenderMode = info.Renderer.RenderMode;
+	m_Info.IsRender = info.IsRender;
+	m_Info.Gravity = info.Gravity;
+	m_Info.StartColor = info.StartColor;
+	m_Info.EndColor = info.EndColor;
+	m_Info.BlendMode = info.BlendMode;
+	//m_Info.
 }

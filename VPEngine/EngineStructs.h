@@ -11,5 +11,18 @@ namespace VisPred
 			float TransitionTime{};
 			bool Loop;
 		};
+
+		enum class Skill
+		{
+			SCENECHANGE = 0,
+			SPAWNPREFAB,
+			DESTORYPREFAB,
+			DRAGBAR,
+			UION,
+			UIOFFSELF,
+			UIOFF,
+			EXIT,
+
+		};
 	}
 }

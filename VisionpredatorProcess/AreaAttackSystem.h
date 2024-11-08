@@ -10,8 +10,8 @@ public :
 	~AreaAttackSystem()=default;
 
 	// ITriggerable을(를) 통해 상속됨
-	void EnterTrigger(std::pair<uint32_t, uint32_t> entitypair) override;
-	void ExitTrigger(std::pair<uint32_t, uint32_t> entitypair) override;
+	void EnterTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second) override;
+	void ExitTrigger(std::shared_ptr<Entity> first, std::shared_ptr<Entity> second) override;
 	void TriggerAttack(AreaAttackComponent& area ,EnemyComponent& enemy);
 
 

@@ -122,6 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;$(SolutionDir)include\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -145,6 +146,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)VPEngine;$(SolutionDir)include\physx;$(SolutionDir)VPCommon\;$(SolutionDir)include\recastnavigation\Detour;$(SolutionDir)include\recastnavigation\DetourCrowd;$(SolutionDir)include\recastnavigation\Recast;$(SolutionDir)include\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -160,8 +162,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AimUIComponent.h" />
+    <ClInclude Include="AutoPickComponent.h" />
+    <ClInclude Include="AutoPickSystem.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
+    <ClInclude Include="CabinetComponent.h" />
+    <ClInclude Include="CabinetSystem.h" />
+    <ClInclude Include="CursorComponent.h" />
+    <ClInclude Include="CursorSystem.h" />
+    <ClInclude Include="DetectableComponent.h" />
+    <ClInclude Include="DoOnceComponent.h" />
+    <ClInclude Include="DoOnceResetComponent.h" />
+    <ClInclude Include="DoOnceSystem.h" />
+    <ClInclude Include="DoorAccessComponent.h" />
+    <ClInclude Include="DoorComponent.h" />
+    <ClInclude Include="DoorOpenerComponent.h" />
+    <ClInclude Include="DoorSystem.h" />
+    <ClInclude Include="EnemyAttackState.h" />
+    <ClInclude Include="EnemyIdleAttack.h" />
     <ClInclude Include="EnemyBackpedalState.h" />
     <ClInclude Include="EnemyBehaviorState.h" />
     <ClInclude Include="EnemyChaseState.h" />
@@ -177,21 +195,41 @@
     <ClInclude Include="EnemyPatrolState.h" />
     <ClInclude Include="EnemyRangedAttackState.h" />
     <ClInclude Include="EnemyRunState.h" />
+    <ClInclude Include="EnemySoundComponent.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="EnemyWalkState.h" />
+    <ClInclude Include="EntityRemoverSystem.h" />
+    <ClInclude Include="HitUIComponent.h" />
+    <ClInclude Include="HPReducerButtonSystem.h" />
+    <ClInclude Include="IdentityRemoverComponent.h" />
+    <ClInclude Include="EntityRemoverComponet.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="FSMComponent.h" />
     <ClInclude Include="GameLogicSystem.h" />
     <ClInclude Include="GunComponent.h" />
     <ClInclude Include="GunSystem.h" />
+    <ClInclude Include="IdentityRemoverSystem.h" />
+    <ClInclude Include="InterectiveComponent.h" />
+    <ClInclude Include="InterectiveSystem.h" />
     <ClInclude Include="IState.h" />
+    <ClInclude Include="MainQuestComponent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerFSMSystem.h" />
+    <ClInclude Include="HPReducerComponent.h" />
     <ClInclude Include="PlayerMeleeComponent.h" />
     <ClInclude Include="PlayerSoundComponent.h" />
     <ClInclude Include="PlayerSystem.h" />
+    <ClInclude Include="PlayerUIComponent.h" />
     <ClInclude Include="PlayerUISystem.h" />
+    <ClInclude Include="QuestComponent.h" />
+    <ClInclude Include="QuestSystem.h" />
+    <ClInclude Include="SectorClearComponent.h" />
+    <ClInclude Include="SectorSystem.h" />
+    <ClInclude Include="ShotGunBulletComponent.h" />
+    <ClInclude Include="SpawnChildComponent.h" />
+    <ClInclude Include="SpawnerComponent.h" />
+    <ClInclude Include="SpawnerSystem.h" />
     <ClInclude Include="StatesInclude.h" />
     <ClInclude Include="AreaAttackComponent.h" />
     <ClInclude Include="AreaAttackSystem.h" />
@@ -201,13 +239,33 @@
     <ClInclude Include="VisPredStructs.h" />
     <ClInclude Include="VisPredComponents.h" />
     <ClInclude Include="DataRegister_Vispred.h" />
+    <ClInclude Include="VPDetectionSystem.h" />
+    <ClInclude Include="VPDetectionComponent.h" />
     <ClInclude Include="VPProcess.h" />
     <ClInclude Include="VPUIComponent.h" />
+    <ClInclude Include="WeaponBoxComponent.h" />
+    <ClInclude Include="WeaponBoxSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AimUIComponent.cpp" />
+    <ClCompile Include="AutoPickComponent.cpp" />
+    <ClCompile Include="AutoPickSystem.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
+    <ClCompile Include="CabinetComponent.cpp" />
+    <ClCompile Include="CabinetSystem.cpp" />
+    <ClCompile Include="CursorComponent.cpp" />
+    <ClCompile Include="CursorSystem.cpp" />
+    <ClCompile Include="DetectableComponent.cpp" />
+    <ClCompile Include="DoOnceComponent.cpp" />
+    <ClCompile Include="DoOnceResetComponent.cpp" />
+    <ClCompile Include="DoOnceSystem.cpp" />
+    <ClCompile Include="DoorAccessComponent.cpp" />
+    <ClCompile Include="DoorComponent.cpp" />
+    <ClCompile Include="DoorOpenerComponent.cpp" />
+    <ClCompile Include="DoorSystem.cpp" />
+    <ClCompile Include="EnemyAttackState.cpp" />
+    <ClCompile Include="EnemyIdleAttack.cpp" />
     <ClCompile Include="EnemyBackpedalState.cpp" />
     <ClCompile Include="EnemyBehaviorState.cpp" />
     <ClCompile Include="EnemyChaseState.cpp" />
@@ -223,13 +281,22 @@
     <ClCompile Include="EnemyPatrolState.cpp" />
     <ClCompile Include="EnemyRangedAttackState.cpp" />
     <ClCompile Include="EnemyRunState.cpp" />
+    <ClCompile Include="EnemySoundComponent.cpp" />
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="EnemySystem.cpp" />
     <ClCompile Include="EnemyWalkState.cpp" />
-    <ClCompile Include="FSMComponent.cpp" />
+    <ClCompile Include="EntityRemoverSystem.cpp" />
+    <ClCompile Include="HitUIComponent.cpp" />
+    <ClCompile Include="HPReducerButtonSystem.cpp" />
+    <ClCompile Include="IdentityRemoverComponent.cpp" />
+    <ClCompile Include="EntityRemoverComponet.cpp" />
     <ClCompile Include="GunComponent.cpp" />
     <ClCompile Include="GunSystem.cpp" />
+    <ClCompile Include="IdentityRemoverSystem.cpp" />
+    <ClCompile Include="InterectiveComponent.cpp" />
+    <ClCompile Include="InterectiveSystem.cpp" />
     <ClCompile Include="IState.cpp" />
+    <ClCompile Include="MainQuestComponent.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -237,19 +304,34 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="PlayerFSMSystem.cpp" />
+    <ClCompile Include="HPReducerComponent.cpp" />
     <ClCompile Include="PlayerMeleeComponent.cpp" />
     <ClCompile Include="PlayerSoundComponent.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
+    <ClCompile Include="PlayerUIComponent.cpp" />
     <ClCompile Include="PlayerUISystem.cpp" />
     <ClCompile Include="AreaAttackComponent.cpp" />
     <ClCompile Include="AreaAttackSystem.cpp" />
+    <ClCompile Include="QuestComponent.cpp" />
+    <ClCompile Include="QuestSystem.cpp" />
+    <ClCompile Include="SectorClearComponent.cpp" />
+    <ClCompile Include="SectorSystem.cpp" />
+    <ClCompile Include="ShotGunBulletComponent.cpp" />
+    <ClCompile Include="SpawnChildComponent.cpp" />
+    <ClCompile Include="SpawnerComponent.cpp" />
+    <ClCompile Include="SpawnerSystem.cpp" />
     <ClCompile Include="TestCameraSystem.cpp" />
     <ClCompile Include="TrunComponent.cpp" />
     <ClCompile Include="TrunSystem.cpp" />
     <ClCompile Include="VisPredStructs.cpp" />
     <ClCompile Include="DataRegister_Vispred.cpp" />
+    <ClCompile Include="VPDetectionSystem.cpp" />
+    <ClCompile Include="VPDetectionComponent.cpp" />
     <ClCompile Include="VPProcess.cpp" />
     <ClCompile Include="VPUIComponent.cpp" />
+    <ClCompile Include="WeaponBoxComponent.cpp" />
+    <ClCompile Include="WeaponBoxSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VPEngine\VPEngine.vcxproj">

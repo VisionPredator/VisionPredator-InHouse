@@ -8,6 +8,7 @@
 PhysicSystem::PhysicSystem(std::shared_ptr<SceneManager> sceneManager)
 	:System(sceneManager)
 {
+	EventManager::GetInstance().Subscribe("OnAddVelecity", CreateSubscriber(&PhysicSystem::OnAddVelecity));
 }
 
 #pragma region IStartable
@@ -98,9 +99,14 @@ void PhysicSystem::PhysicsLateUpdate(float deltaTime)
 			continue;
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
+		if (!m_PhysicsEngine->IsDynamic(entityID))
+			continue;
+		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
+		if (rigidBodyComponent.Speed.Length()<0.001f)
+			continue;
+
 		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
 		rigidBodyTransform->SetWorldQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
-		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
 	}
 
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
@@ -257,6 +263,11 @@ void PhysicSystem::LateRenderUpdate(float deltaTime)
 void PhysicSystem::EditorRenderUpdate(float deltaTime)
 {
 	BeginRenderUpdate(deltaTime);
+}
+void PhysicSystem::OnAddVelecity(std::any ID_Vector3_power)
+{
+	auto [entityid, dir, power] = std::any_cast<std::tuple<uint32_t, VPMath::Vector3,float>>(ID_Vector3_power);
+	m_PhysicsEngine->AddVelocity(entityid, dir, power);
 }
 #pragma endregion
 #pragma region Create

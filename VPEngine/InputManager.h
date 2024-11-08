@@ -184,7 +184,7 @@ public:
 	InputManager();
 	static InputManager* instance;
 	~InputManager() = default;
-	bool Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight);
+	bool Initialize(HINSTANCE hinstance, HWND* hwnd);
 	bool Update();
 	static InputManager& GetInstance()
 	{
@@ -199,10 +199,12 @@ public:
 		Shutdown();
 		delete instance;
 	}
-	int GetMouseX() const { return m_mouseX; }
-	int GetMouseY() const { return m_mouseY; }
-	int GetMouseDeltaX() const { return m_mouseDeltaX; }
-	int GetMouseDeltaY() const { return m_mouseDeltaY; }
+	int GetMouseX() const { return m_curPos.x; }
+	int GetMouseY() const { return m_curPos.y; }
+	int GetMouseDeltaX() const { return m_mouseDelta.x; }
+	int GetMouseDeltaY() const { return m_mouseDelta.y; }
+	int GetUIMouseDeltaX() const { return m_UImouseDelta.x; }
+	int GetUIMouseDeltaY() const { return m_UImouseDelta.y; }
 	void Shutdown();
 	bool GetKeyDown(KEYBOARDKEY inputkey);
 	bool GetKeyUp(KEYBOARDKEY inputkey);
@@ -211,13 +213,22 @@ public:
 	bool GetKeyUp(MOUSEKEY inputkey);
 	bool GetKey(MOUSEKEY);
 	bool IsEscapePressed();
+	bool GetClipmode();
+	void SetClipMode(bool IsWindowMode);
+	VPMath::Vector2 GetClientSize() {
+		return { static_cast<float> (m_clientRect.right - m_clientRect.left),static_cast<float> (m_clientRect.bottom-m_clientRect.top ) };
+	};
+
 private:
 	void CopyKeyStateToPrevious();
 	void CopyMouseStateToPrevious();
-	void CalculateMouseDelta(); // 마우스의 델타 이동을 계산하는 함수
 	void ProcessMouseInput();
-
-
+	void OnResize(std::any hwnd);
+	void OnClipMouse(std::any hwnd);
+	void OnPlayButton(std::any hwnd);
+	void OnStopButton(std::any hwnd);
+	void OnPauseButton(std::any hwnd);
+	void OnResumeButton(std::any hwnd);
 	IDirectInput8* m_directInput = nullptr;
 	IDirectInputDevice8* m_keyboard = nullptr;
 	IDirectInputDevice8* m_mouse = nullptr;
@@ -227,12 +238,14 @@ private:
 	DIMOUSESTATE m_previousMouseState; // 이전 마우스 상태
 	bool ReadKeyboard();
 	bool ReadMouse();
-	int m_screenWidth = 0;
-	int m_screenHeight = 0;
-	int m_mouseX = 0;
-	int m_mouseY = 0;
-	int m_mouseDeltaX=0;
-	int m_mouseDeltaY=0;
+	RECT m_clientRect{};
+
+	POINT m_curPos = {};
+	POINT m_lastPos = {};
+	POINT m_mouseDelta = {};
+	POINT m_UImouseDelta = {};
+	HWND* m_hwnd{};
+	bool m_IsClipMode= false;
 };
 
 template <typename T>

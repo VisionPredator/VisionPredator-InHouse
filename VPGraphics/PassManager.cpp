@@ -30,6 +30,8 @@
 #include "DeferredInstancing.h"
 #include "OverDrawPass.h"
 #include "DecalPass.h"
+#include "DeferredLightPass.h"
+#include "EffectPass.h"
 #pragma endregion Pass
 
 #include "StaticData.h"
@@ -45,17 +47,25 @@ PassManager::PassManager()
 	, m_OutlineEdgeDetectPass(std::make_shared<OutlineEdgeDetectPass>())
 	, m_OutlineBlurPass(std::make_shared<OutlineBlurPass>())
 	, m_OutlineAddPass(std::make_shared<OutlineAddPass>())
+	,m_DeferredLight(std::make_shared<DeferredLightPass>())
 {
 }
 
 PassManager::~PassManager()
 {
-	for (auto& pass : m_BasePasses)
+	for (auto& pass : m_OffScreenPasses)
 	{
 		pass.reset();
 	}
 
-	m_BasePasses.clear();
+	m_OffScreenPasses.clear();
+
+	for (auto& pass : m_AfterLightPasses)
+	{
+		pass.reset();
+	}
+
+	m_AfterLightPasses.clear();
 
 	for (auto& pass : m_IndepentCulling)
 	{
@@ -84,7 +94,7 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_LightManager = lightmanager;
 	m_DecalManager = decalmanager;
 
-	//BasePasses
+	//offscreen
 	m_DebugPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_DebugDrawManager.lock());
 	m_DeferredPass->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_TransparencyPass->Initialize(m_Device.lock(), m_ResourceManager.lock());
@@ -95,6 +105,8 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_Instancing->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 	m_OverDraw = std::make_shared<OverDrawPass>(m_Device.lock(), m_ResourceManager.lock());
 
+
+	m_DeferredLight->Initialize(m_Device.lock(), m_ResourceManager.lock(), m_LightManager);
 
 	//VPpasses
 	m_VPOutLinePass = std::make_shared<VPOutLinePass>(m_Device.lock(), m_ResourceManager.lock());
@@ -114,14 +126,15 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_Decal = std::make_shared<DecalPass>(m_Device.lock(), m_ResourceManager.lock(),m_DecalManager);
 
 	//pass push
-	m_BasePasses.push_back(m_GeometryPass);
-	//m_BasePasses.push_back(m_DebugPass);
-	m_BasePasses.push_back(m_Instancing);
-	m_BasePasses.push_back(m_Decal);
-	m_BasePasses.push_back(m_DeferredPass);
-	m_BasePasses.push_back(m_ObjectMaskPass);
-	m_BasePasses.push_back(m_OverDraw);
-	m_BasePasses.push_back(m_TransparencyPass);
+	m_OffScreenPasses.push_back(m_DebugPass);
+	m_OffScreenPasses.push_back(m_Instancing);	//static
+	m_OffScreenPasses.push_back(m_DeferredPass);	//skinned
+	m_OffScreenPasses.push_back(m_ObjectMaskPass);
+
+	m_AfterLightPasses.push_back(m_DeferredLight);
+	m_AfterLightPasses.push_back(m_Decal);
+	m_AfterLightPasses.push_back(m_TransparencyPass);
+	m_AfterLightPasses.push_back(m_OverDraw);
 
 	m_VPPasses.push_back(m_VPOutLinePass);
 	m_VPPasses.push_back(m_RimLight);
@@ -130,11 +143,21 @@ void PassManager::Initialize(const std::shared_ptr<Device>& device, const std::s
 	m_IndepentCulling.push_back(m_OutlineBlurPass);
 	m_IndepentCulling.push_back(m_OutlineAddPass);
 
+
+	m_punch = std::make_shared<EffectPass>(m_Device.lock(), m_ResourceManager.lock());
+
+
 }
 
 void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling)
 {
-	for (auto& pass : m_BasePasses)
+
+	for (auto& pass : m_OffScreenPasses)
+	{
+		pass->SetRenderQueue(afterCulling);
+	}
+
+	for (auto& pass : m_AfterLightPasses)
 	{
 		pass->SetRenderQueue(afterCulling);
 	}
@@ -143,6 +166,7 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 	{
 		m_VPOutLinePass->SetRenderQueue(afterCulling);
 		m_RimLight->SetRenderQueue(afterCulling);
+		m_punch->SetRenderQueue(afterCulling);
 	}
 
 	if (!m_isDebugDraw)
@@ -152,24 +176,33 @@ void PassManager::Update(const std::vector<std::shared_ptr<RenderData>>& afterCu
 
 }
 
-void PassManager::Render()
+void PassManager::Render(float deltaTime)
 {
 	if (m_isDebugDraw)
 	{
 		m_DebugPass->Render();
 	}
 
-	for (auto& pass : m_BasePasses)
+	for (auto& pass : m_OffScreenPasses)
 	{
 		pass->Render();
 	}
 
+
+	for (auto& pass : m_AfterLightPasses)
+	{
+		pass->Render();
+	}
+
+
 	if (m_isVP)
 	{
+
 		for (auto& pass : m_VPPasses)
 		{
 			pass->Render();
 		}
+		m_punch->Render(deltaTime);
 	}
 
 	for (auto& pass : m_IndepentCulling)
@@ -177,7 +210,7 @@ void PassManager::Render()
 		pass->Render();
 	}
 
-	m_ParticlePass->Render();
+	m_ParticlePass->Render(deltaTime);
 	m_UIPass->Render();
 
 	// 여태까지는 offscreenRTV에 그리다가 이제 여기서 backbufferRTV에 그린다.
@@ -187,7 +220,14 @@ void PassManager::Render()
 
 void PassManager::OnResize()
 {
-	for (auto& pass : m_BasePasses)
+	m_punch->OnResize();
+
+	for (auto& pass : m_OffScreenPasses)
+	{
+		pass->OnResize();
+	}
+
+	for (auto& pass : m_AfterLightPasses)
 	{
 		pass->OnResize();
 	}

@@ -9,6 +9,7 @@ void EnemyIdleState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter IdleState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	enemyComp->CurrentFSM = VisPred::Game::EnemyStates::Idle;
 
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
 }
@@ -19,7 +20,6 @@ void EnemyIdleState::Update(const std::shared_ptr<Component>& component, float d
 	if (CheckIsDead(enemyComp))
 		return;
 	DetectTarget(*enemyComp, deltaTime);
-
 }
 
 void EnemyIdleState::Exit(const std::shared_ptr<Component>& component)

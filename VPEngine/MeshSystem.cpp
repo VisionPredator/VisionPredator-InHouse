@@ -22,6 +22,8 @@ void MeshSystem::ComponentAdded(Component* comp)
 		meshComponent->Renderdata->scale = meshComponent->LightMapScale;
 		meshComponent->Renderdata->tiling = meshComponent->LightMapTiling;
 		meshComponent->Renderdata->MaskingColor = meshComponent->MaskColor;
+		meshComponent->Renderdata->color = meshComponent->InteractiveColor;
+		meshComponent->Renderdata->punchEffect = meshComponent->isEffect;
 
 		m_Graphics->AddRenderModel(meshComponent->Renderdata);
 		return;
@@ -55,6 +57,9 @@ void MeshSystem::BeginRenderUpdate(float deltaTime)
 		renderdata->tiling = meshComp.LightMapTiling;
 		renderdata->offset = meshComp.LightMapOffset;
 		renderdata->lightmapindex = meshComp.LightMapIndex;
+		renderdata->color = meshComp.InteractiveColor;
+		renderdata->punchEffect = meshComp.isEffect;
+
 	}
 }
 

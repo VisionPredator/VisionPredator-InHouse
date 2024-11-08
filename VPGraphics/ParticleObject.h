@@ -22,11 +22,38 @@ public:
 		VPMath::Matrix ViewProj;
 		VPMath::Vector3 EyePosW;
 		float GameTime;
-		VPMath::Vector3 EmitPosW;
 		float TimeStep;
-		VPMath::Vector3 EmitDirW;
-		float Unused;
+		float dummy1[3];
 	};
+	static_assert(sizeof(PerFrame) % 16 == 0, "must be align");
+
+	struct DataCB
+	{
+		VPMath::Vector3 EmitPosW;	// 12
+		float padding1;				// 4
+
+		VPMath::Vector3 EmitDirW;	// 12
+		float padding2;				// 4
+
+		VPMath::Color StartColor;	// 16
+
+		VPMath::Color EndColor;		// 16
+
+		VPMath::Vector2 StartSize;	// 8
+		float StartSpeed;			// 4
+		float Duration;				// 4
+
+		int IsLoop;					// 4
+		int Restart;				// 4
+		float StartLifetime;		// 4
+		float Angle;				// 4
+
+		float Radius;				// 4
+		unsigned int ParticleShape;	// 4
+		unsigned int RenderMode;	// 4
+		float Gravity;				// 4
+	};
+	static_assert(sizeof(DataCB) % 16 == 0, "must be align");
 
 	struct ParticleVertex
 	{
@@ -41,10 +68,10 @@ public:
 	ParticleObject(const std::shared_ptr<class Device>& device, const std::shared_ptr<ResourceManager>& resourceManager, const effect::ParticleInfo& info);
 	~ParticleObject() = default;
 
-	void Update(const float& deltaTime, const float& totalGameTime);
-	void Draw();
+	void Update();
+	void Draw(float deltaTime, float totalGameTime);
 	
-	void SetParticleInfo(const effect::ParticleInfo& info) { m_Info = info; }
+	void SetParticleInfo(const effect::ParticleInfo& info);
 
 private:
 	std::shared_ptr<Device> m_Device;
@@ -52,12 +79,14 @@ private:
 
 	// CB structure
 	PerFrame m_PerFrame = {};
+	DataCB m_Data = {};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_InitVB;		// emit	// 초기화용 방출기 입자
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_StreamOutVB;	// simulate
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_DrawVB;		// draw
 
 	std::shared_ptr<ConstantBuffer<PerFrame>> m_FrameCB;
+	std::shared_ptr<ConstantBuffer<DataCB>> m_DataCB;
 
 	std::shared_ptr<ShaderResourceView> m_TextureSRV;	// 파티클 2d 텍스쳐
 	std::shared_ptr<ShaderResourceView> m_RandomTextureSRV;		// 쉐이더용 난수 텍스처
@@ -80,9 +109,5 @@ private:
 
 	// 수치 조절용
 	effect::ParticleInfo m_Info;
-	// TODO 아래 것도 교체좀.
-	VPMath::Vector3 m_EyePosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
-	VPMath::Vector3 m_EmitPosW = VPMath::Vector3(0.0f, 0.0f, 0.0f);
-	VPMath::Vector3 m_EmitDirW = VPMath::Vector3(0.0f, 1.0f, 0.0f);
 };
 

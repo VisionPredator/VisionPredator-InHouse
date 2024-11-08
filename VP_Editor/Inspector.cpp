@@ -5,6 +5,34 @@
 #include "imgui_stdlib.h"
 #include "Components.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
+#include <locale>
+#include <codecvt>
+// UTF-8 변환 함수
+
+// UTF-8 변환 함수
+std::string WStringToUTF8(const std::wstring& wstr) {
+	if (wstr.empty()) return {};
+
+	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+	if (sizeNeeded == 0) return {};
+
+	std::string strTo(sizeNeeded, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &strTo[0], sizeNeeded, nullptr, nullptr);
+	return strTo;
+}
+
+std::wstring UTF8ToWString(const std::string& str) {
+	if (str.empty()) return {};
+
+	int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), nullptr, 0);
+	if (sizeNeeded == 0) return {};
+
+	std::wstring wstrTo(sizeNeeded, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &wstrTo[0], sizeNeeded);
+	return wstrTo;
+}
+
+
 Inspector::Inspector(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<HierarchySystem> hierarchySystem) :m_SceneManager{ sceneManager }, m_HierarchySystem{ hierarchySystem }
 {
 }
@@ -281,8 +309,7 @@ void Inspector::TransformComponentImGui(Component* component)
 
 
 }
-
-void Inspector::ComponentImGui(Component* component)
+void Inspector::ComponentImGui(Component* component) 
 {
 	entt::id_type compID = component->GetHandle()->type().id();
 	if (ShouldSkipComponent(compID)) return;
@@ -290,33 +317,28 @@ void Inspector::ComponentImGui(Component* component)
 	std::string componentName = Reflection::GetName_Class(component->GetHandle()->type());
 	ImGui::PushID(componentName.c_str());
 
-	if (ImGui::TreeNode(componentName.c_str()))
-	{
+	if (ImGui::TreeNode(componentName.c_str())) {
 		for (auto [MemberID, memberMetaData] : component->GetHandle()->type().data())
 			MemberImGui(memberMetaData, component);
 		ImGui::TreePop();
 	}
 
-	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
-	{
+	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
 		ImGui::OpenPopup("Component_Option");
-		IsClicked = true;
-		m_ClickedCompID = compID;
+		m_ClickedCompID = compID;  // 오른쪽 클릭 시 compID만 설정
 	}
 
-	if (IsClicked && ImGui::BeginPopupContextWindow("Component_Option"))
-	{
-		if (ImGui::MenuItem("Delete") && component->GetEntity()->HasComponent(m_ClickedCompID))
-		{
+	if (m_ClickedCompID == compID && ImGui::BeginPopupContextWindow("Component_Option")) {
+		if (ImGui::MenuItem("Delete") && component->GetEntity()->HasComponent(m_ClickedCompID)) {
 			EventManager::GetInstance().ScheduleEvent("OnRemoveComponent", component);
-			//component->GetEntity()->RemoveComponent(m_ClickedCompID);
-			IsClicked = false;
+			m_ClickedCompID = 0;  // 처리 후 리셋
 		}
 		ImGui::EndPopup();
 	}
-	ImGui::PopID();
 
+	ImGui::PopID();
 }
+
 
 std::string Inspector::RemoveComponentSuffix(const std::string& className)
 {
@@ -363,10 +385,14 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_string(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::wstring>>())
 		TypeImGui_vector_wstring(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::list<uint32_t>>())
+		TypeImGui_list_uint32(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>()) 
 		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
 		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
 		TypeImGui_vector_tuple_wstring_float_float(memberMetaData, component);
+		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
+		TypeImGui_vector_tuple_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
 		TypeImGui_ColliderInfo(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
@@ -478,22 +504,35 @@ void Inspector::TypeImGui_string(entt::meta_data memberMetaData, Component* comp
 		memberMetaData.set(component->GetHandle(), tempName);
 	ImGui::PopID();
 }
+
+
+//// InputText의 콜백 함수
+//int InputTextCallback(ImGuiInputTextCallbackData* data)
+//{
+//	return 0; // 특별한 필터가 필요 없으므로 그냥 0 반환
+//}	
+
 void Inspector::TypeImGui_wstring(entt::meta_data memberMetaData, Component* component)
 {
 	std::wstring tempWName = memberMetaData.get(component->GetHandle()).cast<std::wstring>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 
-	// Convert wstring to string
-	std::string tempName(tempWName.begin(), tempWName.end());
+	// wstring을 UTF-8 string으로 변환
+	std::string tempName = WStringToUTF8(tempWName);
 
 	ImGui::PushID(memberName.c_str());
 
-	// InputText handling for std::wstring
-	if (ImGui::InputText(memberName.c_str(), &tempName))
+	if (ImGui::InputText(memberName.c_str(), &tempName, ImGuiInputTextFlags_CallbackCharFilter))
 	{
-		// Convert string back to wstring
-		std::wstring newWName(tempName.begin(), tempName.end());
-		memberMetaData.set(component->GetHandle(), newWName);
+		try {
+			// UTF-8 문자열을 다시 wstring으로 변환
+			std::wstring newWName = UTF8ToWString(tempName);
+			memberMetaData.set(component->GetHandle(), newWName);
+		}
+		catch (...) {
+			// 예외가 발생할 경우 변환하지 않고 넘어갑니다.
+			// 필요한 경우 로그를 추가하여 예외 내용을 확인할 수 있습니다.
+		}
 	}
 
 	ImGui::PopID();
@@ -685,6 +724,48 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 
 	ImGui::PopID();
 }
+
+void Inspector::TypeImGui_list_uint32(entt::meta_data memberMetaData, Component* component) {
+	// Component의 핸들에서 std::list<uint32_t>를 가져옵니다
+	auto uint32List = memberMetaData.get(component->GetHandle()).cast<std::list<uint32_t>>();
+
+	std::string memberName = Reflection::GetName(memberMetaData);
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text(memberName.c_str());
+
+	// 리스트의 각 요소를 표시
+	int index = 0;
+	for (auto it = uint32List.begin(); it != uint32List.end(); ++it, ++index) {
+		uint32_t value = *it;
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::InputScalar(("Element " + std::to_string(index)).c_str(), ImGuiDataType_U32, &value)) {
+			*it = value; // 입력한 값을 리스트에 반영
+		}
+	}
+
+	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+	// 새 요소 추가 옵션
+	if (ImGui::Button("  Add  ")) {
+		uint32List.push_back(0); // 기본값으로 0 추가
+	}
+
+	// 마지막 요소 제거 옵션
+	if (!uint32List.empty()) {
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("Remove")) {
+			uint32List.pop_back();
+		}
+	}
+
+	// 벡터가 수정된 경우 변경 사항을 적용
+	memberMetaData.set(component->GetHandle(), std::move(uint32List));
+
+	ImGui::PopID();
+}
+
+
 void Inspector::TypeImGui_vector_pair_wstring_float(entt::meta_data memberMetaData, Component* component) {
 	// component의 핸들에서 vector<std::pair<std::wstring, float>>를 가져옴
 	auto pairVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::pair<std::wstring, float>>>();
@@ -805,7 +886,53 @@ void Inspector::TypeImGui_vector_tuple_wstring_float_float(entt::meta_data membe
 	ImGui::PopID();
 }
 
+void Inspector::TypeImGui_vector_tuple_Vector3(entt::meta_data memberMetaData, Component* component)
+{
+	using namespace VPMath;
+	// Retrieve the vector of tuples
+	auto tupleVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::tuple<Vector3, Vector3, Vector3>>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
 
+	ImGui::PushID(memberName.c_str());
+
+	// Toggleable UI section with a collapsing header
+	if (ImGui::CollapsingHeader((memberName + " Vector Tuples").c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		// Add and Remove buttons for managing elements
+		if (ImGui::Button("  Add  ")) {
+			tupleVector.push_back(std::make_tuple(Vector3(), Vector3(), Vector3()));
+		}
+		if (!tupleVector.empty()) {
+			ImGui::SameLine();
+			if (ImGui::Button("Remove")) {
+				tupleVector.pop_back();
+			}
+		}
+
+		// Display each tuple element on separate lines
+		for (size_t i = 0; i < tupleVector.size(); ++i) {
+			std::tuple<Vector3, Vector3, Vector3>& tempTuple = tupleVector[i];
+			Vector3& first = std::get<0>(tempTuple);
+			Vector3& second = std::get<1>(tempTuple);
+			Vector3& third = std::get<2>(tempTuple);
+
+			std::string index = (i < 10 ? "0" : "") + std::to_string(i);
+
+			// Display each Vector3 on a new line with input fields for x, y, z
+			ImGui::DragFloat3(("##First Vector3 " + index).c_str(), &first.x, 0.1f, -100.0f, 100.0f);
+			ImGui::DragFloat3(("##Second Vector3 " + index).c_str(), &second.x, 0.1f, -100.0f, 100.0f);
+			ImGui::SameLine();
+			// Label
+			ImGui::Text(("element " + index).c_str());
+			ImGui::DragFloat3(("##Third Vector3 " + index).c_str(), &third.x, 0.1f, -100.0f, 100.0f);
+			ImGui::Separator(); // Optional separator between tuple entries for clarity
+		}
+	}
+
+	// Apply modified data
+	memberMetaData.set(component->GetHandle(), std::move(tupleVector));
+
+	ImGui::PopID();
+}
 
 
 

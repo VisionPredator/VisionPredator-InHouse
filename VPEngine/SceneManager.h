@@ -26,14 +26,12 @@ public:
 	void ChangeScene(std::string FilePath, bool Immidiate=false);
 	void SpawnPrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 rotation = {0,0,0}, VPMath::Vector3 scele = { -1,-1,-1 });
 	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Vector3 rotation = { 0,0,0 }, VPMath::Vector3 scele = { -1,-1,-1 });
+	//std::shared_ptr<Entity> SpawnSoundEntity(std::string soundName,float volume,bool isloop=false, VPMath::Vector3 pos = { 0,0,0 });
+	std::shared_ptr<Entity> SpawnSoundEntity(std::string soundName,int volume,bool Is2D, bool isloop=false, VPMath::Vector3 pos = { 0,0,0 });
 	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Quaternion Quater = VPMath::Quaternion::Identity, VPMath::Vector3 scele = { -1,-1,-1 });
-
 
 	void SerializePrefab(uint32_t entityID);
 	void DeSerializePrefab(std::string filePath);
-	
-
-
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();
 
@@ -41,12 +39,12 @@ public:
 
 
 	template<typename T>
-	bool HasComponent(uint32_t entityID)
+	bool HasComponent(uint32_t entityID) requires std::derived_from<T, Component>
 	{
 		auto entity = GetEntity(entityID);
 		return entity ? entity->HasComponent<T>() : false;
 	}
-	bool HasComponent(uint32_t EntityID, entt::id_type compid)
+	bool HasComponent(uint32_t EntityID, entt::id_type compid) 
 	{
 		if (!HasEntity(EntityID))
 			return false;
@@ -54,8 +52,8 @@ public:
 	}
 	bool HasEntity(uint32_t entityID) { return m_CurrentScene->EntityMap.count(entityID) > 0; }	///이거 체크
 
-	template<typename T>
-	T* GetComponent(uint32_t EntityID)
+	template<typename T> 
+	T* GetComponent(uint32_t EntityID)requires std::derived_from<T, Component>
 	{
 		//return GetEntity(EntityID)->GetComponent<T>();
 
@@ -91,7 +89,12 @@ public:
 	std::shared_ptr<Entity> GetChildEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetRelationEntityByName(uint32_t entityID,std::string name);
 	std::shared_ptr<Entity> GetEntityByIdentityName(std::string name);
-	std::shared_ptr<Entity> GetEntitySocketEntity(uint32_t entityID);
+	template<typename T>
+	T* GetParentEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
+	template<typename T>
+	std::vector<T*>  GetChildEntityComps_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
+	template<typename T>
+	T*  GetChildEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>;
 
 	const std::string& GetSceneName() { return m_CurrentScene->SceneName; }
 	const BuildSettings& GetSceneBuildSettrings() { return m_CurrentScene->NavBuildSetting; }
@@ -114,6 +117,7 @@ private:
 	/// 해당 json를 Deserialize 한다.
 // 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();
+	std::shared_ptr<Entity> CreateEntity(std::string entityName);
 	uint32_t CreateRandomEntityID();
 	std::shared_ptr<NavMeshData> GetSceneNavMeshData() { return m_CurrentScene->SceneNavData; }
 	void SetSceneNavMeshData(std::shared_ptr<NavMeshData> navMeshdata) { m_CurrentScene->SceneNavData = navMeshdata; }
@@ -207,6 +211,114 @@ private:
 
 
 template<typename T>
+inline T* SceneManager::GetParentEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component>
+{
+	auto mainentity = GetEntity(entityID);
+	while (mainentity)
+	{
+		if (mainentity->HasComponent<T>())
+			return mainentity->GetComponent<T>();
+		else if (mainentity->HasComponent<Parent>())
+			mainentity = GetEntity(mainentity->GetComponent<Parent>()->ParentID);
+		else
+			return nullptr;
+	}
+	return nullptr;
+}
+template<typename T>
+inline std::vector<T*>  SceneManager::GetChildEntityComps_HasComp(uint32_t entityID) requires std::derived_from<T, Component>
+{
+	std::vector<T*> components;
+
+	// Retrieve the main entity
+	auto mainEntity = GetEntity(entityID);
+
+	if (!mainEntity)
+		return components;  // No children to process
+
+	if (mainEntity->HasComponent<T>())
+		components.push_back(mainEntity->GetComponent<T>());
+
+	if (!mainEntity->HasComponent<Children>())
+		return components;
+	// Function to recursively collect components from child entities
+	std::function<void(uint32_t)> collectComponents = [&](uint32_t currentEntityID) 
+		{
+		auto currentEntity = GetEntity(currentEntityID);
+		if (!currentEntity)
+			return;
+
+		// If the current entity has the component T, add it to the list
+		if (currentEntity->HasComponent<T>())
+			components.push_back(currentEntity->GetComponent<T>());
+
+		// If the current entity has children, continue recursively
+		if (currentEntity->HasComponent<Children>()) 
+		{
+			for (auto childID : currentEntity->GetComponent<Children>()->ChildrenID)
+			{
+				collectComponents(childID);
+			}
+		}
+		};
+
+	// Start collecting from the main entity's children
+	for (auto childID : mainEntity->GetComponent<Children>()->ChildrenID)
+	{
+		collectComponents(childID);
+	}
+
+	return components;
+}
+
+template<typename T>
+inline T* SceneManager::GetChildEntityComp_HasComp(uint32_t entityID) requires std::derived_from<T, Component> {
+	// 메인 엔티티를 가져옵니다
+	auto mainEntity = GetEntity(entityID);
+	if (!mainEntity)
+		return nullptr;
+
+	// 메인 엔티티 자체에 컴포넌트 T가 있는지 확인합니다
+	if (mainEntity->HasComponent<T>())
+		return mainEntity->GetComponent<T>();
+
+	// 엔티티에 자식이 있는지 확인합니다
+	if (!mainEntity->HasComponent<Children>())
+		return nullptr;
+
+	// 자식 엔티티에서 컴포넌트를 재귀적으로 수집하는 함수
+	std::function<T* (uint32_t)> collectComponents = [&](uint32_t currentEntityID) -> T* {
+		auto currentEntity = GetEntity(currentEntityID);
+		if (!currentEntity)
+			return nullptr;
+
+		// 현재 엔티티에 컴포넌트 T가 있으면 반환합니다
+		if (currentEntity->HasComponent<T>())
+			return currentEntity->GetComponent<T>();
+
+		// 현재 엔티티에 자식이 있으면 재귀적으로 탐색을 계속합니다
+		if (currentEntity->HasComponent<Children>()) {
+			for (auto childID : currentEntity->GetComponent<Children>()->ChildrenID) {
+				T* result = collectComponents(childID);
+				if (result)
+					return result; // 찾으면 탐색을 중지하고 반환
+			}
+		}
+		return nullptr;
+		};
+
+	// 메인 엔티티의 자식들부터 수집을 시작합니다
+	for (auto childID : mainEntity->GetComponent<Children>()->ChildrenID) {
+		T* result = collectComponents(childID);
+		if (result)
+			return result;
+	}
+
+	return nullptr;
+}
+
+
+template<typename T>
 inline std::vector<std::reference_wrapper<T>> SceneManager::GetComponentPool()
 {
 	std::vector<std::reference_wrapper<T>> result;
@@ -241,6 +353,11 @@ inline void SceneManager::ReleaseCompFromPool(std::shared_ptr<T> comp)
 			return false;
 		}), pool.end());
 }
+
+
+
+
+
 inline void SceneManager::ReleaseCompFromPool(entt::id_type compID, std::shared_ptr<Component> comp)
 {
 	auto& pool = m_CurrentScene->m_ComponentPool[compID];

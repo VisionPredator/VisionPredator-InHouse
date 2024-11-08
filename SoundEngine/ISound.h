@@ -19,13 +19,20 @@ public:
 
 	//virtual void Load3DSound(const std::string& path, const std::string& key, SoundType type) = 0;
 
-	virtual bool Play(const uint32_t& id, const std::string& key, float volume, VPMath::Vector3 pose = {}) = 0;
+	virtual bool Play(const uint32_t& id, const std::string& key, int volume, bool Is2D, bool IsLoop, VPMath::Vector3 pose = {}) = 0;
+	virtual void SetSystemVolume(int master, int bgm, int effect) = 0;
+	virtual int GetMasterVolume() = 0;
+	virtual int GetBGMVolume() = 0;
+	virtual int GetEffectVolume() = 0;
+
+
 	virtual float GetLength( const std::string& key) = 0;
 
 	virtual void Stop(const uint32_t& id, const std::string& soundKey) = 0;
 	virtual void Stop(const uint32_t& id) = 0;
 	virtual bool ChannelMusicFinished(const uint32_t& entityID) = 0;
 	virtual void SetListenerPosition(VPMath::Vector3 pos, VPMath::Vector3 Up, VPMath::Vector3 Forward) = 0;
+	virtual void SetChannelPosition(const uint32_t& id, VPMath::Vector3 pos) = 0;
 	virtual void CleanChannel(const uint32_t& id) = 0;
 	virtual void CleanAllChannel() = 0;
 	virtual bool IsPlayingSound(uint32_t channelid, const std::string& soundKey = {}) = 0;

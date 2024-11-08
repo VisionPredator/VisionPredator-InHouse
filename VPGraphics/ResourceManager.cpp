@@ -87,9 +87,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// Blend State
 	// ----------------------------------------------------------------------------------------
 	Create<BlendState>(L"AlphaBlend", BlendStateType::AlphaBlend);
-	Create<BlendState>(L"AdditiveBlending", BlendStateType::AdditiveBlending);
+	Create<BlendState>(L"Additive", BlendStateType::Additive);
 	Create<BlendState>(L"Opaque", BlendStateType::Opaque);
-
+	Create<BlendState>(L"Multiplicative", BlendStateType::Multiplicative);
 
 	// ----------------------------------------------------------------------------------------
 	// Sampler State
@@ -159,16 +159,24 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	// ----------------------------------------------------------------------------------------
 	// Shader Resource View
 	// ----------------------------------------------------------------------------------------
-#ifdef _DEBUG
-	std::wstring filePath = L"..\\..\\..\\Resource\\Texture\\base.png";
-#else
 	const std::wstring filePath = L"..\\Data\\Texture\\base.png";
-#endif
+
 	//텍스처 이미지가 없으면 임시로 쓸 기본 base.png
 	Create<ShaderResourceView>(filePath, L"base.png");
+	Create<ShaderResourceView>(L"normalbase.png", L"normalbase.png");
+	Create<ShaderResourceView>(L"Noise.png", L"Noise.png");
 
 	// BackBuffer UI Image
 	Create<ShaderResourceView>(L"DefaultUI", L"DefaultUI.png");
+	Create<ShaderResourceView>(L"shadow.png", L"shadow.png");
+	Create<ShaderResourceView>(L"Decal(1).png", L"Decal(1).png");
+	Create<ShaderResourceView>(L"Decal(2).png", L"Decal(2).png");
+	Create<ShaderResourceView>(L"Decal(3).png", L"Decal(3).png");
+	Create<ShaderResourceView>(L"Decal(4).png", L"Decal(4).png");
+	Create<ShaderResourceView>(L"Decal(1)_N.png", L"Decal(1)_N.png");
+	Create<ShaderResourceView>(L"Decal(2)_N.png", L"Decal(2)_N.png");
+	Create<ShaderResourceView>(L"Decal(3)_N.png", L"Decal(3)_N.png");
+	Create<ShaderResourceView>(L"Decal(4)_N.png", L"Decal(4)_N.png");
 	
 
 	// ----------------------------------------------------------------------------------------
@@ -202,6 +210,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_UsingMaterial = Create<ConstantBuffer<MaterialData>>(L"MaterialData", ConstantBufferType::Default);
  	m_Pallete = Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete", ConstantBufferType::Default);
 	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize", ConstantBufferType::Default);
+	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"Color", ConstantBufferType::Default);
 
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Camera), 1, (m_Camera.lock()->GetAddress()));
 	m_Device.lock()->Context()->VSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
@@ -213,18 +222,13 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
 }
 
-void ResourceManager::OnResize(RECT& wndsize)
+void ResourceManager::OnResize(RECT& wndsize, bool isFullScreen)
 {
 	UINT width = wndsize.right - wndsize.left;
 	UINT height = wndsize.bottom - wndsize.top;
 
 	Erase<ViewPort>(L"Main");
 	Create<ViewPort>(L"Main", wndsize);
-
-	/*for (auto tex : m_OffScreenName)
-	{
-		Erase<Texture2D>(tex);
-	}*/
 
 	Erase<RenderTargetView>(L"RTV_Main");
 
@@ -233,16 +237,8 @@ void ResourceManager::OnResize(RECT& wndsize)
 		Erase<RenderTargetView>(tex);
 	}
 
-	//	/*
-	//	auto& RTVmap = m_ResourceArray[static_cast<int>(Resource::GetResourceType<RenderTargetView>())];
-	//	int numRTV = static_cast<int>(RTVmap.size());
+	m_Device.lock()->OnResize(isFullScreen);
 
-	//	for (auto& rtv : RTVmap)
-	//	{
-	//		rtv.second->Release();
-	//	}
-	//	RTVmap.clear();
-	//	*/
 	//	//출력용 backbuffer
 	Create<RenderTargetView>(L"RTV_Main", RenderTargetViewType::BackBuffer, width, height);
 

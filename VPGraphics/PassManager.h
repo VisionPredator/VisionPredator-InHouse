@@ -25,6 +25,8 @@ class RimLight;
 class DeferredInstancing;
 class OverDrawPass;
 class DecalPass;
+class DeferredLightPass;
+class EffectPass;
 #pragma region Pass
 
 #pragma region Manager
@@ -46,15 +48,18 @@ public:
 		const std::shared_ptr<DecalManager> decalmanager);
 	void Update(const std::vector<std::shared_ptr<RenderData>>& afterCulling);
 
-	void Render();
+	void Render(float deltaTime);
 	void OnResize();
 	void SetVP(bool isVP);
 	void SetDebugDraw(bool on_off);
+
+
 private:
 	void DrawIMGUI();
 
 private:
-	std::vector<std::shared_ptr<RenderPass>> m_BasePasses;
+	std::vector<std::shared_ptr<RenderPass>> m_OffScreenPasses;	//기본 depth, normal... offscreen
+	std::vector<std::shared_ptr<RenderPass>> m_AfterLightPasses;	//postProcessing
 	std::vector<std::shared_ptr<RenderPass>> m_VPPasses;	//vp 상태일떄만 쓰는 패스
 	std::vector<std::shared_ptr<RenderPass>> m_IndepentCulling;
 
@@ -73,6 +78,8 @@ private:
 	std::shared_ptr<DeferredInstancing> m_Instancing;
 	std::shared_ptr<OverDrawPass> m_OverDraw;
 	std::shared_ptr<DecalPass> m_Decal;
+	std::shared_ptr<DeferredLightPass> m_DeferredLight;
+	std::shared_ptr<EffectPass> m_punch;
 
 private:
 	std::weak_ptr<Device> m_Device;
@@ -88,7 +95,7 @@ private:
 	VPMath::Matrix m_Proj;
 
 private:
-	bool m_isVP = false;
+	bool m_isVP = false; 
 	bool m_isDebugDraw = false;
 };
 

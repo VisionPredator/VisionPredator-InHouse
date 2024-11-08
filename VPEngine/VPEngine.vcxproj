@@ -166,6 +166,8 @@
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationSystem.h" />
+    <ClInclude Include="ButtonComponent.h" />
+    <ClInclude Include="ButtonSystem.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Component.h" />
@@ -174,6 +176,8 @@
     <ClInclude Include="ControllerMovementSystem.h" />
     <ClInclude Include="DecalComponent.h" />
     <ClInclude Include="DecalSystem.h" />
+    <ClInclude Include="EffectComponent.h" />
+    <ClInclude Include="EffectSystem.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="DataRegister_Engine.h" />
@@ -227,6 +231,8 @@
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AnimationSystem.cpp" />
+    <ClCompile Include="ButtonComponent.cpp" />
+    <ClCompile Include="ButtonSystem.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -234,6 +240,8 @@
     <ClCompile Include="ControllerMovementSystem.cpp" />
     <ClCompile Include="DecalComponent.cpp" />
     <ClCompile Include="DecalSystem.cpp" />
+    <ClCompile Include="EffectComponent.cpp" />
+    <ClCompile Include="EffectSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="DataRegister_Engine.cpp" />
     <ClCompile Include="GeometryComponent.cpp" />

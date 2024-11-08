@@ -20,7 +20,7 @@ public:
 
 	void ImGuiRender() override;
 	void Menu();
-	void Help();
+	void Setting();
 	void Serialize();
 	void Dialog_SaveAs();
 	void PhysicEngineImGui();
@@ -30,6 +30,8 @@ public:
 	static std::string m_CurrentScenePath;
 	bool m_ShowPhysicSettings{ false };
 	bool m_ShowNavSettings{ false };
+	bool m_SetClinetClipmode{ false };
+	bool m_SetWindowClipmode{ false };
 	std::weak_ptr<SceneManager> m_SceneManager;
 	Physic::IPhysx* m_PhysicEngine = nullptr;
 	VPPhysics::PhysicsInfo m_PhysicInfo_ImGui{};

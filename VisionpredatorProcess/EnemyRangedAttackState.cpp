@@ -4,101 +4,133 @@
 #include "TransformComponent.h"
 #include "SceneManager.h"
 #include "../PhysxEngine/IPhysx.h"
-
+#include  "Components.h"
+#include  "VisPredComponents.h"
+#include <random>
 void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter RangedAttackState");
 
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-
-
 }
 
 void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
-	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-
-	// 일정시간 마다 플레이어를 공격
-// 명중률에 따라 피격 정도를 다르게한다.
-	auto transform = enemyComp->GetComponent<TransformComponent>();
-	auto enemyPos = transform->World_Location;
+	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	DetectTarget(*enemyComp, deltaTime);	/// TEMP!!!!!!!
+	const auto transform = enemyComp->GetComponent<TransformComponent>();
+	const auto enemyPos = transform->World_Location;
 	auto rotation = transform->World_Rotation;
 
-	enemyComp->currentAttackTime += deltaTime;
+	enemyComp->AttackCycleTimer += deltaTime;
+	enemyComp->ConsecutiveAttackTimer += deltaTime;
 
 	const auto playerTransform = enemyComp->Player->GetComponent<TransformComponent>();
-	const VisPred::SimpleMath::Vector3 playerPos = VisPred::SimpleMath::Vector3{
+	const auto playerPos = VisPred::SimpleMath::Vector3{
 		playerTransform->WorldTransform._41, playerTransform->WorldTransform._42, playerTransform->WorldTransform._43
 	};
 	auto targetDir = playerPos - enemyPos;
 	targetDir.Normalize();
 
-	// 명중률에 관여하는 것
-	// - 현재 플레이어가 이동중인지, WALk, RUN, JUMP
-	// - distance 에 따라 감소.
-	// 100% 에서 여러 명중률에 관여하는 수치에 따라 낮추거나 유지한다.
-
-	//ChangeCurrentAnimation(enemyComp, VisPred::Game::EnemyAni::ATTACK, 1.f, 0.1f, false);
-
 	enemyComp->GetComponent<NavAgentComponent>()->IsChase = false;
 
-	if ( enemyComp->currentAttackTime >= 1.f)
-	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->currentAttackTime >= 1.f)
+	// 난수 생성기 초기화
+	std::random_device rd;  // 하드웨어 엔트로피를 기반으로 시드 생성
+	std::mt19937 gen(rd()); // Mersenne Twister 난수 생성기
+
+	// 일정시간 마다 플레이어를 공격
+	if (enemyComp->AttackCycleTimer >= enemyComp->AttackCycleDelay)
 	{
-		//enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Pistol_Bullet.prefab", enemyPos, rotation);
-		enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Sound_Pistol.prefab", enemyPos, rotation);
-		enemyComp->currentAttackTime = 0.f;
-
-		//ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
-		//ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::CHASE, 0.005f, 0.005, false);	// Attack Idle 이 있었으면 넣었는데 없어서 이걸로 대체. 근데 어색해서 Attack 애니메이션은 안넣기..
-
-
-		enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
-		// 난수 생성 (0 ~ 100 범위)
-		float randomValue = static_cast<float>(rand() % 101);
-
-		// 명중률에 따라 사격
-		if (randomValue <= enemyComp->AttackAccuracy)
+		// 연속 발사 타이머가 충족되고 남은 연속 공격 횟수가 있을 때만 발사.
+		if (enemyComp->ConsecutiveAttackTimer >= enemyComp->ConsecutiveAttackDelay && enemyComp->ShotCount > 0)
 		{
-			const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastToHitActorFromLocation_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
-			if (detectedObjID == enemyComp->Player->GetEntityID())
-			{
-				enemyComp->Player->HP += -1;
-				Log::GetClientLogger()->warn("Attack Succeed!!!");
-			}
-			else
-			{
-				Log::GetClientLogger()->warn("Missed Target !!!!!!!!!!!");
-			}
-		}
+			enemyComp->ConsecutiveAttackTimer = 0;
+			enemyComp->ShotCount--;
 
-		Exit(component);
+			if (enemyComp->ShotCount <= 0)
+			{
+				// 타이머 초기화
+				enemyComp->AttackCycleTimer = 0.f;
+				if (enemyComp->MaxShotPerBurst <= 0)	// 예외처리
+				{
+					enemyComp->MaxShotPerBurst = 1;
+				}
+				std::uniform_int_distribution dist(1, enemyComp->MaxShotPerBurst);
+				enemyComp->ShotCount = dist(gen);
+			}
+
+			const auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
+
+			// 공격 사운드 출력
+			enemyComp->SceneManager.lock()->SpawnSoundEntity(
+				soundComp->SoundKey_Attack, 
+				soundComp->Volume_Attack, 
+				false, 
+				false, 
+				enemyPos
+			);
+
+			// 공격 이펙트 출력
+			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());
+			if (particle != nullptr)
+			{
+				particle->IsRender = true;
+				particle->Restart = true;
+			}
+
+			// 명중률 계산
+			enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
+
+			std::random_device rd;  // 하드웨어 엔트로피를 기반으로 시드 생성
+			std::mt19937 gen(rd()); // Mersenne Twister 난수 생성기
+			std::uniform_int_distribution dist(0, 100);
+			const float randomValue = static_cast<float>(dist(gen));
+
+			// 명중률에 따라 사격
+			if (randomValue <= enemyComp->AttackAccuracy)
+			{
+				const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
+				if (detectedObjID == enemyComp->Player->GetEntityID())
+				{
+					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
+				}
+			}
+			ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
+		}
 	}
 
-	if (enemyComp->GetComponent<NavAgentComponent>()->IsChase)
-		ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
+	if (enemyComp->ShotCount <= 0)
+	{
+		// 타이머 초기화
+		enemyComp->AttackCycleTimer = 0.f;
+		if (enemyComp->MaxShotPerBurst <= 0)	// 예외처리
+		{
+			enemyComp->MaxShotPerBurst = 1;
+		}
+		std::uniform_int_distribution dist(1, enemyComp->MaxShotPerBurst);
+		enemyComp->ShotCount = dist(gen);
+	}
+
 }
 
 void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit RangedAttackState");
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
-
-	if (enemyComp->BehaviorState != &EnemyBehaviorState::s_Dead)
-		enemyComp->BehaviorState->Enter(component);
 }
 
 float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
 {
+	// 명중률에 관여하는 것
+	// - 현재 플레이어가 이동중인지, WALk, RUN, JUMP
+	// - distance 에 따라 감소.
+	// 100% 에서 여러 명중률에 관여하는 수치에 따라 낮추거나 유지한다.
+
 	float accuracy = 100.f; // 기본 명중률
 
-	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::CROUCH;
-
-	// 플레이어가 이동 중일 때 명중률 감소
-	if (isPlayerMoving)
-	{
-		accuracy -= 10.0f;
-	}
+	const bool isPlayerWalking = enemyComp.Player->CurrentFSM == VisPred::Game::PlayerFSM::WALK;
+	const bool isPlayerRunning = enemyComp.Player->CurrentFSM == VisPred::Game::PlayerFSM::RUN;
+	const bool isPlayerJumping = enemyComp.Player->CurrentFSM == VisPred::Game::PlayerFSM::JUMP;
 
 	// 거리별 명중률 감소
 	if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeOne)
@@ -107,17 +139,27 @@ float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
 	}
 	else if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeTwo)
 	{
-		accuracy -= 10.0f;
+		accuracy -= enemyComp.AccuracyPenaltyOne;
 	}
 	else if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeThree)
 	{
-		accuracy -= 20.0f;
+		accuracy -= enemyComp.AccuracyPenaltyTwo;
 	}
 	else if (enemyComp.DistanceToPlayer <= enemyComp.AccuracyRangeFour)
 	{
-		accuracy -= 30.0f;
+		accuracy -= enemyComp.AccuracyPenaltyThree;
 	}
 	else
+	{
+		accuracy -= enemyComp.AccuracyPenaltyFour;
+	}
+
+	// 플레이어가 이동 중일 때 명중률 감소
+	if (isPlayerWalking || isPlayerJumping)
+	{
+		accuracy -= 20.0f;
+	}
+	else if (isPlayerRunning)
 	{
 		accuracy -= 40.0f;
 	}
