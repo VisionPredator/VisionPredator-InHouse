@@ -13,7 +13,6 @@ void EnemyRangedAttackState::Enter(const std::shared_ptr<Component>& component)
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 }
 
-#pragma optimize( "", off )
 void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
 	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
@@ -95,7 +94,6 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	}
 
 }
-#pragma optimize( "", on )
 void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit RangedAttackState");
