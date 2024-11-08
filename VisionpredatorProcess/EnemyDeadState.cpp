@@ -17,23 +17,34 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 		enemyComp->PhysicsManager->RemoveController(enemyComp->GetEntityID());
 	}
 	EventManager::GetInstance().ImmediateEvent("OnRemoveNavAgent", enemyComp->GetEntityID());
+	
 	auto pose = enemyComp->GetComponent<TransformComponent>()->World_Location;
-	pose.y += 0.4;
-	int temp = VPMath::Random_int(0, 2);
-	switch (temp)
+	pose.y += 1.f;
+	std::shared_ptr<Entity> weapon;
+	switch (enemyComp->EnemyType)
 	{
-	case 0:
-		enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Pistol.prefab", pose, VPMath::Vector3{}, { .2,.2,.2 });
-		break;
-	case 1:
-		enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/ShotGun.prefab", pose, VPMath::Vector3{}, { .2,.2,.2 });
-		break;
-	case 2:
-		enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Rifle.prefab", pose, VPMath::Vector3{}, { .2,.2,.2 });
-		break;
+	case VisPred::Game::GunType::PISTOL:
+	{
+		weapon = enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Pistol.prefab", pose, VPMath::Vector3{}, { .2f,.2f,.2f });
+	}
+	break;
+	case VisPred::Game::GunType::SHOTGUN:
+	{
+		weapon = enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/ShotGun.prefab", pose, VPMath::Vector3{}, { .2f,.2f,.2f });
+	}
+	break;
+	case VisPred::Game::GunType::RIFLE:
+	{
+		weapon = enemyComp->SceneManager.lock()->SpawnEditablePrefab("../Data/Prefab/Rifle.prefab", pose, VPMath::Vector3{}, { .2f,.2f,.2f });
+	}
+	break;
 	default:
 		break;
 	}
+	if (weapon)
+		EventManager::GetInstance().ScheduleEvent("OnAddVelecity", std::make_tuple(weapon->GetEntityID(), VPMath::Vector3{ 0.f,1.f,0.f }, 2.f));
+
+
 	ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
 	enemyComp->MovementState->Enter(enemyComp);
