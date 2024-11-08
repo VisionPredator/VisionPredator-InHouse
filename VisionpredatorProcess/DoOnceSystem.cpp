@@ -34,6 +34,7 @@ void DoOnceSystem::DoOnce(DoOnceComponent* comp)
 {
 
 	comp->GetComponent<InterectiveComponent>()->IsInterective = false;
+	EventManager::GetInstance().ImmediateEvent("OnUnSearched", comp->GetEntityID());
 
 }
 

@@ -165,22 +165,7 @@ void Toolbar::Setting()
 	{
 		m_ShowNavSettings = true;
 	}
-	if (InputManager::GetInstance().GetClipmode())
-	{
-		if (ImGui::MenuItem("SetClientClipMode"))
-		{
-			InputManager::GetInstance().SetClipMode(false);
 
-		}
-
-	}
-	else
-	{
-		if (ImGui::MenuItem("SetWindowClipMode"))
-		{
-			InputManager::GetInstance().SetClipMode(true);
-		}
-	}
 
 
 

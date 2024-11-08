@@ -27,6 +27,8 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 			playercomp.VPHandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = true;
 			playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = true;
 			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_draw, 0, 0, false);
+			ChangeAni_Index(playercomp.HandEntity.lock()->GetEntityID(), VisPred::Game::PlayerAni::End , 0, 0, false);
+
 			m_Graphics->SetVP(playercomp.IsVPMode);
 		}
 		else
@@ -38,6 +40,8 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 			playercomp.VPHandEntity.lock()->GetComponent<SkinningMeshComponent>()->IsVisible = false;
 			playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>()->isPlay = false;
 			ChangeAni_Index(playercomp.HandEntity.lock()->GetEntityID(), VisPred::Game::PlayerAni::ToIdle01_Sword, 0, 0, false);
+			ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::End, 0, 0, false);
+
 			m_Graphics->SetVP(playercomp.IsVPMode);
 
 		}
@@ -196,7 +200,10 @@ void PlayerSystem::FixedUpdate(float deltaTime)
 			|| !playercomp.LongswordEntity.lock()
 			)
 			continue;
+		if (playercomp.IsSearchable)
+		{
 		SearchingInterectives(playercomp);
+		}
 		UpdateCharDataToController(playercomp);
 		CarmeraPosChange(playercomp, deltaTime);
 	}
@@ -255,13 +262,16 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 			if (entityid == playercomp.GunEntityID || entityid == playercomp.GetEntityID())
 				continue;
 
-			if (GetSceneManager()->HasComponent<CabinetComponent>(entityid) &&
-				(!GetSceneManager()->HasComponent<InterectiveComponent>(entityid) ||
-					!GetSceneManager()->GetComponent<InterectiveComponent>(entityid)->IsInterective))
+			if (GetSceneManager()->HasComponent<BulletComponent>(entityid)
+				|| GetSceneManager()->HasComponent<ShotGunBulletComponent>(entityid))
 			{
 				continue;
 			}
-
+			if (GetSceneManager()->HasComponent<InterectiveComponent>(entityid)
+				&&!GetSceneManager()->GetComponent<InterectiveComponent>(entityid)->IsInterective)
+			{
+				continue;
+			}
 			playercomp.SearchedItemID = entityid;
 			break;
 		}
@@ -468,10 +478,12 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 		return;
 	if (PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_dash))
 		return;
+
 	if (!((PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_attack_L) && PlayerAni.IsFinished) ||
 		(PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_attack_R) && PlayerAni.IsFinished) ||
 		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_Idle) ||
-		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_run)))
+		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_run) ||
+		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_jump)))
 		return;
 
 
@@ -1293,7 +1305,6 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToIdle02_Rifle))
 		return false;
@@ -1306,6 +1317,7 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
 	bulletcomp->Damage = guncomp.Damage1;
 	bulletcomp->Speed = guncomp.BulletSpeed;
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
 
 	return true;
@@ -1453,6 +1465,7 @@ void PlayerSystem::Start(uint32_t gameObjectId)
 			VP_ASSERT(false, "player의 Controller가 감지되지 않습니다.");
 		ChangeArm(*playercomp, playercomp->IsVPMode);
 
+		ChangeArm(*playercomp, playercomp->IsVPMode);
 
 
 	};

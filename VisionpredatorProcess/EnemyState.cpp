@@ -24,42 +24,7 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	DirectX::BoundingSphere noiseRange, chaseRange;
 	CreateDetectionAreas(enemyComp, transform, viewRange, noiseRange, chaseRange);
 
-#ifdef _DEBUG 
-	debug::FrustumInfo frustumInfo;
-	frustumInfo.Frustum = viewRange;
-	frustumInfo.Color = VisPred::SimpleMath::Color{ 1, 1, 0, 1 };
-	enemyComp.Graphics->DrawFrustum(frustumInfo);
-
-	debug::SphereInfo sphereInfo;
-	sphereInfo.Sphere = noiseRange;
-	sphereInfo.Color = VPMath::Color{ 1, 0, 1, 1 };
-	enemyComp.Graphics->DrawSphere(sphereInfo);
-
-	DirectX::BoundingSphere temp = noiseRange;
-	temp.Radius = enemyComp.AccuracyRangeOne;
-	debug::SphereInfo sphereInfo1;
-	sphereInfo1.Sphere = temp;
-	sphereInfo1.Color = VPMath::Color{ 1.0f, 1.0f, 0.0f, 1.0f }; // 진한 노란색
-	enemyComp.Graphics->DrawSphere(sphereInfo1);
-
-	temp.Radius = enemyComp.AccuracyRangeTwo;
-	debug::SphereInfo sphereInfo2;
-	sphereInfo2.Sphere = temp;
-	sphereInfo2.Color = VPMath::Color{ 1.0f, 0.9f, 0.2f, 1.0f }; // 약간 연한 노란색
-	enemyComp.Graphics->DrawSphere(sphereInfo2);
-
-	temp.Radius = enemyComp.AccuracyRangeThree;
-	debug::SphereInfo sphereInfo3;
-	sphereInfo3.Sphere = temp;
-	sphereInfo3.Color = VPMath::Color{ 1.0f, 0.8f, 0.4f, 1.0f }; // 더 연한 노란색
-	enemyComp.Graphics->DrawSphere(sphereInfo3);
-
-	temp.Radius = enemyComp.AccuracyRangeFour;
-	debug::SphereInfo sphereInfo4;
-	sphereInfo4.Sphere = temp;
-	sphereInfo4.Color = VPMath::Color{ 1.0f, 0.7f, 0.6f, 1.0f }; // 가장 연한 노란색
-	enemyComp.Graphics->DrawSphere(sphereInfo4);
-#endif _DEBUG
+	DrawDebugDraw(enemyComp, viewRange, noiseRange, chaseRange);
 
 	if (!enemyComp.Player)
 		return -1.f;
@@ -71,8 +36,8 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	};
 
 	constexpr float offsetY = 1.8f;
-	const VPMath::Vector3 enemyPos =
-	{ transform->WorldTransform._41, transform->WorldTransform._42 + offsetY, transform->WorldTransform._43 };
+	 VPMath::Vector3 enemyPos = transform->World_Location;
+	enemyPos.y += 1.2f;
 
 	auto targetDir = playerPos - enemyPos;
 	targetDir.Normalize();
@@ -294,6 +259,46 @@ void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& e
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
+
+void EnemyState::DrawDebugDraw(const EnemyComponent& enemyComp, DirectX::BoundingFrustum& viewRange,
+	DirectX::BoundingSphere& noiseRange, DirectX::BoundingSphere& chaseRange)
+{
+	debug::FrustumInfo frustumInfo;
+	frustumInfo.Frustum = viewRange;
+	frustumInfo.Color = VisPred::SimpleMath::Color{ 1, 1, 0, 1 };
+	enemyComp.Graphics->DrawFrustum(frustumInfo);
+
+	debug::SphereInfo sphereInfo;
+	sphereInfo.Sphere = noiseRange;
+	sphereInfo.Color = VPMath::Color{ 1, 0, 1, 1 };
+	enemyComp.Graphics->DrawSphere(sphereInfo);
+
+	DirectX::BoundingSphere temp = noiseRange;
+	temp.Radius = enemyComp.AccuracyRangeOne;
+	debug::SphereInfo sphereInfo1;
+	sphereInfo1.Sphere = temp;
+	sphereInfo1.Color = VPMath::Color{ 1.0f, 1.0f, 0.0f, 1.0f }; // 진한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo1);
+
+	temp.Radius = enemyComp.AccuracyRangeTwo;
+	debug::SphereInfo sphereInfo2;
+	sphereInfo2.Sphere = temp;
+	sphereInfo2.Color = VPMath::Color{ 1.0f, 0.9f, 0.2f, 1.0f }; // 약간 연한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo2);
+
+	temp.Radius = enemyComp.AccuracyRangeThree;
+	debug::SphereInfo sphereInfo3;
+	sphereInfo3.Sphere = temp;
+	sphereInfo3.Color = VPMath::Color{ 1.0f, 0.8f, 0.4f, 1.0f }; // 더 연한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo3);
+
+	temp.Radius = enemyComp.AccuracyRangeFour;
+	debug::SphereInfo sphereInfo4;
+	sphereInfo4.Sphere = temp;
+	sphereInfo4.Color = VPMath::Color{ 1.0f, 0.7f, 0.6f, 1.0f }; // 가장 연한 노란색
+	enemyComp.Graphics->DrawSphere(sphereInfo4);
+}
+
 
 void EnemyState::ChangeCurrentAnimation(EnemyComponent& enemyComp, VisPred::Game::EnemyAni animation, float speed, float transitionTime, bool isLoop, bool isAgain, bool isImmediate)
 {

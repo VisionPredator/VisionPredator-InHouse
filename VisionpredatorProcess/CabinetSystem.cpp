@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CabinetSystem.h"
 #include "VisPredComponents.h"
+#include "EventManager.h"
 CabinetSystem::CabinetSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&CabinetSystem::OnInterected));
@@ -57,7 +58,7 @@ void CabinetSystem::OnInterected(std::any interective_interector)
 void CabinetSystem::Initialize()
 {
 	COMPLOOP(CabinetComponent, boxcomp)
-		Start(boxcomp.GetEntityID());
+			Start(boxcomp.GetEntityID());
 }
 
 void CabinetSystem::Start(uint32_t gameObjectId)
@@ -75,6 +76,7 @@ void CabinetSystem::Start(uint32_t gameObjectId)
 	cabinetcomp->LeftStartRotate = cabinetcomp->LeftEntity->GetComponent<TransformComponent>()->Local_Rotation;
 	cabinetcomp->RightEndRotation.y -= cabinetcomp->OpenAngle;
 	cabinetcomp->LeftEndRotation.y += cabinetcomp->OpenAngle;
+	///스폰기능 만들기
 }
 
 

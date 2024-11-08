@@ -5,7 +5,7 @@
  {
 	 PlayerSoundComponent();
 	 VP_JSONBODY(PlayerSoundComponent, Volume_Walk, Volume_Run, Volume_Jump, Volume_Landing, Volume_Slide, Volume_Sit, Volume_Hurt, Volume_Death, Volume_Dash, Volume_Transformation, Volume_GunDraw, Volume_GunThrow
-		 , Volume_Sword1, Volume_Sword2, Volume_Sword3, Volume_VPAttack1, Volume_VPAttack2, SoundKey_Walk1, SoundKey_Walk2, SoundKey_Run1, SoundKey_Run2, SoundKey_Jump, SoundKey_Landing, SoundKey_Slide, SoundKey_Sit, SoundKey_Hurt, SoundKey_Death, SoundKey_GunDraw, SoundKey_GunThrow,SoundKey_Sword1, SoundKey_Sword2, SoundKey_Sword3, SoundKey_Dash, SoundKey_Transformation);
+		 , Volume_Sword1, Volume_Sword2, Volume_Sword3, Volume_VPAttack1, Volume_VPAttack2, SoundKey_Walk1, SoundKey_Walk2, SoundKey_Run1, SoundKey_Run2, SoundKey_Jump, SoundKey_Landing, SoundKey_Slide, SoundKey_Sit, SoundKey_Hurt, SoundKey_Death, SoundKey_GunDraw, SoundKey_GunThrow,SoundKey_Sword1, SoundKey_Sword2, SoundKey_Sword3, SoundKey_Dash, SoundKey_Transformation, Volume_Heal, SoundKey_Heal);
 	 int Volume_Walk{ 25 };
 	 int Volume_Run{ 25 };
 	 int Volume_Jump{ 40 };
@@ -23,6 +23,7 @@
 	 int Volume_Sword3{ 30 };
 	 int Volume_VPAttack1{ 30 };
 	 int Volume_VPAttack2{ 30 };
+	 int Volume_Heal = 20;
 	 std::string SoundKey_Walk1 = "Player_Walk1";
 	 std::string SoundKey_Walk2 = "Player_Walk2";
 	 std::string SoundKey_Run1 = "Player_Run1";
@@ -40,6 +41,7 @@
 	 std::string SoundKey_Sword3 = "Sword_Attack2";
 	 std::string SoundKey_VPAttack1 = "VP_Attack1";
 	 std::string SoundKey_VPAttack2 = "VP_Attack2";
+	 std::string SoundKey_Heal = "Heal";
 	 std::string SoundKey_Dash = "VP_Dash";
 	 std::string SoundKey_Transformation = "Change";
 

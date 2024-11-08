@@ -513,6 +513,8 @@ std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, in
 {
 	auto entity = CreateEntity(soundName);
 	auto soundcomp = entity->AddComponent<SoundComponent>();
+	auto identity = entity->AddComponent<IdentityComponent>();
+	identity->UUID = soundName;
 	soundcomp->SoundPath = soundName;
 	soundcomp->Is2D = Is2D;
 	soundcomp->Volume = volume;

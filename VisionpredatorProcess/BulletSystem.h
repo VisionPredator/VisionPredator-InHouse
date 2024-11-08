@@ -54,5 +54,6 @@ public:
 
 private:
 	std::weak_ptr<Entity> GunSparkParticleEntity{};
+	std::weak_ptr<Entity> BloodSplashEntity{};
 };
 
