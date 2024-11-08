@@ -91,7 +91,7 @@ void SpawnerSystem::SpawnPrefabToChild(SpawnChildComponent* spawncomp, const std
 		VPMath::Vector3 pos = defaultPos;
 		VPMath::Vector3 rotation = defaultRotation;
 		VPMath::Vector3 scale = defaultScale;
-
+	auto a = 	spawnentity->GetComponent<IDComponent>()->Name;
 		// pose 튜플에서 위치, 회전, 스케일을 추출
 		std::tie(pos, rotation, scale) = pose;
 		// 생성된 엔티티를 start 엔티티의 자식으로 추가
