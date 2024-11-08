@@ -1296,7 +1296,6 @@ bool PlayerSystem::Shoot_ShotGun(PlayerComponent& playercomp, GunComponent& gunc
 }
 bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans)
 {
-	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToIdle02_Rifle))
 		return false;
@@ -1309,6 +1308,7 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
 	bulletcomp->Damage = guncomp.Damage1;
 	bulletcomp->Speed = guncomp.BulletSpeed;
+	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, temppos);
 
 	return true;

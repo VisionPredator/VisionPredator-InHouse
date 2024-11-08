@@ -34,7 +34,7 @@ public:
     void QuestCheck_PLAYERINTERECT(QuestComponent& questcomp) ;
     void OnInterected(std::any interective_interector);
     void OnTutorialClear(std::any none);
-
+    void MainquestSetting();
     void Finalize() override;
 
     
