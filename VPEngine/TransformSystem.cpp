@@ -97,13 +97,13 @@ void TransformSystem::newUpdate()
 
                 TransformComponent* other = newupdatevector.at(j); // 안전한 접근을 위해 .at() 사용
                 uint32_t otherEntityID = other->GetEntityID();
-               auto cur=  GetSceneManager()->GetComponent<IDComponent>(currentEntityID);
-               auto next=  GetSceneManager()->GetComponent<IDComponent>(otherEntityID);
-               if (cur->Name == "WeaponCabinet" || next->Name == "WeaponCabinet")
-               {
-                   int a = 5;
-                   a = 6;
-               }
+               //auto cur=  GetSceneManager()->GetComponent<IDComponent>(currentEntityID);
+               //auto next=  GetSceneManager()->GetComponent<IDComponent>(otherEntityID);
+               //if (cur->Name == "WeaponCabinet" || next->Name == "WeaponCabinet")
+               //{
+               //    int a = 5;
+               //    a = 6;
+               //}
                 // current가 other의 부모인 경우, other를 제거 대상으로 표시
                 if (GetSceneManager()->CheckParent(currentEntityID, otherEntityID)) 
                 {
@@ -130,16 +130,7 @@ void TransformSystem::newUpdate()
             i++;
         }
 
-        // remove_if를 사용하여 플래그에 따라 벡터를 압축하고 나머지 요소를 제거
-        newupdatevector.erase(
-            std::remove_if(newupdatevector.begin(), newupdatevector.end(),
-                [&](TransformComponent* comp) {
-                    size_t index = std::distance(newupdatevector.begin(), std::find(newupdatevector.begin(), newupdatevector.end(), comp));
-                    return indicesToRemove[index] == 1;
-                }),
-            newupdatevector.end());
-
-        // 마지막으로 indicesToRemove 값이 0인 엔티티들을 추가하여 updateList에 넣음
+        // indicesToRemove 값이 false인 엔티티들을 updateList에 추가하여 중복 방지
         for (size_t k = 0; k < newupdatevector.size(); k++)
         {
             if (!indicesToRemove[k])
@@ -147,6 +138,7 @@ void TransformSystem::newUpdate()
                 updateList.push_back(newupdatevector[k]);
             }
         }
+
         // updateList에 있는 컴포넌트들의 변환을 업데이트
         for (TransformComponent* comp : updateList)
             CalculateTransform_Parent(comp);
