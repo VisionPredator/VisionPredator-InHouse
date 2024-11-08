@@ -21,3 +21,5 @@
 #include "SpawnerSystem.h"
 #include "QuestSystem.h"
 #include "CursorSystem.h"
+#include "FPSSystem.h"
+#include "SceneChangeSystem.h"
