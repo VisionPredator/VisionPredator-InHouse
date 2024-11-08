@@ -7,6 +7,6 @@ struct SceneChangeComponent :
     VP_JSONBODY(SceneChangeComponent, ScenePath, SceneChangeable)
         bool SceneChangeable = true;
     std::string ScenePath{};
-    KEYBOARDKEY ResetButton = KEYBOARDKEY::F10;
+    KEYBOARDKEY ResetButton = KEYBOARDKEY::P;
 };
 
