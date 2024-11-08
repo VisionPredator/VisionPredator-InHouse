@@ -38,7 +38,6 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	if (enemyComp->AttackCycleTimer >= enemyComp->AttackCycleDelay)
 	//if (enemyComp->GetComponent<AnimationComponent>()->IsFinished && enemyComp->AttackCycleTimer >= 1.f)
 	{
-
 		// 연속 발사 타이머가 충족되고 남은 연속 공격 횟수가 있을 때만 발사.
 		if (enemyComp->ConsecutiveAttackTimer >= enemyComp->ConsecutiveAttackDelay && enemyComp->ShotCount > 0)
 		{
@@ -94,6 +93,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	}
 
 }
+
 void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit RangedAttackState");
