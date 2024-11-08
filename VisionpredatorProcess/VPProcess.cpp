@@ -41,6 +41,8 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<SpawnerSystem>();
 	m_SystemManager->AddSystem<QuestSystem>();
 	m_SystemManager->AddSystem<CursorSystem>();
+	m_SystemManager->AddSystem<FPSSystem>();
+	m_SystemManager->AddSystem<SceneChangeSystem>();
 }
 
 VPProcess::~VPProcess()

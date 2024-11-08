@@ -262,13 +262,16 @@ void PlayerSystem::SearchInterective(PlayerComponent& playercomp)
 			if (entityid == playercomp.GunEntityID || entityid == playercomp.GetEntityID())
 				continue;
 
-			if (GetSceneManager()->HasComponent<CabinetComponent>(entityid) &&
-				(!GetSceneManager()->HasComponent<InterectiveComponent>(entityid) ||
-					!GetSceneManager()->GetComponent<InterectiveComponent>(entityid)->IsInterective))
+			if (GetSceneManager()->HasComponent<BulletComponent>(entityid)
+				|| GetSceneManager()->HasComponent<ShotGunBulletComponent>(entityid))
 			{
 				continue;
 			}
-
+			if (GetSceneManager()->HasComponent<InterectiveComponent>(entityid)
+				&&!GetSceneManager()->GetComponent<InterectiveComponent>(entityid)->IsInterective)
+			{
+				continue;
+			}
 			playercomp.SearchedItemID = entityid;
 			break;
 		}
@@ -475,10 +478,12 @@ void PlayerSystem::Melee_VPMode(PlayerComponent& playercomp)
 		return;
 	if (PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_dash))
 		return;
+
 	if (!((PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_attack_L) && PlayerAni.IsFinished) ||
 		(PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_attack_R) && PlayerAni.IsFinished) ||
 		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_Idle) ||
-		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_run)))
+		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_run) ||
+		PlayerAni.curAni == static_cast<int>(VisPred::Game::VPAni::ToVP_jump)))
 		return;
 
 

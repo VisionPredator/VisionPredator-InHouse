@@ -39,6 +39,7 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 
 		comp.Velocity.x += (dir.x * acceleration * deltaTime);
 		comp.Velocity.z += (dir.z * acceleration * deltaTime);
+        comp.Velocity.y = -1;
 	}
 	else
 	{
