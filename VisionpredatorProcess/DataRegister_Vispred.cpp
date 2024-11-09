@@ -2,6 +2,7 @@
 #include "DataRegister_Vispred.h"
 #include "VisPredComponents.h"
 #include "VisPredStructs.h"
+
 void VispredRegister::Register_Metadata()
 {
 	VispredRegister::Register_Components();
@@ -111,9 +112,9 @@ void VispredRegister::Register_Components()
 		, EnemySoundComponent::SoundKey_Death1
 		, EnemySoundComponent::SoundKey_Death2
 		, EnemySoundComponent::SoundKey_Death3
-		)
+	)
 
-	META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::MuzzleEffectPointLightPrefab,GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound,GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound,GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilBack,GunComponent::RecoilTime, GunComponent::RecoilPercent);
+		META_ADD_COMP(GunComponent, GunComponent::Type, GunComponent::BulletPrefab, GunComponent::MuzzleEffectPointLightPrefab, GunComponent::BulletSpeed, GunComponent::ThrowDamage, GunComponent::Damage1, GunComponent::Damage2, GunComponent::Damage3, GunComponent::BulletSize, GunComponent::ShotGunDistance, GunComponent::SoundKey_GunSound, GunComponent::SoundKey_GunDrop, GunComponent::Volume_GunSound, GunComponent::Volume_GunDrop, GunComponent::CoolTime, GunComponent::CurrentBullet, GunComponent::Bullets, GunComponent::RecoilPos, GunComponent::RecoilMaxXY, GunComponent::RecoilBack, GunComponent::RecoilTime, GunComponent::RecoilPercent);
 	META_ADD_COMP(AimUIComponent
 		, AimUIComponent::Killed
 		, AimUIComponent::Aimed
@@ -133,16 +134,16 @@ void VispredRegister::Register_Components()
 		, VPUIComponent::GageImage
 	)
 
-	META_ADD_COMP(DoorComponent, DoorComponent::SoundKey, DoorComponent::Volume, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
-	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity, SectorClearComponent::PreDoorIdentity);
+		META_ADD_COMP(DoorComponent, DoorComponent::SoundKey, DoorComponent::Volume, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
+	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
 	META_ADD_COMP(CabinetComponent
 		, CabinetComponent::RightDoor, CabinetComponent::LeftDoor, CabinetComponent::OpenAngle, CabinetComponent::OpenTime
-	
-	
-	
-	
+
+
+
+
 	);
 	META_ADD_COMP(EntityRemoverComponet, EntityRemoverComponet::temp);
 	META_ADD_COMP(IdentityRemoverComponent, IdentityRemoverComponent::RemoveIdentitys);
@@ -165,34 +166,39 @@ void VispredRegister::Register_Components()
 		, SpawnChildComponent::Prefab5
 		, SpawnChildComponent::Prefab5_Pose
 	);
-	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType,  QuestComponent::IsStarted, QuestComponent::IsCleared);
+	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType, QuestComponent::IsStarted, QuestComponent::IsCleared);
 	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence
-		,MainQuestComponent::Volume_Subquest
-		,MainQuestComponent::Volume_Mainquest
+		, MainQuestComponent::Volume_Subquest
+		, MainQuestComponent::Volume_Mainquest
 		, MainQuestComponent::SounKey_Subquest
-		,MainQuestComponent::SounKey_Mainquest
-		
+		, MainQuestComponent::SounKey_Mainquest
+
 	);
 	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPGage, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI);
-	META_ADD_COMP(		CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale	);
+	META_ADD_COMP(CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale);
 	META_ADD_COMP(HitUIComponent, HitUIComponent::IsHitUIOn, HitUIComponent::ProgressTime, HitUIComponent::DurationTime);
 	META_ADD_COMP(FPSComponent, FPSComponent::IsShow);
-	META_ADD_COMP(SceneChangeComponent, SceneChangeComponent::ScenePath,SceneChangeComponent::SceneChangeable);
+	META_ADD_COMP(SceneChangeComponent, SceneChangeComponent::ScenePath, SceneChangeComponent::SceneChangeable);
+	META_ADD_COMP(SpawnSoundComponent, SpawnSoundComponent::SoundKey_Volume_2D_Loop);
+	META_ADD_COMP(ImageBounceComponent, ImageBounceComponent::AddedBounce, ImageBounceComponent::AddScalePercent, ImageBounceComponent::MaxScalePercent, ImageBounceComponent::BouncingTime, ImageBounceComponent::BounceTimePercent);
+	META_ADD_COMP(TextBounceComponent, TextBounceComponent::AddedBounce, TextBounceComponent::AddScalePercent, TextBounceComponent::MaxScalePercent, TextBounceComponent::BouncingTime, TextBounceComponent::BounceTimePercent);
+
+	//META_ADD_COMP(ImageBounceComponent, ImageBounceComponent::MaxTextScalePercent, ImageBounceComponent::AddTextScalePercent);
 }
 
 void VispredRegister::Register_EnumClass()
 {
 	using namespace VisPred::Game;
 	META_ADD_ENUMCLASS(PlayerFSM
-		,PlayerFSM::IDLE
-		,PlayerFSM::WALK
-		,PlayerFSM::RUN
-		,PlayerFSM::CROUCH
-		,PlayerFSM::Dash_Slide
-		,PlayerFSM::JUMP
-		,PlayerFSM::DIE
-		,PlayerFSM::DIE_END
-		,PlayerFSM::Transformation);
+		, PlayerFSM::IDLE
+		, PlayerFSM::WALK
+		, PlayerFSM::RUN
+		, PlayerFSM::CROUCH
+		, PlayerFSM::Dash_Slide
+		, PlayerFSM::JUMP
+		, PlayerFSM::DIE
+		, PlayerFSM::DIE_END
+		, PlayerFSM::Transformation);
 	META_ADD_ENUMCLASS(PlayerMelee, PlayerMelee::Sword_First, PlayerMelee::Sword_Second, PlayerMelee::Sword_Third, PlayerMelee::Sword_Fourth, PlayerMelee::VP_Left, PlayerMelee::VP_Right, PlayerMelee::END);
 	META_ADD_ENUMCLASS(GunRecoilMode, GunRecoilMode::ReturnToEndAim, GunRecoilMode::ReturnToMiddle);
 	META_ADD_ENUMCLASS(EnemyStates, EnemyStates::Idle, EnemyStates::Chase, EnemyStates::Patrol, EnemyStates::Dead);

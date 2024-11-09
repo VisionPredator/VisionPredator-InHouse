@@ -35,3 +35,6 @@
 #include "HitUIComponent.h"
 #include "FPSComponent.h"
 #include "SceneChangeComponent.h"
+#include "SpawnSoundComponent.h"
+#include "ImageBounceComponent.h"
+#include "TextBounceComponent.h"

@@ -8,7 +8,7 @@ class SectorSystem :
 public:
     SectorSystem(std::shared_ptr<SceneManager> scenemanager);
     
-    void OnUpdateSector(std::any enemyid);
+    void OnEnemyKilled(std::any enemyid);
     void CheckSectorClear(SectorClearComponent* sectorcomp);
     //void CheckSectoStart(SectorClearComponent* sectorcomp);
 

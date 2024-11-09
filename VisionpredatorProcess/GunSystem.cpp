@@ -5,6 +5,7 @@
 GunSystem::GunSystem(std::shared_ptr<SceneManager> scenemanager) :System{ scenemanager }
 {
 	EventManager::GetInstance().GetInstance().Subscribe("OnShoot", CreateSubscriber(&GunSystem::OnShoot));
+	EventManager::GetInstance().GetInstance().Subscribe("OnInterected", CreateSubscriber(&GunSystem::OnInterected));
 }
 
 void GunSystem::Update(float deltaTime)
@@ -75,5 +76,87 @@ void GunSystem::OnShoot(std::any entityID)
 		particle->IsRender = true;
 		particle->Restart = true;
 	}
+}
+
+
+void GunSystem::OnInterected(std::any interective_interector)
+{
+	auto [interected, interector] = std::any_cast<std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>>>(interective_interector);
+	if (interected->HasComponent<GunComponent>() && interector->HasComponent<PlayerComponent>())
+	{
+		auto& guncomp = *interected->GetComponent<GunComponent>();
+		auto& player = *interector->GetComponent<PlayerComponent>();
+		Interected_Gun(guncomp, player);
+	}
+}
+/// <summary>
+/// GrapGun
+/// </summary>
+/// <param name="guncomp"></param>
+/// <param name="playercomp"></param>
+void GunSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& playercomp)
+{
+	auto anicomp = playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+	auto soundcomp = playercomp.GetComponent<PlayerSoundComponent>();
+	if (anicomp->IsBlending)
+		return;
+	if (anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Sword
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Pistol
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_Rifle
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_ShotGun
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_Pistol
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_Rifle
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_ShotGun)
+		return;
+
+	if ((anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_Pistol
+		|| anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_Rifle
+		|| anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_ShotGun) && !anicomp->IsFinished)
+	{
+		return;
+	}
+
+	if (playercomp.HasGun)
+	{
+		std::any data = std::ref(playercomp);
+		EventManager::GetInstance().ImmediateEvent("OnDrop_Gun", data);
+	}
+
+	uint32_t handID = playercomp.HandEntity.lock()->GetEntityID();
+
+	if (guncomp.HasComponent<Parent>())
+	{
+		GetSceneManager()->RemoveParent(guncomp.GetEntityID());
+	}
+
+	auto soceketcomp = guncomp.GetComponent<SocketComponent>();
+	soceketcomp->IsConnected = true;
+	soceketcomp->ConnectedEntityID = handID;
+	playercomp.HasGun = true;
+	playercomp.GunEntityID = guncomp.GetEntityID();
+	m_PhysicsEngine->ConvertToStaticWithLayer(playercomp.GunEntityID, VPPhysics::EPhysicsLayer::NONCOLLISION);
+	guncomp.GetComponent<MeshComponent>()->IsOverDraw = true;
+	///TODO 사운드 로직 추가하기.
+	playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = false;
+
+	VisPred::Engine::AniBlendData temp{ playercomp.HandEntity.lock()->GetEntityID(), {}, 0 ,0, false };
+
+	switch (guncomp.Type)
+	{
+	case VisPred::Game::GunType::PISTOL:
+		temp.Index = static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_Pistol);
+		break;
+	case VisPred::Game::GunType::SHOTGUN:
+		temp.Index = static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_ShotGun);
+		break;
+	case VisPred::Game::GunType::RIFLE:
+		temp.Index = static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_Rifle);
+		break;
+	default:
+		break;
+	}
+	std::any data = temp;
+	EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
+	GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_GunDraw, soundcomp->Volume_GunDraw, true, false, {});
 }
 

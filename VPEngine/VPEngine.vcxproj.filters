@@ -241,9 +241,6 @@
     <ClInclude Include="RenderSystem.h">
       <Filter>System\Derived\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="UISystem.h">
-      <Filter>System\Derived\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="GeometrySystem.h">
       <Filter>System\Derived\Graphics</Filter>
     </ClInclude>
@@ -427,9 +424,6 @@
       <Filter>System\Derived\Graphics\Source</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedMeshSystem.cpp">
-      <Filter>System\Derived\Graphics\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="UISystem.cpp">
       <Filter>System\Derived\Graphics\Source</Filter>
     </ClCompile>
     <ClCompile Include="SceneSerializer.cpp">

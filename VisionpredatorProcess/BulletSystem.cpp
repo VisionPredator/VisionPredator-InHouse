@@ -63,7 +63,7 @@ void BulletSystem::ApplyDamage(Entity& bullet, Entity& Other)
 	{
 		auto bulletTransform = bullet.GetComponent<TransformComponent>();
 
-		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", bulletTransform->World_Location, {0,0,0});
+		GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/BulletMark.prefab", bulletTransform->World_Location, {0,0,0});
 
 		// ¹Ù´Ú ÃÑ¾Ë Æ¢±è ÀÌÆåÆ® Ãâ·Â
 		if (GunSparkParticleEntity.lock())
@@ -204,7 +204,8 @@ void BulletSystem::OnBulletHit(std::any id_damage_pose)
 		{
 			// ¹Ù´Ú ÃÑ¾Ë Æ¢±è ÀÌÆåÆ® Ãâ·Â
 			GunsSparkOn(pose);
-			GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/Decal(1).prefab", pose, { 0,0,0 });
+			GetSceneManager()->SpawnEditablePrefab("../Data/Prefab/BulletMark.prefab", pose, { 0,0,0 });
+			GetSceneManager()->SpawnSoundEntity("Gunhit", 10.f, false, false, pose);
 		}
 	}
 	else if (entity->HasComponent<EnemyComponent>())

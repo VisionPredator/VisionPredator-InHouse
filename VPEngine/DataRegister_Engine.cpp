@@ -66,6 +66,15 @@ void EngineRegister::Register_Value()
 		.prop("second"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<1>(tuple); }) // Second element (Vector3)
 		.prop("third"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<2>(tuple); }); // Third element (Vector3)
 
+	// Register std::tuple<std::string, int, bool, bool>
+	entt::meta<std::tuple<std::string, int, bool, bool>>()
+		.type("std::tuple<std::string, int, bool, bool>"_hs)
+		.prop("first"_hs, [](const std::tuple<std::string, int, bool, bool>& tuple) { return std::get<0>(tuple); })  // First element (std::string)
+		.prop("second"_hs, [](const std::tuple<std::string, int, bool, bool>& tuple) { return std::get<1>(tuple); }) // Second element (int)
+		.prop("third"_hs, [](const std::tuple<std::string, int, bool, bool>& tuple) { return std::get<2>(tuple); })  // Third element (bool)
+		.prop("fourth"_hs, [](const std::tuple<std::string, int, bool, bool>& tuple) { return std::get<3>(tuple); }); // Fourth element (bool)
+
+
 	// Register std::vector<std::tuple<Vector3, Vector3, Vector3>>
 	entt::meta<std::vector<std::tuple<Vector3, Vector3, Vector3>>>().type("std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>"_hs);
 }

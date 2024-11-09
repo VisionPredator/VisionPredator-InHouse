@@ -11,12 +11,10 @@ void SpawnerSystem::OnInterected(std::any interective_interector)
 {
 	auto [interected, interector] = std::any_cast<std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>>>(interective_interector);
 
-	if (!interected->HasComponent<SpawnerComponent>())
-		return;
-	SpawnEntitys(interected->GetComponent<SpawnerComponent>());
-	auto temp = interected->GetComponent<InterectiveComponent>();
-	GetSceneManager()->SpawnSoundEntity(temp->Soundkey, temp->Volume,false, false, interected->GetComponent<TransformComponent>()->World_Location);
-
+	if (interected->HasComponent<SpawnerComponent>())
+		SpawnEntitys(interected->GetComponent<SpawnerComponent>());
+	if (interected->HasComponent<SpawnSoundComponent>())
+		SpawnSounds(interected->GetComponent<SpawnSoundComponent>());
 }
 
 void SpawnerSystem::SpawnEntitys(SpawnerComponent* comp) 
@@ -40,6 +38,18 @@ void SpawnerSystem::SpawnEntitys(SpawnerComponent* comp)
 
 		GetSceneManager()->SpawnPrefab(comp->SpawnPrefab[i], pos, rotation, scale);
 	}
+}
+
+void SpawnerSystem::SpawnSounds(SpawnSoundComponent* comp)
+{
+	if (comp->SoundKey_Volume_2D_Loop.empty())
+		return;
+	for (auto [soundkey,volume,is2D,loop] : comp->SoundKey_Volume_2D_Loop)
+		if (is2D)
+
+			GetSceneManager()->SpawnSoundEntity(soundkey, volume, is2D, loop, {});
+		else
+			GetSceneManager()->SpawnSoundEntity(soundkey, volume, is2D, loop, comp->GetComponent<TransformComponent>()->World_Location);
 }
 
 void SpawnerSystem::Initialize()

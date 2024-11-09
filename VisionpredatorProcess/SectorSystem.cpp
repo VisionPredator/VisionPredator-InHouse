@@ -4,10 +4,10 @@
 #include "EventManager.h"
 SectorSystem::SectorSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
-	EventManager::GetInstance().Subscribe("OnUpdateSector", CreateSubscriber(&SectorSystem::OnUpdateSector));
+	EventManager::GetInstance().Subscribe("OnEnemyKilled", CreateSubscriber(&SectorSystem::OnEnemyKilled));
 }
 
-void SectorSystem::OnUpdateSector(std::any enemyid)
+void SectorSystem::OnEnemyKilled(std::any enemyid)
 {
 	auto entityid = std::any_cast<uint32_t>(enemyid);
 	auto sectorcomp = GetSceneManager()->GetParentEntityComp_HasComp<SectorClearComponent>(entityid);
@@ -42,16 +42,18 @@ void SectorSystem::CheckSectorClear(SectorClearComponent* sectorcomp)
 
 	if (isSectorclear)
 	{
-
-		if (sectorcomp->OpenDoorIdentity.empty())
-			return;
-		for (auto& dooridentity : sectorcomp->OpenDoorIdentity)
-		{
-		auto doorentity = GetSceneManager()->GetEntityByIdentityName(dooridentity);
-		if (!doorentity||!doorentity->HasComponent<DoorComponent>())
-			continue;
-		EventManager::GetInstance().ImmediateEvent("OnChangeDoorUseable", std::make_pair<uint32_t, bool>(doorentity->GetEntityID(), true));
-		}
+		auto entity = GetSceneManager()->GetEntity(sectorcomp->GetEntityID());
+		std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>> eventData(entity, nullptr);
+		EventManager::GetInstance().ImmediateEvent("OnInterected", eventData);
+		//if (sectorcomp->OpenDoorIdentity.empty())
+		//	return;
+		//for (auto& dooridentity : sectorcomp->OpenDoorIdentity)
+		//{
+		//auto doorentity = GetSceneManager()->GetEntityByIdentityName(dooridentity);
+		//if (!doorentity||!doorentity->HasComponent<DoorComponent>())
+		//	continue;
+		//EventManager::GetInstance().ImmediateEvent("OnChangeDoorUseable", std::make_pair<uint32_t, bool>(doorentity->GetEntityID(), true));
+		//}
 
 	}
 

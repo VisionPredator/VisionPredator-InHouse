@@ -13,8 +13,10 @@ struct GunComponent :
     std::string MuzzleEffectPointLightPrefab{};
     std::string SoundKey_GunSound{};
     std::string  SoundKey_GunDrop{};
+    std::string  SoundKey_GunHit{};
     int  Volume_GunDrop{};
     int Volume_GunSound{};
+    int Volume_GunHit{};
     uint32_t CurrentBullet =10;
     uint32_t Bullets{};
     float CoolTime{};

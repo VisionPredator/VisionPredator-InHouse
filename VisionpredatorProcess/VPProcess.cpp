@@ -43,6 +43,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<CursorSystem>();
 	m_SystemManager->AddSystem<FPSSystem>();
 	m_SystemManager->AddSystem<SceneChangeSystem>();
+	m_SystemManager->AddSystem<UIBounceSystem>();
 }
 
 VPProcess::~VPProcess()

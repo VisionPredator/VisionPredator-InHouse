@@ -183,7 +183,7 @@ void PlayerUISystem::UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime
 	UpdateWeaponUI(playerUI);
 	UpdateFadeUI(playerUI);
 	UpdateHitUI(playerUI,deltatime);
-
+	UpdateHP(playerUI);
 
 }
 void PlayerUISystem::UpdateFadeUI(PlayerUIComponent& playerUI)

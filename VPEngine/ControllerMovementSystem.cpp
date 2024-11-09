@@ -39,7 +39,6 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 
 		comp.Velocity.x += (dir.x * acceleration * deltaTime);
 		comp.Velocity.z += (dir.z * acceleration * deltaTime);
-        comp.Velocity.y = -1;
 	}
 	else
 	{
@@ -58,6 +57,8 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
 	// Apply gravity
 	if (comp.IsFall)
 		comp.Velocity.y -= gravity * deltaTime;
+    else
+        comp.Velocity.y = -4.f;
 
 	// Apply jump
 	if (comp.InputDir.y != 0 && !comp.IsFall)

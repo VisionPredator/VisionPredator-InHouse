@@ -1220,7 +1220,7 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 		if (playercomp.GunprogressTime > gunComp->RecoilTime)
 		{
 			VPMath::Quaternion tempquat{};
-			playercomp.RecoilProgress = 0;
+			playercomp.RecoilProgress = 0;		
 			playercomp.GunRecoilStartQuat = {};
 			playercomp.GunRecoilEndQuat = {};
 			playercomp.IsGunRecoiling = false;
@@ -1229,7 +1229,6 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			handtrans.SetLocalLocation(temp);
 		}
 	}
-
 }
 #pragma endregion
 #pragma region Shoot Logic
