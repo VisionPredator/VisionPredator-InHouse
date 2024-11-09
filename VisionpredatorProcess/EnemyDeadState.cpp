@@ -92,6 +92,7 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
 	enemyComp->MovementState->Enter(enemyComp);
 	EventManager::GetInstance().ImmediateEvent("OnEnemyKilled", enemyComp->GetEntityID());
+	EventManager::GetInstance().ImmediateEvent("OnUpdateHP");
 }
 
 void EnemyDeadState::Update(const std::shared_ptr<Component>& component, float deltaTime)

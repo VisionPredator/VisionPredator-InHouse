@@ -158,5 +158,7 @@ void GunSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& playercom
 	std::any data = temp;
 	EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
 	GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_GunDraw, soundcomp->Volume_GunDraw, true, false, {});
+	EventManager::GetInstance().ImmediateEvent("OnUpdateWeaponUI");
+			
 }
 

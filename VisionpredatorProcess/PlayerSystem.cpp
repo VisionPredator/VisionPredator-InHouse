@@ -45,32 +45,35 @@ bool PlayerSystem::ChangeArm(PlayerComponent& playercomp, bool IsVPmode)
 
 		}
 		playercomp.IsArmChanged = true;
+		EventManager::GetInstance().ImmediateEvent("OnUpdateWeaponUI");
+
 		return true;
 	}
 	return false;
 }
 void PlayerSystem::VPMode_Cooltime(PlayerComponent& playercomp, float deltatime)
 {
-
 	if (!playercomp.IsTransformationing)
 	{
-		if (playercomp.VPGageProgress < playercomp.VPGageCoolTime)
+		if (playercomp.ReadyToTransform == false)
 		{
-			playercomp.VPGageProgress += deltatime;
-			playercomp.ReadyToTransform = false;
 
+			if (playercomp.VPGageProgress < playercomp.VPGageCoolTime)
+				playercomp.VPGageProgress += deltatime;
+			else
+			{
+				playercomp.VPGageProgress = playercomp.VPGageCoolTime;
+				playercomp.ReadyToTransform = true;
+			}
+			EventManager::GetInstance().ImmediateEvent("OnUpdateVPState");
 		}
-		else
-		{
-			playercomp.VPGageProgress = playercomp.VPGageCoolTime;
-			playercomp.ReadyToTransform = true;
-		}
+
 	}
 	else
 	{
+		EventManager::GetInstance().ImmediateEvent("OnUpdateVPState");
+
 		playercomp.ReadyToTransform = false;
-
-
 	}
 
 }
@@ -864,6 +867,8 @@ void PlayerSystem::Active_Attack(PlayerComponent& playercomp)
 					{
 						GetSceneManager()->SpawnSoundEntity(sound->SoundKey_GunThrow, sound->Volume_GunThrow, true, false, {});
 						Throw_Setting(playercomp);
+						EventManager::GetInstance().ImmediateEvent("OnUpdateWeaponUI");
+
 					}
 				}
 
@@ -1208,7 +1213,7 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			tempquat = tempquat.Slerp({}, playercomp.GunRecoilEndQuat, static_cast<float>(percent));
 		cameratrans.SetLocalQuaternion(tempquat);
 
-		auto& handtrans = *playercomp.HandEntity.lock()->GetComponent<TransformComponent>();
+		auto& handtrans = * playercomp.HandEntity.lock()->GetComponent<TransformComponent>();
 		auto temp = handtrans.Local_Location;
 		temp.z = 0;
 		VPMath::Vector3 temp2 = temp;
