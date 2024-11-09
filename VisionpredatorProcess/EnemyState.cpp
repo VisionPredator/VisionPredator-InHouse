@@ -44,21 +44,27 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 	/// 시야 범위, 소음 범위, 추격 범위 별로 플레이어 감지 수행.
 	// 각 범위에 들어 왔는지를 확인하고 세부 조건을 확인한다.
-	bool isInViewRange = false, isInNoiseRange = false, isInChaseRange = false;
+	bool isPlayerDetectedInViewRange = false, isPlayerDetectedInNoiseRange = false, isDetectedInChaseRange = false;
 
-	isInViewRange = viewRange.Contains(playerPos);
-	bool isInRange = noiseRange.Contains(playerPos);
+	isPlayerDetectedInViewRange  = viewRange.Contains(playerPos);
+	const bool isInNoiseRange = noiseRange.Contains(playerPos);
 	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::CROUCH;
+
+	// 추격 범위 안에서 플레이어가 총을 쏘면 플레이어를 감지.
+	isDetectedInChaseRange = chaseRange.Contains(playerPos);
+	const bool isPlayerGunShoot = isDetectedInChaseRange && enemyComp.Player->IsAttacking;
 
 	if (enemyComp.BehaviorState == &EnemyBehaviorState::s_Chase)
 	{
 		isPlayerMoving = true;
 	}
-	isInNoiseRange = isInRange && isPlayerMoving;
+	isPlayerDetectedInNoiseRange = isInNoiseRange && isPlayerMoving;
 
-	// 플레이어로부터 공격을 받았다면 플레이어 방향으로 회전한다.
+	isPlayerDetectedInNoiseRange |= isPlayerGunShoot;
+
+	// 플레이어로부터 공격을 받았거나 추격 범위 내에서 플레이어가 총을 쐈을 경우 플레이어 방향으로 회전한다.
 	bool isHit = false;
-	if (enemyComp.OnHit)
+	if (enemyComp.OnHit || isPlayerGunShoot)
 	{
 		isHit = RotateToTarget(transform, targetDir, deltaTime);	// 거의 다 회전하였다면 OnHit 를 false로
 
@@ -74,7 +80,8 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		//}
 	}
 
-	if (isInViewRange || isInNoiseRange || isHit)
+	// 감지 범위 내에서 플레이어가 감지되었다면 Chase 상태로 변환한다.
+	if (isPlayerDetectedInViewRange || isPlayerDetectedInNoiseRange || isHit)
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ).EntityID;
