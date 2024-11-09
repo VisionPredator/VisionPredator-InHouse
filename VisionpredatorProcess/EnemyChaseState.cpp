@@ -9,12 +9,12 @@
 void EnemyChaseState::Enter(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Enter ChaseState");
-	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 	enemyComp->CurrentFSM = VisPred::Game::EnemyStates::Chase;
 
-	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
+	const auto navComp = enemyComp->GetComponent<NavAgentComponent>();
 
-	if (enemyComp->DistanceToPlayer <= enemyComp->AttackRange)
+	if (enemyComp->DistanceToPlayer <= enemyComp->ReachableDistanceToPlayer)
 	{
 		ChangeCurrentState(enemyComp, &EnemyMovementState::s_IdleAttack);
 		navComp->IsChase = false;
@@ -28,22 +28,22 @@ void EnemyChaseState::Enter(const std::shared_ptr<Component>& component)
 }
 
 void EnemyChaseState::Update(const std::shared_ptr<Component>& component, float deltaTime)
-{	
-	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+{
+	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 	if (CheckIsDead(enemyComp))
 		return;
 	enemyComp->DistanceToPlayer = DetectTarget(*enemyComp, deltaTime);
 
-	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
+	const auto navComp = enemyComp->GetComponent<NavAgentComponent>();
 
-	auto animation = enemyComp->GetComponent<AnimationComponent>();
+	const auto animationComp = enemyComp->GetComponent<AnimationComponent>();
 
 	// 플레이어로부터 거리가 가까우면
-	if (enemyComp->DistanceToPlayer <= enemyComp->AttackRange)
+	if (enemyComp->DistanceToPlayer <= enemyComp->ReachableDistanceToPlayer)
 	{
 		navComp->IsChase = false;
 
-		if (animation->IsBlending == false)
+		if (animationComp->IsBlending == false)
 			if (enemyComp->OnHit == true)
 			{
 				ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
@@ -59,7 +59,7 @@ void EnemyChaseState::Update(const std::shared_ptr<Component>& component, float 
 	{
 		navComp->IsChase = true;
 
-		if (animation->IsBlending == false)
+		if (animationComp->IsBlending == false)
 		{
 			if (enemyComp->HeatComplete == true)
 			{
@@ -72,8 +72,8 @@ void EnemyChaseState::Update(const std::shared_ptr<Component>& component, float 
 void EnemyChaseState::Exit(const std::shared_ptr<Component>& component)
 {
 	Log::GetClientLogger()->info("Exit ChaseState");
-	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 
-	auto navComp = enemyComp->GetComponent<NavAgentComponent>();
+	const auto navComp = enemyComp->GetComponent<NavAgentComponent>();
 	navComp->IsChase = false;
 }
