@@ -18,10 +18,10 @@ struct GunComponent :
     uint32_t CurrentBullet =10;
     uint32_t Bullets{};
     float CoolTime{};
-    uint32_t ThrowDamage{};
-    uint32_t Damage1{};
-    uint32_t Damage2{};
-    uint32_t Damage3{};
+    int ThrowDamage{};
+    int Damage1{};
+    int Damage2{};
+    int Damage3{};
     VPMath::Vector2 BulletSize{};
     float BulletSpeed{};
     float ShotGunDistance{};

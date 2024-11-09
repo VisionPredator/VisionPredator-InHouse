@@ -92,7 +92,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 				const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 				if (detectedObjID == enemyComp->Player->GetEntityID())
 				{
-					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
+					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
 				}
 			}
 			ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);

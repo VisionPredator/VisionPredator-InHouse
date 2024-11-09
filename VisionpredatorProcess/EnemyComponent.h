@@ -76,7 +76,7 @@ struct EnemyComponent : public Component
 	float AccuracyPenaltyFour = 50.0f;
 
 	// 공격력
-	uint32_t AttackPower = 1.f;
+	int AttackPower = 1;
 
 	float AttackRange = 10.f;	// 사정거리 내에 플레이어가 있으면 더이상 쫓지 않고 멈춰서 사격.
 	bool OnHit = false;	// 피격 받는 중인지

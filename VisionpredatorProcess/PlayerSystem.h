@@ -31,9 +31,7 @@ public:
 	void NonDamage_Time(PlayerComponent& playercomp, float deltatime);
 	void Gun_Cooltime(PlayerComponent& playercomp, float deltatime);
 
-	void OnDamaged(std::any entityid_Damage);
-
-	void OnShoot(std::any entityID);
+	void ShootNormalBullet(PlayerComponent& playercomp, GunComponent& guncomp, TransformComponent& firetrans);
 
 	void SearchingInterectives(PlayerComponent& playercomp);
 	void SearchInterective(PlayerComponent& playercomp);
@@ -115,6 +113,7 @@ public:
 	void OnDrop_Gun(std::any playercomp);
 	void Drop_Gun(PlayerComponent& playercomp);
 #pragma endregion
+	void OnDamaged(std::any entityid_Damage);
 
 #pragma region Gun Logic
 
