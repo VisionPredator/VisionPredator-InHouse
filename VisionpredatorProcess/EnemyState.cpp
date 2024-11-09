@@ -36,7 +36,7 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	};
 
 	constexpr float offsetY = 1.8f;
-	 VPMath::Vector3 enemyPos = transform->World_Location;
+	VPMath::Vector3 enemyPos = transform->World_Location;
 	enemyPos.y += 1.2f;
 
 	auto targetDir = playerPos - enemyPos;
@@ -46,7 +46,7 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	// 각 범위에 들어 왔는지를 확인하고 세부 조건을 확인한다.
 	bool isPlayerDetectedInViewRange = false, isPlayerDetectedInNoiseRange = false, isDetectedInChaseRange = false;
 
-	isPlayerDetectedInViewRange  = viewRange.Contains(playerPos);
+	isPlayerDetectedInViewRange = viewRange.Contains(playerPos);
 	const bool isInNoiseRange = noiseRange.Contains(playerPos);
 	bool isPlayerMoving = enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::IDLE && enemyComp.Player->CurrentFSM != VisPred::Game::PlayerFSM::CROUCH;
 
@@ -62,9 +62,16 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 	isPlayerDetectedInNoiseRange |= isPlayerGunShoot;
 
-	// 플레이어로부터 공격을 받았거나 추격 범위 내에서 플레이어가 총을 쐈을 경우 플레이어 방향으로 회전한다.
+	// TODO: 코드 정리 필요.
+	// 플레이어가 추격 범위 내에서 공격을 하면 플레이어 방향으로 회전. 
+	if (isPlayerGunShoot)
+	{
+		RotateToTarget(transform, targetDir, deltaTime);
+	}
+
+	// 플레이어로부터 공격을 받으면 플레이어 방향으로 회전한다.
 	bool isHit = false;
-	if (enemyComp.OnHit || isPlayerGunShoot)
+	if (enemyComp.OnHit)
 	{
 		isHit = RotateToTarget(transform, targetDir, deltaTime);	// 거의 다 회전하였다면 OnHit 를 false로
 
@@ -120,8 +127,8 @@ bool EnemyState::CheckIsDead(const std::shared_ptr<EnemyComponent>& enemyCompone
 }
 
 void EnemyState::CreateDetectionAreas(const EnemyComponent& enemyComp, const TransformComponent* transform,
-                                      DirectX::BoundingFrustum& viewRangeOutput, DirectX::BoundingSphere& noiseRangeOutput,
-                                      DirectX::BoundingSphere& chaseRangeOutput)
+	DirectX::BoundingFrustum& viewRangeOutput, DirectX::BoundingSphere& noiseRangeOutput,
+	DirectX::BoundingSphere& chaseRangeOutput)
 {
 	constexpr float offsetY = 1.8f;
 	VPMath::Vector3 enemyPos = { transform->WorldTransform._41, transform->WorldTransform._42 + offsetY, transform->WorldTransform._43 };
