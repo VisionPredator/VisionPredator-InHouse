@@ -17,4 +17,4 @@ struct ImageBounceComponent :
 	float BouncingTime = 0.5f;
 	float BounceProgress = 0.f;
 	float BounceTimePercent = 10.f;
-}
+};
