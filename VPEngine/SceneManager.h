@@ -114,6 +114,8 @@ public:
 protected:
 	friend class CompIter;
 private:
+	std::shared_ptr<Entity> ClonePrefab(const std::string& prefabname, PrefabData& prefabData);
+	std::unordered_map<std::string, std::vector<std::shared_ptr<Entity>>> m_PrefabCache;
 	/// 해당 json를 Deserialize 한다.
 // 엔티티를 CreateEvnet를 호출 하고, Entity를 반환하는 함수.
 	std::shared_ptr<Entity> CreateEntity();

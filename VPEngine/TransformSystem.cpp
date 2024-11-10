@@ -278,19 +278,24 @@ void TransformSystem::CalculateTransform_Parent(TransformComponent* transform)
         IsParentWorldChanged = true;
     }
 
-    if (transform->HasComponent<Children>())
-    {
-        auto children = transform->GetComponent<Children>();
-        for (auto childID : children->ChildrenID)
-        {
-            TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
-            if (childTransform)
-            {
-                CalculateTransform_Child(childTransform, IsParentWorldChanged);
+	if (transform->HasComponent<Children>())
+	{
+		auto children = transform->GetComponent<Children>();
+		for (auto childID : children->ChildrenID)
+		{
+			if (!GetSceneManager()->HasEntity(childID))
+			{
+				int a = 5;
+				a = 7;
+			}
+			TransformComponent* childTransform = GetSceneManager()->GetComponent<TransformComponent>(childID);
+			if (childTransform)
+			{
+				CalculateTransform_Child(childTransform, IsParentWorldChanged);
 
-            }
-        }
-    }
+			}
+		}
+	}
 }
 
 bool TransformSystem::IsLocalTransformChanged(TransformComponent* transform)

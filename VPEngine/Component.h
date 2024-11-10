@@ -4,11 +4,18 @@
 struct Component
 {
     Component() = default;
-    virtual ~Component()
-    {
-        OwnedEntity=nullptr; // Reset the weak pointer for safety
-    }
+    virtual ~Component() { OwnedEntity = nullptr; }
 
+    // 복사 생성자
+    Component(const Component& other) : OwnedEntity(other.OwnedEntity) {}
+
+    // 복사 할당 연산자
+    Component& operator=(const Component& other) {
+        if (this != &other) {
+            OwnedEntity = other.OwnedEntity;
+        }
+        return *this;
+    }
     virtual void SerializeComponent(nlohmann::json& json) const {}
 
 
@@ -39,7 +46,8 @@ struct Component
         OwnedEntity = entity;
     }
 
-
+    // 새로운 순수 가상 복제 함수 추가
+    virtual std::shared_ptr<Component> Clone() const = 0;
 
 
     virtual entt::meta_handle GetHandle() = 0;

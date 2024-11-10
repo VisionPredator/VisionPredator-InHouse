@@ -36,7 +36,7 @@ void SpawnerSystem::SpawnEntitys(SpawnerComponent* comp)
 		if (i < transformSize)
 			std::tie(pos, rotation, scale) = comp->SpawnTransform[i];
 
-		GetSceneManager()->SpawnPrefab(comp->SpawnPrefab[i], pos, rotation, scale);
+		GetSceneManager()->SpawnEditablePrefab(comp->SpawnPrefab[i], pos, rotation, scale);
 	}
 }
 
@@ -54,26 +54,26 @@ void SpawnerSystem::SpawnSounds(SpawnSoundComponent* comp)
 
 void SpawnerSystem::Initialize()
 {
-	COMPLOOP(SpawnChildComponent, comp)
-	{
-		Start(comp.GetEntityID());
-	}
+	//COMPLOOP(SpawnChildComponent, comp)
+	//{
+	//	Start(comp.GetEntityID());
+	//}
 }
 
 void SpawnerSystem::Start(uint32_t gameObjectId)
 {
-	auto startentity = GetSceneManager()->GetEntity(gameObjectId);
-	if (startentity->HasComponent<SpawnChildComponent>())
-	{
-		auto comp = startentity->GetComponent<SpawnChildComponent>();
+	//auto startentity = GetSceneManager()->GetEntity(gameObjectId);
+	//if (startentity->HasComponent<SpawnChildComponent>())
+	//{
+	//	auto comp = startentity->GetComponent<SpawnChildComponent>();
 
-		SpawnPrefabToChild(comp, comp->Prefab1, comp->Prefab1_Pose);
-		SpawnPrefabToChild(comp, comp->Prefab2, comp->Prefab2_Pose);
-		SpawnPrefabToChild(comp, comp->Prefab3, comp->Prefab3_Pose);
-		SpawnPrefabToChild(comp, comp->Prefab4, comp->Prefab4_Pose);
-		SpawnPrefabToChild(comp, comp->Prefab5, comp->Prefab5_Pose);
-	}
-}
+	//	SpawnPrefabToChild(comp, comp->Prefab1, comp->Prefab1_Pose);
+	//	SpawnPrefabToChild(comp, comp->Prefab2, comp->Prefab2_Pose);
+	//	SpawnPrefabToChild(comp, comp->Prefab3, comp->Prefab3_Pose);
+	//	SpawnPrefabToChild(comp, comp->Prefab4, comp->Prefab4_Pose);
+	//	SpawnPrefabToChild(comp, comp->Prefab5, comp->Prefab5_Pose);
+	//}
+}		
 
 void SpawnerSystem::Finish(uint32_t gameObjectId)
 {
@@ -112,5 +112,25 @@ void SpawnerSystem::SpawnPrefabToChild(SpawnChildComponent* spawncomp, const std
 		spawnentitytrans->SetLocalRotation(rotation);
 		spawnentitytrans->SetLocalScale(scale);
 	}
+}
+
+void SpawnerSystem::FixedUpdate(float deltaTime)
+{
+	COMPLOOP(SpawnChildComponent, comp)
+	{
+		if (!comp.IsSpwaned)
+		{
+
+			SpawnPrefabToChild(&comp, comp.Prefab1, comp.Prefab1_Pose);
+			SpawnPrefabToChild(&comp, comp.Prefab2, comp.Prefab2_Pose);
+			SpawnPrefabToChild(&comp, comp.Prefab3, comp.Prefab3_Pose);
+			SpawnPrefabToChild(&comp, comp.Prefab4, comp.Prefab4_Pose);
+			SpawnPrefabToChild(&comp, comp.Prefab5, comp.Prefab5_Pose); 
+				comp.IsSpwaned = true;
+		}
+
+
+	}
+
 }
 
