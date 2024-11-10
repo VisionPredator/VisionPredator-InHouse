@@ -58,9 +58,14 @@ void GunSystem::ApplyDamage(Entity& gun, Entity& Other)
 
 void GunSystem::OnShoot(std::any entityID)
 {
-	const auto& gunID = std::any_cast<uint32_t>(entityID);
+	auto gunID = std::any_cast<uint32_t>(entityID);
 	const auto gunComp = GetSceneManager()->GetComponent<GunComponent>(gunID);
-	const auto& particle = GetSceneManager()->GetChildEntityComp_HasComp<ParticleComponent>(gunID);
+	auto particle = GetSceneManager()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(gunID);
+	if (particle)
+	{
+		EventManager::GetInstance().ImmediateEvent("OnFollowParticle", particle->GetEntityID());
+	}
+	//OnSpawnParticle
 	// 오류로 인하여 주석처리.	
 	// 총 발사 라이트
 	//if (particle != nullptr)
@@ -71,11 +76,11 @@ void GunSystem::OnShoot(std::any entityID)
 	//	GetSceneManager()->SpawnEditablePrefab(pointLightPrefabName, transform->World_Location, transform->World_Rotation, transform->World_Scale);
 	//}
 	// Gun 오브젝트가 ParticleObj를 가지고 있는지 확인
-	if (particle != nullptr)
-	{
-		particle->IsRender = true;
-		particle->Restart = true;
-	}
+	//if (particle != nullptr)
+	//{
+	//	particle->IsRender = true;
+	//	particle->Restart = true;
+	//}
 }
 
 

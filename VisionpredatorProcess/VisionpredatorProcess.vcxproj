@@ -200,8 +200,11 @@
     <ClInclude Include="EnemySystem.h" />
     <ClInclude Include="EnemyWalkState.h" />
     <ClInclude Include="EntityRemoverSystem.h" />
+    <ClInclude Include="FollowComponent.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="FPSSystem.h" />
+    <ClInclude Include="ParticleOwnerComponent.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="HitUIComponent.h" />
     <ClInclude Include="HPReducerButtonSystem.h" />
     <ClInclude Include="IdentityRemoverComponent.h" />
@@ -294,8 +297,11 @@
     <ClCompile Include="EnemySystem.cpp" />
     <ClCompile Include="EnemyWalkState.cpp" />
     <ClCompile Include="EntityRemoverSystem.cpp" />
+    <ClCompile Include="FollowComponent.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="FPSSystem.cpp" />
+    <ClCompile Include="ParticleOwnerComponent.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="HitUIComponent.cpp" />
     <ClCompile Include="HPReducerButtonSystem.cpp" />
     <ClCompile Include="IdentityRemoverComponent.cpp" />

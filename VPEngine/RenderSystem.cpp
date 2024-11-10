@@ -133,8 +133,28 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.IsRender = component.IsRender;
 		info.IsLoop = component.IsLoop;
 
+
+
 		if (component.RestartPrev == true)
+		{
 			component.Restart = false;
+		}
+		if (component.Restart)
+		{
+			component.IsPlaying = true;
+			component.Progresstime = 0;
+		}
+
+		if (component.IsPlaying)
+		{
+			component.Progresstime += deltaTime;
+		}
+		if (component.Progresstime > component.Duration)
+		{
+			component.IsPlaying = false; 
+			component.Progresstime = 0;
+		}
+
 		info.Restart = component.Restart;
 		component.RestartPrev = component.Restart;
 

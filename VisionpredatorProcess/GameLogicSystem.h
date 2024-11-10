@@ -24,4 +24,5 @@
 #include "FPSSystem.h"
 #include "SceneChangeSystem.h"
 #include "UIBounceSystem.h"
+#include "ParticleSystem.h"
 

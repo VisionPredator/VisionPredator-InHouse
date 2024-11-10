@@ -92,6 +92,9 @@ void PlayerUISystem::OnUpdateHP(std::any none)
 
 void PlayerUISystem::UpdateVPState()
 {
+	if (!m_PlayerUI.lock())
+		return;
+
 	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
 	if (!playerUI->VPeyeEntity.lock())
 		return;
@@ -116,10 +119,6 @@ void PlayerUISystem::UpdateVPState()
 	}
 	else
 	{
-
-
-
-
 		imagecomp.TopPercent = 1 - percent;
 		imagecomp.TexturePath = VPUI.GageImage;
 		imagecomp.Color = VPMath::Color::Lerp(White, VPUI.ChangeColor, percent);
@@ -171,21 +170,32 @@ void PlayerUISystem::UpdateWeaponUI()
 	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
 	auto& ammoUIComp = *playerUI->WeaponEntity.lock()->GetComponent<TextComponent>();
 	auto& weaponUIComp = *ammoUIComp.GetComponent<ImageComponent>();
-
+	std::string newweapon{};
 	if (playercomp->IsVPMode)
 	{
 		ammoUIComp.Text = L" ";
-		weaponUIComp.TexturePath = "WeaponUI_VPHand.png";
-		return;
+		newweapon = "WeaponUI_VPHand.png";
 	}
 	else if (!playercomp->HasGun)
-
 	{
 		ammoUIComp.Text = L" ";
-		weaponUIComp.TexturePath = "WeaponUI_Sword.png";
-		return;
+		newweapon = "WeaponUI_Sword.png";
 	}
 
+	if (!newweapon.empty())
+	{
+		if (weaponUIComp.TexturePath != newweapon)
+		{
+		weaponUIComp.TexturePath = newweapon;
+			if (weaponUIComp.HasComponent<ImageBounceComponent>())
+			{
+				auto imagebounce = weaponUIComp.GetComponent<ImageBounceComponent>();
+				imagebounce->AddedBounce = true;
+				return;
+			}
+		}
+		return;
+	}
 
 	auto& guncomp = *m_SceneManager.lock()->GetComponent<GunComponent>(playercomp->GunEntityID);
 
@@ -198,22 +208,36 @@ void PlayerUISystem::UpdateWeaponUI()
 	{
 	case VisPred::Game::GunType::PISTOL:
 	{
-		weaponUIComp.TexturePath = "WeaponUI_Pistol.png";
+		newweapon = "WeaponUI_Pistol.png";
 		break;
 	}
 	case VisPred::Game::GunType::RIFLE:
 	{
-		weaponUIComp.TexturePath = "WeaponUI_Rifle.png";
+		newweapon = "WeaponUI_Rifle.png";
 		break;
 	}
 	case VisPred::Game::GunType::SHOTGUN:
 	{
-		weaponUIComp.TexturePath = "WeaponUI_Shotgun.png";
+		newweapon = "WeaponUI_Shotgun.png";
 		break;
 	}
 	default:
 		break;
 	}
+
+	if (weaponUIComp.TexturePath != newweapon)
+	{
+		weaponUIComp.TexturePath = newweapon;
+		if (weaponUIComp.HasComponent<ImageBounceComponent>())
+		{
+			auto imagebounce = weaponUIComp.GetComponent<ImageBounceComponent>();
+			imagebounce->AddedBounce = true;
+			return;
+		}
+	}
+
+
+
 }
 
 void PlayerUISystem::OnUpdateWeaponUI(std::any data)

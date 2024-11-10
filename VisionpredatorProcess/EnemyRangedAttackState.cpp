@@ -71,12 +71,16 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			);
 
 			// 공격 이펙트 출력
-			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());
-			if (particle != nullptr)
+			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(enemyComp->GetEntityID());
+			if (particle)
 			{
-				particle->IsRender = true;
-				particle->Restart = true;
+				EventManager::GetInstance().ImmediateEvent("OnFollowParticle", particle->GetEntityID());
 			}
+			//if (particle != nullptr)
+			//{
+			//	particle->IsRender = true;
+			//	particle->Restart = true;
+			//}
 
 			// 명중률 계산
 			enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);

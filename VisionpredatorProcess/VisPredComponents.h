@@ -38,3 +38,6 @@
 #include "SpawnSoundComponent.h"
 #include "ImageBounceComponent.h"
 #include "TextBounceComponent.h"
+#include "ParticleOwnerComponent.h"
+#include "FollowComponent.h"
+

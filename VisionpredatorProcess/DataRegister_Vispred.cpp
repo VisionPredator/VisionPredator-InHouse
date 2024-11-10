@@ -182,7 +182,8 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(SpawnSoundComponent, SpawnSoundComponent::SoundKey_Volume_2D_Loop);
 	META_ADD_COMP(ImageBounceComponent, ImageBounceComponent::AddedBounce, ImageBounceComponent::AddScalePercent, ImageBounceComponent::MaxScalePercent, ImageBounceComponent::BouncingTime, ImageBounceComponent::BounceTimePercent);
 	META_ADD_COMP(TextBounceComponent, TextBounceComponent::AddedBounce, TextBounceComponent::AddScalePercent, TextBounceComponent::MaxScalePercent, TextBounceComponent::BouncingTime, TextBounceComponent::BounceTimePercent);
-
+	META_ADD_COMP(FollowComponent, FollowComponent::Isfollowing, FollowComponent::FollowingEntityID);
+	META_ADD_COMP(ParticleOwnerComponent, ParticleOwnerComponent::ParticleName);
 	//META_ADD_COMP(ImageBounceComponent, ImageBounceComponent::MaxTextScalePercent, ImageBounceComponent::AddTextScalePercent);
 }
 
