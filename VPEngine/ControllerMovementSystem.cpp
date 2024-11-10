@@ -100,8 +100,7 @@ void ControllerMovementSystem::ControllerMoveCalculate(float deltaTime, Controll
         comp.Velocity.z = xzVelocity.y;
     }
 
-    // Reset input direction
-    comp.InputDir = VPMath::Vector3(0, 0, 0);
+
 }
 
 
