@@ -193,6 +193,15 @@ void VispredRegister::Register_Components()
 		, MainTopicComponent::Duration
 		, MainTopicComponent::Progress
 		, MainTopicComponent::Ment);
+	META_ADD_COMP(ScoreComponent
+		, ScoreComponent::PlayerPoint
+		, ScoreComponent::Ment
+		, ScoreComponent::EndMent
+		, ScoreComponent::FontColor
+		, ScoreComponent::EndFontColor
+		, ScoreComponent::MiddlePose
+		, ScoreComponent::MiddleScale);
+	META_ADD_COMP(BestScoreComponent, BestScoreComponent::Score, BestScoreComponent::BestScoreMent, BestScoreComponent::NewBestScoreMent, BestScoreComponent::BasicColor, BestScoreComponent::NewColor)
 
 }
 

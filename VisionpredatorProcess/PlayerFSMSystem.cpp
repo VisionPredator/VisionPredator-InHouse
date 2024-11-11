@@ -658,16 +658,22 @@ void PlayerFSMSystem::Enter_Transformation(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Die(PlayerComponent& playercomp)
 {
+	EventManager::GetInstance().ImmediateEvent("OnHideEnemyCount");
+	EventManager::GetInstance().ImmediateEvent("OnHideScore");
+	auto entity =GetSceneManager()->GetEntityByIdentityName("Restart");
+	entity->DestorySelf();
 }
 void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 {
-	GetSceneManager()->SpawnPrefab("../Data/Prefab/DieUI.prefab", {}, VPMath::Vector3{});
+	GetSceneManager()->SpawnPrefab("../Data/Prefab/ClearUI.prefab", {}, VPMath::Vector3{});
 	auto entity =GetSceneManager()->GetEntityByIdentityName("Cursor");
 	if (entity)
 	{
 	entity->GetComponent<CursorComponent>()->ShowCursor = true;
 	}
-	//GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
+	EventManager::GetInstance().ImmediateEvent("OnScoreToMiddle");
+	EventManager::GetInstance().ImmediateEvent("OnEndingBestScore");
+	EventManager::GetInstance().ImmediateEvent("OnHideBullet");
 }
 
 void PlayerFSMSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)

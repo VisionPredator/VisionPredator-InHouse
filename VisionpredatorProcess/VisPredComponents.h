@@ -41,4 +41,6 @@
 #include "ParticleOwnerComponent.h"
 #include "FollowComponent.h"
 #include "MainTopicComponent.h"
+#include "ScoreComponent.h"
+#include "BestScoreComponent.h"
 
