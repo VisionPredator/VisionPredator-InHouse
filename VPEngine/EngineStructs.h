@@ -10,6 +10,7 @@ namespace VisPred
 			float Speed{};
 			float TransitionTime{};
 			bool Loop;
+			bool IsAgain = false;
 		};
 
 		enum class Skill

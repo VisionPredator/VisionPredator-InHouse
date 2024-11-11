@@ -35,7 +35,7 @@ void AnimationSystem::OnChangeAnimation(std::any aniBlendData)
 		auto aniComp = GetSceneManager()->GetComponent<AnimationComponent>(aniblenddata.EntityID);
 		aniComp->isLoop = aniblenddata.Loop;
 
-		if (aniComp->curAni != aniblenddata.Index)	//애니메이션이 다를때만 변경 같으면 그대로
+		if (aniComp->curAni != aniblenddata.Index || aniblenddata.IsAgain)	//애니메이션이 다를때만 변경 같으면 그대로
 		{
 			aniComp->preAni = aniComp->curAni;
 			aniComp->curAni = aniblenddata.Index;

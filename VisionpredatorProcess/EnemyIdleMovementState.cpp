@@ -13,7 +13,7 @@ void EnemyIdleMovementState::Enter(const std::shared_ptr<Component>& component)
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 
 	if(dynamic_cast<EnemyDeadState*>(enemyComp->BehaviorState) == &EnemyBehaviorState::s_Dead)
-		ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::DIE, 2.f, 0.f, false);
+		ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::DIE, 2.f, 0.01f, false);
 	else
 		ChangeCurrentAnimation(*enemyComp, VisPred::Game::EnemyAni::IDLE, 2.f);
 }
