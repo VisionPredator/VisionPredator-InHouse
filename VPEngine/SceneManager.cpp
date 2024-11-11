@@ -561,6 +561,13 @@ void SceneManager::OnSerializePrefab(std::any data)
 	std::string fileExtension = ".prefab";
 	std::string filePath = folderName + entityName + fileExtension;	
 
+	// 만약 prefabname이 m_PrefabCache에 있다면 삭제
+	if (m_PrefabCache.find(filePath) != m_PrefabCache.end())
+	{
+		m_PrefabCache.erase(filePath);
+	}
+
+
 	// 파일을 생성하기 전에 디렉토리가 존재하는지 확인
 	std::filesystem::create_directories(folderName);
 
