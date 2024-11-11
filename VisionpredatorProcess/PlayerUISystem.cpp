@@ -12,6 +12,7 @@ PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager
 	EventManager::GetInstance().Subscribe("OnDamaged", CreateSubscriber(&PlayerUISystem::OnDamaged));
 	EventManager::GetInstance().Subscribe("OnShoot", CreateSubscriber(&PlayerUISystem::OnShoot));
 	EventManager::GetInstance().Subscribe("OnUpdateVPState", CreateSubscriber(&PlayerUISystem::OnUpdateVPState));
+	EventManager::GetInstance().Subscribe("OnHideBullet", CreateSubscriber(&PlayerUISystem::OnHideBullet));
 }
 
 void PlayerUISystem::Update(float deltaTime)
@@ -396,6 +397,20 @@ void PlayerUISystem::OnResetInterectionUI(std::any null)
 	if (!entity)
 		return;
 	ResetInterectionUI(entity->GetComponent<PlayerUIComponent>()->InterectionEntity.lock());
+}
+void PlayerUISystem::OnHideBullet(std::any null)
+{
+	if (!m_PlayerUI.lock())
+		return;
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->WeaponEntity.lock())
+		return;
+
+	if (playerUI->WeaponEntity.lock()->HasComponent<TextComponent>())
+	{
+		playerUI->WeaponEntity.lock()->GetComponent<TextComponent>()->Color.w = 0;
+	}
+
 }
 void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 {

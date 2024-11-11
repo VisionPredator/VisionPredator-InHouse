@@ -32,11 +32,20 @@ void UIManager::Render()
 {
 	DrawAllImages();
 	DrawAllTexts();
+
+}
+
+void UIManager::TopImageRender()
+{
+	DrawAllTopImages();
 }
 
 void UIManager::CreateImageObject(uint32_t entityID, const ui::ImageInfo& info)
 {
-	m_Images.push_back(std::make_shared<ImageObject>(m_Device, m_ResourceManager, info, entityID));
+	if (info.DrawAfterText)
+		m_TopImages.push_back(std::make_shared<ImageObject>(m_Device, m_ResourceManager, info, entityID));
+	else
+		m_Images.push_back(std::make_shared<ImageObject>(m_Device, m_ResourceManager, info, entityID));
 }
 
 void UIManager::UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info)
@@ -49,19 +58,41 @@ void UIManager::UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info)
 			return;
 		}
 	}
+
+	for (const auto& ui : m_TopImages)
+	{
+		if (ui->GetID() == entityID)
+		{
+			ui->SetImageInfo(info);
+			return;
+		}
+	}
 }
 
 void UIManager::DeleteImageObject(uint32_t entityId)
 {
-	auto it = std::remove_if(m_Images.begin(), m_Images.end(),
-		[entityId](const std::shared_ptr<ImageObject>& obj)
-		{
-			return obj->GetID() == entityId;
-		});
+	const auto it = std::remove_if(m_Images.begin(), m_Images.end(),
+	                               [entityId](const std::shared_ptr<ImageObject>& obj)
+	                               {
+		                               return obj->GetID() == entityId;
+	                               });
 
 	if (it != m_Images.end())
 	{
 		m_Images.erase(it, m_Images.end());
+	}
+	else
+	{
+		const auto topImagesIt = std::remove_if(m_TopImages.begin(), m_TopImages.end(),
+		                                        [entityId](const std::shared_ptr<ImageObject>& obj)
+		                                        {
+			                                        return obj->GetID() == entityId;
+		                                        });
+
+		if (topImagesIt != m_TopImages.end())
+		{
+			m_TopImages.erase(topImagesIt, m_TopImages.end());
+		}
 	}
 }
 
@@ -172,4 +203,18 @@ void UIManager::DrawAllTexts()
 	}
 
 	m_SpriteBatch->End();
+}
+
+void UIManager::DrawAllTopImages()
+{
+	// 그냥 무조건 위에 그리는 이미지들 렌더. 텍스트 아래 가려지는 문제 때문에 임시로 추가함. 나중에 코드 정리할 여유가 있다면 바꿔야 한다.
+	std::sort(m_TopImages.begin(), m_TopImages.end(),
+		[&](const std::shared_ptr<ImageObject>& lhs, const std::shared_ptr<ImageObject>& rhs)
+		{
+			return lhs->GetLayer() > rhs->GetLayer();
+		});
+	for (const auto& image : m_TopImages)
+	{
+		image->Render();
+	}
 }

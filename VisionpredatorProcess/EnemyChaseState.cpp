@@ -43,9 +43,12 @@ void EnemyChaseState::Update(const std::shared_ptr<Component>& component, float 
 	{
 		navComp->IsChase = false;
 
-		if (animationComp->IsBlending == false)
+		//if (animationComp->IsBlending == false)
 			if (enemyComp->OnHit == true)
 			{
+				//if (enemyComp->MovementState == &EnemyMovementState::s_HitReaction)
+				//	enemyComp->MovementState->Enter(enemyComp);
+
 				ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
 				enemyComp->HeatComplete = false;
 			}

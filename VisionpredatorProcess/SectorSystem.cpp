@@ -5,6 +5,7 @@
 SectorSystem::SectorSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnEnemyKilled", CreateSubscriber(&SectorSystem::OnEnemyKilled));
+	EventManager::GetInstance().Subscribe("OnHideEnemyCount", CreateSubscriber(&SectorSystem::OnHideEnemyCount));
 }
 
 void SectorSystem::OnEnemyKilled(std::any enemyid)
@@ -58,6 +59,23 @@ void SectorSystem::CheckSectorClear(SectorClearComponent* sectorcomp)
 		}
 
 	}
+
+}
+void SectorSystem::OnHideEnemyCount(std::any null)
+{
+	COMPLOOP(SectorClearComponent, sectorcomp)
+	{
+
+		if (sectorcomp.HasComponent<TextComponent>())
+		{
+			auto text = sectorcomp.GetComponent<TextComponent>();
+			// Set the message with the enemy count
+			text->Text = {};
+
+		}
+
+	}
+
 
 }
 void SectorSystem::Initialize()

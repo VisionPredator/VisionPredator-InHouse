@@ -30,7 +30,7 @@ public:
 	std::shared_ptr<Entity> SpawnSoundEntity(std::string soundName,int volume,bool Is2D, bool isloop=false, VPMath::Vector3 pos = { 0,0,0 });
 	std::shared_ptr<Entity> SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos = { 0,0,0 }, VPMath::Quaternion Quater = VPMath::Quaternion::Identity, VPMath::Vector3 scele = { -1,-1,-1 });
 
-	void SerializePrefab(uint32_t entityID);
+	void SerializePrefab(uint32_t entityID, bool immidiate = false);
 	void DeSerializePrefab(std::string filePath);
 	void SetScenePhysic(VPPhysics::PhysicsInfo physicInfo);
 	VPPhysics::PhysicsInfo GetScenePhysic();

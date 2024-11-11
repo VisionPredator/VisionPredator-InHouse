@@ -79,6 +79,11 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 		{
 			enemyComp.OnHit = false;
 
+			const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
+
+			if (enemyComp.MovementState == &EnemyMovementState::s_HitReaction)
+				enemyComp.MovementState->Enter(temp);
+
 			ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
 		}
 		//else
@@ -265,7 +270,7 @@ void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& e
 
 	enemyComp->CurrentAni = animation;
 
-	VisPred::Engine::AniBlendData temp{ enemyComp->GetEntityID(), static_cast<int>(animation), speed, transitionTime, isLoop };
+	VisPred::Engine::AniBlendData temp{ enemyComp->GetEntityID(), static_cast<int>(animation), speed, transitionTime, isLoop, isAgain };
 
 	const std::any data = temp;
 	if (true == isImmediate)
