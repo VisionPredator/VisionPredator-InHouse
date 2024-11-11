@@ -109,7 +109,7 @@ void PlayerFSMSystem::Calculate_Idle(PlayerComponent& playercomp)
 
 	if (playercomp.IsVPMode)
 	{
-		if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 		}
@@ -136,12 +136,12 @@ void PlayerFSMSystem::Calculate_Idle(PlayerComponent& playercomp)
 	{
 		///¶Ù±â
 		if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))
-			&& INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+			&& INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 		}
 		///°È±â
-		else if (INPUTKEYDOWNS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		else if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
 		}
@@ -537,7 +537,7 @@ void PlayerFSMSystem::Enter_Walk(PlayerComponent & playercomp)
 {
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.WalkSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
+	Controller.Acceleration = Controller.MaxSpeed * 5;
 
 	if (!playercomp.IsVPMode)
 		if (playercomp.PreFSM == VisPred::Game::PlayerFSM::CROUCH || playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
@@ -547,7 +547,7 @@ void PlayerFSMSystem::Enter_Run(PlayerComponent& playercomp)
 {
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 	Controller.MaxSpeed = playercomp.RunSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 3;
+	Controller.Acceleration = Controller.MaxSpeed * 5;
 
 	if (playercomp.IsVPMode)
 	{
@@ -583,7 +583,7 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 		{
 			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 			Controller.MaxSpeed = playercomp.RunSpeed;
-			Controller.Acceleration = Controller.MaxSpeed * 3;
+			Controller.Acceleration = Controller.MaxSpeed * 5;
 		}
 	}
 	else
@@ -592,20 +592,20 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 		{
 			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 			Controller.MaxSpeed = playercomp.WalkSpeed;
-			Controller.Acceleration = Controller.MaxSpeed * 3;
+			Controller.Acceleration = Controller.MaxSpeed * 5;
 		}
 		else if (playercomp.PreFSM == VisPred::Game::PlayerFSM::RUN
 			|| playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 		{
 			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 			Controller.MaxSpeed =  playercomp.RunSpeed;
-			Controller.Acceleration = Controller.MaxSpeed * 3;
+			Controller.Acceleration = Controller.MaxSpeed * 5;
 		}
 		else if (playercomp.PreFSM == VisPred::Game::PlayerFSM::CROUCH)
 		{
 			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
 			Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
-			Controller.Acceleration = Controller.MaxSpeed * 3;
+			Controller.Acceleration = Controller.MaxSpeed * 5;
 		}
 
 	}

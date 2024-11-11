@@ -5,6 +5,7 @@
 #include "imgui_stdlib.h"
 #include "Components.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
+#include "../VisionpredatorProcess/VisPredStructs.h"
 #include <locale>
 #include <codecvt>
 // UTF-8 변환 함수
@@ -387,12 +388,16 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_wstring(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::list<uint32_t>>())
 		TypeImGui_list_uint32(memberMetaData, component);
-	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>()) 
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>())
 		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
-		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float, float>>>())
 		TypeImGui_vector_tuple_wstring_float_float(memberMetaData, component);
-		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
+	else if (metaType.id() == Reflection::GetTypeID<std::array<std::wstring, static_cast<size_t>(VisPred::Game::TopicType::END)>>())
+		TypeImGui_array_wstring_Topic(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
 		TypeImGui_vector_tuple_Vector3(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::string, int, bool, bool>>>())
+		TypeImGui_vector_tuple_string_int_bool_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
 		TypeImGui_ColliderInfo(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::BoxColliderInfo>())
@@ -684,23 +689,25 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 	// Retrieve the vector<std::wstring> from component's handle
 	auto wstringVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::wstring>>();
 	std::string memberName = Reflection::GetName(memberMetaData);
+
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text(memberName.c_str());
+	ImGui::Text("%s", memberName.c_str());
+
 	// Display each string in the vector
-	for (size_t i = 0; i < wstringVector.size(); ++i) 
+	for (size_t i = 0; i < wstringVector.size(); ++i)
 	{
 		std::wstring tempWMember = wstringVector[i];
-		std::string tempSMember(tempWMember.begin(), tempWMember.end());
+		std::string tempSMember = WStringToUTF8(tempWMember);  // Convert to UTF-8
 
 		ImGui::SetNextItemWidth(m_TypeBoxsize);
-		// ImGui::InputText expects a wchar_t array for input
-		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember)) 
+		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember))
 		{
-			// Convert string back to wstring
-			std::wstring newWName(tempSMember.begin(), tempSMember.end());
-			wstringVector[i] = newWName; // Convert back to std::wstring
+			// Convert UTF-8 string back to wstring after editing
+			std::wstring newWName = UTF8ToWString(tempSMember);
+			wstringVector[i] = newWName;
 		}
 	}
+
 	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
 	// Option to add a new element
 	if (ImGui::Button("  Add  "))
@@ -709,13 +716,13 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 	}
 
 	// Option to remove the last element
-	if (!wstringVector.empty() ) 
+	if (!wstringVector.empty())
 	{
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
 		if (ImGui::Button("Remove"))
 		{
-		wstringVector.pop_back();
+			wstringVector.pop_back();
 		}
 	}
 
@@ -724,6 +731,37 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 
 	ImGui::PopID();
 }
+
+void Inspector::TypeImGui_array_wstring_Topic(entt::meta_data memberMetaData, Component* component)
+{
+	// Retrieve the std::array<std::wstring, (int)TopicType::END> from the component's handle
+	auto wstringArray = memberMetaData.get(component->GetHandle()).cast<std::array<std::wstring, (int)VisPred::Game::TopicType::END>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("%s", memberName.c_str());
+
+	// Display each string in the array
+	for (size_t i = 0; i < wstringArray.size(); ++i)
+	{
+		std::wstring tempWMember = wstringArray[i];
+		std::string tempSMember = WStringToUTF8(tempWMember);  // Convert to UTF-8 for ImGui
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember))
+		{
+			// Convert UTF-8 string back to wstring after editing
+			std::wstring newWName = UTF8ToWString(tempSMember);
+			wstringArray[i] = newWName;
+		}
+	}
+
+	// Apply changes if the array was modified
+	memberMetaData.set(component->GetHandle(), std::move(wstringArray));
+
+	ImGui::PopID();
+}
+
 
 void Inspector::TypeImGui_list_uint32(entt::meta_data memberMetaData, Component* component) {
 	// Component의 핸들에서 std::list<uint32_t>를 가져옵니다
@@ -877,6 +915,66 @@ void Inspector::TypeImGui_vector_tuple_wstring_float_float(entt::meta_data membe
 			ImGui::SameLine(); // 두 번째 float 값을 같은 줄에 유지
 			ImGui::SetNextItemWidth(m_TypeBoxsize / 3);
 			ImGui::DragFloat(("##Float Element 2 " + index).c_str(), &tempThird, 0.1f, -100.0f, 100.0f); // 두 번째 float 값을 조정할 수 있는 슬라이더
+		}
+	}
+
+	// 벡터가 수정된 경우 새로운 값을 적용
+	memberMetaData.set(component->GetHandle(), std::move(tupleVector));
+
+	ImGui::PopID();
+}
+void Inspector::TypeImGui_vector_tuple_string_int_bool_bool(entt::meta_data memberMetaData, Component* component) {
+	// component의 핸들에서 vector<std::tuple<std::string, int, bool, bool>>를 가져옴
+	auto tupleVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::tuple<std::string, int, bool, bool>>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+
+	// Collapsing Header를 사용하여 UI를 토글할 수 있도록 함 (기본으로 열림 상태)
+	if (ImGui::CollapsingHeader((memberName + " Vector Tuples").c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// 새로운 요소 추가 옵션 (기본적으로 빈 string과 0 int, false bool 두 개를 가진 tuple 추가)
+		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+		if (ImGui::Button("  Add  ")) {
+			tupleVector.push_back(std::make_tuple("", 0, false, false));
+		}
+
+		// 마지막 요소 제거 옵션
+		if (!tupleVector.empty()) {
+			ImGui::SameLine(); // "Add" 버튼과 같은 줄에 표시
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+			if (ImGui::Button("Remove")) {
+				tupleVector.pop_back();
+			}
+		}
+
+		// 벡터의 각 tuple 요소를 인덱스와 함께 표시
+		for (size_t i = 0; i < tupleVector.size(); ++i) {
+			std::tuple<std::string, int, bool, bool>& tempTuple = tupleVector[i];
+
+			std::string& tempString = std::get<0>(tempTuple); // 첫 번째 요소 (std::string)
+			int& tempInt = std::get<1>(tempTuple);            // 두 번째 요소 (int)
+			bool& tempBool1 = std::get<2>(tempTuple);         // 세 번째 요소 (bool)
+			bool& tempBool2 = std::get<3>(tempTuple);         // 네 번째 요소 (bool)
+
+			// 인덱스 생성 (예: "00", "01" 등)
+			std::string index = (i < 10 ? "0" : "") + std::to_string(i);
+
+			// 인덱스, 문자열 입력, int 입력 및 두 개의 bool 체크박스를 같은 줄에 표시
+			ImGui::Text((index + ":").c_str());
+			ImGui::SameLine(); // 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize);
+			ImGui::InputText(("##String Element " + index).c_str(), &tempString);
+
+			ImGui::SameLine(); // int 값을 같은 줄에 유지
+			ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
+			ImGui::InputInt(("##Int Element " + index).c_str(), &tempInt);
+
+			ImGui::SameLine(); // 첫 번째 bool 값을 같은 줄에 유지
+			ImGui::Checkbox(("##Bool Element 1 " + index).c_str(), &tempBool1);
+
+			ImGui::SameLine(); // 두 번째 bool 값을 같은 줄에 유지
+			ImGui::Checkbox(("##Bool Element 2 " + index).c_str(), &tempBool2);
 		}
 	}
 

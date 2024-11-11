@@ -76,7 +76,7 @@ struct EnemyComponent : public Component
 	float AccuracyPenaltyFour = 50.0f;
 
 	// 공격력
-	uint32_t AttackPower = 1.f;
+	int AttackPower = 1;
 
 
 	// TODO: 새로 만들 변수

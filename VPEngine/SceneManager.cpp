@@ -427,15 +427,25 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 	VPMath::Vector3 rot = Quater.ToEuler() * 180 / VPMath::XM_PI;
 	return SpawnEditablePrefab(prefabname, pos, rot, scele);
 }
-std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scele)
+std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname, VPMath::Vector3 pos, VPMath::Vector3 rotation, VPMath::Vector3 scale)
 {
-	PrefabData prefabData = { CreateRandomEntityID(),prefabname ,pos,rotation,scele };
+	PrefabData prefabData = { CreateRandomEntityID(), prefabname, pos, rotation, scale };
 
+	// 캐시 확인
+	if (m_PrefabCache.find(prefabname) != m_PrefabCache.end())
+	{
+		// 캐시에 있으면 복제해서 사용
+		return ClonePrefab(prefabname, prefabData);
+	}
+
+	std::vector<std::shared_ptr<Entity>> createdEntities;
 	std::ifstream inputFile(prefabData.prefabname);
-	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair{};
-	uint32_t mainprefabID{};
+	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair;
+	uint32_t mainprefabID;
+
 	if (!inputFile.is_open())
 		return nullptr;
+
 	nlohmann::json prefabJson;
 	inputFile >> prefabJson;
 
@@ -446,18 +456,15 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 		std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 		tempEntity->SetEntityID(renewEntityID);
 		SetEntityMap(renewEntityID, tempEntity);
-		///메인 Entity인가?
+
 		bool IsMainEntity = true;
-		///컴포넌트 배치.
-		for (const nlohmann::json compJson : entityJson["Component"])
+		for (const nlohmann::json& compJson : entityJson["Component"])
 		{
 			entt::id_type comp_id = (entt::id_type)compJson["ComponentID"];
 			auto metaType = entt::resolve(comp_id);
 			if (metaType)
 			{
-				// 메타 타입으로부터 인스턴스를 생성합니다.
 				auto instance = metaType.construct();
-				// 특정 함수를 찾고 호출합니다.
 				auto myFunctionMeta = metaType.func("DeserializeComponent"_hs);
 				if (myFunctionMeta)
 				{
@@ -471,8 +478,8 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 						else if (compPtr->GetHandle()->type().id() == Reflection::GetTypeID<Parent>())
 						{
 							IsMainEntity = false;
-							Parent* parentComponet = static_cast<Parent*>(compPtr.get());
-							parentComponet->ParentID = findOrCreatePair(entityResettingPair, parentComponet->ParentID).second;
+							Parent* parentComponent = static_cast<Parent*>(compPtr.get());
+							parentComponent->ParentID = findOrCreatePair(entityResettingPair, parentComponent->ParentID).second;
 						}
 					}
 				}
@@ -484,19 +491,30 @@ std::shared_ptr<Entity> SceneManager::SpawnEditablePrefab(std::string prefabname
 
 		if (IsMainEntity)
 			mainprefabID = renewEntityID;
+
+		createdEntities.push_back(tempEntity);
 	}
+
+	// 캐시에 복사본으로 저장
+	std::vector<std::shared_ptr<Entity>> independentCopies;
+	for (const auto& entity : createdEntities) {
+		std::shared_ptr<Entity> cloneEntity = entity->Clone(entity->GetEntityID());
+		independentCopies.push_back(cloneEntity);
+	}
+	m_PrefabCache[prefabname] = independentCopies;
+
 	auto Transform = GetEntity(mainprefabID)->GetComponent<TransformComponent>();
 	Transform->SetLocalLocation(prefabData.pos);
 	if (prefabData.scale.x > 0)
 		Transform->SetLocalScale(prefabData.scale);
 	Transform->SetLocalRotation(prefabData.rotation);
-	EventManager::GetInstance().ScheduleEvent("OnUpdate");
 	for (auto [old, newID] : entityResettingPair)
 		EventManager::GetInstance().ScheduleEvent("OnStart", newID);
 
-	return  GetEntity(mainprefabID);
+	return GetEntity(mainprefabID);
 }
-//
+
+
 //std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, float volume, bool isloop, VPMath::Vector3 pos)
 //{
 //	auto entity = CreateEntity(soundName);
@@ -541,7 +559,14 @@ void SceneManager::OnSerializePrefab(std::any data)
 	std::string folderName = "../Data/Prefab/";
 	std::string entityName = GetEntity(entityID)->GetComponent<IDComponent>()->Name;
 	std::string fileExtension = ".prefab";
-	std::string filePath = folderName + entityName + fileExtension;
+	std::string filePath = folderName + entityName + fileExtension;	
+
+	// 만약 prefabname이 m_PrefabCache에 있다면 삭제
+	if (m_PrefabCache.find(filePath) != m_PrefabCache.end())
+	{
+		m_PrefabCache.erase(filePath);
+	}
+
 
 	// 파일을 생성하기 전에 디렉토리가 존재하는지 확인
 	std::filesystem::create_directories(folderName);
@@ -668,12 +693,7 @@ void SceneManager::OnDeSerializePrefab(std::any data)
 std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json entityjson, bool Immidate )
 {
 	uint32_t entityID = entityjson["EntityID"];
-	if (entityID== 2634323861)
-	{
-		int a = 5;
-		a = 7;
 
-	}
 	std::shared_ptr<Entity> tempEntity = std::make_shared<Entity>();
 	tempEntity->SetEntityID(entityID);
 	SetEntityMap(entityID, tempEntity);
@@ -699,6 +719,64 @@ std::shared_ptr<Entity> SceneManager::DeSerializeEntity(const nlohmann::json ent
 
 	return tempEntity;
 }
+std::shared_ptr<Entity> SceneManager::ClonePrefab(const std::string& prefabname, PrefabData& prefabData)
+{
+	const auto& entitiesToClone = m_PrefabCache[prefabname];
+	std::vector<std::pair<uint32_t, uint32_t>> entityResettingPair; // ID 매핑 저장
+	uint32_t mainEntityID = 0;
+	std::unordered_map<uint32_t, std::shared_ptr<Entity>> clonedEntities;
+
+	// 1. 엔티티 복제 및 ID 매핑 생성
+	for (const auto& originalEntity : entitiesToClone)
+	{
+		uint32_t newEntityID = findOrCreatePair(entityResettingPair, originalEntity->GetEntityID()).second;
+		std::shared_ptr<Entity> clonedEntity = originalEntity->Clone(newEntityID);
+		SetEntityMap(newEntityID, clonedEntity);
+		clonedEntities[newEntityID] = clonedEntity;
+
+		if (mainEntityID == 0)
+			mainEntityID = newEntityID;
+	}
+
+	// 2. 관계 설정을 위한 ID 매핑 적용
+	for (auto& [newEntityID, clonedEntity] : clonedEntities)
+	{
+		// Children 관계 설정
+		if (clonedEntity->HasComponent<Children>())
+		{
+			auto childrenComp = clonedEntity->GetComponent<Children>();
+			for (auto& childID : childrenComp->ChildrenID)
+			{
+				childID = findOrCreatePair(entityResettingPair, childID).second; // 새 ID로 매핑
+				int a = childID;
+			}
+		}
+
+		// Parent 관계 설정
+		if (clonedEntity->HasComponent<Parent>())
+		{
+			auto parentComp = clonedEntity->GetComponent<Parent>();
+			parentComp->ParentID = findOrCreatePair(entityResettingPair, parentComp->ParentID).second; // 새 ID로 매핑
+		}
+
+		EventManager::GetInstance().ScheduleEvent("OnAddEntityComponentsToScene", newEntityID);
+	}
+
+	// 3. 메인 엔티티의 트랜스폼 설정
+	auto mainTransform = GetEntity(mainEntityID)->GetComponent<TransformComponent>();
+	mainTransform->SetLocalLocation(prefabData.pos);
+	if (prefabData.scale.x > 0)
+		mainTransform->SetLocalScale(prefabData.scale);
+	mainTransform->SetLocalRotation(prefabData.rotation);
+
+	EventManager::GetInstance().ScheduleEvent("OnUpdate");
+	for (const auto& [oldID, newID] : entityResettingPair)
+		EventManager::GetInstance().ScheduleEvent("OnStart", newID);
+
+	return GetEntity(mainEntityID);
+}
+
+
 std::shared_ptr<Entity> SceneManager::CreateEntity()
 {
 	return CreateEntity("Entity");
@@ -973,55 +1051,55 @@ void SceneManager::OnDestroyEntity(std::any data)
 	auto temp = GetEntity(mainID);
 	if (!temp)
 		return;
+
 	std::list<uint32_t> DeleteEntityIDs;
 	DeleteEntityIDs.push_back(mainID);
+	std::vector<uint32_t> DeleteEntity;
 
-	std::vector <uint32_t> DeleteEntity;
-	// 엔티티가 부모 컴포넌트를 가지고 있는 경우, 부모와 자식 관계를 제거합니다.
+	// Remove parent-child relationships at once
 	if (HasComponent<Parent>(mainID))
 	{
 		auto parentEntity = GetEntity(GetComponent<Parent>(mainID)->ParentID);
-		auto parentsChildren = parentEntity->GetComponent<Children>();
-		RemoveParent(mainID,true);
+		if (parentEntity && parentEntity->HasComponent<Children>())
+		{
+			auto parentsChildren = parentEntity->GetComponent<Children>();
+			parentsChildren->ChildrenID.remove(mainID);
+		}
+		RemoveParent(mainID, true);
 	}
+
 	while (!DeleteEntityIDs.empty())
 	{
 		uint32_t DeleteEntityID = DeleteEntityIDs.front();
 		DeleteEntity.push_back(DeleteEntityID);
 		auto entity = GetEntity(DeleteEntityID);
-		
 		DeleteEntityIDs.pop_front();
-		// 엔티티가 자식 컴포넌트를 가지고 있는 경우, 자식 엔티티도 삭제 리스트에 추가합니다.
-		if (entity)
-			if (entity->HasComponent<Children>())
-			{
-				auto children = entity->GetComponent<Children>();
-				DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
-			}
+
+		if (entity && entity->HasComponent<Children>())
+		{
+			auto children = entity->GetComponent<Children>();
+			DeleteEntityIDs.insert(DeleteEntityIDs.end(), children->ChildrenID.begin(), children->ChildrenID.end());
+		}
 	}
 
 	for (auto entityID : DeleteEntity)
 	{
-
-		// entityMap에서 해당 entityID를 가진 엔티티를 찾고 제거합니다.
 		if (auto entityIter = entityMap.find(entityID); entityIter != entityMap.end())
 		{
 			EventManager::GetInstance().ImmediateEvent("OnFinish", entityID);
-			auto componentMap = entityIter->second->GetOwnedComponents();
 
-			// componentMap에서 해당 entityID와 연관된 컴포넌트를 찾아 제거합니다.
+			auto componentMap = entityIter->second->GetOwnedComponents();
 			for (auto& sharedComp : componentMap)
 			{
 				EventManager::GetInstance().ImmediateEvent("OnReleasedComponent", sharedComp.get());
 			}
 
-			// m_ComponentCache에서 entityID와 연관된 항목들을 모두 제거합니다.
+			// Clear all related items in ComponentCache
 			std::erase_if(m_ComponentCache, [entityID](const auto& pair) {
 				return pair.first.first == entityID;
 				});
 
-			// 마지막으로, entityMap에서 엔티티를 제거합니다.
-			entityMap.erase(entityIter);
+			entityMap.erase(entityIter);  // Remove entity from EntityMap
 		}
 	}
 }

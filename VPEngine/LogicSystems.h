@@ -11,7 +11,6 @@
 #include "NavMeshSystem.h"
 #include "NavAgentSystem.h"
 #include "SocketSystem.h"
-#include "UISystem.h"
 #include "MeshSystem.h"
 #include "SkinnedMeshSystem.h"
 #include "GeometrySystem.h"

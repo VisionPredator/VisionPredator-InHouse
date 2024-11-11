@@ -100,3 +100,36 @@ void Entity::removeComponent(Component* comp)
         VP_ASSERT(false, "컴포넌트가 존재하지 않습니다.");
     }
 }
+std::shared_ptr<Entity> Entity::Clone(uint32_t entityID)
+{
+    std::shared_ptr<Entity> cloneEntity = std::make_shared<Entity>(entityID);
+
+    for (const auto& [compID, compPtr] : m_OwnedComp)
+    {
+        std::shared_ptr<Component> newComp;
+
+        // Children 컴포넌트인 경우, 자식 ID를 개별적으로 복사
+        if (auto childrenComp = std::dynamic_pointer_cast<Children>(compPtr))
+        {
+            auto clonedChildrenComp = std::make_shared<Children>(*childrenComp);
+            clonedChildrenComp->ChildrenID.clear(); // 자식 ID 목록 초기화
+
+            for (const auto childID : childrenComp->ChildrenID)
+            {
+                // 각 자식 ID를 새로운 엔티티로 복사하여 추가
+                clonedChildrenComp->ChildrenID.push_back(childID);
+            }
+
+            newComp = clonedChildrenComp;
+        }
+        else
+        {
+            newComp = compPtr->Clone();
+        }
+
+        cloneEntity->AddComponentToMap(newComp);
+        newComp->SetEntity(cloneEntity.get());
+    }
+
+    return cloneEntity;
+}

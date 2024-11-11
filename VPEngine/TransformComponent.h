@@ -20,7 +20,21 @@ struct Parent : public Component
 
 struct Children : public Component
 {
-	VP_JSONBODY(Children, ChildrenID)
+	friend void to_json(nlohmann::json& nlohmann_json_j, const Children& nlohmann_json_t) {
+		nlohmann_json_j["ChildrenID"] = nlohmann_json_t.ChildrenID;
+	} friend void from_json(const nlohmann::json& nlohmann_json_j, Children& nlohmann_json_t) {
+		if (nlohmann_json_j.contains("ChildrenID")) nlohmann_json_j.at("ChildrenID").get_to(nlohmann_json_t.ChildrenID);
+	} std::shared_ptr<Component> AddComponent(Entity* parentEntity) override {
+		auto component = AddComponentToEntity<Children>(parentEntity); return component;
+	} void SerializeComponent(nlohmann::json& json) const override {
+		to_json(json, *this);
+	} std::shared_ptr<Component> DeserializeComponent(const nlohmann::json& json, Entity* parentEntity, bool Immidiate = false, bool UseAddCompToScene = true) const override {
+		auto component = AddComponentToEntity<Children>(parentEntity, Immidiate, UseAddCompToScene); *component = json.get<Children>(); component->SetEntity(parentEntity); return component;
+	} entt::meta_handle GetHandle() override {
+		return *this;
+	} std::shared_ptr<Component> Clone() const override {
+		auto clonedComponent = std::make_shared<Children>(*this); clonedComponent->SetEntity(nullptr); return clonedComponent;
+	}
 		Children();
 
 	std::list<uint32_t> ChildrenID;

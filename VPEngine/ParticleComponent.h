@@ -16,7 +16,8 @@ struct ParticleComponent : Component
 	bool IsRender = true;
 	bool IsLoop = true;
 	bool Restart = false;
-
+	float Progresstime = 0.f;
+	bool IsPlaying = false;
 	float Gravity = -7.8f;
 
 	float Duration = 5.f; // 파티클 시스템이 파티클을 emit 하는 시간의 길이

@@ -1,8 +1,8 @@
 #pragma once
 #include "../VPEngine/System.h"
-
+#include "EventSubscriber.h"
 class BulletSystem :
-    public System,public IFixedUpdatable, public IContactable,public IStartable,public IPhysicable,public ITriggerable
+    public System,public IFixedUpdatable, public IContactable,public IStartable,public IPhysicable,public ITriggerable,public EventSubscriber
 {
 public:
 	BulletSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -21,6 +21,7 @@ public:
 	// IContactable을(를) 통해 상속됨
 	void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
 	void ApplyDamage(Entity& bullet, Entity& Other);
+	void OnBulletHit(std::any id_damage_pose);
 	void ApplyShotGunDamage(std::shared_ptr<Entity> bullet, std::shared_ptr<Entity> Other);
 	void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) override {};
 
@@ -39,7 +40,8 @@ public:
 	void PhysicsUpdate(float deltaTime) override {};
 
 	void PhysicsLateUpdate(float deltaTime) override {};
-
+	void GunsSparkOn(VPMath::Vector3 pose);
+	void BloodSplashOn(VPMath::Vector3 pose);
 
 	//// ITriggerable을(를) 통해 상속됨
 	//void EnterTrigger(std::pair<uint32_t, uint32_t> entitypair) override;

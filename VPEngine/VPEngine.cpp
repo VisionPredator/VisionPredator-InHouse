@@ -103,7 +103,6 @@ void VPEngine::Addsystem()
 	m_SystemManager->AddSystem<MeshSystem>();
 	m_SystemManager->AddSystem<SkinnedMeshSystem>();
 	m_SystemManager->AddSystem <GeometrySystem>();
-	m_SystemManager->AddSystem <UISystem>();
 	m_SystemManager->AddSystem<CameraSystem>();
 	m_SystemManager->AddSystem<LifeTimeSystem>();
 	m_SystemManager->AddSystem<SoundSystem>();

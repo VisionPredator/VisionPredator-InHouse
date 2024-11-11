@@ -9,7 +9,7 @@ AreaAttackSystem::AreaAttackSystem(std::shared_ptr<SceneManager> sceneManager) :
 
 void AreaAttackSystem::TriggerAttack(AreaAttackComponent& area, EnemyComponent& enemy)
 {
-	EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemy.GetEntityID(), area.Damage));
+	EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(enemy.GetEntityID(), area.Damage));
 
 }
 
