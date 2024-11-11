@@ -7,7 +7,7 @@ struct MainTopicComponent :
 {
     VP_JSONBODY(MainTopicComponent, MentColor, BackGroundColor, IsReset, Duration, Mode, Ment)
     VisPred::Game::TopicType Mode;
-    std::array < std::wstring, (int)VisPred::Game::TopicType::END> Ment;
+    std::array<std::wstring, (int)VisPred::Game::TopicType::END> Ment;
     VPMath::Color MentColor{1,1,1,1};
     VPMath::Color BackGroundColor = { 0,0,0,0.5 };
     bool IsReset{};

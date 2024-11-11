@@ -43,7 +43,7 @@ void MainTopicSystem::OnChangeTopic(std::any mode)
 	{
 	case VisPred::Game::TopicType::FINDBELL:
 	{
-		text->Text = topic->Ment[(int)VisPred::Game::TopicType::FINDBELL].c_str();
+		text->Text = topic->Ment[(int)VisPred::Game::TopicType::FINDBELL];
 		text->Color = topic->MentColor;
 		image->Color = topic->BackGroundColor;
 		topic->IsReset = true;
@@ -52,7 +52,7 @@ void MainTopicSystem::OnChangeTopic(std::any mode)
 
 	case VisPred::Game::TopicType::KILLALL:
 	{
-		text->Text = topic->Ment[(int)VisPred::Game::TopicType::KILLALL].c_str();
+		text->Text = topic->Ment[(int)VisPred::Game::TopicType::KILLALL];
 		text->Color = topic->MentColor;
 		image->Color = topic->BackGroundColor;
 		topic->IsReset = true;
@@ -62,7 +62,7 @@ void MainTopicSystem::OnChangeTopic(std::any mode)
 
 	case VisPred::Game::TopicType::NONE:
 	{
-		text->Text = topic->Ment[(int)VisPred::Game::TopicType::NONE].c_str();
+		text->Text = topic->Ment[(int)VisPred::Game::TopicType::NONE];
 		text->Color.w = 0;
 		image->Color.w = 0;
 	
