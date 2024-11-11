@@ -89,6 +89,7 @@ void ImageObject::SetImageInfo(const ui::ImageInfo& info)
 	m_Info.RightPercent = info.RightPercent;
 	m_Info.TopPercent = info.TopPercent;
 	m_Info.BottomPercent = info.BottomPercent;
+	m_Info.DrawAfterText = info.DrawAfterText;
 
 	// 모델의 텍스처 로드
 	if (m_Info.ImagePath.empty())	// 텍스처 경로가 비어있다면 기본 텍스처 가져오기.
