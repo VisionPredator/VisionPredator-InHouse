@@ -1,4 +1,4 @@
-  #include "pch.h"
+#include "pch.h"
 
 #include "ResourceManager.h"
 
@@ -11,6 +11,11 @@
 
 #include "ModelData.h"
 #include "Mesh.h"
+
+#include "DirectXTex.h"
+#include <wrl/client.h>
+#include <winrt\base.h>
+
 
 ResourceManager::ResourceManager()
 {
@@ -117,9 +122,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	};
 	Create<VertexShader>(L"Base", L"MeshVS", "main");
 	Create<VertexShader>(L"Skinning", L"MeshVS", "main", macro);
-	Create<VertexShader>(L"Quad", L"QuadVS", "main");	
+	Create<VertexShader>(L"Quad", L"QuadVS", "main");
 	Create<VertexShader>(L"InstancingVS", L"InstancingVS");	//Instancing VS
-	Create<VertexShader>(L"DecalVS", L"DecalVS",Instancing::DecalDesc,Instancing::DecalCount);	//Decal VS
+	Create<VertexShader>(L"DecalVS", L"DecalVS", Instancing::DecalDesc, Instancing::DecalCount);	//Decal VS
 
 	// ----------------------------------------------------------------------------------------
 	// Pixel Shader
@@ -143,7 +148,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 
 	size = sizeof(BaseVertex);
 	Create<VertexBuffer>(L"TextureBox_VB", TextureBox::Vertex::Desc, TextureBox::Vertex::Data, size);
-	
+
 	size = sizeof(DecalVertex);
 	Create<VertexBuffer>(L"Decal_VB", DecalVolume::Vertex::Desc, DecalVolume::Vertex::Data, size);
 
@@ -177,7 +182,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	Create<ShaderResourceView>(L"Decal(2)_N.png", L"Decal(2)_N.png");
 	Create<ShaderResourceView>(L"Decal(3)_N.png", L"Decal(3)_N.png");
 	Create<ShaderResourceView>(L"Decal(4)_N.png", L"Decal(4)_N.png");
-	
+
 
 	// ----------------------------------------------------------------------------------------
 	// Render Target View
@@ -208,7 +213,7 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Transform = Create<ConstantBuffer<TransformData>>(L"Transform", ConstantBufferType::Default);
 	m_UsingLights = Create<ConstantBuffer<LightArray>>(L"LightArray", ConstantBufferType::Default);
 	m_UsingMaterial = Create<ConstantBuffer<MaterialData>>(L"MaterialData", ConstantBufferType::Default);
- 	m_Pallete = Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete", ConstantBufferType::Default);
+	m_Pallete = Create<ConstantBuffer<MatrixPallete>>(L"MatrixPallete", ConstantBufferType::Default);
 	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"TexelSize", ConstantBufferType::Default);
 	Create<ConstantBuffer<VPMath::XMFLOAT4>>(L"Color", ConstantBufferType::Default);
 
@@ -220,6 +225,9 @@ void ResourceManager::Initialize(std::weak_ptr<Device> device)
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Transform), 1, m_Transform.lock()->GetAddress());
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::Material), 1, m_UsingMaterial.lock()->GetAddress());
 	m_Device.lock()->Context()->PSSetConstantBuffers(static_cast<UINT>(Slot_B::LightArray), 1, m_UsingLights.lock()->GetAddress());
+
+
+	//ConvertDDS();
 }
 
 void ResourceManager::OnResize(RECT& wndsize, bool isFullScreen)
@@ -273,4 +281,53 @@ void ResourceManager::OnResize(RECT& wndsize, bool isFullScreen)
 		Create<DepthStencilView>(L"DSV_Main", DepthStencilViewType::Default);
 		Create<DepthStencilView>(L"DSV_Deferred", texDesc);
 	}
+
+
+}
+
+void ResourceManager::ConvertDDS()
+{
+	std::string path;
+	path = "..\\Data\\Texture\\";
+
+	std::wstring wfilename;
+
+	std::wstring wfilepath;
+	wfilepath.assign(path.begin(), path.end());
+
+	std::vector<std::string> filelist;
+
+	for (const auto& entry : std::filesystem::directory_iterator(path))
+	{
+		std::string filename = std::filesystem::path(entry).filename().string();
+		filelist.push_back(filename);
+	}
+
+	for (auto& file : filelist)
+	{
+		wfilename.assign(file.begin(), file.end());
+		wfilename = wfilepath + wfilename;
+
+
+		DirectX::TexMetadata metadata;
+		DirectX::ScratchImage scratchImage;
+		(DirectX::LoadFromWICFile(wfilename.c_str(), DirectX::WIC_FLAGS_NONE, &metadata, scratchImage));
+
+
+		std::wstring newPath = wfilename.substr(0, wfilename.find_last_of(L"."));
+		newPath += L".dds";
+		HRESULT hr;
+		hr = DirectX::SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, DirectX::DDS_FLAGS_NONE, newPath.c_str());
+		if (FAILED(hr))
+		{
+			int a = -0;
+		}
+	}
+
+	for (auto& file : filelist)
+	{
+		std::string newstr = path + file;
+		std::filesystem::remove(newstr);
+	}
+
 }

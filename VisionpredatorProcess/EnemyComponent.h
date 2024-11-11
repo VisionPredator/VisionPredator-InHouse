@@ -32,7 +32,7 @@ struct EnemyComponent : public Component
 		NoiseRangeRadius, 
 		ChaseRangeRadius, 
 		DeadTime, 
-		AttackRange, 
+		ReachableDistanceToPlayer, 
 		ConsecutiveAttackDelay, 
 		AttackCycleDelay, 
 		OnHit, 
@@ -78,7 +78,13 @@ struct EnemyComponent : public Component
 	// 공격력
 	int AttackPower = 1;
 
-	float AttackRange = 10.f;	// 사정거리 내에 플레이어가 있으면 더이상 쫓지 않고 멈춰서 사격.
+
+	// TODO: 새로 만들 변수
+	// - 플레이어 접근 가능 거리
+	// - 사격 가능 최소 사정거리
+	float ReachableDistanceToPlayer = 10.f;	// 사정거리 내에 플레이어가 있으면 더이상 쫓지 않고 멈춰서 사격.	// 플레이어 접근 가능 거리
+	float MinRangedAttackRange = 50;	// 사격 가능 최소 사정거리 <= AccuracyRangeFour
+
 	bool OnHit = false;	// 피격 받는 중인지
 
 	// Chase 상태 중 마지막으로 포착된 플레이어의 위치

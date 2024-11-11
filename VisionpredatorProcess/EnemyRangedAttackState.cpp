@@ -32,8 +32,6 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	auto targetDir = playerPos - enemyPos;
 	targetDir.Normalize();
 
-	enemyComp->GetComponent<NavAgentComponent>()->IsChase = false;
-
 	// 난수 생성기 초기화
 	std::random_device rd;  // 하드웨어 엔트로피를 기반으로 시드 생성
 	std::mt19937 gen(rd()); // Mersenne Twister 난수 생성기
@@ -123,7 +121,7 @@ void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 }
 
-float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
+float EnemyRangedAttackState::CalculateAccuracy(const EnemyComponent& enemyComp)
 {
 	// 명중률에 관여하는 것
 	// - 현재 플레이어가 이동중인지, WALk, RUN, JUMP

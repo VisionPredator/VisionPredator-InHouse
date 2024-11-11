@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VP_Editor", "VP_Editor\VP_Editor.vcxproj", "{E90E05F5-F35A-4376-ACB8-DE5D257126BC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher", "Launcher\Launcher.vcxproj", "{49ECA3DD-51D4-4013-A636-0A654E390DF4}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPEngine", "VPEngine\VPEngine.vcxproj", "{2C00F534-01BF-4232-BD17-A5AC02072AAC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPGraphics", "VPGraphics\VPGraphics.vcxproj", "{6AF1262E-67C4-4738-97AC-A36899FE4316}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VP_Editor", "VP_Editor\VP_Editor.vcxproj", "{E90E05F5-F35A-4376-ACB8-DE5D257126BC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{2F00B69A-45E0-4776-A6F8-47E4E473AD95}"
 EndProject
@@ -16,8 +18,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VisionpredatorProcess", "VisionpredatorProcess\VisionpredatorProcess.vcxproj", "{C685A604-1265-412A-A168-1E3B3F691064}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VPCommon", "VPCommon\VPCommon.vcxproj", "{43DD310D-9FFF-48B4-B088-A7867CB467D5}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher", "Launcher\Launcher.vcxproj", "{49ECA3DD-51D4-4013-A636-0A654E390DF4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundEngine", "SoundEngine\SoundEngine.vcxproj", "{27B0AEA1-FF8C-426A-95B7-1597FDBF4778}"
 EndProject
