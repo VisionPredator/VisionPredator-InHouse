@@ -20,6 +20,14 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 	}
 	EventManager::GetInstance().ImmediateEvent("OnRemoveNavAgent", enemyComp->GetEntityID());
 
+	const auto decalComp = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<DecalComponent>(enemyComp->GetEntityID());
+
+	// 데칼 그림자 삭제
+	if (decalComp)
+	{
+		enemyComp->SceneManager.lock()->DestroyEntity(decalComp->GetEntityID());
+	}
+
 	// 적이 들고 있는 무기를 바닥에 드랍.
 	auto dropWeaponPos = enemyComp->GetComponent<TransformComponent>()->World_Location;
 	dropWeaponPos.y += 1.f;
