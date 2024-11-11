@@ -23,6 +23,8 @@ enum class TopicType
 void MainTopicSystem::OnChangeTopic(std::any mode)
 {
 	VisPred::Game::TopicType Mode = std::any_cast<VisPred::Game::TopicType>(mode);
+	if (!m_MainTopicEntity.lock())
+		return;
 	auto topic = m_MainTopicEntity.lock()->GetComponent<MainTopicComponent>();
 	auto image = m_MainTopicEntity.lock()->GetComponent<ImageComponent>();
 	auto text = m_MainTopicEntity.lock()->GetComponent<TextComponent>();

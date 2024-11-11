@@ -689,23 +689,25 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 	// Retrieve the vector<std::wstring> from component's handle
 	auto wstringVector = memberMetaData.get(component->GetHandle()).cast<std::vector<std::wstring>>();
 	std::string memberName = Reflection::GetName(memberMetaData);
+
 	ImGui::PushID(memberName.c_str());
-	ImGui::Text(memberName.c_str());
+	ImGui::Text("%s", memberName.c_str());
+
 	// Display each string in the vector
-	for (size_t i = 0; i < wstringVector.size(); ++i) 
+	for (size_t i = 0; i < wstringVector.size(); ++i)
 	{
 		std::wstring tempWMember = wstringVector[i];
-		std::string tempSMember(tempWMember.begin(), tempWMember.end());
+		std::string tempSMember = WStringToUTF8(tempWMember);  // Convert to UTF-8
 
 		ImGui::SetNextItemWidth(m_TypeBoxsize);
-		// ImGui::InputText expects a wchar_t array for input
-		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember)) 
+		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember))
 		{
-			// Convert string back to wstring
-			std::wstring newWName(tempSMember.begin(), tempSMember.end());
-			wstringVector[i] = newWName; // Convert back to std::wstring
+			// Convert UTF-8 string back to wstring after editing
+			std::wstring newWName = UTF8ToWString(tempSMember);
+			wstringVector[i] = newWName;
 		}
 	}
+
 	ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
 	// Option to add a new element
 	if (ImGui::Button("  Add  "))
@@ -714,13 +716,13 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 	}
 
 	// Option to remove the last element
-	if (!wstringVector.empty() ) 
+	if (!wstringVector.empty())
 	{
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(m_TypeBoxsize / 2);
 		if (ImGui::Button("Remove"))
 		{
-		wstringVector.pop_back();
+			wstringVector.pop_back();
 		}
 	}
 
@@ -733,7 +735,6 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 void Inspector::TypeImGui_array_wstring_Topic(entt::meta_data memberMetaData, Component* component)
 {
 	// Retrieve the std::array<std::wstring, (int)TopicType::END> from the component's handle
-	
 	auto wstringArray = memberMetaData.get(component->GetHandle()).cast<std::array<std::wstring, (int)VisPred::Game::TopicType::END>>();
 	std::string memberName = Reflection::GetName(memberMetaData);
 
@@ -744,14 +745,13 @@ void Inspector::TypeImGui_array_wstring_Topic(entt::meta_data memberMetaData, Co
 	for (size_t i = 0; i < wstringArray.size(); ++i)
 	{
 		std::wstring tempWMember = wstringArray[i];
-		std::string tempSMember(tempWMember.begin(), tempWMember.end());  // Convert to std::string for ImGui
+		std::string tempSMember = WStringToUTF8(tempWMember);  // Convert to UTF-8 for ImGui
 
 		ImGui::SetNextItemWidth(m_TypeBoxsize);
-		// ImGui::InputText expects a char array, so use std::string for editing
 		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember))
 		{
-			// Convert string back to wstring after editing
-			std::wstring newWName(tempSMember.begin(), tempSMember.end());
+			// Convert UTF-8 string back to wstring after editing
+			std::wstring newWName = UTF8ToWString(tempSMember);
 			wstringArray[i] = newWName;
 		}
 	}
