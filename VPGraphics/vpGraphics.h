@@ -179,6 +179,7 @@ namespace ui
 		// 3D
 		VPMath::Matrix World = VPMath::Matrix::Identity;
 
+		bool DrawAfterText = false;
 	};
 
 	struct TextInfo
