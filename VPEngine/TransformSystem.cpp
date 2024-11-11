@@ -504,13 +504,19 @@ void TransformSystem::ComponentAdded(Component* comp)
 {
     if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
     {
-        TransformComponent* aniComp = static_cast<TransformComponent*>(comp);
-        AddUpdateData(aniComp);
+        TransformComponent* transform = static_cast<TransformComponent*>(comp);
+        AddUpdateData(transform);
         return;
     }
 }
 
 void TransformSystem::ComponentReleased(Component* comp)
 {
+    if (comp->GetHandle()->type().id() == Reflection::GetTypeID<TransformComponent>())
+    {
+        TransformComponent* transform = static_cast<TransformComponent*>(comp);
+
+        RemoveUpdateData(transform);
+    }
 }
 
