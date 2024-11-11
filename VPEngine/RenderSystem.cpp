@@ -73,6 +73,7 @@ void RenderSystem::ComponentAdded(Component* comp)
 		info.RightPercent = component->RightPercent;
 		info.TopPercent = component->TopPercent;
 		info.BottomPercent = component->BottomPercent;
+		info.DrawAfterText = component->DrawAfterText;
 
 		m_Graphics->CreateImageObject(component->GetEntityID(), info);
 	}
@@ -199,6 +200,7 @@ void RenderSystem::BeginRenderUpdate(float deltaTime)
 		info.RightPercent = component.RightPercent;
 		info.TopPercent = component.TopPercent;
 		info.BottomPercent = component.BottomPercent;
+		info.DrawAfterText = component.DrawAfterText;
 
 		m_Graphics->UpdateImageObject(component.GetEntityID(), info);
 	}
