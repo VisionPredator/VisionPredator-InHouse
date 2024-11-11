@@ -10,13 +10,13 @@ void EnemyIdleCombatState::Enter(const std::shared_ptr<Component>& component)
 
 void EnemyIdleCombatState::Update(const std::shared_ptr<Component>& component, float deltaTime)
 {
-	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
+	const auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 	if (CheckIsDead(enemyComp))
 		return;
 	enemyComp->DistanceToPlayer = DetectTarget(*enemyComp, deltaTime);
 
 	// 플레이어가 공격 사정거리 안에 있다면 공격 상태로 전환
-	if (enemyComp->DistanceToPlayer >= 0.0f && enemyComp->DistanceToPlayer <= enemyComp->AttackRange)
+	if (enemyComp->DistanceToPlayer >= 0.0f && enemyComp->DistanceToPlayer <= enemyComp->MinRangedAttackRange)
 		ChangeCurrentState(enemyComp, &EnemyCombatState::s_RangedAttack);
 
 }

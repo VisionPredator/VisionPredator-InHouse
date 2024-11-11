@@ -24,6 +24,9 @@ void BulletSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
 	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
 
+	if (&Firstentity == nullptr || &Secondentity == nullptr)
+		return;
+
 	if (Firstentity.HasComponent<BulletComponent>())
 	{
 		ApplyDamage(Firstentity, Secondentity);
