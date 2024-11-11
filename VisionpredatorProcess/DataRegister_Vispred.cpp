@@ -89,7 +89,8 @@ void VispredRegister::Register_Components()
 		, EnemyComponent::IsModelFlipped
 		, EnemyComponent::NoiseRangeRadius, EnemyComponent::ChaseRangeRadius
 		, EnemyComponent::DeadTime
-		, EnemyComponent::ReachableDistanceToPlayer, EnemyComponent::ConsecutiveAttackDelay, EnemyComponent::AttackCycleDelay
+		, EnemyComponent::ReachableDistanceToPlayer, EnemyComponent::MinRangedAttackRange
+		, EnemyComponent::ConsecutiveAttackDelay, EnemyComponent::AttackCycleDelay
 		, EnemyComponent::OnHit
 		, EnemyComponent::AttackAccuracy
 		, EnemyComponent::AccuracyRangeOne, EnemyComponent::AccuracyRangeTwo, EnemyComponent::AccuracyRangeThree, EnemyComponent::AccuracyRangeFour
