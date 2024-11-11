@@ -45,6 +45,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<SceneChangeSystem>();
 	m_SystemManager->AddSystem<UIBounceSystem>();
 	m_SystemManager->AddSystem<ParticleSystem>();
+	m_SystemManager->AddSystem<MainTopicSystem>();
 }
 
 VPProcess::~VPProcess()

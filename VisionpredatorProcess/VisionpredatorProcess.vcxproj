@@ -164,6 +164,7 @@
     <ClInclude Include="AimUIComponent.h" />
     <ClInclude Include="AutoPickComponent.h" />
     <ClInclude Include="AutoPickSystem.h" />
+    <ClInclude Include="BestScoreComponent.h" />
     <ClInclude Include="BulletComponent.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CabinetComponent.h" />
@@ -203,6 +204,8 @@
     <ClInclude Include="FollowComponent.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="FPSSystem.h" />
+    <ClInclude Include="MainTopicComponent.h" />
+    <ClInclude Include="MainTopicSystem.h" />
     <ClInclude Include="ParticleOwnerComponent.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="HitUIComponent.h" />
@@ -261,6 +264,7 @@
     <ClCompile Include="AimUIComponent.cpp" />
     <ClCompile Include="AutoPickComponent.cpp" />
     <ClCompile Include="AutoPickSystem.cpp" />
+    <ClCompile Include="BestScoreComponent.cpp" />
     <ClCompile Include="BulletComponent.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="CabinetComponent.cpp" />
@@ -300,6 +304,8 @@
     <ClCompile Include="FollowComponent.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="FPSSystem.cpp" />
+    <ClCompile Include="MainTopicComponent.cpp" />
+    <ClCompile Include="MainTopicSystem.cpp" />
     <ClCompile Include="ParticleOwnerComponent.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="HitUIComponent.cpp" />

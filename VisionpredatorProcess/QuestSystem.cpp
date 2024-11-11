@@ -282,6 +282,7 @@ void QuestSystem::OnTutorialClear(std::any none)
 	EventManager::GetInstance().ImmediateEvent("OnInterected",std::make_pair(m_MainQuestEntity.lock(), m_MainQuestEntity.lock()));
 	auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
 	GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Mainquest, questcomp->Volume_Mainquest, true, false, {});
+	EventManager::GetInstance().ImmediateEvent("OnChangeTopic",VisPred::Game::TopicType::FINDBELL);
 	m_MainQuestEntity.lock()->DestorySelf();
 }
 

@@ -19,24 +19,29 @@ void SectorSystem::OnEnemyKilled(std::any enemyid)
 
 void SectorSystem::CheckSectorClear(SectorClearComponent* sectorcomp)
 {
-	if (!sectorcomp->HasComponent<Children>())
-		return;
 
-	auto childrens = sectorcomp->GetComponent<Children>()->ChildrenID;
 	bool isSectorclear = true;
-	for (auto childID : childrens)
+	auto enemys =GetSceneManager()->GetChildEntityComps_HasComp<EnemyComponent>(sectorcomp->GetEntityID());
+	if (enemys.empty())
+		isSectorclear = true;
+	int LiveEnemy = 0;
+	for (auto enemy : enemys)
 	{
-		auto entity = GetSceneManager()->GetEntity(childID);
-		if (!entity)
-			continue;
-		if (!entity->HasComponent<EnemyComponent>())
-			continue;
-		EnemyComponent* enemycomp = entity->GetComponent<EnemyComponent>();
-
-		if (enemycomp->BehaviorState != &EnemyBehaviorState::s_Dead)
+		if (enemy->BehaviorState != &EnemyBehaviorState::s_Dead)
 		{
 			isSectorclear = false;
-			break;
+			LiveEnemy++;
+		}
+	}
+
+	if (!isSectorclear && sectorcomp->HasComponent<TextComponent>())
+	{
+		auto text = sectorcomp->GetComponent<TextComponent>();
+		// Set the message with the enemy count
+		text->Text = sectorcomp->Ment + std::to_wstring(LiveEnemy);
+		if (sectorcomp->HasComponent<TextBounceComponent>())
+		{
+			sectorcomp->GetComponent<TextBounceComponent>()->AddedBounce = true;
 		}
 	}
 
@@ -45,6 +50,12 @@ void SectorSystem::CheckSectorClear(SectorClearComponent* sectorcomp)
 		auto entity = GetSceneManager()->GetEntity(sectorcomp->GetEntityID());
 		std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>> eventData(entity, nullptr);
 		EventManager::GetInstance().ImmediateEvent("OnInterected", eventData);
+		EventManager::GetInstance().ImmediateEvent("OnChangeTopic", VisPred::Game::TopicType::FINDBELL);
+		if (sectorcomp->HasComponent<TextComponent>())
+		{
+			auto text = sectorcomp->GetComponent<TextComponent>();
+			text->Text = {};
+		}
 
 	}
 
@@ -59,6 +70,11 @@ void SectorSystem::Initialize()
 }
 void SectorSystem::Start(uint32_t gameObjectId)
 {
+	auto entity = GetSceneManager()->GetEntity(gameObjectId);
+	if (!entity || !entity->HasComponent<SectorClearComponent>())
+		return;
+	CheckSectorClear(entity->GetComponent<SectorClearComponent>());
+	EventManager::GetInstance().ImmediateEvent("OnChangeTopic", VisPred::Game::TopicType::KILLALL);
 }
 void SectorSystem::Finish(uint32_t gameObjectId)
 {

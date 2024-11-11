@@ -5,6 +5,7 @@
 #include "imgui_stdlib.h"
 #include "Components.h"
 #include "../PhysxEngine/VPPhysicsStructs.h"
+#include "../VisionpredatorProcess/VisPredStructs.h"
 #include <locale>
 #include <codecvt>
 // UTF-8 변환 함수
@@ -387,13 +388,15 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_vector_wstring(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::list<uint32_t>>())
 		TypeImGui_list_uint32(memberMetaData, component);
-	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>()) 
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::pair<std::wstring, float>>>())
 		TypeImGui_vector_pair_wstring_float(memberMetaData, component);
-		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float,float>>>()) 
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::wstring, float, float>>>())
 		TypeImGui_vector_tuple_wstring_float_float(memberMetaData, component);
-		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
+	else if (metaType.id() == Reflection::GetTypeID<std::array<std::wstring, static_cast<size_t>(VisPred::Game::TopicType::END)>>())
+		TypeImGui_array_wstring_Topic(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
 		TypeImGui_vector_tuple_Vector3(memberMetaData, component);
-		else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::string, int, bool, bool>>>())
+	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::string, int, bool, bool>>>())
 		TypeImGui_vector_tuple_string_int_bool_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
 		TypeImGui_ColliderInfo(memberMetaData, component);
@@ -726,6 +729,39 @@ void Inspector::TypeImGui_vector_wstring(entt::meta_data memberMetaData, Compone
 
 	ImGui::PopID();
 }
+
+void Inspector::TypeImGui_array_wstring_Topic(entt::meta_data memberMetaData, Component* component)
+{
+	// Retrieve the std::array<std::wstring, (int)TopicType::END> from the component's handle
+	
+	auto wstringArray = memberMetaData.get(component->GetHandle()).cast<std::array<std::wstring, (int)VisPred::Game::TopicType::END>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+	ImGui::Text("%s", memberName.c_str());
+
+	// Display each string in the array
+	for (size_t i = 0; i < wstringArray.size(); ++i)
+	{
+		std::wstring tempWMember = wstringArray[i];
+		std::string tempSMember(tempWMember.begin(), tempWMember.end());  // Convert to std::string for ImGui
+
+		ImGui::SetNextItemWidth(m_TypeBoxsize);
+		// ImGui::InputText expects a char array, so use std::string for editing
+		if (ImGui::InputText(("Element " + std::to_string(i)).c_str(), &tempSMember))
+		{
+			// Convert string back to wstring after editing
+			std::wstring newWName(tempSMember.begin(), tempSMember.end());
+			wstringArray[i] = newWName;
+		}
+	}
+
+	// Apply changes if the array was modified
+	memberMetaData.set(component->GetHandle(), std::move(wstringArray));
+
+	ImGui::PopID();
+}
+
 
 void Inspector::TypeImGui_list_uint32(entt::meta_data memberMetaData, Component* component) {
 	// Component의 핸들에서 std::list<uint32_t>를 가져옵니다

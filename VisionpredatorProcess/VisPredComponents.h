@@ -40,4 +40,5 @@
 #include "TextBounceComponent.h"
 #include "ParticleOwnerComponent.h"
 #include "FollowComponent.h"
+#include "MainTopicComponent.h"
 

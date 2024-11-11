@@ -12,7 +12,15 @@ namespace VisPred
 			NONE,
 			END
 
-		};		
+		};
+		enum class TopicType
+		{
+			FINDBELL,
+			KILLALL,
+			NONE,
+			END
+
+		};
 		enum class QuestType
 		{
 			VPMOVE,

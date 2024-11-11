@@ -135,7 +135,7 @@ void VispredRegister::Register_Components()
 	)
 
 		META_ADD_COMP(DoorComponent, DoorComponent::SoundKey, DoorComponent::Volume, DoorComponent::LeftDoor, DoorComponent::RightDoor, DoorComponent::OpenTime, DoorComponent::IsUseserble, DoorComponent::MoveDistance);
-	META_ADD_COMP(SectorClearComponent, SectorClearComponent::OpenDoorIdentity);
+	META_ADD_COMP(SectorClearComponent, SectorClearComponent::Ment, SectorClearComponent::OpenDoorIdentity);
 	META_ADD_COMP(DoorOpenerComponent, DoorOpenerComponent::Dummy);
 	META_ADD_COMP(WeaponBoxComponent, WeaponBoxComponent::SpawnPrefabs, WeaponBoxComponent::TopMesh, WeaponBoxComponent::OpenAngle, WeaponBoxComponent::OpenTime, WeaponBoxComponent::SpawnOffset, WeaponBoxComponent::SpawnDirection, WeaponBoxComponent::SpawnSpeed);
 	META_ADD_COMP(CabinetComponent
@@ -184,7 +184,15 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(TextBounceComponent, TextBounceComponent::AddedBounce, TextBounceComponent::AddScalePercent, TextBounceComponent::MaxScalePercent, TextBounceComponent::BouncingTime, TextBounceComponent::BounceTimePercent);
 	META_ADD_COMP(FollowComponent, FollowComponent::Isfollowing, FollowComponent::FollowingEntityID);
 	META_ADD_COMP(ParticleOwnerComponent, ParticleOwnerComponent::ParticleName);
-	//META_ADD_COMP(ImageBounceComponent, ImageBounceComponent::MaxTextScalePercent, ImageBounceComponent::AddTextScalePercent);
+	META_ADD_COMP(MainTopicComponent
+		, MainTopicComponent::BackGroundColor, MainTopicComponent::MentColor
+		, MainTopicComponent::Mode
+		, MainTopicComponent::IsReset
+		, MainTopicComponent::IsShowing
+		, MainTopicComponent::Duration
+		, MainTopicComponent::Progress
+		, MainTopicComponent::Ment);
+
 }
 
 void VispredRegister::Register_EnumClass()
@@ -246,8 +254,13 @@ void VispredRegister::Register_EnumClass()
 		, QuestType::PLAYERINTERECT);
 
 
+	META_ADD_ENUMCLASS(TopicType
 
-
+		, TopicType::FINDBELL
+		, TopicType::KILLALL
+		, TopicType::NONE
+		, TopicType::END
+	);
 
 
 
@@ -266,6 +279,7 @@ void VispredRegister::Register_EnumClass()
 void VispredRegister::Register_Structs()
 {
 	using namespace VPMath;
+	using namespace VisPred::Game;
 
 	// std::tuple<std::wstring, float, float> µî·Ï
 	entt::meta<std::tuple<std::wstring, float, float>>()
@@ -294,6 +308,7 @@ void VispredRegister::Register_Structs()
 		.prop("third"_hs, [](const std::tuple<std::string, int, bool, bool>& tuple) { return std::get<2>(tuple); })  // Third element (bool)
 		.prop("fourth"_hs, [](const std::tuple<std::string, int, bool, bool>& tuple) { return std::get<3>(tuple); }); // Fourth element (bool)
 
+	entt::meta < std::array < std::wstring, (int)TopicType::END >>().type("std::array<std::wstring,(int)TopicType::END>"_hs);
 
 }
 
