@@ -62,6 +62,9 @@ void EnemySystem::Start(uint32_t gameObjectId)
 	enemyCompRawPtr->Graphics = m_Graphics;
 	enemyCompRawPtr->SoundEngine = m_SoundEngine;
 
+	if (enemyComp->Player->CurrentFSM == PlayerFSM::DIE || enemyComp->Player->CurrentFSM == PlayerFSM::DIE_END)
+		return;
+
 	enemyComp->BehaviorState->Enter(enemyComp);
 	enemyComp->CombatState->Enter(enemyComp);
 	enemyComp->MovementState->Enter(enemyComp);
@@ -71,6 +74,9 @@ void EnemySystem::FixedUpdate(float deltaTime)
 {
 	COMPLOOP(EnemyComponent, enemycomp)
 	{
+		if (enemycomp.Player->CurrentFSM == PlayerFSM::DIE || enemycomp.Player->CurrentFSM == PlayerFSM::DIE_END)
+			return;
+
 		const std::shared_ptr<EnemyComponent> enemyComp(&enemycomp, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
 
 		enemycomp.BehaviorState->Update(enemyComp, deltaTime);
