@@ -12,12 +12,16 @@ GeometryShader::GeometryShader(const std::shared_ptr<Device>& device, const std:
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 
 	DWORD shaderFlag = D3DCOMPILE_ENABLE_STRICTNESS;
+
+	std::wstring hlslFileBasePath{};
 #ifdef _DEBUG
 	shaderFlag |= D3DCOMPILE_DEBUG;
 	shaderFlag |= D3DCOMPILE_SKIP_OPTIMIZATION;
+	hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
+#else
+	hlslFileBasePath = L"..\\Data\\HLSL\\";
 #endif
 
-	const std::wstring hlslFileBasePath = L"..\\..\\..\\VPGraphics\\";
 	const std::wstring hlslFileExtension = L".hlsl";
 	const std::wstring binaryFileExtension = L".cso";
 

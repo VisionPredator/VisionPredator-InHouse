@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "DataRegister_Vispred.h"
-
 #include "VisPredComponents.h"
 #include "VisPredStructs.h"
 void VispredRegister::Register_Metadata()
@@ -177,6 +176,8 @@ void VispredRegister::Register_Components()
 	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPGage, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI);
 	META_ADD_COMP(		CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale	);
 	META_ADD_COMP(HitUIComponent, HitUIComponent::IsHitUIOn, HitUIComponent::ProgressTime, HitUIComponent::DurationTime);
+	META_ADD_COMP(FPSComponent, FPSComponent::IsShow);
+	META_ADD_COMP(SceneChangeComponent, SceneChangeComponent::ScenePath,SceneChangeComponent::SceneChangeable);
 }
 
 void VispredRegister::Register_EnumClass()
@@ -220,6 +221,7 @@ void VispredRegister::Register_EnumClass()
 		, PlayerAni::ToThrow_Pistol
 		, PlayerAni::ToThrow_Rifle
 		, PlayerAni::ToThrow_ShotGun
+		, PlayerAni::End
 	);
 	META_ADD_ENUMCLASS(QuestType
 		, QuestType::VPMOVE
@@ -250,6 +252,7 @@ void VispredRegister::Register_EnumClass()
 		, VPAni::ToVP_jump
 		, VPAni::ToVP_run
 		, VPAni::ToVP_draw
+		, VPAni::End
 	);
 }
 

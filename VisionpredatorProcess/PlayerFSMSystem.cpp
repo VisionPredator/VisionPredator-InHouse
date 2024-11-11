@@ -660,6 +660,11 @@ void PlayerFSMSystem::Enter_Die(PlayerComponent& playercomp)
 void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 {
 	GetSceneManager()->SpawnPrefab("../Data/Prefab/DieUI.prefab", {}, VPMath::Vector3{});
+	auto entity =GetSceneManager()->GetEntityByIdentityName("Cursor");
+	if (entity)
+	{
+	entity->GetComponent<CursorComponent>()->ShowCursor = true;
+	}
 	//GetSceneManager()->ChangeScene("../Data/Scene/Title.scene");
 }
 
