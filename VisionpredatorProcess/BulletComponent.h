@@ -3,7 +3,7 @@
 struct BulletComponent :public Component
 {
 	VP_JSONBODY(BulletComponent, SparkParticleName, BloodSplashParticleName, Damage, Speed)
-	float Damage{};
+	int Damage{};
 	float Speed{};
 
 	std::string SparkParticleName{};

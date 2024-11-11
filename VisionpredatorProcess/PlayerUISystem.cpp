@@ -5,18 +5,26 @@
 PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager)
 	: System(sceneManager)
 {
-	EventManager::GetInstance().Subscribe("OnGunShoot", CreateSubscriber(&PlayerUISystem::OnGunShoot));
 	EventManager::GetInstance().Subscribe("OnUpdateSearchUI", CreateSubscriber(&PlayerUISystem::OnUpdateSearchUI));
+	EventManager::GetInstance().Subscribe("OnUpdateWeaponUI", CreateSubscriber(&PlayerUISystem::OnUpdateWeaponUI));
+	EventManager::GetInstance().Subscribe("OnUpdateHP", CreateSubscriber(&PlayerUISystem::OnUpdateHP));
 	EventManager::GetInstance().Subscribe("OnResetInterectionUI", CreateSubscriber(&PlayerUISystem::OnResetInterectionUI));
 	EventManager::GetInstance().Subscribe("OnDamaged", CreateSubscriber(&PlayerUISystem::OnDamaged));
+	EventManager::GetInstance().Subscribe("OnShoot", CreateSubscriber(&PlayerUISystem::OnShoot));
+	EventManager::GetInstance().Subscribe("OnUpdateVPState", CreateSubscriber(&PlayerUISystem::OnUpdateVPState));
 }
 
 void PlayerUISystem::Update(float deltaTime)
 {
-	COMPLOOP(PlayerUIComponent, comp)
-	{
-		UpdatePlayerUI(comp, deltaTime);
-	}
+	if (!m_PlayerUI.lock())
+		return;
+	if (!m_PlayerUI.lock()->GetComponent<PlayerUIComponent>()->PlayerEntity.lock())
+		return;
+	//UpdateVPState();
+	UpdateFadeUI();
+	UpdateHitUI(deltaTime);
+	UpdateAim();
+	//UpdateWeaponUI();
 }
 void PlayerUISystem::Initialize()
 {
@@ -27,47 +35,71 @@ void PlayerUISystem::Initialize()
 }
 void PlayerUISystem::Start(uint32_t gameObjectId)
 {
+	if (m_PlayerUI.lock())
+		return;
 	auto entity = GetSceneManager()->GetEntity(gameObjectId);
 	if (entity->HasComponent<PlayerUIComponent>())
 	{
+		m_PlayerUI = entity;
 		auto playerUI = entity->GetComponent<PlayerUIComponent>();
 		playerUI->PlayerEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->Player);
 		playerUI->PlayerEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->Player);
 		playerUI->FadeEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->FadeUI);
-		playerUI->HPEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HPGage);
+		playerUI->HPGageEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HPGage);
+		playerUI->HPBackEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HPBackGround);
+		playerUI->HPBoarderEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HPBoarder);
 		playerUI->AimEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->AimUI);
 		playerUI->VPeyeEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->VPeyeUI);
 		playerUI->WeaponEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->WeaponUI);
 		playerUI->HitEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HitUI);
 		playerUI->InterectionEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->InterectionUI);
 
-		UpdatePlayerUI(*entity->GetComponent<PlayerUIComponent>(),0);
+		SettingPlayerUI(0);
 	}
 }
 void PlayerUISystem::Finalize()
 {
 }
 
-void PlayerUISystem::UpdateHP(PlayerUIComponent& playerUI)
+void PlayerUISystem::UpdateHP()
 {
-	if (!playerUI.HPEntity.lock())
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->HPGageEntity.lock())
 		return;
-	auto playercomp = playerUI.PlayerEntity.lock()->GetComponent<PlayerComponent>();
-
-	// HP는 피격 받았을 때만 업데이트하고 싶다. 
-// -> 이벤트 매니저 사용
-// hp 게이지 변경.
-	auto ui = playerUI.HPEntity.lock()->GetComponent<ImageComponent>();
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
+	auto ui = playerUI->HPGageEntity.lock()->GetComponent<ImageComponent>();
 	ui->RightPercent = 1.f - static_cast<float>(playercomp->HP) / static_cast<float>(playercomp->MaxHP);
 }
 
-void PlayerUISystem::UpdateVPState(PlayerUIComponent& playerUI)
+void PlayerUISystem::OnUpdateHP(std::any none)
 {
-	if (!playerUI.VPeyeEntity.lock())
+	if (!m_PlayerUI.lock())
+		return;
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+
+	if (!playerUI->HPBackEntity.lock() || !playerUI->HPGageEntity.lock() || !playerUI->HPBoarderEntity.lock())
+		return;
+	if (playerUI->HPBackEntity.lock()->HasComponent<ImageBounceComponent>() &&
+		playerUI->HPGageEntity.lock()->HasComponent<ImageBounceComponent>() &&
+		playerUI->HPBoarderEntity.lock()->HasComponent<ImageBounceComponent>())
+	{
+		playerUI->HPBackEntity.lock()->GetComponent<ImageBounceComponent>()->AddedBounce = true;
+		playerUI->HPGageEntity.lock()->GetComponent<ImageBounceComponent>()->AddedBounce = true;
+		playerUI->HPBoarderEntity.lock()->GetComponent<ImageBounceComponent>()->AddedBounce = true;
+	}
+	UpdateHP();
+}
+
+void PlayerUISystem::UpdateVPState()
+{
+	if (!m_PlayerUI.lock())
 		return;
 
-	auto playercomp = playerUI.PlayerEntity.lock()->GetComponent<PlayerComponent>();
-	auto& imagecomp = *playerUI.VPeyeEntity.lock()->GetComponent<ImageComponent>();
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->VPeyeEntity.lock())
+		return;
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
+	auto& imagecomp = *playerUI->VPeyeEntity.lock()->GetComponent<ImageComponent>();
 	auto& VPUI = *imagecomp.GetComponent<VPUIComponent>();
 	VPMath::Color White{ 1,1,1,1 };
 	VPMath::Color temp{};
@@ -75,29 +107,38 @@ void PlayerUISystem::UpdateVPState(PlayerUIComponent& playerUI)
 	if (percent > 1)
 		percent = 1;
 	temp = VPMath::Color::Lerp(White, VPUI.ChangeColor, percent);
-	if (percent>=1 || playercomp->ReadyToTransform)
+	if (percent >= 1 || playercomp->ReadyToTransform)
 	{
+		if (imagecomp.HasComponent<ImageBounceComponent>())
+		{
+			imagecomp.GetComponent<ImageBounceComponent>()->AddedBounce = true;
+		}
 		imagecomp.TexturePath = VPUI.FullImage;
 		imagecomp.Color = White;
 		imagecomp.TopPercent = 0;
-
 	}
 	else
 	{
 		imagecomp.TopPercent = 1 - percent;
-
 		imagecomp.TexturePath = VPUI.GageImage;
 		imagecomp.Color = VPMath::Color::Lerp(White, VPUI.ChangeColor, percent);
 	}
 
 }
-void PlayerUISystem::UpdateAim(PlayerUIComponent& playerUI)
+void PlayerUISystem::OnUpdateVPState(std::any none)
 {
-	if (!playerUI.AimEntity.lock())
-		return;
-	auto playercomp = playerUI.PlayerEntity.lock()->GetComponent<PlayerComponent>();
 
-	auto& imagecomp = *playerUI.AimEntity.lock()->GetComponent<ImageComponent>();
+	UpdateVPState();
+}
+void PlayerUISystem::UpdateAim()
+{
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->AimEntity.lock())
+		return;
+
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
+
+	auto& imagecomp = *playerUI->AimEntity.lock()->GetComponent<ImageComponent>();
 	auto& AimComp = *imagecomp.GetComponent<AimUIComponent>();
 	auto entity = GetSceneManager()->GetEntity(playercomp->SearchedItemID);
 	imagecomp.Color.w = 1;
@@ -119,30 +160,42 @@ void PlayerUISystem::UpdateAim(PlayerUIComponent& playerUI)
 
 
 // OnChangeWeapon 이벤트를 만들까..
-void PlayerUISystem::UpdateWeaponUI(PlayerUIComponent& playerUI)
+void PlayerUISystem::UpdateWeaponUI()
 {
 	/// 총을 가지고 있을 때 ------------------------------------------------------------------------
-	
-	if (!playerUI.WeaponEntity.lock())
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->WeaponEntity.lock())
 		return;
-	auto playercomp = playerUI.PlayerEntity.lock()->GetComponent<PlayerComponent>();
-	auto& ammoUIComp = *playerUI.WeaponEntity.lock()->GetComponent<TextComponent>();
-	auto& weaponUIComp = *ammoUIComp.GetComponent<ImageComponent>();
 
-	if (playercomp->IsVPMode	)
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
+	auto& ammoUIComp = *playerUI->WeaponEntity.lock()->GetComponent<TextComponent>();
+	auto& weaponUIComp = *ammoUIComp.GetComponent<ImageComponent>();
+	std::string newweapon{};
+	if (playercomp->IsVPMode)
 	{
 		ammoUIComp.Text = L" ";
-		weaponUIComp.TexturePath = "WeaponUI_VPHand.png";
-		return;
+		newweapon = "WeaponUI_VPHand.png";
 	}
 	else if (!playercomp->HasGun)
-
 	{
 		ammoUIComp.Text = L" ";
-		weaponUIComp.TexturePath = "WeaponUI_Sword.png";
-		return;
+		newweapon = "WeaponUI_Sword.png";
 	}
 
+	if (!newweapon.empty())
+	{
+		if (weaponUIComp.TexturePath != newweapon)
+		{
+		weaponUIComp.TexturePath = newweapon;
+			if (weaponUIComp.HasComponent<ImageBounceComponent>())
+			{
+				auto imagebounce = weaponUIComp.GetComponent<ImageBounceComponent>();
+				imagebounce->AddedBounce = true;
+				return;
+			}
+		}
+		return;
+	}
 
 	auto& guncomp = *m_SceneManager.lock()->GetComponent<GunComponent>(playercomp->GunEntityID);
 
@@ -155,63 +208,96 @@ void PlayerUISystem::UpdateWeaponUI(PlayerUIComponent& playerUI)
 	{
 	case VisPred::Game::GunType::PISTOL:
 	{
-		weaponUIComp.TexturePath = "WeaponUI_Pistol.png";
+		newweapon = "WeaponUI_Pistol.png";
 		break;
 	}
 	case VisPred::Game::GunType::RIFLE:
 	{
-		weaponUIComp.TexturePath = "WeaponUI_Rifle.png";
+		newweapon = "WeaponUI_Rifle.png";
 		break;
 	}
 	case VisPred::Game::GunType::SHOTGUN:
 	{
-		weaponUIComp.TexturePath = "WeaponUI_Shotgun.png";
+		newweapon = "WeaponUI_Shotgun.png";
 		break;
 	}
 	default:
 		break;
 	}
+
+	if (weaponUIComp.TexturePath != newweapon)
+	{
+		weaponUIComp.TexturePath = newweapon;
+		if (weaponUIComp.HasComponent<ImageBounceComponent>())
+		{
+			auto imagebounce = weaponUIComp.GetComponent<ImageBounceComponent>();
+			imagebounce->AddedBounce = true;
+			return;
+		}
+	}
+
+
+
 }
 
-void PlayerUISystem::UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime)
+void PlayerUISystem::OnUpdateWeaponUI(std::any data)
 {
-	if (!playerUI.PlayerEntity.lock())
-	return;
-
-	UpdateVPState(playerUI);
-	UpdateAim(playerUI);
-	UpdateWeaponUI(playerUI);
-	UpdateFadeUI(playerUI);
-	UpdateHitUI(playerUI,deltatime);
-
-
-}
-void PlayerUISystem::UpdateFadeUI(PlayerUIComponent& playerUI)
-{
-	if (!playerUI.FadeEntity.lock())
+	if (!m_PlayerUI.lock())
 		return;
-	auto playercomp = playerUI.PlayerEntity.lock()->GetComponent<PlayerComponent>();
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->WeaponEntity.lock())
+		return;
 
+	playerUI->WeaponEntity.lock()->HasComponent<TextBounceComponent>();
+	if (playerUI->WeaponEntity.lock()->HasComponent<TextBounceComponent>())
+	{
+		playerUI->WeaponEntity.lock()->GetComponent<TextBounceComponent>()->AddedBounce = true;
+	}
+	UpdateWeaponUI();
+}
 
-
+void PlayerUISystem::SettingPlayerUI(float deltatime)
+{
+	if (!m_PlayerUI.lock())
+	{
+		return;
+	}
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->PlayerEntity.lock())
+		return;
+	UpdateVPState();
+	UpdateFadeUI();
+	UpdateHitUI(deltatime);
+	UpdateAim();
+	UpdateWeaponUI();
+	UpdateHP();
+}
+void PlayerUISystem::UpdateFadeUI()
+{
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->FadeEntity.lock())
+		return;
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
 	if (playercomp->CurrentFSM == VisPred::Game::PlayerFSM::DIE || playercomp->CurrentFSM == VisPred::Game::PlayerFSM::DIE_END)
 	{
-		auto& fadeui = *playerUI.FadeEntity.lock()->GetComponent<ImageComponent>();
+		auto& fadeui = *playerUI->FadeEntity.lock()->GetComponent<ImageComponent>();
 		fadeui.Color.w = playercomp->DieProgress * 2 / playercomp->DieTime;
 	}
 	else
 	{
-		auto& fadeui = *playerUI.FadeEntity.lock()->GetComponent<ImageComponent>();
-		fadeui.Color.w = Fade_in_out_Percent(playercomp->TransformationProgress,playercomp->TransformationTime);
+		auto& fadeui = *playerUI->FadeEntity.lock()->GetComponent<ImageComponent>();
+		fadeui.Color.w = Fade_in_out_Percent(playercomp->TransformationProgress, playercomp->TransformationTime);
 	}
 }
-void PlayerUISystem::UpdateHitUI(PlayerUIComponent& playerUI, float deltatime)
+void PlayerUISystem::UpdateHitUI( float deltatime)
 {
-	if (!playerUI.HitEntity.lock())
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->HitEntity.lock())
 		return;
 
-	auto playercomp = playerUI.PlayerEntity.lock()->GetComponent<PlayerComponent>();
-	auto& hitui = *playerUI.HitEntity.lock()->GetComponent<ImageComponent>();
+
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
+	auto& hitui = *playerUI->HitEntity.lock()->GetComponent<ImageComponent>();
 	auto& hitcomp = *hitui.GetComponent<HitUIComponent>();
 
 	if (hitcomp.IsHitUIOn)
@@ -276,7 +362,6 @@ double PlayerUISystem::Fade_in_Percent(float progress, float totalTime)
 	// 진행도가 100%를 초과할 경우 2를 반환
 	return 2.0;
 }
-
 double PlayerUISystem::Fade_out_Percent(float progress, float totalTime)
 {
 	// 전체 시간이 0 이하일 경우 0을 반환하여 나누기 오류를 방지합니다.
@@ -312,8 +397,6 @@ void PlayerUISystem::OnResetInterectionUI(std::any null)
 		return;
 	ResetInterectionUI(entity->GetComponent<PlayerUIComponent>()->InterectionEntity.lock());
 }
-
-
 void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 {
 	if (!playerUI.InterectionEntity.lock())
@@ -334,12 +417,10 @@ void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 	if (InterectingGun(playerUI.InterectionEntity.lock(), entity)) {}
 
 }
-
 bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
 {
 	if (!selectedentity->HasComponent<GunComponent>())
 		return false;
-
 
 	auto guncomp = selectedentity->GetComponent<GunComponent>();
 	auto& textUI = *interectionentity->GetComponent<TextComponent>();
@@ -379,30 +460,25 @@ bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, E
 
 void PlayerUISystem::OnDamaged(std::any entityid_Damage)
 {
+	if (!m_PlayerUI.lock())
+		return;
 	auto [entityid, damage] = std::any_cast<std::pair<uint32_t, int>>(entityid_Damage);
 	auto entity = GetSceneManager()->GetEntity(entityid);
 	if (!entity || !entity->HasComponent<PlayerComponent>())
 		return;
-	auto playerUI = GetSceneManager()->GetEntityByIdentityName("PlayerUI");
-	if (!playerUI->HasComponent<PlayerUIComponent>())
-		return;
-	auto playeruicomp = playerUI->GetComponent<PlayerUIComponent>();
+	auto playerUIComp = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	OnUpdateHP({});
 
-	if (playeruicomp->HPEntity.lock())
+	if (playerUIComp->HitEntity.lock())
 	{
-
-		auto ui = playeruicomp->HPEntity.lock()->GetComponent<ImageComponent>();
-		ui->RightPercent = 1.f - static_cast<float>(entity->GetComponent < PlayerComponent >()->HP) / static_cast<float>(entity->GetComponent < PlayerComponent >()->MaxHP);
-	}
-
-	if (playeruicomp->HitEntity.lock())
-	{
-		playeruicomp->HitEntity.lock()->GetComponent<HitUIComponent>()->IsHitUIOn = true;
+		playerUIComp->HitEntity.lock()->GetComponent<HitUIComponent>()->IsHitUIOn = true;
 	}
 
 
 }
 
-void PlayerUISystem::OnGunShoot(std::any data)
+
+void PlayerUISystem::OnShoot(std::any entityID)
 {
+	OnUpdateWeaponUI();
 }

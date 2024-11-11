@@ -5,7 +5,7 @@ struct AreaAttackComponent : public Component
 	AreaAttackComponent();
 
 	VP_JSONBODY(AreaAttackComponent, IdentityAttach, Damage);
-	float Damage{};
+	int Damage{};
 	std::string IdentityAttach{};
 	std::weak_ptr<Entity> AttachedEntity{};
 };

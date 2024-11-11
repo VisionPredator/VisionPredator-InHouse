@@ -30,7 +30,15 @@ public:
 			newupdatevector.push_back(newComponent);
 		}
 	}
-
+    static void RemoveUpdateData(TransformComponent* componentToRemove)
+    {
+        // newupdatevector에서 componentToRemove를 제거
+        auto it = std::find(newupdatevector.begin(), newupdatevector.end(), componentToRemove);
+        if (it != newupdatevector.end())
+        {
+            newupdatevector.erase(it);
+        }
+    }
 private:
     void UpdateDirVector(TransformComponent* transform);
     static std::vector<TransformComponent*> newupdatevector;

@@ -207,7 +207,6 @@
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="EngineStructs.h" />
     <ClInclude Include="TextComponent.h" />
-    <ClInclude Include="UISystem.h" />
     <ClInclude Include="VPEngine.h" />
     <ClInclude Include="IDComponent.h" />
     <ClInclude Include="IdentityComponent.h" />
@@ -286,7 +285,6 @@
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="TransformSystem.cpp" />
-    <ClCompile Include="UISystem.cpp" />
     <ClCompile Include="VPEngine.cpp" />
   </ItemGroup>
   <ItemGroup>

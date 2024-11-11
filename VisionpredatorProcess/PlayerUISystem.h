@@ -18,13 +18,16 @@ public:
 	void Start(uint32_t gameObjectId) override;
 	void Finish(uint32_t gameObjectId) override {};
 	void Finalize() override ;
-	void UpdateHP(PlayerUIComponent& playerUI);
-	void UpdateVPState(PlayerUIComponent& playerUI);
-	void UpdateAim(PlayerUIComponent& playerUI);
-	void UpdateWeaponUI(PlayerUIComponent& playerUI);
-	void UpdatePlayerUI(PlayerUIComponent& playerUI, float deltatime);
-	void UpdateFadeUI(PlayerUIComponent& playerUI);
-	void UpdateHitUI(PlayerUIComponent& playerUI, float deltatime);
+	void UpdateHP();
+	void OnUpdateHP(std::any none);
+	void UpdateVPState();
+	void OnUpdateVPState(std::any none = {});
+	void UpdateAim();
+	void UpdateWeaponUI();
+	void OnUpdateWeaponUI(std::any data = {});
+	void SettingPlayerUI( float deltatime);
+	void UpdateFadeUI();
+	void UpdateHitUI(float deltatime);
 	double Fade_in_out_Percent(float progress, float totalTime);
 	double Fade_in_Percent(float progress, float totalTime);
 	double Fade_out_Percent(float progress, float totalTime);
@@ -36,7 +39,7 @@ public:
 	bool InterectingGun(std::shared_ptr<Entity> weaponentity, Entity* selectedentity);
 	void OnDamaged(std::any entity_Damage);
 	// Event
-	void OnGunShoot(std::any data);
-	 //PlayerComponent *m_PlayerComp{};
+	void OnShoot(std::any data);
+	std::weak_ptr<Entity> m_PlayerUI;
 	
 };

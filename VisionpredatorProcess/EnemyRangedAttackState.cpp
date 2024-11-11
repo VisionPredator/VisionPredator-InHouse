@@ -32,8 +32,6 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 	auto targetDir = playerPos - enemyPos;
 	targetDir.Normalize();
 
-	enemyComp->GetComponent<NavAgentComponent>()->IsChase = false;
-
 	// 난수 생성기 초기화
 	std::random_device rd;  // 하드웨어 엔트로피를 기반으로 시드 생성
 	std::mt19937 gen(rd()); // Mersenne Twister 난수 생성기
@@ -71,12 +69,16 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			);
 
 			// 공격 이펙트 출력
-			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleComponent>(enemyComp->GetEntityID());
-			if (particle != nullptr)
+			const auto particle = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(enemyComp->GetEntityID());
+			if (particle)
 			{
-				particle->IsRender = true;
-				particle->Restart = true;
+				EventManager::GetInstance().ImmediateEvent("OnFollowParticle", particle->GetEntityID());
 			}
+			//if (particle != nullptr)
+			//{
+			//	particle->IsRender = true;
+			//	particle->Restart = true;
+			//}
 
 			// 명중률 계산
 			enemyComp->AttackAccuracy = CalculateAccuracy(*enemyComp);
@@ -92,7 +94,7 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 				const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
 				if (detectedObjID == enemyComp->Player->GetEntityID())
 				{
-					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair<uint32_t, int >(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
+					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));
 				}
 			}
 			ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
@@ -119,7 +121,7 @@ void EnemyRangedAttackState::Exit(const std::shared_ptr<Component>& component)
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 }
 
-float EnemyRangedAttackState::CalculateAccuracy(EnemyComponent& enemyComp)
+float EnemyRangedAttackState::CalculateAccuracy(const EnemyComponent& enemyComp)
 {
 	// 명중률에 관여하는 것
 	// - 현재 플레이어가 이동중인지, WALk, RUN, JUMP

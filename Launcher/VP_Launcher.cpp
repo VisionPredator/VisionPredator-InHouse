@@ -5,6 +5,7 @@
 VP_Launcher::VP_Launcher(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
 {
 	InputManager::GetInstance().SetClipMode(TRUE);
+	ShowCursor(FALSE);
 }
 
 

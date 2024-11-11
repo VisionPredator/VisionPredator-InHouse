@@ -29,7 +29,6 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<GunSystem>();
 	m_SystemManager->AddSystem<AreaAttackSystem>();
 	m_SystemManager->AddSystem<InterectiveSystem>();
-	m_SystemManager->AddSystem<SectorSystem>();
 	m_SystemManager->AddSystem<DoorSystem>();
 	m_SystemManager->AddSystem<WeaponBoxSystem>();
 	m_SystemManager->AddSystem<CabinetSystem>();
@@ -39,8 +38,14 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<AutoPickSystem>();
 	m_SystemManager->AddSystem<DoOnceSystem>();
 	m_SystemManager->AddSystem<SpawnerSystem>();
+	m_SystemManager->AddSystem<SectorSystem>();
 	m_SystemManager->AddSystem<QuestSystem>();
 	m_SystemManager->AddSystem<CursorSystem>();
+	m_SystemManager->AddSystem<FPSSystem>();
+	m_SystemManager->AddSystem<SceneChangeSystem>();
+	m_SystemManager->AddSystem<UIBounceSystem>();
+	m_SystemManager->AddSystem<ParticleSystem>();
+	m_SystemManager->AddSystem<MainTopicSystem>();
 }
 
 VPProcess::~VPProcess()

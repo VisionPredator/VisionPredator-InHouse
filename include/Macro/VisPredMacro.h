@@ -69,6 +69,12 @@
     entt::meta_handle GetHandle() override\
     {\
         return *this;\
+    }\
+    std::shared_ptr<Component> Clone() const override \
+    { \
+        auto clonedComponent = std::make_shared<CLASSNAME>(*this); \
+        clonedComponent->SetEntity(nullptr); /* Clone 후에 새로운 엔티티로 설정 */ \
+        return clonedComponent; \
     }
 
 constexpr float DegToRad(float degrees) 

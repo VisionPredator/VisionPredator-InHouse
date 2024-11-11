@@ -9,6 +9,9 @@ public:
     Entity();
     Entity(uint32_t entityID);
     Entity(const Entity& other) = default;
+    Entity& operator=(const Entity& other) = delete;  // 복사 할당 금지
+    Entity(Entity&& other) noexcept = default;        // 이동 생성자 허용
+    Entity& operator=(Entity&& other) noexcept = default;  // 이동 할당 허용
     ~Entity();
 
 	template<typename T>
@@ -51,8 +54,7 @@ public:
     const uint32_t GetEntityID() { return m_EntityID; }
 
 
-   
-
+    std::shared_ptr<Entity> Clone(uint32_t entityID);
 
     friend struct Component;
 

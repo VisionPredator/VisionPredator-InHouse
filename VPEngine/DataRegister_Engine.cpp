@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "DataRegister_Engine.h"
 #include "Components.h"
-#include "ParticleComponent.h"
 #include "../VPGraphics/MeshFilter.h"
 #include "../VPGraphics/CBuffer.h"
 
@@ -47,24 +46,6 @@ void EngineRegister::Register_Value()
 		.prop("first"_hs, &std::pair<std::wstring, float>::first)
 		.prop("second"_hs, &std::pair<std::wstring, float>::second);
 
-	// std::tuple<std::wstring, float, float> 등록
-	entt::meta<std::tuple<std::wstring, float, float>>()
-		.type("std::tuple<std::wstring, float, float>"_hs)
-		// std::get을 사용하는 대신, tuple의 각 요소에 직접 접근합니다.
-		.prop("first"_hs, [](const std::tuple<std::wstring, float, float>& tuple) { return std::get<0>(tuple); })    // 첫 번째 항목 (std::wstring)
-		.prop("second"_hs, [](const std::tuple<std::wstring, float, float>& tuple) { return std::get<1>(tuple); })   // 두 번째 항목 (float)
-		.prop("third"_hs, [](const std::tuple<std::wstring, float, float>& tuple) { return std::get<2>(tuple); });   // 세 번째 항목 (float)
-
-	// std::vector<std::tuple<std::wstring, float, float>> 등록
-	entt::meta<std::vector<std::tuple<std::wstring, float, float>>>()
-		.type("std::vector<std::tuple<std::wstring, float, float>>"_hs);
-
-	// Register std::tuple<Vector3, Vector3, Vector3>
-	entt::meta<std::tuple<Vector3, Vector3, Vector3>>()
-		.type("std::tuple<Vector3, Vector3, Vector3>"_hs)
-		.prop("first"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<0>(tuple); })  // First element (Vector3)
-		.prop("second"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<1>(tuple); }) // Second element (Vector3)
-		.prop("third"_hs, [](const std::tuple<Vector3, Vector3, Vector3>& tuple) { return std::get<2>(tuple); }); // Third element (Vector3)
 
 	// Register std::vector<std::tuple<Vector3, Vector3, Vector3>>
 	entt::meta<std::vector<std::tuple<Vector3, Vector3, Vector3>>>().type("std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>"_hs);
@@ -144,6 +125,8 @@ void EngineRegister::Register_Components()
 	META_ADD_COMP(SkinningMeshComponent,SkinningMeshComponent::IsVisible, SkinningMeshComponent::FBX,SkinningMeshComponent::InteractiveColor);
 	META_ADD_COMP(ParticleComponent,
 		ParticleComponent::TexturePath,
+		ParticleComponent::IsPlaying,
+		ParticleComponent::Progresstime,
 		ParticleComponent::IsRender,
 		ParticleComponent::IsLoop,
 		ParticleComponent::Restart,

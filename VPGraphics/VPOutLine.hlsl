@@ -75,7 +75,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
     
     
     // 임계값 설정 (Normal 변화량이 크면 경계로 간주)
-    float threshold = 0.1f;
+    float threshold = 1.0f;
 
     
     float4 output;
