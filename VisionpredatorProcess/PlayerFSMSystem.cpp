@@ -660,8 +660,8 @@ void PlayerFSMSystem::Enter_Die(PlayerComponent& playercomp)
 {
 	EventManager::GetInstance().ImmediateEvent("OnHideEnemyCount");
 	EventManager::GetInstance().ImmediateEvent("OnHideScore");
-	GetSceneManager()->GetEntityByIdentityName("Restart");
-
+	auto entity =GetSceneManager()->GetEntityByIdentityName("Restart");
+	entity->DestorySelf();
 }
 void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 {
@@ -673,6 +673,7 @@ void PlayerFSMSystem::Enter_Die_end(PlayerComponent& playercomp)
 	}
 	EventManager::GetInstance().ImmediateEvent("OnScoreToMiddle");
 	EventManager::GetInstance().ImmediateEvent("OnEndingBestScore");
+	EventManager::GetInstance().ImmediateEvent("OnHideBullet");
 }
 
 void PlayerFSMSystem::SetSlideDir(PlayerComponent& playercomp, ControllerComponent& controllercomp)
