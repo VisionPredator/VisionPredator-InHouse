@@ -12,7 +12,7 @@ void GunSystem::Update(float deltaTime)
 {
 	COMPLOOP(GunComponent, guncomp)
 	{
-		if (guncomp.CurrentBullet==0)
+		if (guncomp.CurrentBullet == 0)
 			guncomp.IsEmpty = true;
 	}
 }
@@ -115,6 +115,11 @@ void GunSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& playercom
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToAttack1_Sword
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToAttack2_Sword
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToAttack3_Sword
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle01_Sword
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle01_Pistol
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle01_Rifle
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle01_ShotGun
+
 		)
 		return;
 
@@ -168,6 +173,6 @@ void GunSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& playercom
 	EventManager::GetInstance().ImmediateEvent("OnChangeAnimation", data);
 	GetSceneManager()->SpawnSoundEntity(soundcomp->SoundKey_GunDraw, soundcomp->Volume_GunDraw, true, false, {});
 	EventManager::GetInstance().ImmediateEvent("OnUpdateWeaponUI");
-			
+
 }
 
