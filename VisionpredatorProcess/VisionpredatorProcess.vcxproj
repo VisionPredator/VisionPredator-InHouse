@@ -204,6 +204,8 @@
     <ClInclude Include="FollowComponent.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="FPSSystem.h" />
+    <ClInclude Include="GameBaseComponent.h" />
+    <ClInclude Include="GameBaseSystem.h" />
     <ClInclude Include="MainTopicComponent.h" />
     <ClInclude Include="MainTopicSystem.h" />
     <ClInclude Include="ParticleOwnerComponent.h" />
@@ -310,6 +312,8 @@
     <ClCompile Include="FollowComponent.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="FPSSystem.cpp" />
+    <ClCompile Include="GameBaseComponent.cpp" />
+    <ClCompile Include="GameBaseSystem.cpp" />
     <ClCompile Include="MainTopicComponent.cpp" />
     <ClCompile Include="MainTopicSystem.cpp" />
     <ClCompile Include="ParticleOwnerComponent.cpp" />

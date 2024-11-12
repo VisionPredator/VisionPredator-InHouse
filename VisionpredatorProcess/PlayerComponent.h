@@ -5,7 +5,7 @@ struct PlayerComponent :
 	public Component
 {
 	VP_JSONBODY(PlayerComponent
-		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
+		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName, DamageReduce
 		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, VPRunSpeed, SlideDuration, DashDuration, DashMultiple, SlideMultiple, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
 
 	std::string HandName{};
@@ -23,6 +23,7 @@ struct PlayerComponent :
 	std::weak_ptr<Entity> AutoPickEntity{};
 	int MaxHP{110};
 	int HP{110};
+	int DamageReduce = 0;
 	VisPred::Game::PlayerFSM CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
 	VisPred::Game::PlayerFSM PreFSM = VisPred::Game::PlayerFSM::IDLE;
 	float Height{};

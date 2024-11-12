@@ -128,10 +128,11 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 			return;
 		if (playercomp->GodMode)
 			damage = 0;
-		
+		else
+			damage = static_cast<int>(static_cast<float>(100 - playercomp->DamageReduce) / 100.f);
+
 		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
 		{
-
 
 			if (playercomp->HP > damage)
 			{
