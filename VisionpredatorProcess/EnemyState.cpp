@@ -77,14 +77,16 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 		if (true == isHit)
 		{
-			enemyComp.OnHit = false;
 
 			const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
 
 			if (enemyComp.MovementState == &EnemyMovementState::s_HitReaction)
+			//if (enemyComp.CurrentAni == VisPred::Game::EnemyAni::ATTACKED)
 				enemyComp.MovementState->Enter(temp);
+			else
+				ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
 
-			ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
+			enemyComp.OnHit = false;
 		}
 		//else
 		//{
