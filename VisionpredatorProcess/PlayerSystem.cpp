@@ -911,6 +911,10 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 		auto& anicomp = *playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
 		if (anicomp.IsFinished)
 		{
+			VPAnimationFinished(playercomp, anicomp);
+		}
+		if (anicomp.IsFinished)
+		{
 			ReturnToVPIdle(playercomp, anicomp);
 		}
 	}
@@ -920,8 +924,10 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 		if (anicomp.IsFinished)
 		{
 			AnimationFinished(playercomp, anicomp);
+		}
+		if (anicomp.IsFinished)
+		{
 			ReturnToIdle(anicomp);
-
 		}
 	}
 
@@ -938,6 +944,14 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 		case  (int)VisPred::Game::PlayerAni::ToAttack1_Sword:
 		case  (int)VisPred::Game::PlayerAni::ToAttack2_Sword:
 		case  (int)VisPred::Game::PlayerAni::ToAttack3_Sword:
+		{
+			if (playercomp.AutoPickEntity.lock() && playercomp.AutoPickEntity.lock()->HasComponent<AutoPickComponent>() && playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>()->IsAuto)
+			{
+				EventManager::GetInstance().ImmediateEvent("OnAutoPickup", playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>());
+			}
+			playercomp.IsAttacking = false;
+		}
+			break;
 		case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:
 		case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:
 		case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:
@@ -960,12 +974,12 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 				socketcomp->ConnectedEntityID = 0;
 				playercomp.ThrowingGunEntityID = 0;
 				socketcomp->GetComponent<MeshComponent>()->IsOverDraw = false;
-				/*		if (playercomp.AutoPickEntity.lock()&& playercomp.AutoPickEntity.lock()->HasComponent<AutoPickComponent>()&& playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>()->IsAuto)
-						{
-							EventManager::GetInstance().ImmediateEvent("OnAutoPickup", playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>());
-						}
-						else*/
-				playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
+				if (playercomp.AutoPickEntity.lock() && playercomp.AutoPickEntity.lock()->HasComponent<AutoPickComponent>() && playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>()->IsAuto)
+				{
+					EventManager::GetInstance().ImmediateEvent("OnAutoPickup", playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>());
+				}
+				else
+					playercomp.LongswordEntity.lock().get()->GetComponent<MeshComponent>()->IsVisible = true;
 
 			}
 			break;
@@ -1264,16 +1278,7 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
 
-	//auto temppos = firetrans.World_Location;
-	//auto temprotate = firetrans.World_Rotation;
 
-	//auto bulletentity = m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	//if (!bulletentity)
-	//	return false;
-
-	//auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
-	//bulletcomp->Damage = guncomp.Damage1;
-	//bulletcomp->Speed = guncomp.BulletSpeed;
 	ShootNormalBullet(playercomp, guncomp, firetrans);
 	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, {});
 
@@ -1324,14 +1329,6 @@ bool PlayerSystem::Shoot_Rifle(PlayerComponent& playercomp, GunComponent& guncom
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Rifle, PlayerAni::ToIdle02_Rifle))
 		return false;
 
-	//auto temppos = firetrans.World_Location;
-	//auto temprotate = firetrans.World_Rotation;
-	//auto bulletentity = m_SceneManager.lock()->SpawnEditablePrefab(guncomp.BulletPrefab, temppos, temprotate);
-	//if (!bulletentity)
-	//	return false;
-	//auto bulletcomp = bulletentity->GetComponent<BulletComponent>();
-	//bulletcomp->Damage = guncomp.Damage1;
-	//bulletcomp->Speed = guncomp.BulletSpeed;
 	ShootNormalBullet(playercomp, guncomp, firetrans);
 	EventManager::GetInstance().ImmediateEvent("OnShoot", guncomp.GetEntityID());
 
@@ -1348,7 +1345,6 @@ bool PlayerSystem::Throw_Setting(PlayerComponent& playercomp)
 	playercomp.HasGun = false;
 	playercomp.ThrowingGunEntityID = playercomp.GunEntityID;
 	playercomp.GunEntityID = 0;
-	//playercomp.ShootType = VisPred::Game::GunType::NONE;
 	return true;
 }
 bool PlayerSystem::Throw_Pistol(PlayerComponent& playercomp, GunComponent& guncomp)

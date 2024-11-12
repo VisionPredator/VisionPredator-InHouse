@@ -111,7 +111,11 @@ void GunSystem::Interected_Gun(GunComponent& guncomp, PlayerComponent& playercom
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToIdle02_ShotGun
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_Pistol
 		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_Rifle
-		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_ShotGun)
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToThrow_ShotGun
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToAttack1_Sword
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToAttack2_Sword
+		&& anicomp->PlayerCurAni != VisPred::Game::PlayerAni::ToAttack3_Sword
+		)
 		return;
 
 	if ((anicomp->PlayerCurAni == VisPred::Game::PlayerAni::ToThrow_Pistol
