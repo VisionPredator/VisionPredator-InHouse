@@ -6,7 +6,7 @@ struct ImageComponent : Component
 {
 	ImageComponent() = default;
 
-	VP_JSONBODY(ImageComponent, RenderMode, Billboard, TexturePath, PosXPercent, PosYPercent, Scale, Layer, Color, LeftPercent, RightPercent, TopPercent, BottomPercent, isAlwaysOn);
+	VP_JSONBODY(ImageComponent, RenderMode, Billboard, TexturePath, PosXPercent, PosYPercent, Scale, Layer, Color, LeftPercent, RightPercent, TopPercent, BottomPercent, isAlwaysOn, DrawAfterText);
 
 	ui::RenderModeType RenderMode = ui::RenderModeType::ScreenSpaceOverlay;
 	ui::BillboardType Billboard = ui::BillboardType::None;
@@ -21,5 +21,6 @@ struct ImageComponent : Component
 	float TopPercent = 0.f;
 	float BottomPercent = 0.f;
 	bool isAlwaysOn = false;
+	bool DrawAfterText = false;
 };
 

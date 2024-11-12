@@ -5,7 +5,7 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
-AutoPickSystem::AutoPickSystem(std::shared_ptr<SceneManager> scenemnager):System(scenemnager)
+AutoPickSystem::AutoPickSystem(std::shared_ptr<SceneManager> scenemnager) :System(scenemnager)
 {
 	EventManager::GetInstance().Subscribe("OnAutoPickup", CreateSubscriber(&AutoPickSystem::OnAutoPickup));
 }
@@ -31,10 +31,16 @@ void AutoPickSystem::AddPickup(AutoPickComponent* autopick, GunComponent* pickup
 {
 	if (pickuped->IsEmpty)
 		return;
-	autopick->PickUps.push_back(pickuped->GetEntityID());
+
+	// ID가 이미 PickUps 리스트에 있는지 확인
+	uint32_t entityID = pickuped->GetEntityID();
+	if (std::find(autopick->PickUps.begin(), autopick->PickUps.end(), entityID) == autopick->PickUps.end())
+	{
+		autopick->PickUps.push_back(entityID);
+	}
 }
 
-void AutoPickSystem::ReleasePickup(AutoPickComponent* autopick, GunComponent* pickuped) 
+void AutoPickSystem::ReleasePickup(AutoPickComponent* autopick, GunComponent* pickuped)
 {
 	auto it = std::find(autopick->PickUps.begin(), autopick->PickUps.end(), pickuped->GetEntityID());
 	if (it != autopick->PickUps.end())
@@ -54,15 +60,22 @@ void AutoPickSystem::OnAutoPickup(std::any pcomp)
 void AutoPickSystem::FixedUpdate(float deltaTime)
 {
 
-	COMPLOOP(AutoPickComponent, pickupcomp) 
+	COMPLOOP(AutoPickComponent, pickupcomp)
 	{
 		if (pickupcomp.ParentPlayer
 			&& pickupcomp.IsAuto
 			&& !pickupcomp.ParentPlayer->HasGun
 			&& !pickupcomp.ParentPlayer->IsVPMode
-			&& pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->curAni == static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Sword)
+			&& (pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->curAni == static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Sword)
+				|| pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->curAni == static_cast<int>(VisPred::Game::PlayerAni::ToIdle01_Sword)
+				|| pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->curAni == static_cast<int>(VisPred::Game::PlayerAni::ToAttack1_Sword)
+				|| pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->curAni == static_cast<int>(VisPred::Game::PlayerAni::ToAttack2_Sword)
+				|| pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->curAni == static_cast<int>(VisPred::Game::PlayerAni::ToAttack3_Sword)	)
 			&& !pickupcomp.ParentPlayer->HandEntity.lock()->GetComponent<AnimationComponent>()->IsBlending)
 		{
+
+			pickupcomp.ParentPlayer->IsAttacking = false;
+
 			AutoPickUp(&pickupcomp);
 		}
 	}
@@ -142,7 +155,7 @@ void AutoPickSystem::RemoveInvalidEntities(AutoPickComponent* autopick)
 		{
 			it = autopick->PickUps.erase(it);
 		}
-		else if (entity->HasComponent<GunComponent>()&& entity->GetComponent<GunComponent>()->IsEmpty)
+		else if (entity->HasComponent<GunComponent>() && entity->GetComponent<GunComponent>()->IsEmpty)
 		{
 			it = autopick->PickUps.erase(it);
 		}
@@ -155,7 +168,7 @@ void AutoPickSystem::RemoveInvalidEntities(AutoPickComponent* autopick)
 bool AutoPickSystem::IsValidPickupEntity(uint32_t entityID)
 {
 	auto entity = GetSceneManager()->GetEntity(entityID);
-	if (!entity || !m_PhysicsEngine->IsDynamic(entityID)) 
+	if (!entity || !m_PhysicsEngine->IsDynamic(entityID))
 		return false;
 
 	auto guncomp = entity->GetComponent<GunComponent>();

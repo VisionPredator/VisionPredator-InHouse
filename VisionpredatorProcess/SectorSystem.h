@@ -11,7 +11,7 @@ public:
     void OnEnemyKilled(std::any enemyid);
     void CheckSectorClear(SectorClearComponent* sectorcomp);
     //void CheckSectoStart(SectorClearComponent* sectorcomp);
-
+    void OnHideEnemyCount(std::any null = {});
 
     // IStartable을(를) 통해 상속됨
     void Initialize() override;

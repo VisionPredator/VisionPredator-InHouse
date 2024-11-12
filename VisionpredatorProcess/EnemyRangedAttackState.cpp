@@ -91,7 +91,22 @@ void EnemyRangedAttackState::Update(const std::shared_ptr<Component>& component,
 			// 명중률에 따라 사격
 			if (randomValue <= enemyComp->AttackAccuracy)
 			{
-				const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), enemyPos, targetDir, enemyComp->FarZ).EntityID;
+				VPMath::Vector3 pose{};
+				VPMath::Vector3 dir{};
+				auto poscomp = enemyComp->SceneManager.lock()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(enemyComp->GetEntityID());
+				if (poscomp)
+				{
+					pose = poscomp->GetComponent<TransformComponent>()->World_Location;
+					dir = playerPos - pose;
+				}
+				else
+				{
+					pose = enemyPos;
+					dir = targetDir;
+				}
+
+
+				const uint32_t detectedObjID = enemyComp->PhysicsManager->RaycastActorAtPose_Ignore(enemyComp->GetEntityID(), pose, dir, enemyComp->FarZ).EntityID;
 				if (detectedObjID == enemyComp->Player->GetEntityID())
 				{
 					EventManager::GetInstance().ImmediateEvent("OnDamaged", std::make_pair(enemyComp->Player->GetEntityID(), enemyComp->AttackPower));

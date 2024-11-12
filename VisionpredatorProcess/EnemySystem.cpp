@@ -113,6 +113,8 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 	}
 	else
 	{
+		Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 		enemycomponent->HP = 0;
 
 		int healthup{};
@@ -121,6 +123,8 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 		else
 			healthup = 10;
 		if (m_playercomponent->CurrentFSM == VisPred::Game::PlayerFSM::DIE)
+			return;
+		if (m_playercomponent->HP<=0)
 			return;
 		if ((m_playercomponent->HP + healthup) > m_playercomponent->MaxHP)
 			m_playercomponent->HP = m_playercomponent->MaxHP;
@@ -131,7 +135,6 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 		if (!GetSceneManager()->GetEntityByIdentityName(playersound->SoundKey_Heal))
 			GetSceneManager()->SpawnSoundEntity(playersound->SoundKey_Heal, playersound->Volume_Heal, true, false, {});
 	}
-	Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 }
 

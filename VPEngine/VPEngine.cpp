@@ -20,6 +20,7 @@ bool VPEngine::isResize = false;
 bool VPEngine::isFullScreen = false;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
 	EngineRegister::Register_Metadata();
@@ -75,7 +76,6 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	EventManager::GetInstance().ScheduleEvent("OnAddSystemLater");
 	//m_SoundEngine->Play(0, "MainTitle_BGM", 1, {});
 }
-
 VPEngine::~VPEngine()
 {
 	m_SceneManager = nullptr;

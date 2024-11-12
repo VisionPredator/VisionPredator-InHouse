@@ -150,6 +150,7 @@ namespace ui
 		WorldSpace,				// 3D 월드 좌표계에서 렌더링
 		ScreenSpaceOverlay,		// 2D 화면 좌표계에서 렌더링
 		ScreenSpaceCamera,		// 특정 카메라에 연결하여 렌더링..		// 유니티를 참고함
+		WorldToScreenOverlay,	// 월드 좌표에서 화면 좌표로 변환해 2d 화면 좌표계에서 렌더링
 	};
 
 	enum class BillboardType
@@ -179,6 +180,7 @@ namespace ui
 		// 3D
 		VPMath::Matrix World = VPMath::Matrix::Identity;
 
+		bool DrawAfterText = false;
 	};
 
 	struct TextInfo

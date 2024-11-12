@@ -545,9 +545,17 @@ std::shared_ptr<Entity> SceneManager::SpawnSoundEntity(std::string soundName, in
 
 
 
-void SceneManager::SerializePrefab(uint32_t entityID)
+void SceneManager::SerializePrefab(uint32_t entityID, bool immidiate)
 {
+	if (immidiate)
+	{
+		OnSerializePrefab(entityID);
+	}
+	else
+	{
 	EventManager::GetInstance().ScheduleEvent("OnSerializePrefab", entityID);
+
+	}
 }
 void SceneManager::OnSerializePrefab(std::any data)
 {

@@ -21,6 +21,8 @@ public:
 		, const std::shared_ptr<class ResourceManager>& resourceManager);
 	void Render();
 
+	void TopImageRender();
+
 	void CreateImageObject(uint32_t entityID, const ui::ImageInfo& info);
 	void UpdateImageObject(uint32_t entityID, const ui::ImageInfo& info);
 	void DeleteImageObject(uint32_t entityId);
@@ -35,14 +37,17 @@ private:
 	void DrawAllImages();
 	void DrawAllTexts();
 
+	void DrawAllTopImages();
+
 private:
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<ResourceManager> m_ResourceManager;
 
 	std::vector<std::shared_ptr<ImageObject>> m_Images;
-
-	// TODO: Font
 	std::vector<std::shared_ptr<TextObject>> m_Texts;
+
+	// TODO: 나중에 코드 정리 필요.
+	std::vector<std::shared_ptr<ImageObject>> m_TopImages;
 
 	// Sprite Font
 	std::unique_ptr<DirectX::SpriteBatch> m_SpriteBatch;

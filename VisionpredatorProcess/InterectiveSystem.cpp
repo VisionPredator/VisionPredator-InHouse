@@ -32,14 +32,13 @@ void InterectiveSystem::OnSearched(std::any searchedEntityID)
 
 void InterectiveSystem::OnUnSearched(std::any searchedEntityID)
 {
-
+	EventManager::GetInstance().ImmediateEvent("OnResetInterectionUI");
 	auto searchedID = std::any_cast<uint32_t>(searchedEntityID);
 	if (!GetSceneManager()->HasComponent<InterectiveComponent>(searchedID))
 		return;
 
 	auto interectedEntity = GetSceneManager()->GetEntity(searchedID);
 	auto interective = interectedEntity->GetComponent<InterectiveComponent>();
-	EventManager::GetInstance().ImmediateEvent("OnResetInterectionUI");
 
 	auto meshcompvec = GetSceneManager()->GetChildEntityComps_HasComp<MeshComponent>(interectedEntity->GetEntityID());
 	if (meshcompvec.empty())

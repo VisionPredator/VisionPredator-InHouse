@@ -12,6 +12,7 @@ PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager
 	EventManager::GetInstance().Subscribe("OnDamaged", CreateSubscriber(&PlayerUISystem::OnDamaged));
 	EventManager::GetInstance().Subscribe("OnShoot", CreateSubscriber(&PlayerUISystem::OnShoot));
 	EventManager::GetInstance().Subscribe("OnUpdateVPState", CreateSubscriber(&PlayerUISystem::OnUpdateVPState));
+	EventManager::GetInstance().Subscribe("OnHideBullet", CreateSubscriber(&PlayerUISystem::OnHideBullet));
 }
 
 void PlayerUISystem::Update(float deltaTime)
@@ -397,6 +398,20 @@ void PlayerUISystem::OnResetInterectionUI(std::any null)
 		return;
 	ResetInterectionUI(entity->GetComponent<PlayerUIComponent>()->InterectionEntity.lock());
 }
+void PlayerUISystem::OnHideBullet(std::any null)
+{
+	if (!m_PlayerUI.lock())
+		return;
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->WeaponEntity.lock())
+		return;
+
+	if (playerUI->WeaponEntity.lock()->HasComponent<TextComponent>())
+	{
+		playerUI->WeaponEntity.lock()->GetComponent<TextComponent>()->Color.w = 0;
+	}
+
+}
 void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 {
 	if (!playerUI.InterectionEntity.lock())
@@ -415,6 +430,9 @@ void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 		return;
 
 	if (InterectingGun(playerUI.InterectionEntity.lock(), entity)) {}
+	else if (InterectingObject(playerUI.InterectionEntity.lock(), entity))
+	{
+	}
 
 }
 bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
@@ -426,19 +444,24 @@ bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, E
 	auto& textUI = *interectionentity->GetComponent<TextComponent>();
 	auto& imageUI = *textUI.GetComponent<ImageComponent>();
 
-	textUI.Color.w = 1;
-	imageUI.Color.w = 0.3;
+
 
 	switch (guncomp->Type)
 	{
 	case VisPred::Game::GunType::PISTOL:
 	{
+		textUI.Color.w = 1;
+		imageUI.Color.w = 0.3;
+		textUI.Scale = 0.6f;
 		textUI.Text = L"Pistol";
 		return true;
 		break;
 	}
 	case VisPred::Game::GunType::SHOTGUN:
 	{
+		textUI.Color.w = 1;
+		imageUI.Color.w = 0.3;
+		textUI.Scale = 0.6f;
 		textUI.Text = L"Shotgun";
 		return true;
 
@@ -446,6 +469,9 @@ bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, E
 	}
 	case VisPred::Game::GunType::RIFLE:
 	{
+		textUI.Color.w = 1;
+		imageUI.Color.w = 0.3;
+		textUI.Scale = 0.6f;
 		textUI.Text = L"Rifle";
 		return true;
 
@@ -456,6 +482,20 @@ bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, E
 
 		break;
 	}
+}
+
+bool PlayerUISystem::InterectingObject(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
+{
+	if (!selectedentity->HasComponent<InterectiveComponent>())
+		return false;
+	auto& textUI = *interectionentity->GetComponent<TextComponent>();
+	auto& imageUI = *textUI.GetComponent<ImageComponent>();
+
+	textUI.Color.w = 1;
+	imageUI.Color.w = 0.3;
+	textUI.Text = L"press \"F\" Interect";
+	textUI.Scale = 0.45f;
+	return true;
 }
 
 void PlayerUISystem::OnDamaged(std::any entityid_Damage)
