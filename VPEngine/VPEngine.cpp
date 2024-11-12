@@ -53,7 +53,7 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
 		wTitle.c_str(),
 		wTitle.c_str(),
-		WS_POPUP, // WS_OVERLAPPEDWINDOW 대신 WS_POPUP 사용
+		WS_OVERLAPPEDWINDOW, // WS_OVERLAPPEDWINDOW 대신 WS_POPUP 사용
 		posX, posY, // 중앙에 위치하도록 좌표 설정
 		rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
