@@ -19,6 +19,8 @@ public:
 	void Finish(uint32_t gameObjectId) override {};
 	void Finalize() override ;
 	void UpdateHP();
+	VPMath::Color GetRainbowColor(float time);
+	void UpdateGodMode(float deltatime);
 	void OnUpdateHP(std::any none);
 	void UpdateVPState();
 	void OnUpdateVPState(std::any none = {});
@@ -43,5 +45,6 @@ public:
 	// Event
 	void OnShoot(std::any data);
 	std::weak_ptr<Entity> m_PlayerUI;
+	float GodModeProgressTime{};
 	
 };

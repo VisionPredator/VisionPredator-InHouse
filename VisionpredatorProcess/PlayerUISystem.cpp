@@ -14,13 +14,21 @@ PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager
 	EventManager::GetInstance().Subscribe("OnUpdateVPState", CreateSubscriber(&PlayerUISystem::OnUpdateVPState));
 	EventManager::GetInstance().Subscribe("OnHideBullet", CreateSubscriber(&PlayerUISystem::OnHideBullet));
 }
-
+VPMath::Color PlayerUISystem::GetRainbowColor(float time)
+{
+	VPMath::Color color;
+	color.x = (std::sin(time) + 1.0f) / 2.0f;          // 0 ~ 1 범위의 r 값
+	color.y = (std::sin(time + 2.0f * VPMath::XM_PI / 3.0f) + 1.0f) / 2.0f; // g 값: 파장을 살짝 뒤로
+	color.z = (std::sin(time + 4.0f * VPMath::XM_PI / 3.0f) + 1.0f) / 2.0f; // b 값: 파장을 더 뒤로
+	return color;
+}
 void PlayerUISystem::Update(float deltaTime)
 {
 	if (!m_PlayerUI.lock())
 		return;
 	if (!m_PlayerUI.lock()->GetComponent<PlayerUIComponent>()->PlayerEntity.lock())
 		return;
+	UpdateGodMode(deltaTime);
 	//UpdateVPState();
 	UpdateFadeUI();
 	UpdateHitUI(deltaTime);
@@ -54,6 +62,7 @@ void PlayerUISystem::Start(uint32_t gameObjectId)
 		playerUI->WeaponEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->WeaponUI);
 		playerUI->HitEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->HitUI);
 		playerUI->InterectionEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->InterectionUI);
+		playerUI->GodModeEntity = GetSceneManager()->GetEntityByIdentityName(playerUI->GodModeUI);
 
 		SettingPlayerUI(0);
 	}
@@ -70,6 +79,34 @@ void PlayerUISystem::UpdateHP()
 	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
 	auto ui = playerUI->HPGageEntity.lock()->GetComponent<ImageComponent>();
 	ui->RightPercent = 1.f - static_cast<float>(playercomp->HP) / static_cast<float>(playercomp->MaxHP);
+}
+
+
+void PlayerUISystem::UpdateGodMode(float deltatime)
+{
+	if (!m_PlayerUI.lock())
+		return;
+	auto playerUI = m_PlayerUI.lock()->GetComponent<PlayerUIComponent>();
+	if (!playerUI->GodModeEntity.lock())
+		return;
+	auto godcomp = playerUI->GodModeEntity.lock()->GetComponent<TextComponent>();
+
+	auto playercomp = playerUI->PlayerEntity.lock()->GetComponent<PlayerComponent>();
+	if (!playercomp->GodMode)
+	{
+		GodModeProgressTime = 0;
+		godcomp->Color.w = 0;
+	}
+	else
+	{
+		godcomp->Color.w = 1;
+		GodModeProgressTime += deltatime*4;
+		auto color = GetRainbowColor(GodModeProgressTime);
+		float scale = std::sin(GodModeProgressTime/2)*0.7f;
+		godcomp->Color = color;
+		godcomp->Scale = scale;
+	}
+
 }
 
 void PlayerUISystem::OnUpdateHP(std::any none)

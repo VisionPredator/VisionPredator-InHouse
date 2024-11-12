@@ -163,6 +163,7 @@ void PlayerSystem::Update(float deltaTime)
 			|| !playercomp.LongswordEntity.lock()
 			)
 			return;
+		GodMode(playercomp);
 		Transformation_Time(playercomp, deltaTime);
 		Gun_Cooltime(playercomp, deltaTime);
 		NonDamage_Time(playercomp, deltaTime);

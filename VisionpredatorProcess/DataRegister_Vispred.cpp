@@ -175,7 +175,7 @@ void VispredRegister::Register_Components()
 		, MainQuestComponent::SounKey_Mainquest
 
 	);
-	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPBackGround, PlayerUIComponent::HPGage, PlayerUIComponent::HPBoarder, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI);
+	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPBackGround, PlayerUIComponent::HPGage, PlayerUIComponent::HPBoarder, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI, PlayerUIComponent::GodModeUI);
 	META_ADD_COMP(CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale);
 	META_ADD_COMP(HitUIComponent, HitUIComponent::IsHitUIOn, HitUIComponent::ProgressTime, HitUIComponent::DurationTime);
 	META_ADD_COMP(FPSComponent, FPSComponent::IsShow);
