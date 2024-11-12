@@ -167,6 +167,9 @@ void VispredRegister::Register_Components()
 		, SpawnChildComponent::Prefab5
 		, SpawnChildComponent::Prefab5_Pose
 	);
+	META_ADD_COMP(PingComponent, PingComponent::IsOn);
+	META_ADD_COMP(PingAccessComponent, PingAccessComponent::IsUsed, PingAccessComponent::PingIdentity);
+	META_ADD_COMP(PingAccessResetComponent, PingAccessResetComponent::PingIdentity);
 	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType, QuestComponent::IsStarted, QuestComponent::IsCleared);
 	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence
 		, MainQuestComponent::Volume_Subquest
