@@ -99,6 +99,7 @@ public:
 #pragma endregion 
 
 #pragma region Animation
+	void GodMode(PlayerComponent& playercomp);
 	void PlayerAnimation(PlayerComponent& playercomp);
 	void ReturnToIdle(AnimationComponent& anicomp);
 	void ReturnToVPIdle(PlayerComponent& player, AnimationComponent& anicomp);

@@ -907,6 +907,9 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::VPAni index
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
+void PlayerSystem::GodMode(PlayerComponent& playercomp)
+{
+}
 void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
 	if (playercomp.IsVPMode)

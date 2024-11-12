@@ -98,16 +98,19 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
 		VPMath::Vector3 pose{};
+		VPMath::Vector3 dir{};
 	auto poscomp= 	enemyComp.SceneManager.lock()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(enemyComp.GetEntityID());
 	if (poscomp)
 	{
 		pose = poscomp->GetComponent<TransformComponent>()->World_Location;
+		dir= playerPos - pose;
 	}
 	else
 	{
 		pose = enemyPos;
+		dir = targetDir;
 	}
-		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, pose, targetDir, enemyComp.FarZ).EntityID;
+		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, pose, dir, enemyComp.FarZ).EntityID;
 		if (detectedObjID == playerID)
 		{
 			enemyComp.DistanceToPlayer = (playerPos - enemyPos).Length();
