@@ -430,6 +430,9 @@ void PlayerUISystem::UpdateInterectionUI(PlayerUIComponent& playerUI)
 		return;
 
 	if (InterectingGun(playerUI.InterectionEntity.lock(), entity)) {}
+	else if (InterectingObject(playerUI.InterectionEntity.lock(), entity))
+	{
+	}
 
 }
 bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
@@ -471,6 +474,19 @@ bool PlayerUISystem::InterectingGun(std::shared_ptr<Entity> interectionentity, E
 
 		break;
 	}
+}
+
+bool PlayerUISystem::InterectingObject(std::shared_ptr<Entity> interectionentity, Entity* selectedentity)
+{
+	if (!selectedentity->HasComponent<InterectiveComponent>())
+		return false;
+	auto& textUI = *interectionentity->GetComponent<TextComponent>();
+	auto& imageUI = *textUI.GetComponent<ImageComponent>();
+
+	textUI.Color.w = 1;
+	imageUI.Color.w = 0.3;
+	textUI.Text = L"press \"F\" Interect";
+	return true;
 }
 
 void PlayerUISystem::OnDamaged(std::any entityid_Damage)
