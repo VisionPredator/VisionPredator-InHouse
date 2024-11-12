@@ -43,4 +43,7 @@
 #include "MainTopicComponent.h"
 #include "ScoreComponent.h"
 #include "BestScoreComponent.h"
+#include "PingComponent.h"
+#include "PingAccessComponent.h"
+#include "PingAccessResetComponent.h"
 

@@ -126,9 +126,13 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 			return;
 		if (playercomp->IsVPMode &&playercomp->CurrentFSM== VisPred::Game::PlayerFSM::Dash_Slide)
 			return;
-
+		if (playercomp->GodMode)
+			damage = 0;
+		
 		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
 		{
+
+
 			if (playercomp->HP > damage)
 			{
 				playercomp->HP = playercomp->HP - damage;
@@ -159,6 +163,7 @@ void PlayerSystem::Update(float deltaTime)
 			|| !playercomp.LongswordEntity.lock()
 			)
 			return;
+		GodMode(playercomp);
 		Transformation_Time(playercomp, deltaTime);
 		Gun_Cooltime(playercomp, deltaTime);
 		NonDamage_Time(playercomp, deltaTime);
@@ -909,6 +914,8 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::VPAni index
 }
 void PlayerSystem::GodMode(PlayerComponent& playercomp)
 {
+	if (INPUTKEYDOWN(KEYBOARDKEY::F8))
+		playercomp.GodMode = !playercomp.GodMode;
 }
 void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {

@@ -26,5 +26,6 @@
 #include "UIBounceSystem.h"
 #include "ParticleSystem.h"
 #include "MainTopicSystem.h"
+#include "PingSystem.h"
 #include "ScoreSystem.h"
 

@@ -167,6 +167,9 @@ void VispredRegister::Register_Components()
 		, SpawnChildComponent::Prefab5
 		, SpawnChildComponent::Prefab5_Pose
 	);
+	META_ADD_COMP(PingComponent, PingComponent::IsOn);
+	META_ADD_COMP(PingAccessComponent, PingAccessComponent::IsUsed, PingAccessComponent::PingIdentity);
+	META_ADD_COMP(PingAccessResetComponent, PingAccessResetComponent::PingIdentity);
 	META_ADD_COMP(QuestComponent, QuestComponent::PlayerIdentity, QuestComponent::QuestType, QuestComponent::IsStarted, QuestComponent::IsCleared);
 	META_ADD_COMP(MainQuestComponent, MainQuestComponent::QuestSequence
 		, MainQuestComponent::Volume_Subquest
@@ -175,7 +178,7 @@ void VispredRegister::Register_Components()
 		, MainQuestComponent::SounKey_Mainquest
 
 	);
-	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPBackGround, PlayerUIComponent::HPGage, PlayerUIComponent::HPBoarder, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI);
+	META_ADD_COMP(PlayerUIComponent, PlayerUIComponent::AimUI, PlayerUIComponent::FadeUI, PlayerUIComponent::HitUI, PlayerUIComponent::HPBackGround, PlayerUIComponent::HPGage, PlayerUIComponent::HPBoarder, PlayerUIComponent::InterectionUI, PlayerUIComponent::Player, PlayerUIComponent::VPeyeUI, PlayerUIComponent::WeaponUI, PlayerUIComponent::GodModeUI);
 	META_ADD_COMP(CursorComponent, CursorComponent::ShowCursor, CursorComponent::CursorImage, CursorComponent::CursorScale);
 	META_ADD_COMP(HitUIComponent, HitUIComponent::IsHitUIOn, HitUIComponent::ProgressTime, HitUIComponent::DurationTime);
 	META_ADD_COMP(FPSComponent, FPSComponent::IsShow);

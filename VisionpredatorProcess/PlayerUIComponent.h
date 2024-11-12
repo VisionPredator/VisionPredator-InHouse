@@ -3,7 +3,7 @@
 struct PlayerUIComponent :
     public Component
 {
-    VP_JSONBODY(PlayerUIComponent, Player,FadeUI, HPGage, HPBackGround, HPBoarder, AimUI, VPeyeUI, WeaponUI, HitUI, InterectionUI)
+    VP_JSONBODY(PlayerUIComponent, Player,FadeUI, HPGage, HPBackGround, HPBoarder, AimUI, VPeyeUI, WeaponUI, HitUI, InterectionUI, GodModeUI)
         std::string Player = "Player";
     std::string FadeUI = "FadeUI";
     std::string HPGage="HPGageUI";
@@ -14,6 +14,7 @@ struct PlayerUIComponent :
     std::string WeaponUI= "WeaponUI";
     std::string HitUI = "HitUI";
     std::string InterectionUI =  "InterectionUI";
+    std::string GodModeUI =  "GodMode";
 
     std::weak_ptr<Entity> PlayerEntity;
     std::weak_ptr<Entity> FadeEntity;
@@ -26,5 +27,6 @@ struct PlayerUIComponent :
     std::weak_ptr<Entity> WeaponEntity;
     std::weak_ptr<Entity> HitEntity;
     std::weak_ptr<Entity> InterectionEntity;
+    std::weak_ptr<Entity> GodModeEntity;
 };
 

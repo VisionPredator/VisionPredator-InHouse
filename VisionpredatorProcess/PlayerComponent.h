@@ -69,6 +69,7 @@ struct PlayerComponent :
 	bool IsSearchable = true;
 	bool IsVPMode=true;
 	bool NonDamageMode =false;
+	bool GodMode =false;
 	bool IsTransformationing{};
 	float VPGageProgress{};
 	float VPGageCoolTime{};
