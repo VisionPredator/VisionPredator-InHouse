@@ -222,6 +222,10 @@
     <ClInclude Include="IState.h" />
     <ClInclude Include="MainQuestComponent.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PingAccessComponent.h" />
+    <ClInclude Include="PingAccessResetComponent.h" />
+    <ClInclude Include="PingComponent.h" />
+    <ClInclude Include="PingSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerFSMSystem.h" />
     <ClInclude Include="HPReducerComponent.h" />
@@ -327,6 +331,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PingAccessComponent.cpp" />
+    <ClCompile Include="PingAccessResetComponent.cpp" />
+    <ClCompile Include="PingComponent.cpp" />
+    <ClCompile Include="PingSystem.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerFSMSystem.cpp" />
     <ClCompile Include="HPReducerComponent.cpp" />
