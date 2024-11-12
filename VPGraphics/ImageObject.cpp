@@ -259,6 +259,7 @@ void ImageObject::UpdateBuffers()
 		m_CanvasHeight = m_Device->GetWndHeight();
 
 		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+		DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(cameraCB->m_struct.viewInverse.Transpose()._41, cameraCB->m_struct.viewInverse.Transpose()._42, cameraCB->m_struct.viewInverse.Transpose()._43);
 
 		// 월드 좌표를 화면 좌표로 변환
 		DirectX::XMFLOAT3 targetWorldPos(m_Info.World._41, m_Info.World._42, m_Info.World._43);
@@ -289,6 +290,18 @@ void ImageObject::UpdateBuffers()
 				screenPos.y = (clipSpacePos.m128_f32[1] < 0) ? halfHeight : (m_CanvasHeight - halfHeight);
 				screenPos.x = std::clamp((m_CanvasWidth / 2.0f) * (1.0f + clipSpacePos.m128_f32[0]), halfWidth, m_CanvasWidth - halfWidth);
 			}
+
+
+			// 카메라와 이미지의 y 좌표 비교
+			if (targetWorldPos.y > cameraPos.y)   // 이미지가 카메라보다 높을 경우 화면 위쪽에 표시
+			{
+				screenPos.y = halfHeight;  // 화면 위쪽 가장자리로 위치
+			}
+			else if (targetWorldPos.y < cameraPos.y)   // 이미지가 카메라보다 낮을 경우 화면 아래쪽에 표시
+			{
+				screenPos.y = m_CanvasHeight - halfHeight;  // 화면 아래쪽 가장자리로 위치
+			}
+
 		}
 		else
 		{
