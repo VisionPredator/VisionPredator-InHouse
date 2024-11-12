@@ -91,6 +91,8 @@ void PlayerSystem::Transformation_Time(PlayerComponent& playercomp, float deltat
 }
 void PlayerSystem::NonDamage_Time(PlayerComponent& playercomp, float deltatime)
 {
+
+
 	if (playercomp.NonDamageMode)
 	{
 		if (playercomp.NonDamageProgress > playercomp.MaxNonDamageTime)
@@ -123,6 +125,9 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 		auto playercomp = entity->GetComponent<PlayerComponent>();
 		if (playercomp->NonDamageMode)
 			return;
+		if (playercomp->IsVPMode &&playercomp->CurrentFSM== VisPred::Game::PlayerFSM::Dash_Slide)
+			return;
+
 		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
 		{
 			if (playercomp->HP > damage)
