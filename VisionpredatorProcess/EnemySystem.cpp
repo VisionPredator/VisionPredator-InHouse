@@ -98,11 +98,18 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 	auto enemycomponent = entity->GetComponent<EnemyComponent>();
 	if (enemycomponent->HP == 0)
 		return;
-		enemycomponent->OnHit = true;
 	if (enemycomponent->HP > damage)
 	{
+		enemycomponent->OnHit = true;
 		enemycomponent->HP -= damage;
 
+		if (enemycomponent->MovementState == &EnemyMovementState::s_HitReaction)
+		{
+			const std::shared_ptr<EnemyComponent> enemyComp(enemycomponent, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
+			enemycomponent->MovementState->Enter(enemyComp);
+		}
+		else
+			enemycomponent->MovementState->ChangeCurrentState(*enemycomponent, &EnemyMovementState::s_HitReaction);
 	}
 	else
 	{

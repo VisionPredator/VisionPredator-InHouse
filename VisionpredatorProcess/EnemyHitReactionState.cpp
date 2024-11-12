@@ -38,6 +38,8 @@ void EnemyHitReactionState::Update(const std::shared_ptr<Component>& component, 
 	{
 		ChangeCurrentState(enemyComp, &EnemyBehaviorState::s_Chase);
 		enemyComp->HeatComplete = true;
+
+		enemyComp->OnHit = false;
 	}
 }
 
@@ -46,4 +48,5 @@ void EnemyHitReactionState::Exit(const std::shared_ptr<Component>& component)
 	auto enemyComp = std::dynamic_pointer_cast<EnemyComponent>(component);
 	Log::GetClientLogger()->info("Exit HitReactionState");
 
+	enemyComp->OnHit = false;
 }
