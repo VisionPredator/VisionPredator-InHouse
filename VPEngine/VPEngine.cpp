@@ -42,12 +42,22 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	RECT rcClient = { 0, 0, (LONG)width, (LONG)height };
 	AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
 
+	// 화면 해상도 가져오기
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	// 창의 위치 계산 (화면 중앙에 위치하도록)
+	int posX = (screenWidth - (rcClient.right - rcClient.left)) / 2;
+	int posY = (screenHeight - (rcClient.bottom - rcClient.top)) / 2;
+
 	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
 		wTitle.c_str(),
 		wTitle.c_str(),
-		WS_OVERLAPPEDWINDOW,
-		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
+		WS_POPUP, // WS_OVERLAPPEDWINDOW 대신 WS_POPUP 사용
+		posX, posY, // 중앙에 위치하도록 좌표 설정
+		rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		NULL, NULL, hInstance, NULL);
+
 
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);

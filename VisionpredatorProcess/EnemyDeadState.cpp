@@ -99,6 +99,10 @@ void EnemyDeadState::Enter(const std::shared_ptr<Component>& component)
 	ChangeCurrentState(enemyComp, &EnemyCombatState::s_Idle);
 	ChangeCurrentState(enemyComp, &EnemyMovementState::s_Idle);
 	enemyComp->MovementState->Enter(enemyComp);
+	if (enemyComp->HasComponent<SkinningMeshComponent>())
+	{
+	enemyComp->GetComponent<SkinningMeshComponent>()->InteractiveColor = { 0,0,0,0 };
+	}
 	EventManager::GetInstance().ImmediateEvent("OnEnemyKilled", enemyComp->GetEntityID());
 	EventManager::GetInstance().ImmediateEvent("OnUpdateHP");
 }

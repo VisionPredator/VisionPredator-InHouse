@@ -2,7 +2,6 @@
 #include "PlayerSystem.h"
 #include <iostream>
 #include "EngineStructs.h"
-
 using namespace VisPred::Game;
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {

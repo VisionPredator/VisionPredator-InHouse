@@ -4,7 +4,8 @@
 #include "EnemyComponent.h"
 #include "TransformComponent.h"
 #include "../VPGraphics/D3DUtill.h"
-
+#include "SceneManager.h"
+#include "ParticleOwnerComponent.h"
 #include "StatesInclude.h"
 
 struct null_deleter
@@ -96,7 +97,17 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	if (isPlayerDetectedInViewRange || isPlayerDetectedInNoiseRange || isHit)
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
-		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ).EntityID;
+		VPMath::Vector3 pose{};
+	auto poscomp= 	enemyComp.SceneManager.lock()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(enemyComp.GetEntityID());
+	if (poscomp)
+	{
+		pose = poscomp->GetComponent<TransformComponent>()->World_Location;
+	}
+	else
+	{
+		pose = enemyPos;
+	}
+		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, pose, targetDir, enemyComp.FarZ).EntityID;
 		if (detectedObjID == playerID)
 		{
 			enemyComp.DistanceToPlayer = (playerPos - enemyPos).Length();
