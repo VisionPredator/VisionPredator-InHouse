@@ -6,7 +6,7 @@ struct PlayerComponent :
 {
 	VP_JSONBODY(PlayerComponent
 		,HandName, VPHandName, CameraPosName, CameraName, FirePosName, LongswordName
-		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, SlideDuration, DashDuration, DashMultiple, SlideMultiple, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
+		, MaxHP, HP, Sencitive, WalkSpeed, RunSpeed, VPRunSpeed, SlideDuration, DashDuration, DashMultiple, SlideMultiple, SearchDistance, StaticFriction, JumpForce, AirControlPercent, GravityPower, RecoilProgress, VPGageCoolTime, NonDamageTime, TransformationTime)
 
 	std::string HandName{};
 	std::string VPHandName{};
@@ -30,6 +30,7 @@ struct PlayerComponent :
 	float Sencitive = 1.f;
 	float WalkSpeed{};
 	float RunSpeed{};
+	float VPRunSpeed{};
 	//float SlideDisTance{};
 	float StaticFriction{};
 	float JumpForce{};

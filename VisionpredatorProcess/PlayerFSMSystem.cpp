@@ -135,19 +135,12 @@ void PlayerFSMSystem::Calculate_Idle(PlayerComponent& playercomp)
 	else
 	{
 		///¶Ù±â
-		if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT))
-			&& INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
+		if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 		}
-		///°È±â
-		else if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
-		{
-			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
-		}
 		///½½¶óÀÌµù
-		else if ((INPUTKEYDOWN(KEYBOARDKEY::LSHIFT) || INPUTKEY(KEYBOARDKEY::LSHIFT)) &&
-			INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+		else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
 		}
@@ -218,11 +211,11 @@ void PlayerFSMSystem::Calculate_Run(PlayerComponent& playercomp)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::DIE;
 		else if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
-		else if (INPUTKEYUP(KEYBOARDKEY::LSHIFT))
-			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
 		else if ( playercomp.GetComponent<ControllerComponent>()->IsFall)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
 		else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
+		else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
 		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform && playercomp.ThrowingGunEntityID == 0)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
@@ -237,7 +230,7 @@ void PlayerFSMSystem::Calculate_Crouch(PlayerComponent& playercomp)
 	{
 		if (INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 		{
-			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 		}
 		else
 		{
@@ -258,10 +251,9 @@ void PlayerFSMSystem::Calculate_Slide(PlayerComponent& playercomp)
 				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
 			if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
-			else if (INPUTKEYS(KEYBOARDKEY::LSHIFT))
-				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 			else
-				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+				playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
+
 		}
 	}
 	else if (playercomp.IsVPMode && playercomp.SlideProgress >= playercomp.DashDuration)
@@ -307,12 +299,12 @@ void PlayerFSMSystem::Calculate_Jump(PlayerComponent& playercomp)
 	{
 		if (playercomp.HP <= 0)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::DIE;
+		else if (INPUTKEY(KEYBOARDKEY::LCONTROL))
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
 		else if (!INPUTKEYS(KEYBOARDKEY::W, KEYBOARDKEY::A, KEYBOARDKEY::S, KEYBOARDKEY::D))
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::IDLE;
-		else if (INPUTKEY(KEYBOARDKEY::LSHIFT))
-			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 		else
-			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::WALK;
+			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::RUN;
 	}
 
 }
@@ -548,11 +540,14 @@ void PlayerFSMSystem::Enter_Walk(PlayerComponent & playercomp)
 void PlayerFSMSystem::Enter_Run(PlayerComponent& playercomp)
 {
 	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-	Controller.MaxSpeed = playercomp.RunSpeed;
-	Controller.Acceleration = Controller.MaxSpeed * 5;
 
 	if (playercomp.IsVPMode)
 	{
+
+	Controller.MaxSpeed = playercomp.VPRunSpeed;
+	Controller.Acceleration = Controller.MaxSpeed * 5;	
+
+
 		auto anicomp = playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
 		auto tempindex = static_cast<VisPred::Game::VPAni>(anicomp->curAni);
 		if (tempindex == VisPred::Game::VPAni::ToVP_attack_L || tempindex == VisPred::Game::VPAni::ToVP_attack_R || tempindex == VisPred::Game::VPAni::ToVP_draw)
@@ -561,6 +556,9 @@ void PlayerFSMSystem::Enter_Run(PlayerComponent& playercomp)
 	}
 	else
 	{
+		Controller.MaxSpeed = playercomp.RunSpeed;
+		Controller.Acceleration = Controller.MaxSpeed * 5;
+
 		if (playercomp.PreFSM == VisPred::Game::PlayerFSM::CROUCH || playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 			DefalutModeController(playercomp);
 	}
@@ -568,8 +566,6 @@ void PlayerFSMSystem::Enter_Run(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 {
-
-
 	if (playercomp.IsVPMode)
 	{
 		auto anicomp = playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
@@ -584,7 +580,7 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 			|| playercomp.PreFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 		{
 			ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
-			Controller.MaxSpeed = playercomp.RunSpeed;
+			Controller.MaxSpeed = playercomp.VPRunSpeed;
 			Controller.Acceleration = Controller.MaxSpeed * 5;
 		}
 	}
@@ -614,6 +610,10 @@ void PlayerFSMSystem::Enter_Jump(PlayerComponent& playercomp)
 }
 void PlayerFSMSystem::Enter_Crouch(PlayerComponent& playercomp)
 {
+	ControllerComponent& Controller = *playercomp.GetComponent<ControllerComponent>();
+	Controller.MaxSpeed = playercomp.WalkSpeed / 2.f;
+	Controller.Acceleration = Controller.MaxSpeed * 5;
+	Controller.InputDir.y = 0;
 	CrouchModeController(playercomp);
 }
 void PlayerFSMSystem::Enter_Dash_Slide(PlayerComponent& playercomp)
@@ -622,7 +622,7 @@ void PlayerFSMSystem::Enter_Dash_Slide(PlayerComponent& playercomp)
 
 	if (playercomp.IsVPMode)
 	{
-		controller.MaxSpeed = playercomp.RunSpeed * playercomp.DashMultiple;
+		controller.MaxSpeed = playercomp.VPRunSpeed * playercomp.DashMultiple;
 		ChangeAni_Index(playercomp.VPHandEntity.lock()->GetEntityID(), VisPred::Game::VPAni::ToVP_dash, 0, 0, true);
 		playercomp.SlideDir = playercomp.GetComponent<TransformComponent>()->FrontVector;
 		auto& melee = *playercomp.GetComponent<PlayerMeleeComponent>();
