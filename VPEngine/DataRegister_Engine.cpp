@@ -21,7 +21,7 @@ void EngineRegister::Register_EnumClass()
 	META_ADD_ENUMCLASS(GeoMetryFilter, GeoMetryFilter::Axis, GeoMetryFilter::Box, GeoMetryFilter::Frustum, GeoMetryFilter::Grid);
 	META_ADD_ENUMCLASS(LightType, LightType::Direction, LightType::Spot, LightType::Point);
 	META_ADD_ENUMCLASS(PassState, PassState::ObjectMask);
-	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera);
+	META_ADD_ENUMCLASS(RenderModeType, RenderModeType::WorldSpace, RenderModeType::ScreenSpaceOverlay, RenderModeType::ScreenSpaceCamera, RenderModeType::WorldToScreenOverlay);
 	META_ADD_ENUMCLASS(BillboardType, BillboardType::None, BillboardType::Full, BillboardType::AxisY);
 	META_ADD_ENUMCLASS(Skill, Skill::SCENECHANGE,Skill::SPAWNPREFAB,Skill::DESTORYPREFAB,Skill::DRAGBAR,Skill::UION,Skill::UIOFFSELF,Skill::UIOFF,Skill::EXIT);
 
