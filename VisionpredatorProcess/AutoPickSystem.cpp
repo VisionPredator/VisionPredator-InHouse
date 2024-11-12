@@ -31,7 +31,13 @@ void AutoPickSystem::AddPickup(AutoPickComponent* autopick, GunComponent* pickup
 {
 	if (pickuped->IsEmpty)
 		return;
-	autopick->PickUps.push_back(pickuped->GetEntityID());
+
+	// ID가 이미 PickUps 리스트에 있는지 확인
+	uint32_t entityID = pickuped->GetEntityID();
+	if (std::find(autopick->PickUps.begin(), autopick->PickUps.end(), entityID) == autopick->PickUps.end())
+	{
+		autopick->PickUps.push_back(entityID);
+	}
 }
 
 void AutoPickSystem::ReleasePickup(AutoPickComponent* autopick, GunComponent* pickuped) 
