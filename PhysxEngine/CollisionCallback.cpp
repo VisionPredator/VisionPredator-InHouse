@@ -89,17 +89,24 @@ std::pair<uint32_t, uint32_t> CollisionCallback::SortEntityPair(const PxContactP
 	auto userdata1 = static_cast<VPPhysics::USERDATA*>(pairs.shapes[0]->userData);
 	auto userdata2 = static_cast<VPPhysics::USERDATA*>(pairs.shapes[1]->userData);
 
+	// userdata가 nullptr인지 확인
+	if (!userdata1 || !userdata2)
+	{
+		return { 0, 0 }; // nullptr인 경우 {0, 0} 반환
+	}
+
 	std::pair<uint32_t, uint32_t> entitypair;
 	if (userdata1->entityID > userdata2->entityID)
 	{
-		entitypair = { userdata2->entityID,userdata1->entityID };
+		entitypair = { userdata2->entityID, userdata1->entityID };
 	}
 	else
 	{
-		entitypair = { userdata1->entityID,  userdata2->entityID };
+		entitypair = { userdata1->entityID, userdata2->entityID };
 	}
 	return entitypair;
 }
+
 
 std::pair<uint32_t, uint32_t> CollisionCallback::SortEntityPair(const PxTriggerPair& pairs)
 {

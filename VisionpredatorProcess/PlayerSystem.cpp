@@ -2,7 +2,6 @@
 #include "PlayerSystem.h"
 #include <iostream>
 #include "EngineStructs.h"
-
 using namespace VisPred::Game;
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {
@@ -91,6 +90,8 @@ void PlayerSystem::Transformation_Time(PlayerComponent& playercomp, float deltat
 }
 void PlayerSystem::NonDamage_Time(PlayerComponent& playercomp, float deltatime)
 {
+
+
 	if (playercomp.NonDamageMode)
 	{
 		if (playercomp.NonDamageProgress > playercomp.MaxNonDamageTime)
@@ -123,6 +124,9 @@ void PlayerSystem::OnDamaged(std::any entityid_Damage)
 		auto playercomp = entity->GetComponent<PlayerComponent>();
 		if (playercomp->NonDamageMode)
 			return;
+		if (playercomp->IsVPMode &&playercomp->CurrentFSM== VisPred::Game::PlayerFSM::Dash_Slide)
+			return;
+
 		if (playercomp->CurrentFSM != PlayerFSM::DIE && playercomp->CurrentFSM != PlayerFSM::DIE_END)
 		{
 			if (playercomp->HP > damage)
@@ -368,7 +372,6 @@ void PlayerSystem::Melee_Default(PlayerComponent& playercomp)
 
 	if (PlayerAni.IsBlending || PlayerAni.curAni != static_cast<int>(VisPred::Game::PlayerAni::ToIdle02_Sword))
 		return;
-	playercomp.IsAttacking = true;
 
 	///어택모드 설정하기.
 	int attackmode = static_cast<int>(meleecomp.AttackMode);
@@ -904,23 +907,52 @@ void PlayerSystem::ChangeAni_Index(uint32_t entityID, VisPred::Game::VPAni index
 	else
 		EventManager::GetInstance().ScheduleEvent("OnChangeAnimation", data);
 }
+void PlayerSystem::GodMode(PlayerComponent& playercomp)
+{
+}
 void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 {
 	if (playercomp.IsVPMode)
 	{
 		auto& anicomp = *playercomp.VPHandEntity.lock()->GetComponent<AnimationComponent>();
+
+		if (anicomp.curAni == (int)VisPred::Game::PlayerAni::ToIdle02_Rifle && anicomp.duration < 0.1f
+			|| anicomp.curAni == (int)VisPred::Game::VPAni::ToVP_attack_L
+			|| anicomp.curAni == (int)VisPred::Game::VPAni::ToVP_attack_R
+			|| anicomp.curAni == (int)VisPred::Game::VPAni::ToVP_dash
+			)
+			playercomp.IsAttacking = true;
+		else
+			playercomp.IsAttacking = false;
 		if (anicomp.IsFinished)
-		{
 			VPAnimationFinished(playercomp, anicomp);
-		}
 		if (anicomp.IsFinished)
-		{
 			ReturnToVPIdle(playercomp, anicomp);
-		}
 	}
 	else
 	{
 		auto& anicomp = *playercomp.HandEntity.lock()->GetComponent<AnimationComponent>();
+		if (anicomp.curAni == (int)VisPred::Game::PlayerAni::ToIdle02_Rifle && anicomp.duration < 0.1f
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack1_Sword
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack2_Sword
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack3_Sword
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToIdle02_Rifle
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToThrow_Pistol
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToThrow_Rifle
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToThrow_ShotGun
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack_Rifle
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack_ShotGun
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToIdle01_Pistol			)
+		{
+			playercomp.IsAttacking = true;
+		}
+		else
+		{
+			playercomp.IsAttacking = false;
+		}
+
+
+
 		if (anicomp.IsFinished)
 		{
 			AnimationFinished(playercomp, anicomp);
@@ -949,20 +981,19 @@ void PlayerSystem::AnimationFinished(PlayerComponent& playercomp, AnimationCompo
 			{
 				EventManager::GetInstance().ImmediateEvent("OnAutoPickup", playercomp.AutoPickEntity.lock()->GetComponent<AutoPickComponent>());
 			}
-			playercomp.IsAttacking = false;
 		}
 			break;
 		case  (int)VisPred::Game::PlayerAni::ToAttack_Pistol:
 		case  (int)VisPred::Game::PlayerAni::ToAttack_Rifle:
 		case  (int)VisPred::Game::PlayerAni::ToAttack_ShotGun:
 		{
-			playercomp.IsAttacking = false;
 			break;
 		}
 		case  (int)VisPred::Game::PlayerAni::ToThrow_Pistol:
 		case  (int)VisPred::Game::PlayerAni::ToThrow_Rifle:
 		case  (int)VisPred::Game::PlayerAni::ToThrow_ShotGun:
 		{
+
 			if (GetSceneManager()->GetEntity(playercomp.ThrowingGunEntityID))
 			{
 				SocketComponent* socketcomp = GetSceneManager()->GetComponent<SocketComponent>(playercomp.ThrowingGunEntityID);
@@ -997,7 +1028,6 @@ void PlayerSystem::VPAnimationFinished(PlayerComponent& playercomp, AnimationCom
 	{
 		case  (int)VisPred::Game::VPAni::ToVP_attack_L:
 		case  (int)VisPred::Game::VPAni::ToVP_attack_R:
-			playercomp.IsAttacking = false;
 			break;
 			break;
 		default:
@@ -1243,7 +1273,6 @@ void PlayerSystem::Gun_RecoilingToMiddle(PlayerComponent& playercomp, float delt
 			playercomp.GunRecoilStartQuat = {};
 			playercomp.GunRecoilEndQuat = {};
 			playercomp.IsGunRecoiling = false;
-			playercomp.IsAttacking = false;
 			cameratrans.SetLocalQuaternion({});
 			handtrans.SetLocalLocation(temp);
 		}
@@ -1267,7 +1296,6 @@ bool PlayerSystem::Shoot_Common(PlayerComponent& playercomp, GunComponent& gunco
 		anicomp.duration = 0;
 	}
 	// Update gun and player state
-	playercomp.IsAttacking = true;
 	playercomp.GunprogressTime = 0;
 	playercomp.ReadyToShoot = false;
 	guncomp.CurrentBullet -= 1;
@@ -1277,7 +1305,6 @@ bool PlayerSystem::Shoot_Pistol(PlayerComponent& playercomp, GunComponent& gunco
 {
 	if (!Shoot_Common(playercomp, guncomp, PlayerAni::ToIdle02_Pistol, PlayerAni::ToAttack_Pistol))
 		return false;
-
 
 	ShootNormalBullet(playercomp, guncomp, firetrans);
 	GetSceneManager()->SpawnSoundEntity(guncomp.SoundKey_GunSound, guncomp.Volume_GunSound, true, false, {});

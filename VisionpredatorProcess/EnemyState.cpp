@@ -4,7 +4,8 @@
 #include "EnemyComponent.h"
 #include "TransformComponent.h"
 #include "../VPGraphics/D3DUtill.h"
-
+#include "SceneManager.h"
+#include "ParticleOwnerComponent.h"
 #include "StatesInclude.h"
 
 struct null_deleter
@@ -77,14 +78,16 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 
 		if (true == isHit)
 		{
-			enemyComp.OnHit = false;
 
 			const std::shared_ptr<EnemyComponent> temp(&enemyComp, null_deleter{});
 
 			if (enemyComp.MovementState == &EnemyMovementState::s_HitReaction)
+			//if (enemyComp.CurrentAni == VisPred::Game::EnemyAni::ATTACKED)
 				enemyComp.MovementState->Enter(temp);
+			else
+				ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
 
-			ChangeCurrentState(enemyComp, &EnemyMovementState::s_HitReaction);
+			enemyComp.OnHit = false;
 		}
 		//else
 		//{
@@ -96,7 +99,20 @@ float EnemyState::DetectTarget(EnemyComponent& enemyComp, float deltaTime)
 	if (isPlayerDetectedInViewRange || isPlayerDetectedInNoiseRange || isHit)
 	{
 		//uint32_t detectedObjID = m_PhysicsEngine->RaycastToHitActor(enemyID, targetDir, enemyComp.FarZ);
-		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, enemyPos, targetDir, enemyComp.FarZ).EntityID;
+		VPMath::Vector3 pose{};
+		VPMath::Vector3 dir{};
+	auto poscomp= 	enemyComp.SceneManager.lock()->GetChildEntityComp_HasComp<ParticleOwnerComponent>(enemyComp.GetEntityID());
+	if (poscomp)
+	{
+		pose = poscomp->GetComponent<TransformComponent>()->World_Location;
+		dir= playerPos - pose;
+	}
+	else
+	{
+		pose = enemyPos;
+		dir = targetDir;
+	}
+		const uint32_t detectedObjID = enemyComp.PhysicsManager->RaycastActorAtPose_Ignore(enemyID, pose, dir, enemyComp.FarZ).EntityID;
 		if (detectedObjID == playerID)
 		{
 			enemyComp.DistanceToPlayer = (playerPos - enemyPos).Length();

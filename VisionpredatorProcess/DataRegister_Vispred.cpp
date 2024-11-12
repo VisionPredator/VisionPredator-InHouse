@@ -24,7 +24,7 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::Sencitive
 		, PlayerComponent::SearchDistance
 		, PlayerComponent::JumpForce
-		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed
+		, PlayerComponent::WalkSpeed, PlayerComponent::RunSpeed, PlayerComponent::VPRunSpeed
 		, PlayerComponent::SlideDuration
 		, PlayerComponent::DashDuration
 		, PlayerComponent::SlideMultiple

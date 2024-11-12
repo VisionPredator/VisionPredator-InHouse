@@ -206,7 +206,7 @@ void ImageObject::UpdateBuffers()
 		right = sizeX;
 		bottom = -sizeY;
 	}
-	else    // ui::RenderModeType::ScreenSpaceOverlay
+	else if (m_Info.RenderMode == ui::RenderModeType::ScreenSpaceOverlay)    // ui::RenderModeType::ScreenSpaceOverlay
 	{
 		m_CanvasWidth = m_Device->GetWndWidth();
 		m_CanvasHeight = m_Device->GetWndHeight();
@@ -248,6 +248,103 @@ void ImageObject::UpdateBuffers()
 		m_ImageRect.bottom = static_cast<LONG>(m_ImagePosY + scaledHeight);
 
 		// 비트맵의 좌표 계산
+		left = static_cast<float>(m_CanvasWidth) / 2 * -1 + m_ImagePosX;
+		right = left + scaledWidth;
+		top = static_cast<float>(m_CanvasHeight) / 2 - m_ImagePosY;
+		bottom = top - scaledHeight;
+	}
+	else if (m_Info.RenderMode == ui::RenderModeType::WorldToScreenOverlay)
+	{
+		m_CanvasWidth = m_Device->GetWndWidth();
+		m_CanvasHeight = m_Device->GetWndHeight();
+
+		const std::shared_ptr<ConstantBuffer<CameraData>> cameraCB = m_ResourceManager->Get<ConstantBuffer<CameraData>>(L"Camera").lock();
+		DirectX::XMFLOAT3 cameraPos = DirectX::XMFLOAT3(cameraCB->m_struct.viewInverse.Transpose()._41, cameraCB->m_struct.viewInverse.Transpose()._42, cameraCB->m_struct.viewInverse.Transpose()._43);
+
+		// 월드 좌표를 화면 좌표로 변환
+		DirectX::XMFLOAT3 targetWorldPos(m_Info.World._41, m_Info.World._42, m_Info.World._43);
+		DirectX::XMVECTOR worldPosVec = DirectX::XMLoadFloat3(&targetWorldPos);
+		//DirectX::XMMATRIX viewProjMatrix = DirectX::XMMatrixMultiply(cameraCB->m_struct.view, cameraCB->m_struct.proj);
+		DirectX::XMMATRIX viewProjMatrix = cameraCB->m_struct.worldviewproj.Transpose();
+		DirectX::XMVECTOR clipSpacePos = DirectX::XMVector3Transform(worldPosVec, viewProjMatrix);
+
+		// NDC로 변환하여 화면 좌표 계산
+		DirectX::XMFLOAT3 screenPos;
+		DirectX::XMStoreFloat3(&screenPos, clipSpacePos);
+
+		// 화면을 벗어난 경우 가장자리 위치로 보정
+		float halfWidth = m_BitmapWidth * m_Info.Scale / 2.0f;
+		float halfHeight = m_BitmapHeight * m_Info.Scale / 2.0f;
+
+		// 오브젝트가 카메라 뒤에 있는지 확인
+		if (screenPos.z < 0)
+		{
+			// 카메라 뒤에 있을 경우, clipSpacePos의 x, y 값에 따라 가장자리의 상대 위치로 조정
+			if (fabs(clipSpacePos.m128_f32[0]) > fabs(clipSpacePos.m128_f32[1]))
+			{
+				screenPos.x = (clipSpacePos.m128_f32[0] < 0) ? halfWidth : (m_CanvasWidth - halfWidth);
+				screenPos.y = std::clamp((m_CanvasHeight / 2.0f) * (1.0f - clipSpacePos.m128_f32[1]), halfHeight, m_CanvasHeight - halfHeight);
+			}
+			else
+			{
+				screenPos.y = (clipSpacePos.m128_f32[1] < 0) ? halfHeight : (m_CanvasHeight - halfHeight);
+				screenPos.x = std::clamp((m_CanvasWidth / 2.0f) * (1.0f + clipSpacePos.m128_f32[0]), halfWidth, m_CanvasWidth - halfWidth);
+			}
+
+
+			// 카메라와 이미지의 y 좌표 비교
+			if (targetWorldPos.y > cameraPos.y)   // 이미지가 카메라보다 높을 경우 화면 위쪽에 표시
+			{
+				screenPos.y = halfHeight;  // 화면 위쪽 가장자리로 위치
+			}
+			else if (targetWorldPos.y < cameraPos.y)   // 이미지가 카메라보다 낮을 경우 화면 아래쪽에 표시
+			{
+				screenPos.y = m_CanvasHeight - halfHeight;  // 화면 아래쪽 가장자리로 위치
+			}
+
+		}
+		else
+		{
+			// 카메라 앞에 있을 때만 NDC 좌표 변환
+			screenPos.x = (screenPos.x / screenPos.z + 1.0f) * 0.5f * m_CanvasWidth;
+			screenPos.y = (1.0f - screenPos.y / screenPos.z) * 0.5f * m_CanvasHeight;
+
+			if (screenPos.x - halfWidth < 0)
+			{
+				screenPos.x = halfWidth;
+			}
+			else if (screenPos.x + halfWidth > m_CanvasWidth)
+			{
+				screenPos.x = m_CanvasWidth - halfWidth;
+			}
+
+			if (screenPos.y - halfHeight < 0)
+			{
+				screenPos.y = halfHeight;
+			}
+			else if (screenPos.y + halfHeight > m_CanvasHeight)
+			{
+				screenPos.y = m_CanvasHeight - halfHeight;
+			}
+		}
+
+		// 이미지 중심 위치를 화면 좌표에 맞게 설정
+		m_ImageCenterPosX = screenPos.x;
+		m_ImageCenterPosY = screenPos.y;
+
+		// 이미지의 크기와 위치를 계산하여 화면에 표시
+		const float scaledWidth = static_cast<float>(m_BitmapWidth) * m_Info.Scale;
+		const float scaledHeight = static_cast<float>(m_BitmapHeight) * m_Info.Scale;
+
+		m_ImagePosX = m_ImageCenterPosX - (scaledWidth / 2.0f);
+		m_ImagePosY = m_ImageCenterPosY - (scaledHeight / 2.0f);
+
+		m_ImageRect.left = static_cast<LONG>(m_ImagePosX);
+		m_ImageRect.right = static_cast<LONG>(m_ImagePosX + scaledWidth);
+		m_ImageRect.top = static_cast<LONG>(m_ImagePosY);
+		m_ImageRect.bottom = static_cast<LONG>(m_ImagePosY + scaledHeight);
+
+		// 정점 데이터 업데이트
 		left = static_cast<float>(m_CanvasWidth) / 2 * -1 + m_ImagePosX;
 		right = left + scaledWidth;
 		top = static_cast<float>(m_CanvasHeight) / 2 - m_ImagePosY;

@@ -98,14 +98,23 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 	auto enemycomponent = entity->GetComponent<EnemyComponent>();
 	if (enemycomponent->HP == 0)
 		return;
-		enemycomponent->OnHit = true;
 	if (enemycomponent->HP > damage)
 	{
+		enemycomponent->OnHit = true;
 		enemycomponent->HP -= damage;
 
+		if (enemycomponent->MovementState == &EnemyMovementState::s_HitReaction)
+		{
+			const std::shared_ptr<EnemyComponent> enemyComp(enemycomponent, null_deleter{});	// null_deleter를 사용해 메모리 해제가 되지 않도록 스마트 포인터 생성
+			enemycomponent->MovementState->Enter(enemyComp);
+		}
+		else
+			enemycomponent->MovementState->ChangeCurrentState(*enemycomponent, &EnemyMovementState::s_HitReaction);
 	}
 	else
 	{
+		Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 		enemycomponent->HP = 0;
 
 		int healthup{};
@@ -114,6 +123,8 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 		else
 			healthup = 10;
 		if (m_playercomponent->CurrentFSM == VisPred::Game::PlayerFSM::DIE)
+			return;
+		if (m_playercomponent->HP<=0)
 			return;
 		if ((m_playercomponent->HP + healthup) > m_playercomponent->MaxHP)
 			m_playercomponent->HP = m_playercomponent->MaxHP;
@@ -124,7 +135,6 @@ void EnemySystem::OnDamaged(std::any entityid_Damage)
 		if (!GetSceneManager()->GetEntityByIdentityName(playersound->SoundKey_Heal))
 			GetSceneManager()->SpawnSoundEntity(playersound->SoundKey_Heal, playersound->Volume_Heal, true, false, {});
 	}
-	Log::GetClientLogger()->warn("HEAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 }
 
