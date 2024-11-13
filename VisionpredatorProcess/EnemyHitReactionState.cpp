@@ -16,12 +16,24 @@ void EnemyHitReactionState::Enter(const std::shared_ptr<Component>& component)
 	ChangeCurrentAnimation(enemyComp, VisPred::Game::EnemyAni::ATTACKED, 3.5f, 0.05f, false, true);
 
 	const auto soundComp = enemyComp->GetComponent<EnemySoundComponent>();
-	enemyComp->SceneManager.lock()->SpawnSoundEntity(
+	//enemyComp->SceneManager.lock()->SpawnSoundEntity(
+	//	soundComp->SoundKey_Hurt, 
+	//	soundComp->Volume_Hurt, 
+	//	false, 
+	//	false, 
+	//	enemyComp->GetComponent<TransformComponent>()->World_Location
+	//);
+
+	// 이미 재생되고 있었다면 끊고 다시 재생한다.
+	const auto soundEngine = enemyComp->SoundEngine;
+	soundEngine->Stop(soundComp->GetEntityID());
+	soundEngine->Play(
+		soundComp->GetEntityID(), 
 		soundComp->SoundKey_Hurt, 
 		soundComp->Volume_Hurt, 
 		false, 
 		false, 
-		enemyComp->GetComponent<TransformComponent>()->World_Location
+		soundComp->GetComponent<TransformComponent>()->World_Location
 	);
 
 	enemyComp->HeatComplete = false;
