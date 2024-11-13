@@ -27,7 +27,14 @@ void EnemyRunState::Update(const std::shared_ptr<Component>& component, float de
 	if (!soundEngine->IsPlayingSound(soundComp->GetEntityID(), soundComp->SoundKey_Run))
 	{
 		soundEngine->Stop(soundComp->GetEntityID());
-		soundEngine->Play(soundComp->GetEntityID(), soundComp->SoundKey_Run, soundComp->Volume_Run, false, false, soundComp->GetComponent<TransformComponent>()->World_Location);
+		soundEngine->Play(
+			soundComp->GetEntityID(), 
+			soundComp->SoundKey_Run, 
+			soundComp->Volume_Run, 
+			false, 
+			false, 
+			soundComp->GetComponent<TransformComponent>()->World_Location
+		);
 	}
 }
 
