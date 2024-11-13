@@ -19,7 +19,7 @@ void VispredRegister::Register_Components()
 		, PlayerComponent::IsAttacking
 		, PlayerComponent::CurrentFSM
 		, PlayerComponent::CameraPosName, PlayerComponent::CameraName, PlayerComponent::FirePosName, PlayerComponent::HandName, PlayerComponent::VPHandName, PlayerComponent::LongswordName
-		, PlayerComponent::NonDamageTime
+		, PlayerComponent::NonDamageTime, PlayerComponent::DamageReduce
 		, PlayerComponent::MaxHP, PlayerComponent::HP
 		, PlayerComponent::Sencitive
 		, PlayerComponent::SearchDistance
@@ -204,7 +204,8 @@ void VispredRegister::Register_Components()
 		, ScoreComponent::EndFontColor
 		, ScoreComponent::MiddlePose
 		, ScoreComponent::MiddleScale);
-	META_ADD_COMP(BestScoreComponent, BestScoreComponent::Score, BestScoreComponent::BestScoreMent, BestScoreComponent::NewBestScoreMent, BestScoreComponent::BasicColor, BestScoreComponent::NewColor)
+	META_ADD_COMP(BestScoreComponent, BestScoreComponent::Score, BestScoreComponent::BestScoreMent, BestScoreComponent::NewBestScoreMent, BestScoreComponent::BasicColor, BestScoreComponent::NewColor);
+		META_ADD_COMP(GameBaseComponent, GameBaseComponent::PlayerName, GameBaseComponent::SencitiveUI, GameBaseComponent::SencitiveEntity, GameBaseComponent::ShowDuration, GameBaseComponent::ShowProgress);
 
 }
 

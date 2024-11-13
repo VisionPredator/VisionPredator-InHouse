@@ -22,12 +22,14 @@ void GunSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
 
 	auto& Firstentity = *GetSceneManager()->GetEntity(entitypair.first);
 	auto& Secondentity = *GetSceneManager()->GetEntity(entitypair.second);
+
+	if (&Firstentity == nullptr || &Secondentity == nullptr)
+		return;
+
 	if (Firstentity.HasComponent<GunComponent>())
 		ApplyDamage(Firstentity, Secondentity);
 	else if (Secondentity.HasComponent<GunComponent>())
 		ApplyDamage(Secondentity, Firstentity);
-
-
 }
 
 void GunSystem::ExitCollision(std::pair<uint32_t, uint32_t> entitypair)
