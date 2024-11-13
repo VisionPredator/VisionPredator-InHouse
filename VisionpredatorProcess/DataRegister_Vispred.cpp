@@ -205,7 +205,7 @@ void VispredRegister::Register_Components()
 		, ScoreComponent::MiddlePose
 		, ScoreComponent::MiddleScale);
 	META_ADD_COMP(BestScoreComponent, BestScoreComponent::Score, BestScoreComponent::BestScoreMent, BestScoreComponent::NewBestScoreMent, BestScoreComponent::BasicColor, BestScoreComponent::NewColor);
-		META_ADD_COMP(GameBaseComponent, GameBaseComponent::PlayerName, GameBaseComponent::SencitiveUI, GameBaseComponent::SencitiveEntity, GameBaseComponent::ShowDuration, GameBaseComponent::ShowProgress);
+		META_ADD_COMP(GameBaseComponent, GameBaseComponent::PlayerName, GameBaseComponent::Reduce, GameBaseComponent::MaxHP, GameBaseComponent::MouseSencitive, GameBaseComponent::SencitiveUI, GameBaseComponent::SencitiveEntity, GameBaseComponent::ShowDuration, GameBaseComponent::ShowProgress);
 
 }
 
