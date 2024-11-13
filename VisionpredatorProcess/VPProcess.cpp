@@ -48,6 +48,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<MainTopicSystem>();
 	m_SystemManager->AddSystem<ScoreSystem>();
 	m_SystemManager->AddSystem<PingSystem>();
+	m_SystemManager->AddSystem<GameBaseSystem>();
 }
 
 VPProcess::~VPProcess()

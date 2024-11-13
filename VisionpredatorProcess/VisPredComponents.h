@@ -46,4 +46,5 @@
 #include "PingComponent.h"
 #include "PingAccessComponent.h"
 #include "PingAccessResetComponent.h"
+#include "GameBaseComponent.h"
 
