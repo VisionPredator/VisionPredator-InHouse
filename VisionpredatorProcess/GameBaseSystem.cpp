@@ -37,6 +37,7 @@ void GameBaseSystem::Start(uint32_t gameObjectId)
 	auto playercomp = comp->Player.lock()->GetComponent<PlayerComponent>();
 	playercomp->MaxHP = comp->MaxHP;
 	playercomp->HP = comp->MaxHP;
+	playercomp->DamageReduce = comp->Reduce;
 	playercomp->Sencitive = (static_cast<float>(comp->MouseSencitive) / 2.f / 100.f);
 
 }
