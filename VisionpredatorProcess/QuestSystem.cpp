@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "QuestSystem.h"
-#include "VisPredComponents.h"
+#include "QuestComponent.h"
+#include "MainQuestComponent.h"
+#include "PlayerComponent.h"
 #include "EventManager.h"
 
 QuestSystem::QuestSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)

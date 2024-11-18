@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SceneChangeSystem.h"
 #include "InputManager.h"
-#include "VisPredComponents.h"
+#include "SceneChangeComponent.h"
 SceneChangeSystem::SceneChangeSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 }

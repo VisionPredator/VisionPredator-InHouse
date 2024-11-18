@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "MainTopicSystem.h"
 #include "EventManager.h"
-#include "VisPredComponents.h"
+#include "TextBounceComponent.h"
+#include "ImageBounceComponent.h"
+#include "MainTopicComponent.h"
 MainTopicSystem::MainTopicSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnChangeTopic", CreateSubscriber(&MainTopicSystem::OnChangeTopic));

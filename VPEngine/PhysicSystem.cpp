@@ -154,6 +154,40 @@ VPMath::Vector3 PhysicSystem::DisApplyPivotAndOffset(const ControllerComponent& 
 
 	return adjustedLocation;
 }
+void PhysicSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
+{
+	auto firstentity= GetSceneManager()->GetEntity(entitypair.first);
+	if (firstentity->HasComponent<RigidBodyComponent>())
+	{
+		firstentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,0,0,1 };
+	}
+	else if (firstentity->HasComponent<ControllerComponent>())
+		firstentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,0,0,1 };
+	auto secondentity = GetSceneManager()->GetEntity(entitypair.second);
+	if (secondentity->HasComponent<RigidBodyComponent>())
+	{
+		secondentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,0,0,1 };
+	}
+	else if (secondentity->HasComponent<ControllerComponent>())
+		secondentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,0,0,1 };
+
+}
+void PhysicSystem::ExitCollision(std::pair<uint32_t, uint32_t> entitypair)
+{
+	auto firstentity = GetSceneManager()->GetEntity(entitypair.first);
+	if (firstentity->HasComponent<RigidBodyComponent>())
+		firstentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,1,1,1 };
+	else if (firstentity->HasComponent<ControllerComponent>())
+		firstentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,1,1,1 };
+
+
+	auto secondentity = GetSceneManager()->GetEntity(entitypair.second);
+	if (secondentity->HasComponent<RigidBodyComponent>())
+		secondentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,1,1,1 };
+	else if (secondentity->HasComponent<ControllerComponent>())
+		secondentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,1,1,1 };
+
+}
 // Function to compute the conjugate of a quaternion
 VPMath::Quaternion QuaternionConjugate(const VPMath::Quaternion& q)
 {
@@ -196,6 +230,7 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 			obbInfo.OBB.Center = rigidTransform->World_Location;
 			obbInfo.OBB.Extents = rigidBodyComponent.BoxInfo.Extent * rigidTransform->World_Scale;
 			obbInfo.xAxisAngle = rigidTransform->World_Rotation.x;
+			obbInfo.Color = rigidBodyComponent.DebugLineColor;
 			obbInfo.yAxisAngle = rigidTransform->World_Rotation.y;
 			obbInfo.zAxisAngle = rigidTransform->World_Rotation.z;
 			m_Graphics->DrawOBB(obbInfo);
@@ -208,8 +243,67 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 			sphereInfo.Sphere.Center = rigidTransform->World_Location;
 			float maxscle = rigidTransform->World_Scale.GetMaxComponent();
 			sphereInfo.Sphere.Radius = rigidBodyComponent.SphereInfo.Radius * maxscle;
+			sphereInfo.Color = rigidBodyComponent.DebugLineColor;
+
 			m_Graphics->DrawSphere(sphereInfo);
 
+		}
+		break;
+		case VPPhysics::EColliderShape::CONVEX:
+		{
+			// Convex Mesh의 로컬 정점을 가져옵니다.
+			if (rigidBodyComponent.cachedWorldVertices.empty())
+				return;
+
+			auto transform = rigidBodyComponent.GetComponent<TransformComponent>();
+
+			// 이미 존재하는 WorldTransform 사용
+			const auto& worldTransform = transform->WorldTransform;
+
+			// 변환된 월드 정점 계산
+			std::vector<VPMath::Vector3> worldVertices;
+			for (const auto& vertex : rigidBodyComponent.cachedWorldVertices)
+				worldVertices.push_back(VPMath::Vector3::Transform(vertex, worldTransform));
+
+			// Ray의 색상 설정 (동일한 색상 사용)
+			VPMath::Vector4 rayColor = { 1, 0, 0, 1 }; // Red color for all rays
+
+			// 디버그 데이터 렌더링
+			for (size_t i = 0; i < worldVertices.size() - 1; ++i)
+			{
+				VPMath::Vector3 currentVertex = worldVertices[i];
+				VPMath::Vector3 nextVertex = worldVertices[i + 1];
+
+				// 방향 벡터 계산
+				VPMath::Vector3 direction = nextVertex - currentVertex;
+
+				// RayInfo 생성
+				debug::RayInfo rayInfo{};
+				rayInfo.Color = rigidBodyComponent.DebugLineColor;
+				rayInfo.Origin = currentVertex;
+				rayInfo.Direction = direction;
+				rayInfo.Normalize = false;
+
+				// Ray를 그립니다.
+				m_Graphics->DrawRay(rayInfo);
+			}
+
+			// 마지막 정점과 첫 번째 정점 연결
+			if (!worldVertices.empty())
+			{
+				VPMath::Vector3 lastVertex = worldVertices.back();
+				VPMath::Vector3 firstVertex = worldVertices.front();
+
+				VPMath::Vector3 direction = firstVertex - lastVertex;
+
+				debug::RayInfo rayInfo{};
+				rayInfo.Color = rigidBodyComponent.DebugLineColor; // 동일한 색상
+				rayInfo.Origin = lastVertex;
+				rayInfo.Direction = direction;
+				rayInfo.Normalize = false;
+
+				m_Graphics->DrawRay(rayInfo);
+			}
 		}
 		break;
 		default:
@@ -233,6 +327,7 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		obbInfo.xAxisAngle = ControllerTransform->World_Rotation.x;
 		obbInfo.yAxisAngle = ControllerTransform->World_Rotation.y;
 		obbInfo.zAxisAngle = ControllerTransform->World_Rotation.z;
+		obbInfo.Color = ControllerComp.DebugLineColor;
 		m_Graphics->DrawOBB(obbInfo);
 
 		//FrontVector
@@ -250,7 +345,7 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 		rightinfo.Origin = ControllerTransform->World_Location;
 		rightinfo.Direction = 10 * ControllerTransform->RightVector;
 		rightinfo.Normalize = false;
-		//m_Graphics->DrawRay(rightinfo);
+		m_Graphics->DrawRay(rightinfo);
 	}
 }
 
@@ -339,7 +434,7 @@ void PhysicSystem::CreateStatic(RigidBodyComponent* staticBody)
 		staticBody->ConvexColliderInfo.FBXName = meshcomp->FBX;
 		staticBody->ConvexColliderInfo.colliderInfo = staticBody->DefaultColliderInfo;
 		m_PhysicsEngine->CreateStaticBody(staticBody->ConvexColliderInfo, staticBody->ColliderType);
-
+		staticBody->cachedWorldVertices = m_PhysicsEngine->GetConVexMeshVertex(staticBody->GetEntityID());
 	}
 	break;
 
@@ -398,6 +493,8 @@ void PhysicSystem::CreateDynamic(RigidBodyComponent* dynamicBody)
 		dynamicBody->ConvexColliderInfo.FBXName = meshcomp->FBX;
 		dynamicBody->ConvexColliderInfo.colliderInfo = dynamicBody->DefaultColliderInfo;
 		m_PhysicsEngine->CreateDynamicBody(dynamicBody->ConvexColliderInfo, dynamicBody->ColliderType);
+		dynamicBody->cachedWorldVertices = m_PhysicsEngine->GetConVexMeshVertex(dynamicBody->GetEntityID());
+
 	}
 	break;
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "System.h"
-#include "VisPredComponents.h"
+#include "PlayerUIComponent.h"
 #include "EventSubscriber.h"
 
 class PlayerUISystem

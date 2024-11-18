@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CabinetSystem.h"
-#include "VisPredComponents.h"
+#include "InterectiveComponent.h"
+#include "CabinetComponent.h"
 #include "EventManager.h"
 CabinetSystem::CabinetSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {

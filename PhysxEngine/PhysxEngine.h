@@ -120,5 +120,9 @@ private:
 	bool IsDynamic(uint32_t entityID) override;
 	bool IsStatic(uint32_t entityID) override;
 
+
+	// IPhysx을(를) 통해 상속됨
+	std::vector<VPMath::Vector3> GetConVexMeshVertex(uint32_t entityID) override;
+
 };
 

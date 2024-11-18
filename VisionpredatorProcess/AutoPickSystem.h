@@ -1,7 +1,8 @@
 #pragma once
 #include <System.h>
-#include "VisPredComponents.h"
 #include "EventSubscriber.h"
+struct AutoPickComponent;
+struct GunComponent;
 class AutoPickSystem :
     public System,public ITriggerable,public IFixedUpdatable,public IUpdatable, public IStartable,public EventSubscriber,public IPhysicable
 {

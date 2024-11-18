@@ -12,7 +12,8 @@ class PhysicSystem :
     public IStartable,
     public IPhysicable, 
     public IRenderable,
-    public EventSubscriber
+    public EventSubscriber,
+	public IContactable
 {
 public:
 	PhysicSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -53,6 +54,12 @@ private:
 
 
 
+
+
+	// IContactable을(를) 통해 상속됨
+	void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
+
+	void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) override;
 
 };
 

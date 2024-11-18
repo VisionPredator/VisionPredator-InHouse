@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "SpawnerSystem.h"
 #include "EventManager.h"
-#include "VisPredComponents.h"
+#include "SpawnerComponent.h"
+#include "SpawnSoundComponent.h"
 SpawnerSystem::SpawnerSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&SpawnerSystem::OnInterected));

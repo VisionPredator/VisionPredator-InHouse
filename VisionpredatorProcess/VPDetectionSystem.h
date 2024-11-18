@@ -1,7 +1,6 @@
 #pragma once
 #include "System.h"
 #include "EventSubscriber.h"
-#include "VisPredComponents.h"
 class VPDetectionSystem :public System, public EventSubscriber, public ITriggerable,public IStartable
 {
 public:

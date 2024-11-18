@@ -49,6 +49,7 @@ void VPProcess::AddSystems()
 	m_SystemManager->AddSystem<ScoreSystem>();
 	m_SystemManager->AddSystem<PingSystem>();
 	m_SystemManager->AddSystem<GameBaseSystem>();
+	m_SystemManager->AddSystem<LDHButtonSystem>();
 }
 
 VPProcess::~VPProcess()

@@ -17,6 +17,7 @@ struct RigidBodyComponent :
     VPMath::Vector3 Speed{};
 
     std::vector<VPMath::Vector3> cachedWorldVertices;
+    VPMath::Color DebugLineColor = { 1,1,1,1 };
 
 };
 

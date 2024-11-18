@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DoOnceSystem.h"
-#include "VisPredComponents.h"
+#include "DoOnceComponent.h"
+#include "DoOnceResetComponent.h"
+#include "InterectiveComponent.h"
 #include"EventManager.h"
 DoOnceSystem::DoOnceSystem(std::shared_ptr<SceneManager> scenemanger):System(scenemanger)
 {

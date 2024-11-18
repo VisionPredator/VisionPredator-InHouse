@@ -161,6 +161,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddPrefabButtonComponent.h" />
     <ClInclude Include="AimUIComponent.h" />
     <ClInclude Include="AutoPickComponent.h" />
     <ClInclude Include="AutoPickSystem.h" />
@@ -171,6 +172,8 @@
     <ClInclude Include="CabinetSystem.h" />
     <ClInclude Include="CursorComponent.h" />
     <ClInclude Include="CursorSystem.h" />
+    <ClInclude Include="DeletePrefabComponent.h" />
+    <ClInclude Include="DestroySelfComponent.h" />
     <ClInclude Include="DetectableComponent.h" />
     <ClInclude Include="DoOnceComponent.h" />
     <ClInclude Include="DoOnceResetComponent.h" />
@@ -206,6 +209,7 @@
     <ClInclude Include="FPSSystem.h" />
     <ClInclude Include="GameBaseComponent.h" />
     <ClInclude Include="GameBaseSystem.h" />
+    <ClInclude Include="LDHButtonSystem.h" />
     <ClInclude Include="MainTopicComponent.h" />
     <ClInclude Include="MainTopicSystem.h" />
     <ClInclude Include="ParticleOwnerComponent.h" />
@@ -269,6 +273,7 @@
     <ClInclude Include="WeaponBoxSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddPrefabButtonComponent.cpp" />
     <ClCompile Include="AimUIComponent.cpp" />
     <ClCompile Include="AutoPickComponent.cpp" />
     <ClCompile Include="AutoPickSystem.cpp" />
@@ -279,6 +284,8 @@
     <ClCompile Include="CabinetSystem.cpp" />
     <ClCompile Include="CursorComponent.cpp" />
     <ClCompile Include="CursorSystem.cpp" />
+    <ClCompile Include="DeletePrefabComponent.cpp" />
+    <ClCompile Include="DestroySelfComponent.cpp" />
     <ClCompile Include="DetectableComponent.cpp" />
     <ClCompile Include="DoOnceComponent.cpp" />
     <ClCompile Include="DoOnceResetComponent.cpp" />
@@ -314,6 +321,7 @@
     <ClCompile Include="FPSSystem.cpp" />
     <ClCompile Include="GameBaseComponent.cpp" />
     <ClCompile Include="GameBaseSystem.cpp" />
+    <ClCompile Include="LDHButtonSystem.cpp" />
     <ClCompile Include="MainTopicComponent.cpp" />
     <ClCompile Include="MainTopicSystem.cpp" />
     <ClCompile Include="ParticleOwnerComponent.cpp" />

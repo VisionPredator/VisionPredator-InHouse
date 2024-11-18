@@ -7,7 +7,6 @@ class ScoreSystem :
 public: ScoreSystem(std::shared_ptr<SceneManager> scenemanager);
 
 	  
-	  void OnSpawnBestScore(std::any null = {});
 	  void OnEnemyKilled(std::any null = {});
 	  void OnHideScore(std::any null = {});
 	  void OnScoreToMiddle(std::any null = {});

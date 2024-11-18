@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "HPReducerButtonSystem.h"
 #include "EventManager.h"
-#include "VisPredComponents.h"
+#include "HPReducerComponent.h"
+#include "PlayerComponent.h"
 // Define a custom max function
 
 HPReducerButtonSystem::HPReducerButtonSystem(std::shared_ptr<SceneManager> sceneManager):System(sceneManager)

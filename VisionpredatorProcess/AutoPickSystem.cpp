@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "AutoPickSystem.h"
-#include "VisPredComponents.h"
 #include "EventSubscriber.h"
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include "AutoPickComponent.h"
+#include "GunComponent.h"
+#include "PlayerComponent.h"
 AutoPickSystem::AutoPickSystem(std::shared_ptr<SceneManager> scenemnager) :System(scenemnager)
 {
 	EventManager::GetInstance().Subscribe("OnAutoPickup", CreateSubscriber(&AutoPickSystem::OnAutoPickup));

@@ -26,6 +26,7 @@ public:
 	virtual void CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexinfo, const EColliderType& collidertype) abstract;
 	virtual void ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
 	virtual void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices) abstract;
+	virtual std::vector<VPMath::Vector3> GetConVexMeshVertex(uint32_t entityID) abstract;
 #pragma region raycast
 	/// <summary>
 	/// Actor를 가진 entity로부터 dir 방향으로 dist거리만큼 raycast를 쏴 가장가까운 entityID를 반환한다.

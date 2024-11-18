@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "SectorSystem.h"
-#include "VisPredComponents.h"
 #include "EventManager.h"
+#include "SectorClearComponent.h"
+#include "EnemyComponent.h"
+#include "TextBounceComponent.h"
 SectorSystem::SectorSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnEnemyKilled", CreateSubscriber(&SectorSystem::OnEnemyKilled));

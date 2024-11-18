@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CursorSystem.h"
-#include "VisPredComponents.h"
+#include "CursorComponent.h"
 CursorSystem::CursorSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 }

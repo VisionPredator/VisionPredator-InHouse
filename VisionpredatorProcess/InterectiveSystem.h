@@ -1,7 +1,6 @@
 #pragma once
 #include "System.h"
 #include "EventSubscriber.h"
-#include "VisPredComponents.h"
 class InterectiveSystem:public System,public EventSubscriber,public IPhysicable
 {
 public:
@@ -12,7 +11,6 @@ public:
 	void OnUnSearched(std::any searchedEntityID);
 	void OnInterective(std::any interective_interector);
 	void OnInterected(std::any interective_interector);
-	void Interected_Gun(GunComponent& guncomp, PlayerComponent& player);
 
 
 	// IPhysicable을(를) 통해 상속됨

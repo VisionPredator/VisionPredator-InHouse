@@ -1,7 +1,16 @@
 #include "pch.h"
 #include "PlayerUISystem.h"
+#include "PlayerUIComponent.h"
+#include "ImageBounceComponent.h"
+#include "HitUIComponent.h"
+#include "TextBounceComponent.h"
+#include "PlayerComponent.h"
+#include "AimUIComponent.h"
+#include "InterectiveComponent.h"
+#include "GunComponent.h"
+#include "VPUIComponent.h"
+#include "EnemyComponent.h"
 #include "../VPGraphics/Util.h"
-#include "VisPredComponents.h"
 PlayerUISystem::PlayerUISystem(const std::shared_ptr<SceneManager>& sceneManager)
 	: System(sceneManager)
 {

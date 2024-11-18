@@ -1,7 +1,8 @@
 #pragma once
 #include <System.h>
 #include "EventSubscriber.h"
-#include "VisPredComponents.h"
+#include "DoOnceResetComponent.h"
+#include "DoOnceComponent.h"
 
 class DoOnceSystem :
     public System,public EventSubscriber

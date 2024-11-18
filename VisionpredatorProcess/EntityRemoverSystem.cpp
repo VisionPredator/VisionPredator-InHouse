@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EntityRemoverSystem.h"
-#include "VisPredComponents.h"
+#include "EntityRemoverComponet.h"
 
 EntityRemoverSystem::EntityRemoverSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {

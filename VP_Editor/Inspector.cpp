@@ -396,6 +396,8 @@ void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component
 		TypeImGui_array_wstring_Topic(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>>())
 		TypeImGui_vector_tuple_Vector3(memberMetaData, component);
+	else if (metaType.id() == Reflection::GetTypeID<std::tuple<VPMath::Vector3, VPMath::Vector3, VPMath::Vector3>>())
+		TypeImGui_tuple_Vector3(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<std::vector<std::tuple<std::string, int, bool, bool>>>())
 		TypeImGui_vector_tuple_string_int_bool_bool(memberMetaData, component);
 	else if (metaType.id() == Reflection::GetTypeID<VPPhysics::ColliderInfo>())
@@ -983,6 +985,38 @@ void Inspector::TypeImGui_vector_tuple_string_int_bool_bool(entt::meta_data memb
 
 	ImGui::PopID();
 }
+void Inspector::TypeImGui_tuple_Vector3(entt::meta_data memberMetaData, Component* component)
+{
+	using namespace VPMath;
+	// Retrieve the tuple
+	auto tupleData = memberMetaData.get(component->GetHandle()).cast<std::tuple<Vector3, Vector3, Vector3>>();
+	std::string memberName = Reflection::GetName(memberMetaData);
+
+	ImGui::PushID(memberName.c_str());
+
+	// Display a header for the tuple
+	if (ImGui::CollapsingHeader((memberName + " Tuple").c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		Vector3& first = std::get<0>(tupleData);
+		Vector3& second = std::get<1>(tupleData);
+		Vector3& third = std::get<2>(tupleData);
+
+		// Display input fields for each Vector3 in the tuple
+		ImGui::Text("First Vector3");
+		ImGui::DragFloat3(("##First Vector3 " + memberName).c_str(), &first.x, 0.1f, -100.0f, 100.0f);
+
+		ImGui::Text("Second Vector3");
+		ImGui::DragFloat3(("##Second Vector3 " + memberName).c_str(), &second.x, 0.1f, -100.0f, 100.0f);
+
+		ImGui::Text("Third Vector3");
+		ImGui::DragFloat3(("##Third Vector3 " + memberName).c_str(), &third.x, 0.1f, -100.0f, 100.0f);
+	}
+
+	// Apply modified data
+	memberMetaData.set(component->GetHandle(), std::move(tupleData));
+
+	ImGui::PopID();
+}
+
 
 void Inspector::TypeImGui_vector_tuple_Vector3(entt::meta_data memberMetaData, Component* component)
 {

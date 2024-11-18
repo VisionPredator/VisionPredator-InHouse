@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GameBaseSystem.h"
-#include "VisPredComponents.h"
+#include "GameBaseComponent.h"
+#include "PlayerComponent.h"
+#include "TextBounceComponent.h"
 GameBaseSystem::GameBaseSystem(std::shared_ptr<SceneManager> sceneManager):System(sceneManager)
 {
 }

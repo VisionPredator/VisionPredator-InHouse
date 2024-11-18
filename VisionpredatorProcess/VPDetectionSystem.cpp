@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "VPDetectionSystem.h"
+#include "VPDetectionComponent.h"
+#include "EnemyComponent.h"
+#include "InterectiveComponent.h"
+#include "GunComponent.h"
 
 VPDetectionSystem::VPDetectionSystem(std::shared_ptr<SceneManager> scenemanger):System(scenemanger)
 {

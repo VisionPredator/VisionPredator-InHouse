@@ -47,4 +47,7 @@
 #include "PingAccessComponent.h"
 #include "PingAccessResetComponent.h"
 #include "GameBaseComponent.h"
+#include "AddPrefabButtonComponent.h"
+#include "DestroySelfComponent.h"
+#include "DeletePrefabComponent.h"
 

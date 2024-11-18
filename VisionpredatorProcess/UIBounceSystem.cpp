@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIBounceSystem.h"
-#include "VisPredComponents.h"
+#include "ImageBounceComponent.h"
+#include "TextBounceComponent.h"
 UIBounceSystem::UIBounceSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 }

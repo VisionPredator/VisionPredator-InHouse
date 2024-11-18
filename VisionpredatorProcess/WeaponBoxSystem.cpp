@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "WeaponBoxSystem.h"
 #include "EventManager.h"
-#include "VisPredComponents.h"
+#include "WeaponBoxComponent.h"
+#include "InterectiveComponent.h"
 WeaponBoxSystem::WeaponBoxSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&WeaponBoxSystem::OnInterected));

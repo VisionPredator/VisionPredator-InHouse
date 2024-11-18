@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "ScoreSystem.h"
 #include "EventManager.h"
-#include "VisPredComponents.h"
+#include "TextBounceComponent.h"
+#include "ScoreComponent.h"
+#include "BestScoreComponent.h"
 ScoreSystem::ScoreSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnEnemyKilled", CreateSubscriber(&ScoreSystem::OnEnemyKilled));

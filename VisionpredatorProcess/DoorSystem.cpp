@@ -1,6 +1,11 @@
 #include "pch.h"
+#include "../VPGraphics/Log.h"
+
 #include "DoorSystem.h"
-#include "VisPredComponents.h"
+#include "DoorOpenerComponent.h"
+#include "InterectiveComponent.h"
+#include "DoorComponent.h"
+#include "DoorAccessComponent.h"
 DoorSystem::DoorSystem(std::shared_ptr<SceneManager> scenemanger) :System(scenemanger)
 {
 	EventManager::GetInstance().Subscribe("OnChangeDoorUseable", CreateSubscriber(&DoorSystem::OnChangeDoorUseable));

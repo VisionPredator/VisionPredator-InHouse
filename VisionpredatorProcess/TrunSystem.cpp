@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "TrunSystem.h"
-#include "VisPredComponents.h"
+#include "TrunComponent.h"
 TrunSystem::TrunSystem(std::shared_ptr<SceneManager> SceneManager) :System(SceneManager)
 {
 }

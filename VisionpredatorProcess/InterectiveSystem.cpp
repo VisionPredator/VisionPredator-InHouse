@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "InterectiveSystem.h"
-#include "VisPredComponents.h"
+#include "InterectiveComponent.h"
 #include "EventManager.h"
 #include <EngineStructs.h>
 InterectiveSystem::InterectiveSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)

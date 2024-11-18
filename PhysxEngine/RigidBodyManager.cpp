@@ -581,20 +581,24 @@ void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VP
 {
 	if (!HasRigidBody(entityID))
 		return;
-
-	auto rigidBody = GetRigidBody(entityID);
-	auto staticBody = dynamic_cast<StaticRigidBody*>(rigidBody.get());
-	if (!staticBody)
-		return;
-
-	physx::PxRigidStatic* pxRigidStatic = staticBody->GetPxStaticRigid();
-	if (!pxRigidStatic)
-		return;
-
-	// Use the previously implemented function to extract vertices and faces
-	ExtractVerticesAndFaces(pxRigidStatic, outVertices, outIndices);
+	if (IsStatic(entityID))
+	{
+		auto staticBody = dynamic_cast<StaticRigidBody*>(GetRigidBody(entityID).get());
+		physx::PxRigidStatic* pxRigidStatic = staticBody->GetPxStaticRigid();
+		if (!pxRigidStatic)
+			return;
+		ExtractVerticesAndFaces(pxRigidStatic, outVertices, outIndices);
+	}
+	else if (IsDynamic(entityID))
+	{
+		auto dynamicrigid = dynamic_cast<DynamicRigidBody*>(GetRigidBody(entityID).get());
+		physx::PxRigidDynamic* pxRigidDynamic = dynamicrigid->GetPxDynamicRigid();
+		if (!pxRigidDynamic)
+			return;
+		ExtractVerticesAndFaces(pxRigidDynamic, outVertices, outIndices);
+	}
 }
-void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+void RigidBodyManager::ExtractVerticesAndFaces(PxRigidActor* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!actor)
 		return;
@@ -639,7 +643,6 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 
 					// 스케일링된 정점을 액터의 전역 포즈를 사용하여 월드 공간으로 변환합니다.
 					PxVec3 worldVertex = globalPose.transform(scaledVertex);
-
 					// 변환된 정점을 출력 벡터에 추가합니다.
 					outVertices.emplace_back(worldVertex.x, worldVertex.y, worldVertex.z);
 				}
@@ -672,14 +675,92 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector
 						}
 					}
 
-					// 디버깅 출력
-					//std::cout << "폴리곤 " << i << " 은(는) " << polygon.mNbVerts << " 개의 정점을 가지고 있습니다.\n";
-					//std::cout << "현재까지의 인덱스 개수: " << outIndices.size() << "\n";
 				}
 			}
 		}
 	}
 }
+
+void RigidBodyManager::ExtractLocalVerticesFromActor(physx::PxRigidActor* actor, std::vector<VPMath::Vector3>& localVertices)
+{
+	if (!actor)
+		return;
+
+	// 액터에서 쉐이프 추출
+	PxU32 shapeCount = actor->getNbShapes();
+	std::vector<PxShape*> shapes(shapeCount);
+	actor->getShapes(shapes.data(), shapeCount);
+
+	for (PxShape* shape : shapes)
+	{
+		// SIMULATION_SHAPE(충돌 용도)로 표시된 쉐이프만 처리
+		if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
+		{
+			PxGeometryHolder geometryHolder = shape->getGeometry();
+
+			// 컨벡스 메쉬인지 확인
+			if (geometryHolder.getType() == PxGeometryType::eCONVEXMESH)
+			{
+				PxConvexMeshGeometry convexGeometry = geometryHolder.convexMesh();
+				PxConvexMesh* convexMesh = convexGeometry.convexMesh;
+
+				if (!convexMesh)
+					continue;
+
+				// PxConvexMesh에서 로컬 정점 가져오기
+				const PxVec3* meshVertices = convexMesh->getVertices();
+				PxU32 vertexCount = convexMesh->getNbVertices();
+
+				for (PxU32 i = 0; i < vertexCount; ++i)
+				{
+					localVertices.emplace_back(meshVertices[i].x, meshVertices[i].y, meshVertices[i].z);
+				}
+			}
+		}
+	}
+}
+
+std::vector<VPMath::Vector3> RigidBodyManager::GetConVexMeshVertex(uint32_t entityID)
+{
+	std::vector<VPMath::Vector3> localVertices;
+
+	if (!HasRigidBody(entityID))
+		return localVertices;
+
+	auto rigidBody = GetRigidBody(entityID);
+
+	if (IsStatic(entityID))
+	{
+		// StaticRigidBody 처리
+		auto staticBody = dynamic_cast<StaticRigidBody*>(rigidBody.get());
+		if (!staticBody)
+			return localVertices;
+
+		physx::PxRigidStatic* pxRigidStatic = staticBody->GetPxStaticRigid();
+		if (!pxRigidStatic)
+			return localVertices;
+
+		// PxRigidStatic에서 정점 가져오기
+		ExtractLocalVerticesFromActor(pxRigidStatic, localVertices);
+	}
+	else if (IsDynamic(entityID))
+	{
+		// DynamicRigidBody 처리
+		auto dynamicBody = dynamic_cast<DynamicRigidBody*>(rigidBody.get());
+		if (!dynamicBody)
+			return localVertices;
+
+		physx::PxRigidDynamic* pxRigidDynamic = dynamicBody->GetPxDynamicRigid();
+		if (!pxRigidDynamic)
+			return localVertices;
+
+		// PxRigidDynamic에서 정점 가져오기
+		ExtractLocalVerticesFromActor(pxRigidDynamic, localVertices);
+	}
+
+	return localVertices;
+}
+
 void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q)
 {
 	auto temp = GetRigidBody(entityID);

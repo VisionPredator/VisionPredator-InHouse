@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "PingSystem.h"
 #include "EventManager.h"
-#include "VisPredComponents.h"
+#include "PingAccessComponent.h"
+#include "PingComponent.h"
+#include "PingAccessResetComponent.h"
 PingSystem::PingSystem(std::shared_ptr<SceneManager> sceneManager) :System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&PingSystem::OnInterected));

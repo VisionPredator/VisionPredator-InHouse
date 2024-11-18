@@ -40,6 +40,7 @@ public:
     void TypeImGui_vector_pair_wstring_float(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_vector_tuple_wstring_float_float(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_vector_tuple_string_int_bool_bool(entt::meta_data memberMetaData, Component* component);
+    void TypeImGui_tuple_Vector3(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_vector_tuple_Vector3(entt::meta_data memberMetaData, Component* component); 
     void TypeImGui_ColliderInfo(entt::meta_data memberMetaData, Component* component);
     void TypeImGui_BoxColliderInfo(entt::meta_data memberMetaData, Component* component);

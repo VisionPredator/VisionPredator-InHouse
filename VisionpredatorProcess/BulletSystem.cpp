@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "BulletSystem.h"
-#include "VisPredComponents.h"
 #include "EventManager.h"
+#include "ShotGunBulletComponent.h"
+#include "BulletComponent.h"
+#include "EnemyComponent.h"
 BulletSystem::BulletSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {
 	EventManager::GetInstance().Subscribe("OnBulletHit", CreateSubscriber(&BulletSystem::OnBulletHit));

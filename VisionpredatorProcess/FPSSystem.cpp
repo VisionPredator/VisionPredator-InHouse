@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "FPSSystem.h"
-#include "VisPredComponents.h"
+#include "FPSComponent.h"
 FPSSystem::FPSSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 }

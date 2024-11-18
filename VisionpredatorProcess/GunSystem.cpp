@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "GunSystem.h"
-#include "VisPredComponents.h"
 #include"EventManager.h"
+#include"GunComponent.h"
+#include"ParticleOwnerComponent.h"
+#include"PlayerComponent.h"
+#include"EnemyComponent.h"
+#include"PlayerSoundComponent.h"
 GunSystem::GunSystem(std::shared_ptr<SceneManager> scenemanager) :System{ scenemanager }
 {
 	EventManager::GetInstance().GetInstance().Subscribe("OnShoot", CreateSubscriber(&GunSystem::OnShoot));

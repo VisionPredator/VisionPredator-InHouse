@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "IdentityRemoverSystem.h"
-#include "VisPredComponents.h"
+#include "IdentityRemoverComponent.h"
 #include "EventManager.h"
 
 IdentityRemoverSystem::IdentityRemoverSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)

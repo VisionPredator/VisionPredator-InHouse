@@ -1,7 +1,8 @@
 #pragma once
 #include "System.h"
 #include "EventSubscriber.h"
-#include "VisPredComponents.h"
+#include "GunComponent.h"
+#include "PlayerComponent.h"
 class GunSystem :
     public System, public IUpdatable,public IContactable,public EventSubscriber,public IPhysicable
 {

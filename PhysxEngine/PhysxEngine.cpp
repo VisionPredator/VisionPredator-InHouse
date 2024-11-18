@@ -300,6 +300,11 @@ bool PhysxEngine::IsStatic(uint32_t entityID)
 	return m_RigidBodyManager->IsStatic(entityID);
 }
 
+std::vector<VPMath::Vector3> PhysxEngine::GetConVexMeshVertex(uint32_t entityID)
+{
+	return m_RigidBodyManager->GetConVexMeshVertex(entityID);
+}
+
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "System.h"
-#include "VisPredComponents.h"
+struct DoorOpenerComponent;
+struct DoorAccessComponent;
 class DoorSystem :public System, public IFixedUpdatable, public IStartable,public EventSubscriber
 {
 public :

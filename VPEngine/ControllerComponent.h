@@ -20,7 +20,7 @@ struct ControllerComponent :
 	float JumpXZAcceleration = 10.f;					// 점프 중에 이동(XZ축) 가속도 값
 	float JumpXZDeceleration = 0.1f;					// 점프 중에 이동(XZ축) 감속 값 ( 0.0 ~ 1.0 )
 	float GravityWeight = 0.2f;							// 기본 중력 값을 줄 수 있지만 가중치를 더 주고 싶을 때 값을 다르게 세팅할 수 있습니다.
-
+	VPMath::Color DebugLineColor = { 1,1,1,1 };
 
 };
 

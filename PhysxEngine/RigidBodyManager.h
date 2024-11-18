@@ -18,7 +18,6 @@ public:
 	void CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
 	void CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
 	void CreateStaticBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-
 	void CreateDynamicBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
 	void CreateDynamicBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
 	void CreateDynamicBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
@@ -44,7 +43,9 @@ public:
 	bool IsStatic(uint32_t EntityID);
 	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
-	void ExtractVerticesAndFaces(PxRigidStatic* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
+	void ExtractVerticesAndFaces(PxRigidActor* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
+	void ExtractLocalVerticesFromActor(physx::PxRigidActor* actor, std::vector<VPMath::Vector3>& localVertices);
+	std::vector<VPMath::Vector3> GetConVexMeshVertex(uint32_t entityid);
 
 	void SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q);
 	VPMath::Vector3 GetVelocity(uint32_t entityID);
