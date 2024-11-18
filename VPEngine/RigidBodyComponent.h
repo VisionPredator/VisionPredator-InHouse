@@ -16,5 +16,7 @@ struct RigidBodyComponent :
     VPPhysics::ColliderInfo DefaultColliderInfo{};
     VPMath::Vector3 Speed{};
 
+    std::vector<VPMath::Vector3> cachedWorldVertices;
+
 };
 
