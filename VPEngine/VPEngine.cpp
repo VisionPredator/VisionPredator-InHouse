@@ -24,7 +24,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
 {
 	EngineRegister::Register_Metadata();
-
 	auto wTitle = std::wstring(title.begin(), title.end());
 	// 윈도우 클래스 구조체 정의
 	m_hinstance = GetModuleHandle(NULL);
@@ -40,39 +39,60 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = wTitle.c_str();
 	RegisterClass(&wndclass);
+	if (m_IsMenubar)
+	{
 
-	// 창 스타일 설정
-	DWORD dwStyle = WS_POPUP; // 제목 바 제거를 위해 WS_POPUP 사용
+		RECT rcClient = { 0, 0, (LONG)width, (LONG)height };
+		AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
+		// 창을 중앙에 위치시키기 위해 좌표 계산
+		m_ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		m_ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	// 창 크기 정확히 설정 (클라이언트 크기 조정 불필요)
-	int clientWidth = width;
-	int clientHeight = height;
+		// 창을 중앙에 위치시키기 위해 좌표 계산
+		int posX = (m_ScreenWidth - width) / 2;
+		int posY = (m_ScreenHeight - height) / 2;
 
-	// 화면 크기 가져오기
-	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+		m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
+			wTitle.c_str(),
+			wTitle.c_str(),
+			WS_OVERLAPPEDWINDOW,
+			posX, posY, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
+			NULL, NULL, hInstance, NULL);
 
-	// 창을 중앙에 위치시키기 위해 좌표 계산
-	int posX = (screenWidth - clientWidth) / 2;
-	int posY = (screenHeight - clientHeight) / 2;
+		ShowWindow(m_hWnd, SW_SHOWNORMAL);
+		UpdateWindow(m_hWnd);
+		SetFocus(m_hWnd);
 
-	// 창 생성
-	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
-		wTitle.c_str(),
-		wTitle.c_str(),
-		dwStyle, // WS_POPUP 사용
-		posX, posY, // 중앙 위치
-		clientWidth, clientHeight, // 정확한 크기
-		NULL, NULL, hInstance, NULL);
+	}
+	else
+	{
+		// 창 스타일 설정
+		DWORD dwStyle = WS_POPUP; // 제목 바 제거를 위해 WS_POPUP 사용
 
-	// 창 표시
-	ShowWindow(m_hWnd, SW_SHOWNORMAL);
-	UpdateWindow(m_hWnd);
-	SetFocus(m_hWnd);
 
-	// 화면 크기 저장
-	m_ScreenWidth = screenWidth;
-	m_ScreenHeight = screenHeight;
+		// 화면 크기 가져오기
+		m_ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		m_ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+		// 창을 중앙에 위치시키기 위해 좌표 계산
+		int posX = (m_ScreenWidth - width) / 2;
+		int posY = (m_ScreenHeight - height) / 2;
+
+		// 창 생성
+		m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
+			wTitle.c_str(),
+			wTitle.c_str(),
+			dwStyle, // WS_POPUP 사용
+			posX, posY, // 중앙 위치
+			width, height, // 정확한 크기
+			NULL, NULL, hInstance, NULL);
+
+		// 창 표시
+		ShowWindow(m_hWnd, SW_SHOWNORMAL);
+		UpdateWindow(m_hWnd);
+		SetFocus(m_hWnd);
+	}
+	
 	InputManager::GetInstance().Initialize(m_hinstance, &m_hWnd);
 
 
