@@ -55,7 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ int       nCmdShow)
 {
 	VP_Editor* Process;
-	Process = new VP_Editor(hInstance, "VisionPredator", 1920, 1080);
+	Process = new VP_Editor(hInstance, "Editor", 1920, 1080,true);
 	Process->Loop();
 	delete Process;
 	EventManager::GetInstance().Release();

@@ -2,7 +2,7 @@
 #include "VP_Launcher.h"
 #include "InputManager.h"
 #include "../VPEngine/SceneManager.h"
-VP_Launcher::VP_Launcher(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
+VP_Launcher::VP_Launcher(HINSTANCE hInstance, std::string title, int width, int height, bool ismenubar) :VPProcess(hInstance, title, width, height, ismenubar)
 {
 	InputManager::GetInstance().SetClipMode(TRUE);
 	ShowCursor(FALSE);

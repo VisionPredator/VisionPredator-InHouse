@@ -26,8 +26,8 @@ public:
 	HINSTANCE m_hinstance=nullptr;
 
 	HWND m_hWnd = nullptr;
-	VPEngine(HINSTANCE hInstance, std::string title, int width, int height);
-	bool m_IsMenubar = true;;
+	VPEngine(HINSTANCE hInstance, std::string title, int width, int height, bool ismenubar);
+	bool m_IsMenubar = true;
 	~VPEngine();
 	void Loop();
 	int m_ScreenWidth {};

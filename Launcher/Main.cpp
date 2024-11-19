@@ -28,7 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ int       nCmdShow)
 {
 	VP_Launcher* Process;
-	Process = new VP_Launcher(hInstance, "VisionPredator", 1920, 1080);
+	Process = new VP_Launcher(hInstance, "VisionPredator", 1920, 1080, false);
 	Process->SetStartScene("../Data/Scene/title.scene");
 	Process->Loop();
 	delete Process;

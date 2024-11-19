@@ -12,7 +12,7 @@
 #include "LightSystem.h"
 #include "ImGuiFileDialog.h"
 #include "EditorSystem.h"
-VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height) :VPProcess(hInstance, title, width, height)
+VP_Editor::VP_Editor(HINSTANCE hInstance, std::string title, int width, int height, bool ismenubar) :VPProcess(hInstance, title, width, height, ismenubar)
 {
     ImGuiIO& io = ImGui::GetIO();
     ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgunbd.ttf",20.f, NULL, io.Fonts->GetGlyphRangesKorean());

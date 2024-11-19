@@ -5,7 +5,7 @@
 #include "GameLogicSystem.h"
 #include "DataRegister_Vispred.h"
 
-VPProcess::VPProcess(HINSTANCE hInstance, std::string title, int width, int height) :VPEngine(hInstance, title, width, height)
+VPProcess::VPProcess(HINSTANCE hInstance, std::string title, int width, int height,bool ismenubar) :VPEngine(hInstance, title, width, height,ismenubar)
 {
 	VispredRegister::Register_Metadata();
 	Initialize();

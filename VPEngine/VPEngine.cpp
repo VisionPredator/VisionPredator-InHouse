@@ -21,8 +21,9 @@ bool VPEngine::isFullScreen = false;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height) :m_DeltaTime(0.f)
+VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height,bool ismenubar) :m_DeltaTime(0.f)
 {
+	m_IsMenubar = ismenubar;
 	EngineRegister::Register_Metadata();
 	auto wTitle = std::wstring(title.begin(), title.end());
 	// 윈도우 클래스 구조체 정의
@@ -231,11 +232,11 @@ void VPEngine::Update()
 	m_SystemManager->SoundUpdate(m_DeltaTime);
 	m_SystemManager->LateUpdate(m_DeltaTime);
 
-	if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
-	{
-		std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
-		SetWindowTextW(m_hWnd, newname.c_str());
-	}
+	//if (m_TimeManager->GetPrevFPS() != m_TimeManager->GetFPS())
+	//{
+	//	std::wstring newname = std::to_wstring(m_TimeManager->GetFPS());
+	//	SetWindowTextW(m_hWnd, newname.c_str());
+	//}
 }
 void VPEngine::Render()
 {

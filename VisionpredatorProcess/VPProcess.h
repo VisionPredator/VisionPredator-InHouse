@@ -3,7 +3,7 @@
 class VPProcess :public VPEngine
 {
 public:
-	VPProcess(HINSTANCE hInstance, std::string title, int width, int height);
+	VPProcess(HINSTANCE hInstance, std::string title, int width, int height,bool ismenubar);
 	~VPProcess();
 	void Initialize();
 	void AddSystems();

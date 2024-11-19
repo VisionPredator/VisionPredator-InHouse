@@ -9,7 +9,7 @@ class EditorSystem;
 class VP_Editor :public VPProcess
 {
 public:
-	VP_Editor(HINSTANCE hInstance, std::string title, int width, int height);
+	VP_Editor(HINSTANCE hInstance, std::string title, int width, int height,bool ismenubar);
 	~VP_Editor();
 	virtual void Update();
 	virtual void Render();
