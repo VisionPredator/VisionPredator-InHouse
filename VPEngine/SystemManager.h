@@ -62,7 +62,13 @@
 		{
 			if (IsSystemAdded<T>())
 			{
-				return nullptr;
+				for (const auto& system : m_Systems)
+				{
+					if (T* existingSystem = dynamic_cast<T*>(system.get()))
+					{
+						return existingSystem; // 이미 존재하면 해당 시스템 반환
+					}
+				}
 			}
 			m_Systems.push_back(std::make_unique<T>(m_SceneManager.lock()));
 			auto* system = static_cast<T*>(m_Systems.back().get());

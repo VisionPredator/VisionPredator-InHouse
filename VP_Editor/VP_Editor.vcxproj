@@ -160,7 +160,6 @@
     <ClInclude Include="..\include\Macro\ReflectionMacro.h" />
     <ClInclude Include="..\include\Macro\VisPredMacro.h" />
     <ClInclude Include="EditorCamera.h" />
-    <ClInclude Include="EditorSystem.h" />
     <ClInclude Include="FolderTool.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Hierarchy.h" />
@@ -179,7 +178,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EditorCamera.cpp" />
-    <ClCompile Include="EditorSystem.cpp" />
     <ClCompile Include="FolderTool.cpp" />
     <ClCompile Include="Hierarchy.cpp" />
     <ClCompile Include="HierarchySystem.cpp" />

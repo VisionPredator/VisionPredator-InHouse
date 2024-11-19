@@ -182,6 +182,7 @@
     <ClInclude Include="DoorComponent.h" />
     <ClInclude Include="DoorOpenerComponent.h" />
     <ClInclude Include="DoorSystem.h" />
+    <ClInclude Include="EditorSystem.h" />
     <ClInclude Include="EnemyAttackState.h" />
     <ClInclude Include="EnemyIdleAttack.h" />
     <ClInclude Include="EnemyBackpedalState.h" />
@@ -294,6 +295,7 @@
     <ClCompile Include="DoorComponent.cpp" />
     <ClCompile Include="DoorOpenerComponent.cpp" />
     <ClCompile Include="DoorSystem.cpp" />
+    <ClCompile Include="EditorSystem.cpp" />
     <ClCompile Include="EnemyAttackState.cpp" />
     <ClCompile Include="EnemyIdleAttack.cpp" />
     <ClCompile Include="EnemyBackpedalState.cpp" />

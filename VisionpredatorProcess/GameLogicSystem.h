@@ -29,5 +29,6 @@
 #include "PingSystem.h"
 #include "ScoreSystem.h"
 #include "GameBaseSystem.h"
+#include "EditorSystem.h"
 
 #include "LDHButtonSystem.h"
