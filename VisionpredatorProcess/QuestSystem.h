@@ -32,8 +32,10 @@ public:
     void QuestCheck_PLAYERPICKUP(QuestComponent& questcomp) ;
     void QuestCheck_PLAYERTHROW(QuestComponent& questcomp) ;
     void QuestCheck_PLAYERINTERECT(QuestComponent& questcomp) ;
+    void QuestCheck_MouseSensitive(QuestComponent& questcomp) ;
     void OnInterected(std::any interective_interector);
     void OnTutorialClear(std::any none);
+    void OnShoot(std::any none);
     void MainquestSetting();
     void Finalize() override;
 

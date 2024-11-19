@@ -271,7 +271,8 @@ void VispredRegister::Register_EnumClass()
 		, QuestType::PLAYERATTACK
 		, QuestType::PLAYERPICKUP
 		, QuestType::PLAYERTHROW
-		, QuestType::PLAYERINTERECT);
+		, QuestType::PLAYERINTERECT
+		, QuestType::MOUSESENSITIVE);
 
 
 	META_ADD_ENUMCLASS(TopicType

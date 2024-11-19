@@ -23,6 +23,7 @@ namespace VisPred
 		};
 		enum class QuestType
 		{
+			MOUSESENSITIVE,
 			VPMOVE,
 			VPJUMP,
 			VPDASH,

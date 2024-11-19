@@ -125,7 +125,7 @@ void PlayerFSMSystem::Calculate_Idle(PlayerComponent& playercomp)
 		///점프
 		else if (playercomp.GetComponent<ControllerComponent>()->IsFall)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
-		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform)
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform&& playercomp.IsTransformable)
 		{
 			///상태 저장
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
@@ -152,7 +152,7 @@ void PlayerFSMSystem::Calculate_Idle(PlayerComponent& playercomp)
 		///점프
 		else if ( playercomp.GetComponent<ControllerComponent>()->IsFall)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::JUMP;
-		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform&& playercomp.ThrowingGunEntityID==0)
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform&& playercomp.IsTransformable&& playercomp.ThrowingGunEntityID==0)
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
 		}
@@ -180,7 +180,7 @@ void PlayerFSMSystem::Calculate_Walk(PlayerComponent& playercomp)
 	else if (INPUTKEYDOWN(KEYBOARDKEY::LCONTROL) || INPUTKEY(KEYBOARDKEY::LCONTROL))
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
 
-	else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform && playercomp.ThrowingGunEntityID == 0)
+	else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform && playercomp.IsTransformable&& playercomp.ThrowingGunEntityID == 0)
 		playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
 }
 void PlayerFSMSystem::Calculate_Run(PlayerComponent& playercomp)
@@ -200,7 +200,7 @@ void PlayerFSMSystem::Calculate_Run(PlayerComponent& playercomp)
 				return;
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
 		}
-		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform)
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform&& playercomp.IsTransformable)
 		{
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
 		}
@@ -217,7 +217,7 @@ void PlayerFSMSystem::Calculate_Run(PlayerComponent& playercomp)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::CROUCH;
 		else if (INPUTKEYDOWN(KEYBOARDKEY::LSHIFT))
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Dash_Slide;
-		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform && playercomp.ThrowingGunEntityID == 0)
+		else if (INPUTKEYDOWN(KEYBOARDKEY::R) && playercomp.ReadyToTransform && playercomp.IsTransformable&& playercomp.ThrowingGunEntityID == 0)
 			playercomp.CurrentFSM = VisPred::Game::PlayerFSM::Transformation;
 	}
 

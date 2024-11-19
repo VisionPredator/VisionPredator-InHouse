@@ -7,6 +7,11 @@ LDHButtonSystem::LDHButtonSystem(std::shared_ptr<SceneManager> scenemanager) :Sy
 
 void LDHButtonSystem::Update(float deltaTime)
 {
+	if (INPUTKEYDOWN(KEYBOARDKEY::F2))
+	{
+		isDebugRender = !isDebugRender;
+		m_Graphics->DebugRenderONOFF(isDebugRender);
+	}
 	COMPLOOP(AddPrefabButtonComponent, button)
 	{
 		if (INPUTKEYDOWN(button.Button))
@@ -37,4 +42,20 @@ void LDHButtonSystem::Update(float deltaTime)
 		}
 
 	}
+}
+
+void LDHButtonSystem::BeginRenderUpdate(float deltaTime)
+{
+}
+
+void LDHButtonSystem::RenderUpdate(float deltaTime)
+{
+}
+
+void LDHButtonSystem::LateRenderUpdate(float deltaTime)
+{
+}
+
+void LDHButtonSystem::EditorRenderUpdate(float deltaTime)
+{
 }

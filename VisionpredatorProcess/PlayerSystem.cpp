@@ -949,8 +949,7 @@ void PlayerSystem::PlayerAnimation(PlayerComponent& playercomp)
 			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToThrow_Rifle
 			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToThrow_ShotGun
 			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack_Rifle
-			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack_ShotGun
-			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToIdle01_Pistol			)
+			|| anicomp.curAni == (int)VisPred::Game::PlayerAni::ToAttack_ShotGun	)
 		{
 			playercomp.IsAttacking = true;
 		}

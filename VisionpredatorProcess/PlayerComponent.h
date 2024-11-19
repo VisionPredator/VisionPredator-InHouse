@@ -75,6 +75,7 @@ struct PlayerComponent :
 	float VPGageProgress{};
 	float VPGageCoolTime{};
 	bool ReadyToTransform{};
+	bool IsTransformable = true;
 	float TransformationProgress{};
 	float TransformationTime =1;
 	bool IsArmChanged{};

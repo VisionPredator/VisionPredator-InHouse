@@ -9,6 +9,7 @@ QuestSystem::QuestSystem(std::shared_ptr<SceneManager> scenemanager) :System(sce
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&QuestSystem::OnInterected));
 	EventManager::GetInstance().Subscribe("OnTutorialClear", CreateSubscriber(&QuestSystem::OnTutorialClear));
+	EventManager::GetInstance().Subscribe("OnShoot", CreateSubscriber(&QuestSystem::OnShoot));
 }
 
 void QuestSystem::FixedUpdate(float deltaTime)
@@ -22,6 +23,7 @@ void QuestSystem::FixedUpdate(float deltaTime)
 			continue;
 		switch (quest.QuestType)
 		{
+		case VisPred::Game::QuestType::MOUSESENSITIVE:	QuestCheck_MouseSensitive(quest); break;
 		case VisPred::Game::QuestType::VPMOVE:			QuestCheck_VPMOVE(quest); break;
 		case VisPred::Game::QuestType::VPJUMP:			QuestCheck_VPJUMP(quest); break;
 		case VisPred::Game::QuestType::VPDASH:			QuestCheck_VPDASH(quest); break;
@@ -110,6 +112,10 @@ void QuestSystem::Start(uint32_t gameObjectId)
 		auto playerentity = GetSceneManager()->GetEntityByIdentityName(questcomp->PlayerIdentity);
 		if (playerentity && playerentity->HasComponent<PlayerComponent>())
 			questcomp->QuestPlayer = playerentity->GetComponent<PlayerComponent>();
+		if (questcomp->QuestType== VisPred::Game::QuestType::VPCHANGE)
+		{
+			questcomp->QuestPlayer->IsTransformable = false;
+		}
 	}
 }
 
@@ -150,6 +156,7 @@ void QuestSystem::QuestCheck_VPDASH(QuestComponent& questcomp)
 	if (questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->CurrentFSM == VisPred::Game::PlayerFSM::Dash_Slide)
 	{
 		questcomp.IsCleared = true;
+		questcomp.QuestPlayer->IsTransformable = true;
 		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
 		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
 	}
@@ -169,12 +176,12 @@ void QuestSystem::QuestCheck_VPCHANGE(QuestComponent& questcomp)
 void QuestSystem::QuestCheck_PLAYERSHOOT(QuestComponent& questcomp)
 {
 	questcomp.GetComponent<TextComponent>()->Color = { 1.f,1.f,1.f };
-	if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->HasGun && questcomp.QuestPlayer->IsAttacking)
-	{
-		questcomp.IsCleared = true;
-		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
-		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
-	}
+	//if (!questcomp.QuestPlayer->IsVPMode && questcomp.QuestPlayer->HasGun && questcomp.QuestPlayer->IsAttacking)
+	//{
+	//	questcomp.IsCleared = true;
+	//	auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+	//	GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
+	//}
 }
 
 void QuestSystem::QuestCheck_PLAYERRUN(QuestComponent& questcomp)
@@ -262,6 +269,14 @@ void QuestSystem::QuestCheck_PLAYERINTERECT(QuestComponent& questcomp)
 	questcomp.GetComponent<TextComponent>()->Color = { 1.f,1.f,1.f };
 }
 
+void QuestSystem::QuestCheck_MouseSensitive(QuestComponent& questcomp)
+{
+	questcomp.GetComponent<TextComponent>()->Color = { 1.f,1.f,1.f };
+	if (INPUTKEYS(KEYBOARDKEY::RBRACKET, KEYBOARDKEY::LBRACKET))
+		questcomp.IsCleared = true;
+
+}
+
 void QuestSystem::OnInterected(std::any interective_interector)
 {
 	auto [interected, interector] = std::any_cast<std::pair<std::shared_ptr<Entity>, std::shared_ptr<Entity>>>(interective_interector);
@@ -288,6 +303,21 @@ void QuestSystem::OnTutorialClear(std::any none)
 	m_MainQuestEntity.lock()->DestorySelf();
 }
 
+void QuestSystem::OnShoot(std::any none)
+{
+	if (!m_MainQuestEntity.lock())
+		return;
+	auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+	if (questcomp->Questptrs.empty())
+		return;
+	if (questcomp->Questptrs.front()->QuestType == VisPred::Game::QuestType::PLAYERSHOOT)
+	{
+		questcomp->Questptrs.front()->IsCleared = true;
+		auto questcomp = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(questcomp->SounKey_Subquest, questcomp->Volume_Subquest, true, false, {});
+	}
+}
+
 void QuestSystem::MainquestSetting()
 {
 	if (INPUTKEY(KEYBOARDKEY::O))
@@ -306,6 +336,8 @@ void QuestSystem::MainquestSetting()
 			frontQuest->IsCleared = true;
 			if (frontQuest->QuestType == VisPred::Game::QuestType::PLAYERINTERECT)
 				frontQuest->QuestPlayer->IsSearchable = true;
+			if (frontQuest->QuestType == VisPred::Game::QuestType::VPDASH)
+				frontQuest->QuestPlayer->IsTransformable = true;
 			// 첫 번째 요소 제거
 			mainquestcomp->Questptrs.pop_front();
 		}

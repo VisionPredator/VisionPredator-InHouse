@@ -40,21 +40,39 @@ VPEngine::VPEngine(HINSTANCE hInstance, std::string title, int width, int height
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = wTitle.c_str();
 	RegisterClass(&wndclass);
-	RECT rcClient = { 0, 0, (LONG)width, (LONG)height };
-	AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
 
+	// 창 스타일 설정
+	DWORD dwStyle = WS_POPUP; // 제목 바 제거를 위해 WS_POPUP 사용
+
+	// 창 크기 정확히 설정 (클라이언트 크기 조정 불필요)
+	int clientWidth = width;
+	int clientHeight = height;
+
+	// 화면 크기 가져오기
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	// 창을 중앙에 위치시키기 위해 좌표 계산
+	int posX = (screenWidth - clientWidth) / 2;
+	int posY = (screenHeight - clientHeight) / 2;
+
+	// 창 생성
 	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW,
 		wTitle.c_str(),
 		wTitle.c_str(),
-		WS_OVERLAPPEDWINDOW,
-		0, 0, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
+		dwStyle, // WS_POPUP 사용
+		posX, posY, // 중앙 위치
+		clientWidth, clientHeight, // 정확한 크기
 		NULL, NULL, hInstance, NULL);
 
+	// 창 표시
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 	SetFocus(m_hWnd);
-	m_ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-	m_ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	// 화면 크기 저장
+	m_ScreenWidth = screenWidth;
+	m_ScreenHeight = screenHeight;
 	InputManager::GetInstance().Initialize(m_hinstance, &m_hWnd);
 
 
