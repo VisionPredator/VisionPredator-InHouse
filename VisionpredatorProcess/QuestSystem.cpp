@@ -261,6 +261,7 @@ void QuestSystem::QuestCheck_PLAYERTHROW(QuestComponent& questcomp)
 		|| curani == static_cast<int>(VisPred::Game::PlayerAni::ToThrow_Pistol) || curani == static_cast<int>(VisPred::Game::PlayerAni::ToThrow_ShotGun))
 	{
 		questcomp.IsCleared = true;
+
 	}
 }
 
@@ -273,7 +274,12 @@ void QuestSystem::QuestCheck_MouseSensitive(QuestComponent& questcomp)
 {
 	questcomp.GetComponent<TextComponent>()->Color = { 1.f,1.f,1.f };
 	if (INPUTKEYS(KEYBOARDKEY::RBRACKET, KEYBOARDKEY::LBRACKET))
+	{
 		questcomp.IsCleared = true;
+		auto main = m_MainQuestEntity.lock()->GetComponent<MainQuestComponent>();
+		GetSceneManager()->SpawnSoundEntity(main->SounKey_Subquest, main->Volume_Subquest, true, false, {});
+
+	}
 
 }
 
