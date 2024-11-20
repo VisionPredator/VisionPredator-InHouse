@@ -1,5 +1,8 @@
 #pragma once
 #include <System.h>
+struct PlayerComponent;
+struct PlayerSoundComponent;
+struct ControllerComponent;
 
 class PlayerFSMSystem :
     public System, public IUpdatable, public ILateUpdatable, public ISoundable, public EventSubscriber

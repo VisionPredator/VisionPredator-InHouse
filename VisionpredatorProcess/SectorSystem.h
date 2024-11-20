@@ -1,7 +1,7 @@
 #pragma once
 #include <System.h>
 #include "EventSubscriber.h"
-#include "SectorClearComponent.h"
+struct SectorClearComponent;
 class SectorSystem :
     public System, public EventSubscriber,public IStartable
 {

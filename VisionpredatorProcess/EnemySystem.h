@@ -1,6 +1,6 @@
 #pragma once
 #include "../VPEngine/System.h"
-#include "VisPredComponents.h"
+struct PlayerComponent;
 #include "EventSubscriber.h"
 class EnemySystem :
 	public System

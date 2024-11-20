@@ -1,6 +1,7 @@
 #pragma once
 #include <System.h>
-#include "VisPredComponents.h"
+struct TextBounceComponent;
+struct ImageBounceComponent;
 class UIBounceSystem :
     public System,public IUpdatable,public IStartable
 {

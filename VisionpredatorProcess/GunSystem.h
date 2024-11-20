@@ -1,8 +1,9 @@
 #pragma once
 #include "System.h"
 #include "EventSubscriber.h"
-#include "GunComponent.h"
-#include "PlayerComponent.h"
+
+struct GunComponent;
+struct PlayerComponent;
 class GunSystem :
     public System, public IUpdatable,public IContactable,public EventSubscriber,public IPhysicable
 {

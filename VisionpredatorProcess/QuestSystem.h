@@ -1,7 +1,7 @@
 #pragma once
 #include <System.h>
-#include "VisPredComponents.h"
 #include "EventSubscriber.h"
+struct QuestComponent;
 class QuestSystem :
     public System, public IUpdatable, public IFixedUpdatable,public IStartable,public EventSubscriber
 {

@@ -1,7 +1,8 @@
 #pragma once
 #include <System.h>
-#include "VisPredComponents.h"
 #include "EventSubscriber.h"
+struct PlayerComponent;
+struct GunComponent;
 class PlayerSystem :
     public System, public IUpdatable,public IPhysicable,public IStartable,public IFixedUpdatable,public IRenderable,public ISoundable,public EventSubscriber
 {

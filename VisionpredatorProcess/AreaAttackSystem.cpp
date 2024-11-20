@@ -2,6 +2,8 @@
 #include "AreaAttackSystem.h"
 
 #include "StatesInclude.h"
+#include "EnemyComponent.h"
+#include "AreaAttackComponent.h"
 
 AreaAttackSystem::AreaAttackSystem(std::shared_ptr<SceneManager> sceneManager) : System(sceneManager)
 {

@@ -1,8 +1,12 @@
 #include "pch.h"
-#include "VisPredComponents.h"
-#include "EngineStructs.h"
-
 #include "PlayerFSMSystem.h"
+#include "EngineStructs.h"
+#include "PlayerComponent.h"
+#include "PlayerSoundComponent.h"
+#include "CursorComponent.h"
+#include "PlayerMeleeComponent.h"
+#include "AreaAttackComponent.h"
+
 PlayerFSMSystem::PlayerFSMSystem(std::shared_ptr<SceneManager> sceneManager):System(sceneManager)
 {
 }

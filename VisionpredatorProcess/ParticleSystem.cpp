@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ParticleSystem.h"
-#include "VisPredComponents.h"
+#include "ParticleOwnerComponent.h"
+#include "FollowComponent.h"
 #include "EventManager.h"
 ParticleSystem::ParticleSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {

@@ -2,6 +2,16 @@
 #include "PlayerSystem.h"
 #include <iostream>
 #include "EngineStructs.h"
+#include "PlayerSoundComponent.h"
+#include "InterectiveComponent.h"
+#include "BulletComponent.h"
+#include "ShotGunBulletComponent.h"
+#include "PlayerMeleeComponent.h"
+#include "TrunComponent.h"
+#include "AreaAttackComponent.h"
+#include "AutoPickComponent.h"
+#include "PlayerComponent.h"
+#include "GunComponent.h"
 using namespace VisPred::Game;
 PlayerSystem::PlayerSystem(std::shared_ptr<SceneManager> sceneManager) :System{ sceneManager }
 {

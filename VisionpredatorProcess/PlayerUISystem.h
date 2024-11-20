@@ -1,8 +1,7 @@
 #pragma once
 #include "System.h"
-#include "PlayerUIComponent.h"
 #include "EventSubscriber.h"
-
+struct PlayerUIComponent;
 class PlayerUISystem
 	: public System
 	, public IUpdatable

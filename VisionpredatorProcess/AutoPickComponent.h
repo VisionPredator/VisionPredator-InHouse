@@ -1,6 +1,6 @@
 #pragma once
 #include <Component.h>
-#include "VisPredComponents.h"
+struct PlayerComponent;
 struct AutoPickComponent :
 	public Component
 {

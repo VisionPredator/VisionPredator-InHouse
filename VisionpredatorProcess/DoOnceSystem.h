@@ -1,9 +1,8 @@
 #pragma once
 #include <System.h>
 #include "EventSubscriber.h"
-#include "DoOnceResetComponent.h"
-#include "DoOnceComponent.h"
-
+struct DoOnceResetComponent;
+struct DoOnceComponent;
 class DoOnceSystem :
     public System,public EventSubscriber
 {

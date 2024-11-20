@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "LDHButtonSystem.h"
-#include "VisPredComponents.h"
+#include "AddPrefabButtonComponent.h"
+#include "DestroySelfComponent.h"
+#include "DeletePrefabComponent.h"
 LDHButtonSystem::LDHButtonSystem(std::shared_ptr<SceneManager> scenemanager) :System(scenemanager)
 {
 }

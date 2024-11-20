@@ -1,9 +1,10 @@
 #pragma once
 #include <System.h>
 #include "EventSubscriber.h"
-#include "SpawnerComponent.h"
-#include "SpawnChildComponent.h"
-#include"SpawnSoundComponent.h"
+
+struct SpawnerComponent;
+struct SpawnSoundComponent;
+struct SpawnChildComponent;
 class SpawnerSystem :
     public System,public EventSubscriber,public IStartable,public IFixedUpdatable
 {

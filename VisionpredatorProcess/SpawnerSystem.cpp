@@ -3,6 +3,7 @@
 #include "EventManager.h"
 #include "SpawnerComponent.h"
 #include "SpawnSoundComponent.h"
+#include "SpawnChildComponent.h"
 SpawnerSystem::SpawnerSystem(std::shared_ptr<SceneManager> scenemanager):System(scenemanager)
 {
 	EventManager::GetInstance().Subscribe("OnInterected", CreateSubscriber(&SpawnerSystem::OnInterected));

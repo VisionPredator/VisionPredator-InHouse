@@ -1,7 +1,7 @@
 #pragma once
 #include "System.h"
-#include "AreaAttackComponent.h"
-#include "EnemyComponent.h"
+struct AreaAttackComponent;
+struct EnemyComponent;
 class AreaAttackSystem:public System, public ITriggerable,public IFixedUpdatable,public  IStartable
 {
 public :
