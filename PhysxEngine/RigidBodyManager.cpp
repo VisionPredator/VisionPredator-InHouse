@@ -935,7 +935,7 @@ RaycastData RigidBodyManager::RaycastActor(uint32_t entityID, VPMath::Vector3 di
 	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);
 	if (!tempActor)
-		return;
+		return {};
 	physx::PxVec3 tempDir = { dir.x,dir.y,dir.z };
 	tempDir.normalize();
 	PxF32 max = (PxF32)distance;
@@ -953,9 +953,7 @@ RaycastData RigidBodyManager::RaycastActor(uint32_t entityID, VPMath::Vector3 di
 
 	if (!find)
 		return raycastresult;
-	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) {
-		return a.distance < b.distance;
-		});
+	std::sort(buf.touches, buf.touches + buf.nbTouches, [](const PxRaycastHit& a, const PxRaycastHit& b) { return a.distance < b.distance; });
 	for (PxU32 i = 0; i < buf.nbTouches; i++)
 	{
 		PxVec3 p = buf.getTouch(i).position;				// i번째로 레이캐스트에 의해 접촉된 지점의 위치를 가져옴
@@ -979,7 +977,7 @@ RaycastData RigidBodyManager::RaycastActor_Offset(uint32_t entityID, VPMath::Vec
 	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);			// entityID를 통해 물리 액터를 찾아옴
 	if (!tempActor)
-		return;
+		return {};
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };	// 입력된 방향 벡터를 PhysX의 PxVec3로 변환
 	tempDir.normalize();								// 방향 벡터를 단위 벡터로 정규화
 	PxF32 max = (PxF32)distance;						// 레이캐스트할 최대 거리를 설정
