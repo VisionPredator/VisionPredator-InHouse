@@ -30,7 +30,6 @@ bool Controller::ControllerInit(VPPhysics::ControllerInfo info,physx::PxMaterial
 	m_Filters = std::make_shared<PxControllerFilters>(m_FilterData.get(), m_PxQueryFilterCallback.get(), m_PxControllerFilterCallback.get());
 	//m_Filters = std::make_shared<PxControllerFilters>(m_FilterData.get(), m_ControllerQueryFilterCallback.get());
 	m_UserData.entityID = info.EntityId;
-	m_UserData.IsController = true;
 	return true;
 }
 

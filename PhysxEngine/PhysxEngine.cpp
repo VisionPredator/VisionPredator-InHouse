@@ -77,36 +77,46 @@ PhysxEngine::~PhysxEngine()
 
 bool PhysxEngine::Initialize()
 {
-	m_Physics =std::make_shared<Physics>();
-	m_Collisioncallback =std::make_shared<CollisionCallback>();
-	m_RigidBodyManager = std::make_shared<RigidBodyManager>();
-	m_ControllerManager =std::make_shared<ControllerManager>();
-	m_RecourceManager= std::make_shared<PhysichResourceManager>();
-	m_CollisionManager = std::make_shared<CollisionManager>();
-	m_Physics->Initialize();
-	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
-	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale());
-	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();
-	sceneDesc.filterShader = CustomSimulationFilterShader;
+	// 물리 엔진의 주요 구성 요소를 생성 및 초기화
+	m_Physics = std::make_shared<Physics>();                       // 물리 엔진 객체 생성
+	m_Collisioncallback = std::make_shared<CollisionCallback>();   // 충돌 콜백 객체 생성
+	m_RigidBodyManager = std::make_shared<RigidBodyManager>();     // 리지드 바디 매니저 생성
+	m_ControllerManager = std::make_shared<ControllerManager>();   // 컨트롤러 매니저 생성
+	m_RecourceManager = std::make_shared<PhysichResourceManager>(); // 물리 리소스 매니저 생성
+	m_CollisionManager = std::make_shared<CollisionManager>();     // 충돌 매니저 생성
 
-	sceneDesc.simulationEventCallback = m_Collisioncallback.get();
-	sceneDesc.gravity=PxVec3(0.f,-9.81f,0.f);
-	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE;
-	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;
-	sceneDesc.flags |= physx::PxSceneFlag::eDISABLE_CCD_RESWEEP;
-	//sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
-	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
-	sceneDesc.solverType = physx::PxSolverType::ePGS;
+	// 물리 엔진 초기화
+	m_Physics->Initialize();
+	// PhysX Physics 객체 가져오기
+	physx::PxPhysics* physics = m_Physics->GetPxPhysics();
+	// SceneDesc 설정
+	physx::PxSceneDesc sceneDesc(physics->getTolerancesScale()); // 씬의 물리적 허용 오차 스케일 설정
+	sceneDesc.cpuDispatcher = m_Physics->GetDispatcher();        // CPU 디스패처 설정
+	sceneDesc.filterShader = CustomSimulationFilterShader;       // 사용자 정의 필터 셰이더 설정
+	sceneDesc.simulationEventCallback = m_Collisioncallback.get(); // 충돌 이벤트 콜백 설정
+	sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);                  // 중력 설정 (y축: -9.81m/s^2)
+	sceneDesc.staticStructure = physx::PxPruningStructureType::eDYNAMIC_AABB_TREE; // 정적 구조 설정 (AABB Tree)
+	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;           // CCD(Continuous Collision Detection) 활성화
+	sceneDesc.flags |= physx::PxSceneFlag::eDISABLE_CCD_RESWEEP;  // CCD의 Resweep 비활성화
+	//sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS; // GPU 기반 물리 동작 활성화 (현재 주석 처리됨)
+	//sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;    // GPU 브로드 페이즈 활성화 (현재 주석 처리됨)
+	sceneDesc.solverType = physx::PxSolverType::ePGS;             // PGS(Pivoting Gauss-Seidel) 솔버 사용
+
+	// PhysX Scene 생성
 	m_PxScene = physics->createScene(sceneDesc);
+	// 매니저 초기화
 	m_RecourceManager->Initialize(m_Physics->GetPxPhysics());
 	m_RigidBodyManager->Initialize(m_Physics->GetPxPhysics(), m_PxScene, m_RecourceManager);
-	m_ControllerManager->Initialize(m_PxScene,m_Physics->GetPxPhysics(), m_CollisionManager.get());
+	m_ControllerManager->Initialize(m_PxScene, m_Physics->GetPxPhysics(), m_CollisionManager.get());
+
 #ifdef _DEBUG
+	// 디버그 모드에서 PVD(PhysX Visual Debugger) 클라이언트 설정
 	m_Physics->SettingPVDClient(m_PxScene);
 #endif
 
-	return true;
+	return true; // 초기화 성공 반환
 }
+
 
 
 bool PhysxEngine::Finalize()
@@ -177,7 +187,7 @@ void PhysxEngine::ExtractVerticesAndFacesByLayer(EPhysicsLayer layer, std::vecto
 void PhysxEngine::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 
-	m_RigidBodyManager->ExtractVerticesAndFaces(entityID, outVertices, outIndices);
+	m_RigidBodyManager->ExtractEntityVerticesAndFaces(entityID, outVertices, outIndices);
 }
 
 void PhysxEngine::CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype)

@@ -18,7 +18,6 @@ namespace VPPhysics
 	struct USERDATA
 	{
 		uint32_t entityID{};
-		bool IsController{};
 	};
 
 	enum class EPhysicsLayer

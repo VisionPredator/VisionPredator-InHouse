@@ -14,24 +14,24 @@ public:
 	~RigidBodyManager();
 	bool Initialize(physx::PxPhysics* physics, physx::PxScene* Scene, std::shared_ptr<PhysichResourceManager> resourceManager);
 	void Update();
-	void CreateStaticBody(const BoxColliderInfo& boxinfo, const  EColliderType& collidertype,const PhysicsInfo& engininfo );
-	void CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-	void CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-	void CreateStaticBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-	void CreateDynamicBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-	void CreateDynamicBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-	void CreateDynamicBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
-	void CreateDynamicBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const PhysicsInfo& engininfo);
+	void CreateStaticBody(const BoxColliderInfo& info, const  EColliderType& type,const PhysicsInfo& engineinfo );
+	void CreateStaticBody(const SphereColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo);
+	void CreateStaticBody(const CapsuleColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo);
+	void CreateStaticBody(const ConvexColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo);
+	void CreateDynamicBody(const BoxColliderInfo& info, const EColliderType& type, const PhysicsInfo& engininfo);
+	void CreateDynamicBody(const SphereColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo);
+	void CreateDynamicBody(const CapsuleColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo);
+	void CreateDynamicBody(const ConvexColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo);
 
-	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
-	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engineinfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engineinfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engineinfo);
+	std::shared_ptr<StaticRigidBody> SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engineinfo);
 
-	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engineinfo);
 	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
-	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
-	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engineinfo);
+	std::shared_ptr<DynamicRigidBody> SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engineinfo);
 	void ReleaseBodyScene(uint32_t EntityID);
 	std::shared_ptr<RigidBody> GetRigidBody(uint32_t EntityID);
 	void ConvertToStatic(uint32_t EntityID);
@@ -42,7 +42,7 @@ public:
 	bool IsDynamic(uint32_t EntityID);
 	bool IsStatic(uint32_t EntityID);
 	void ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
-	void ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
+	void ExtractEntityVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractVerticesAndFaces(PxRigidActor* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices);
 	void ExtractLocalVerticesFromActor(physx::PxRigidActor* actor, std::vector<VPMath::Vector3>& localVertices);
 	std::vector<VPMath::Vector3> GetConVexMeshVertex(uint32_t entityid);
@@ -64,8 +64,6 @@ public:
 	std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance);
 private:
 	physx::PxRigidActor* FindActorByID(uint32_t entityID);
-	void OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody);
-	void OnReleaseBodyScene(std::any data);
 	void AddBodyScene(std::shared_ptr<RigidBody> body);
 
 	std::weak_ptr<CollisionManager> m_Collsion;

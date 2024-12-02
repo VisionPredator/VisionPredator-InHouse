@@ -10,8 +10,6 @@
 
 RigidBodyManager::RigidBodyManager()
 {
-	//EventManager::GetInstance().Subscribe("OnAddBodyScene", CreateSubscriber(&RigidBodyManager::OnAddBodyScene));
-	EventManager::GetInstance().Subscribe("OnReleaseBodyScene", CreateSubscriber(&RigidBodyManager::OnReleaseBodyScene));
 }
 
 RigidBodyManager::~RigidBodyManager()
@@ -30,127 +28,123 @@ bool RigidBodyManager::Initialize(physx::PxPhysics* physics, physx::PxScene* sce
 void RigidBodyManager::Update()
 {
 }
-
-void RigidBodyManager::CreateStaticBody(const BoxColliderInfo& boxinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+#pragma region Create Body
+void RigidBodyManager::CreateStaticBody(const BoxColliderInfo& info, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
-	// Create the material for the box
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(boxinfo.colliderInfo.StaticFriction, boxinfo.colliderInfo.DynamicFriction, boxinfo.colliderInfo.Restitution);
-	// Create the shape for the box collider with absolute scale values
+	// 박스 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
+
+	// 박스 콜라이더를 위한 Shape 생성 (절대 스케일 값 사용)
 	physx::PxBoxGeometry mesh(
-		std::abs(boxinfo.Extent.x * boxinfo.colliderInfo.WorldScale.x),
-		std::abs(boxinfo.Extent.y * boxinfo.colliderInfo.WorldScale.y),
-		std::abs(boxinfo.Extent.z * boxinfo.colliderInfo.WorldScale.z)
+		std::abs(info.Extent.x * info.colliderInfo.WorldScale.x),
+		std::abs(info.Extent.y * info.colliderInfo.WorldScale.y),
+		std::abs(info.Extent.z * info.colliderInfo.WorldScale.z)
 	);
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
-	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, boxinfo, collidertype, engininfo);
-	// Initialize the rigid body
+
+	// 정적 바디 설정
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, info, collidertype, engininfo);
+
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		rigidBody->SetExtent(boxinfo.Extent);
-		// Insert the rigid body into the map
-		m_RigidBodyMap[boxinfo.colliderInfo.EntityID] = rigidBody;
-		// Add the rigid body to the scene
-		AddBodyScene(rigidBody);
-		shape->release();
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
-		assert(false);
+		assert(false); // 실패 시 디버그 중단
 }
-void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateStaticBody(const SphereColliderInfo& info, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
-	// Create the material for the Sphere
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
-	
-	// Create the shape for the sphere collider with the maximum absolute scale
-	float maxScale = std::abs(sphereinfo.colliderInfo.WorldScale.GetMaxComponent());
-	float newRadius = sphereinfo.Radius * maxScale;
+	// 구체 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
+
+	// 구체 콜라이더를 위한 Shape 생성 (최대 절대 스케일 사용)
+	float maxScale = std::abs(info.colliderInfo.WorldScale.GetMaxComponent());
+	float newRadius = info.Radius * maxScale;
 	physx::PxSphereGeometry mesh(newRadius);
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
-	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, sphereinfo, collidertype, engininfo);
+	// 정적 바디 설정
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, info, collidertype, engininfo);
 
-	// Initialize the rigid body
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		rigidBody->SetRadius(sphereinfo.Radius);
-		// Insert the rigid body into the map
-		m_RigidBodyMap[sphereinfo.colliderInfo.EntityID] = rigidBody;
-		// Add the rigid body to the scene
-		AddBodyScene(rigidBody);
-		shape->release();
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
 	{
-		assert(false);
+		assert(false); // 실패 시 디버그 중단
 	}
 }
-void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateStaticBody(const CapsuleColliderInfo& info, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
-	// Create the material for the collider
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
+	// 캡슐 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
 
-	// Create the shape for the capsule collider with absolute scale values
-	VPMath::Vector3 scale = capsuleinfo.colliderInfo.WorldScale;
+	// 캡슐 콜라이더를 위한 Shape 생성 (절대 스케일 값 사용)
+	VPMath::Vector3 scale = info.colliderInfo.WorldScale;
 	VPMath::Vector2 size;
-	size.y = std::abs(capsuleinfo.HalfHeight * scale.y);
+	size.y = std::abs(info.HalfHeight * scale.y); // 절대 높이 설정
 	scale.y = 0;
 	float maxScale = std::abs(scale.GetMaxComponent());
-	size.x = capsuleinfo.Radius * maxScale;
+	size.x = info.Radius * maxScale; // 반지름 설정
 	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(size.x, size.y), *pxMaterial);
-	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, capsuleinfo, collidertype, engininfo);
 
-	// Initialize the rigid body
+	// 정적 바디 설정
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, info, collidertype, engininfo);
+
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		// Insert the rigid body into the map
-		m_RigidBodyMap[capsuleinfo.colliderInfo.EntityID] = rigidBody;
-		// Add the rigid body to the scene
-		AddBodyScene(rigidBody);
-		shape->release();
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
 	{
-		assert(false);
+		assert(false); // 실패 시 디버그 중단
 	}
 }
-void RigidBodyManager::CreateStaticBody(const ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateStaticBody(const ConvexColliderInfo& info, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
-	// Create the material for the collider
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(convexMeshinfo.colliderInfo.StaticFriction, convexMeshinfo.colliderInfo.DynamicFriction, convexMeshinfo.colliderInfo.Restitution);
+	// 컨벡스 메쉬 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
 
-	// Create the shape for the Convex collider with absolute scale values
-	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(convexMeshinfo.FBXName);
+	// 컨벡스 메쉬 콜라이더를 위한 Shape 생성 (절대 스케일 값 사용)
+	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(info.FBXName);
 	physx::PxConvexMesh* pxConvexMesh = convexMesh.lock()->GetConvexMesh();
 	auto mesh = physx::PxConvexMeshGeometry(pxConvexMesh);
 	mesh.scale.scale = {
-		std::abs(convexMeshinfo.colliderInfo.WorldScale.x),
-		std::abs(convexMeshinfo.colliderInfo.WorldScale.y),
-		std::abs(convexMeshinfo.colliderInfo.WorldScale.z)
+		std::abs(info.colliderInfo.WorldScale.x),
+		std::abs(info.colliderInfo.WorldScale.y),
+		std::abs(info.colliderInfo.WorldScale.z)
 	};
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
-	// Set up the static body
-	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, convexMeshinfo, collidertype, engininfo);
 
-	// Initialize the rigid body
-	if (rigidBody->Initialize( shape, m_Physics))
+	// 정적 바디 설정
+	std::shared_ptr<StaticRigidBody> rigidBody = SettingStaticBody(shape, info, collidertype, engininfo);
+
+	// 리지드 바디 초기화
+	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		// Insert the rigid body into the map
-		m_RigidBodyMap[convexMeshinfo.colliderInfo.EntityID] = rigidBody;
-		// Add the rigid body to the scene
-		AddBodyScene(rigidBody);
-		shape->release();
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
-		assert(false);
+		assert(false); // 실패 시 디버그 중단
 }
 void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& info, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
 {
+	// 박스 콜라이더를 위한 Material 생성
 	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
 
-	// Create the shape for the box collider with absolute scale values
+	// 박스 콜라이더를 위한 Shape 생성 (절대 스케일 값 사용)
 	physx::PxBoxGeometry mesh(
 		std::abs(info.Extent.x * info.colliderInfo.WorldScale.x),
 		std::abs(info.Extent.y * info.colliderInfo.WorldScale.y),
@@ -159,270 +153,279 @@ void RigidBodyManager::CreateDynamicBody(const VPPhysics::BoxColliderInfo& info,
 
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
-	// Set up the dynamic body
+	// 동적 바디 설정
 	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, info, collidertype, engininfo);
 
-	// Initialize the rigid body
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody;
-		AddBodyScene(rigidBody);
-		shape->release();
-		rigidBody->SetExtent(info.Extent);
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
-		assert(false);
+		assert(false); // 실패 시 디버그 중단
 }
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::SphereColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engininfo)
 {
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(sphereinfo.colliderInfo.StaticFriction, sphereinfo.colliderInfo.DynamicFriction, sphereinfo.colliderInfo.Restitution);
+	// 구체 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
 
-	// Create the shape for the sphere collider with the maximum absolute scale
-	float maxScale = std::abs(sphereinfo.colliderInfo.WorldScale.GetMaxComponent());
-	float newRadius = sphereinfo.Radius * maxScale;
+	// 구체 콜라이더를 위한 Shape 생성 (최대 절대 스케일 사용)
+	float maxScale = std::abs(info.colliderInfo.WorldScale.GetMaxComponent());
+	float newRadius = info.Radius * maxScale;
 	physx::PxSphereGeometry mesh(newRadius);
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
-	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody>  rigidBody = SettingDynamicBody(shape, sphereinfo, collidertype, engininfo);
+	// 동적 바디 설정
+	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, info, type, engininfo);
 
-	// Initialize the rigid body
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		m_RigidBodyMap[sphereinfo.colliderInfo.EntityID] = rigidBody;
-		AddBodyScene(rigidBody);
-		shape->release();
-		rigidBody->SetRadius(sphereinfo.Radius);
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
-	{
-		assert(false);
-	}
+		assert(false); // 실패 시 디버그 중단
 }
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::CapsuleColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engineinfo)
 {
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(capsuleinfo.colliderInfo.StaticFriction, capsuleinfo.colliderInfo.DynamicFriction, capsuleinfo.colliderInfo.Restitution);
-	// Create the shape for the capsule collider with absolute scale values
-	VPMath::Vector3 scale = capsuleinfo.colliderInfo.WorldScale;
+	// 캡슐 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
+
+	// 캡슐 콜라이더를 위한 Shape 생성 (절대 스케일 값 사용)
+	VPMath::Vector3 scale = info.colliderInfo.WorldScale;
 	VPMath::Vector2 size;
-	size.y = std::abs(capsuleinfo.HalfHeight * scale.y);
+	size.y = std::abs(info.HalfHeight * scale.y); // 절대 높이 설정
 	scale.y = 0;
 	float maxScale = std::abs(scale.GetMaxComponent());
-	size.x = capsuleinfo.Radius * maxScale;
+	size.x = info.Radius * maxScale; // 반지름 설정
 	physx::PxShape* shape = m_Physics->createShape(physx::PxCapsuleGeometry(size.x, size.y), *pxMaterial);
 
-	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, capsuleinfo, collidertype, engininfo);
+	// 동적 바디 설정
+	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, info, type, engineinfo);
 
-	// Initialize the rigid body
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		m_RigidBodyMap[capsuleinfo.colliderInfo.EntityID] = rigidBody;
-		AddBodyScene(rigidBody);
-		shape->release();
-		rigidBody->SetHalfHeight(capsuleinfo.HalfHeight);
-		rigidBody->SetRadius(capsuleinfo.Radius);
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
-	{
-		assert(false);
-	}
+		assert(false); // 실패 시 디버그 중단
 }
-void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& convexMeshinfo, const EColliderType& collidertype, const VPPhysics::PhysicsInfo& engininfo)
+void RigidBodyManager::CreateDynamicBody(const VPPhysics::ConvexColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engineinfo)
 {
-	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(convexMeshinfo.colliderInfo.StaticFriction, convexMeshinfo.colliderInfo.DynamicFriction, convexMeshinfo.colliderInfo.Restitution);
+	// 컨벡스 메쉬 콜라이더를 위한 Material 생성
+	physx::PxMaterial* pxMaterial = m_Physics->createMaterial(info.colliderInfo.StaticFriction, info.colliderInfo.DynamicFriction, info.colliderInfo.Restitution);
 
-	// Create the shape for the Convex collider with absolute scale values
-	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(convexMeshinfo.FBXName);
+	// 컨벡스 메쉬 콜라이더를 위한 Shape 생성 (절대 스케일 값 사용)
+	std::weak_ptr<ConvexMeshResource> convexMesh = m_ResourceManager.lock()->GetConvexMeshResource(info.FBXName);
 	physx::PxConvexMesh* pxConvexMesh = convexMesh.lock()->GetConvexMesh();
 	auto mesh = physx::PxConvexMeshGeometry(pxConvexMesh);
 	mesh.scale.scale = {
-		std::abs(convexMeshinfo.colliderInfo.WorldScale.x),
-		std::abs(convexMeshinfo.colliderInfo.WorldScale.y),
-		std::abs(convexMeshinfo.colliderInfo.WorldScale.z)
+		std::abs(info.colliderInfo.WorldScale.x),
+		std::abs(info.colliderInfo.WorldScale.y),
+		std::abs(info.colliderInfo.WorldScale.z)
 	};
 	physx::PxShape* shape = m_Physics->createShape(mesh, *pxMaterial);
 
-	// Set up the dynamic body
-	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, convexMeshinfo, collidertype, engininfo);
+	// 동적 바디 설정
+	std::shared_ptr<DynamicRigidBody> rigidBody = SettingDynamicBody(shape, info, type, engineinfo);
 
-	// Initialize the rigid body
+	// 리지드 바디 초기화
 	if (rigidBody->Initialize(shape, m_Physics))
 	{
-		m_RigidBodyMap[convexMeshinfo.colliderInfo.EntityID] = rigidBody;
-		AddBodyScene(rigidBody);
-		shape->release();
+		m_RigidBodyMap[info.colliderInfo.EntityID] = rigidBody; // 맵에 리지드 바디 삽입
+		AddBodyScene(rigidBody); // 씬에 리지드 바디 추가
+		shape->release(); // Shape 해제
 	}
 	else
-	{
-		assert(false);
-	}
+		assert(false); // 실패 시 디버그 중단
 }
-std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
-{
-	physx::PxFilterData filterdata;
-	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
-	shape->setSimulationFilterData(filterdata);
-	auto staticBody = std::make_shared<StaticRigidBody>(info,colliderType, engininfo);
-	m_RigidBodyMap[staticBody->GetID()] = staticBody;
+#pragma endregion
+#pragma region Setting Body
 
+// 정적 리지드 바디를 설정하는 함수 (BoxColliderInfo 사용)
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engineinfo)
+{
+	// 필터 데이터 설정 (PhysicsLayer와 CollisionMatrix 기반)
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer); // 현재 물리 레이어
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)]; // 충돌 행렬
+	shape->setSimulationFilterData(filterdata); // Shape에 필터 데이터 적용
+
+	// StaticRigidBody 생성 및 리턴
+	auto staticBody = std::make_shared<StaticRigidBody>(info, type, engineinfo);
+	m_RigidBodyMap[staticBody->GetID()] = staticBody; // 맵에 등록
 	return staticBody;
 }
-std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
+// 정적 리지드 바디를 설정하는 함수 (SphereColliderInfo 사용)
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engineinfo)
 {
+	// 필터 데이터 설정
 	physx::PxFilterData filterdata;
 	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
-	auto staticBody = std::make_shared<StaticRigidBody>(info, colliderType, engininfo);
-	m_RigidBodyMap[staticBody->GetID()] = staticBody;
-	return staticBody;
-}
-std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
-{
-	physx::PxFilterData filterdata;
-	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
-	shape->setSimulationFilterData(filterdata);
-	auto staticBody = std::make_shared<StaticRigidBody>(info, colliderType, engininfo);
+
+	// StaticRigidBody 생성 및 리턴
+	auto staticBody = std::make_shared<StaticRigidBody>(info, type, engineinfo);
 	m_RigidBodyMap[staticBody->GetID()] = staticBody;
 	return staticBody;
 }
-std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const VPPhysics::PhysicsInfo& engininfo)
+// 정적 리지드 바디를 설정하는 함수 (ConvexColliderInfo 사용)
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engineinfo)
 {
+	// 필터 데이터 설정
 	physx::PxFilterData filterdata;
 	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
-	auto staticBody = std::make_shared<StaticRigidBody>(info, colliderType, engininfo);
+
+	// StaticRigidBody 생성 및 리턴
+	auto staticBody = std::make_shared<StaticRigidBody>(info, type, engineinfo);
 	m_RigidBodyMap[staticBody->GetID()] = staticBody;
 	return staticBody;
 }
-std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+// 정적 리지드 바디를 설정하는 함수 (CapsuleColliderInfo 사용)
+std::shared_ptr<StaticRigidBody> RigidBodyManager::SettingStaticBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& type, const VPPhysics::PhysicsInfo& engininfo)
 {
+	// 필터 데이터 설정
 	physx::PxFilterData filterdata;
 	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
 	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
 
-	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
-	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
-	return dynamicBody;
+	// StaticRigidBody 생성 및 리턴
+	auto staticBody = std::make_shared<StaticRigidBody>(info, type, engininfo);
+	m_RigidBodyMap[staticBody->GetID()] = staticBody;
+	return staticBody;
 }
-std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+
+// 동적 리지드 바디를 설정하는 함수 (BoxColliderInfo 사용)
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const BoxColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo)
 {
+	// 필터 데이터 설정
 	physx::PxFilterData filterdata;
 	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
 
-	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
-	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
+	// DynamicRigidBody 생성 및 리턴
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, type, engineinfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody; // 맵에 등록
 	return dynamicBody;
 }
-std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+// 동적 리지드 바디를 설정하는 함수 (SphereColliderInfo 사용)
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const SphereColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo)
 {
+	// 필터 데이터 설정
 	physx::PxFilterData filterdata;
 	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
 
-	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
-	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
+	// DynamicRigidBody 생성 및 리턴
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, type, engineinfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody; // 맵에 등록
 	return dynamicBody;
 }
-std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& colliderType, const PhysicsInfo& engininfo)
+// 동적 리지드 바디를 설정하는 함수 (ConvexColliderInfo 사용)
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const ConvexColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo)
 {
+	// 필터 데이터 설정
 	physx::PxFilterData filterdata;
 	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
-	filterdata.word1 = engininfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
 	shape->setSimulationFilterData(filterdata);
 
-	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, colliderType, engininfo);
-	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody;
+	// DynamicRigidBody 생성 및 리턴
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, type, engineinfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody; // 맵에 등록
+	return dynamicBody;
+}
+// 동적 리지드 바디를 설정하는 함수 (CapsuleColliderInfo 사용)
+std::shared_ptr<DynamicRigidBody> RigidBodyManager::SettingDynamicBody(physx::PxShape* shape, const CapsuleColliderInfo& info, const EColliderType& type, const PhysicsInfo& engineinfo)
+{
+	// 필터 데이터 설정
+	physx::PxFilterData filterdata;
+	filterdata.word0 = static_cast<int>(info.colliderInfo.PhysicsLayer);
+	filterdata.word1 = engineinfo.CollisionMatrix[static_cast<int>(info.colliderInfo.PhysicsLayer)];
+	shape->setSimulationFilterData(filterdata);
+
+	// DynamicRigidBody 생성 및 리턴
+	auto dynamicBody = std::make_shared<DynamicRigidBody>(info, type, engineinfo);
+	m_RigidBodyMap[dynamicBody->GetID()] = dynamicBody; // 맵에 등록
 	return dynamicBody;
 }
 
-void RigidBodyManager::OnAddBodyScene(std::shared_ptr<RigidBody> rigidbody)
-{
-	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
-		m_Scene->addActor(*std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody)->GetPxDynamicRigid());
-	else if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
-		m_Scene->addActor(*std::dynamic_pointer_cast<StaticRigidBody>(rigidbody)->GetPxStaticRigid());
+#pragma endregion
 
-}
-void RigidBodyManager::OnReleaseBodyScene(std::any data)
+#pragma region Add_Release
+// 리지드 바디를 씬에 추가하는 함수
+void RigidBodyManager::AddBodyScene(std::shared_ptr<RigidBody> body)
 {
-	auto [rigidBody, isDynamic] = std::any_cast<std::pair<std::shared_ptr<RigidBody>, bool>>(data);
-
-	if (isDynamic)
-	{
-		if (auto dynamicBody = dynamic_cast<DynamicRigidBody*>(rigidBody.get()))
-		{
-			m_Scene->removeActor(*dynamicBody->GetPxDynamicRigid());
-		}
-	}
-	else
-	{
-		if (auto staticBody = dynamic_cast<StaticRigidBody*>(rigidBody.get()))
-		{
-			m_Scene->removeActor(*staticBody->GetPxStaticRigid());
-		}
-	}
+	// 리지드 바디가 DynamicRigidBody인지 확인하고 씬에 추가
+	if (IsDynamic(body->GetID()))
+		m_Scene->addActor(*std::dynamic_pointer_cast<DynamicRigidBody>(body)->GetPxDynamicRigid());
+	// 리지드 바디가 StaticRigidBody인지 확인하고 씬에 추가
+	else if (IsStatic(body->GetID()))
+		m_Scene->addActor(*std::dynamic_pointer_cast<StaticRigidBody>(body)->GetPxStaticRigid());
 }
+// 리지드 바디를 씬에서 제거하는 함수
 void RigidBodyManager::ReleaseBodyScene(uint32_t entityID)
 {
-	auto it = m_RigidBodyMap.find(entityID);
+	auto it = m_RigidBodyMap.find(entityID); // 엔티티 ID로 리지드 바디 검색
 	if (it == m_RigidBodyMap.end())
-		return;
+		return; // 엔티티가 없으면 반환
 
 	auto tempbody = it->second;
-	bool isDynamic = false;
 
-	// DynamicRigidBody인지 체크 후 처리
-	if (Reflection::IsSameType<DynamicRigidBody>(tempbody->GetTypeID()))
-	{
-		auto dynamicBody = std::static_pointer_cast<DynamicRigidBody>(tempbody);
-		if (dynamicBody->GetPxDynamicRigid()->getScene() == m_Scene)
-		{
-			m_RigidBodyMap.erase(it);
-			isDynamic = true;
-		}
-	}
-	// StaticRigidBody인지 체크 후 처리
-	else if (Reflection::IsSameType<StaticRigidBody>(tempbody->GetTypeID()))
-	{
-		auto staticBody = std::static_pointer_cast<StaticRigidBody>(tempbody);
-		if (staticBody->GetPxStaticRigid()->getScene() == m_Scene)
-		{
-			m_RigidBodyMap.erase(it);
-		}
-	}
+	// 리지드 바디가 Dynamic 또는 Static인지 확인
+	if (!Reflection::IsSameType<DynamicRigidBody>(tempbody->GetTypeID()) &&
+		!Reflection::IsSameType<StaticRigidBody>(tempbody->GetTypeID()))
+		return;
 
-	// tempbody와 isDynamic의 값을 std::any로 래핑하여 이벤트를 호출
-	std::any data = std::make_pair(tempbody, isDynamic);
-	OnReleaseBodyScene(data);
+	// 리지드 바디를 타입에 맞게 캐스팅
+	auto dynamicBody = std::dynamic_pointer_cast<DynamicRigidBody>(tempbody);
+	auto staticBody = std::dynamic_pointer_cast<StaticRigidBody>(tempbody);
+
+	// DynamicRigidBody를 씬에서 제거
+	if (dynamicBody && dynamicBody->GetPxDynamicRigid()->getScene() == m_Scene)
+	{
+		m_Scene->removeActor(*dynamicBody->GetPxDynamicRigid());
+		m_RigidBodyMap.erase(it); // 맵에서 제거
+	}
+	// StaticRigidBody를 씬에서 제거
+	else if (staticBody && staticBody->GetPxStaticRigid()->getScene() == m_Scene)
+	{
+		m_Scene->removeActor(*staticBody->GetPxStaticRigid());
+		m_RigidBodyMap.erase(it); // 맵에서 제거
+	}
 }
-std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
-{
-	auto it = m_RigidBodyMap.find(entityID);
-	if (it == m_RigidBodyMap.end())
-		return nullptr;
-	return it->second;
-}
+#pragma endregion
+
+#pragma region Convert_Static_Dynamic
+// Dynamic 리지드 바디를 Static으로 변환하는 함수
 void RigidBodyManager::ConvertToStatic(uint32_t EntityID)
 {
-	auto rigidbody = GetRigidBody(EntityID);
+	auto rigidbody = GetRigidBody(EntityID); // 리지드 바디 검색
 	if (!rigidbody)
-		return;
-	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
-		return;
-	// Remove the dynamic actor from the scene
+		return; // 없으면 반환
+	if (IsStatic(EntityID))
+		return; // 이미 Static이면 반환
+
+	// Dynamic 리지드 바디를 씬에서 제거
 	if (auto dynamicActor = std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody))
 	{
 		m_Scene->removeActor(*dynamicActor->GetPxDynamicRigid());
 	}
+
+	// 타입에 따라 적절한 Static 리지드 바디 생성
 	if (rigidbody->m_Boxinfo)
 		CreateStaticBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 	else if (rigidbody->m_Sphereinfo)
@@ -432,16 +435,20 @@ void RigidBodyManager::ConvertToStatic(uint32_t EntityID)
 	else if (rigidbody->m_Convexinfo)
 		CreateStaticBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 }
+// Static 리지드 바디를 Dynamic으로 변환하는 함수
 void RigidBodyManager::ConvertToDynamic(uint32_t EntityID)
 {
-	auto rigidbody = GetRigidBody(EntityID);
+	auto rigidbody = GetRigidBody(EntityID); // 리지드 바디 검색
 	if (!rigidbody)
-		return;
-	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
-		return;
-	// Remove the dynamic actor from the scene
-	if (auto dynamicActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
-		m_Scene->removeActor(*dynamicActor->GetPxStaticRigid());
+		return; // 없으면 반환
+	if (IsDynamic(EntityID))
+		return; // 이미 Dynamic이면 반환
+
+	// Static 리지드 바디를 씬에서 제거
+	if (auto staticActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
+		m_Scene->removeActor(*staticActor->GetPxStaticRigid());
+
+	// 타입에 따라 적절한 Dynamic 리지드 바디 생성
 	if (rigidbody->m_Boxinfo)
 		CreateDynamicBody(*rigidbody->m_Boxinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 	else if (rigidbody->m_Sphereinfo)
@@ -451,17 +458,20 @@ void RigidBodyManager::ConvertToDynamic(uint32_t EntityID)
 	else if (rigidbody->m_Convexinfo)
 		CreateDynamicBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 }
+// Dynamic 리지드 바디를 특정 PhysicsLayer로 Static으로 변환하는 함수
 void RigidBodyManager::ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer)
 {
-	auto rigidbody = GetRigidBody(EntityID);
+	auto rigidbody = GetRigidBody(EntityID); // 리지드 바디 검색
 	if (!rigidbody)
-		return;
-	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
-		return;
-	// Remove the dynamic actor from the scene
+		return; // 없으면 반환
+	if (IsStatic(EntityID))
+		return; // 이미 Static이면 반환
+
+	// Dynamic 리지드 바디를 씬에서 제거
 	if (auto dynamicActor = std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody))
 		m_Scene->removeActor(*dynamicActor->GetPxDynamicRigid());
 
+	// 타입에 따라 적절한 PhysicsLayer를 설정하고 Static 리지드 바디 생성
 	if (rigidbody->m_Boxinfo)
 	{
 		rigidbody->m_Boxinfo->colliderInfo.PhysicsLayer = layer;
@@ -483,16 +493,21 @@ void RigidBodyManager::ConvertToStaticWithLayer(uint32_t EntityID, VPPhysics::EP
 		CreateStaticBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 	}
 }
+// Static 리지드 바디를 특정 PhysicsLayer로 Dynamic으로 변환하는 함수
 void RigidBodyManager::ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::EPhysicsLayer layer)
 {
-	auto rigidbody = GetRigidBody(EntityID);
+	auto rigidbody = GetRigidBody(EntityID); // 리지드 바디 검색
 	if (!rigidbody)
-		return;
-	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
-		return;
-	// Remove the dynamic actor from the scene
-	if (auto dynamicActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
-		m_Scene->removeActor(*dynamicActor->GetPxStaticRigid());
+		return; // 없으면 반환
+	if (IsDynamic(EntityID))
+		return; // 이미 Dynamic이면 반환
+
+
+	// Static 리지드 바디를 씬에서 제거
+	if (auto staticActor = std::dynamic_pointer_cast<StaticRigidBody>(rigidbody))
+		m_Scene->removeActor(*staticActor->GetPxStaticRigid());
+
+	// 타입에 따라 적절한 PhysicsLayer를 설정하고 Dynamic 리지드 바디 생성
 	if (rigidbody->m_Boxinfo)
 	{
 		rigidbody->m_Boxinfo->colliderInfo.PhysicsLayer = layer;
@@ -514,6 +529,18 @@ void RigidBodyManager::ConvertToDynamicWithLayer(uint32_t EntityID, VPPhysics::E
 		CreateDynamicBody(*rigidbody->m_Convexinfo, rigidbody->m_ColliderType, *rigidbody->m_PhysicInfo);
 	}
 }
+#pragma endregion
+
+
+// 리지드 바디를 가져오는 함수
+std::shared_ptr<RigidBody> RigidBodyManager::GetRigidBody(uint32_t entityID)
+{
+	auto it = m_RigidBodyMap.find(entityID); // 엔티티 ID로 검색
+	if (it == m_RigidBodyMap.end())
+		return nullptr; // 없으면 nullptr 반환
+	return it->second; // 리지드 바디 반환
+}
+
 bool RigidBodyManager::HasRigidBody(uint32_t entityID)
 {
 	return m_RigidBodyMap.count(entityID) > 0;
@@ -525,9 +552,7 @@ bool RigidBodyManager::IsDynamic(uint32_t EntityID)
 		return false;
 	if (Reflection::IsSameType<DynamicRigidBody>(rigid->GetTypeID()))
 		return true;
-
 	return false;
-
 }
 bool RigidBodyManager::IsStatic(uint32_t EntityID)
 {
@@ -536,52 +561,56 @@ bool RigidBodyManager::IsStatic(uint32_t EntityID)
 		return false;
 	if (Reflection::IsSameType<StaticRigidBody>(rigid->GetTypeID()))
 		return true;
-
 	return false;
 }
+
+// 특정 물리 레이어에서 씬의 정점과 면을 추출하는 함수
 void RigidBodyManager::ExtractSceneVerticesAndFacesByLayer(PxScene* scene, EPhysicsLayer layer, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!scene)
-		return;
+		return; // 씬이 유효하지 않으면 반환
 
-	// Retrieve only static rigid actors from the scene
+	// 씬에서 Static Rigid Actor만 가져옴
 	PxU32 actorCount = scene->getNbActors(physx::PxActorTypeFlag::eRIGID_STATIC);
 	std::vector<PxRigidStatic*> actors(actorCount);
 	scene->getActors(physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<PxActor**>(actors.data()), actorCount);
 
-	// Iterate over all static actors
+	// 각 Static Actor를 순회
 	for (PxRigidStatic* actor : actors)
 	{
 		if (!actor)
 			continue;
 
-		// Retrieve shapes from the PxRigidStatic actor
+		// Actor에서 Shapes를 가져옴
 		PxU32 shapeCount = actor->getNbShapes();
 		std::vector<PxShape*> shapes(shapeCount);
 		actor->getShapes(shapes.data(), shapeCount);
 
 		for (PxShape* shape : shapes)
 		{
-			// Check if the shape is a simulation shape and not a trigger shape
+			// Simulation Shape이면서 Trigger Shape이 아닌 경우 처리
 			if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
 			{
-				// Check the shape's filter data for the layer
+				// 필터 데이터를 확인하여 레이어와 비교
 				PxFilterData filterData = shape->getSimulationFilterData();
 				if (filterData.word0 == static_cast<PxU32>(layer))
 				{
-					// Use the existing function to extract vertices and faces for this actor
+					// 해당 Actor의 정점 및 면 데이터를 추출
 					RigidBodyManager::ExtractVerticesAndFaces(actor, outVertices, outIndices);
-					break; // No need to check other shapes if we've processed the actor
+					break; // 하나의 Shape만 처리하면 Actor 처리를 중단
 				}
 			}
 		}
 	}
 }
-void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
+
+// 특정 엔티티의 정점과 면을 추출하는 함수
+void RigidBodyManager::ExtractEntityVerticesAndFaces(uint32_t entityID, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!HasRigidBody(entityID))
-		return;
-	if (IsStatic(entityID))
+		return; // 엔티티에 리지드 바디가 없으면 반환
+
+	if (IsStatic(entityID)) // Static Rigid Body인지 확인
 	{
 		auto staticBody = dynamic_cast<StaticRigidBody*>(GetRigidBody(entityID).get());
 		physx::PxRigidStatic* pxRigidStatic = staticBody->GetPxStaticRigid();
@@ -589,7 +618,7 @@ void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VP
 			return;
 		ExtractVerticesAndFaces(pxRigidStatic, outVertices, outIndices);
 	}
-	else if (IsDynamic(entityID))
+	else if (IsDynamic(entityID)) // Dynamic Rigid Body인지 확인
 	{
 		auto dynamicrigid = dynamic_cast<DynamicRigidBody*>(GetRigidBody(entityID).get());
 		physx::PxRigidDynamic* pxRigidDynamic = dynamicrigid->GetPxDynamicRigid();
@@ -598,56 +627,54 @@ void RigidBodyManager::ExtractVerticesAndFaces(uint32_t entityID, std::vector<VP
 		ExtractVerticesAndFaces(pxRigidDynamic, outVertices, outIndices);
 	}
 }
+
+// Rigid Actor에서 정점과 면을 추출하는 함수
 void RigidBodyManager::ExtractVerticesAndFaces(PxRigidActor* actor, std::vector<VPMath::Vector3>& outVertices, std::vector<int>& outIndices)
 {
 	if (!actor)
-		return;
+		return; // Actor가 유효하지 않으면 반환
 
-	// 액터의 전역 포즈(월드 변환)를 가져옵니다.
+	// Actor의 전역 변환(월드 좌표계)을 가져옴
 	PxTransform globalPose = actor->getGlobalPose();
 
-	// PxRigidStatic 액터에서 쉐이프들을 가져옵니다.
+	// Actor에서 Shapes를 가져옴
 	PxU32 shapeCount = actor->getNbShapes();
 	std::vector<PxShape*> shapes(shapeCount);
 	actor->getShapes(shapes.data(), shapeCount);
 
 	for (PxShape* shape : shapes)
 	{
-		// SIMULATION_SHAPE(충돌 용도)로 표시된 쉐이프만 처리합니다.
+		// Simulation Shape으로 표시된 것만 처리
 		if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
 		{
-			// 쉐이프에서 지오메트리를 가져옵니다.
+			// Shape의 지오메트리를 가져옴
 			PxGeometryHolder geometryHolder = shape->getGeometry();
 
-			if (geometryHolder.getType() == PxGeometryType::eCONVEXMESH)
+			if (geometryHolder.getType() == PxGeometryType::eCONVEXMESH) // 컨벡스 메쉬 처리
 			{
-				// 컨벡스 메쉬 지오메트리 접근
+				// Convex Mesh Geometry 가져오기
 				PxConvexMeshGeometry convexGeometry = geometryHolder.convexMesh();
 				PxConvexMesh* convexMesh = convexGeometry.convexMesh;
 
-				// convexGeometry에서 스케일을 추출합니다.
+				// Convex Mesh 스케일 가져오기
 				PxMeshScale scale = convexGeometry.scale;
 
-				// PxConvexMesh에서 정점들을 추출합니다.
+				// 정점 데이터 추출
 				const PxVec3* meshVertices = convexMesh->getVertices();
 				PxU32 vertexCount = convexMesh->getNbVertices();
 
-				// 이 정점 배치의 시작 인덱스를 저장합니다.
+				// 현재 정점 데이터의 시작 인덱스 저장
 				int baseIndex = static_cast<int>(outVertices.size());
 
-				// 정점을 변환하여 월드 공간으로 변환한 후 outVertices에 추가합니다.
+				// 정점을 변환하고 월드 좌표계로 변환 후 추가
 				for (PxU32 i = 0; i < vertexCount; ++i)
 				{
-					// 먼저 로컬 정점에 스케일을 적용합니다.
-					PxVec3 scaledVertex = scale.transform(meshVertices[i]);
-
-					// 스케일링된 정점을 액터의 전역 포즈를 사용하여 월드 공간으로 변환합니다.
-					PxVec3 worldVertex = globalPose.transform(scaledVertex);
-					// 변환된 정점을 출력 벡터에 추가합니다.
-					outVertices.emplace_back(worldVertex.x, worldVertex.y, worldVertex.z);
+					PxVec3 scaledVertex = scale.transform(meshVertices[i]); // 스케일 적용
+					PxVec3 worldVertex = globalPose.transform(scaledVertex); // 월드 변환
+					outVertices.emplace_back(worldVertex.x, worldVertex.y, worldVertex.z); // 출력 버퍼에 추가
 				}
 
-				// 인덱스를 추출합니다 (인덱스 버퍼는 정점 버퍼를 참조합니다).
+				// 면 데이터 추출 (인덱스 버퍼 사용)
 				const PxU8* indexBuffer = convexMesh->getIndexBuffer();
 				PxU32 polygonCount = convexMesh->getNbPolygons();
 
@@ -656,49 +683,43 @@ void RigidBodyManager::ExtractVerticesAndFaces(PxRigidActor* actor, std::vector<
 					PxHullPolygon polygon;
 					convexMesh->getPolygonData(i, polygon);
 
-					// 폴리곤의 정점 인덱스를 추출합니다.
-					if (polygon.mNbVerts == 3) // 이미 삼각형
-					{
+					// 폴리곤의 정점 인덱스 처리
+					if (polygon.mNbVerts == 3) // 삼각형일 경우 바로 처리
 						for (PxU32 j = 0; j < 3; ++j)
 						{
 							PxU32 vertexIndex = indexBuffer[polygon.mIndexBase + j];
 							outIndices.push_back(baseIndex + static_cast<int>(vertexIndex));
 						}
-					}
-					else if (polygon.mNbVerts > 3) // 3개 이상의 정점을 가진 폴리곤(삼각형화가 필요)
-					{
+					else if (polygon.mNbVerts > 3) // 다각형일 경우 삼각형화 처리
 						for (PxU32 j = 2; j < polygon.mNbVerts; ++j)
 						{
 							outIndices.push_back(baseIndex + static_cast<int>(indexBuffer[polygon.mIndexBase]));
 							outIndices.push_back(baseIndex + static_cast<int>(indexBuffer[polygon.mIndexBase + j - 1]));
 							outIndices.push_back(baseIndex + static_cast<int>(indexBuffer[polygon.mIndexBase + j]));
 						}
-					}
-
 				}
 			}
 		}
 	}
 }
 
+// Rigid Actor에서 로컬 정점을 추출하는 함수
 void RigidBodyManager::ExtractLocalVerticesFromActor(physx::PxRigidActor* actor, std::vector<VPMath::Vector3>& localVertices)
 {
 	if (!actor)
-		return;
-
-	// 액터에서 쉐이프 추출
+		return; // Actor가 유효하지 않으면 반환
+	// Actor에서 Shapes를 가져옴
 	PxU32 shapeCount = actor->getNbShapes();
 	std::vector<PxShape*> shapes(shapeCount);
 	actor->getShapes(shapes.data(), shapeCount);
-
 	for (PxShape* shape : shapes)
 	{
-		// SIMULATION_SHAPE(충돌 용도)로 표시된 쉐이프만 처리
+		// Simulation Shape으로 표시된 것만 처리
 		if (shape->getFlags().isSet(physx::PxShapeFlag::eSIMULATION_SHAPE))
 		{
 			PxGeometryHolder geometryHolder = shape->getGeometry();
 
-			// 컨벡스 메쉬인지 확인
+			// Convex Mesh인지 확인
 			if (geometryHolder.getType() == PxGeometryType::eCONVEXMESH)
 			{
 				PxConvexMeshGeometry convexGeometry = geometryHolder.convexMesh();
@@ -707,7 +728,7 @@ void RigidBodyManager::ExtractLocalVerticesFromActor(physx::PxRigidActor* actor,
 				if (!convexMesh)
 					continue;
 
-				// PxConvexMesh에서 로컬 정점 가져오기
+				// 로컬 정점 데이터 추출
 				const PxVec3* meshVertices = convexMesh->getVertices();
 				PxU32 vertexCount = convexMesh->getNbVertices();
 
@@ -761,6 +782,7 @@ std::vector<VPMath::Vector3> RigidBodyManager::GetConVexMeshVertex(uint32_t enti
 	return localVertices;
 }
 
+
 void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P, const VPMath::Quaternion& Q)
 {
 	auto temp = GetRigidBody(entityID);
@@ -771,12 +793,12 @@ void RigidBodyManager::SetGobalPose(uint32_t entityID, const VPMath::Vector3& P,
 	tempQuat.normalize();
 
 
-	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
+	if (IsDynamic(entityID))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		dynamicBody->GetPxDynamicRigid()->setGlobalPose({ tempPos, tempQuat });
 	}
-	else if (Reflection::IsSameType<StaticRigidBody>(temp->GetTypeID()))
+	else if (IsStatic(entityID))
 	{
 		auto staticBody = static_cast<StaticRigidBody*>(temp.get());
 		staticBody->GetPxStaticRigid()->setGlobalPose({ tempPos, tempQuat });
@@ -792,13 +814,13 @@ VPMath::Vector3 RigidBodyManager::GetVelocity(uint32_t entityID)
 	if (!temp)
 		return { 0, 0, 0 };
 
-	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
+	if (IsDynamic(entityID))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		PxVec3 velocity = dynamicBody->GetPxDynamicRigid()->getLinearVelocity();
 		return { velocity.x, velocity.y, velocity.z };
 	}
-	else if (Reflection::IsSameType<StaticRigidBody>(temp->GetTypeID()))
+	else if (IsStatic(entityID))
 	{
 		return { 0, 0, 0 };
 	}
@@ -813,7 +835,7 @@ void RigidBodyManager::AddVelocity(uint32_t entityID, const VPMath::Vector3& dir
 		assert(false);
 		return;
 	}
-	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
+	if (IsDynamic(entityID))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		VPMath::Vector3 Dir = dir;
@@ -835,7 +857,7 @@ void RigidBodyManager::SetVelocity(uint32_t entityID, const VPMath::Vector3& dir
 		assert(false);
 		return;
 	}
-	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID())) 
+	if (IsDynamic(entityID))
 	{
 		auto dynamicBody = static_cast<DynamicRigidBody*>(temp.get());
 		VPMath::Vector3 Dir = dir;
@@ -857,13 +879,13 @@ void RigidBodyManager::SetVelocity(uint32_t entityID, const VPMath::Vector3& dir
 VPMath::Vector3 RigidBodyManager::GetGobalLocation(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
-	if (Reflection::IsSameType<DynamicRigidBody>(temp->GetTypeID()))
+	if (IsDynamic(entityID))
 	{
 		auto dynamicbody = static_cast<DynamicRigidBody*>(temp.get());
 		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
 		return { pose.p.x, pose.p.y, pose.p.z };
 	}
-	else if (Reflection::IsSameType<StaticRigidBody>(temp->GetTypeID()))
+	else if (IsStatic(entityID))
 	{
 		auto staticbody = static_cast<StaticRigidBody*>(temp.get());
 		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
@@ -879,7 +901,7 @@ VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
 {
 	auto temp = GetRigidBody(entityID);
 
-	if (Reflection::GetTypeID<DynamicRigidBody>() == temp->GetTypeID())
+	if (IsDynamic(entityID))
 	{
 		auto dynamicbody = static_cast<DynamicRigidBody*>(temp.get());
 		auto pose = dynamicbody->GetPxDynamicRigid()->getGlobalPose();
@@ -887,7 +909,7 @@ VPMath::Quaternion RigidBodyManager::GetGobalQuaternion(uint32_t entityID)
 		tempQuat.Normalize(); // Normalize quaternion after getting it
 		return tempQuat;
 	}
-	else if (Reflection::GetTypeID<StaticRigidBody>() == temp->GetTypeID())
+	else if (IsStatic(entityID))
 	{
 		auto staticbody = static_cast<StaticRigidBody*>(temp.get());
 		auto pose = staticbody->GetPxStaticRigid()->getGlobalPose();
@@ -912,6 +934,8 @@ RaycastData RigidBodyManager::RaycastActor(uint32_t entityID, VPMath::Vector3 di
 {
 	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);
+	if (!tempActor)
+		return;
 	physx::PxVec3 tempDir = { dir.x,dir.y,dir.z };
 	tempDir.normalize();
 	PxF32 max = (PxF32)distance;
@@ -954,6 +978,8 @@ RaycastData RigidBodyManager::RaycastActor_Offset(uint32_t entityID, VPMath::Vec
 {
 	RaycastData raycastresult{};
 	auto tempActor = FindActorByID(entityID);			// entityID를 통해 물리 액터를 찾아옴
+	if (!tempActor)
+		return;
 	physx::PxVec3 tempDir = { dir.x, dir.y, dir.z };	// 입력된 방향 벡터를 PhysX의 PxVec3로 변환
 	tempDir.normalize();								// 방향 벡터를 단위 벡터로 정규화
 	PxF32 max = (PxF32)distance;						// 레이캐스트할 최대 거리를 설정
@@ -1253,20 +1279,13 @@ physx::PxRigidActor* RigidBodyManager::FindActorByID(uint32_t entityID)
 		return nullptr;
 
 	auto rigidbody = it->second;  // 검색한 결과의 값을 가져옴
-	Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID());
 	// DynamicRigidBody 타입인지 먼저 체크 후 반환
-	if (Reflection::IsSameType<DynamicRigidBody>(rigidbody->GetTypeID()))
+	if (IsDynamic(entityID))
 		return std::dynamic_pointer_cast<DynamicRigidBody>(rigidbody)->GetPxDynamicRigid();
 
 	// StaticRigidBody 타입인지 체크 후 반환
-	if (Reflection::IsSameType<StaticRigidBody>(rigidbody->GetTypeID()))
+	if (IsStatic(entityID))
 		return std::dynamic_pointer_cast<StaticRigidBody>(rigidbody)->GetPxStaticRigid();
-
 	return nullptr;  // 해당하는 타입이 없으면 nullptr 반환
 }
 
-void RigidBodyManager::AddBodyScene(std::shared_ptr<RigidBody> body)
-{
-	//EventManager::GetInstance().ScheduleEvent("OnAddBodyScene", body);
-	OnAddBodyScene(body);
-}
