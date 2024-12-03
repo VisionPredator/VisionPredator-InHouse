@@ -10,6 +10,9 @@ public:
     void RemoveMaps();
     void Update();
 
+    bool IsEntityInCollision(uint32_t entityID);
+    bool IsEntityInTrigger(uint32_t entityID);
+
 private:
     void AddEnter(std::pair<uint32_t, uint32_t> data, bool IsTrigger = false);
     std::multimap<uint32_t, uint32_t>::iterator MoveEnterToContact(std::multimap<uint32_t, uint32_t>::iterator it, bool IsTrigger = false);

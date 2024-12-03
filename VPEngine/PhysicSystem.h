@@ -12,8 +12,7 @@ class PhysicSystem :
     public IStartable,
     public IPhysicable, 
     public IRenderable,
-    public EventSubscriber,
-	public IContactable
+    public EventSubscriber
 {
 public:
 	PhysicSystem(std::shared_ptr<SceneManager> sceneManager);
@@ -49,17 +48,6 @@ private:
 	VPMath::Vector3 DisApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation);
 
 
-
-
-
-
-
-
-
-	// IContactable을(를) 통해 상속됨
-	void EnterCollision(std::pair<uint32_t, uint32_t> entitypair) override;
-
-	void ExitCollision(std::pair<uint32_t, uint32_t> entitypair) override;
 
 };
 

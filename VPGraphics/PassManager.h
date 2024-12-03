@@ -52,7 +52,7 @@ public:
 	void OnResize();
 	void SetVP(bool isVP);
 	void SetDebugDraw(bool on_off);
-
+	bool GetDebugSetting();
 
 private:
 	void DrawIMGUI();

@@ -298,6 +298,8 @@ void EnemyState::ChangeCurrentAnimation(const std::shared_ptr<EnemyComponent>& e
 void EnemyState::DrawDebugDraw(const EnemyComponent& enemyComp, DirectX::BoundingFrustum& viewRange,
 	DirectX::BoundingSphere& noiseRange, DirectX::BoundingSphere& chaseRange)
 {
+	if (!enemyComp.Graphics->GetDebugRenderSetting())
+		return;
 	debug::FrustumInfo frustumInfo;
 	frustumInfo.Frustum = viewRange;
 	frustumInfo.Color = VisPred::SimpleMath::Color{ 1, 1, 0, 1 };

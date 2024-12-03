@@ -24,7 +24,8 @@ void LightSystem::BeginRenderUpdate(float deltaTime)
 		temp.spot = lightComp.spot;
 		temp.type = static_cast<float>(lightComp.type);
 		m_Graphics->UpdateLightData(lightComp.GetEntityID(), lightComp.type, temp);
-
+		if (!m_Graphics->GetDebugRenderSetting())
+			continue;
 		debug::SphereInfo sphereInfo;
 		sphereInfo.Sphere.Center = temp.pos;
 		sphereInfo.Sphere.Radius = temp.range;

@@ -54,7 +54,7 @@ public:
 	void OnResize(HWND hwnd, bool isFullScreen) override;
 
 	virtual void DebugRenderONOFF(bool isRender) override;
-
+	bool GetDebugRenderSetting() override;
 
 	void SetCamera(VPMath::Matrix view, VPMath::Matrix proj, const VPMath::Matrix& orthoProj) override;
 	void testCulling(VPMath::Matrix view, VPMath::Matrix proj) override;
@@ -105,7 +105,7 @@ public:
 	void* GetSRV(std::wstring name) override;
 
 	///¹°¸®
-	virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) override;
+	virtual std::vector<VPMath::Vector3> GetVertices(const std::wstring& fbx) override;
 
 
 protected:
@@ -156,4 +156,6 @@ private:
 	void BeginImGui();
 	void EndImGui();
 	void DestroyImGui();
+
+
 };

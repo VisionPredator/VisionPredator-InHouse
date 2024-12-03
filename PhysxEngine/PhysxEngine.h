@@ -33,7 +33,6 @@ public:
 	void ConvertToDynamic(uint32_t entityID) override;
 	void ReleaseActor(uint32_t entityID) override;
 
-	// IPhysx을(를) 통해 상속됨
 	void CreateStaticBody(const VPPhysics::BoxColliderInfo& boxinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::SphereColliderInfo& sphereinfo, const EColliderType& collidertype) override;
 	void CreateStaticBody(const VPPhysics::CapsuleColliderInfo& capsuleinfo, const EColliderType& collidertype) override;
@@ -58,26 +57,17 @@ public:
 	VPMath::Vector3 GetVelocity(uint32_t entityID) override;
 
 private:
-	//Physics* m_Physics{};
-	//physx::PxScene* m_PxScene{};
 	physx::PxScene* m_PxScene;
 	std::shared_ptr<Physics> m_Physics;
-	//RigidBodyManager* m_RigidBodyManager{};
 	std::shared_ptr<RigidBodyManager> m_RigidBodyManager;
 	std::shared_ptr<ControllerManager> m_ControllerManager;
 	std::shared_ptr<CollisionManager> m_CollisionManager;
 	std::shared_ptr<CollisionCallback> m_Collisioncallback;
 	std::shared_ptr<PhysichResourceManager> m_RecourceManager;
-	//ControllerManager* m_ControllerManager{};
-	//CollisionManager* m_CollisionManager{};
-	//CollisionCallback* m_Collisioncallback{};
 	VPPhysics::PhysicsInfo m_PhyiscsInfo{};
 	int m_Frame = 60;
 	float m_UpdateTime = 1.f / 120.f;
 	float m_ElapsedTime = 0.f;
-
-
-	// IPhysx을(를) 통해 상속됨
 	void CreatCapsuleController(VPPhysics::CapsuleControllerInfo capsuleinfo) override;
 	void RemoveController(uint32_t entityID) override;
 	void SetControllerGobalPose(uint32_t entityID, VPMath::Vector3 P) override;
@@ -88,41 +78,23 @@ private:
 	bool HasConvexMeshResource(const std::wstring& key) override;
 	bool HasRigidBody(uint32_t entityID) override;
 	bool HasController(uint32_t entityID) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	RaycastData RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance) override;
 	RaycastData RaycastActor_Offset(uint32_t entityID, VPMath::Vector3 offset, VPMath::Vector3 dir, float distance) override;
 	RaycastData RaycastActorAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 	RaycastData RaycastActorAtPose_Ignore(uint32_t entityID, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
 	RaycastData RaycastActorAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-
-
-
-
-
-	// IPhysx을(를) 통해 상속됨
 	void ResizeCapsuleController(uint32_t entityID, float radius, float height) override;
-
-
-
-
-
-
-
-	// IPhysx을(를) 통해 상속됨
 	std::vector<RaycastData> RaycastActorsAtPose(VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-
 	std::vector<RaycastData> RaycastActorsAtPose_Ignores(std::vector<uint32_t> entityIDs, VPMath::Vector3 location, VPMath::Vector3 dir, float distance) override;
-
-
-	// IPhysx을(를) 통해 상속됨
 	bool IsDynamic(uint32_t entityID) override;
 	bool IsStatic(uint32_t entityID) override;
+	std::vector<VPMath::Vector3> GetConVexMeshVertex(uint32_t entityID) override;
 
 
 	// IPhysx을(를) 통해 상속됨
-	std::vector<VPMath::Vector3> GetConVexMeshVertex(uint32_t entityID) override;
+	bool IsEntityInCollision(uint32_t entityID) override;
+
+	bool IsEntityInTrigger(uint32_t entityID) override;
 
 };
 

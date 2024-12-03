@@ -8,9 +8,7 @@ ConvexMeshResource::ConvexMeshResource(physx::PxPhysics* physics, const VPPhysic
 
 	m_ConvexMesh = PhysicModelLoader::CookConvexMesh(physics, info);
 	if (!m_ConvexMesh)
-	{
 		assert(false);
-	}
 }
 
  ConvexMeshResource::~ConvexMeshResource()

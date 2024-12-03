@@ -94,6 +94,8 @@ public:
 	virtual bool HasController(uint32_t entityID) abstract;
 	virtual bool HasConvexMeshResource(const std::wstring& key) abstract;
 
+	virtual bool IsEntityInCollision(uint32_t entityID) abstract;
+	virtual bool IsEntityInTrigger(uint32_t entityID) abstract;
 };
 
 }

@@ -47,6 +47,7 @@ namespace Graphics
 		virtual void EndRender() abstract;
 		virtual void OnResize(HWND hwnd,bool isFullScreen) abstract;
 		virtual void DebugRenderONOFF(bool isRender) abstract;
+		virtual bool GetDebugRenderSetting() abstract;
 
 		// 엔티티가 사라지면 그래픽스 안에 있는 해당 오브젝트도 지워주는 함수
 		virtual void EraseObject(uint32_t EntityID) abstract;
@@ -110,6 +111,6 @@ namespace Graphics
 		virtual void* GetSRV(std::wstring name) abstract;
 
 		/// 물리 전용
-		virtual std::vector<VPMath::Vector3> GetVertices(std::string fbx) abstract;
+		virtual std::vector<VPMath::Vector3> GetVertices(const std::wstring& fbx) abstract;
 	};
 }

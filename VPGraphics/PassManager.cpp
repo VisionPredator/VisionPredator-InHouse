@@ -255,6 +255,11 @@ void PassManager::SetDebugDraw(bool on_off)
 	m_isDebugDraw = on_off;
 }
 
+bool PassManager::GetDebugSetting()
+{
+	return m_isDebugDraw;
+}
+
 void PassManager::DrawIMGUI()
 {
 	std::shared_ptr<Device> Device = m_Device.lock();

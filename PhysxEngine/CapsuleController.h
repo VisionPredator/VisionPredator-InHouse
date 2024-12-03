@@ -13,9 +13,7 @@ public:
     void SetShapeOffset(ControllerPivot pivot,VPMath::Vector3 offset);
     void UpdateCapsuleDimensions(CapsuleControllerInfo info);
     ~CapsuleController();
-    entt::id_type GetTypeID() const override {
-        return Reflection::GetTypeID<CapsuleController>();
-    }
+	entt::id_type GetTypeID() const override { return Reflection::GetTypeID<CapsuleController>(); }
 private:
     std::shared_ptr<ControllerHitCallback> m_ControllerHitCallback;
 

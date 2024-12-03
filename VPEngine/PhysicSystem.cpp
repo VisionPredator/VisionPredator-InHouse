@@ -51,83 +51,104 @@ void PhysicSystem::PhysicsUpdate(float deltaTime)
 }
 void PhysicSystem::PhysicsLateUpdate(float deltaTime)
 {
+	// "OnUpdate" 이벤트를 즉시 발생시킴
 	EventManager::GetInstance().ImmediateEvent("OnUpdate");
 
+	// RigidBodyComponent 처리
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
-
 		uint32_t entityID = rigidBodyComponent.GetEntityID();
+		// 해당 엔티티의 RigidBody가 없으면 건너뜀
 		if (!m_PhysicsEngine->HasRigidBody(entityID))
 			continue;
+		// TransformComponent 가져오기
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
+		// 현재 위치와 회전을 가져옴
 		auto templocation = m_PhysicsEngine->GetGobalLocation(entityID);
-		auto offset_T = (rigidBodyTransform->World_Location - templocation).Length();
+		float offset_T = (rigidBodyTransform->World_Location - templocation).Length();
 		VPMath::Quaternion tempQuat = m_PhysicsEngine->GetGobalQuaternion(entityID);
 		float offset_R = (rigidBodyTransform->World_Quaternion - tempQuat).Length();
+		// 위치와 회전 차이가 임계값을 넘으면 물리 엔진에 갱신
 		if (offset_R > m_rotation_threshold_degrees || offset_T > m_location_threshold)
-		{
 			m_PhysicsEngine->SetGobalPose(entityID, rigidBodyTransform->World_Location, rigidBodyTransform->World_Quaternion);
-		}
-		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
+		// 속도 업데이트
+		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(entityID);
 	}
 
+	// ControllerComponent 처리
 	for (ControllerComponent& controllerCompoent : COMPITER(ControllerComponent))
 	{
-		if (!m_PhysicsEngine->HasController(controllerCompoent.GetEntityID()))
-			continue;
 		uint32_t entityID = controllerCompoent.GetEntityID();
 
+		// 해당 엔티티의 Controller가 없으면 건너뜀
+		if (!m_PhysicsEngine->HasController(entityID))
+			continue;
+		// TransformComponent 가져오기
 		TransformComponent* controllerTransform = controllerCompoent.GetComponent<TransformComponent>();
-
+		// 현재 위치를 가져와 Pivot과 Offset 제거
 		VPMath::Vector3 templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
 		templocation = DisApplyPivotAndOffset(controllerCompoent, templocation);
-		float offset_T = (controllerTransform->World_Location - templocation).Length();
-		if (offset_T > m_location_threshold)
+		// 위치 차이가 임계값을 넘으면 물리 엔진에 갱신
+		if ((controllerTransform->World_Location - templocation).Length() > m_location_threshold)
 		{
 			templocation = ApplyPivotAndOffset(controllerCompoent, controllerTransform->World_Location);
 			m_PhysicsEngine->SetControllerGobalPose(entityID, templocation);
 		}
-
 	}
 
+	// 물리 엔진 업데이트
 	m_PhysicsEngine->Update(deltaTime);
 
+	// 동적인 RigidBodyComponent를 처리하여 Transform 업데이트
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
 		uint32_t entityID = rigidBodyComponent.GetEntityID();
+
+		// 해당 엔티티의 RigidBody가 없으면 건너뜀
 		if (!m_PhysicsEngine->HasRigidBody(entityID))
 			continue;
+
+		// TransformComponent 가져오기
 		auto rigidBodyTransform = rigidBodyComponent.GetComponent<TransformComponent>();
 
+		// 동적 RigidBody가 아니면 건너뜀
 		if (!m_PhysicsEngine->IsDynamic(entityID))
 			continue;
-		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(rigidBodyTransform->GetEntityID());
-		if (rigidBodyComponent.Speed.Length()<0.001f)
-			continue;
 
+		// 속도가 일정 이하이면 건너뜀
+		rigidBodyComponent.Speed = m_PhysicsEngine->GetVelocity(entityID);
+		if (rigidBodyComponent.Speed.Length() < 0.001f)
+			continue;
+		// TransformComponent의 위치와 회전 업데이트
 		rigidBodyTransform->SetWorldLocation(m_PhysicsEngine->GetGobalLocation(entityID));
 		rigidBodyTransform->SetWorldQuaternion(m_PhysicsEngine->GetGobalQuaternion(entityID));
 	}
 
+	// ControllerComponent를 처리하여 Transform 업데이트
 	for (ControllerComponent& controllerComponent : COMPITER(ControllerComponent))
 	{
-		if (!m_PhysicsEngine->HasController(controllerComponent.GetEntityID()))
-			continue;
 		uint32_t entityID = controllerComponent.GetEntityID();
-
+		// 해당 엔티티의 Controller가 없으면 건너뜀
+		if (!m_PhysicsEngine->HasController(entityID))
+			continue;
+		// TransformComponent 가져오기
 		auto controllerTransform = controllerComponent.GetComponent<TransformComponent>();
+		// 현재 위치를 가져와 Pivot과 Offset 제거 후 Transform 업데이트
 		auto templocation = m_PhysicsEngine->GetControllerGobalPose(entityID);
 		templocation = DisApplyPivotAndOffset(controllerComponent, templocation);
 		controllerTransform->SetWorldLocation(templocation);
+		// TransformSystem에 업데이트 데이터 추가
 		TransformSystem::AddUpdateData(controllerTransform);
 	}
+
+	// "OnUpdate" 이벤트를 다시 즉시 발생시킴
 	EventManager::GetInstance().ImmediateEvent("OnUpdate");
 }
+
 #pragma region Physics Fuction
 VPMath::Vector3 PhysicSystem::ApplyPivotAndOffset(const ControllerComponent& controllerComponent, VPMath::Vector3 baseLocation)
 {
 	VPMath::Vector3 adjustedLocation = baseLocation + controllerComponent.Contollerinfo.LocalOffset;
-
 	switch (controllerComponent.Contollerinfo.Pivot)
 	{
 	case VPPhysics::ControllerPivot::FOOT:
@@ -154,72 +175,54 @@ VPMath::Vector3 PhysicSystem::DisApplyPivotAndOffset(const ControllerComponent& 
 
 	return adjustedLocation;
 }
-void PhysicSystem::EnterCollision(std::pair<uint32_t, uint32_t> entitypair)
-{
-	auto firstentity= GetSceneManager()->GetEntity(entitypair.first);
-	if (firstentity->HasComponent<RigidBodyComponent>())
-	{
-		firstentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,0,0,1 };
-	}
-	else if (firstentity->HasComponent<ControllerComponent>())
-		firstentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,0,0,1 };
-	auto secondentity = GetSceneManager()->GetEntity(entitypair.second);
-	if (secondentity->HasComponent<RigidBodyComponent>())
-	{
-		secondentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,0,0,1 };
-	}
-	else if (secondentity->HasComponent<ControllerComponent>())
-		secondentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,0,0,1 };
-
-}
-void PhysicSystem::ExitCollision(std::pair<uint32_t, uint32_t> entitypair)
-{
-	auto firstentity = GetSceneManager()->GetEntity(entitypair.first);
-	if (firstentity->HasComponent<RigidBodyComponent>())
-		firstentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,1,1,1 };
-	else if (firstentity->HasComponent<ControllerComponent>())
-		firstentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,1,1,1 };
 
 
-	auto secondentity = GetSceneManager()->GetEntity(entitypair.second);
-	if (secondentity->HasComponent<RigidBodyComponent>())
-		secondentity->GetComponent<RigidBodyComponent>()->DebugLineColor = { 1,1,1,1 };
-	else if (secondentity->HasComponent<ControllerComponent>())
-		secondentity->GetComponent<ControllerComponent>()->DebugLineColor = { 1,1,1,1 };
-
-}
-// Function to compute the conjugate of a quaternion
+// 쿼터니언의 켤레를 계산하는 함수
 VPMath::Quaternion QuaternionConjugate(const VPMath::Quaternion& q)
 {
+	// x, y, z는 부호를 반전하고 w는 그대로 유지
 	return VPMath::Quaternion(-q.x, -q.y, -q.z, q.w);
 }
+
+// 두 쿼터니언 간의 각도 차이를 계산하는 함수
 float QuaternionAngleDifference(const VPMath::Quaternion& q1, const VPMath::Quaternion& q2)
 {
-
+	// 두 쿼터니언의 델타를 계산
 	VPMath::Quaternion delta = q1 * QuaternionConjugate(q2);
-	delta.Normalize(); // Ensure the quaternion is normalized
+	delta.Normalize(); // 델타 쿼터니언을 정규화
 
-	// Clamp the w component to be within the range of -1.0 to 1.0
+	// w 컴포넌트를 -1.0과 1.0 사이로 제한
 	float angleInRadians = 2.0f * std::acos(std::clamp(delta.w, -1.0f, 1.0f));
-	return angleInRadians * (180.0f / VPMath::XM_PI); // Convert to degrees
+
+	// 라디안 값을 각도로 변환하여 반환
+	return angleInRadians * (180.0f / VPMath::XM_PI);
 }
+
 #pragma endregion
 #pragma region Render
 void PhysicSystem::BeginRenderUpdate(float deltaTime)
 {
+	if (!m_Graphics->GetDebugRenderSetting())
+		return;
+
 	debug::OBBInfo obbInfo{};
 	debug::SphereInfo sphereInfo{};
 
 	for (RigidBodyComponent& rigidBodyComponent : COMPITER(RigidBodyComponent))
 	{
+		if (m_PhysicsEngine->IsEntityInCollision(rigidBodyComponent.GetEntityID()))
+			rigidBodyComponent.DebugLineColor = { 1,0,0,1 };
+		else if (m_PhysicsEngine->IsEntityInTrigger(rigidBodyComponent.GetEntityID()))
+			rigidBodyComponent.DebugLineColor = { 0,1,0,1 };
+		else
+			rigidBodyComponent.DebugLineColor = { 1,1,1,1 };
+		
 		auto rigidTransform = rigidBodyComponent.GetComponent<TransformComponent>();
-		//RightVector
 		debug::RayInfo frontInfo{};
 		frontInfo.Color = { 0,0,1,1 };
 		frontInfo.Origin = rigidTransform->World_Location;
 		frontInfo.Direction = 10 * rigidTransform->FrontVector;
 		frontInfo.Normalize = false;
-		//m_Graphics->DrawRay(frontInfo);
 
 		switch (rigidBodyComponent.ColliderShape)
 		{
@@ -313,8 +316,21 @@ void PhysicSystem::BeginRenderUpdate(float deltaTime)
 	}
 	for (ControllerComponent& ControllerComp : COMPITER(ControllerComponent))
 	{
-		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
+		if (m_PhysicsEngine->IsEntityInCollision(ControllerComp.GetEntityID()))
+			ControllerComp.DebugLineColor = { 1,0,0,1 };
+		else if (m_PhysicsEngine->IsEntityInTrigger(ControllerComp.GetEntityID()))
+			ControllerComp.DebugLineColor = { 0,1,0,1 };
+		else
+			ControllerComp.DebugLineColor = { 1,1,1,1 };
 
+		if (m_PhysicsEngine->IsEntityInCollision(ControllerComp.GetEntityID()))
+			ControllerComp.DebugLineColor = { 1,0,0,1 };
+		else if (m_PhysicsEngine->IsEntityInTrigger(ControllerComp.GetEntityID()))
+			ControllerComp.DebugLineColor = { 0,1,0,1 };
+		else
+			ControllerComp.DebugLineColor = { 1,1,1,1 };
+
+		auto ControllerTransform = ControllerComp.GetComponent<TransformComponent>();
 		debug::OBBInfo obbInfo{};
 		VPPhysics::CapsuleControllerInfo tempinfo = ControllerComp.CapsuleControllerinfo;
 		obbInfo.OBB.Center = ControllerTransform->World_Location;
@@ -423,11 +439,9 @@ void PhysicSystem::CreateStatic(RigidBodyComponent* staticBody)
 		{
 			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
 			convexMeshResourceInfo.FBXName = meshcomp->FBX;
-			///TODO GetVertices wstring으로
-			std::string temp(convexMeshResourceInfo.FBXName.begin(), convexMeshResourceInfo.FBXName.end());
-			convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(temp);
+			convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(meshcomp->FBX);
 			if (convexMeshResourceInfo.Vertexs.empty())
-				return; // Return null if no vertices were extracted
+				return;
 
 			m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
 		}
@@ -473,22 +487,12 @@ void PhysicSystem::CreateDynamic(RigidBodyComponent* dynamicBody)
 		///해당 메쉬에 대한 Convex가 존재하지 않는가?
 		if (!m_PhysicsEngine->HasConvexMeshResource(meshcomp->FBX))
 		{
-			//VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
-			//convexMeshResourceInfo.FBXName = meshcomp->FBX;
-			//convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(convexMeshResourceInfo.FBXName);
-			//if (convexMeshResourceInfo.Vertexs.empty())
-			//return;
-			//m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
-			///=======================삭제 예정=======================
-			///TODO GetVertices wstring으로
 			VPPhysics::ConvexMeshResourceInfo convexMeshResourceInfo;
 			convexMeshResourceInfo.FBXName = meshcomp->FBX;
-			std::string temp(meshcomp->FBX.begin(), meshcomp->FBX.end());
-			convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(temp);
+			convexMeshResourceInfo.Vertexs = m_Graphics->GetVertices(meshcomp->FBX);
 			if (convexMeshResourceInfo.Vertexs.empty())
-				return; // Return null if no vertices were extracted
+				return;
 			m_PhysicsEngine->LoadConvexMeshResource(convexMeshResourceInfo);
-			///=======================================================
 		}
 		dynamicBody->ConvexColliderInfo.FBXName = meshcomp->FBX;
 		dynamicBody->ConvexColliderInfo.colliderInfo = dynamicBody->DefaultColliderInfo;

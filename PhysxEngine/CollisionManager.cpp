@@ -183,3 +183,29 @@ void CollisionManager::OnMoveContactToExit_Trigger(std::any entityPair)
     auto entitys = std::any_cast<std::pair<uint32_t, uint32_t>>(entityPair);
     MoveContactToExit(entitys, true);
 }
+
+bool CollisionManager::IsEntityInCollision(uint32_t entityID)
+{
+	// m_CollisionContact가 비어 있는 경우 false 반환
+	if (m_CollisionContact.empty())
+		return false; // 충돌 데이터가 없으므로 해당 ID는 충돌 상태가 아님
+
+	// m_CollisionContact에서 entityID가 first 또는 second에 존재하는지 확인
+	for (const auto& pair : m_CollisionContact)
+		if (pair.first == entityID || pair.second == entityID)
+			return true; // 존재하면 true 반환
+	return false; // 존재하지 않으면 false 반환
+}
+
+bool CollisionManager::IsEntityInTrigger(uint32_t entityID)
+{
+    // m_TriggerContact가 비어 있는 경우 false 반환
+    if (m_TriggerContact.empty())
+        return false; // 충돌 데이터가 없으므로 해당 ID는 충돌 상태가 아님
+
+    // m_TriggerContact에서 entityID가 first 또는 second에 존재하는지 확인
+    for (const auto& pair : m_TriggerContact)
+        if (pair.first == entityID || pair.second == entityID)
+            return true; // 존재하면 true 반환
+    return false; // 존재하지 않으면 false 반환
+}

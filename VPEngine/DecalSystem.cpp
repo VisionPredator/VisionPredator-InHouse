@@ -16,7 +16,8 @@ void DecalSystem::BeginRenderUpdate(float deltaTime)
 		temp.TexturePath = comp.TextureName;
 		temp.WorldTransform = transform->WorldTransform;
 		m_Graphics->DrawDecal(temp);
-
+		if (!m_Graphics->GetDebugRenderSetting())
+			continue;
 		debug::OBBInfo box;
 		box.OBB.Center = transform->World_Location;
 		box.OBB.Extents = transform->World_Scale / 2;

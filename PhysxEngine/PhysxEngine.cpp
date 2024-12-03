@@ -315,6 +315,17 @@ std::vector<VPMath::Vector3> PhysxEngine::GetConVexMeshVertex(uint32_t entityID)
 	return m_RigidBodyManager->GetConVexMeshVertex(entityID);
 }
 
+bool PhysxEngine::IsEntityInCollision(uint32_t entityID)
+{
+	return m_CollisionManager->IsEntityInCollision(entityID);
+}
+
+bool PhysxEngine::IsEntityInTrigger(uint32_t entityID)
+{
+	return m_CollisionManager->IsEntityInTrigger(entityID);
+
+}
+
 
 void PhysxEngine::SetGobalPose(uint32_t entityID, VPMath::Vector3 P, VPMath::Quaternion Q)
 {

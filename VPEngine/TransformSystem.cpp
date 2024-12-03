@@ -454,16 +454,16 @@ void TransformSystem::BeginRenderUpdate(float deltaTime)
 
 void TransformSystem::RenderUpdate(float deltaTime)
 {
-    for (TransformComponent& comp : COMPITER(TransformComponent))
-    {
-        debug::OBBInfo obbinfo{};
-        obbinfo.OBB.Center = comp.World_Location;
-        obbinfo.OBB.Extents = { 0.2f,0.2f ,0.2f };
-        obbinfo.xAxisAngle = comp.World_Rotation.x;
-        obbinfo.yAxisAngle = comp.World_Rotation.y;
-        obbinfo.zAxisAngle = comp.World_Rotation.z;
-        //m_Graphics->DrawOBB(obbinfo);
-    }
+    //for (TransformComponent& comp : COMPITER(TransformComponent))
+    //{
+    //    debug::OBBInfo obbinfo{};
+    //    obbinfo.OBB.Center = comp.World_Location;
+    //    obbinfo.OBB.Extents = { 0.2f,0.2f ,0.2f };
+    //    obbinfo.xAxisAngle = comp.World_Rotation.x;
+    //    obbinfo.yAxisAngle = comp.World_Rotation.y;
+    //    obbinfo.zAxisAngle = comp.World_Rotation.z;
+    //    //m_Graphics->DrawOBB(obbinfo);
+    //}
 }
 
 void TransformSystem::LateRenderUpdate(float deltaTime)

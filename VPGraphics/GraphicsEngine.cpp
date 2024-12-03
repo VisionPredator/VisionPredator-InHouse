@@ -498,19 +498,14 @@ void* GraphicsEngine::GetSRV(std::wstring name)
 	return nullptr;
 }
 
-std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(std::string fbx)
+std::vector<VPMath::Vector3> GraphicsEngine::GetVertices(const std::wstring& fbx)
 {
-	std::wstring tempfbx{};
-	tempfbx.assign(fbx.begin(), fbx.end());
-	std::weak_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(tempfbx);
-
+	std::weak_ptr<ModelData> curFBX = m_ResourceManager->Get<ModelData>(fbx);
 	if (curFBX.lock() != nullptr)
-	{
 		return curFBX.lock()->vertices;
-	}
-
 	return {};
 }
+
 
 void GraphicsEngine::OnResize(HWND hwnd, bool isFullScreen)
 {
@@ -551,6 +546,11 @@ void GraphicsEngine::DebugRenderONOFF(bool isRender)
 {
 	m_PassManager->SetDebugDraw(isRender);
 }
+bool GraphicsEngine::GetDebugRenderSetting()
+{
+	return m_PassManager->GetDebugSetting();
+}
+
 
 void GraphicsEngine::Culling()
 {
