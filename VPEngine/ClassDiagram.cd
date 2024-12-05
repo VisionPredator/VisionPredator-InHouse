@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AnimationSystem" Collapsed="true">
+    <Position X="23.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWCEAAAAgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAQAAA=</HashCode>
+      <FileName>AnimationSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ButtonSystem" Collapsed="true">
+    <Position X="18" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWCBAgAAKAAEAAAAgIAAEAAAAABAAgAAAAAAAAQAAA=</HashCode>
+      <FileName>ButtonSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CameraSystem" Collapsed="true">
+    <Position X="22" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWCAKAAAAAAAAAhQAAAIAAAAAAAAACAAAAAgAAQAAQ=</HashCode>
+      <FileName>CameraSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System" Collapsed="true">
+    <Position X="55.75" Y="4.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="System::CompIter&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>System.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAMAEQIAAAAAADAAAAAAAAAAAgAAAAMAAAAAAAAA=</HashCode>
+      <FileName>System.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ControllerMovementSystem" Collapsed="true">
+    <Position X="27" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAACAAAAAAsAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ControllerMovementSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DecalComponent" Collapsed="true">
+    <Position X="10.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAACAAAAAAAAAAgIAAA=</HashCode>
+      <FileName>DecalComponent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DecalSystem" Collapsed="true">
+    <Position X="18" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWGAAAAAAAAAAAAAAAAAQAAIAAAAEAAAAAAAAAQAAA=</HashCode>
+      <FileName>DecalSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EffectComponent" Collapsed="true">
+    <Position X="17.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAIAAAAAACAIAAAgIAABABAAAAAAAAAAAAAAAAgAQ=</HashCode>
+      <FileName>EffectComponent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EffectSystem" Collapsed="true">
+    <Position X="18" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGGAAAAAgAAAAAAAAAAAQIAAAAAAAAAAAAAAABQAAA=</HashCode>
+      <FileName>EffectSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Entity" Collapsed="true">
+    <Position X="52.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAABAACAgAIAAAEAAAABQgAAGAAAAAEACAgBAAAgBI=</HashCode>
+      <FileName>Entity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GeometrySystem" Collapsed="true">
+    <Position X="26.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGGAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAYAAA=</HashCode>
+      <FileName>GeometrySystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IContactable" Collapsed="true">
+    <Position X="54" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>SystemInterface.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputManager" Collapsed="true">
+    <Position X="6.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgYAIAEEAAgIBQAAcSABGxRAJEBEQgEAQECgYBAomAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ITriggerable" Collapsed="true">
+    <Position X="54" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SystemInterface.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LifeTimeSystem" Collapsed="true">
+    <Position X="26.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAQAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LifeTimeSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LightSystem" Collapsed="true">
+    <Position X="29.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGGAAAAAAAAAAAAAAAAAQAAAAAAAAAIAAAAAAAQEAA=</HashCode>
+      <FileName>LightSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MeshSystem" Collapsed="true">
+    <Position X="33.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGGAAAAAAAAAAAAAAAAAQIAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>MeshSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NavAgentData" Collapsed="true">
+    <Position X="55.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAMAAAAAEAAAAAAAAAAACAAAAAAQAEAAAAA=</HashCode>
+      <FileName>NavMeshData.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NavAgentSystem" Collapsed="true">
+    <Position X="15" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACBAAACAAAQAAAAAAABACAIEIgAAAoEAAAACAAAg=</HashCode>
+      <FileName>NavAgentSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NavMeshData" Collapsed="true">
+    <Position X="52.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAQAAAAAACAAAgAAABQQAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NavMeshData.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NavMeshSystem" Collapsed="true">
+    <Position X="31.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGCABAgAiQACQgAAAAAQABAAIAAgAAAAEAAAAAQAAg=</HashCode>
+      <FileName>NavMeshSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Physic::IPhysx" Collapsed="true">
+    <Position X="55.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AzwAIGwEiIAXAQAAIAlIABBIBQBBkUQgQBgIAIAUAoA=</HashCode>
+      <FileName>VPEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PhysicSystem" Collapsed="true">
+    <Position X="25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABXCABAgACSAAQAQAAAAAAoQAIAAkAAAIAAAAAAQCAg=</HashCode>
+      <FileName>PhysicSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderSystem" Collapsed="true">
+    <Position X="15" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGGAAAAAAAAAAAAAAAAIQAAAAAAAAIAAAACAAAQAAA=</HashCode>
+      <FileName>RenderSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="54" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBAEAAIAACAAIAAAgAAAAAAAQAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="9.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EJDwCAE8CIAGEXQFhBWVHCSARCIUwWgAIiQILEAACgQ=</HashCode>
+      <FileName>SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneSerializer" Collapsed="true">
+    <Position X="15" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAQAAAAAACAAAACAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SceneSerializer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SkinnedMeshSystem" Collapsed="true">
+    <Position X="29" Y="10.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAGGBAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>SkinnedMeshSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SocketSystem" Collapsed="true">
+    <Position X="18" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWiABAAAAAAAQAAgBAAAAAQAIAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>SocketSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sound::ISound" Collapsed="true">
+    <Position X="52.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBBAQAQAAAAQAQFAAEAAAgAAAAAQQAoAAAAAABACA=</HashCode>
+      <FileName>VPEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoundSystem" Collapsed="true">
+    <Position X="15" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAAACAAAQAAAAAQAAAAAAAAgAAAAAAAAAAAAAg=</HashCode>
+      <FileName>SoundSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System" Collapsed="true">
+    <Position X="19.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAMAEQIAAAAAADAAAAAAAAAAAgAAAAMAAAAAAAAA=</HashCode>
+      <FileName>System.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SystemManager" Collapsed="true">
+    <Position X="33.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAeiAoAcWigQBYIEkogS4aAMAIZAAIEMQuAACAASwGk=</HashCode>
+      <FileName>SystemManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeManager" Collapsed="true">
+    <Position X="1" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IASgGgAAAAAAAQAAIAAgAgAAAAAAAAAAAhRAAAAAEAA=</HashCode>
+      <FileName>TimeManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TransformSystem" Collapsed="true">
+    <Position X="21" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWGBgAAAKAEAQAElgAAYQACACBAggiBAACASCEQgAg=</HashCode>
+      <FileName>TransformSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VPEngine" Collapsed="true">
+    <Position X="3.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQQEAAIWDgAABAAAAAAQCAgSAIAEAEgADAABEAQAAU=</HashCode>
+      <FileName>VPEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="AnimationComponent" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AACAAAIgAAAAAAAABAAAAAAACAgBAQAgBgACAAAgAAQ=</HashCode>
+      <FileName>AnimationComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="BuildSettings" Collapsed="true">
+    <Position X="54" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAABAAAAAAAAAAAAAAAAAAAAggAAAgAAAAAAAg=</HashCode>
+      <FileName>NavStructs.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ButtonComponent" Collapsed="true">
+    <Position X="12.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>QAAAABAAAAAAAAgAAAABABAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ButtonComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="CameraComponent" Collapsed="true">
+    <Position X="3" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEIAAAIAAAACAAAAAAAAABAQAAAAAEIAAAAAg=</HashCode>
+      <FileName>CameraComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Children" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAIIAAAAAAEAAACAAAAAAAAAAAAAAAABBA=</HashCode>
+      <FileName>TransformComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Component" Collapsed="true">
+    <Position X="25.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAgEAAAAAAIIAAAAAABFAgCAAAAAAAAACBgAAAAABA=</HashCode>
+      <FileName>Component.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ControllerComponent" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAIAQABAAAAAAAAAAAlABABAAAAhAIAAABEQAAEAAA=</HashCode>
+      <FileName>ControllerComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="GeometryComponent" Collapsed="true">
+    <Position X="15" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAEAQEAAQAAAAEAAAAAACAACAAAAgAAAA=</HashCode>
+      <FileName>GeometryComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IDComponent" Collapsed="true">
+    <Position X="36.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>IDComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IdentityComponent" Collapsed="true">
+    <Position X="39" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IdentityComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ImageComponent" Collapsed="true">
+    <Position X="41.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQAAAAAAQEAAAgAAMIAABAAAAAAIAAGAAAAgACAIAA=</HashCode>
+      <FileName>ImageComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LifeTimeComponent" Collapsed="true">
+    <Position X="24.75" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LifeTimeComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LightComponent" Collapsed="true">
+    <Position X="34.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAIAAAAIAAAAAAAAAAAAAABCACBAAAAAAAIAAA=</HashCode>
+      <FileName>LightComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MeshComponent" Collapsed="true">
+    <Position X="27.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAKAAAgAAAMAQAAEQAABAAAAgAAGAAAAAAAAAAAAQ=</HashCode>
+      <FileName>MeshComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NavAgentComponent" Collapsed="true">
+    <Position X="19.75" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAABAAAAAAAAAAgAAAAQBgAAAAAAAAAQA=</HashCode>
+      <FileName>NavAgentComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PrefabData" Collapsed="true">
+    <Position X="55.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAACBAIACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="RigidBodyComponent" Collapsed="true">
+    <Position X="22.25" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAABAAAAAgAAAAAIgAAABIAAgAAIIAAAAAAQAAAA=</HashCode>
+      <FileName>RigidBodyComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SkinningMeshComponent" Collapsed="true">
+    <Position X="29.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAEAQAAAQAAAAAAAAAACAAAAAAAAAAAAQ=</HashCode>
+      <FileName>SkinningMeshComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SocketComponent" Collapsed="true">
+    <Position X="32.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAIAABAAAAAAAAAAAABAAACAAGAEAAAgAI=</HashCode>
+      <FileName>SocketComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SoundComponent" Collapsed="true">
+    <Position X="43.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAACAAAAAAQAABAAAAAAAAAAIAIAAAAAAAA=</HashCode>
+      <FileName>SoundComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TextComponent" Collapsed="true">
+    <Position X="46" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAMIAABAIAAAgAAAEAEACqAAAAAA=</HashCode>
+      <FileName>TextComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TransformComponent" Collapsed="true">
+    <Position X="48.25" Y="3.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>EEMRSAAAAOgBAAAgCBSEAEIIAAAGMIAAiACEIgIAQAg=</HashCode>
+      <FileName>TransformComponent.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VisPred::Engine::AniBlendData" Collapsed="true">
+    <Position X="52.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAEAAAgAAAAQABAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>EngineStructs.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="KEYBOARDKEY" Collapsed="true">
+    <Position X="52.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>8MQDbAz/IoICWqi0OAFIkA2kogMqEAsq4QBg////Zwc=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MOUSEKEY" Collapsed="true">
+    <Position X="54" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQBAAAAAAAACAAAAAAAAAAAAAwAAAAAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VisPred::Engine::Skill" Collapsed="true">
+    <Position X="55.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEQAAgBAAAAAAAAACAAAAAAAAAABAAAAAAgAAAE=</HashCode>
+      <FileName>EngineStructs.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

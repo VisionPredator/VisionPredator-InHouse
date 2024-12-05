@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CapsuleController">
+    <Position X="19" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAQAAAAACBEABAAAAEAAAAACAIAAAAAA=</HashCode>
+      <FileName>CapsuleController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CollisionCallback" Collapsed="true">
+    <Position X="21" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEEAAAAAAEAAAoAAQAAAAAAAAACABEAAAAAAAAAAA=</HashCode>
+      <FileName>CollisionCallback.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CollisionManager" Collapsed="true">
+    <Position X="23.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGQAAEAgAAAASAAAAABDAQgAIEAABAAAEAACAADAAAI=</HashCode>
+      <FileName>CollisionManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Controller">
+    <Position X="16" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgBIAEBSiiAAIAAIAAAAgQAAAAAkQAEAAAIAABgAA=</HashCode>
+      <FileName>Controller.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ControllerHitCallback">
+    <Position X="21" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAIAAAAAAAAAAAAAAAAAAAAAAgAIAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>ControllerHitCallback.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ControllerManager">
+    <Position X="25.25" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AQSIFAAAAAAAAQAAAIwIAIEAAAAAEAAAABCAAgAAABI=</HashCode>
+      <FileName>ControllerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RigidBody">
+    <Position X="9.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAACAgAAAAABAAAAAAAgAQQAAAAABAAgAAAMAAAiAA=</HashCode>
+      <FileName>RigidBody.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StaticRigidBody">
+    <Position X="11.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAQAAAAAAAAAACAAAAAAAAAgIIAAAAAA=</HashCode>
+      <FileName>StaticRigidBody.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DynamicRigidBody">
+    <Position X="11.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAABAAAAAAEAAgAAAACAIAAAAAA=</HashCode>
+      <FileName>DynamicRigidBody.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RigidBodyManager">
+    <Position X="3.75" Y="4.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AjyAIAQEKYATAQACAAkCABhKBQIAEUAAQAgEAIIEAhA=</HashCode>
+      <FileName>RigidBodyManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

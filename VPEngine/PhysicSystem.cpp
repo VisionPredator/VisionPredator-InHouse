@@ -397,13 +397,9 @@ void PhysicSystem::CreateRigidBody(uint32_t EntityID)
 	rigidComp->DefaultColliderInfo.WorldQuaternion = rigidtransform.World_Quaternion;
 	rigidComp->DefaultColliderInfo.WorldScale = rigidtransform.World_Scale;
 	if (!rigidComp->IsDynamic)
-	{
 		CreateStatic(rigidComp);
-	}
 	else
-	{
 		CreateDynamic(rigidComp);
-	}
 }
 
 
