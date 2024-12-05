@@ -3,6 +3,7 @@
 #include "CollisionCallback.h"
 #include "EventManager.h"
 #include "VPPhysicsStructs.h"
+#include "..\VPGraphics\Log.h"
 
 using namespace physx;
 CollisionCallback::CollisionCallback()
@@ -17,14 +18,10 @@ void CollisionCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 c
 
 void CollisionCallback::onWake(PxActor** actors, PxU32 count)
 {
-	std::cout << "onWake" << std::endl;
-
 }
 
 void CollisionCallback::onSleep(PxActor** actors, PxU32 count)
 {
-	std::cout << "onSleep" << std::endl;
-
 }
 
 void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
@@ -33,17 +30,16 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
 	{
 		if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
 		{
-			std::cout << "EnterContact" << std::endl;
 			auto entitypair = SortEntityPair(pairs[i]);
+			Log::GetClientLogger()->info("EnterContact : Entity1 = {}, Entity2 = {}", entitypair.first, entitypair.second);
 			EventManager::GetInstance().ImmediateEvent("OnAddEnter_Collision", entitypair);
 		}
 
 		/// END_COLLISION 충돌 이벤트 실행
 		else if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_LOST | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
 		{
-			std::cout << "ExitContact" << std::endl;
 			auto entitypair = SortEntityPair(pairs[i]);
-
+			Log::GetClientLogger()->info("ExitContact : Entity1 = {}, Entity2 = {}", entitypair.first, entitypair.second);
 			EventManager::GetInstance().ImmediateEvent("OnMoveContactToExit_Collision", entitypair);
 
 		}
@@ -51,7 +47,6 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
 		/// ON_COLLSION 충돌 이벤트 실행
 		else if (pairs[i].events & (physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS | physx::PxPairFlag::eNOTIFY_TOUCH_CCD))
 		{
-			//std::cout << "OnContact" << std::endl;
 		}
 	}
 
@@ -64,17 +59,16 @@ void CollisionCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 		/// ENTER_OVERLAP 충돌 이벤트 실행
  		if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 		{
-			std::cout << "EnterTrigger" << std::endl;
 
 			auto entitypair = SortEntityPair(pairs[i]);
+			Log::GetClientLogger()->info("EnterTrigger : Entity1 = {}, Entity2 = {}", entitypair.first, entitypair.second);
 			EventManager::GetInstance().ImmediateEvent("OnAddEnter_Trigger", entitypair);
 		}
 		/// END_OVERLAP 충돌 이벤트 실행
 		else if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
 		{
-			std::cout << "ExitTrigger" << std::endl;
-
 			auto entitypair = SortEntityPair(pairs[i]);
+			Log::GetClientLogger()->info("ExitTrigger : Entity1 = {}, Entity2 = {}", entitypair.first, entitypair.second);
 			EventManager::GetInstance().ImmediateEvent("OnMoveContactToExit_Trigger", entitypair);
 		}
 	}

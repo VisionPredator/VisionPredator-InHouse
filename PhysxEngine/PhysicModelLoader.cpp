@@ -19,17 +19,17 @@ physx::PxConvexMesh* PhysicModelLoader::CookConvexMesh(physx::PxPhysics* physics
     convexdesc.points.count = static_cast<physx::PxU32>(vertices.size()); // 정점 개수 설정
     convexdesc.points.stride = sizeof(VPMath::Vector3); // 정점의 메모리 간격 설정
     convexdesc.points.data = vertices.data(); // 정점 데이터 지정
-    convexdesc.vertexLimit = 256; // 정점 수 제한 설정
-    convexdesc.polygonLimit = 1024; // 폴리곤 수 제한 설정
+    convexdesc.vertexLimit = 1024; // 정점 수 제한 설정
+    convexdesc.polygonLimit = 2048; // 폴리곤 수 제한 설정
     convexdesc.flags = physx::PxConvexFlag::eCOMPUTE_CONVEX; // Convex 생성 플래그 설정
 
     // Cooking 파라미터 설정
     physx::PxTolerancesScale scale;
     physx::PxCookingParams params(scale);
-    params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH; // 메쉬 정리 비활성화
-    params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE; // 활성 엣지 계산 비활성화
+    //params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH; // 메쉬 정리 비활성화
+    //params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE; // 활성 엣지 계산 비활성화
     params.buildGPUData = true; // GPU 데이터를 빌드하도록 설정
-
+    // 메쉬 전처리 플래그 설정 (간소화된 Convex Mesh를 위한 최적화)
     // Convex Mesh 생성 (Cooking)
     physx::PxDefaultMemoryOutputStream buf;
     physx::PxConvexMeshCookingResult::Enum result;
@@ -52,7 +52,6 @@ physx::PxConvexMesh* PhysicModelLoader::CookConvexMesh(physx::PxPhysics* physics
             Log::GetClientLogger()->error("Convex mesh cooking failed: Unknown error. Result code: {}", resultCode); // 알 수 없는 실패
             break;
         }
-        return nullptr; // 실패 시 nullptr 반환
     }
 
     // 생성된 Convex Mesh 데이터를 기반으로 Convex Mesh 생성
