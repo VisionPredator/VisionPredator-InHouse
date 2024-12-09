@@ -35,12 +35,6 @@ void CollisionManager::Update()
         it = EraseExit(it, true);
     }
 
-    // On콜리전 발생시! 프레임 저하 발생시에 저거를하고, 대체품도 생각해보기
-    //for (auto& entitypair : m_CollisionContact)
-    //    EventManager::GetInstance().ImmediateEvent("OnCollisionContact", entitypair);
-    //for (auto& entitypair : m_TriggerContact)
-    //    EventManager::GetInstance().ImmediateEvent("OnTriggerContact", entitypair);
-
     // simulation의 결과 콜리전Enter 발생시!
     for (auto it = m_CollisionEnter.begin(); it != m_CollisionEnter.end();)
     {
