@@ -7,15 +7,15 @@
       <FileName>CapsuleController.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CollisionCallback" Collapsed="true">
-    <Position X="21" Y="3.25" Width="1.5" />
+  <Class Name="CollisionCallback">
+    <Position X="20.5" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAEEAAAAAAEAAAoAAQAAAAAAAAACABEAAAAAAAAAAA=</HashCode>
       <FileName>CollisionCallback.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CollisionManager" Collapsed="true">
-    <Position X="23.25" Y="4" Width="1.5" />
+  <Class Name="CollisionManager">
+    <Position X="18.25" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AGQAAEAgAAAASAAAAABDAQgAIEAABAAAEAACAADAAAI=</HashCode>
       <FileName>CollisionManager.h</FileName>
@@ -24,12 +24,12 @@
   <Class Name="Controller">
     <Position X="16" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgBIAEBSiiAAIAAIAAAAgQAAAAAkQAEAAAIAABgAA=</HashCode>
+      <HashCode>AAAgBIAEBSiiAAIAAIAAAAgQAIAAAkQAEAAAIAABgAA=</HashCode>
       <FileName>Controller.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ControllerHitCallback">
-    <Position X="21" Y="4.25" Width="1.75" />
+    <Position X="20.5" Y="10.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>gAIAAAAAAAAAAAAAAAAAAAAAAgAIAAAAAAAAAAAAAAg=</HashCode>
       <FileName>ControllerHitCallback.h</FileName>
@@ -38,7 +38,7 @@
   <Class Name="ControllerManager">
     <Position X="25.25" Y="3.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AQSIFAAAAAAAAQAAAIwIAIEAAAAAEAAAABCAAgAAABI=</HashCode>
+      <HashCode>AQSIFAAAAAAAAQAAAIwIIIEAAAAAEAAAABCAAgAAABI=</HashCode>
       <FileName>ControllerManager.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -68,6 +68,13 @@
     <TypeIdentifier>
       <HashCode>AjyAIAQEKYATAQACAAkCABhKBQIAEUAAQAgEAIIEAhA=</HashCode>
       <FileName>RigidBodyManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ControllerQueryFilterCallback">
+    <Position X="22.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAkAAAEAAAAAAAAAAQAQAAgAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>ControllerQueryFilterCallback.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="맑은 고딕" Size="9" />

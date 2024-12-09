@@ -80,6 +80,7 @@ public:
     // 멤버 변수
     USERDATA m_UserData{}; // 사용자 데이터
     physx::PxController* m_Controller{}; // 컨트롤러 객체
+    physx::PxControllerCollisionFlags m_Collisionflag; // 충돌 플래그 저장 변수 m_Collisionflag; // 콜리젼 체크
     VPPhysics::EPhysicsLayer m_LayerNum{}; // 물리 레이어 정보
     physx::PxMaterial* m_Material{}; // 물리 재질
     std::shared_ptr<PxFilterData> m_FilterData{}; // 필터 데이터

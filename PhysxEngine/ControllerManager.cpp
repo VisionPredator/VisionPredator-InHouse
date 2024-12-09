@@ -58,23 +58,49 @@ bool ControllerManager::Update(float deltatime)
             CapsuleController* capsuleController = static_cast<CapsuleController*>(controller.get());
 
             // 컨트롤러 이동 로직 실행
-            physx::PxControllerCollisionFlags collisionFlags = capsuleController->m_Controller->move(
+            capsuleController->m_Collisionflag = capsuleController->m_Controller->move(
                 capsuleController->m_Velocity * deltatime, // 속도 * 델타 타임
                 0.001f,                                   // 최소 이동 허용치
                 deltatime,                                // 델타 타임
                 *capsuleController->GetFilters()          // 필터 적용
             );
 
-            // 컨트롤러가 아래 방향 충돌 플래그를 가졌는지 확인
-            if (collisionFlags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
-                capsuleController->SetIsFall(false); // 충돌 시 낙하 상태 해제
-            else
-                capsuleController->SetIsFall(true);  // 충돌하지 않으면 낙하 상태로 설정
         }
     }
     // 업데이트 성공 시 true 반환
     return true;
 }
+
+bool ControllerManager::LateUpdate()
+{
+    // m_CharectorMap이 비어있는 경우 업데이트를 수행하지 않고 true 반환
+	if (m_CharectorMap.empty())
+		return true;
+
+	// m_CharectorMap의 모든 엔티티 ID와 컨트롤러를 순회
+	for (auto [entityID, controller] : m_CharectorMap)
+	{
+		// 컨트롤러가 CapsuleController 타입인지 확인
+		if (controller->GetTypeID() == Reflection::GetTypeID<CapsuleController>())
+		{
+			// CapsuleController 타입으로 컨트롤러를 캐스팅
+			CapsuleController* capsuleController = static_cast<CapsuleController*>(controller.get());
+
+			// 컨트롤러가 아래 방향 충돌 플래그를 가졌는지 확인
+			if (capsuleController->m_Collisionflag & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
+				capsuleController->SetIsFall(false); // 충돌 시 낙하 상태 해제
+			else
+				capsuleController->SetIsFall(true);  // 충돌하지 않으면 낙하 상태로 설정
+
+            // 필요시 플래그 초기화
+            capsuleController->m_Collisionflag = physx::PxControllerCollisionFlags(0);
+
+		}
+	}
+	// 업데이트 성공 시 true 반환
+    return true;
+}
+
 
 VPPhysics::RaycastData ControllerManager::RaycastActor(uint32_t entityID, VPMath::Vector3 dir, float distance)
 {

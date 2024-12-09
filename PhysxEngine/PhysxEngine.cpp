@@ -126,11 +126,11 @@ bool PhysxEngine::Finalize()
 
 void PhysxEngine::Update(float deltatime)
 {
-
 	m_ControllerManager->Update(deltatime);
 	SimulateUpdate(deltatime);
-	m_CollisionManager->Update();
 	/// 충돌 체크 관런
+	m_CollisionManager->Update();
+	m_ControllerManager->LateUpdate();
 }
 
 void PhysxEngine::SimulateUpdate(float deltatime)
