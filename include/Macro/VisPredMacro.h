@@ -44,10 +44,18 @@
 
 
 
+
 /// \def VP_JSONBODY(CLASSNAME,...)
-/// \brief 해당 컴포넌트에 시리얼라이즈 함수와 디시리얼라이즈 함수를 구현한다.
-/// \param CLASSNAME : Class
-/// \param 추가 매개변수 : 가지고있는 멤버변수 순서 맞춰서 기입해주세요.
+/// \brief 이 매크로는 컴포넌트 클래스에 대해 시리얼라이즈, 디시리얼라이즈, 복제 및 기타 유틸리티 함수를 자동으로 생성합니다.
+/// \param CLASSNAME : 클래스 이름
+/// \param ... : 클래스의 멤버 변수를 순서대로 입력 (NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2와 연결)
+/// 
+/// 이 매크로는 다음 기능을 제공합니다:
+/// 1. `AddComponent`: 지정된 엔티티에 컴포넌트를 추가하는 함수
+/// 2. `SerializeComponent`: 컴포넌트를 JSON으로 변환하는 함수
+/// 3. `DeserializeComponent`: JSON에서 컴포넌트를 역직렬화하고 엔티티에 추가하는 함수
+/// 4. `GetHandle`: 메타 데이터를 반환하는 함수
+/// 5. `Clone`: 현재 컴포넌트를 복제하는 함수
 #define VP_JSONBODY(CLASSNAME,...)\
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_VER2(CLASSNAME, __VA_ARGS__)\
     std::shared_ptr<Component> AddComponent(Entity*  parentEntity) override\
@@ -76,7 +84,6 @@
         clonedComponent->SetEntity(nullptr); /* Clone 후에 새로운 엔티티로 설정 */ \
         return clonedComponent; \
     }
-
 constexpr float DegToRad(float degrees) 
 {
     return degrees * (VPMath::XM_PI / 180.0f);

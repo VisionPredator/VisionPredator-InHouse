@@ -354,8 +354,6 @@ std::string Inspector::RemoveComponentSuffix(const std::string& className)
 
 void Inspector::MemberImGui(entt::meta_data memberMetaData, Component* component)
 {
-
-
 	auto metaType = memberMetaData.type();
 	ImGui::SetNextItemWidth(m_TypeBoxsize);
 	if (metaType.is_enum())
